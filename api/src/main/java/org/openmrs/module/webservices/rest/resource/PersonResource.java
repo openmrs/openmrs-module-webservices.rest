@@ -55,7 +55,7 @@ public class PersonResource<P extends Person> implements OpenmrsResource<P> {
     }
 
 	public String getURISuffix(P openmrsObject) {
-		return WSConstants.URL_PREFIX + "/person/" + openmrsObject.getUuid();
+		return WSConstants.URL_PREFIX + "person/" + openmrsObject.getUuid();
 	}
 		
 }

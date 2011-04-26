@@ -67,7 +67,7 @@ public class PatientResource<P extends Patient> implements OpenmrsResource<P> {
     }
 
 	public String getURISuffix(P openmrsObject) {
-		return WSConstants.URL_PREFIX + "/person/" + openmrsObject.getUuid();
+		return WSConstants.URL_PREFIX + "patient/" + openmrsObject.getUuid();
 	}
 		
 }

@@ -14,9 +14,7 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import org.openmrs.module.webservices.rest.WSUtil;
-import org.openmrs.module.webservices.rest.web.StringToOpenmrsObjectConverterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -29,10 +27,16 @@ public class BaseResourceController {
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		//binder.registerCustomEditor(OpenmrsObject.class, new OpenmrsObjectByUuidEditor());
-		GenericConversionService cs = new GenericConversionService();
-		cs.addConverterFactory(new StringToOpenmrsObjectConverterFactory());
-		binder.setConversionService(cs);
+		// can't know the object type if we use a prop editor
+//		binder.registerCustomEditor(OpenmrsObject.class, new OpenmrsObjectByUuidEditor());
+		
+		// spring won't ever find our conversion service here because it of the timing
+		// and when it is registered here.  Spring is supposed to look at the prop editors
+		// and then look here, but it just stops after looking at the prop editors
+		
+//		GenericConversionService cs = new GenericConversionService();
+//		cs.addConverterFactory(new StringToOpenmrsObjectConverterFactory());
+//		binder.setConversionService(cs);
 	}
 	
 	@Autowired

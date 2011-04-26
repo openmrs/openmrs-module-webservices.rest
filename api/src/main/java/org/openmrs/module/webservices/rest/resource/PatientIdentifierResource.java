@@ -44,7 +44,7 @@ public class PatientIdentifierResource<PI extends PatientIdentifier> implements 
     }
 
 	public String getURISuffix(PI identifier) {
-		return WSConstants.URL_PREFIX + "/patient/" + identifier.getPatient().getUuid() + "/identifier/" + identifier.getUuid();
+		return WSConstants.URL_PREFIX + "patient/" + identifier.getPatient().getUuid() + "/identifier/" + identifier.getUuid();
 	}
 		
 }

@@ -51,7 +51,6 @@ public class AuditInfoResource<A extends Auditable> implements OpenmrsResource<A
     public String[] getDefaultRepresentation() {
     	return new String[] { "creator", "dateCreated", "changedBy", "dateChanged" };
     }
-
 	
 		
 }

@@ -50,7 +50,7 @@ public class EncounterResource<E extends Encounter> implements
 	}
 
 	public String getURISuffix(E openmrsObject) {
-		return "/encounter/" + openmrsObject.getUuid();
+		return "encounter/" + openmrsObject.getUuid();
 	}
 
 }

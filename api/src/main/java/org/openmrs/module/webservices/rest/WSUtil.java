@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
 import org.openmrs.module.webservices.rest.resource.OpenmrsResource;
 import org.openmrs.util.HandlerUtil;
@@ -32,7 +34,9 @@ import org.springframework.web.context.request.WebRequest;
  * 
  */
 public class WSUtil {
-
+	
+	private static Log log = LogFactory.getLog(WSUtil.class);
+	
 	/**
 	 * Gets the default/full/custom string out of the Accept-Type header. <br/>
 	 * never returns null
@@ -243,10 +247,20 @@ public class WSUtil {
 					(Object[]) null);
 
 			// the class name of what we want to convert to
-			Field propertyOnResource = resource.getClass().getDeclaredField(
-					prop);
+			Field propertyOnResource;
+			try {
+				propertyOnResource = resource.getClass().getDeclaredField(
+						prop);
+			}
+			catch (NoSuchFieldException e) {
+				// the user requested a field that does not exist on the resource,
+				// so silently skip this
+				log.debug("Skipping field: " + prop + " because it does not exist on the " + resource + " resource");
+				continue;
+			}
 			Class propertyClass = propertyOnResource.getType();
 
+			// now convert from OpenmrsObject into this type on the resource
 			if (propertyClass.equals(SimpleObject.class)) {
 				// sets uuid/link/display
 				SimpleObject subSimpleObject = new SimpleObject(resource,
