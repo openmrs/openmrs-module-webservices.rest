@@ -34,9 +34,9 @@ import org.springframework.web.context.request.WebRequest;
  * 
  */
 public class WSUtil {
-	
+
 	private static Log log = LogFactory.getLog(WSUtil.class);
-	
+
 	/**
 	 * Gets the default/full/custom string out of the Accept-Type header. <br/>
 	 * never returns null
@@ -56,8 +56,8 @@ public class WSUtil {
 			if (WSConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(repType)) {
 				return WSConstants.REPRESENTATION_DEFAULT;
 			}
-			if (WSConstants.REPRESENTATION_SMALL.equalsIgnoreCase(repType)) {
-				return WSConstants.REPRESENTATION_SMALL;
+			if (WSConstants.REPRESENTATION_PARTIAL.equalsIgnoreCase(repType)) {
+				return WSConstants.REPRESENTATION_PARTIAL;
 			}
 			if (WSConstants.REPRESENTATION_FULL.equalsIgnoreCase(repType)) {
 				return WSConstants.REPRESENTATION_FULL;
@@ -225,20 +225,23 @@ public class WSUtil {
 				// just use that method's return value
 				Object returnValue = getterOnResource.invoke(resource,
 						openmrsObject);
+
+				// turn OpenmrsObjects into Refs
 				if (OpenmrsObject.class
 						.isAssignableFrom(returnValue.getClass())) {
 					SimpleObject so = new SimpleObject(
 							(OpenmrsObject) returnValue);
 					simpleObject.put(prop, so);
 				} else
-					// if
-					// (String.class.isAssignableFrom(returnValue.getClass()))
+					// if(String.class.isAssignableFrom(returnValue.getClass()))
+					// everything else /should be/ strings.
+					// (what special about Dates, etc?)
 					simpleObject.put(prop, returnValue);
 				continue;
 			}
 
 			// the user didn't define a getProperty(OpenmrsObject), so we
-			// need to find it magically
+			// need to find OpenmrsObject.getProperty() magically by reflection
 
 			// get the actual value we'll need to convert on the OpenmrsObject
 			Method getterOnObject = openmrsObject.getClass().getMethod(
@@ -249,13 +252,14 @@ public class WSUtil {
 			// the class name of what we want to convert to
 			Field propertyOnResource;
 			try {
-				propertyOnResource = resource.getClass().getDeclaredField(
-						prop);
-			}
-			catch (NoSuchFieldException e) {
-				// the user requested a field that does not exist on the resource,
+				propertyOnResource = resource.getClass().getDeclaredField(prop);
+			} catch (NoSuchFieldException e) {
+				// the user requested a field that does not exist on the
+				// resource,
 				// so silently skip this
-				log.debug("Skipping field: " + prop + " because it does not exist on the " + resource + " resource");
+				log.debug("Skipping field: " + prop
+						+ " because it does not exist on the " + resource
+						+ " resource");
 				continue;
 			}
 			Class propertyClass = propertyOnResource.getType();
@@ -272,8 +276,7 @@ public class WSUtil {
 						.newInstance();
 
 				// TODO: if representation just has "prop", assume that means
-				// all
-				// default properties on the resource
+				// all default properties on the resource
 
 				// TODO: if representation has "prop.x, prop.y", assume that
 				// means only those properties from the resource
@@ -291,6 +294,7 @@ public class WSUtil {
 
 				OpenmrsObject collectionContains = isOpenmrsObjectCollection(propValue);
 				if (collectionContains != null) {
+					// we have an OpenmrsObject collection
 
 					OpenmrsResource collectionResource = HandlerUtil
 							.getPreferredHandler(OpenmrsResource.class,
@@ -314,11 +318,12 @@ public class WSUtil {
 							convert(collectionResource, o, strippedDownRep);
 						}
 					} else if (WSConstants.REPRESENTATION_FULL
-							.equals(representation)) {
+							.equals(representation)
+							|| WSConstants.REPRESENTATION_PARTIAL
+									.equals(representation)) {
 						// TODO: do we want this? do users want this?
 						for (OpenmrsObject o : (Collection<OpenmrsObject>) propValue) {
-							convert(collectionResource, o,
-									WSConstants.REPRESENTATION_FULL);
+							convert(collectionResource, o, representation);
 						}
 					} else {
 						// the user didn't ask for anything special in the rep,
@@ -364,11 +369,13 @@ public class WSUtil {
 	private String[] getPropsToInclude(OpenmrsResource resource,
 			String representation) {
 
-		// TODO loop over resource annotations and get default list of props
-		// TODO if rep==full, loop over resource annotations and get full list
-		// of props
-		// TODO if rep==custom(*), split on comma and get all values without
-		// periods in it
+		// TODO loop over @WebServiceProperty resource annotations and get
+		// default list of props
+		// TODO if rep==partial, get all default ones plus all partial ones
+		// TODO if rep==full, loop over resource annotations and get list
+		// of all props
+		// TODO if rep==custom(*), split on comma and get all values. Then split
+		// on period and only take the string before the first period
 
 		String[] propsToInclude;
 

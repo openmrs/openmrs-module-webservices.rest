@@ -41,9 +41,14 @@ public class WSConstants {
 	 */
 	public static String URL_PREFIX = "/ws/rest/";
 	
+	// the properties returned on an resource if no special rep is requested
 	public static String REPRESENTATION_DEFAULT = "default";
+	
+	// more properties than default, but not all of them
+	public static String REPRESENTATION_PARTIAL = "partial";
+	
+	// all properties on the resource are returned
 	public static String REPRESENTATION_FULL = "full";
 	public static String REPRESENTATION_CUSTOM_PREFIX = "custom:";
-	public static String REPRESENTATION_SMALL = "small";
 	
 }

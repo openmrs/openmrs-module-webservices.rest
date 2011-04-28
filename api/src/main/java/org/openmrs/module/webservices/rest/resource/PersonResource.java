@@ -20,6 +20,7 @@ import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSConstants;
+import org.openmrs.module.webservices.rest.annotation.WebServiceProperty;
 
 /**
  *
@@ -28,19 +29,34 @@ import org.openmrs.module.webservices.rest.WSConstants;
 public class PersonResource<P extends Person> implements OpenmrsResource<P> {
 	
 	// default
+	@WebServiceProperty({"default", "required"})
 	protected String name;
+	
+	@WebServiceProperty({"default", "required"})
 	protected String gender;
+	
+	@WebServiceProperty({"default", "required"})
 	protected Date birthdate;
+	
+	@WebServiceProperty("default")
 	protected boolean dead;
+	
+	@WebServiceProperty("default")
 	protected boolean voided;
+	
+	@WebServiceProperty("default")
 	protected String uuid;
 	
 	// optional
+	@WebServiceProperty("partial")
 	protected Date deathDate;
-	protected AuditInfoResource<P> auditInfo;
+	
+	@WebServiceProperty("partial")
 	protected List<SimpleObject> names;
 	protected List<SimpleObject> addresses;
 	protected List<SimpleObject> attributes;
+	
+	protected AuditInfoResource<P> auditInfo;
 	
 	public String getName(P person) {
 		return person.getPersonName().getFullName();
