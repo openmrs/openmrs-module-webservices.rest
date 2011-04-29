@@ -56,8 +56,8 @@ public class WSUtil {
 			if (WSConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(repType)) {
 				return WSConstants.REPRESENTATION_DEFAULT;
 			}
-			if (WSConstants.REPRESENTATION_PARTIAL.equalsIgnoreCase(repType)) {
-				return WSConstants.REPRESENTATION_PARTIAL;
+			if (WSConstants.REPRESENTATION_MEDIUM.equalsIgnoreCase(repType)) {
+				return WSConstants.REPRESENTATION_MEDIUM;
 			}
 			if (WSConstants.REPRESENTATION_FULL.equalsIgnoreCase(repType)) {
 				return WSConstants.REPRESENTATION_FULL;
@@ -69,7 +69,7 @@ public class WSUtil {
 		}
 
 		// for testing, go off of a param
-		// return request.getParameter("rep");
+		//return request.getParameter("rep");
 
 		// not sure what string they put in, lets just ignore it and return
 		// default
@@ -199,23 +199,42 @@ public class WSUtil {
 			resource = HandlerUtil.getPreferredHandler(OpenmrsResource.class,
 					openmrsObject.getClass());
 
-		// get the properties to show on this object
-		String[] propsToInclude = getPropsToInclude(resource, representation);
-
 		// the object to return. adds the default link/display/uuid properties
 		SimpleObject simpleObject = new SimpleObject(resource, openmrsObject);
+
+		// if they asked for a simple rep, we're done, just return that
+		if (WSConstants.REPRESENTATION_REF.equals(representation))
+			return simpleObject;
+
+		// get the properties to show on this object
+		String[] propsToInclude = getPropsToInclude(resource, representation);
 
 		// loop over each prop defined and put it on the simpleObject
 		for (String prop : propsToInclude) {
 
-			// cut out white space
+			// cut out potential white space around commas
 			prop = prop.trim();
 
-			// the name of the methods for this property
+			// the property field on the resource of what we're converting
+			Field propertyOnResource;
+			try {
+				propertyOnResource = resource.getClass().getDeclaredField(prop);
+			} catch (NoSuchFieldException e) {
+				// the user requested a field that does not exist on the
+				// resource,
+				// so silently skip this
+				log.debug("Skipping field: " + prop
+						+ " because it does not exist on the " + resource
+						+ " resource");
+				continue;
+			}
+
+			// the name of the getter methods for this property
 			String getterName = "get" + StringUtils.capitalize(prop);
 
 			// first check to see if there is a getter defined on the resource,
-			// maybe its a custom translation to a string/OpenmrsObject
+			// maybe its a custom translation to a string or OpenmrsObject and
+			// we can then end early
 			Method getterOnResource = getMethod(resource.getClass(),
 					getterName, openmrsObject.getClass());
 
@@ -229,8 +248,11 @@ public class WSUtil {
 				// turn OpenmrsObjects into Refs
 				if (OpenmrsObject.class
 						.isAssignableFrom(returnValue.getClass())) {
-					SimpleObject so = new SimpleObject(
-							(OpenmrsObject) returnValue);
+
+					String cascadeRep = getCascadeRep(propertyOnResource,
+							representation);
+
+					SimpleObject so = convert(openmrsObject, cascadeRep);
 					simpleObject.put(prop, so);
 				} else
 					// if(String.class.isAssignableFrom(returnValue.getClass()))
@@ -241,7 +263,7 @@ public class WSUtil {
 			}
 
 			// the user didn't define a getProperty(OpenmrsObject), so we
-			// need to find OpenmrsObject.getProperty() magically by reflection
+			// need to find openmrsObject.getProperty() magically by reflection
 
 			// get the actual value we'll need to convert on the OpenmrsObject
 			Method getterOnObject = openmrsObject.getClass().getMethod(
@@ -249,26 +271,15 @@ public class WSUtil {
 			Object propValue = getterOnObject.invoke(openmrsObject,
 					(Object[]) null);
 
-			// the class name of what we want to convert to
-			Field propertyOnResource;
-			try {
-				propertyOnResource = resource.getClass().getDeclaredField(prop);
-			} catch (NoSuchFieldException e) {
-				// the user requested a field that does not exist on the
-				// resource,
-				// so silently skip this
-				log.debug("Skipping field: " + prop
-						+ " because it does not exist on the " + resource
-						+ " resource");
-				continue;
-			}
 			Class propertyClass = propertyOnResource.getType();
 
 			// now convert from OpenmrsObject into this type on the resource
 			if (propertyClass.equals(SimpleObject.class)) {
-				// sets uuid/link/display
-				SimpleObject subSimpleObject = new SimpleObject(resource,
-						(OpenmrsObject) propValue);
+
+				String cascadeRep = getCascadeRep(propertyOnResource,
+						representation);
+				SimpleObject subSimpleObject = convert(resource, openmrsObject,
+						cascadeRep);
 				simpleObject.put(prop, subSimpleObject);
 			} else if (OpenmrsResource.class.isAssignableFrom(propertyClass)) {
 				// the resource has a resource property (like AuditInfo)
@@ -284,8 +295,14 @@ public class WSUtil {
 				// and possibly creating a common method for getting the
 				// strippedDownRep
 
+				// TODO: else if cascade is one of the standard ones, find the
+				// rep
+				// to cascade to
+				String cascadeRep = getCascadeRep(propertyOnResource,
+						representation);
+
 				SimpleObject subSimpleObject = convert(openmrsResource,
-						openmrsObject, representation);
+						openmrsObject, cascadeRep);
 				simpleObject.put(prop, subSimpleObject);
 			} else if (Reflect.isCollection(propertyClass)) {
 
@@ -319,15 +336,19 @@ public class WSUtil {
 						}
 					} else if (WSConstants.REPRESENTATION_FULL
 							.equals(representation)
-							|| WSConstants.REPRESENTATION_PARTIAL
+							|| WSConstants.REPRESENTATION_MEDIUM
 									.equals(representation)) {
-						// TODO: do we want this? do users want this?
+
+						String cascadeRep = getCascadeRep(propertyOnResource,
+								representation);
+
 						for (OpenmrsObject o : (Collection<OpenmrsObject>) propValue) {
-							convert(collectionResource, o, representation);
+							convert(collectionResource, o, cascadeRep);
 						}
 					} else {
 						// the user didn't ask for anything special in the rep,
-						// so they get back lists of simple objects by default
+						// so they get back lists of ref simple objects by
+						// default
 						for (OpenmrsObject o : (Collection<OpenmrsObject>) propValue) {
 							// sets uuid/link/display
 							SimpleObject listMemberSimpleObject = new SimpleObject(
@@ -356,6 +377,17 @@ public class WSUtil {
 		return simpleObject;
 	}
 
+	private String getCascadeRep(Field propertyOnResource, String representation) {
+
+		// TODO: rep could be empty or null here, be sure to check for that
+
+		// TODO: look up the WSCascade annotation on the given field
+		// and return the representation that we should cascade as
+
+		return WSConstants.REPRESENTATION_REF;
+
+	}
+
 	/**
 	 * Looks at the annotations on the given <code>resource</code> to get the
 	 * properties to include given the <code>representation</code>
@@ -371,7 +403,7 @@ public class WSUtil {
 
 		// TODO loop over @WebServiceProperty resource annotations and get
 		// default list of props
-		// TODO if rep==partial, get all default ones plus all partial ones
+		// TODO if rep==medium, get all default ones plus all medium ones
 		// TODO if rep==full, loop over resource annotations and get list
 		// of all props
 		// TODO if rep==custom(*), split on comma and get all values. Then split
@@ -397,9 +429,7 @@ public class WSUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Method getMethod(Class c, String name, Class param) { // throws
-		// NoSuchMethodException
-		// {
+	public Method getMethod(Class c, String name, Class param) {
 
 		Method m = null;
 		try {

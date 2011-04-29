@@ -8,27 +8,33 @@ url: <input id="url" type="text" value="/openmrs/ws/rest/person/495b10c4-56bd-11
 <br/>
 json content: <input type="text" id="json" value="{patient:'39234823'}" size="45"/>
 <br/><br/>
+representation: <input id="rep" type="text" value="" size="12"/> (default, medium, full, custom:)
+<br/><br/>
 <input type="button" name="button" value="send" onclick="sendToServer()"/>
+
 
 <br/><br/>
 <div id="output">
 </div>
 <script>
 function sendToServer() {
-	    var d = jQuery("#json").val();
-	    var type = jQuery("#type").val();
-	    jQuery.ajax({
-	        type: type,
-	        contentType: "application/json;",
-	        url: jQuery("#url").val(),
-	        data: d,
-	        //dataType: "json",
-	        success: onSuccess,
-	        error: function(req, msg, err) { jQuery("#output").html("error!\r\nmsg: " + msg + "\r\nerr: " + err + "\r\rreq: " + req); }
-	    });
+	var u = jQuery("#url").val()
+	var d = jQuery("#json").val();
+	var type = jQuery("#type").val();
+	var hdrs = { "Accept-Type": jQuery("#rep").val() };
+	jQuery.ajax({
+	   type: type,
+	   contentType: "application/json;",
+	   url: u,
+	   data: d,
+	   headers: hdrs,
+	   //dataType: "json",
+	   success: onSuccess,
+	   error: function(req, msg, err) { jQuery("#output").html("error!\r\nmsg: " + msg + "\r\nerr: " + err + "\r\rreq: " + req); }
+	});
 	    	    
-	    return false;
-	}
+	return false;
+}
 
 function onSuccess(obj, msg, req, s) {
 	jQuery("#output").html(msg + "!<br/>");

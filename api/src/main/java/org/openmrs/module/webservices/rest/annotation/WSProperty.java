@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface WebServiceProperty {
+public @interface WSProperty {
 
 	/**
 	 * This should be one of "default", "required" (for saving), or "minimal"<br/>

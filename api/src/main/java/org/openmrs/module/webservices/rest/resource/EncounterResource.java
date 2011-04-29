@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.annotation.WSCascade;
 
 /**
  *
@@ -29,7 +30,11 @@ public class EncounterResource<E extends Encounter> implements
 
 	// default
 	protected Date encounterDatetime;
+	
+	@WSCascade(cascadeFullAs="medium")
 	protected SimpleObject location;
+	
+	@WSCascade(cascadeFullAs="medium", cascadeMediumAs="default")
 	protected SimpleObject patient;
 	protected SimpleObject form;
 	protected SimpleObject provider;
@@ -38,7 +43,11 @@ public class EncounterResource<E extends Encounter> implements
 	// optional
 
 	protected AuditInfoResource<E> auditInfo;
+	
+	@WSCascade(cascadeFullAs="medium")
 	protected List<SimpleObject> obs;
+	
+	@WSCascade(cascadeFullAs="medium")
 	protected List<SimpleObject> orders;
 
 	public String getDisplay(E enc) {

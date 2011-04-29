@@ -20,7 +20,8 @@ import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSConstants;
-import org.openmrs.module.webservices.rest.annotation.WebServiceProperty;
+import org.openmrs.module.webservices.rest.annotation.WSCascade;
+import org.openmrs.module.webservices.rest.annotation.WSProperty;
 
 /**
  *
@@ -29,31 +30,35 @@ import org.openmrs.module.webservices.rest.annotation.WebServiceProperty;
 public class PersonResource<P extends Person> implements OpenmrsResource<P> {
 	
 	// default
-	@WebServiceProperty({"default", "required"})
+	@WSProperty({"default", "required"})
 	protected String name;
 	
-	@WebServiceProperty({"default", "required"})
+	@WSProperty({"default", "required"})
 	protected String gender;
 	
-	@WebServiceProperty({"default", "required"})
+	@WSProperty({"default", "required"})
 	protected Date birthdate;
 	
-	@WebServiceProperty("default")
+	@WSProperty("default")
 	protected boolean dead;
 	
-	@WebServiceProperty("default")
+	@WSProperty("default")
 	protected boolean voided;
 	
-	@WebServiceProperty("default")
+	@WSProperty("default")
 	protected String uuid;
 	
 	// optional
-	@WebServiceProperty("partial")
+	@WSProperty("medium")
 	protected Date deathDate;
 	
-	@WebServiceProperty("partial")
+	@WSProperty("medium")
+	@WSCascade(cascadeFullAs="partial")
 	protected List<SimpleObject> names;
+	
 	protected List<SimpleObject> addresses;
+	
+	@WSCascade(cascadeFullAs="partial")
 	protected List<SimpleObject> attributes;
 	
 	protected AuditInfoResource<P> auditInfo;
