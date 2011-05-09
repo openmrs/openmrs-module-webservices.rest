@@ -14,15 +14,13 @@
 package org.openmrs.module.webservices.rest.api;
 
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.Representation;
-import org.openmrs.module.webservices.rest.WSConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Database related methods for the Rest Web Services
  */
-public interface WSRestService {
+public interface RestService {
 	
 	/**
 	 * Gets any type of OpenmrsObject given a class and a UUID

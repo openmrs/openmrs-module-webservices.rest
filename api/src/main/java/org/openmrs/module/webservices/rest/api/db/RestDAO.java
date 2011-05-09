@@ -18,7 +18,7 @@ import org.openmrs.OpenmrsObject;
 /**
  * Rest Web Service database functions
  */
-public interface WSRestDAO {
+public interface RestDAO {
 	
 	public <T extends OpenmrsObject> T getOpenmrsObjectByUuid(Class<T> clazz, String uuid);
 	

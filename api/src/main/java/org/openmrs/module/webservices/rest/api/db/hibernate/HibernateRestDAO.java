@@ -19,9 +19,9 @@ import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.module.webservices.rest.api.db.WSRestDAO;
+import org.openmrs.module.webservices.rest.api.db.RestDAO;
 
-public class HibernateWSRestDAO implements WSRestDAO {
+public class HibernateRestDAO implements RestDAO {
 
 	protected final Log log = LogFactory.getLog(getClass());
 
@@ -30,7 +30,7 @@ public class HibernateWSRestDAO implements WSRestDAO {
 	 */
 	private SessionFactory sessionFactory;
 
-	public HibernateWSRestDAO() {
+	public HibernateRestDAO() {
 	}
 
 	/**

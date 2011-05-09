@@ -17,7 +17,7 @@ import java.beans.PropertyEditorSupport;
 
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.api.WSRestService;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.springframework.util.StringUtils;
 
 /**
@@ -33,7 +33,7 @@ public class OpenmrsObjectByUuidEditor extends PropertyEditorSupport {
 	public void setAsText(String uuid) throws IllegalArgumentException {
 
 		if (StringUtils.hasText(uuid)) {
-			WSRestService service = Context.getService(WSRestService.class);
+			RestService service = Context.getService(RestService.class);
 
 			try {
 				setValue(service.getOpenmrsObjectByUuid(((OpenmrsObject)getValue()).getClass(), uuid));

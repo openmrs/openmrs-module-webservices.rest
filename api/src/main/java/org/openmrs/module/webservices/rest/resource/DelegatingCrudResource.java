@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
-import org.openmrs.module.webservices.rest.api.WSRestService;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -310,7 +310,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 						// TODO create a proper class to represent property/method name and representation
 						if (prop.indexOf(':') > 0) {
 							String[] temp = prop.split(":");
-							map.put(temp[0], Context.getService(WSRestService.class).getRepresentation(temp[1]));
+							map.put(temp[0], Context.getService(RestService.class).getRepresentation(temp[1]));
 						} else {
 							map.put(prop, Representation.DEFAULT);
 						}

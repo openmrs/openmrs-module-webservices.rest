@@ -29,11 +29,11 @@
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
-				<value>org.openmrs.module.webservices.rest.api.WSRestService</value> <!-- service interface name -->
+				<value>org.openmrs.module.webservices.rest.api.RestService</value> <!-- service interface name -->
 				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 					<property name="transactionManager"><ref bean="transactionManager"/></property>
 					<property name="target">
-						<bean class="org.openmrs.module.webservices.rest.api.impl.WSRestServiceImpl" autowire="byType" />
+						<bean class="org.openmrs.module.webservices.rest.api.impl.RestServiceImpl" autowire="byType" />
 					</property>
 					<property name="preInterceptors">
 						<ref bean="serviceInterceptors"/>

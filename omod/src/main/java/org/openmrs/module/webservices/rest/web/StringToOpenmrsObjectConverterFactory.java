@@ -15,7 +15,7 @@ package org.openmrs.module.webservices.rest.web;
 
 import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.api.WSRestService;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
@@ -47,7 +47,7 @@ public class StringToOpenmrsObjectConverterFactory implements
 
 		// do the magic
 		public T convert(String uuid) {
-			WSRestService service = Context.getService(WSRestService.class);
+			RestService service = Context.getService(RestService.class);
 			return (T) service.getOpenmrsObjectByUuid(openmrsObjectType, uuid);
 		}
 	}

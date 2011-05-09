@@ -5,7 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSUtil;
-import org.openmrs.module.webservices.rest.api.WSRestService;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.openmrs.module.webservices.rest.resource.PatientCrudResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public class DariusPatientController {
 			@PathVariable("patientUuid") Patient patient,
 			WebRequest request) throws Exception {
 
-		Representation rep = Context.getService(WSRestService.class).getRepresentation(WSUtil.getRepresentation(request));
+		Representation rep = Context.getService(RestService.class).getRepresentation(WSUtil.getRepresentation(request));
 		PatientCrudResource resource = new PatientCrudResource(patient);
 		
 		return resource.asRepresentation(rep);
@@ -75,7 +75,7 @@ public class DariusPatientController {
 	@ResponseBody
 	public Object getNames(@PathVariable("patientUuid") Patient patient,
 	                       WebRequest request) throws Exception {
-		Representation rep = Context.getService(WSRestService.class).getRepresentation(WSUtil.getRepresentation(request));
+		Representation rep = Context.getService(RestService.class).getRepresentation(WSUtil.getRepresentation(request));
 		PatientCrudResource patientResource = new PatientCrudResource(patient);
 		return patientResource.getPropertyWithRepresentation("names", rep);
 	}

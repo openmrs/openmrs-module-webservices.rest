@@ -5,7 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSUtil;
-import org.openmrs.module.webservices.rest.api.WSRestService;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.openmrs.module.webservices.rest.resource.EncounterCrudResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public class DariusEncounterController {
 			@PathVariable("encounterUuid") Encounter encounter,
 			WebRequest request) throws Exception {
 
-		Representation rep = Context.getService(WSRestService.class).getRepresentation(WSUtil.getRepresentation(request));
+		Representation rep = Context.getService(RestService.class).getRepresentation(WSUtil.getRepresentation(request));
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
 		return resource.asRepresentation(rep);
 	}

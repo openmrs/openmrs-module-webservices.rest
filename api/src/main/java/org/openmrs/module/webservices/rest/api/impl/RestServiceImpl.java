@@ -21,18 +21,18 @@ import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.RefRepresentation;
 import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.WSConstants;
-import org.openmrs.module.webservices.rest.api.WSRestService;
-import org.openmrs.module.webservices.rest.api.db.WSRestDAO;
+import org.openmrs.module.webservices.rest.api.RestService;
+import org.openmrs.module.webservices.rest.api.db.RestDAO;
 
 /**
- * Default implementation of the {@link WSRestService}
+ * Default implementation of the {@link RestService}
  */
-public class WSRestServiceImpl implements WSRestService {
+public class RestServiceImpl implements RestService {
 	
-	private WSRestDAO dao;
+	private RestDAO dao;
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.api.WSRestService#getOpenmrsObjectByUuid(java.lang.Class, java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.api.RestService#getOpenmrsObjectByUuid(java.lang.Class, java.lang.String)
 	 */
 	@Override
 	public <T extends OpenmrsObject> T getOpenmrsObjectByUuid(Class<T> clazz, String uuid) {
@@ -40,7 +40,7 @@ public class WSRestServiceImpl implements WSRestService {
 	}
 
 	/**
-	 * @see org.openmrs.module.webservices.rest.api.WSRestService#getRepresentation(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.api.RestService#getRepresentation(java.lang.String)
 	 */
 	@Override
 	public Representation getRepresentation(String requested) {
