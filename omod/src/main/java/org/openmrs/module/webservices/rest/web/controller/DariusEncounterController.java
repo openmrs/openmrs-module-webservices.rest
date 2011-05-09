@@ -1,9 +1,11 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import org.openmrs.Encounter;
-import org.openmrs.module.webservices.rest.RepresentationFactory;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSUtil;
+import org.openmrs.module.webservices.rest.api.WSRestService;
 import org.openmrs.module.webservices.rest.resource.EncounterCrudResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +26,9 @@ public class DariusEncounterController {
 			@PathVariable("encounterUuid") Encounter encounter,
 			WebRequest request) throws Exception {
 
-		String representation = WSUtil.getRepresentation(request);
+		Representation rep = Context.getService(WSRestService.class).getRepresentation(WSUtil.getRepresentation(request));
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
-		return resource.asRepresentation(RepresentationFactory.get(representation));
+		return resource.asRepresentation(rep);
 	}
 
 	
@@ -36,7 +38,7 @@ public class DariusEncounterController {
 
 		EncounterCrudResource resource = new EncounterCrudResource();
 		resource.create(post);
-		return resource.asRepresentation(RepresentationFactory.DEFAULT);
+		return resource.asRepresentation(Representation.DEFAULT);
 	}
 	
 	@RequestMapping(value = "/{encounterUuid}", method = RequestMethod.POST)
@@ -47,7 +49,7 @@ public class DariusEncounterController {
 
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
 		resource.update(post);
-		return resource.asRepresentation(RepresentationFactory.DEFAULT);
+		return resource.asRepresentation(Representation.DEFAULT);
 	}
 	
 	@RequestMapping(value = "/{encounterUuid}", method = RequestMethod.DELETE, params="!purge")

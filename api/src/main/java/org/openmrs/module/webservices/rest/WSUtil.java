@@ -46,34 +46,7 @@ public class WSUtil {
 	 * @return a string for how to represent the to-be-returned objects
 	 */
 	public static String getRepresentation(WebRequest request) {
-		// TODO, research accept-type. is there potential for other values to be
-		// in there?
-
-		// TODO allow a mix of default/custom ?
-
-		String repType = request.getHeader("Accept-Type");
-		if (repType != null) {
-			if (WSConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(repType)) {
-				return WSConstants.REPRESENTATION_DEFAULT;
-			}
-			if (WSConstants.REPRESENTATION_MEDIUM.equalsIgnoreCase(repType)) {
-				return WSConstants.REPRESENTATION_MEDIUM;
-			}
-			if (WSConstants.REPRESENTATION_FULL.equalsIgnoreCase(repType)) {
-				return WSConstants.REPRESENTATION_FULL;
-			}
-			if (repType.startsWith(WSConstants.REPRESENTATION_CUSTOM_PREFIX)) {
-				return repType.replace(
-						WSConstants.REPRESENTATION_CUSTOM_PREFIX, "");
-			}
-		}
-
-		// for testing, go off of a param
-		//return request.getParameter("rep");
-
-		// not sure what string they put in, lets just ignore it and return
-		// default
-		return WSConstants.REPRESENTATION_DEFAULT;
+		return request.getHeader("Accept-Type");
 	}
 
 	/**

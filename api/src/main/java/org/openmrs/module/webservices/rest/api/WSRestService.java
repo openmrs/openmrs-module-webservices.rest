@@ -14,12 +14,14 @@
 package org.openmrs.module.webservices.rest.api;
 
 import org.openmrs.OpenmrsObject;
+import org.openmrs.module.webservices.rest.NamedRepresentation;
+import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.WSConstants;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Database related methods for the Rest Web Services
  */
-@Transactional
 public interface WSRestService {
 	
 	/**
@@ -33,5 +35,12 @@ public interface WSRestService {
 	 */
 	@Transactional(readOnly = true)
 	public <T extends OpenmrsObject> T getOpenmrsObjectByUuid(Class<T> clazz, String uuid);
+	
+	/**
+	 * Parses a representation requested by the client via the http request
+	 * @param requested
+	 * @return
+	 */
+	public Representation getRepresentation(String requested);
 	
 }

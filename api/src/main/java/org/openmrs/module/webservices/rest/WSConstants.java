@@ -52,6 +52,7 @@ public class WSConstants {
 	
 	// all properties on the resource are returned
 	public static String REPRESENTATION_FULL = "full";
+	
 	public static String REPRESENTATION_CUSTOM_PREFIX = "custom:";
 	
 }

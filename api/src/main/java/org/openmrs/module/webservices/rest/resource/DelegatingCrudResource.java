@@ -16,12 +16,13 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.Representation;
-import org.openmrs.module.webservices.rest.RepresentationFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
+import org.openmrs.module.webservices.rest.api.WSRestService;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -309,9 +310,9 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 						// TODO create a proper class to represent property/method name and representation
 						if (prop.indexOf(':') > 0) {
 							String[] temp = prop.split(":");
-							map.put(temp[0], RepresentationFactory.get(temp[1]));
+							map.put(temp[0], Context.getService(WSRestService.class).getRepresentation(temp[1]));
 						} else {
-							map.put(prop, RepresentationFactory.DEFAULT);
+							map.put(prop, Representation.DEFAULT);
 						}
 					}
 				}

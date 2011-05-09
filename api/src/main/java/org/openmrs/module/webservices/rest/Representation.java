@@ -6,4 +6,6 @@ package org.openmrs.module.webservices.rest;
  */
 public interface Representation {
 
+	Representation DEFAULT = new NamedRepresentation(WSConstants.REPRESENTATION_DEFAULT);
+
 }

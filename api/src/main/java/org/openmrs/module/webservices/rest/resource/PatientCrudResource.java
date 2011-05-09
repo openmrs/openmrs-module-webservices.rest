@@ -53,14 +53,10 @@ public class PatientCrudResource extends DataDelegatingCrudResource<Patient> {
 	public Object listSubResource(String subResourceName, Representation rep) throws Exception {
 		return getPropertyWithRepresentation(subResourceName, rep);
     }
-
-	public DelegateConverter<?> createSubResource(String subResourceName, SimpleObject post) throws Exception {
-		if (subResourceName.equals("names")) {
-			post.put("person", delegate);
-			return new PersonNameCrudResource().create(post);
-		} else {
-			throw new IllegalArgumentException("Unknown subresource: " + subResourceName);
-		}
-    }
+	
+	public PersonNameCrudResource createPersonName(SimpleObject post) throws Exception {
+		post.put("person", delegate);
+		return (PersonNameCrudResource) new PersonNameCrudResource().create(post);
+	}
 	
 }
