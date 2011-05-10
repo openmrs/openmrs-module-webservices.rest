@@ -1,32 +1,11 @@
-/**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.Patient;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RequestContext;
+import org.openmrs.module.webservices.rest.RestUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.WSConstants;
-import org.openmrs.module.webservices.rest.WSUtil;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFound;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.representation.Representation;
+import org.openmrs.module.webservices.rest.resource.PatientResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,125 +16,121 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * 
+ * Controller for REST web service access to the Patient resource. Supports CRUD on the resource itself,
+ * and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest")
-public class PatientController extends BaseResourceController {
-
-	protected final Log log = LogFactory.getLog(getClass());
+@RequestMapping(value = "/rest/darius/patient")
+public class PatientController {
 
 	/**
-	 * Get a patient object.<br/>
-	 * Returns 404 HTTP Status if no patient with given uuid is found
-	 * 
 	 * @param patient
-	 * @param request
-	 * @return Patient object.
-	 * @throws ResponseException
-	 */
-	@RequestMapping(value = "/patient/{patientUuid}", method = RequestMethod.GET)
-	@ResponseBody
-	public SimpleObject getPatient(
-			@PathVariable("patientUuid") Patient patient, WebRequest request)
-			throws ResponseException {
-
-		if (patient == null) {
-			throw new ObjectNotFound();
-		}
-
-		String representation = WSUtil.getRepresentation(request);
-		try {
-			return wsUtil.convert(patient, representation);
-		} catch (Exception e) {
-			log.error("Unable to convert " + patient, e);
-			throw new ConversionException();
-		}
-	}
-
-	/**
-	 * Gets a list of people to matching the given query.
-	 * 
-	 * @see PatientService#getPatients(String)
-	 * 
-	 * @param query
 	 * @param request
 	 * @return
-	 * @throws ResponseException
+	 * @throws Exception
+	 * @should get a representation of a patient
 	 */
-	@RequestMapping(value = "/patient/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public List<SimpleObject> getPatients(
-			@RequestParam(value = "q", required = false) String query,
-			WebRequest request) throws ResponseException {
-
-		String representation = WSUtil.getRepresentation(request);
-
-		List<Patient> searchResults = Context.getPatientService().getPatients(
-				query);
-
-		try {
-			return wsUtil.convertList(null, searchResults, representation,
-					WSUtil.getLimit(request));
-		} catch (Exception e) {
-			log.error("Unable get people with query " + query, e);
-			throw new ConversionException();
-		}
+	public Object getPatient(
+			@PathVariable("patientUuid") Patient patient,
+			WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource resource = new PatientResource(patient);
+		return resource.retrieve(context);
 	}
-
+	
 	/**
+	 * @param post
 	 * @param request
-	 * @param patientValues
-	 * @return the newly created patient object with default representation
-	 * @throws ResponseException
+	 * @return
+	 * @throws Exception
+	 * @should create a new patient
 	 */
-	@RequestMapping(value = "/patient/", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public SimpleObject createPatient(WebRequest request,
-			@RequestBody Map<String, Object> patientValues)
-			throws ResponseException {
-
-		Patient p = new Patient();
-		wsUtil.setValues(p, patientValues);
-
-		Context.getPatientService().savePatient(p);
-
-		// return the newly changed patient object
-		try {
-			return wsUtil.convert(p, WSConstants.REPRESENTATION_DEFAULT);
-		} catch (Exception e) {
-			// uh oh, this is really bad, we JUST made this object!
-			log.error("Unable to convert the newly created patient " + p, e);
-			throw new ConversionException();
-		}
+	public Object createPatient(@RequestBody SimpleObject post,
+	                            WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource resource = new PatientResource();
+		return resource.create(post, context).asRepresentation(Representation.DEFAULT);
 	}
-
+	
 	/**
 	 * @param patient
-	 * @param patientValues
-	 * @return the newly changed patient with the default representation
-	 * @throws ResponseException
+	 * @param post
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 * @should change a property on a patient
 	 */
-	@RequestMapping(value = "/patient/{patientUuid}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public SimpleObject updatePatient(
+	public Object updatePatient(
 			@PathVariable("patientUuid") Patient patient,
-			@RequestBody Map<String, Object> patientValues)
-			throws ResponseException {
+			@RequestBody SimpleObject post,
+			WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource resource = new PatientResource(patient);
+		resource.update(post, context);
+		return resource.retrieve(context);
+	}
+	
+	/**
+	 * @param patient
+	 * @param reason
+	 * @param request
+	 * @throws Exception
+	 * @should void a patient
+	 */
+	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params="!purge")
+	public void voidPatient(
+			@PathVariable("patientUuid") Patient patient,
+			@RequestParam(value="reason", defaultValue="web service call") String reason,
+			WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource resource = new PatientResource(patient);
+		resource.delete(reason, context);
+	}
+	
+	/**
+	 * @param patient
+	 * @param request
+	 * @throws Exception
+	 * @should fail to purge a patient with dependent data
+	 */
+	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params="purge=true")
+	public void purgePatient(
+			@PathVariable("patientUuid") Patient patient,
+			WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource resource = new PatientResource(patient);
+		resource.purge("uuid", context);
+	}
+	
+	/**
+	 * @should return a list of names
+	 */
+	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.GET)
+	@ResponseBody
+	public Object getNames(@PathVariable("patientUuid") Patient patient,
+	                       WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource patientResource = new PatientResource(patient);
+		return patientResource.getPropertyWithRepresentation("names", context.getRepresentation());
+	}
 
-		// looks up setters, determines if its settable, converts it potentially
-		wsUtil.setValues(patient, patientValues);
-
-		Context.getPatientService().savePatient(patient);
-
-		// return the newly changed patient object
-		try {
-			return wsUtil.convert(patient, WSConstants.REPRESENTATION_DEFAULT);
-		} catch (Exception e) {
-			log.error("Unable to convert the newly changed patient " + patient,
-					e);
-			throw new ConversionException();
-		}
+	/**
+	 * @should add a name
+	 */
+	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.POST)
+	@ResponseBody
+	public Object addName(@RequestBody SimpleObject post,
+	                    @PathVariable("patientUuid") Patient patient,
+	                    WebRequest request) throws Exception {
+		RequestContext context = RestUtil.getRequestContext(request);
+		PatientResource patientResource = new PatientResource(patient);
+		return patientResource.createPersonName(post, context).asRepresentation(Representation.DEFAULT);
 	}
 
 }

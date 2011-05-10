@@ -11,19 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
-import org.openmrs.module.webservices.rest.DelegatingResourceRepresentation;
-import org.openmrs.module.webservices.rest.NamedRepresentation;
-import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.annotation.Resource;
+import org.openmrs.module.webservices.rest.representation.NamedRepresentation;
+import org.openmrs.module.webservices.rest.representation.Representation;
 import org.openmrs.util.HandlerUtil;
 
 /**
- * A base implementation of a {@link Retrievable} that delegates property access to a wrapped object
+ * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped object
  * @param <T> the class we're delegating to
  */
 public abstract class DelegatingCrudResource<T> implements CrudResource, DelegateConverter<T> {
@@ -61,7 +62,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 
     /**
 	 * Assumes that the delegate property is the already-retrieved object with the given uuid
-	 * @see org.openmrs.module.webservices.rest.resource.Retrievable#retrieve(java.lang.String, org.openmrs.module.webservices.rest.Representation)
+	 * @see org.openmrs.module.webservices.rest.resource.Retrievable#retrieve(java.lang.String, org.openmrs.module.webservices.rest.representation.Representation)
 	 */
 	@Override
 	public Object retrieve(String uuid, RequestContext context) {
@@ -318,4 +319,16 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 		return converter.asRepresentation(rep);
 	}
 
+    /**
+     * Gets the URI fragment from the @RestResource annotation on the concrete subclass
+     * @return
+     */
+    protected String getUriFragment() {
+    	Resource ann = getClass().getAnnotation(Resource.class);
+    	if (ann == null)
+    		throw new RuntimeException("There is no " + Resource.class + " annotation on " + getClass());
+    	if (StringUtils.isEmpty(ann.value()))
+    		throw new RuntimeException(Resource.class.getSimpleName() + " annotation on " + getClass() + " must specify a value");
+    	return ann.value();
+    }
 }

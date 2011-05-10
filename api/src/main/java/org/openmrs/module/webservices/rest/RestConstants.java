@@ -17,7 +17,7 @@ package org.openmrs.module.webservices.rest;
  * Constants used by the Rest Web Services
  * 
  */
-public class WSConstants {
+public class RestConstants {
 
 	/**
 	 * The number of results to limit lists of objects to if an admin has not

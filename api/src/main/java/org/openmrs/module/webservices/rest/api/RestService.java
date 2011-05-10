@@ -13,26 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.api;
 
-import org.openmrs.OpenmrsObject;
-import org.openmrs.module.webservices.rest.Representation;
-import org.springframework.transaction.annotation.Transactional;
+import org.openmrs.module.webservices.rest.representation.Representation;
 
 /**
  * Database related methods for the Rest Web Services
  */
 public interface RestService {
-	
-	/**
-	 * Gets any type of OpenmrsObject given a class and a UUID
-	 * 
-	 * @param <T> works for any OpenmrsObject subclass
-	 * @param clazz
-	 * @param uuid
-	 * @return
-	 * @should get any openmrs object by its uuid
-	 */
-	@Transactional(readOnly = true)
-	public <T extends OpenmrsObject> T getOpenmrsObjectByUuid(Class<T> clazz, String uuid);
 	
 	/**
 	 * Parses a representation requested by the client via the http request

@@ -58,6 +58,4 @@
 	<!-- so spring finds our controllers -->
 	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.controller" />
 	
-	<bean id="wsUtil" class="org.openmrs.module.webservices.rest.WSUtil" />
-	
 </beans>

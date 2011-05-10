@@ -1,11 +1,15 @@
 package org.openmrs.module.webservices.rest.resource;
 
 import org.openmrs.OpenmrsData;
-import org.openmrs.module.webservices.rest.NamedRepresentation;
-import org.openmrs.module.webservices.rest.RefRepresentation;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.representation.RefRepresentation;
 
+/**
+ * Subclass of {@link DelegatingCrudResource} with helper methods specific to {@link OpenmrsData}
+ * @param <T>
+ */
 public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends DelegatingCrudResource<T> {
 	
 	protected DataDelegatingCrudResource(T delegate) {
@@ -20,7 +24,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	return ret;
     }
     
-    @RepHandler(value=NamedRepresentation.class, name="default")
+    @RepHandler(DefaultRepresentation.class)
     public SimpleObject asDefaultRep() throws Exception {
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());

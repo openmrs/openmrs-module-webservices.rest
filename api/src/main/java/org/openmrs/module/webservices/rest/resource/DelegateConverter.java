@@ -1,6 +1,6 @@
 package org.openmrs.module.webservices.rest.resource;
 
-import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.representation.Representation;
 
 /**
  * Can convert from String -> T.

@@ -1,11 +1,10 @@
-package org.openmrs.module.webservices.rest;
+package org.openmrs.module.webservices.rest.resource;
 
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.openmrs.module.webservices.rest.resource.DelegatingCrudResource;
-import org.openmrs.module.webservices.rest.resource.ResourceRepresentation;
+import org.openmrs.module.webservices.rest.representation.Representation;
 
 /**
  * Used by implementations of {@link DelegatingCrudResource} to indicate what delegate properties, and what

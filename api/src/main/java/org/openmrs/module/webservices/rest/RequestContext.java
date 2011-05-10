@@ -1,11 +1,14 @@
 package org.openmrs.module.webservices.rest;
 
+import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.representation.Representation;
+
 /**
  * Holds information related to a REST web service request
  */
 public class RequestContext {
 	
-	private Representation representation = new NamedRepresentation("default");
+	private Representation representation = new DefaultRepresentation();
 	
 	private Integer limit;
 

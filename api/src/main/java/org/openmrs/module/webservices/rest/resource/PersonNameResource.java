@@ -1,48 +1,74 @@
-/**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- */
 package org.openmrs.module.webservices.rest.resource;
 
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RequestContext;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.annotation.Resource;
+import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
 
 /**
- *
+ * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@Handler(supports = { PersonName.class })
-public class PersonNameResource<PN extends PersonName> implements
-		OpenmrsResource<PN> {
+@Resource("personName")
+@Handler(supports=PersonName.class, order=0)
+public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
-	protected boolean preferred;
-	protected String prefix;
-	protected String givenName;
-	protected String middleName;
-	protected String familyNamePrefix;
-	protected String familyName;
-	protected String familyName2;
-	protected String familyNameSuffix;
-	protected String degree;
-	protected String uuid;
+	public PersonNameResource() {
+	    super(null);
+    }
 
-	public String getDisplay(PN pn) {
-		return pn.getFullName();
+	public PersonNameResource(PersonName name) {
+	    super(name);
+    }
+	
+	@RepHandler(DefaultRepresentation.class)
+	public SimpleObject asDefaultRep() throws Exception {
+		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+		rep.addProperty("givenName");
+		rep.addProperty("middleName");
+		rep.addProperty("familyName");
+		rep.addProperty("familyName2");
+		return convertDelegateToRepresentation(rep);
 	}
 
-	public String[] getDefaultRepresentation() {
-		return new String[] { "givenName", "familyName" };
-	}
 
-	public String getURISuffix(PN name) {
-		return "person/" + name.getPerson().getUuid() + "/name/" + name.getUuid();
+	@Override
+	public PersonName fromString(String uuid) {
+		return Context.getPersonService().getPersonNameByUuid(uuid);
 	}
+	
+	@Override
+	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
+		// TODO Auto-generated function stub
+	}
+	
+	@Override
+	public void purge(RequestContext context) throws ResourceDeletionException {
+		// TODO Auto-generated function stub	
+	}
+	
+	@Override
+	protected PersonName saveDelegate() {
+		// make sure that the name has actually been added to the person
+		boolean needToAdd = true;
+		for (PersonName pn : delegate.getPerson().getNames()) {
+			if (pn.equals(delegate)) {
+				needToAdd = false;
+				break;
+			}
+		}
+		if (needToAdd)
+			delegate.getPerson().addName(delegate);
+		Context.getPersonService().savePerson(delegate.getPerson());
+		return delegate;
+	}
+	
+	@Override
+	protected PersonName newDelegate() {
+		return new PersonName();
+	}
+	
 }

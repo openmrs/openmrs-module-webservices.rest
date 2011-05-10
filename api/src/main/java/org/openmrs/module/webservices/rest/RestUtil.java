@@ -13,43 +13,22 @@
  */
 package org.openmrs.module.webservices.rest;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.api.RestService;
-import org.openmrs.module.webservices.rest.resource.OpenmrsResource;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.Reflect;
 import org.springframework.web.context.request.WebRequest;
 
 /**
  * Convenient helper methods for the Rest Web Services module.
  * 
  */
-public class WSUtil {
+public class RestUtil {
 
-	private static Log log = LogFactory.getLog(WSUtil.class);
-
-	/**
-	 * Gets the default/full/custom string out of the Accept-Type header. <br/>
-	 * never returns null
-	 * 
-	 * @param request
-	 *            the current WebRequest
-	 * @return a string for how to represent the to-be-returned objects
-	 */
-	public static String getRepresentation(WebRequest request) {
-		return request.getHeader("Accept-Type");
-	}
+	private static Log log = LogFactory.getLog(RestUtil.class);
 
 	/**
 	 * Looks in the request params to see if the user wants to restrict the
@@ -84,66 +63,18 @@ public class WSUtil {
 	 * 
 	 * @return Integer limit
 	 * @see #getLimit(WebRequest)
-	 * @see WSConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
+	 * @see RestConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
 		// TODO check global property
 		// WSConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME;
 
-		return WSConstants.MAX_RESULTS_DEFAULT;
+		return RestConstants.MAX_RESULTS_DEFAULT;
 
 	}
 
-	/**
-	 * @param <OO>
-	 *            the type of object being converted
-	 * @param resource
-	 *            the the resource to use. If null, determines it from the
-	 *            contents of <code>searchResults</code>
-	 * @param searchResults
-	 *            the objects to convert
-	 * @param representation
-	 *            the representation, if null, uses "default"
-	 * @param limit
-	 *            an optional limit.
-	 * @return the <code>searchResults</code> converted into
-	 *         {@link SimpleObject}s
-	 * @throws Exception
-	 * @see {@link #convert(OpenmrsResource, OpenmrsObject, String)}
-	 * 
-	 *      TODO: don't throw generic exception
-	 */
-	public <OO extends OpenmrsObject> List<SimpleObject> convertList(
-			OpenmrsResource resource, List<OO> searchResults,
-			String representation, Integer limit) throws Exception {
-
-		List<SimpleObject> objects = new ArrayList<SimpleObject>();
-
-		// TODO trim searchResults to limit size if not null
-
-		for (OpenmrsObject obj : searchResults) {
-			if (resource == null)
-				resource = HandlerUtil.getPreferredHandler(
-						OpenmrsResource.class, obj.getClass());
-
-			objects.add(convert(resource, obj, representation));
-		}
-		return objects;
-	}
-
-	/**
-	 * @see #convert(OpenmrsResource, OpenmrsObject, String)
-	 */
-	public SimpleObject convert(OpenmrsObject openmrsObject,
-			String representation) throws Exception {
-
-		OpenmrsResource resource = HandlerUtil.getPreferredHandler(
-				OpenmrsResource.class, openmrsObject.getClass());
-
-		return convert(resource, openmrsObject, representation);
-	}
-
-	/**
+	/*
+	 * TODO - move logic from here to a method to deal with custom representations
 	 * Converts the given <code>openmrsObject</code> into a {@link SimpleObject}
 	 * to be returned to the REST user. <br/>
 	 * 
@@ -162,13 +93,13 @@ public class WSUtil {
 	 * @return a SimpleObject (key/value pair mapping) of the object properties
 	 *         requested
 	 * @throws Exception
-	 */
+	 *
 	public SimpleObject convert(OpenmrsResource resource,
 			OpenmrsObject openmrsObject, String representation)
 			throws Exception {
 
 		if (representation == null)
-			representation = WSConstants.REPRESENTATION_DEFAULT;
+			representation = RestConstants.REPRESENTATION_DEFAULT;
 
 		if (resource == null)
 			resource = HandlerUtil.getPreferredHandler(OpenmrsResource.class,
@@ -178,7 +109,7 @@ public class WSUtil {
 		SimpleObject simpleObject = new SimpleObject(resource, openmrsObject);
 
 		// if they asked for a simple rep, we're done, just return that
-		if (WSConstants.REPRESENTATION_REF.equals(representation))
+		if (RestConstants.REPRESENTATION_REF.equals(representation))
 			return simpleObject;
 
 		// get the properties to show on this object
@@ -309,9 +240,9 @@ public class WSUtil {
 						for (OpenmrsObject o : (Collection<OpenmrsObject>) propValue) {
 							convert(collectionResource, o, strippedDownRep);
 						}
-					} else if (WSConstants.REPRESENTATION_FULL
+					} else if (RestConstants.REPRESENTATION_FULL
 							.equals(representation)
-							|| WSConstants.REPRESENTATION_MEDIUM
+							|| RestConstants.REPRESENTATION_MEDIUM
 									.equals(representation)) {
 
 						String cascadeRep = getCascadeRep(propertyOnResource,
@@ -351,49 +282,7 @@ public class WSUtil {
 
 		return simpleObject;
 	}
-
-	private String getCascadeRep(Field propertyOnResource, String representation) {
-
-		// TODO: rep could be empty or null here, be sure to check for that
-
-		// TODO: look up the WSCascade annotation on the given field
-		// and return the representation that we should cascade as
-
-		return WSConstants.REPRESENTATION_REF;
-
-	}
-
-	/**
-	 * Looks at the annotations on the given <code>resource</code> to get the
-	 * properties to include given the <code>representation</code>
-	 * 
-	 * TODO: make this a List<String> instead of a String[] after testing
-	 * 
-	 * @param representation
-	 *            default/full/standard (cannot be null)
-	 * @return list of strings to include
-	 */
-	private String[] getPropsToInclude(OpenmrsResource resource,
-			String representation) {
-
-		// TODO loop over @WebServiceProperty resource annotations and get
-		// default list of props
-		// TODO if rep==medium, get all default ones plus all medium ones
-		// TODO if rep==full, loop over resource annotations and get list
-		// of all props
-		// TODO if rep==custom(*), split on comma and get all values. Then split
-		// on period and only take the string before the first period
-
-		String[] propsToInclude;
-
-		// for now, just "hard code" which props so we can test
-		if ("default".equals(representation))
-			propsToInclude = resource.getDefaultRepresentation();
-		else
-			propsToInclude = representation.split(",");
-
-		return propsToInclude;
-	}
+	*/
 
 	/**
 	 * Helper method to use the superclass of param class as well
@@ -403,8 +292,7 @@ public class WSUtil {
 	 * @param param
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public Method getMethod(Class c, String name, Class param) {
+	public Method getMethod(Class<?> c, String name, Class<?> param) {
 
 		Method m = null;
 		try {
@@ -423,67 +311,6 @@ public class WSUtil {
 		return null;
 		// throw new NoSuchMethodException("No method on class " + c +
 		// " with name " + name + " with param " + param);
-	}
-
-	// copied from trunk but exchange boolean for OpenmrsObject return value
-	protected static OpenmrsObject isOpenmrsObjectCollection(Object arg) {
-
-		// kind of a hacky way to test for a list of openmrs objects, but java
-		// strips out
-		// the generic info for 1.4 compat, so we don't have access to that info
-		// here
-		try {
-			Collection<Object> objects = (Collection<Object>) arg;
-			if (!objects.isEmpty()) {
-				return (OpenmrsObject) objects.iterator().next();
-			} else {
-				return null;
-			}
-		} catch (ClassCastException ex) {
-			// do nothing
-		}
-		return null;
-	}
-
-	/**
-	 * Auto generated method comment
-	 * 
-	 * @param openmrsObject
-	 * @param properties
-	 *            map from property name to property value/unique name/uuid
-	 */
-	public void setValues(OpenmrsObject openmrsObject,
-			Map<String, Object> properties) {
-		// TODO: implement this method
-
-		// look up setter
-		// check value
-		// convert if necessary
-		// set value
-
-		// will reject setting of "retired" and "voided" and "dead". those
-		// should be their own methods
-	}
-
-	/**
-	 * Convenience method to get the uri property on all SimpleObject / Ref
-	 * objects.
-	 * 
-	 * @param <OO>
-	 *            the type of the OpenmrsObject
-	 * @param resource
-	 *            the OpenmrsResource defining this openmrs object
-	 * @param openmrsObject
-	 *            the OpenmrsObject itself (has the uuids, etc on it for
-	 *            inserting into uri)
-	 * @return a uri string specific to this object like
-	 *         "http://myopenmrs.org:8080/openmrs/ws/rest/person/38423BD-3843-283492343"
-	 */
-	public <OO extends OpenmrsObject> String getURI(
-			OpenmrsResource<OO> resource, OO openmrsObject) {
-		String prefix = ""; // TODO: get webapp url and put it here
-		prefix += WSConstants.URL_PREFIX;
-		return prefix + resource.getURISuffix(openmrsObject);
 	}
 
 	/**

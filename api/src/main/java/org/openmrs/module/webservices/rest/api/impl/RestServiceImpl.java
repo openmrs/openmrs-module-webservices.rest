@@ -14,49 +14,38 @@
 package org.openmrs.module.webservices.rest.api.impl;
 
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.OpenmrsObject;
 import org.openmrs.api.APIException;
-import org.openmrs.module.webservices.rest.CustomRepresentation;
-import org.openmrs.module.webservices.rest.NamedRepresentation;
-import org.openmrs.module.webservices.rest.RefRepresentation;
-import org.openmrs.module.webservices.rest.Representation;
-import org.openmrs.module.webservices.rest.WSConstants;
+import org.openmrs.module.webservices.rest.RestConstants;
 import org.openmrs.module.webservices.rest.api.RestService;
-import org.openmrs.module.webservices.rest.api.db.RestDAO;
+import org.openmrs.module.webservices.rest.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.representation.NamedRepresentation;
+import org.openmrs.module.webservices.rest.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.representation.Representation;
 
 /**
  * Default implementation of the {@link RestService}
  */
 public class RestServiceImpl implements RestService {
 	
-	private RestDAO dao;
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.api.RestService#getOpenmrsObjectByUuid(java.lang.Class, java.lang.String)
-	 */
-	@Override
-	public <T extends OpenmrsObject> T getOpenmrsObjectByUuid(Class<T> clazz, String uuid) {
-		return dao.getOpenmrsObjectByUuid(clazz, uuid);
-	}
-
 	/**
 	 * @see org.openmrs.module.webservices.rest.api.RestService#getRepresentation(java.lang.String)
 	 */
 	@Override
 	public Representation getRepresentation(String requested) {
 	    if (StringUtils.isEmpty(requested)) {
-	    	return new NamedRepresentation(WSConstants.REPRESENTATION_DEFAULT);
+	    	return new DefaultRepresentation();
 	    } else {
-	    	if (WSConstants.REPRESENTATION_REF.equalsIgnoreCase(requested)) {
+	    	if (RestConstants.REPRESENTATION_REF.equalsIgnoreCase(requested)) {
 				return new RefRepresentation();
-	    	} else if (WSConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(requested)) {
-				return new NamedRepresentation(WSConstants.REPRESENTATION_DEFAULT);
-			} else if (WSConstants.REPRESENTATION_MEDIUM.equalsIgnoreCase(requested)) {
-				return new NamedRepresentation(WSConstants.REPRESENTATION_MEDIUM);
-			} else if (WSConstants.REPRESENTATION_FULL.equalsIgnoreCase(requested)) {
-				return new NamedRepresentation(WSConstants.REPRESENTATION_FULL);
-			} else if (requested.startsWith(WSConstants.REPRESENTATION_CUSTOM_PREFIX)) {
-				return new CustomRepresentation(requested.replace(WSConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
+	    	} else if (RestConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(requested)) {
+				return new DefaultRepresentation();
+			} else if (RestConstants.REPRESENTATION_MEDIUM.equalsIgnoreCase(requested)) {
+				return new NamedRepresentation(RestConstants.REPRESENTATION_MEDIUM);
+			} else if (RestConstants.REPRESENTATION_FULL.equalsIgnoreCase(requested)) {
+				return new NamedRepresentation(RestConstants.REPRESENTATION_FULL);
+			} else if (requested.startsWith(RestConstants.REPRESENTATION_CUSTOM_PREFIX)) {
+				return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
 			}
 	    }
 	    throw new APIException("Unknown representation: " + requested);
