@@ -3,16 +3,19 @@ package org.openmrs.module.webservices.rest.resource;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.DelegatingResourceRepresentation;
+import org.openmrs.module.webservices.rest.NamedRepresentation;
+import org.openmrs.module.webservices.rest.RefRepresentation;
 import org.openmrs.module.webservices.rest.RequestContext;
-import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations 
  */
 @Resource("encounter")
-@Handler(supports=Encounter.class)
-@IncludeProperties(rep = "default", properties = { "encounterDatetime", "patient:ref", "location:ref" })
+@Handler(supports=Encounter.class, order=0)
 public class EncounterCrudResource extends DataDelegatingCrudResource<Encounter> {
 
 	public EncounterCrudResource() {
@@ -21,6 +24,20 @@ public class EncounterCrudResource extends DataDelegatingCrudResource<Encounter>
 	
 	public EncounterCrudResource(Encounter delegate) {
 		super(delegate);
+	}
+	
+	@RepHandler(value=NamedRepresentation.class, name="default")
+	public SimpleObject asDefaultRep() throws Exception {
+		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+		rep.addProperty("uuid");
+		rep.addProperty("encounterDatetime");
+		rep.addProperty("patient", new RefRepresentation());
+		rep.addProperty("location", new RefRepresentation());
+		rep.addProperty("form", new RefRepresentation());
+		rep.addProperty("encounterType", new RefRepresentation());
+		rep.addProperty("provider", new RefRepresentation());
+		rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
+		return convertDelegateToRepresentation(rep);
 	}
 	
 	/**

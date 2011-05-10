@@ -1,14 +1,12 @@
 package org.openmrs.module.webservices.rest.resource;
 
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +14,12 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.DelegatingResourceRepresentation;
 import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
-import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
-import org.openmrs.module.webservices.rest.api.RestService;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.util.HandlerUtil;
 
 /**
@@ -204,6 +200,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     }
 
 	/**
+	 * TODO move to utility class
 	 * Converts the given object to the given type
 	 * @param object
 	 * @param toType
@@ -247,94 +244,41 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	if (delegate == null)
    			throw new NullPointerException();
 
-    	// if any method in this class or a superclass is annotated with @RepClassHandler for this representation class
-    	// we just call that method
-    	Method meth = findAnnotatedMethodForRepresentationClass(representation.getClass());
-    	if (meth != null) {
-    		return meth.invoke(this, representation);
-    	}
-    	
-    	SimpleObject ret = new SimpleObject();
-		if (representation instanceof NamedRepresentation) {
-	    	Map<String, Representation> propsToInclude = propertiesToInclude((NamedRepresentation) representation);
-	    	for (Map.Entry<String, Representation> e : propsToInclude.entrySet()) {
-	    		ret.put(e.getKey(), getPropertyWithRepresentation(e.getKey(), e.getValue()));
-	    	}
-		}
-    	return ret;
+    	Method meth = findAnnotatedMethodForRepresentation(representation);
+    	if (meth == null)
+    		throw new IllegalArgumentException("Don't know how to get " + getClass().getSimpleName() + " as " + representation);
+    	if (meth.getParameterTypes().length == 0)
+			return meth.invoke(this);
+		else
+			return meth.invoke(this, representation);
     }
 
+	protected SimpleObject convertDelegateToRepresentation(DelegatingResourceRepresentation rep) throws Exception {
+    	if (delegate == null)
+   			throw new NullPointerException();
+    	SimpleObject ret = new SimpleObject();
+    	for (Map.Entry<String, Representation> e : rep.getProperties().entrySet())
+    		ret.put(e.getKey(), getPropertyWithRepresentation(e.getKey(), e.getValue()));
+    	return ret;
+    }
+	
 	/**
-	 * Finds a method in this class or a superclass annotated with a {@link RepClassHandler} for the given
-	 * representation class
+	 * Finds a method in this class or a superclass annotated with a {@link RepHandler} for the given
+	 * representation
 	 * @param clazz
 	 * @return
 	 */
-	private Method findAnnotatedMethodForRepresentationClass(Class<? extends Representation> clazz) throws Exception {
+	private Method findAnnotatedMethodForRepresentation(Representation rep) throws Exception {
 		// TODO make sure if there are multiple annotated methods we take the one on the subclass
 	    for (Method method : getClass().getMethods()) {
-	    	for (RepClassHandler ann : getAnnotations(method, RepClassHandler.class)) {
-	    		if (ann.value().isAssignableFrom(clazz))
-	    			return method;
+	    	RepHandler ann = method.getAnnotation(RepHandler.class);
+	    	if (ann != null) {
+	    		if (rep instanceof NamedRepresentation && !((NamedRepresentation) rep).matchesAnnotation(ann))
+	    			continue;
+	    		return method;
 	    	}
 	    }
 	    return null;
-    }
-
-	@SuppressWarnings("unchecked")
-    private <Ann> List<Ann> getAnnotations(Method method, Class<Ann> annotationClass) {
-		List<Ann> ret = new ArrayList<Ann>();
-		for (Annotation ann : method.getAnnotations())
-			if (annotationClass.isAssignableFrom(ann.getClass()))
-				ret.add((Ann) ann);
-	    return ret;
-    }
-
-	/**
-	 * Gets the properties that should be included, under the given representation
-	 * @param representation
-	 * @return
-	 */
-	protected Map<String, Representation> propertiesToInclude(NamedRepresentation representation) {
-	    Map<String, Representation> ret = new HashMap<String, Representation>();
-	    propertiesToIncludeFromClassAndSuperclasses(ret, getClass(), representation);
-	    return ret;
-    }
-
-	/**
-	 * Looks at the {@link IncludeProperties} annotation on clazz to determine which properties to include,
-	 * and recurses to superclasses and interfaces as well.
-	 * @param map
-	 * @param clazz
-	 */
-	private void propertiesToIncludeFromClassAndSuperclasses(Map<String, Representation> map,
-                                                             Class<?> clazz,
-                                                             NamedRepresentation rep) {
-		if (clazz == null || !DelegatingCrudResource.class.isAssignableFrom(clazz))
-			return;
-		
-		// handle this class
-		for (Annotation ann : clazz.getAnnotations()) {
-			if (ann instanceof IncludeProperties) {
-				IncludeProperties incProp = (IncludeProperties) ann;
-				if (rep.matchesAnnotation(incProp)) {
-					for (String prop : incProp.properties()) {
-						// TODO create a proper class to represent property/method name and representation
-						if (prop.indexOf(':') > 0) {
-							String[] temp = prop.split(":");
-							map.put(temp[0], Context.getService(RestService.class).getRepresentation(temp[1]));
-						} else {
-							map.put(prop, Representation.DEFAULT);
-						}
-					}
-				}
-			}
-		}
-		
-		// recurse
-		for (Class<?> interf : clazz.getInterfaces())
-			propertiesToIncludeFromClassAndSuperclasses(map, interf, rep);
-		propertiesToIncludeFromClassAndSuperclasses(map, clazz.getSuperclass(), rep);
     }
 
 	/**
@@ -356,7 +300,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 			return o;
 		}
     }
-	
+		
 	@SuppressWarnings("unchecked")
     private <S> Object convertObjectToRep(S o, Representation rep) throws Exception {
 		if (o == null)
@@ -369,7 +313,6 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 		}
 		converter = converter.getClass().newInstance();
 		converter.setDelegate(o);
-		//getConstructor(o.getClass()).newInstance(o);
 		return converter.asRepresentation(rep);
 	}
 

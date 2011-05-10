@@ -3,15 +3,12 @@ package org.openmrs.module.webservices.rest.resource;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.Representation;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
 @Resource("patient")
-@Handler(supports=Patient.class)
-@IncludeProperties(rep = "default", properties = { "birthdate", "names" })
+@Handler(supports=Patient.class, order=0)
 public class PatientCrudResource extends DataDelegatingCrudResource<Patient> {
 		
 	public PatientCrudResource() {

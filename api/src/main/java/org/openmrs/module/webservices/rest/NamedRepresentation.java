@@ -1,6 +1,7 @@
 package org.openmrs.module.webservices.rest;
 
-import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
+
 
 /**
  * A named representation, like "default", "minimal", or "full"
@@ -29,11 +30,8 @@ public class NamedRepresentation implements Representation {
     	this.representation = representation;
     }
 
-    /**
-     * @see org.openmrs.module.webservices.rest.Representation#matchesAnnotation(org.openmrs.module.webservices.rest.annotation.IncludeProperties)
-     */
-    public boolean matchesAnnotation(IncludeProperties incProp) {
-	    return incProp.rep().equals(representation);
+    public boolean matchesAnnotation(RepHandler ann) {
+	    return ann.name().equals(representation);
     }
 
 }

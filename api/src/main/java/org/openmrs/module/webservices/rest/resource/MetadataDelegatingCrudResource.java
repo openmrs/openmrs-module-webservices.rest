@@ -5,27 +5,36 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.DelegatingResourceRepresentation;
+import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.RefRepresentation;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
-import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
-@IncludeProperties(rep="default", properties={ "uuid", "name", "description" })
 public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> extends DelegatingCrudResource<T> {
 	
     protected MetadataDelegatingCrudResource(T metadata) {
 	    super(metadata);
     }
 
-    @RepClassHandler(RefRepresentation.class)
+    @RepHandler(RefRepresentation.class)
     public SimpleObject convertToRef(RefRepresentation rep) {
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.getName());
     	ret.put("uri", "something/" + getUriFragment() + "/" + delegate.getUuid());
     	return ret;
+    }
+    
+    @RepHandler(value=NamedRepresentation.class, name="default")
+    public SimpleObject asDefaultRep() throws Exception {
+    	DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+		rep.addProperty("uuid");
+		rep.addProperty("name");
+		rep.addProperty("description");
+		return convertDelegateToRepresentation(rep);
     }
 
     /**
