@@ -21,6 +21,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.toString());
+    	ret.put("uri", "something/" + getUriFragment() + "/" + delegate.getUuid());
     	return ret;
     }
     
