@@ -3,6 +3,7 @@ package org.openmrs.module.webservices.rest.resource;
 import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
 @Resource("location")
@@ -43,12 +44,12 @@ public class LocationCrudResource extends MetadataDelegatingCrudResource<Locatio
 			ret = Context.getLocationService().getLocation(uuidOrName);
 		return ret;
     }
-	
+		
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge()
+	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge(RequestContext))
 	 */
 	@Override
-	public void purge() throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResourceDeletionException {
 	    try {
 	    	Context.getLocationService().purgeLocation(delegate);
 	    } catch (Exception ex) {

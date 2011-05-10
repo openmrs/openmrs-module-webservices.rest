@@ -4,6 +4,7 @@ import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.Resource;
@@ -37,12 +38,12 @@ public class PatientCrudResource extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	@Override
-	public void delete(String reason) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
 	    Context.getPatientService().voidPatient(delegate, reason);
 	}
 	
 	@Override
-	public void purge() throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResourceDeletionException {
 	    try {
 	    	Context.getPatientService().purgePatient(delegate);
 	    } catch (Exception ex) {
@@ -50,13 +51,13 @@ public class PatientCrudResource extends DataDelegatingCrudResource<Patient> {
 	    }
 	}
 
-	public Object listSubResource(String subResourceName, Representation rep) throws Exception {
-		return getPropertyWithRepresentation(subResourceName, rep);
+	public Object listSubResource(String subResourceName, RequestContext context) throws Exception {
+		return getPropertyWithRepresentation(subResourceName, context.getRepresentation());
     }
 	
-	public PersonNameCrudResource createPersonName(SimpleObject post) throws Exception {
+	public PersonNameCrudResource createPersonName(SimpleObject post, RequestContext context) throws Exception {
 		post.put("person", delegate);
-		return (PersonNameCrudResource) new PersonNameCrudResource().create(post);
+		return (PersonNameCrudResource) new PersonNameCrudResource().create(post, context);
 	}
 	
 }

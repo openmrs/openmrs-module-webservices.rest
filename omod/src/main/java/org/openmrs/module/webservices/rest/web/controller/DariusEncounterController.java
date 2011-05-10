@@ -3,6 +3,7 @@ package org.openmrs.module.webservices.rest.web.controller;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSUtil;
 import org.openmrs.module.webservices.rest.api.RestService;
@@ -34,10 +35,11 @@ public class DariusEncounterController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object createEncounter(@RequestBody SimpleObject post) throws Exception {
-
+	public Object createEncounter(@RequestBody SimpleObject post,
+	                              WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		EncounterCrudResource resource = new EncounterCrudResource();
-		resource.create(post);
+		resource.create(post, context);
 		return resource.asRepresentation(Representation.DEFAULT);
 	}
 	
@@ -45,28 +47,31 @@ public class DariusEncounterController {
 	@ResponseBody
 	public Object updateEncounter(
 			@PathVariable("encounterUuid") Encounter encounter,
-			@RequestBody SimpleObject post) throws Exception {
-
+			@RequestBody SimpleObject post,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
-		resource.update(post);
+		resource.update(post, context);
 		return resource.asRepresentation(Representation.DEFAULT);
 	}
 	
 	@RequestMapping(value = "/{encounterUuid}", method = RequestMethod.DELETE, params="!purge")
 	public void voidEncounter(
 			@PathVariable("encounterUuid") Encounter encounter,
-			@RequestParam(value="reason", defaultValue="web service call") String reason) throws Exception {
-
+			@RequestParam(value="reason", defaultValue="web service call") String reason,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
-		resource.delete(reason);
+		resource.delete(reason, context);
 	}
 	
 	@RequestMapping(value = "/{encounterUuid}", method = RequestMethod.DELETE, params="purge=true")
 	public void purgeEncounter(
-			@PathVariable("encounterUuid") Encounter encounter) throws Exception {
-
+			@PathVariable("encounterUuid") Encounter encounter,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		EncounterCrudResource resource = new EncounterCrudResource(encounter);
-		resource.purge("uuid");
+		resource.purge(context);
 	}
 	
 }

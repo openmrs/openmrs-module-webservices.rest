@@ -19,6 +19,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.NamedRepresentation;
 import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
@@ -67,10 +68,19 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	 * @see org.openmrs.module.webservices.rest.resource.Retrievable#retrieve(java.lang.String, org.openmrs.module.webservices.rest.Representation)
 	 */
 	@Override
-	public Object retrieve(String uuid, Representation representation) {
-		// TODO check that delegate has the correct uuid, and we aren't about to return the wrong thing
+	public Object retrieve(String uuid, RequestContext context) {
+		return retrieve(context);
+	}
+	
+	/**
+	 * Convenience method for handling a {@link #retrieve(String, Representation)} action, since this class
+	 * is already configured with a delegate.
+	 * @param representation
+	 * @return
+	 */
+	public Object retrieve(RequestContext context) {
 		try {
-			return asRepresentation(representation);
+			return asRepresentation(context.getRepresentation());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -80,7 +90,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	 * @see org.openmrs.module.webservices.rest.resource.Creatable#create(org.springframework.web.context.request.WebRequest)
 	 */
 	@Override
-	public DelegatingCrudResource<T> create(SimpleObject post) throws ResourceCreationException {
+	public DelegatingCrudResource<T> create(SimpleObject post, RequestContext context) throws ResourceCreationException {
 		try {
 			delegate = newDelegate();
 			setPropertiesOnDelegate(post);
@@ -96,19 +106,20 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	 * @see org.openmrs.module.webservices.rest.resource.Updatable#update(java.lang.String, org.openmrs.module.webservices.rest.SimpleObject)
 	 */
 	@Override
-	public Object update(String uuid, SimpleObject propertiesToUpdate) throws ResourceUpdateException {
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResourceUpdateException {
 	    // TODO check that delegate has the correct uuid, and we aren't about to update the wrong thing
-		return update(propertiesToUpdate);
+		return update(propertiesToUpdate, context);
 	}
 	
 	/**
 	 * Convenience version of {@link #update(String, SimpleObject)}, since this resource already has a
 	 * delegate set
 	 * @param propertiesToUpdate
+	 * @param context 
 	 * @return
 	 * @throws ResourceUpdateException
 	 */
-	public Object update(SimpleObject propertiesToUpdate) throws ResourceUpdateException {
+	public Object update(SimpleObject propertiesToUpdate, RequestContext context) throws ResourceUpdateException {
 		try {
 			setPropertiesOnDelegate(propertiesToUpdate);
 			delegate = saveDelegate();
@@ -122,9 +133,9 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	 * @see org.openmrs.module.webservices.rest.resource.Deletable#delete(java.lang.String)
 	 */
 	@Override
-	public void delete(String uuid, String reason) throws ResourceDeletionException {
+	public void delete(String uuid, String reason, RequestContext context) throws ResourceDeletionException {
 		// TODO check that delegate has the correct uuid, and we aren't about to delete the wrong thing
-	    delete(reason);
+	    delete(reason, context);
 	}
 	
 	/**
@@ -132,23 +143,24 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	 * @throws ResourceDeletionException 
 	 * @see Deletable#delete(String,String)
 	 */
-	public abstract void delete(String reason) throws ResourceDeletionException;
+	public abstract void delete(String reason, RequestContext context) throws ResourceDeletionException;
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.resource.Purgeable#purge(java.lang.String)
 	 */
 	@Override
-	public void purge(String uuid) throws ResourceDeletionException {
+	public void purge(String uuid, RequestContext context) throws ResourceDeletionException {
 		// TODO check that delegate has the correct uuid, and we aren't about to purge the wrong thing
-		purge();
+		purge(context);
 	}
 	
     /**
      * Convenience version of {@link #purge(String)}, since this resource already has a delegate set
+     * @param context 
      * @throws ResourceDeletionException 
      * @see Purgeable#purge(String)
      */
-    public abstract void purge() throws ResourceDeletionException;
+    public abstract void purge(RequestContext context) throws ResourceDeletionException;
     
 	/**
      * Writes the delegate to the database

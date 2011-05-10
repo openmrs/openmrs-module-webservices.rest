@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.RefRepresentation;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.RepClassHandler;
@@ -41,7 +42,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
     }
 
 	@Override
-    public void delete(String reason) throws ResourceDeletionException {
+    public void delete(String reason, RequestContext context) throws ResourceDeletionException {
         if (delegate.isRetired())
         	throw new ResourceDeletionException("Already retired");
         delegate.setRetired(true);

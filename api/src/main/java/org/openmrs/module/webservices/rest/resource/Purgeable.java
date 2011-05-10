@@ -1,5 +1,7 @@
 package org.openmrs.module.webservices.rest.resource;
 
+import org.openmrs.module.webservices.rest.RequestContext;
+
 
 /**
  * Interface implemented by resources that support the standard-pattern Purge operation
@@ -7,6 +9,6 @@ package org.openmrs.module.webservices.rest.resource;
  */
 public interface Purgeable extends Resource {
 	
-	void purge(String uuid) throws ResourceDeletionException;
+	void purge(String uuid, RequestContext context) throws ResourceDeletionException;
 
 }

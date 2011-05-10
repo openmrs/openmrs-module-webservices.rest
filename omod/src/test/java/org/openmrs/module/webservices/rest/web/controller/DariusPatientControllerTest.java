@@ -1,8 +1,6 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 
-import java.util.List;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,7 +34,7 @@ public class DariusPatientControllerTest extends BaseModuleContextSensitiveTest 
     	Patient p = Context.getPatientService().getPatient(2);
     	int before = p.getNames().size();
     	SimpleObject post = new ObjectMapper().readValue("{\"givenName\":\"Darius\", \"familyName\":\"Programmer\"}", SimpleObject.class);
-    	Object newName = new DariusPatientController().addName(post, p);
+    	Object newName = new DariusPatientController().addName(post, p, new ServletWebRequest(new MockHttpServletRequest()));
     	System.out.println(newName);
     	Assert.assertNotNull(newName);
     	Assert.assertEquals(before + 1, Context.getPatientService().getPatient(2).getNames().size());

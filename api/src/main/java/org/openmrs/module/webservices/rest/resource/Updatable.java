@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.resource;
 
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 /**
@@ -9,11 +10,13 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 public interface Updatable extends Resource {
 	
 	/**
-	 * Sets the given properties on the resource identified by the given uuid 
+	 * Sets the given properties on the resource identified by the given uuid
+	 * @param uuid 
 	 * @param propertiesToUpdate
+	 * @param context
 	 * @return
 	 * @throws ResourceUpdateException 
 	 */
-	public Object update(String uuid, SimpleObject propertiesToUpdate) throws ResourceUpdateException;
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResourceUpdateException;
 
 }

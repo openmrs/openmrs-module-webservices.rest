@@ -3,6 +3,7 @@ package org.openmrs.module.webservices.rest.resource;
 import org.openmrs.Encounter;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
@@ -47,18 +48,18 @@ public class EncounterCrudResource extends DataDelegatingCrudResource<Encounter>
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
-	public void delete(String reason) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
 	    Context.getEncounterService().voidEncounter(delegate, reason);
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge()
+	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge(RequestContext))
 	 */
 	@Override
-	public void purge() throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResourceDeletionException {
 		try {
 			Context.getEncounterService().purgeEncounter(delegate);
 		} catch (Exception ex) {

@@ -24,6 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.api.RestService;
 import org.openmrs.module.webservices.rest.resource.OpenmrsResource;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.Reflect;
@@ -483,4 +485,17 @@ public class WSUtil {
 		prefix += WSConstants.URL_PREFIX;
 		return prefix + resource.getURISuffix(openmrsObject);
 	}
+
+	/**
+	 * Determines the request representation, number of results, etc, if specified in the request.
+	 * @param request
+	 * @return
+	 */
+	public static RequestContext getRequestContext(WebRequest request) {
+	    RequestContext ret = new RequestContext();
+	    String temp = request.getHeader("Accept-Type");
+	    if (StringUtils.isNotEmpty(temp))
+	    	ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
+	    return ret;
+    }
 }

@@ -3,6 +3,7 @@ package org.openmrs.module.webservices.rest.web.controller;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.Representation;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.WSUtil;
 import org.openmrs.module.webservices.rest.api.RestService;
@@ -25,47 +26,49 @@ public class DariusPatientController {
 	public Object getPatient(
 			@PathVariable("patientUuid") Patient patient,
 			WebRequest request) throws Exception {
-
-		Representation rep = Context.getService(RestService.class).getRepresentation(WSUtil.getRepresentation(request));
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource resource = new PatientCrudResource(patient);
-		
-		return resource.asRepresentation(rep);
+		return resource.retrieve(context);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object createPatient(@RequestBody SimpleObject post) throws Exception {
-
+	public Object createPatient(@RequestBody SimpleObject post,
+	                            WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource resource = new PatientCrudResource();
-		return resource.create(post).asRepresentation(Representation.DEFAULT);
+		return resource.create(post, context).asRepresentation(Representation.DEFAULT);
 	}
 	
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object updatePatient(
 			@PathVariable("patientUuid") Patient patient,
-			@RequestBody SimpleObject post) throws Exception {
-
+			@RequestBody SimpleObject post,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource resource = new PatientCrudResource(patient);
-		resource.update(post);
-		return resource.asRepresentation(Representation.DEFAULT);
+		resource.update(post, context);
+		return resource.retrieve(context);
 	}
 	
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params="!purge")
 	public void voidPatient(
 			@PathVariable("patientUuid") Patient patient,
-			@RequestParam(value="reason", defaultValue="web service call") String reason) throws Exception {
-
+			@RequestParam(value="reason", defaultValue="web service call") String reason,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource resource = new PatientCrudResource(patient);
-		resource.delete(reason);
+		resource.delete(reason, context);
 	}
 	
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params="purge=true")
 	public void purgePatient(
-			@PathVariable("patientUuid") Patient patient) throws Exception {
-
+			@PathVariable("patientUuid") Patient patient,
+			WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource resource = new PatientCrudResource(patient);
-		resource.purge("uuid");
+		resource.purge("uuid", context);
 	}
 	
 	/**
@@ -86,9 +89,11 @@ public class DariusPatientController {
 	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.POST)
 	@ResponseBody
 	public Object addName(@RequestBody SimpleObject post,
-	                    @PathVariable("patientUuid") Patient patient) throws Exception {
+	                    @PathVariable("patientUuid") Patient patient,
+	                    WebRequest request) throws Exception {
+		RequestContext context = WSUtil.getRequestContext(request);
 		PatientCrudResource patientResource = new PatientCrudResource(patient);
-		return patientResource.createPersonName(post).asRepresentation(Representation.DEFAULT);
+		return patientResource.createPersonName(post, context).asRepresentation(Representation.DEFAULT);
 	}
 
 }

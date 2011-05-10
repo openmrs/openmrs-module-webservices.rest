@@ -3,6 +3,7 @@ package org.openmrs.module.webservices.rest.resource;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.IncludeProperties;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 
@@ -25,12 +26,12 @@ public class PersonNameCrudResource extends DataDelegatingCrudResource<PersonNam
 	}
 	
 	@Override
-	public void delete(String reason) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
 		// TODO Auto-generated function stub
 	}
 	
 	@Override
-	public void purge() throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResourceDeletionException {
 		// TODO Auto-generated function stub	
 	}
 	
