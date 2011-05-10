@@ -273,9 +273,11 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	    for (Method method : getClass().getMethods()) {
 	    	RepHandler ann = method.getAnnotation(RepHandler.class);
 	    	if (ann != null) {
-	    		if (rep instanceof NamedRepresentation && !((NamedRepresentation) rep).matchesAnnotation(ann))
-	    			continue;
-	    		return method;
+	    		if (ann.value().isAssignableFrom(rep.getClass())) {
+		    		if (rep instanceof NamedRepresentation && !((NamedRepresentation) rep).matchesAnnotation(ann))
+		    			continue;
+		    		return method;
+	    		}
 	    	}
 	    }
 	    return null;
