@@ -312,6 +312,11 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 		try {
 			converter = HandlerUtil.getPreferredHandler(DelegateConverter.class, o.getClass());
 		} catch (APIException ex) {
+			// try a few known datatypes
+			if (o instanceof Date) {
+				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format((Date) o);
+			}
+			// otherwise we have no choice but to return the plain object
 			return o;
 		}
 		converter = converter.getClass().newInstance();

@@ -5,7 +5,10 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
+import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.representation.RefRepresentation;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations, and listing and adding of the
@@ -22,6 +25,29 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	public PatientResource(Patient patient) {
 		super(patient);
 	}
+	
+	/**
+	 * @return default representation of this resource 
+	 */
+	@RepHandler(DefaultRepresentation.class)
+	public SimpleObject asDefaultRep() throws Exception {
+		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+		rep.addProperty("uuid");
+		rep.addProperty("gender");
+		rep.addProperty("age");
+		rep.addProperty("birthdate");
+		rep.addProperty("birthdateEstimated");
+		rep.addProperty("dead");
+		rep.addProperty("deathDate");
+		rep.addProperty("causeOfDeath");
+		rep.addProperty("personName", new RefRepresentation());
+		rep.addProperty("personAddress", new RefRepresentation());
+		rep.addProperty("activeIdentifiers", new RefRepresentation());
+		rep.addProperty("activeAttributes", new RefRepresentation());
+		//rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
+		return convertDelegateToRepresentation(rep);
+	}
+
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#newDelegate()
