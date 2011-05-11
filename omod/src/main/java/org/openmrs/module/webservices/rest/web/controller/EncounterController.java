@@ -2,12 +2,12 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.RestUtil;
-import org.openmrs.module.webservices.rest.api.RestService;
-import org.openmrs.module.webservices.rest.representation.Representation;
-import org.openmrs.module.webservices.rest.resource.EncounterResource;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.EncounterResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -4,13 +4,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.webservices.rest.RequestContext;
-import org.openmrs.module.webservices.rest.RestUtil;
 import org.openmrs.module.webservices.rest.RuntimeWrappedException;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.representation.Representation;
-import org.openmrs.module.webservices.rest.resource.PatientResource;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.propertyeditor.UuidEditor;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.response.SuccessfulDeletion;
 import org.springframework.stereotype.Controller;
