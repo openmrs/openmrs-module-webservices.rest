@@ -1,11 +1,14 @@
 package org.openmrs.module.webservices.rest.web.propertyeditor;
 
 import java.beans.PropertyEditorSupport;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.RuntimeWrappedException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 
 /**
  * You can use this to override the property editors in the OpenMRS core, that are based off of
@@ -14,22 +17,25 @@ import org.openmrs.api.context.Context;
 public class UuidEditor extends PropertyEditorSupport {
 	
 	Class<? extends OpenmrsService> serviceClass;
-	
-	String methodName;
-	
-	public UuidEditor(Class<? extends OpenmrsService> serviceClass, String methodName) {
+	Method method;
+		
+	public UuidEditor(Class<? extends OpenmrsService> serviceClass, String methodName) throws SecurityException, NoSuchMethodException {
 		this.serviceClass = serviceClass;
-		this.methodName = methodName;
+		OpenmrsService service = Context.getService(serviceClass);
+		method = service.getClass().getMethod(methodName, String.class);
 	}
 	
 	@Override
 	public void setAsText(String uuid) throws IllegalArgumentException {
 		OpenmrsService service = Context.getService(serviceClass);
 		try {
-			Method method = service.getClass().getMethod(methodName, String.class);
-			setValue(method.invoke(service, uuid));
-		}
-		catch (Exception ex) {
+			Object val = method.invoke(service, uuid);
+			if (val == null)
+				throw new RuntimeWrappedException(new ObjectNotFoundException());
+			setValue(val);
+		} catch (IllegalAccessException ex) {
+			throw new RuntimeException(ex);
+		} catch (InvocationTargetException ex) {
 			throw new RuntimeException(ex);
 		}
 	}

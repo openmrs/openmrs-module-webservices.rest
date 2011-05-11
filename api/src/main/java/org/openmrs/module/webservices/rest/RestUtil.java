@@ -15,11 +15,15 @@ package org.openmrs.module.webservices.rest;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.api.RestService;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -324,5 +328,22 @@ public class RestUtil {
 	    if (StringUtils.isNotEmpty(temp))
 	    	ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 	    return ret;
+    }
+
+	/**
+	 * Sets the HTTP status on the response according to the exception
+	 * @param ex
+	 * @param response
+	 */
+	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
+		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
+		if (ann != null) {
+			if (StringUtils.isNotBlank(ann.reason()))
+				response.setStatus(ann.value().value(), ann.reason());
+			else
+				response.setStatus(ann.value().value());
+		} else {
+	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
     }
 }

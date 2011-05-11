@@ -9,6 +9,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Subclass of {@link DelegatingCrudResource} with helper methods specific to {@link OpenmrsMetadata}
@@ -38,10 +39,15 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		return convertDelegateToRepresentation(rep);
     }
 
+	/**
+	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
+	 */
 	@Override
-    public void delete(String reason, RequestContext context) throws ResourceDeletionException {
-        if (delegate.isRetired())
-        	throw new ResourceDeletionException("Already retired");
+    public void delete(String reason, RequestContext context) throws ResponseException {
+        if (delegate.isRetired()) {
+        	// since DELETE should be idempotent, we return success here
+        	return;
+        }
         delegate.setRetired(true);
         delegate.setRetiredBy(Context.getAuthenticatedUser());
         delegate.setDateRetired(new Date());

@@ -19,6 +19,14 @@ package org.openmrs.module.webservices.rest.web.response;
  */
 public abstract class ResponseException extends Exception {
 
+	public ResponseException() {
+		super();
+	}
+	
+	public ResponseException(String message, Throwable cause) {
+	    super(message, cause);
+    }
+
 	private static final long serialVersionUID = 1L;
 
 }

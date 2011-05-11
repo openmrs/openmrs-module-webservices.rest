@@ -1,6 +1,7 @@
 package org.openmrs.module.webservices.rest.resource;
 
 import org.openmrs.module.webservices.rest.RequestContext;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 
 /**
@@ -13,7 +14,8 @@ public interface Deletable extends Resource {
 	 * @param uuid
 	 * @param reason
 	 * @param context
+	 * @throws ResponseException
 	 */
-	void delete(String uuid, String reason, RequestContext context) throws ResourceDeletionException;
+	void delete(String uuid, String reason, RequestContext context) throws ResponseException;
 
 }

@@ -8,6 +8,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
@@ -41,12 +42,12 @@ public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 	}
 	
 	@Override
-	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResponseException {
 		// TODO Auto-generated function stub
 	}
 	
 	@Override
-	public void purge(RequestContext context) throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResponseException {
 		// TODO Auto-generated function stub	
 	}
 	

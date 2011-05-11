@@ -6,7 +6,7 @@ import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.resource.DelegateConverter;
 import org.openmrs.module.webservices.rest.resource.MetadataDelegatingCrudResource;
-import org.openmrs.module.webservices.rest.resource.ResourceDeletionException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * This class is a temporary hack, to be removed before the first release of the module. It allows
@@ -32,7 +32,7 @@ public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<Op
 	}
 	
 	@Override
-	public void purge(RequestContext context) throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
 	}
 	

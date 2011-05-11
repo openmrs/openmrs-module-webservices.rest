@@ -1,6 +1,7 @@
 package org.openmrs.module.webservices.rest.resource;
 
 import org.openmrs.module.webservices.rest.RequestContext;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Interface implemented by resources that have the standard-pattern Retrieve operation by UUID
@@ -12,7 +13,8 @@ public interface Retrievable extends Resource {
 	 * @param uuid
 	 * @param context
 	 * @return
+	 * @throws ResponseException
 	 */
-	public Object retrieve(String uuid, RequestContext context);
+	public Object retrieve(String uuid, RequestContext context) throws ResponseException;
 
 }

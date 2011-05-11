@@ -1,15 +1,21 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.RestUtil;
+import org.openmrs.module.webservices.rest.RuntimeWrappedException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.representation.Representation;
 import org.openmrs.module.webservices.rest.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.propertyeditor.UuidEditor;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.response.SuccessfulDeletion;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,8 +34,14 @@ import org.springframework.web.context.request.WebRequest;
 public class PatientController {
 	
 	@InitBinder
-	public void initBinder(WebDataBinder wdb) {
+	public void initBinder(WebDataBinder wdb) throws Exception {
 		wdb.registerCustomEditor(Patient.class, new UuidEditor(PatientService.class, "getPatientByUuid"));
+	}
+	
+	@ExceptionHandler(RuntimeWrappedException.class)
+	public String handleWrappedExceptions(RuntimeWrappedException ex, HttpServletResponse response) {
+		RestUtil.setResponseStatus(ex.getCause(), response);
+		return "error"; // TODO get the correct view name
 	}
 	
 	/**
@@ -41,7 +53,7 @@ public class PatientController {
 	 */
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getPatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws Exception {
+	public Object getPatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
 		return resource.retrieve(context);
@@ -56,7 +68,7 @@ public class PatientController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object createPatient(@RequestBody SimpleObject post, WebRequest request) throws Exception {
+	public Object createPatient(@RequestBody SimpleObject post, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource();
 		return resource.create(post, context).asRepresentation(Representation.DEFAULT);
@@ -73,7 +85,7 @@ public class PatientController {
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object updatePatient(@PathVariable("patientUuid") Patient patient, @RequestBody SimpleObject post,
-	                            WebRequest request) throws Exception {
+	                            WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
 		resource.update(post, context);
@@ -90,7 +102,7 @@ public class PatientController {
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "!purge")
 	public void voidPatient(@PathVariable("patientUuid") Patient patient,
 	                        @RequestParam(value = "reason", defaultValue = "web service call") String reason,
-	                        WebRequest request) throws Exception {
+	                        WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
 		resource.delete(reason, context);
@@ -103,10 +115,11 @@ public class PatientController {
 	 * @should fail to purge a patient with dependent data
 	 */
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "purge=true")
-	public void purgePatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws Exception {
+	public void purgePatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
-		resource.purge("uuid", context);
+        resource.purge("uuid", context);
+        throw new SuccessfulDeletion();
 	}
 	
 	/**
@@ -114,7 +127,7 @@ public class PatientController {
 	 */
 	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getNames(@PathVariable("patientUuid") Patient patient, WebRequest request) throws Exception {
+	public Object getNames(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource patientResource = new PatientResource(patient);
 		return patientResource.getPropertyWithRepresentation("names", context.getRepresentation());
@@ -126,7 +139,7 @@ public class PatientController {
 	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.POST)
 	@ResponseBody
 	public Object addName(@RequestBody SimpleObject post, @PathVariable("patientUuid") Patient patient, WebRequest request)
-	                                                                                                                       throws Exception {
+	                                                                                                                       throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource patientResource = new PatientResource(patient);
 		return patientResource.createPersonName(post, context).asRepresentation(Representation.DEFAULT);

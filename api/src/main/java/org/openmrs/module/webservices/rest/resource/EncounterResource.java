@@ -9,6 +9,7 @@ import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations 
@@ -70,7 +71,11 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
-	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			// DELETE is idempotent, so we return success here
+			return;
+		}
 	    Context.getEncounterService().voidEncounter(delegate, reason);
 	}
 	
@@ -78,12 +83,12 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge(RequestContext))
 	 */
 	@Override
-	public void purge(RequestContext context) throws ResourceDeletionException {
-		try {
-			Context.getEncounterService().purgeEncounter(delegate);
-		} catch (Exception ex) {
-			throw new ResourceDeletionException(ex);
+	public void purge(RequestContext context) throws ResponseException {
+		if (delegate == null) {
+			// DELETE is idempotent, so we return success here
+			return;
 		}
+		Context.getEncounterService().purgeEncounter(delegate);
 	}
 
 }

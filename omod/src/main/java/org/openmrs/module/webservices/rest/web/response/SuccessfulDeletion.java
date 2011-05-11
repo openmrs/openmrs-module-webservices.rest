@@ -17,13 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This exception should be thrown from controllers after a DELETE request (a
- * retire/void/purge) that has finished successfully.
- * 
+ * This exception should be thrown from controllers after a purge request that has finished
+ * successfully. (Retiring or voiding should return the default representation of the voided/retired
+ * resource.)
  */
 @ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "Object deleted successfully")
 public class SuccessfulDeletion extends ResponseException {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 }

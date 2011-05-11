@@ -24,5 +24,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ConversionException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
+	
+    public ConversionException(String message, Throwable cause) {
+    	super(message, cause);
+    }
 
 }

@@ -6,7 +6,7 @@ import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.resource.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.resource.DelegateConverter;
-import org.openmrs.module.webservices.rest.resource.ResourceDeletionException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * This class is a temporary hack, to be removed before the first release of the module. It allows
@@ -28,7 +28,7 @@ public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsDat
 	}
 	
 	@Override
-	public void purge(RequestContext context) throws ResourceDeletionException {
+	public void purge(RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
 	}
 	
@@ -43,7 +43,7 @@ public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsDat
 	}
 	
 	@Override
-	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
 	}
 	

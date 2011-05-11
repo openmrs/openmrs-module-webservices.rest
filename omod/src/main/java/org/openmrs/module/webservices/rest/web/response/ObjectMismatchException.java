@@ -17,14 +17,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This exception should be thrown from controllers when a subresource (like
- * name) is fetched but the uuid does not match the uuid of the main resource
- * (like person).
- * 
+ * This exception should be thrown from controllers when a subresource (like name) is fetched but
+ * the uuid does not match the uuid of the main resource (like person).
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Subresource with given uuid doesn't match the uuid of the main resource")
-public class ObjectMismatch extends ResponseException {
+public class ObjectMismatchException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
+	
+	public ObjectMismatchException() { }
+	
+	public ObjectMismatchException(String message, Throwable cause) {
+	    super(message, cause);
+    }
 
 }

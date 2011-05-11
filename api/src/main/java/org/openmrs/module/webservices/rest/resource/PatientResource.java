@@ -10,6 +10,7 @@ import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.representation.Representation;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations, and listing and adding of the
@@ -100,7 +101,11 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
-	public void delete(String reason, RequestContext context) throws ResourceDeletionException {
+	public void delete(String reason, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			// DELETE is idempotent, so we return success here
+			return;
+		}
 	    Context.getPatientService().voidPatient(delegate, reason);
 	}
 	
@@ -108,12 +113,12 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge(org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
-	public void purge(RequestContext context) throws ResourceDeletionException {
-	    try {
-	    	Context.getPatientService().purgePatient(delegate);
-	    } catch (Exception ex) {
-	    	throw new ResourceDeletionException(ex);
-	    }
+	public void purge(RequestContext context) throws ResponseException {
+		if (delegate == null) {
+			// DELETE is idempotent, so we return success here
+			return;
+		}
+		Context.getPatientService().purgePatient(delegate);
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @return
 	 * @throws Exception
 	 */
-	public Object listSubResource(String subResourceName, RequestContext context) throws Exception {
+	public Object listSubResource(String subResourceName, RequestContext context) throws ResponseException {
 		return getPropertyWithRepresentation(subResourceName, context.getRepresentation());
     }
 	
@@ -134,7 +139,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @return
 	 * @throws Exception
 	 */
-	public PersonNameResource createPersonName(SimpleObject post, RequestContext context) throws Exception {
+	public PersonNameResource createPersonName(SimpleObject post, RequestContext context) throws ResponseException {
 		post.put("person", delegate);
 		return (PersonNameResource) new PersonNameResource().create(post, context);
 	}

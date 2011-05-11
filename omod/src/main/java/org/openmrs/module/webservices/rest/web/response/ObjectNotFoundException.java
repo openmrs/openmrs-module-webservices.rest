@@ -17,11 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This exception should be thrown from controllers that 
- *
+ * This exception should be thrown from controllers when passed a uuid that does not represent an
+ * existing resource.
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Object with given uuid doesn't exist")
-public class ObjectNotFound extends ResponseException {
+public class ObjectNotFoundException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
 
