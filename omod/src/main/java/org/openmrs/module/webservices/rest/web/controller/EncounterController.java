@@ -21,7 +21,7 @@ import org.springframework.web.context.request.WebRequest;
  * Controller for REST web service access to the Encounter resource.
  */
 @Controller
-@RequestMapping(value = "/rest/darius/encounter")
+@RequestMapping(value = "/rest/encounter")
 public class EncounterController {
 	
 	@RequestMapping(value = "/{encounterUuid}", method = RequestMethod.GET)
