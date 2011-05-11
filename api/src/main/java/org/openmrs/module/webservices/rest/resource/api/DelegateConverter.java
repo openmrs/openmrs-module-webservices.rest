@@ -1,4 +1,4 @@
-package org.openmrs.module.webservices.rest.resource;
+package org.openmrs.module.webservices.rest.resource.api;
 
 import org.openmrs.module.webservices.rest.representation.Representation;
 

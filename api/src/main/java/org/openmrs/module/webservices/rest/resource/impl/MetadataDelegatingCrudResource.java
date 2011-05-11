@@ -1,4 +1,4 @@
-package org.openmrs.module.webservices.rest.resource;
+package org.openmrs.module.webservices.rest.resource.impl;
 
 import java.util.Date;
 
@@ -40,7 +40,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
     }
 
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.resource.impl.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
     public void delete(String reason, RequestContext context) throws ResponseException {

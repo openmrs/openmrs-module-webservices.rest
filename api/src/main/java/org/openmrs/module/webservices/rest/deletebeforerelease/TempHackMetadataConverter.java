@@ -4,8 +4,8 @@ import org.openmrs.OpenmrsMetadata;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.RequestContext;
 import org.openmrs.module.webservices.rest.annotation.Resource;
-import org.openmrs.module.webservices.rest.resource.DelegateConverter;
-import org.openmrs.module.webservices.rest.resource.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**

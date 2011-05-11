@@ -1,4 +1,4 @@
-package org.openmrs.module.webservices.rest.resource;
+package org.openmrs.module.webservices.rest.resource.impl;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -21,6 +21,10 @@ import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.representation.Representation;
+import org.openmrs.module.webservices.rest.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.resource.api.Deletable;
+import org.openmrs.module.webservices.rest.resource.api.Purgeable;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -66,7 +70,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 
     /**
 	 * Assumes that the delegate property is the already-retrieved object with the given uuid
-	 * @see org.openmrs.module.webservices.rest.resource.Retrievable#retrieve(java.lang.String, org.openmrs.module.webservices.rest.representation.Representation)
+	 * @see org.openmrs.module.webservices.rest.resource.api.Retrievable#retrieve(java.lang.String, org.openmrs.module.webservices.rest.representation.Representation)
 	 */
 	@Override
 	public Object retrieve(String uuid, RequestContext context) throws ResponseException {
@@ -86,7 +90,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.Creatable#create(org.springframework.web.context.request.WebRequest)
+	 * @see org.openmrs.module.webservices.rest.resource.api.Creatable#create(org.springframework.web.context.request.WebRequest)
 	 */
 	@Override
 	public DelegatingCrudResource<T> create(SimpleObject post, RequestContext context) throws ResponseException {
@@ -98,7 +102,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	
 	/**
 	 * @throws ResourceUpdateException 
-	 * @see org.openmrs.module.webservices.rest.resource.Updatable#update(java.lang.String, org.openmrs.module.webservices.rest.SimpleObject)
+	 * @see org.openmrs.module.webservices.rest.resource.api.Updatable#update(java.lang.String, org.openmrs.module.webservices.rest.SimpleObject)
 	 */
 	@Override
 	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
@@ -123,7 +127,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	}
 
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.Deletable#delete(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.resource.api.Deletable#delete(java.lang.String)
 	 */
 	@Override
 	public void delete(String uuid, String reason, RequestContext context) throws ResponseException {
@@ -154,7 +158,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
 	public abstract void delete(String reason, RequestContext context) throws ResponseException;
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.Purgeable#purge(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.resource.api.Purgeable#purge(java.lang.String)
 	 */
 	@Override
 	public void purge(String uuid, RequestContext context) throws ResponseException {

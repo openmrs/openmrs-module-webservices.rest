@@ -8,6 +8,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.resource.impl.DataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.resource.impl.DelegatingResourceRepresentation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**

@@ -9,6 +9,8 @@ import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.resource.impl.DataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.resource.impl.DelegatingResourceRepresentation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -44,7 +46,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#newDelegate()
+	 * @see org.openmrs.module.webservices.rest.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
 	public Encounter newDelegate() {
@@ -52,7 +54,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#saveDelegate()
+	 * @see org.openmrs.module.webservices.rest.resource.impl.DelegatingCrudResource#saveDelegate()
 	 */
 	@Override
 	public Encounter saveDelegate() {
@@ -60,7 +62,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegateConverter#fromString(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.resource.api.DelegateConverter#fromString(java.lang.String)
 	 */
 	@Override
 	public Encounter fromString(String uuid) {
@@ -68,7 +70,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.resource.impl.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.RequestContext)
 	 */
 	@Override
 	public void delete(String reason, RequestContext context) throws ResponseException {

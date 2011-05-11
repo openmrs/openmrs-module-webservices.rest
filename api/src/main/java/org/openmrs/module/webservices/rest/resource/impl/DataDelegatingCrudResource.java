@@ -1,4 +1,4 @@
-package org.openmrs.module.webservices.rest.resource;
+package org.openmrs.module.webservices.rest.resource.impl;
 
 import org.openmrs.OpenmrsData;
 import org.openmrs.module.webservices.rest.SimpleObject;
