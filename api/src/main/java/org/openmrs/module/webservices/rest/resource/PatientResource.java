@@ -8,7 +8,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.annotation.Resource;
 import org.openmrs.module.webservices.rest.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.representation.Representation;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations, and listing and adding of the
@@ -40,14 +41,36 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		rep.addProperty("dead");
 		rep.addProperty("deathDate");
 		rep.addProperty("causeOfDeath");
-		rep.addProperty("personName", new RefRepresentation());
-		rep.addProperty("personAddress", new RefRepresentation());
-		rep.addProperty("activeIdentifiers", new RefRepresentation());
-		rep.addProperty("activeAttributes", new RefRepresentation());
-		//rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
+		rep.addProperty("personName", Representation.REF);
+		rep.addProperty("personAddress", Representation.REF);
+		rep.addProperty("activeIdentifiers", Representation.REF);
+		rep.addProperty("activeAttributes", Representation.REF);
 		return convertDelegateToRepresentation(rep);
 	}
-
+	
+	/**
+	 * @return full representation of this resource 
+	 */
+	@RepHandler(FullRepresentation.class)
+	public SimpleObject asFullRep() throws Exception {
+		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+		rep.addProperty("uuid");
+		rep.addProperty("gender");
+		rep.addProperty("age");
+		rep.addProperty("birthdate");
+		rep.addProperty("birthdateEstimated");
+		rep.addProperty("dead");
+		rep.addProperty("deathDate");
+		rep.addProperty("causeOfDeath");
+		rep.addProperty("personName", Representation.DEFAULT);
+		rep.addProperty("personAddress", Representation.DEFAULT);
+		rep.addProperty("names", Representation.DEFAULT);
+		rep.addProperty("addresses", Representation.DEFAULT);
+		rep.addProperty("identifiers", Representation.DEFAULT);
+		rep.addProperty("attributes", Representation.DEFAULT);
+		rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
+		return convertDelegateToRepresentation(rep);
+	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#newDelegate()

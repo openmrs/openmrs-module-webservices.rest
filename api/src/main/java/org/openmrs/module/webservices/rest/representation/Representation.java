@@ -9,4 +9,8 @@ public interface Representation {
 	
 	Representation DEFAULT = new DefaultRepresentation();
 	
+	Representation REF = new RefRepresentation();
+	
+	Representation FULL = new FullRepresentation();
+	
 }
