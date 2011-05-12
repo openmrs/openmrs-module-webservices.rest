@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped object
@@ -200,6 +202,14 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	SimpleObject ret = new SimpleObject();
     	for (Map.Entry<String, Representation> e : rep.getProperties().entrySet())
     		ret.put(e.getKey(), ConversionUtil.getPropertyWithRepresentation(delegate, e.getKey(), e.getValue()));
+    	for (Map.Entry<String, Method> e : rep.getMethodProperties().entrySet()) {
+    		try {
+	            ret.put(e.getKey(), e.getValue().invoke(this, delegate));
+            }
+            catch (Exception ex) {
+	            throw new ConversionException("method " + e.getValue(), ex);
+            }
+    	}
     	return ret;
     }
 	
@@ -235,5 +245,21 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	if (StringUtils.isEmpty(ann.value()))
     		throw new RuntimeException(Resource.class.getSimpleName() + " annotation on " + getClass() + " must specify a value");
     	return ann.value();
+    }
+    
+    /**
+     * @param delegate
+     * @return the URI for the given delegate object
+     */
+    public String getUri(T delegate) {
+    	return "someprefix://" + getUriFragment() + "/" + getPropertyIfExists(delegate, "uuid");
+    }
+    
+    protected Method findMethod(String name) throws ConversionException {
+    	// TODO replace this with something that looks specifically for a method that takes a single T argument 
+    	Method ret = ReflectionUtils.findMethod(getClass(), name, (Class<?>[]) null);
+    	if (ret == null)
+    		throw new ConversionException("No method: " + name, null);
+    	return ret;
     }
 }

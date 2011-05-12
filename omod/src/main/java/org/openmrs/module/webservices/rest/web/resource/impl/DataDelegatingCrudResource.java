@@ -6,6 +6,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 
 /**
  * Subclass of {@link DelegatingCrudResource} with helper methods specific to {@link OpenmrsData}
@@ -18,7 +19,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.toString());
-    	ret.put("uri", "something/" + getUriFragment() + "/" + delegate.getUuid());
+    	ret.put("uri", getUri(delegate));
     	return ret;
     }
     
@@ -28,13 +29,14 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.toString());
     	ret.put("temp-hack", "this method should be overridden");
+    	ret.put("uri", getUri(delegate));
     	return ret;
     }
     
     public SimpleObject getAuditInfo(T delegate) throws Exception {
     	SimpleObject ret = new SimpleObject();
-    	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", new RefRepresentation()));
-    	ret.put("dateCreated", delegate.getDateCreated());
+    	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
+    	ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
     	return ret;
     }
     

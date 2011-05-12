@@ -26,6 +26,7 @@ public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 		rep.addProperty("middleName");
 		rep.addProperty("familyName");
 		rep.addProperty("familyName2");
+		rep.addMethodProperty("uri", findMethod("getUri"));
 		return convertDelegateToRepresentation(pn, rep);
 	}
 

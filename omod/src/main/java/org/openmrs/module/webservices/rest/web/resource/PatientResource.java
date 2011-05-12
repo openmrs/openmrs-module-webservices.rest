@@ -43,6 +43,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		rep.addProperty("personAddress", Representation.REF);
 		rep.addProperty("activeIdentifiers", Representation.REF);
 		rep.addProperty("activeAttributes", Representation.REF);
+    	rep.addMethodProperty("uri", findMethod("getUri"));
 		return convertDelegateToRepresentation(patient, rep);
 	}
 	
@@ -66,7 +67,8 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		rep.addProperty("addresses");
 		rep.addProperty("identifiers");
 		rep.addProperty("attributes");
-		rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
+		rep.addMethodProperty("auditInfo", findMethod("getAuditInfo"));
+		rep.addMethodProperty("uri", findMethod("getUri"));
 		return convertDelegateToRepresentation(patient, rep);
 	}
 

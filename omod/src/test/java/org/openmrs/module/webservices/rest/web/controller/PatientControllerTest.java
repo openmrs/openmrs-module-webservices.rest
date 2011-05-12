@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -14,13 +16,15 @@ import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
-public class PatientControllerTest extends BaseModuleContextSensitiveTest {
+public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	private void log(String label, Object object) {
 		String toPrint;
@@ -86,15 +90,29 @@ public class PatientControllerTest extends BaseModuleContextSensitiveTest {
 	
 	/**
 	 * @see PatientController#getPatient(Patient,WebRequest)
-	 * @verifies get a representation of a patient
+	 * @verifies get a default representation of a patient
 	 */
 	@Test
-	public void getPatient_shouldGetARepresentationOfAPatient() throws Exception {
+	public void getPatient_shouldGetADefaultRepresentationOfAPatient() throws Exception {
 		Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
-		log("Patient fetched", result);
+		log("Patient fetched (default)", result);
 	}
+	
+	/**
+     * @see PatientController#getPatient(String,WebRequest)
+     * @verifies get a full representation of a patient
+     */
+    @Test
+    public void getPatient_shouldGetAFullRepresentationOfAPatient() throws Exception {
+    	MockHttpServletRequest req = new MockHttpServletRequest();
+    	req.addHeader("Accept-Type", RestConstants.REPRESENTATION_FULL);
+    	Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		log("Patient fetched (full)", result);
+    }
 	
 	/**
 	 * FAILING. I CAN'T FIGURE OUT WHY THIS METHOD IS NOT THROWING AN EXCEPTION WHEN THE PURGE
@@ -140,4 +158,5 @@ public class PatientControllerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertTrue(pat.isVoided());
 		Assert.assertEquals("unit test", pat.getVoidReason());
 	}
+
 }

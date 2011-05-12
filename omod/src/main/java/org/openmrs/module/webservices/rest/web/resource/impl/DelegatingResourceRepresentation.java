@@ -17,10 +17,12 @@ public class DelegatingResourceRepresentation implements ResourceRepresentation 
 	Map<String, Method> methodProperties = new LinkedHashMap<String, Method>();
 
 	public void addProperty(String propertyName) {
-	    properties.put(propertyName, null);
+	    addProperty(propertyName, null);
     }
 
 	public void addProperty(String propertyName, Representation rep) {
+		if (rep == null)
+			rep = Representation.DEFAULT;
 	    properties.put(propertyName, rep);
     }
 

@@ -35,7 +35,8 @@ public class PatientController {
 	 * @param request
 	 * @return
 	 * @throws Exception
-	 * @should get a representation of a patient
+	 * @should get a default representation of a patient
+	 * @should get a full representation of a patient
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
