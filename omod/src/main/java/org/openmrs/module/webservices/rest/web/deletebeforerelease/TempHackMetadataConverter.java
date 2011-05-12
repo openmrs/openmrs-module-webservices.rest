@@ -4,7 +4,9 @@ import org.openmrs.OpenmrsMetadata;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -35,6 +37,11 @@ public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<Op
 
 	@Override
     public OpenmrsMetadata getByUniqueId(String uniqueId) {
+		throw new RuntimeException("Not Implemented");
+    }
+	
+	@Override
+    public DelegatingResourceRepresentation getRepresentationDescription(Representation rep) {
 		throw new RuntimeException("Not Implemented");
     }
 	

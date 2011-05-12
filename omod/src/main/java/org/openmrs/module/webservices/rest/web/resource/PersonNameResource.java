@@ -3,11 +3,10 @@ package org.openmrs.module.webservices.rest.web.resource;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceRepresentation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -19,17 +18,19 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports=PersonName.class, order=0)
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
-	@RepHandler(DefaultRepresentation.class)
-	public SimpleObject asDefaultRep(PersonName pn) throws Exception {
-		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
-		rep.addProperty("givenName");
-		rep.addProperty("middleName");
-		rep.addProperty("familyName");
-		rep.addProperty("familyName2");
-		rep.addMethodProperty("uri", findMethod("getUri"));
-		return convertDelegateToRepresentation(pn, rep);
+	@Override
+	public DelegatingResourceRepresentation getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			description.addProperty("givenName");
+			description.addProperty("middleName");
+			description.addProperty("familyName");
+			description.addProperty("familyName2");
+			description.addMethodProperty("uri", findMethod("getUri"));
+			return description;
+		}
+	    return null;
 	}
-
 
 	@Override
 	public PersonName getByUniqueId(String uuid) {

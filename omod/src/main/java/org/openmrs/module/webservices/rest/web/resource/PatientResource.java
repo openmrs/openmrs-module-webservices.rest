@@ -8,7 +8,6 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -26,50 +25,47 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
 	/**
-	 * @return default representation of this resource 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
-	@RepHandler(DefaultRepresentation.class)
-	public SimpleObject asDefaultRep(Patient patient) throws Exception {
-		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
-		rep.addProperty("uuid");
-		rep.addProperty("gender");
-		rep.addProperty("age");
-		rep.addProperty("birthdate");
-		rep.addProperty("birthdateEstimated");
-		rep.addProperty("dead");
-		rep.addProperty("deathDate");
-		rep.addProperty("causeOfDeath", Representation.REF);
-		rep.addProperty("personName", Representation.REF);
-		rep.addProperty("personAddress", Representation.REF);
-		rep.addProperty("activeIdentifiers", Representation.REF);
-		rep.addProperty("activeAttributes", Representation.REF);
-    	rep.addMethodProperty("uri", findMethod("getUri"));
-		return convertDelegateToRepresentation(patient, rep);
-	}
-	
-	/**
-	 * @return full representation of this resource 
-	 */
-	@RepHandler(FullRepresentation.class)
-	public SimpleObject asFullRep(Patient patient) throws Exception {
-		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
-		rep.addProperty("uuid");
-		rep.addProperty("gender");
-		rep.addProperty("age");
-		rep.addProperty("birthdate");
-		rep.addProperty("birthdateEstimated");
-		rep.addProperty("dead");
-		rep.addProperty("deathDate");
-		rep.addProperty("causeOfDeath");
-		rep.addProperty("personName");
-		rep.addProperty("personAddress");
-		rep.addProperty("names");
-		rep.addProperty("addresses");
-		rep.addProperty("identifiers");
-		rep.addProperty("attributes");
-		rep.addMethodProperty("auditInfo", findMethod("getAuditInfo"));
-		rep.addMethodProperty("uri", findMethod("getUri"));
-		return convertDelegateToRepresentation(patient, rep);
+	@Override
+	public DelegatingResourceRepresentation getRepresentationDescription(Representation rep) {
+	    if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			description.addProperty("uuid");
+			description.addProperty("gender");
+			description.addProperty("age");
+			description.addProperty("birthdate");
+			description.addProperty("birthdateEstimated");
+			description.addProperty("dead");
+			description.addProperty("deathDate");
+			description.addProperty("causeOfDeath", Representation.REF);
+			description.addProperty("personName", Representation.REF);
+			description.addProperty("personAddress", Representation.REF);
+			description.addProperty("activeIdentifiers", Representation.REF);
+			description.addProperty("activeAttributes", Representation.REF);
+	    	description.addMethodProperty("uri", findMethod("getUri"));
+	    	return description;
+	    } else if (rep instanceof FullRepresentation) {
+			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			description.addProperty("uuid");
+			description.addProperty("gender");
+			description.addProperty("age");
+			description.addProperty("birthdate");
+			description.addProperty("birthdateEstimated");
+			description.addProperty("dead");
+			description.addProperty("deathDate");
+			description.addProperty("causeOfDeath");
+			description.addProperty("personName");
+			description.addProperty("personAddress");
+			description.addProperty("names");
+			description.addProperty("addresses");
+			description.addProperty("identifiers");
+			description.addProperty("attributes");
+			description.addMethodProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addMethodProperty("uri", findMethod("getUri"));
+			return description;
+	    }
+	    return null;
 	}
 
 	/**

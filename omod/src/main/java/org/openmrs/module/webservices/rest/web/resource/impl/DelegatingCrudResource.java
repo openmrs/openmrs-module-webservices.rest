@@ -18,6 +18,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -51,6 +52,13 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
      * @return a new instance of the delegate class
      */
     protected abstract T newDelegate();
+    
+    /**
+     * Gets the {@link RepresentationDescription} for the given representation for this resource, if it exists
+     * @param rep
+     * @return
+     */
+    public abstract DelegatingResourceRepresentation getRepresentationDescription(Representation rep);
     
     /**
      * Implementations should override this method if they support sub-resources
@@ -183,17 +191,27 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	if (delegate == null)
    			throw new NullPointerException();
 
+    	// first look for a method annotated to handle this representation
     	Method meth = findAnnotatedMethodForRepresentation(representation);
-    	if (meth == null)
-    		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as " + representation, null);
-    	try {
-	    	if (meth.getParameterTypes().length == 1)
-				return meth.invoke(this, delegate);
-			else
-				return meth.invoke(this, delegate, representation);
-    	} catch (Exception ex) {
-    		throw new ConversionException(null, ex);
+    	if (meth != null) {
+        	try {
+        		// TODO verify that the method takes 1 or 2 parameters
+    	    	if (meth.getParameterTypes().length == 1)
+    				return meth.invoke(this, delegate);
+    			else
+    				return meth.invoke(this, delegate, representation);
+        	} catch (Exception ex) {
+        		throw new ConversionException(null, ex);
+        	}
     	}
+
+    	// otherwise call getRepresentationDescription()
+    	DelegatingResourceRepresentation repDescription = getRepresentationDescription(representation);
+    	if (repDescription != null) {
+    		return convertDelegateToRepresentation(delegate, repDescription);
+    	}
+    		
+    	throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as " + representation, null);
     }
 
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceRepresentation rep) throws ConversionException {
@@ -255,11 +273,11 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	return "someprefix://" + getUriFragment() + "/" + getPropertyIfExists(delegate, "uuid");
     }
     
-    protected Method findMethod(String name) throws ConversionException {
+    protected Method findMethod(String name) {
     	// TODO replace this with something that looks specifically for a method that takes a single T argument 
     	Method ret = ReflectionUtils.findMethod(getClass(), name, (Class<?>[]) null);
     	if (ret == null)
-    		throw new ConversionException("No method: " + name, null);
+    		throw new RuntimeException("No suitable method \"" + name + "\" in " + getClass());
     	return ret;
     }
 }
