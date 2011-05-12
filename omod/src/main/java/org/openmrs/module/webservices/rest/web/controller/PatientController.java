@@ -12,7 +12,6 @@ import org.openmrs.module.webservices.rest.web.propertyeditor.UuidEditor;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.response.SuccessfulDeletion;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -100,12 +99,15 @@ public class PatientController {
 	 * @should void a patient
 	 */
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "!purge")
-	public void voidPatient(@PathVariable("patientUuid") Patient patient,
+	@ResponseBody
+	public Object voidPatient(@PathVariable("patientUuid") Patient patient,
 	                        @RequestParam(value = "reason", defaultValue = "web service call") String reason,
-	                        WebRequest request) throws ResponseException {
+	                        WebRequest request,
+	                        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
 		resource.delete(reason, context);
+		return RestUtil.noContent(response);
 	}
 	
 	/**
@@ -115,11 +117,12 @@ public class PatientController {
 	 * @should fail to purge a patient with dependent data
 	 */
 	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "purge=true")
-	public void purgePatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
+	@ResponseBody
+	public Object purgePatient(@PathVariable("patientUuid") Patient patient, WebRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource(patient);
         resource.purge("uuid", context);
-        throw new SuccessfulDeletion();
+        return RestUtil.noContent(response);
 	}
 	
 	/**

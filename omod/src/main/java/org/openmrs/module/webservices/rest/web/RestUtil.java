@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
@@ -346,4 +348,16 @@ public class RestUtil {
 	    	response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
     }
+
+	/**
+	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
+	 * returning from a @ResponseBody annotated Spring controller method.
+	 * @param response
+	 * @return
+	 */
+	public static Object noContent(HttpServletResponse response) {
+	    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+	    return "";
+    }
+	
 }
