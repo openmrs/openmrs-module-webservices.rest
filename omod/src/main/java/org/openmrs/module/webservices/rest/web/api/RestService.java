@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.api;
 
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
 /**
  * Database related methods for the Rest Web Services
@@ -26,5 +27,13 @@ public interface RestService {
 	 * @return
 	 */
 	public Representation getRepresentation(String requested);
+	
+	/**
+	 * Gets an instance of a resource, possibly instantiating a new one, possibly re-using an existing one.
+	 * @param <T>
+	 * @param resourceClass
+	 * @return
+	 */
+	public <R extends Resource> R getResource(Class<R> resourceClass);
 	
 }

@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -20,11 +23,14 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
 /**
  * Default implementation of the {@link RestService}
  */
 public class RestServiceImpl implements RestService {
+	
+	private Map<Class<? extends Resource>, Resource> resourceSingletons = new HashMap<Class<? extends Resource>, Resource>();
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getRepresentation(java.lang.String)
@@ -48,4 +54,24 @@ public class RestServiceImpl implements RestService {
 	    }
 	    throw new APIException("Unknown representation: " + requested);
 	}
+
+	/**
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResource(java.lang.Class)
+	 */
+	@Override
+    public <R extends Resource> R getResource(Class<R> resourceClass) {
+	    Resource resource = resourceSingletons.get(resourceClass);
+	    if (resource == null) {
+	    	try {
+	    		resource = resourceClass.newInstance();
+	    	} catch (Exception ex) {
+	    		throw new APIException("Failed to instantiate " + resourceClass, ex);
+	    	}
+	    	resourceSingletons.put(resourceClass, resource);
+	    }
+	    return (R) resource;
+    }
+
 }
