@@ -18,26 +18,13 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports=OpenmrsMetadata.class)
 public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<OpenmrsMetadata> {
 	
-	public TempHackMetadataConverter() {
-		super(null);
-	}
-	
-	public TempHackMetadataConverter(OpenmrsMetadata metadata) {
-	    super(metadata);
-    }
-
 	@Override
-	public OpenmrsMetadata fromString(String string) {
+	public void purge(OpenmrsMetadata md, RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
 	}
 	
 	@Override
-	public void purge(RequestContext context) throws ResponseException {
-		throw new RuntimeException("Not Implemented");
-	}
-	
-	@Override
-	protected OpenmrsMetadata saveDelegate() {
+	protected OpenmrsMetadata save(OpenmrsMetadata md) {
 		throw new RuntimeException("Not Implemented");
 	}
 	
@@ -45,5 +32,10 @@ public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<Op
 	protected OpenmrsMetadata newDelegate() {
 		throw new RuntimeException("Not Implemented");
 	}
+
+	@Override
+    public OpenmrsMetadata getByUniqueId(String uniqueId) {
+		throw new RuntimeException("Not Implemented");
+    }
 	
 }

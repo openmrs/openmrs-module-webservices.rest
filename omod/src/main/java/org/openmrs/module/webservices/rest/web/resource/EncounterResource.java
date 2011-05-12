@@ -19,20 +19,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("encounter")
 @Handler(supports=Encounter.class, order=0)
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
-
-	public EncounterResource() {
-		super(null);
-	}
-	
-	public EncounterResource(Encounter delegate) {
-		super(delegate);
-	}
 	
 	/**
 	 * @return default representation of this resource 
 	 */
 	@RepHandler(DefaultRepresentation.class)
-	public SimpleObject asDefaultRep() throws Exception {
+	public SimpleObject asDefaultRep(Encounter enc) throws Exception {
 		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
 		rep.addProperty("uuid");
 		rep.addProperty("encounterDatetime");
@@ -42,55 +34,40 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		rep.addProperty("encounterType", new RefRepresentation());
 		rep.addProperty("provider", new RefRepresentation());
 		rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
-		return convertDelegateToRepresentation(rep);
+		return convertDelegateToRepresentation(enc, rep);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
-	 */
 	@Override
 	public Encounter newDelegate() {
 	    return new Encounter();
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#saveDelegate()
-	 */
 	@Override
-	public Encounter saveDelegate() {
-	    return Context.getEncounterService().saveEncounter(delegate);
+	public Encounter save(Encounter enc) {
+	    return Context.getEncounterService().saveEncounter(enc);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter#fromString(java.lang.String)
-	 */
 	@Override
-	public Encounter fromString(String uuid) {
+	public Encounter getByUniqueId(String uuid) {
 	    return Context.getEncounterService().getEncounterByUuid(uuid);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
 	@Override
-	public void delete(String reason, RequestContext context) throws ResponseException {
-		if (delegate.isVoided()) {
+	public void delete(Encounter enc, String reason, RequestContext context) throws ResponseException {
+		if (enc.isVoided()) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-	    Context.getEncounterService().voidEncounter(delegate, reason);
+	    Context.getEncounterService().voidEncounter(enc, reason);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.resource.DelegatingCrudResource#purge(RequestContext))
-	 */
 	@Override
-	public void purge(RequestContext context) throws ResponseException {
-		if (delegate == null) {
+	public void purge(Encounter enc, RequestContext context) throws ResponseException {
+		if (enc == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getEncounterService().purgeEncounter(delegate);
+		Context.getEncounterService().purgeEncounter(enc);
 	}
 
 }

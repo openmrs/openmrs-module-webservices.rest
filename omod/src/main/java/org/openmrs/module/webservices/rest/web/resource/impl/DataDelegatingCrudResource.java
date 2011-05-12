@@ -2,6 +2,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import org.openmrs.OpenmrsData;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -12,12 +13,8 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
  */
 public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends DelegatingCrudResource<T> {
 	
-	protected DataDelegatingCrudResource(T delegate) {
-		super(delegate);
-	}
-	
     @RepHandler(RefRepresentation.class)
-    public SimpleObject asRef(RefRepresentation rep) {
+    public SimpleObject asRef(T delegate) {
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.toString());
@@ -26,7 +23,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     }
     
     @RepHandler(DefaultRepresentation.class)
-    public SimpleObject asDefaultRep() throws Exception {
+    public SimpleObject asDefaultRep(T delegate) throws Exception {
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.toString());
@@ -34,9 +31,9 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	return ret;
     }
     
-    public SimpleObject getAuditInfo() throws Exception {
+    public SimpleObject getAuditInfo(T delegate) throws Exception {
     	SimpleObject ret = new SimpleObject();
-    	ret.put("creator", getPropertyWithRepresentation("creator", new RefRepresentation()));
+    	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", new RefRepresentation()));
     	ret.put("dateCreated", delegate.getDateCreated());
     	return ret;
     }

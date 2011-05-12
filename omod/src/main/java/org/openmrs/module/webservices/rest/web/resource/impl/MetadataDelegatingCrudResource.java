@@ -16,13 +16,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * @param <T>
  */
 public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> extends DelegatingCrudResource<T> {
-	
-    protected MetadataDelegatingCrudResource(T metadata) {
-	    super(metadata);
-    }
 
     @RepHandler(RefRepresentation.class)
-    public SimpleObject convertToRef(RefRepresentation rep) {
+    public SimpleObject convertToRef(T delegate) {
     	SimpleObject ret = new SimpleObject();
     	ret.put("uuid", delegate.getUuid());
     	ret.put("display", delegate.getName());
@@ -31,19 +27,19 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
     }
     
     @RepHandler(DefaultRepresentation.class)
-    public SimpleObject asDefaultRep() throws Exception {
+    public SimpleObject asDefaultRep(T delegate) throws Exception {
     	DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
-		return convertDelegateToRepresentation(rep);
+		return convertDelegateToRepresentation(delegate, rep);
     }
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-    public void delete(String reason, RequestContext context) throws ResponseException {
+    public void delete(T delegate, String reason, RequestContext context) throws ResponseException {
         if (delegate.isRetired()) {
         	// since DELETE should be idempotent, we return success here
         	return;
@@ -52,6 +48,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
         delegate.setRetiredBy(Context.getAuthenticatedUser());
         delegate.setDateRetired(new Date());
         delegate.setRetireReason(reason);
-        saveDelegate();
+        save(delegate);
     }
 }

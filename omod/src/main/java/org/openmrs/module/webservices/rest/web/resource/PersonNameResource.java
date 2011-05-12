@@ -19,54 +19,46 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports=PersonName.class, order=0)
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
-	public PersonNameResource() {
-	    super(null);
-    }
-
-	public PersonNameResource(PersonName name) {
-	    super(name);
-    }
-	
 	@RepHandler(DefaultRepresentation.class)
-	public SimpleObject asDefaultRep() throws Exception {
+	public SimpleObject asDefaultRep(PersonName pn) throws Exception {
 		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
 		rep.addProperty("givenName");
 		rep.addProperty("middleName");
 		rep.addProperty("familyName");
 		rep.addProperty("familyName2");
-		return convertDelegateToRepresentation(rep);
+		return convertDelegateToRepresentation(pn, rep);
 	}
 
 
 	@Override
-	public PersonName fromString(String uuid) {
+	public PersonName getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonNameByUuid(uuid);
 	}
 	
 	@Override
-	public void delete(String reason, RequestContext context) throws ResponseException {
+	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
 		// TODO Auto-generated function stub
 	}
 	
 	@Override
-	public void purge(RequestContext context) throws ResponseException {
+	public void purge(PersonName pn, RequestContext context) throws ResponseException {
 		// TODO Auto-generated function stub	
 	}
 	
 	@Override
-	protected PersonName saveDelegate() {
+	protected PersonName save(PersonName newName) {
 		// make sure that the name has actually been added to the person
 		boolean needToAdd = true;
-		for (PersonName pn : delegate.getPerson().getNames()) {
-			if (pn.equals(delegate)) {
+		for (PersonName pn : newName.getPerson().getNames()) {
+			if (pn.equals(newName)) {
 				needToAdd = false;
 				break;
 			}
 		}
 		if (needToAdd)
-			delegate.getPerson().addName(delegate);
-		Context.getPersonService().savePerson(delegate.getPerson());
-		return delegate;
+			newName.getPerson().addName(newName);
+		Context.getPersonService().savePerson(newName.getPerson());
+		return newName;
 	}
 	
 	@Override

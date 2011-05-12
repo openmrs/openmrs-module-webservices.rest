@@ -1,5 +1,8 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -21,20 +24,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("patient")
 @Handler(supports=Patient.class, order=0)
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
-		
-	public PatientResource() {
-		super(null);
-	}
-	
-	public PatientResource(Patient patient) {
-		super(patient);
-	}
 	
 	/**
 	 * @return default representation of this resource 
 	 */
 	@RepHandler(DefaultRepresentation.class)
-	public SimpleObject asDefaultRep() throws Exception {
+	public SimpleObject asDefaultRep(Patient patient) throws Exception {
 		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
 		rep.addProperty("uuid");
 		rep.addProperty("gender");
@@ -43,19 +38,19 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		rep.addProperty("birthdateEstimated");
 		rep.addProperty("dead");
 		rep.addProperty("deathDate");
-		rep.addProperty("causeOfDeath");
+		rep.addProperty("causeOfDeath", Representation.REF);
 		rep.addProperty("personName", Representation.REF);
 		rep.addProperty("personAddress", Representation.REF);
 		rep.addProperty("activeIdentifiers", Representation.REF);
 		rep.addProperty("activeAttributes", Representation.REF);
-		return convertDelegateToRepresentation(rep);
+		return convertDelegateToRepresentation(patient, rep);
 	}
 	
 	/**
 	 * @return full representation of this resource 
 	 */
 	@RepHandler(FullRepresentation.class)
-	public SimpleObject asFullRep() throws Exception {
+	public SimpleObject asFullRep(Patient patient) throws Exception {
 		DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
 		rep.addProperty("uuid");
 		rep.addProperty("gender");
@@ -65,14 +60,14 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		rep.addProperty("dead");
 		rep.addProperty("deathDate");
 		rep.addProperty("causeOfDeath");
-		rep.addProperty("personName", Representation.DEFAULT);
-		rep.addProperty("personAddress", Representation.DEFAULT);
-		rep.addProperty("names", Representation.DEFAULT);
-		rep.addProperty("addresses", Representation.DEFAULT);
-		rep.addProperty("identifiers", Representation.DEFAULT);
-		rep.addProperty("attributes", Representation.DEFAULT);
+		rep.addProperty("personName");
+		rep.addProperty("personAddress");
+		rep.addProperty("names");
+		rep.addProperty("addresses");
+		rep.addProperty("identifiers");
+		rep.addProperty("attributes");
 		rep.addMethodProperty("auditInfo", getClass().getMethod("getAuditInfo"));
-		return convertDelegateToRepresentation(rep);
+		return convertDelegateToRepresentation(patient, rep);
 	}
 
 	/**
@@ -84,56 +79,53 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
     }
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#saveDelegate()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-    public Patient saveDelegate() {
-	    return Context.getPatientService().savePatient(delegate);
+    public Patient save(Patient patient) {
+	    return Context.getPatientService().savePatient(patient);
     }
 
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter#fromString(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public Patient fromString(String uuid) {
+	public Patient getByUniqueId(String uuid) {
 	    return Context.getPatientService().getPatientByUuid(uuid);
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(String reason, RequestContext context) throws ResponseException {
-		if (delegate.isVoided()) {
+	public void delete(Patient patient, String reason, RequestContext context) throws ResponseException {
+		if (patient.isVoided()) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-	    Context.getPatientService().voidPatient(delegate, reason);
+	    Context.getPatientService().voidPatient(patient, reason);
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(RequestContext context) throws ResponseException {
-		if (delegate == null) {
+	public void purge(Patient patient, RequestContext context) throws ResponseException {
+		if (patient == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getPatientService().purgePatient(delegate);
+		Context.getPatientService().purgePatient(patient);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
+	 */
+	@Override
+	protected List<String> propertiesToExposeAsSubResources() {
+	    return Arrays.asList("names");
 	}
 
-	/**
-	 * Lists current values for a given subresource
-	 * @param subResourceName
-	 * @param context
-	 * @return
-	 * @throws Exception
-	 */
-	public Object listSubResource(String subResourceName, RequestContext context) throws ResponseException {
-		return getPropertyWithRepresentation(subResourceName, context.getRepresentation());
-    }
-	
 	/**
 	 * Adds a new PersonName to the "names" subresource
 	 * @param post
@@ -141,9 +133,9 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @return
 	 * @throws Exception
 	 */
-	public PersonNameResource createPersonName(SimpleObject post, RequestContext context) throws ResponseException {
-		post.put("person", delegate);
-		return (PersonNameResource) new PersonNameResource().create(post, context);
+	public Object createPersonName(String uuid, SimpleObject post, RequestContext context) throws ResponseException {
+		post.put("person", getByUniqueId(uuid));
+		return new PersonNameResource().create(post, context);
 	}
 	
 }

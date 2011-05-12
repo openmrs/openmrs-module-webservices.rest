@@ -32,17 +32,6 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping(value = "/rest/patient")
 public class PatientController {
 	
-	@InitBinder
-	public void initBinder(WebDataBinder wdb) throws Exception {
-		wdb.registerCustomEditor(Patient.class, new UuidEditor(PatientService.class, "getPatientByUuid"));
-	}
-	
-	@ExceptionHandler(RuntimeWrappedException.class)
-	public String handleWrappedExceptions(RuntimeWrappedException ex, HttpServletResponse response) {
-		RestUtil.setResponseStatus(ex.getCause(), response);
-		return "error"; // TODO get the correct view name
-	}
-	
 	/**
 	 * @param patient
 	 * @param request
@@ -50,12 +39,12 @@ public class PatientController {
 	 * @throws Exception
 	 * @should get a representation of a patient
 	 */
-	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getPatient(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
+	public Object getPatient(@PathVariable("uuid") String uuid, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource resource = new PatientResource(patient);
-		return resource.retrieve(context);
+		PatientResource resource = new PatientResource();
+		return resource.retrieve(uuid, context);
 	}
 	
 	/**
@@ -70,7 +59,7 @@ public class PatientController {
 	public Object createPatient(@RequestBody SimpleObject post, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = new PatientResource();
-		return resource.create(post, context).asRepresentation(Representation.DEFAULT);
+		return resource.create(post, context);
 	}
 	
 	/**
@@ -81,14 +70,14 @@ public class PatientController {
 	 * @throws Exception
 	 * @should change a property on a patient
 	 */
-	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public Object updatePatient(@PathVariable("patientUuid") Patient patient, @RequestBody SimpleObject post,
+	public Object updatePatient(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post,
 	                            WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource resource = new PatientResource(patient);
-		resource.update(post, context);
-		return resource.retrieve(context);
+		PatientResource resource = new PatientResource();
+		resource.update(uuid, post, context);
+		return resource.retrieve(uuid, context); // <-- TODO think about this line
 	}
 	
 	/**
@@ -98,15 +87,15 @@ public class PatientController {
 	 * @throws Exception
 	 * @should void a patient
 	 */
-	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "!purge")
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
-	public Object voidPatient(@PathVariable("patientUuid") Patient patient,
+	public Object voidPatient(@PathVariable("uuid") String uuid,
 	                        @RequestParam(value = "reason", defaultValue = "web service call") String reason,
 	                        WebRequest request,
 	                        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource resource = new PatientResource(patient);
-		resource.delete(reason, context);
+		PatientResource resource = new PatientResource();
+		resource.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -116,36 +105,36 @@ public class PatientController {
 	 * @throws Exception
 	 * @should fail to purge a patient with dependent data
 	 */
-	@RequestMapping(value = "/{patientUuid}", method = RequestMethod.DELETE, params = "purge=true")
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge=true")
 	@ResponseBody
-	public Object purgePatient(@PathVariable("patientUuid") Patient patient, WebRequest request, HttpServletResponse response) throws ResponseException {
+	public Object purgePatient(@PathVariable("uuid") String uuid, WebRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource resource = new PatientResource(patient);
-        resource.purge("uuid", context);
+		PatientResource resource = new PatientResource();
+        resource.purge(uuid, context);
         return RestUtil.noContent(response);
 	}
 	
 	/**
 	 * @should return a list of names
 	 */
-	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.GET)
+	@RequestMapping(value = "/{uuid}/names", method = RequestMethod.GET)
 	@ResponseBody
-	public Object getNames(@PathVariable("patientUuid") Patient patient, WebRequest request) throws ResponseException {
+	public Object getNames(@PathVariable("uuid") String uuid, WebRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource patientResource = new PatientResource(patient);
-		return patientResource.getPropertyWithRepresentation("names", context.getRepresentation());
+		PatientResource patientResource = new PatientResource();
+		return patientResource.listSubResource(uuid, "names", context.getRepresentation());
 	}
 	
 	/**
 	 * @should add a name
 	 */
-	@RequestMapping(value = "/{patientUuid}/names", method = RequestMethod.POST)
+	@RequestMapping(value = "/{uuid}/names", method = RequestMethod.POST)
 	@ResponseBody
-	public Object addName(@RequestBody SimpleObject post, @PathVariable("patientUuid") Patient patient, WebRequest request)
+	public Object addName(@RequestBody SimpleObject post, @PathVariable("uuid") String uuid, WebRequest request)
 	                                                                                                                       throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		PatientResource patientResource = new PatientResource(patient);
-		return patientResource.createPersonName(post, context).asRepresentation(Representation.DEFAULT);
+		PatientResource patientResource = new PatientResource();
+		return patientResource.createPersonName(uuid, post, context);
 	}
 	
 }
