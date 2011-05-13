@@ -58,7 +58,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
      * @param rep
      * @return
      */
-    public abstract DelegatingResourceRepresentation getRepresentationDescription(Representation rep);
+    public abstract DelegatingResourceDescription getRepresentationDescription(Representation rep);
     
     /**
      * Implementations should override this method if they support sub-resources
@@ -206,7 +206,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	}
 
     	// otherwise call getRepresentationDescription()
-    	DelegatingResourceRepresentation repDescription = getRepresentationDescription(representation);
+    	DelegatingResourceDescription repDescription = getRepresentationDescription(representation);
     	if (repDescription != null) {
     		return convertDelegateToRepresentation(delegate, repDescription);
     	}
@@ -214,7 +214,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as " + representation, null);
     }
 
-	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceRepresentation rep) throws ConversionException {
+	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep) throws ConversionException {
     	if (delegate == null)
    			throw new NullPointerException();
     	SimpleObject ret = new SimpleObject();

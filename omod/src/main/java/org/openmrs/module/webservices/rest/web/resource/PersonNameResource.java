@@ -8,7 +8,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceRepresentation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -19,9 +19,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
 	@Override
-	public DelegatingResourceRepresentation getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("givenName");
 			description.addProperty("middleName");
 			description.addProperty("familyName");

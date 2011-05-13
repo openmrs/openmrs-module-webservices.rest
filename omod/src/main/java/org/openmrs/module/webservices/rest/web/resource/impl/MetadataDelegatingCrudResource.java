@@ -28,7 +28,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
     
     @RepHandler(DefaultRepresentation.class)
     public SimpleObject asDefaultRep(T delegate) throws Exception {
-    	DelegatingResourceRepresentation rep = new DelegatingResourceRepresentation();
+    	DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");

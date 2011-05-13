@@ -11,7 +11,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescri
  * Used by implementations of {@link DelegatingCrudResource} to indicate what delegate properties, and what
  * methods they want to include in a particular representation 
  */
-public class DelegatingResourceRepresentation implements RepresentationDescription {
+public class DelegatingResourceDescription implements RepresentationDescription {
 	
 	Map<String, Representation> properties = new LinkedHashMap<String, Representation>();
 	Map<String, Method> methodProperties = new LinkedHashMap<String, Method>();

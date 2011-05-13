@@ -13,7 +13,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceRepresentation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -28,9 +28,9 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceRepresentation getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 	    if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
 			description.addProperty("age");
@@ -46,7 +46,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	    	description.addMethodProperty("uri", findMethod("getUri"));
 	    	return description;
 	    } else if (rep instanceof FullRepresentation) {
-			DelegatingResourceRepresentation description = new DelegatingResourceRepresentation();
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
 			description.addProperty("age");
