@@ -4,8 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -17,7 +15,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -54,23 +51,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		log("Existing names", names);
 		Assert.assertNotNull(names);
 	}
-	
-	/**
-	 * @see PatientController#addName(SimpleObject,Patient)
-	 * @verifies add a name
-	 */
-	@Test
-	public void addName_shouldAddAName() throws Exception {
-		Patient p = Context.getPatientService().getPatient(2);
-		int before = p.getNames().size();
-		SimpleObject post = new ObjectMapper().readValue("{\"givenName\":\"Darius\", \"familyName\":\"Programmer\"}",
-		    SimpleObject.class);
-		Object newName = new PatientController().addName(post, "da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
-		log("Added name", newName);
-		Assert.assertNotNull(newName);
-		Assert.assertEquals(before + 1, Context.getPatientService().getPatient(2).getNames().size());
-	}
-	
+		
 	/**
 	 * THIS DOES NOT WORK YET. NEED TO SEE HOW TO CREATE PATIENT WITH NAMES, ETC
 	 * 
@@ -97,6 +78,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 		log("Patient fetched (default)", result);
 	}
 	

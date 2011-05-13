@@ -14,10 +14,15 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@Resource("personName")
+@Resource("person/{uuid}/personName")
 @Handler(supports=PersonName.class, order=0)
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
+	@Override
+	public String getUri(PersonName pn) {
+		return "someprefix://person/" + pn.getPerson().getUuid() + "/names/" + pn.getUuid();
+	}
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {

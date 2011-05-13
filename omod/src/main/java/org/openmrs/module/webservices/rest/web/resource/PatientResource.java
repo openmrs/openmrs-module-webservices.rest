@@ -123,17 +123,5 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	protected List<String> propertiesToExposeAsSubResources() {
 	    return Arrays.asList("names");
 	}
-
-	/**
-	 * Adds a new PersonName to the "names" subresource
-	 * @param post
-	 * @param context
-	 * @return
-	 * @throws Exception
-	 */
-	public Object createPersonName(String uuid, SimpleObject post, RequestContext context) throws ResponseException {
-		post.put("person", getByUniqueId(uuid));
-		return new PersonNameResource().create(post, context);
-	}
 	
 }

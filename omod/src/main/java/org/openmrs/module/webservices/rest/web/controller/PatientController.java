@@ -120,15 +120,4 @@ public class PatientController {
 		return getPatientResource().listSubResource(uuid, "names", context.getRepresentation());
 	}
 	
-	/**
-	 * @should add a name
-	 */
-	@RequestMapping(value = "/{uuid}/names", method = RequestMethod.POST)
-	@ResponseBody
-	public Object addName(@RequestBody SimpleObject post, @PathVariable("uuid") String uuid, WebRequest request)
-	                                                                                                                       throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		return getPatientResource().createPersonName(uuid, post, context);
-	}
-	
 }
