@@ -107,10 +107,11 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
     @Test
     public void getPatient_shouldGetAFullRepresentationOfAPatient() throws Exception {
     	MockHttpServletRequest req = new MockHttpServletRequest();
-    	req.addHeader("Accept-Type", RestConstants.REPRESENTATION_FULL);
+    	req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
     	Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		log("Patient fetched (full)", result);
     }
 	

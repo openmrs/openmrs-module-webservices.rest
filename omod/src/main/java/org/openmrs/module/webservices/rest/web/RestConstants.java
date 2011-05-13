@@ -41,14 +41,13 @@ public class RestConstants {
 	 */
 	public static String URL_PREFIX = "/ws/rest/";
 	
+	public static String REQUEST_PROPERTY_FOR_REPRESENTATION = "v";
+	
 	// a ref is just a uuid/uri/display value
 	public static String REPRESENTATION_REF = "ref";
 	
 	// the properties returned on an resource if no special rep is requested
 	public static String REPRESENTATION_DEFAULT = "default";
-	
-	// more properties than default, but not all of them
-	public static String REPRESENTATION_MEDIUM = "medium";
 	
 	// all properties on the resource are returned
 	public static String REPRESENTATION_FULL = "full";

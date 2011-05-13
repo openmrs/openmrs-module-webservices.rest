@@ -21,7 +21,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
@@ -40,14 +39,12 @@ public class RestServiceImpl implements RestService {
 	    if (StringUtils.isEmpty(requested)) {
 	    	return Representation.DEFAULT;
 	    } else {
-	    	if (RestConstants.REPRESENTATION_REF.equalsIgnoreCase(requested)) {
+	    	if (RestConstants.REPRESENTATION_REF.equals(requested)) {
 				return Representation.REF;
-	    	} else if (RestConstants.REPRESENTATION_DEFAULT.equalsIgnoreCase(requested)) {
+	    	} else if (RestConstants.REPRESENTATION_DEFAULT.equals(requested)) {
 				return Representation.DEFAULT;
-			} else if (RestConstants.REPRESENTATION_FULL.equalsIgnoreCase(requested)) {
+			} else if (RestConstants.REPRESENTATION_FULL.equals(requested)) {
 				return Representation.FULL;
-			} else if (RestConstants.REPRESENTATION_MEDIUM.equalsIgnoreCase(requested)) {
-				return new NamedRepresentation(RestConstants.REPRESENTATION_MEDIUM);
 			} else if (requested.startsWith(RestConstants.REPRESENTATION_CUSTOM_PREFIX)) {
 				return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
 			}

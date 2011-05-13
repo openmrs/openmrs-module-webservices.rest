@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
@@ -323,9 +324,14 @@ public class RestUtil {
 	 */
 	public static RequestContext getRequestContext(WebRequest request) {
 	    RequestContext ret = new RequestContext();
-	    String temp = request.getHeader("Accept-Type");
-	    if (StringUtils.isNotEmpty(temp))
+	    String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
+	    if (StringUtils.isEmpty(temp)) {
+	    	ret.setRepresentation(Representation.DEFAULT);
+	    } else if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
+	    	throw new IllegalArgumentException("Do not specify ?v=default");
+	    } else {
 	    	ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
+	    }
 	    return ret;
     }
 
