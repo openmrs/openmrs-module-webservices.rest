@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +22,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
