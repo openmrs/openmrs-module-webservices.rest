@@ -5,6 +5,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
@@ -14,15 +15,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@Resource("person/{uuid}/personName")
+@SubResource(parent=PersonResource.class, path="names", parentProperty="person")
 @Handler(supports=PersonName.class, order=0)
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 
-	@Override
-	public String getUri(PersonName pn) {
-		return "someprefix://person/" + pn.getPerson().getUuid() + "/names/" + pn.getUuid();
-	}
-	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {

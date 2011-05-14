@@ -1,6 +1,5 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +8,14 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
@@ -264,16 +266,49 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     		throw new RuntimeException(Resource.class.getSimpleName() + " annotation on " + getClass() + " must specify a value");
     	return ann.value();
     }
-    
+       
     /**
      * @param delegate
      * @return the URI for the given delegate object
      */
-    public String getUri(T delegate) {
-    	return "someprefix://" + getUriFragment() + "/" + getPropertyIfExists(delegate, "uuid");
+    @SuppressWarnings("unchecked")
+    public String getUri(Object delegate) {
+    	SubResource sub = getClass().getAnnotation(SubResource.class);
+    	if (sub != null) {
+    		return getSubResourceUri(sub, (T) delegate);
+    	}
+    	Resource res = getClass().getAnnotation(Resource.class);
+    	if (res != null) {
+    		return getResourceUri(res, (T) delegate);
+    	}
+    	throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
+    	
     }
     
-    protected Method findMethod(String name) {
+	private String getResourceUri(Resource res, T delegate) {
+		return "someprefix://" + res.value() + "/" + getUniqueId(delegate);
+    }
+	
+    private String getSubResourceUri(SubResource sub, T delegate) {
+    	try {
+		    org.openmrs.module.webservices.rest.web.resource.api.Resource parentResource = Context.getService(RestService.class).getResource(sub.parent());
+		    Object parentInstance = PropertyUtils.getProperty(delegate, sub.parentProperty());
+		    String parentUri = parentResource.getUri(parentInstance);
+		    return parentUri + "/" + sub.path() + "/" + getUniqueId(delegate);
+    	} catch (Exception ex) {
+    		throw new RuntimeException("Failed to get URI from sub-resource " + delegate + " with annotation " + sub);
+    	}
+    }
+
+	protected String getUniqueId(T delegate) {
+	    try {
+	    	return (String) PropertyUtils.getProperty(delegate, "uuid");
+	    } catch (Exception ex) {
+	    	throw new RuntimeException("Cannot find String uuid property on " + delegate.getClass(), null);
+	    }
+    }
+
+	protected Method findMethod(String name) {
     	// TODO replace this with something that looks specifically for a method that takes a single T argument 
     	Method ret = ReflectionUtils.findMethod(getClass(), name, (Class<?>[]) null);
     	if (ret == null)

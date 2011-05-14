@@ -2,6 +2,7 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -47,9 +48,12 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getNames_shouldReturnAListOfNames() throws Exception {
-		Object names = new PatientController().getNames("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
+		Collection<?> names = (Collection) new PatientController().getNames("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
 		log("Existing names", names);
 		Assert.assertNotNull(names);
+		Assert.assertEquals(1, names.size());
+		String uri = (String) PropertyUtils.getProperty(names.iterator().next(), "uri");
+		Assert.assertTrue(uri.contains("person/da7f524f-27ce-4bb2-86d6-6d1d05312bd5/names/399e3a7b-6482-487d-94ce-c07bb3ca3cc7"));
 	}
 		
 	/**
