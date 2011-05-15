@@ -30,7 +30,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("form", new RefRepresentation());
 			description.addProperty("encounterType", new RefRepresentation());
 			description.addProperty("provider", new RefRepresentation());
-			description.addMethodProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 	    }
 	    return null;

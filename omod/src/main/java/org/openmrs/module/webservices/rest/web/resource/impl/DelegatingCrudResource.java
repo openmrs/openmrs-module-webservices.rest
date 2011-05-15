@@ -1,9 +1,12 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -12,28 +15,37 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
-import org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped object
  * @param <T> the class we're delegating to
  */
-public abstract class DelegatingCrudResource<T> implements CrudResource, DelegateConverter<T> {
+public abstract class DelegatingCrudResource<T> implements CrudResource, Converter<T> {
 	
 	protected final Log log = LogFactory.getLog(getClass());
+	
+	/**
+	 * Implementations should define mappings for properties that they want to expose with other names.
+	 * (Map from the exposed property name to the actual property name.)  
+	 */
+	protected Map<String, String> remappedProperties = new HashMap<String, String>();
 
 	/**
 	 * Gets the delegate object with the given unique id. Implementations may decide whether "unique id" means
@@ -193,7 +205,13 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	if (delegate == null)
    			throw new NullPointerException();
 
-    	// first look for a method annotated to handle this representation
+    	// first call getRepresentationDescription()
+    	DelegatingResourceDescription repDescription = getRepresentationDescription(representation);
+    	if (repDescription != null) {
+    		return convertDelegateToRepresentation(delegate, repDescription);
+    	}
+    	
+    	// otherwise look for a method annotated to handle this representation
     	Method meth = findAnnotatedMethodForRepresentation(representation);
     	if (meth != null) {
         	try {
@@ -206,13 +224,7 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
         		throw new ConversionException(null, ex);
         	}
     	}
-
-    	// otherwise call getRepresentationDescription()
-    	DelegatingResourceDescription repDescription = getRepresentationDescription(representation);
-    	if (repDescription != null) {
-    		return convertDelegateToRepresentation(delegate, repDescription);
-    	}
-    		
+    	
     	throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as " + representation, null);
     }
 
@@ -220,15 +232,8 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     	if (delegate == null)
    			throw new NullPointerException();
     	SimpleObject ret = new SimpleObject();
-    	for (Map.Entry<String, Representation> e : rep.getProperties().entrySet())
-    		ret.put(e.getKey(), ConversionUtil.getPropertyWithRepresentation(delegate, e.getKey(), e.getValue()));
-    	for (Map.Entry<String, Method> e : rep.getMethodProperties().entrySet()) {
-    		try {
-	            ret.put(e.getKey(), e.getValue().invoke(this, delegate));
-            }
-            catch (Exception ex) {
-	            throw new ConversionException("method " + e.getValue(), ex);
-            }
+    	for (Entry<String, Property> e : rep.getProperties().entrySet()) {
+    		ret.put(e.getKey(), e.getValue().evaluate(this, delegate));
     	}
     	return ret;
     }
@@ -315,4 +320,50 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Delegat
     		throw new RuntimeException("No suitable method \"" + name + "\" in " + getClass());
     	return ret;
     }
+	
+	public Object getProperty(T instance, String propertyName) throws ConversionException {
+		try {
+			String override = remappedProperties.get(propertyName);
+			if (override != null)
+				propertyName = override;
+			return PropertyUtils.getProperty(instance, propertyName);
+		} catch (Exception ex) {
+			throw new ConversionException(propertyName, ex);
+		}
+	}
+	
+	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {
+		try {
+			// first, try to find a @PropertySetter-annotated method
+			Method annotatedSetter = findSetterMethod(propertyName);
+			if (annotatedSetter != null) {
+				Class<?> expectedType = annotatedSetter.getParameterTypes()[1];
+				if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+					value = ConversionUtil.convert(value, expectedType);
+				annotatedSetter.invoke(null, instance, value);
+				return;
+			}
+			
+			// next use standard bean methods
+			String override = remappedProperties.get(propertyName);
+			if (override != null)
+				propertyName = override;
+			Class<?> expectedType = PropertyUtils.getPropertyType(instance, propertyName);
+			if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+				value = ConversionUtil.convert(value, expectedType);
+			PropertyUtils.setProperty(instance, propertyName, value);
+		} catch (Exception ex) {
+			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
+		}
+	}
+
+	private Method findSetterMethod(String propName) {
+	    for (Method candidate : getClass().getMethods()) {
+	    	PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
+	    	if (ann != null && ann.value().equals(propName))
+	    		return candidate;
+	    }
+	    return null;
+    }
+	
 }

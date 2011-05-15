@@ -11,6 +11,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -62,12 +63,11 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @see PatientController#createPatient(SimpleObject,WebRequest)
 	 * @verifies create a new patient
 	 */
-	@Ignore
 	@Test
 	public void createPatient_shouldCreateANewPatient() throws Exception {
 		int before = Context.getPatientService().getAllPatients().size();
-		SimpleObject post = new ObjectMapper().readValue("{\"givenName\":\"Darius\", \"familyName\":\"Programmer\"}",
-		    SimpleObject.class);
+		String json = "{ \"preferredIdentifier\":{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, \"preferredName\":{ \"givenName\":\"Darius\", \"familyName\":\"Programmer\" }, \"birthdate\":\"1978-01-15\", \"gender\":\"M\" }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newPatient = new PatientController().createPatient(post, emptyRequest());
 		log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
@@ -81,9 +81,10 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getPatient_shouldGetADefaultRepresentationOfAPatient() throws Exception {
 		Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
 		Assert.assertNotNull(result);
-		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 		log("Patient fetched (default)", result);
+		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "preferredName"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
@@ -130,6 +131,20 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
+	
+	/**
+	 * DOES NOT WORK YET BECAUSE WE DON'T HAVE A CONVERTER FOR CONCEPTS
+     * @see PatientController#updatePatient(String,SimpleObject,WebRequest)
+     * @verifies change a complex property on a patient
+     */
+    @Test
+    @Ignore
+    public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
+		SimpleObject post = new ObjectMapper().readValue("{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
+		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest());
+		log("Set patient as dead", editedPatient);
+		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPatient, "causeOfDeath"));
+    }
 	
 	/**
 	 * @see PatientController#voidPatient(Patient,String,WebRequest)

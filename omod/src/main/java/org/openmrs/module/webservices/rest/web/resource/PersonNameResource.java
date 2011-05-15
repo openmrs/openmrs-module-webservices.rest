@@ -27,7 +27,7 @@ public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 			description.addProperty("middleName");
 			description.addProperty("familyName");
 			description.addProperty("familyName2");
-			description.addMethodProperty("uri", findMethod("getUri"));
+			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		}
 	    return null;

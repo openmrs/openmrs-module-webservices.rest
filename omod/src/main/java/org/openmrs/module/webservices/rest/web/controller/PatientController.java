@@ -67,6 +67,7 @@ public class PatientController {
 	 * @return
 	 * @throws Exception
 	 * @should change a property on a patient
+	 * @should change a complex property on a patient
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody

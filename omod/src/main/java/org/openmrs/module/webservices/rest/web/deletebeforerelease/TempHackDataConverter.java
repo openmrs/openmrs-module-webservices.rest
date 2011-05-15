@@ -5,7 +5,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -13,7 +13,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * This class is a temporary hack, to be removed before the first release of the module. It allows
  * the framework to generate resource representations that refer to metadata properties that don't
- * have their own {@link DelegateConverter} defined yet without getting the 'Conflicting getter
+ * have their own {@link Converter} defined yet without getting the 'Conflicting getter
  * definitions for property "voided"' you would otherwise get from Jackson JSON.
  */
 @Resource("temp hack")
@@ -47,7 +47,7 @@ public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsDat
 
 	@Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		throw new RuntimeException("Not Implemented");
+		return null;
     }
 	
 }

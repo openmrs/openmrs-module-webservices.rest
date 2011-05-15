@@ -32,7 +32,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
-		rep.addMethodProperty("uri", getClass().getMethod("getUri"));
+		rep.addProperty("uri", getClass().getMethod("getUri"));
 		return convertDelegateToRepresentation(delegate, rep);
     }
 

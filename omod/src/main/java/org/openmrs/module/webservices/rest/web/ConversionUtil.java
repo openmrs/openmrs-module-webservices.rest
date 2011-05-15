@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.DelegateConverter;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
 
@@ -40,23 +40,39 @@ public class ConversionUtil {
 	 * @param value
 	 * @throws ConversionException 
 	 */
-	public static void setConvertedProperty(Object bean, String property, Object value) throws ConversionException {
+	public static <T> void setConvertedProperty(T bean, String property, Object value) throws ConversionException {
 		try {
-		    log.trace("applying " + property + " which is a " + value.getClass() + " = " + value);
-		    PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, property);
-		    log.trace("property exists and is a: " + pd.getPropertyType());
-		    if (value == null || pd.getPropertyType().isAssignableFrom(value.getClass())) {
-		    	log.trace("compatible type, so setting directly");
-		    	pd.getWriteMethod().invoke(bean, value);
-		    } else {
-		    	log.trace("need to convert " + value.getClass() + " to " + pd.getPropertyType());
-		    	Object converted = convert(value, pd.getPropertyType());
-		    	pd.getWriteMethod().invoke(bean, converted);
-		    }
+			// first see if we have a Converter for the given object
+			Converter<T> converter = (Converter<T>) getConverter(bean.getClass());
+			if (converter != null) {
+				converter.setProperty(bean, property, value);
+			}
+			else {  
+				// otherwise we try the regular method
+			    log.trace("applying " + property + " which is a " + value.getClass() + " = " + value);
+			    PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, property);
+			    log.trace("property exists and is a: " + pd.getPropertyType());
+			    if (value == null || pd.getPropertyType().isAssignableFrom(value.getClass())) {
+			    	log.trace("compatible type, so setting directly");
+			    	pd.getWriteMethod().invoke(bean, value);
+			    } else {
+			    	log.trace("need to convert " + value.getClass() + " to " + pd.getPropertyType());
+			    	Object converted = convert(value, pd.getPropertyType());
+			    	pd.getWriteMethod().invoke(bean, converted);
+			    }
+			}
 		} catch (Exception ex) {
 			throw new ConversionException("setting " + property + " on " + bean.getClass(), ex);
 		}
     }
+	
+	public static <T> Converter<T> getConverter(Class<T> clazz) {
+		try {
+			return HandlerUtil.getPreferredHandler(Converter.class, clazz);
+		} catch (APIException ex) {
+			return null;
+		}
+	}
 
 	/**
 	 * Converts the given object to the given type
@@ -66,15 +82,13 @@ public class ConversionUtil {
 	 * @throws ConversionException 
 	 */
 	public static Object convert(Object object, Class<?> toType) throws ConversionException {
+		if (object == null || toType.isAssignableFrom(object.getClass()))
+			return object;
 		if (object instanceof String) {
 			String string = (String) object;
-			DelegateConverter<?> converter = null;
-			try {
-				converter = HandlerUtil.getPreferredHandler(DelegateConverter.class, toType);
+			Converter<?> converter = getConverter(toType);
+			if (converter != null)
 				return converter.getByUniqueId(string);
-			} catch (APIException ex) {
-				// it's okay if there's no registered handler
-			}
 
 			if (toType.isAssignableFrom(Date.class)) {
 				try {
@@ -86,6 +100,22 @@ public class ConversionUtil {
 						throw new ConversionException("converting date", ex);
 					}
 				}
+			}
+		}
+		else if (object instanceof Map) {
+			try {
+				Object ret = toType.newInstance();
+				@SuppressWarnings("unchecked")
+                Map<String, ?> map = (Map<String, ?>) object;
+				for (Map.Entry<String, ?> e : map.entrySet()) {
+					String property = e.getKey();
+					Class<?> expectedType = PropertyUtils.getPropertyType(ret, property);
+					Object value = convert(e.getValue(), expectedType);
+					PropertyUtils.setProperty(ret, property, value);				
+				}
+				return ret;
+			} catch (Exception ex) {
+				throw new ConversionException("converting Map to " + toType.getClass(), ex);
 			}
 		}
 	    throw new ConversionException("Don't know how to convert from " + object.getClass() + " to " + toType, null);
@@ -120,9 +150,9 @@ public class ConversionUtil {
     public static <S> Object convertToRepresentation(S o, Representation rep) throws ConversionException {
 		if (o == null)
 			return null;
-		DelegateConverter<S> converter = null;
+		Converter<S> converter = null;
 		try {
-			converter = HandlerUtil.getPreferredHandler(DelegateConverter.class, o.getClass());
+			converter = HandlerUtil.getPreferredHandler(Converter.class, o.getClass());
 		} catch (APIException ex) {
 			// try a few known datatypes
 			if (o instanceof Date) {
