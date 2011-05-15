@@ -111,14 +111,4 @@ public class PatientController {
         return RestUtil.noContent(response);
 	}
 	
-	/**
-	 * @should return a list of names
-	 */
-	@RequestMapping(value = "/{uuid}/names", method = RequestMethod.GET)
-	@ResponseBody
-	public Object getNames(@PathVariable("uuid") String uuid, WebRequest request) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		return getPatientResource().listSubResource(uuid, "names", context.getRepresentation());
-	}
-	
 }

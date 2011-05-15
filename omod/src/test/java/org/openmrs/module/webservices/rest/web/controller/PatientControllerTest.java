@@ -42,24 +42,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	private WebRequest emptyRequest() {
 		return new ServletWebRequest(new MockHttpServletRequest());
 	}
-	
+			
 	/**
-	 * @see PatientController#getNames(Patient,WebRequest)
-	 * @verifies return a list of names
-	 */
-	@Test
-	public void getNames_shouldReturnAListOfNames() throws Exception {
-		Collection<?> names = (Collection) new PatientController().getNames("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
-		log("Existing names", names);
-		Assert.assertNotNull(names);
-		Assert.assertEquals(1, names.size());
-		String uri = (String) PropertyUtils.getProperty(names.iterator().next(), "uri");
-		Assert.assertTrue(uri.contains("person/da7f524f-27ce-4bb2-86d6-6d1d05312bd5/names/399e3a7b-6482-487d-94ce-c07bb3ca3cc7"));
-	}
-		
-	/**
-	 * THIS DOES NOT WORK YET. NEED TO SEE HOW TO CREATE PATIENT WITH NAMES, ETC
-	 * 
 	 * @see PatientController#createPatient(SimpleObject,WebRequest)
 	 * @verifies create a new patient
 	 */
@@ -68,6 +52,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		int before = Context.getPatientService().getAllPatients().size();
 		String json = "{ \"preferredIdentifier\":{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, \"preferredName\":{ \"givenName\":\"Darius\", \"familyName\":\"Programmer\" }, \"birthdate\":\"1978-01-15\", \"gender\":\"M\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		log(">>>>>>", post);
 		Object newPatient = new PatientController().createPatient(post, emptyRequest());
 		log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
