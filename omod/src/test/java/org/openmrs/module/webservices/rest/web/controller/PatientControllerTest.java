@@ -2,7 +2,6 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -52,8 +51,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		int before = Context.getPatientService().getAllPatients().size();
 		String json = "{ \"preferredIdentifier\":{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, \"preferredName\":{ \"givenName\":\"Darius\", \"familyName\":\"Programmer\" }, \"birthdate\":\"1978-01-15\", \"gender\":\"M\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		log(">>>>>>", post);
-		Object newPatient = new PatientController().createPatient(post, emptyRequest());
+		Object newPatient = new PatientController().createPatient(post, emptyRequest(), new MockHttpServletResponse());
 		log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
 	}
@@ -112,7 +110,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest());
+		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
 		log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
@@ -126,7 +124,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
     @Ignore
     public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
 		SimpleObject post = new ObjectMapper().readValue("{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest());
+		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
 		log("Set patient as dead", editedPatient);
 		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPatient, "causeOfDeath"));
     }

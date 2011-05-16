@@ -24,7 +24,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 @Controller
 @RequestMapping(value = "/rest/patient")
-public class PatientController {
+public class PatientController extends BaseRestController {
 	
 	private PatientResource getPatientResource() {
 		return Context.getService(RestService.class).getResource(PatientResource.class);
@@ -55,9 +55,10 @@ public class PatientController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object createPatient(@RequestBody SimpleObject post, WebRequest request) throws ResponseException {
+	public Object createPatient(@RequestBody SimpleObject post, WebRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		return getPatientResource().create(post, context);
+		Object created = getPatientResource().create(post, context);
+		return RestUtil.created(response, created);
 	}
 	
 	/**
@@ -72,11 +73,11 @@ public class PatientController {
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object updatePatient(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post,
-	                            WebRequest request) throws ResponseException {
+	                            WebRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		PatientResource resource = getPatientResource();
 		resource.update(uuid, post, context);
-		return resource.retrieve(uuid, context); // <-- TODO think about this line
+		return RestUtil.noContent(response);
 	}
 	
 	/**

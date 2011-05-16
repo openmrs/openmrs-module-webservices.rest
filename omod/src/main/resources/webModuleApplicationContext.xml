@@ -46,6 +46,10 @@
 		</property>
 	</bean>
 
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+        <property name="order" value="1"/>
+    </bean>
+
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
 	<!-- Cannot do this, breaks all property editors from trunk...

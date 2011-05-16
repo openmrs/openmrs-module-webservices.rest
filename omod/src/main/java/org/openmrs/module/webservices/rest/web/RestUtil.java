@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -361,6 +362,21 @@ public class RestUtil {
 	public static Object noContent(HttpServletResponse response) {
 	    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 	    return "";
+    }
+
+	/**
+	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute 
+	 * @param response
+	 * @param created
+	 * @return the object passed in
+	 */
+	public static Object created(HttpServletResponse response, Object created) {
+		response.setStatus(HttpServletResponse.SC_CREATED);
+		try {
+			String uri = (String) PropertyUtils.getProperty(created, "uri");
+			response.addHeader("Location", uri);
+		} catch (Exception ex) { }
+		return created;
     }
 	
 }
