@@ -13,23 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.PatientResource;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Controller for REST web service access to the Patient resource. Supports CRUD on the resource
@@ -42,24 +30,6 @@ public class PatientController extends BaseCrudController<PatientResource> {
 	@Override
 	public PatientResource getResource() {
 		return Context.getService(RestService.class).getResource(PatientResource.class);
-	}
-	
-	/**
-	 * @param query
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ResponseException
-	 * @should return no results if there are no matching patients
-	 * @should find matching patients
-	 */
-	@RequestMapping(method=RequestMethod.GET, params="q")
-	@ResponseBody
-	public List<Object> findPatients(@RequestParam("q") String query, WebRequest request, HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		context.setRepresentation(Representation.REF);
-		PatientResource resource = getResource();
-		return resource.search(query, context);
 	}
 	
 }

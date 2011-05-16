@@ -153,7 +153,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
      */
     @Test
     public void findPatients_shouldReturnNoResultsIfThereAreNoMatchingPatients() throws Exception {
-	    List<Object> results = new PatientController().findPatients("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+	    List<Object> results = new PatientController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
 	    Assert.assertEquals(0, results.size());
     }
 
@@ -163,7 +163,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
      */
     @Test
     public void findPatients_shouldFindMatchingPatients() throws Exception {
-	    List<Object> results = new PatientController().findPatients("Horatio", emptyRequest(), new MockHttpServletResponse());
+	    List<Object> results = new PatientController().search("Horatio", emptyRequest(), new MockHttpServletResponse());
 	    Assert.assertEquals(1, results.size());
 	    log("Found " + results.size() + " patient(s)", results);
 	    Object result = results.get(0);

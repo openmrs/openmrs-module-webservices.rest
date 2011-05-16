@@ -1,11 +1,17 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -103,5 +109,26 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 		getResource().purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
+	
+	/**
+	 * @param query
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method=RequestMethod.GET, params="q")
+	@ResponseBody
+	public List<Object> search(@RequestParam("q") String query, WebRequest request, HttpServletResponse response) throws ResponseException {
+		Searchable searchable;
+		try {
+			searchable = (Searchable) getResource();
+		} catch (ClassCastException ex) {
+			throw new ResourceDoesNotSupportOperationException(getResource().getClass().getSimpleName() + " is not Searchable", null);
+		}
+		RequestContext context = RestUtil.getRequestContext(request);
+		context.setRepresentation(Representation.REF);
+		return searchable.search(query, context);
+	}	
 	
 }
