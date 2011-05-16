@@ -1,12 +1,13 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.beanutils.MethodUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -25,19 +26,19 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
+import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped object
  * @param <T> the class we're delegating to
  */
-public abstract class DelegatingCrudResource<T> implements CrudResource, Converter<T> {
+public abstract class DelegatingCrudResource<T> implements CrudResource, Searchable, Converter<T> {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
@@ -154,6 +155,24 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Convert
 		purge(delegate, context);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public List<Object> search(String query, RequestContext context) throws ResponseException {
+	    List<Object> ret = new ArrayList<Object>();
+	    for (T match : doSearch(query, context))
+	    	ret.add(asRepresentation(match, context.getRepresentation()));
+	    return ret;
+	}
+	
+	/**
+	 * Implementations should override this method if they are actually searchable.
+	 */
+	protected List<T> doSearch(String query, RequestContext context) {
+		return Collections.emptyList();
+	}
+
 	/**
 	 * @param bean
 	 * @param property

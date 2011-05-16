@@ -163,6 +163,14 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected List<Patient> doSearch(String query, RequestContext context) {
+	    return Context.getPatientService().getPatients(query, context.getStartIndex(), context.getLimit());
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
 	 */
 	@Override

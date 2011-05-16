@@ -3,6 +3,9 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -143,5 +146,30 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(pat.isVoided());
 		Assert.assertEquals("unit test", pat.getVoidReason());
 	}
+
+	/**
+     * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
+     * @verifies return no results if there are no matching patients
+     */
+    @Test
+    public void findPatients_shouldReturnNoResultsIfThereAreNoMatchingPatients() throws Exception {
+	    List<Object> results = new PatientController().findPatients("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+	    Assert.assertEquals(0, results.size());
+    }
+
+	/**
+     * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
+     * @verifies find matching patients
+     */
+    @Test
+    public void findPatients_shouldFindMatchingPatients() throws Exception {
+	    List<Object> results = new PatientController().findPatients("Horatio", emptyRequest(), new MockHttpServletResponse());
+	    Assert.assertEquals(1, results.size());
+	    log("Found " + results.size() + " patient(s)", results);
+	    Object result = results.get(0);
+	    Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+	    Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+	    Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+    }
 
 }

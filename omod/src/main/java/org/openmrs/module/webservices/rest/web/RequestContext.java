@@ -10,7 +10,9 @@ public class RequestContext {
 	
 	private Representation representation = new DefaultRepresentation();
 	
-	private Integer limit;
+	private Integer startIndex = 0;
+	
+	private Integer limit = RestUtil.getDefaultLimit();
 
 	public RequestContext() { }
 	
@@ -45,5 +47,20 @@ public class RequestContext {
     	this.limit = limit;
     }
 
+	
+    /**
+     * @return the startIndex
+     */
+    public Integer getStartIndex() {
+    	return startIndex;
+    }
+
+	
+    /**
+     * @param startIndex the startIndex to set
+     */
+    public void setStartIndex(Integer startIndex) {
+    	this.startIndex = startIndex;
+    }
     
 }

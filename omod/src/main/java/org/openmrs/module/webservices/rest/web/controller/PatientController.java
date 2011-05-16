@@ -1,5 +1,7 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.api.context.Context;
@@ -7,6 +9,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
@@ -28,6 +32,24 @@ public class PatientController extends BaseRestController {
 	
 	private PatientResource getPatientResource() {
 		return Context.getService(RestService.class).getResource(PatientResource.class);
+	}
+	
+	/**
+	 * @param query
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 * @should return no results if there are no matching patients
+	 * @should find matching patients
+	 */
+	@RequestMapping(method=RequestMethod.GET, params="q")
+	@ResponseBody
+	public List<Object> findPatients(@RequestParam("q") String query, WebRequest request, HttpServletResponse response) throws ResponseException {
+		RequestContext context = RestUtil.getRequestContext(request);
+		context.setRepresentation(Representation.REF);
+		PatientResource resource = getPatientResource();
+		return resource.search(query, context);
 	}
 	
 	/**
