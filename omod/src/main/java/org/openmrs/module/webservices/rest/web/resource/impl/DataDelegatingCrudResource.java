@@ -37,6 +37,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
     	SimpleObject ret = new SimpleObject();
     	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
     	ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
+    	// TODO: add retired/retiredBy/dateRetired/retireReason/
     	return ret;
     }
     

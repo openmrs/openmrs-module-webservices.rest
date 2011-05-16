@@ -4,11 +4,11 @@
 
 type: <input id="type" type="text" value="GET" size="12"/> (GET, POST, PUT, or DELETE)
 <br/>
-url: <input id="url" type="text" value="/openmrs/ws/rest/person/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
+url: <input id="url" type="text" value="/openmrs/ws/rest/patient/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
 <br/>
 json content: <input type="text" id="json" value="{patient:'39234823'}" size="45"/>
 <br/><br/>
-representation: <input id="rep" type="text" value="" size="12"/> (default, medium, full, custom:)
+representation: <input id="rep" type="text" value="" size="12"/> (default, full, custom:)
 <br/><br/>
 <input type="button" name="button" value="send" onclick="sendToServer()"/>
 
@@ -21,22 +21,27 @@ function sendToServer() {
 	var u = jQuery("#url").val()
 	var d = jQuery("#json").val();
 	var type = jQuery("#type").val();
-	var hdrs = { "Accept-Type": jQuery("#rep").val() };
+	var qparam = "?v=" + jQuery("#rep").val();
+	u = u + qparam;
 	jQuery.ajax({
 	   type: type,
 	   contentType: "application/json;",
 	   url: u,
 	   data: d,
-	   headers: hdrs,
 	   //dataType: "json",
 	   success: onSuccess,
-	   error: function(req, msg, err) { jQuery("#output").html("error!\r\nmsg: " + msg + "\r\nerr: " + err + "\r\rreq: " + req); }
+	   error: function(req, msg, errorThrown) { jQuery("#output").html("error!<br/>msg: " + msg + "<br/>errorThrown: " + errorThrown + "<br/>req: " + req); var tbl = prettyPrint( req ); jQuery("#output").append(tbl); },
+	   statusCode: {
+		    404: function() {
+		      alert('404 thrown: page/object not found');
+		    }
+		  },
 	});
 	    	    
 	return false;
 }
 
-function onSuccess(obj, msg, req, s) {
+function onSuccess(obj, msg, req) {
 	jQuery("#output").html(msg + "!<br/>");
 	var tbl = prettyPrint( obj );
 	jQuery("#output").append(tbl);
