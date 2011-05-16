@@ -25,6 +25,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
@@ -40,7 +41,7 @@ import org.springframework.util.ReflectionUtils;
  * 
  * @param <T> the class we're delegating to
  */
-public abstract class DelegatingCrudResource<T> implements CrudResource, Searchable, Converter<T> {
+public abstract class DelegatingCrudResource<T> implements CrudResource, Searchable, Listable, Converter<T> {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
@@ -184,6 +185,25 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Searcha
 	 * Implementations should override this method if they are actually searchable.
 	 */
 	protected List<T> doSearch(String query, RequestContext context) {
+		return Collections.emptyList();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public List<Object> getAll(RequestContext context) throws ResponseException {
+		List<Object> ret = new ArrayList<Object>();
+		for (T match : doGetAll(context))
+			ret.add(asRepresentation(match, context.getRepresentation()));
+		return ret;
+	}
+	
+	/**
+	 * Implementations should override this method to return a list of all instances represented by
+	 * the specified rest resource in the database
+	 */
+	protected List<T> doGetAll(RequestContext context) {
 		return Collections.emptyList();
 	}
 	
