@@ -13,6 +13,7 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -75,7 +76,13 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-	    if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("uri", findMethod("getUri"));
+			description.addProperty("display", findMethod("getDisplayString"));
+			return description;
+		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
@@ -176,6 +183,14 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	@Override
 	protected List<String> propertiesToExposeAsSubResources() {
 	    return Arrays.asList("identifiers");
+	}
+	
+	/**
+	 * @param patient
+	 * @return identifier + name (for concise display purposes)
+	 */
+	public String getDisplayString(Patient patient) {
+		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName();
 	}
 	
 }
