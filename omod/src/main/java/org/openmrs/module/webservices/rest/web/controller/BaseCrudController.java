@@ -101,7 +101,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge=true")
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
 	public Object purge(@PathVariable("uuid") String uuid, WebRequest request, HttpServletResponse response)
 	                                                                                                        throws ResponseException {
