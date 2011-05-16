@@ -54,7 +54,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		int before = Context.getPatientService().getAllPatients().size();
 		String json = "{ \"preferredIdentifier\":{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, \"preferredName\":{ \"givenName\":\"Darius\", \"familyName\":\"Programmer\" }, \"birthdate\":\"1978-01-15\", \"gender\":\"M\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newPatient = new PatientController().createPatient(post, emptyRequest(), new MockHttpServletResponse());
+		Object newPatient = new PatientController().create(post, emptyRequest(), new MockHttpServletResponse());
 		log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
 	}
@@ -65,7 +65,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getPatient_shouldGetADefaultRepresentationOfAPatient() throws Exception {
-		Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
+		Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest());
 		Assert.assertNotNull(result);
 		log("Patient fetched (default)", result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
@@ -81,7 +81,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
     public void getPatient_shouldGetAFullRepresentationOfAPatient() throws Exception {
     	MockHttpServletRequest req = new MockHttpServletRequest();
     	req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-    	Object result = new PatientController().getPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
+    	Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
@@ -99,7 +99,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test(expected = APIException.class)
 	public void purgePatient_shouldFailToPurgeAPatientWithDependentData() throws Exception {
 		Assert.assertNotSame(0, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
-		new PatientController().purgePatient("5946f880-b197-400b-9caa-a3c661d23041", emptyRequest(),
+		new PatientController().purge("5946f880-b197-400b-9caa-a3c661d23041", emptyRequest(),
 		    new MockHttpServletResponse());
 		Assert.assertEquals(0, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
 	}
@@ -113,7 +113,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
+		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
 		log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
@@ -127,7 +127,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
     @Ignore
     public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
 		SimpleObject post = new ObjectMapper().readValue("{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().updatePatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
+		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
 		log("Set patient as dead", editedPatient);
 		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPatient, "causeOfDeath"));
     }
@@ -140,7 +140,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void voidPatient_shouldVoidAPatient() throws Exception {
 		Patient pat = Context.getPatientService().getPatient(2);
 		Assert.assertFalse(pat.isVoided());
-		new PatientController().voidPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", "unit test", emptyRequest(),
+		new PatientController().delete("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", "unit test", emptyRequest(),
 		    new MockHttpServletResponse());
 		pat = Context.getPatientService().getPatient(2);
 		Assert.assertTrue(pat.isVoided());
