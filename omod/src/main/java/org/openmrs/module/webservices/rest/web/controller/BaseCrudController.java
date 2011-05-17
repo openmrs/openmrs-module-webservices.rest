@@ -29,6 +29,9 @@ import org.springframework.web.context.request.WebRequest;
  */
 public abstract class BaseCrudController<R extends CrudResource> extends BaseRestController {
 	
+	/**
+	 * @return the resource this controller is delegating to
+	 */
 	public abstract R getResource();
 	
 	/**
