@@ -13,13 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
@@ -43,9 +46,14 @@ import org.springframework.web.context.request.WebRequest;
 public abstract class BaseCrudController<R extends CrudResource> extends BaseRestController {
 	
 	/**
-	 * @return the resource this controller is delegating to
+	 * @return a Resource for the actual parameterized type of this superclass
 	 */
-	public abstract R getResource();
+	@SuppressWarnings("unchecked")
+	protected R getResource() {
+		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
+        Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
+		return Context.getService(RestService.class).getResource(clazz);
+	}
 	
 	/**
 	 * @param uuid
