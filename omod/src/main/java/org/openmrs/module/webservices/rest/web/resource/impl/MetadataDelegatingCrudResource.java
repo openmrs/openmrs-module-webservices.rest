@@ -18,10 +18,12 @@ import java.util.Date;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -47,6 +49,17 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("description");
 		rep.addProperty("uri", getClass().getMethod("getUri"));
 		return convertDelegateToRepresentation(delegate, rep);
+    }
+    
+    public SimpleObject getAuditInfo(T delegate) throws Exception {
+    	SimpleObject ret = new SimpleObject();
+    	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
+    	ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
+        ret.put("retired", ConversionUtil.convertToRepresentation(delegate.isRetired(), Representation.DEFAULT));
+        ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
+        ret.put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(), Representation.DEFAULT));
+        ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(), Representation.DEFAULT));
+    	return ret;
     }
 
 	/**
