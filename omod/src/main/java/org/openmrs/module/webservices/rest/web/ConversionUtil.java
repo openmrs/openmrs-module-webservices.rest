@@ -62,14 +62,18 @@ public class ConversionUtil {
 				converter.setProperty(bean, property, value);
 			} else {
 				// otherwise we try the regular method
-				log.trace("applying " + property + " which is a " + value.getClass() + " = " + value);
+				if (log.isTraceEnabled())
+					log.trace("applying " + property + " which is a " + value.getClass() + " = " + value);
 				PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, property);
-				log.trace("property exists and is a: " + pd.getPropertyType());
+				if (log.isTraceEnabled())
+					log.trace("property exists and is a: " + pd.getPropertyType());
 				if (value == null || pd.getPropertyType().isAssignableFrom(value.getClass())) {
-					log.trace("compatible type, so setting directly");
+					if (log.isTraceEnabled())
+						log.trace("compatible type, so setting directly");
 					pd.getWriteMethod().invoke(bean, value);
 				} else {
-					log.trace("need to convert " + value.getClass() + " to " + pd.getPropertyType());
+					if (log.isTraceEnabled())
+						log.trace("need to convert " + value.getClass() + " to " + pd.getPropertyType());
 					Object converted = convert(value, pd.getPropertyType());
 					pd.getWriteMethod().invoke(bean, converted);
 				}
