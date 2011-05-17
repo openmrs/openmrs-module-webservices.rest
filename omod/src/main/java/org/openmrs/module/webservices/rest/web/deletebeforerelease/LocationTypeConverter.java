@@ -26,7 +26,8 @@ public class LocationTypeConverter implements Converter<Location> {
 	
 	@Override
 	public Object asRepresentation(Location instance, Representation rep) throws ConversionException {
-		throw new RuntimeException("Not implemented");
+		return "Temp hack some location";
+		//throw new RuntimeException("Not implemented");
 	}
 	
 	@Override

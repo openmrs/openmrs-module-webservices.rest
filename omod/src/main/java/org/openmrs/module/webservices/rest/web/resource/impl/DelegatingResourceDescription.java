@@ -105,12 +105,12 @@ public class DelegatingResourceDescription implements RepresentationDescription 
         	this.rep = rep;
         }
 
-		public Object evaluate(DelegatingCrudResource<?> resource, Object delegate) throws ConversionException {
+		public Object evaluate(BaseDelegatingResource<?> converter, Object delegate) throws ConversionException {
 	        if (delegateProperty != null) {
 	        	return ConversionUtil.getPropertyWithRepresentation(delegate, delegateProperty, rep);
 	        } else if (method != null) {
 	        	try {
-	        		return method.invoke(resource, delegate);
+	        		return method.invoke(converter, delegate);
 	            }
 	            catch (Exception ex) {
 		            throw new ConversionException("method " + method, ex);
