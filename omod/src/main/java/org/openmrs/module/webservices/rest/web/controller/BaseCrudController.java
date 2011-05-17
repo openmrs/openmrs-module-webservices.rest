@@ -8,8 +8,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.PatientResource;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -117,18 +117,43 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method=RequestMethod.GET, params="q")
+	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
-	public List<Object> search(@RequestParam("q") String query, WebRequest request, HttpServletResponse response) throws ResponseException {
+	public List<Object> search(@RequestParam("q") String query, WebRequest request, HttpServletResponse response)
+	                                                                                                             throws ResponseException {
 		Searchable searchable;
 		try {
 			searchable = (Searchable) getResource();
-		} catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(getResource().getClass().getSimpleName() + " is not Searchable", null);
+		}
+		catch (ClassCastException ex) {
+			throw new ResourceDoesNotSupportOperationException(getResource().getClass().getSimpleName()
+			        + " is not Searchable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request);
 		context.setRepresentation(Representation.REF);
 		return searchable.search(query, context);
-	}	
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
+	public List<Object> getAll(WebRequest request, HttpServletResponse response) throws ResponseException {
+		Listable listable;
+		try {
+			listable = (Listable) getResource();
+		}
+		catch (ClassCastException ex) {
+			throw new ResourceDoesNotSupportOperationException(
+			        getResource().getClass().getSimpleName() + " is not Listable", null);
+		}
+		RequestContext context = RestUtil.getRequestContext(request);
+		context.setRepresentation(Representation.REF);
+		return listable.getAll(context);
+	}
 	
 }

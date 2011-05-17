@@ -32,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ReflectionUtils;
 
@@ -202,9 +203,11 @@ public abstract class DelegatingCrudResource<T> implements CrudResource, Searcha
 	/**
 	 * Implementations should override this method to return a list of all instances represented by
 	 * the specified rest resource in the database
+	 * 
+	 * @throws ResponseException
 	 */
-	protected List<T> doGetAll(RequestContext context) {
-		return Collections.emptyList();
+	protected List<T> doGetAll(RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

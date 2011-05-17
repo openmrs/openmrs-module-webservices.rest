@@ -82,14 +82,6 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	}
 	
 	/**
-	 * @see DelegatingCrudResource#delete(java.lang.Object, String, RequestContext)
-	 */
-	@Override
-	public void delete(ConceptDatatype conceptDatatype, String reason, RequestContext context) throws ResponseException {
-		//This is useless for now since the API has no retireConceptDatatype(Datatype, reason) method
-	}
-	
-	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
