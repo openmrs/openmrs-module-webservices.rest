@@ -45,7 +45,7 @@ public class RestUtil {
 		// WSConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME;
         
        String limit = Context.getAdministrationService().getGlobalProperty( RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME );
-        if (limit != null && !limit.isEmpty())
+        if (StringUtils.isNotEmpty( limit ) )
         {
             try{
                 return Integer.parseInt( limit );
