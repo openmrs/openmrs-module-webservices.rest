@@ -30,7 +30,12 @@
 	<!-- Required Privileges -->
 
 	<!-- Required Global Properties -->
-	
+    <globalProperty>
+        <property>@MODULE_ID@.maxresults</property>
+        <defaultValue>50</defaultValue>
+        <description>The maximum list of a resource available in a webservice call</description>
+    </globalProperty>
+
 	<!-- DWR -->
 	
 	<!-- Servlets -->

@@ -43,9 +43,18 @@ public class RestUtil {
 	public static Integer getDefaultLimit() {
 		// TODO check global property
 		// WSConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME;
-
-		return RestConstants.MAX_RESULTS_DEFAULT;
-
+        
+       String limit = Context.getAdministrationService().getGlobalProperty( RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME );
+        if (limit != null && !limit.isEmpty())
+        {
+            try{
+                return Integer.parseInt( limit );
+            } catch (NumberFormatException nfex){
+                return RestConstants.MAX_RESULTS_DEFAULT;
+            }
+        } else{
+            return RestConstants.MAX_RESULTS_DEFAULT;
+        }
 	}
 
 	/*
