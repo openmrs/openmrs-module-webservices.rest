@@ -127,7 +127,6 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getByUniqueName(java.lang.String)
 	 */
-	
 	@Override
 	protected Location getByUniqueName(String name) throws ResponseException {
 		return Context.getLocationService().getLocation(name);

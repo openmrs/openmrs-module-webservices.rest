@@ -82,6 +82,15 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#findByUniqueName(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public ConceptDatatype findByUniqueName(String name, RequestContext context) throws ResponseException {
+		return Context.getConceptService().getConceptDatatypeByName(name);
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
