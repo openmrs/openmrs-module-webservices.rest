@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.lang.reflect.Method;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -34,34 +32,6 @@ import org.springframework.web.context.request.WebRequest;
 public class RestUtil {
 
 	private static Log log = LogFactory.getLog(RestUtil.class);
-
-	/**
-	 * Looks in the request params to see if the user wants to restrict the
-	 * number of results returned. <br/>
-	 * <br/>
-	 * The param should be named "limit". <br/>
-	 * <br/>
-	 * If the param does not exist or is not a valid integer, the results are
-	 * restricted to WSConstants.MAX_RESULTS size.<br/>
-	 * <br/>
-	 * 
-	 * @param request
-	 *            the current WebRequest
-	 * @return Integer number of results to restrict to
-	 */
-	public static Integer getLimit(WebRequest request) {
-		String limitString = request.getParameter("limit");
-		if (limitString != null) {
-			try {
-				Integer limit = Integer.valueOf(limitString);
-				return limit;
-			} catch (NumberFormatException e) {
-				// log.info("invalid limit specified: " + limitString);
-			}
-		}
-
-		return getDefaultLimit();
-	}
 
 	/**
 	 * Looks up the admin defined global property for the system limit
@@ -289,6 +259,11 @@ public class RestUtil {
 	}
 	*/
 
+	
+	/* Used by code commented out above.  Ready for possible deletion.
+	 * 
+	 * TODO: look into whether this can use PropertyUtils instead
+	 
 	/**
 	 * Helper method to use the superclass of param class as well
 	 * 
@@ -296,7 +271,7 @@ public class RestUtil {
 	 * @param name
 	 * @param param
 	 * @return
-	 */
+	 *
 	public Method getMethod(Class<?> c, String name, Class<?> param) {
 
 		Method m = null;
@@ -317,14 +292,26 @@ public class RestUtil {
 		// throw new NoSuchMethodException("No method on class " + c +
 		// " with name " + name + " with param " + param);
 	}
+	*/
 
 	/**
-	 * Determines the request representation, number of results, etc, if specified in the request.
-	 * @param request
-	 * @return
+	 * Determines the request representation, if not provided, uses default.
+	 * <br/>
+	 * Determines number of results to limit to, if not provided, uses default set by admin.
+	 * <br/>
+	 * Determines how far into a list to start with given the startIndex param.
+	 * <br/>
+	 * 
+	 * @param request the current http web request
+	 * @return a {@link RequestContext} object filled with all the necessary values
+	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
+	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
+	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 */
 	public static RequestContext getRequestContext(WebRequest request) {
 	    RequestContext ret = new RequestContext();
+	    
+	    // get the "v" param for the representations
 	    String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 	    if (StringUtils.isEmpty(temp)) {
 	    	ret.setRepresentation(Representation.DEFAULT);
@@ -333,6 +320,33 @@ public class RestUtil {
 	    } else {
 	    	ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 	    }
+	    
+	    Integer tempInt;
+	    
+	    // fetch the "limit" param
+	    temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
+	    try {
+		    tempInt = new Integer(temp);
+		    if (tempInt != null) {
+		    	ret.setLimit(tempInt);
+		    }
+	    }
+	    catch (NumberFormatException e) {
+	    	log.debug("unable to parse 'limit' parameter into a valid integer: " + temp);
+	    }
+	    
+	    // fetch the startIndex param
+	    temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
+	    try {
+		    tempInt = new Integer(temp);
+		    if (tempInt != null) {
+		    	ret.setStartIndex(tempInt);
+		    }
+	    }
+	    catch (NumberFormatException e) {
+	    	log.debug("unable to parse 'startIndex' parameter into a valid integer: " + temp);
+	    }
+	    
 	    return ret;
     }
 
