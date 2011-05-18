@@ -78,7 +78,11 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	 */
 	@Override
 	public ConceptDatatype getByUniqueId(String uuid) {
-		return Context.getConceptService().getConceptDatatypeByUuid(uuid);
+		ConceptDatatype datatype = Context.getConceptService().getConceptDatatypeByUuid(uuid);
+		if (datatype == null)
+			datatype = Context.getConceptService().getConceptDatatypeByName(uuid);
+		
+		return datatype;
 	}
 	
 	/**
@@ -97,7 +101,7 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	 */
 	@Override
 	protected List<ConceptDatatype> doGetAll(RequestContext context) {
-		return Context.getConceptService().getAllConceptDatatypes();
+		return Context.getConceptService().getAllConceptDatatypes(true);
 	}
 	
 }

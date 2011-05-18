@@ -118,7 +118,7 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 		//Set the parent Location for testing purposes
 		String uuid = "167ce20c-4785-4285-9119-d197268f7f4a";
 		Location location = service.getLocationByUuid(uuid);
-		location.setParentLocation(Context.getLocationService().getLocation(2));
+		location.setParentLocation(service.getLocation(2));
 		service.saveLocation(location);
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
@@ -134,7 +134,7 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 		String parentUuid = "dc5c1fcc-0459-4201-bf70-0b90535ba362";
 		Location location = service.getLocationByUuid(parentUuid);
 		Assert.assertEquals(0, location.getChildLocations().size());
-		location.addChildLocation(Context.getLocationService().getLocation(3));
+		location.addChildLocation(service.getLocation(3));
 		service.saveLocation(location);
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
