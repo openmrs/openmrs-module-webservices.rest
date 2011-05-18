@@ -60,10 +60,10 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	public void shouldListAllLocations() throws Exception {
+	public void shouldListAllUnRetiredLocations() throws Exception {
 		List<Object> result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(3, result.size());
+		Assert.assertEquals(2, result.size());
 	}
 	
 	@Test

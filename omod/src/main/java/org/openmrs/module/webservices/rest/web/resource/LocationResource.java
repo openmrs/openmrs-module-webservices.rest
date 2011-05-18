@@ -145,7 +145,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 */
 	@Override
 	protected List<Location> doGetAll(RequestContext context) {
-		return Context.getLocationService().getAllLocations();
+		return Context.getLocationService().getAllLocations(false);
 	}
 	
 	/**
