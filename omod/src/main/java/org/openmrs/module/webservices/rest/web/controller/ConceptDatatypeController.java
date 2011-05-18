@@ -14,16 +14,10 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.ConceptDatatypeResource;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Controller for REST web service access to the ConceptDatatype resource. Supports CRUD on the
@@ -39,19 +33,5 @@ public class ConceptDatatypeController extends BaseCrudController<ConceptDatatyp
 	@Override
 	public ConceptDatatypeResource getResource() {
 		return Context.getService(RestService.class).getResource(ConceptDatatypeResource.class);
-	}
-	
-	/**
-	 * Processes requests to fetch a concept datatype by the specified name
-	 * 
-	 * @param name
-	 * @param request
-	 * @return
-	 * @throws ResponseException
-	 */
-	@RequestMapping(method = RequestMethod.GET, params = "name")
-	@ResponseBody
-	public Object findByUniqueName(@RequestParam("name") String name, WebRequest request) throws ResponseException {
-		return getResource().findByUniqueName(name, RestUtil.getRequestContext(request));
 	}
 }
