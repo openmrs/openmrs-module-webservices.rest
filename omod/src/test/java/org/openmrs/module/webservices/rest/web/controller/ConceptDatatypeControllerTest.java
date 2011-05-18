@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.List;
@@ -13,6 +26,7 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -102,5 +116,14 @@ public class ConceptDatatypeControllerTest extends BaseModuleWebContextSensitive
 		controller.purge(uuid, request, response);
 		Assert.assertNull(service.getConceptDatatypeByUuid(uuid));
 		Assert.assertEquals(originalCount - 1, service.getAllConceptDatatypes().size());
+	}
+	
+	@Test
+	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest();
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = controller.retrieve("8d4a606c-c2cc-11de-8d13-0010c6dffd0f", new ServletWebRequest(httpReq));
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 }

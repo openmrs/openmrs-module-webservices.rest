@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.ConceptDatatypeResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +23,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping(value = "/rest/conceptdatatype")
-public class ConceptDatatypeController extends BaseCrudController<ConceptDatatypeResource> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.controller.BaseCrudController#getResource()
-	 */
-	@Override
-	public ConceptDatatypeResource getResource() {
-		return Context.getService(RestService.class).getResource(ConceptDatatypeResource.class);
-	}
-}
+public class ConceptDatatypeController extends BaseCrudController<ConceptDatatypeResource> {}

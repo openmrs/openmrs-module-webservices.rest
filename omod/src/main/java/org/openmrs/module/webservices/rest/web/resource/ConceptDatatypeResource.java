@@ -45,6 +45,8 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("hl7Abbreviation");
+			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -52,6 +54,8 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("hl7Abbreviation");
+			description.addProperty("uri", findMethod("getUri"));
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 		}
 		return null;
@@ -101,7 +105,7 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	 */
 	@Override
 	protected List<ConceptDatatype> doGetAll(RequestContext context) {
-		return Context.getConceptService().getAllConceptDatatypes(true);
+		return Context.getConceptService().getAllConceptDatatypes(false);
 	}
 	
 }
