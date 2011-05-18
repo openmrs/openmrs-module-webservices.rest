@@ -21,6 +21,7 @@ import org.openmrs.User;
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -137,7 +138,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
         ArrayList users = new ArrayList();
         for(User user : Context.getUserService().getUsers( query, null, false ))
         {
-            users.add( user );
+            users.add( new UserAndPassword(user) );
         }
 	    return users;
 	}
@@ -160,11 +161,16 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
     public void setProperty( UserAndPassword instance, String propertyName, Object value ) throws ConversionException
     {
         try {
-            if(propertyName.equals( "password") ){
-                super.setProperty( instance, propertyName, value );
-            }
-            else{
-                PropertyUtils.setProperty( instance.getUser(), propertyName, value);
+            if(propertyName.equals( "password")){
+                Class<?> expectedType = PropertyUtils.getPropertyType(instance, propertyName);
+                if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+                    value = ConversionUtil.convert(value, expectedType);
+                PropertyUtils.setProperty(instance, propertyName, value);
+            } else{
+                Class<?> expectedType = PropertyUtils.getPropertyType(instance.getUser(), propertyName);
+                if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+                    value = ConversionUtil.convert(value, expectedType);
+                PropertyUtils.setProperty(instance.getUser(), propertyName, value);
             }
         }catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);

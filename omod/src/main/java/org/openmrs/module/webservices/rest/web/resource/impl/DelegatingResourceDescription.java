@@ -14,7 +14,10 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -118,9 +121,17 @@ public class DelegatingResourceDescription implements RepresentationDescription 
         	this.rep = rep;
         }
 
-		public Object evaluate(BaseDelegatingResource<?> converter, Object delegate) throws ConversionException {
+		public <T>Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {
 	        if (delegateProperty != null) {
-	        	return ConversionUtil.getPropertyWithRepresentation(delegate, delegateProperty, rep);
+	        	Object propVal = converter.getProperty(delegate, delegateProperty);
+                if (propVal instanceof Collection) {
+                    List<Object> ret = new ArrayList<Object>();
+                    for (Object element : (Collection<?>) propVal)
+                        ret.add(ConversionUtil.convertToRepresentation(element, rep));
+                    return ret;
+                } else {
+                    return ConversionUtil.convertToRepresentation(propVal, rep);
+                }
 	        } else if (method != null) {
 	        	try {
 	        		return method.invoke(converter, delegate);

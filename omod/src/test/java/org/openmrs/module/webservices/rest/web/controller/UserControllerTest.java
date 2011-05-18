@@ -18,9 +18,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -102,12 +100,14 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies change a property on a patient
 	 */
 	@Test
-    @Ignore
 	public void updateUser_shouldChangeAPropertyOnAUser() throws Exception {
+        UserAndPassword user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
+        Assert.assertFalse( "5-6".equals( user.getUser().getSystemId()));
         SimpleObject post = new ObjectMapper().readValue("{\"systemId\":\"5-6\",\"password\":\"Admin@123\"}", SimpleObject.class);
-		Object editedUser = new UserController().update("1010d442-e134-11de-babe-001e378eb67e", post, emptyRequest(), new MockHttpServletResponse());
+		Object editedUser = new UserController().update("c98a1558-e131-11de-babe-001e378eb67e", post, emptyRequest(), new MockHttpServletResponse());
 		log("Edited SystemId", editedUser);
-        Assert.assertEquals( "5-6", PropertyUtils.getProperty(editedUser, "systemId"));
+        user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
+        Assert.assertEquals( "5-6", user.getUser().getSystemId());
 	}
 	
 	/**
@@ -115,15 +115,14 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies void a patient
 	 */
 	@Test
-    @Ignore
 	public void retireUser_shouldRetireAUser() throws Exception {
 		UserAndPassword user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
 		Assert.assertFalse(user.isRetired());
 		new UserController().delete("c98a1558-e131-11de-babe-001e378eb67e", "unit test", emptyRequest(),
 		    new MockHttpServletResponse());
         user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
-		Assert.assertTrue(user.isRetired());
-		Assert.assertEquals("unit test", user.getRetireReason());
+		Assert.assertTrue(user.getUser().isRetired());
+		Assert.assertEquals("unit test", user.getUser().getRetireReason());
 	}
 
 	/**

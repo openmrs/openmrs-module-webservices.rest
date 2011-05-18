@@ -40,6 +40,7 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
     /** default constructor */
     public UserAndPassword()
     {
+        user = new User();
     }
 
     /**
