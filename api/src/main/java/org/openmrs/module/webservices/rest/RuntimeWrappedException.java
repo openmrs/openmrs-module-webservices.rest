@@ -19,11 +19,11 @@ package org.openmrs.module.webservices.rest;
  * in a property editor.
  */
 public class RuntimeWrappedException extends RuntimeException {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	public RuntimeWrappedException(Exception ex) {
 		super(ex);
 	}
-
+	
 }

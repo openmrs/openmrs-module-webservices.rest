@@ -34,5 +34,5 @@ public @interface PropertySetter {
 	 * @return the name of the property the annotated method is a "setter" for.
 	 */
 	String value();
-
+	
 }

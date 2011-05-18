@@ -31,5 +31,5 @@ public class PersonController extends BaseCrudController<PersonResource> {
 	public PersonResource getResource() {
 		return Context.getService(RestService.class).getResource(PersonResource.class);
 	}
-    
+	
 }

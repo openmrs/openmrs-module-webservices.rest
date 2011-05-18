@@ -1,6 +1,5 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
-
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,12 +25,15 @@ import org.springframework.web.context.request.WebRequest;
  * the controller inherits those methods from a subclass
  */
 public class PatientIdentifierControllerTest extends BaseModuleWebContextSensitiveTest {
-
+	
 	String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 	
 	private PatientService service;
+	
 	private PatientIdentifierController controller;
+	
 	private WebRequest request;
+	
 	private HttpServletResponse response;
 	
 	@Before
@@ -48,13 +50,14 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
 			toPrint = mapper.writeValueAsString(object);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			toPrint = "" + object;
 		}
 		if (label != null)
 			toPrint = label + ": " + toPrint;
 		System.out.println(toPrint);
-	}	
+	}
 	
 	@Test
 	public void shouldGetAnIdentifier() throws Exception {
@@ -112,11 +115,13 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
 		// complains that the identifier will be re-created since the patient is in the session.
 		String piUuid = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
-		Number before = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
+		Number before = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
 		
 		controller.purge(patientUuid, piUuid, request, response);
 		Context.flushSession();
-		Number after = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
+		Number after = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
 		Assert.assertEquals(before.intValue() - 1, after.intValue());
 		Assert.assertNull(service.getPatientIdentifierByUuid(piUuid));
 	}

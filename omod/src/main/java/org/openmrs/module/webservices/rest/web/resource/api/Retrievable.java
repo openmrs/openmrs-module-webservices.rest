@@ -29,5 +29,5 @@ public interface Retrievable extends Resource {
 	 * @throws ResponseException
 	 */
 	public Object retrieve(String uuid, RequestContext context) throws ResponseException;
-
+	
 }

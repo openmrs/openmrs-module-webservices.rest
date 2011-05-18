@@ -38,7 +38,8 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
 			toPrint = mapper.writeValueAsString(object);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			toPrint = "" + object;
 		}
 		if (label != null)
@@ -49,7 +50,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	private WebRequest emptyRequest() {
 		return new ServletWebRequest(new MockHttpServletRequest());
 	}
-    
+	
 	/**
 	 * @see UserController#createUser(SimpleObject,WebRequest)
 	 * @verifies create a new user
@@ -58,8 +59,8 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void createUser_shouldCreateANewUser() throws Exception {
 		int before = Context.getUserService().getAllUsers().size();
 		String json = "{\"username\":\"test\",\"password\":\"Admin@123\",\"person\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\"}}";
-        SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newUser = new UserController().create(post, emptyRequest() , new MockHttpServletResponse());
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object newUser = new UserController().create(post, emptyRequest(), new MockHttpServletResponse());
 		log("Created User", newUser);
 		Assert.assertEquals(before + 1, Context.getUserService().getAllUsers().size());
 	}
@@ -75,25 +76,25 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		log("User retrieved (default)", result);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
-        Assert.assertEquals( "butch", PropertyUtils.getProperty(result, "username"));
+		Assert.assertEquals("butch", PropertyUtils.getProperty(result, "username"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
-     * @see PatientController#getPatient(String,WebRequest)
-     * @verifies get a full representation of a patient
-     */
-    @Test
-    public void getUser_shouldGetAFullRepresentationOfAPatient() throws Exception {
-    	MockHttpServletRequest req = new MockHttpServletRequest();
-    	req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-    	Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", new ServletWebRequest(req));
-  		log("User retrieved (full)", result);
+	 * @see PatientController#getPatient(String,WebRequest)
+	 * @verifies get a full representation of a patient
+	 */
+	@Test
+	public void getUser_shouldGetAFullRepresentationOfAPatient() throws Exception {
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", new ServletWebRequest(req));
+		log("User retrieved (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("c1d8f5c2-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
-        Assert.assertEquals( "", PropertyUtils.getProperty(result, "secretQuestion"));
-    }
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
+		Assert.assertEquals("", PropertyUtils.getProperty(result, "secretQuestion"));
+	}
 	
 	/**
 	 * @see UserController#updateUser(UserAndPassword,SimpleObject,WebRequest)
@@ -101,13 +102,15 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void updateUser_shouldChangeAPropertyOnAUser() throws Exception {
-        UserAndPassword user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
-        Assert.assertFalse( "5-6".equals( user.getUser().getSystemId()));
-        SimpleObject post = new ObjectMapper().readValue("{\"systemId\":\"5-6\",\"password\":\"Admin@123\"}", SimpleObject.class);
-		Object editedUser = new UserController().update("c98a1558-e131-11de-babe-001e378eb67e", post, emptyRequest(), new MockHttpServletResponse());
+		UserAndPassword user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
+		Assert.assertFalse("5-6".equals(user.getUser().getSystemId()));
+		SimpleObject post = new ObjectMapper().readValue("{\"systemId\":\"5-6\",\"password\":\"Admin@123\"}",
+		    SimpleObject.class);
+		Object editedUser = new UserController().update("c98a1558-e131-11de-babe-001e378eb67e", post, emptyRequest(),
+		    new MockHttpServletResponse());
 		log("Edited SystemId", editedUser);
-        user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
-        Assert.assertEquals( "5-6", user.getUser().getSystemId());
+		user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
+		Assert.assertEquals("5-6", user.getUser().getSystemId());
 	}
 	
 	/**
@@ -116,36 +119,36 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void retireUser_shouldRetireAUser() throws Exception {
-		UserAndPassword user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
+		UserAndPassword user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
 		Assert.assertFalse(user.isRetired());
 		new UserController().delete("c98a1558-e131-11de-babe-001e378eb67e", "unit test", emptyRequest(),
 		    new MockHttpServletResponse());
-        user = new UserResource().getByUniqueId( "c98a1558-e131-11de-babe-001e378eb67e" );
+		user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
 		Assert.assertTrue(user.getUser().isRetired());
 		Assert.assertEquals("unit test", user.getUser().getRetireReason());
 	}
-
+	
 	/**
-     * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-     * @verifies return no results if there are no matching users
-     */
-    @Test
-    public void findUsers_shouldReturnNoResultsIfThereAreNoMatchingUsers() throws Exception {
-	    List<Object> results = new UserController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(0, results.size());
-    }
-
+	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
+	 * @verifies return no results if there are no matching users
+	 */
+	@Test
+	public void findUsers_shouldReturnNoResultsIfThereAreNoMatchingUsers() throws Exception {
+		List<Object> results = new UserController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(0, results.size());
+	}
+	
 	/**
-     * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-     * @verifies find matching users
-     */
-    @Test
-    public void findUsers_shouldFindMatchingUsers() throws Exception {
-	    List<Object> results = new UserController().search("but", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(1, results.size());
-	    log("Found " + results.size() + " user(s)", results);
-	    Object result = results.get(0);
-	    Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
-    }
-    
+	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
+	 * @verifies find matching users
+	 */
+	@Test
+	public void findUsers_shouldFindMatchingUsers() throws Exception {
+		List<Object> results = new UserController().search("but", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(1, results.size());
+		log("Found " + results.size() + " user(s)", results);
+		Object result = results.get(0);
+		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
+	}
+	
 }

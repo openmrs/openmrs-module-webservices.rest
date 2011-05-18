@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class BaseDelegatingResource<T> implements Converter<T> {
-
+	
 	/**
 	 * Implementations should define mappings for properties that they want to expose with other
 	 * names. (Map from the exposed property name to the actual property name.)
@@ -51,12 +51,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	 */
 	@Override
 	public abstract T getByUniqueId(String uniqueId);
-		
+	
 	/**
 	 * @return a new instance of the delegate class
 	 */
 	protected abstract T newDelegate();
-
+	
 	/**
 	 * Writes the delegate to the database
 	 * 
@@ -146,7 +146,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	}
 	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	                                                                                                     throws ConversionException {
+	        throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
@@ -165,7 +165,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
 			setProperty(delegate, prop.getKey(), prop.getValue());
 		}
-    }
+	}
 	
 	/**
 	 * Finds a method in this class or a superclass annotated with a {@link RepHandler} for the
@@ -209,7 +209,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-
+	
 	@Override
 	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {
 		try {

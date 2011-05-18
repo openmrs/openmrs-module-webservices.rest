@@ -22,15 +22,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class GenericRestException extends ResponseException {
-
-    private static final long serialVersionUID = 1L;
-    
-    public GenericRestException() {
-    	super();
-    }
-    
-    public GenericRestException(String message, Throwable cause) {
-    	super(message, cause);
-    }
-
+	
+	private static final long serialVersionUID = 1L;
+	
+	public GenericRestException() {
+		super();
+	}
+	
+	public GenericRestException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
 }

@@ -32,118 +32,121 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 public class DelegatingResourceDescription implements RepresentationDescription {
 	
 	Map<String, Property> properties = new LinkedHashMap<String, Property>();
-
+	
 	public void addProperty(String propertyName) {
-	    addProperty(propertyName, propertyName, null);
-    }
+		addProperty(propertyName, propertyName, null);
+	}
 	
 	public void addProperty(String propertyName, Representation rep) {
-	    addProperty(propertyName, propertyName, rep);
-    }
+		addProperty(propertyName, propertyName, rep);
+	}
 	
 	public void addProperty(String propertyName, Method method) {
 		addProperty(propertyName, method, null);
-    }
-
+	}
+	
 	public void addProperty(String propertyName, String delegatePropertyName, Representation rep) {
 		if (rep == null)
 			rep = Representation.DEFAULT;
-	    properties.put(propertyName, new Property(delegatePropertyName, rep));
-    }
-
+		properties.put(propertyName, new Property(delegatePropertyName, rep));
+	}
+	
 	public void addProperty(String propertyName, Method method, Representation rep) {
 		if (rep == null)
 			rep = Representation.DEFAULT;
-	    properties.put(propertyName, new Property(method, rep));
-    }
-
-    /**
-     * @return the properties
-     */
-    public Map<String, Property> getProperties() {
-    	return properties;
-    }
-
+		properties.put(propertyName, new Property(method, rep));
+	}
+	
+	/**
+	 * @return the properties
+	 */
+	public Map<String, Property> getProperties() {
+		return properties;
+	}
+	
 	class Property {
-    	private String delegateProperty;
-    	private Method method;
-    	private Representation rep;
-    	
-    	public Property(String delegateProperty, Representation rep) {
-    		this.delegateProperty = delegateProperty;
-    		this.rep = rep;
-    	}
-    	
-    	public Property(Method method, Representation rep) {
-    		this.method = method;
-    		this.rep = rep;
-    	}
 		
-        /**
-         * @return the delegateProperty
-         */
-        public String getDelegateProperty() {
-        	return delegateProperty;
-        }
+		private String delegateProperty;
 		
-        /**
-         * @param delegateProperty the delegateProperty to set
-         */
-        public void setDelegateProperty(String delegateProperty) {
-        	this.delegateProperty = delegateProperty;
-        }
+		private Method method;
 		
-        /**
-         * @return the method
-         */
-        public Method getMethod() {
-        	return method;
-        }
+		private Representation rep;
 		
-        /**
-         * @param method the method to set
-         */
-        public void setMethod(Method method) {
-        	this.method = method;
-        }
+		public Property(String delegateProperty, Representation rep) {
+			this.delegateProperty = delegateProperty;
+			this.rep = rep;
+		}
 		
-        /**
-         * @return the rep
-         */
-        public Representation getRep() {
-        	return rep;
-        }
+		public Property(Method method, Representation rep) {
+			this.method = method;
+			this.rep = rep;
+		}
 		
-        /**
-         * @param rep the rep to set
-         */
-        public void setRep(Representation rep) {
-        	this.rep = rep;
-        }
-
-		public <T>Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {
-	        if (delegateProperty != null) {
-	        	Object propVal = converter.getProperty(delegate, delegateProperty);
-                if (propVal instanceof Collection) {
-                    List<Object> ret = new ArrayList<Object>();
-                    for (Object element : (Collection<?>) propVal)
-                        ret.add(ConversionUtil.convertToRepresentation(element, rep));
-                    return ret;
-                } else {
-                    return ConversionUtil.convertToRepresentation(propVal, rep);
-                }
-	        } else if (method != null) {
-	        	try {
-	        		return method.invoke(converter, delegate);
-	            }
-	            catch (Exception ex) {
-		            throw new ConversionException("method " + method, ex);
-	            }
-	        } else {
-	        	throw new RuntimeException("Property with no delegateProperty or method specified");
-	        }
-        }
-
-    }
-    
+		/**
+		 * @return the delegateProperty
+		 */
+		public String getDelegateProperty() {
+			return delegateProperty;
+		}
+		
+		/**
+		 * @param delegateProperty the delegateProperty to set
+		 */
+		public void setDelegateProperty(String delegateProperty) {
+			this.delegateProperty = delegateProperty;
+		}
+		
+		/**
+		 * @return the method
+		 */
+		public Method getMethod() {
+			return method;
+		}
+		
+		/**
+		 * @param method the method to set
+		 */
+		public void setMethod(Method method) {
+			this.method = method;
+		}
+		
+		/**
+		 * @return the rep
+		 */
+		public Representation getRep() {
+			return rep;
+		}
+		
+		/**
+		 * @param rep the rep to set
+		 */
+		public void setRep(Representation rep) {
+			this.rep = rep;
+		}
+		
+		public <T> Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {
+			if (delegateProperty != null) {
+				Object propVal = converter.getProperty(delegate, delegateProperty);
+				if (propVal instanceof Collection) {
+					List<Object> ret = new ArrayList<Object>();
+					for (Object element : (Collection<?>) propVal)
+						ret.add(ConversionUtil.convertToRepresentation(element, rep));
+					return ret;
+				} else {
+					return ConversionUtil.convertToRepresentation(propVal, rep);
+				}
+			} else if (method != null) {
+				try {
+					return method.invoke(converter, delegate);
+				}
+				catch (Exception ex) {
+					throw new ConversionException("method " + method, ex);
+				}
+			} else {
+				throw new RuntimeException("Property with no delegateProperty or method specified");
+			}
+		}
+		
+	}
+	
 }

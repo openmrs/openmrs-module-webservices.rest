@@ -22,13 +22,13 @@ import org.openmrs.module.ModuleActivator;
  * {@link ModuleActivator} for the webservices.rest module 
  */
 public class Activator extends BaseModuleActivator {
-
+	
 	private Log log = LogFactory.getLog(this.getClass());
 	
 	public void started() {
 		log.info("Started the REST Web Service module");
 	}
-
+	
 	public void stopped() {
 		log.info("Stopped the REST Web Service module");
 	}

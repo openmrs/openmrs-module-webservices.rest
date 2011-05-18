@@ -36,39 +36,40 @@ public class RestServiceImpl implements RestService {
 	 */
 	@Override
 	public Representation getRepresentation(String requested) {
-	    if (StringUtils.isEmpty(requested)) {
-	    	return Representation.DEFAULT;
-	    } else {
-	    	if (RestConstants.REPRESENTATION_REF.equals(requested)) {
+		if (StringUtils.isEmpty(requested)) {
+			return Representation.DEFAULT;
+		} else {
+			if (RestConstants.REPRESENTATION_REF.equals(requested)) {
 				return Representation.REF;
-	    	} else if (RestConstants.REPRESENTATION_DEFAULT.equals(requested)) {
+			} else if (RestConstants.REPRESENTATION_DEFAULT.equals(requested)) {
 				return Representation.DEFAULT;
 			} else if (RestConstants.REPRESENTATION_FULL.equals(requested)) {
 				return Representation.FULL;
 			} else if (requested.startsWith(RestConstants.REPRESENTATION_CUSTOM_PREFIX)) {
 				return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
 			}
-	    }
-	    throw new APIException("Unknown representation: " + requested);
+		}
+		throw new APIException("Unknown representation: " + requested);
 	}
-
+	
 	/**
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResource(java.lang.Class)
 	 */
 	@Override
-    public <R extends Resource> R getResource(Class<R> resourceClass) {
-	    Resource resource = resourceSingletons.get(resourceClass);
-	    if (resource == null) {
-	    	try {
-	    		resource = resourceClass.newInstance();
-	    	} catch (Exception ex) {
-	    		throw new APIException("Failed to instantiate " + resourceClass, ex);
-	    	}
-	    	resourceSingletons.put(resourceClass, resource);
-	    }
-	    return (R) resource;
-    }
-
+	public <R extends Resource> R getResource(Class<R> resourceClass) {
+		Resource resource = resourceSingletons.get(resourceClass);
+		if (resource == null) {
+			try {
+				resource = resourceClass.newInstance();
+			}
+			catch (Exception ex) {
+				throw new APIException("Failed to instantiate " + resourceClass, ex);
+			}
+			resourceSingletons.put(resourceClass, resource);
+		}
+		return (R) resource;
+	}
+	
 }

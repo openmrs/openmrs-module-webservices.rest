@@ -81,7 +81,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.SimpleObject)
@@ -106,7 +106,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		delete(delegate, reason, context);
 	}
-		
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Purgeable#purge(java.lang.String)
 	 */
@@ -243,5 +243,5 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new RuntimeException("Failed to get URI from sub-resource " + delegate + " with annotation " + sub);
 		}
 	}
-		
+	
 }

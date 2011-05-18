@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * core web application does.)
  */
 public abstract class BaseRestController {
-
+	
 	@ExceptionHandler(Exception.class)
 	public void handleException(Exception ex, HttpServletResponse response) throws Exception {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
@@ -38,8 +38,7 @@ public abstract class BaseRestController {
 			errorCode = ann.value().value();
 			if (StringUtils.isNotEmpty(ann.reason()))
 				errorDetail = ann.reason();
-		}
-		else if (ex instanceof APIException) {
+		} else if (ex instanceof APIException) {
 			// TODO how do we determine whether it's client error or server error? For now we always assume client error
 			errorCode = HttpServletResponse.SC_BAD_REQUEST;
 		}
@@ -58,5 +57,5 @@ public abstract class BaseRestController {
 		}
 		response.sendError(errorCode, errorDetail);
 	}
-
+	
 }

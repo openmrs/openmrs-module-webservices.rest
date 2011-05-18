@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("temp hack")
 @Handler(supports = OpenmrsData.class)
 public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsData> {
-
+	
 	@Override
 	public void purge(OpenmrsData data, RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
@@ -39,15 +39,15 @@ public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsDat
 	public void delete(OpenmrsData data, String reason, RequestContext context) throws ResponseException {
 		throw new RuntimeException("Not Implemented");
 	}
-
+	
 	@Override
-    public OpenmrsData getByUniqueId(String uniqueId) {
+	public OpenmrsData getByUniqueId(String uniqueId) {
 		throw new RuntimeException("Not Implemented");
-    }
-
+	}
+	
 	@Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
-    }
+	}
 	
 }

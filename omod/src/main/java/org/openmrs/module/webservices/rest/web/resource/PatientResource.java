@@ -36,53 +36,53 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
 @Resource("patient")
-@Handler(supports=Patient.class)
+@Handler(supports = Patient.class)
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
-    public PatientResource() {
-	    remappedProperties.put("preferredIdentifier", "patientIdentifier");
-    }
-    
-    @PropertySetter("preferredIdentifier")
-    public static void setPreferredIdentifier(Patient instance, PatientIdentifier id) {
-    	if (id.getId() == null) {
-    		// adding a new identifier
-    		id.setPreferred(true);
-    		instance.addIdentifier(id);
-    	} else {
-    		// switching which identifier is preferred
-    		for (PatientIdentifier existing : instance.getActiveIdentifiers()) {
-    			if (existing.isPreferred() && !existing.equals(id))
-    				existing.setPreferred(false);
-    		}
-    		id.setPreferred(true);
-    		instance.addIdentifier(id);
-    	}
-    }
-    
-    /**
-     * FIND OUT HOW TO SET THIS VIA THE PERSON PERSON INSTEAD
-     * @param instance
-     * @param name
-     */
-    @PropertySetter("preferredName")
-    public static void setPreferredName(Patient instance, PersonName name) {
-    	if (name.getId() == null) {
-    		// adding a new identifier
-    		name.setPreferred(true);
-    		instance.addName(name);
-    	} else {
-    		// switching which name is preferred
-    		for (PersonName existing : instance.getNames()) {
-    			if (existing.isVoided())
-    				continue;
-    			if (existing.isPreferred() && !existing.equals(name))
-    				existing.setPreferred(false);
-    		}
-    		name.setPreferred(true);
-    		instance.addName(name);
-    	}
-    }
+	public PatientResource() {
+		remappedProperties.put("preferredIdentifier", "patientIdentifier");
+	}
+	
+	@PropertySetter("preferredIdentifier")
+	public static void setPreferredIdentifier(Patient instance, PatientIdentifier id) {
+		if (id.getId() == null) {
+			// adding a new identifier
+			id.setPreferred(true);
+			instance.addIdentifier(id);
+		} else {
+			// switching which identifier is preferred
+			for (PatientIdentifier existing : instance.getActiveIdentifiers()) {
+				if (existing.isPreferred() && !existing.equals(id))
+					existing.setPreferred(false);
+			}
+			id.setPreferred(true);
+			instance.addIdentifier(id);
+		}
+	}
+	
+	/**
+	 * FIND OUT HOW TO SET THIS VIA THE PERSON PERSON INSTEAD
+	 * @param instance
+	 * @param name
+	 */
+	@PropertySetter("preferredName")
+	public static void setPreferredName(Patient instance, PersonName name) {
+		if (name.getId() == null) {
+			// adding a new identifier
+			name.setPreferred(true);
+			instance.addName(name);
+		} else {
+			// switching which name is preferred
+			for (PersonName existing : instance.getNames()) {
+				if (existing.isVoided())
+					continue;
+				if (existing.isPreferred() && !existing.equals(name))
+					existing.setPreferred(false);
+			}
+			name.setPreferred(true);
+			instance.addName(name);
+		}
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -109,9 +109,9 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("personAddress", Representation.REF);
 			description.addProperty("activeIdentifiers", Representation.REF);
 			description.addProperty("activeAttributes", Representation.REF);
-	    	description.addProperty("uri", findMethod("getUri"));
-	    	return description;
-	    } else if (rep instanceof FullRepresentation) {
+			description.addProperty("uri", findMethod("getUri"));
+			return description;
+		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
@@ -130,32 +130,32 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
-	    }
-	    return null;
+		}
+		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
-    public Patient newDelegate() {
-	    return new Patient();
-    }
+	public Patient newDelegate() {
+		return new Patient();
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-    public Patient save(Patient patient) {
-	    return Context.getPatientService().savePatient(patient);
-    }
-
+	public Patient save(Patient patient) {
+		return Context.getPatientService().savePatient(patient);
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Patient getByUniqueId(String uuid) {
-	    return Context.getPatientService().getPatientByUuid(uuid);
+		return Context.getPatientService().getPatientByUuid(uuid);
 	}
 	
 	/**
@@ -167,7 +167,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-	    Context.getPatientService().voidPatient(patient, reason);
+		Context.getPatientService().voidPatient(patient, reason);
 	}
 	
 	/**
@@ -187,7 +187,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	protected List<Patient> doSearch(String query, RequestContext context) {
-	    return Context.getPatientService().getPatients(query, context.getStartIndex(), context.getLimit());
+		return Context.getPatientService().getPatients(query, context.getStartIndex(), context.getLimit());
 	}
 	
 	/**
@@ -195,7 +195,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	protected List<String> propertiesToExposeAsSubResources() {
-	    return Arrays.asList("identifiers");
+		return Arrays.asList("identifiers");
 	}
 	
 	/**

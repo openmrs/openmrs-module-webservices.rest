@@ -24,5 +24,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/rest/patient")
 public class PatientController extends BaseCrudController<PatientResource> {
-		
+
 }

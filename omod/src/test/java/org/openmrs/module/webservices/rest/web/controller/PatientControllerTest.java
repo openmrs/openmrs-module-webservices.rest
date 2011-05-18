@@ -33,7 +33,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
 			toPrint = mapper.writeValueAsString(object);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			toPrint = "" + object;
 		}
 		if (label != null)
@@ -44,7 +45,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	private WebRequest emptyRequest() {
 		return new ServletWebRequest(new MockHttpServletRequest());
 	}
-			
+	
 	/**
 	 * @see PatientController#createPatient(SimpleObject,WebRequest)
 	 * @verifies create a new patient
@@ -74,19 +75,19 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-     * @see PatientController#getPatient(String,WebRequest)
-     * @verifies get a full representation of a patient
-     */
-    @Test
-    public void getPatient_shouldGetAFullRepresentationOfAPatient() throws Exception {
-    	MockHttpServletRequest req = new MockHttpServletRequest();
-    	req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-    	Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
+	 * @see PatientController#getPatient(String,WebRequest)
+	 * @verifies get a full representation of a patient
+	 */
+	@Test
+	public void getPatient_shouldGetAFullRepresentationOfAPatient() throws Exception {
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		log("Patient fetched (full)", result);
-    }
+	}
 	
 	/**
 	 * FAILING. I CAN'T FIGURE OUT WHY THIS METHOD IS NOT THROWING AN EXCEPTION WHEN THE PURGE
@@ -99,8 +100,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test(expected = APIException.class)
 	public void purgePatient_shouldFailToPurgeAPatientWithDependentData() throws Exception {
 		Assert.assertNotSame(0, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
-		new PatientController().purge("5946f880-b197-400b-9caa-a3c661d23041", emptyRequest(),
-		    new MockHttpServletResponse());
+		new PatientController().purge("5946f880-b197-400b-9caa-a3c661d23041", emptyRequest(), new MockHttpServletResponse());
 		Assert.assertEquals(0, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
 	}
 	
@@ -113,24 +113,27 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
+		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(),
+		    new MockHttpServletResponse());
 		log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
 	
 	/**
 	 * DOES NOT WORK YET BECAUSE WE DON'T HAVE A CONVERTER FOR CONCEPTS
-     * @see PatientController#updatePatient(String,SimpleObject,WebRequest)
-     * @verifies change a complex property on a patient
-     */
-    @Test
-    @Ignore
-    public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
-		SimpleObject post = new ObjectMapper().readValue("{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(), new MockHttpServletResponse());
+	 * @see PatientController#updatePatient(String,SimpleObject,WebRequest)
+	 * @verifies change a complex property on a patient
+	 */
+	@Test
+	@Ignore
+	public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
+		SimpleObject post = new ObjectMapper().readValue(
+		    "{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
+		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(),
+		    new MockHttpServletResponse());
 		log("Set patient as dead", editedPatient);
 		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPatient, "causeOfDeath"));
-    }
+	}
 	
 	/**
 	 * @see PatientController#voidPatient(Patient,String,WebRequest)
@@ -146,30 +149,30 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(pat.isVoided());
 		Assert.assertEquals("unit test", pat.getVoidReason());
 	}
-
+	
 	/**
-     * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
-     * @verifies return no results if there are no matching patients
-     */
-    @Test
-    public void findPatients_shouldReturnNoResultsIfThereAreNoMatchingPatients() throws Exception {
-	    List<Object> results = new PatientController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(0, results.size());
-    }
-
+	 * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
+	 * @verifies return no results if there are no matching patients
+	 */
+	@Test
+	public void findPatients_shouldReturnNoResultsIfThereAreNoMatchingPatients() throws Exception {
+		List<Object> results = new PatientController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(0, results.size());
+	}
+	
 	/**
-     * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
-     * @verifies find matching patients
-     */
-    @Test
-    public void findPatients_shouldFindMatchingPatients() throws Exception {
-	    List<Object> results = new PatientController().search("Horatio", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(1, results.size());
-	    log("Found " + results.size() + " patient(s)", results);
-	    Object result = results.get(0);
-	    Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
-	    Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
-	    Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-    }
-
+	 * @see PatientController#findPatients(String,WebRequest,HttpServletResponse)
+	 * @verifies find matching patients
+	 */
+	@Test
+	public void findPatients_shouldFindMatchingPatients() throws Exception {
+		List<Object> results = new PatientController().search("Horatio", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(1, results.size());
+		log("Found " + results.size() + " patient(s)", results);
+		Object result = results.get(0);
+		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+	}
+	
 }

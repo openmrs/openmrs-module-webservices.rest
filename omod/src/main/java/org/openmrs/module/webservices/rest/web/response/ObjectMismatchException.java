@@ -22,13 +22,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Subresource with given uuid doesn't match the uuid of the main resource")
 public class ObjectMismatchException extends ResponseException {
-
+	
 	private static final long serialVersionUID = 1L;
 	
-	public ObjectMismatchException() { }
+	public ObjectMismatchException() {
+	}
 	
 	public ObjectMismatchException(String message, Throwable cause) {
-	    super(message, cause);
-    }
-
+		super(message, cause);
+	}
+	
 }

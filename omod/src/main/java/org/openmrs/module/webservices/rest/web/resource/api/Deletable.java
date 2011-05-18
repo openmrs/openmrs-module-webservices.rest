@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.resource.api;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-
 /**
  * Interface implemented by resources that support the standard-pattern Delete operation
  */
@@ -30,5 +29,5 @@ public interface Deletable extends Resource {
 	 * @throws ResponseException
 	 */
 	void delete(String uuid, String reason, RequestContext context) throws ResponseException;
-
+	
 }

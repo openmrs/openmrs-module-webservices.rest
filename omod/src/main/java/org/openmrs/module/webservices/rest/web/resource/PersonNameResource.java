@@ -28,10 +28,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@SubResource(parent=PersonResource.class, path="names", parentProperty="person")
-@Handler(supports=PersonName.class, order=0)
+@SubResource(parent = PersonResource.class, path = "names", parentProperty = "person")
+@Handler(supports = PersonName.class, order = 0)
 public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
-
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
@@ -43,9 +43,9 @@ public class PersonNameResource extends DataDelegatingCrudResource<PersonName> {
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		}
-	    return null;
+		return null;
 	}
-
+	
 	@Override
 	public PersonName getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonNameByUuid(uuid);

@@ -43,8 +43,9 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findEncounters_shouldReturnNoResultsIfThereAreNoMatchingEncounters() throws Exception {
-	    List<Object> results = new EncounterController().search("noencounter", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(0, results.size());
+		List<Object> results = new EncounterController()
+		        .search("noencounter", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(0, results.size());
 	}
 	
 	/**
@@ -53,8 +54,8 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findEncounters_shouldFindMatchingEncounters() throws Exception {
-	    List<Object> results = new EncounterController().search("Test", emptyRequest(), new MockHttpServletResponse());
-	    Assert.assertEquals(0, results.size());
+		List<Object> results = new EncounterController().search("Test", emptyRequest(), new MockHttpServletResponse());
+		Assert.assertEquals(0, results.size());
 	}
 	
 	/**
@@ -69,17 +70,17 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "encounterType"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "patient"));
 	}
-		
+	
 	/**
 	 * @see EncounterController#purge(String,WebRequest,HttpServletResponse)
 	 * @verifies fail to purge a encounter with dependent data
 	 */
-	@Test(expected=Exception.class)
+	@Test(expected = Exception.class)
 	public void purgeEncounter_shouldNotPurgeAEncounterWithDependentData() throws Exception {
 		int size = Context.getEncounterService().getEncountersByPatient(new Patient(7)).size();
 		new EncounterController().purge("6519d653-393b-4118-9c83-a3715b82d4ac", emptyRequest(),
 		    new MockHttpServletResponse());
-		Assert.assertEquals(size-1, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
+		Assert.assertEquals(size - 1, Context.getEncounterService().getEncountersByPatient(new Patient(7)).size());
 	}
 	
 	/**
@@ -90,8 +91,10 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void updateEncounter_shouldChangeAPropertyOnAEncounter() throws Exception {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		SimpleObject post = new ObjectMapper().readValue("{\"encounterDatetime\":\"" + df.format(now) + "\"}", SimpleObject.class);
-		Object editedPatient = new EncounterController().update("6519d653-393b-4118-9c83-a3715b82d4ac", post, emptyRequest(), new MockHttpServletResponse());
+		SimpleObject post = new ObjectMapper().readValue("{\"encounterDatetime\":\"" + df.format(now) + "\"}",
+		    SimpleObject.class);
+		Object editedPatient = new EncounterController().update("6519d653-393b-4118-9c83-a3715b82d4ac", post,
+		    emptyRequest(), new MockHttpServletResponse());
 		Assert.assertEquals(df.format(now), df.format(Context.getEncounterService().getEncounter(3).getEncounterDatetime()));
 	}
 	

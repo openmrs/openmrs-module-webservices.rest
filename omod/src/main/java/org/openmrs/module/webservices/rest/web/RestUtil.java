@@ -30,9 +30,9 @@ import org.springframework.web.context.request.WebRequest;
  * 
  */
 public class RestUtil {
-
+	
 	private static Log log = LogFactory.getLog(RestUtil.class);
-
+	
 	/**
 	 * Looks up the admin defined global property for the system limit
 	 * 
@@ -41,19 +41,19 @@ public class RestUtil {
 	 * @see RestConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService().getGlobalProperty(
-				RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
+		String limit = Context.getAdministrationService().getGlobalProperty(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
-			} catch (NumberFormatException nfex) {
+			}
+			catch (NumberFormatException nfex) {
 				return RestConstants.MAX_RESULTS_DEFAULT;
 			}
 		} else {
 			return RestConstants.MAX_RESULTS_DEFAULT;
 		}
 	}
-
+	
 	/*
 	 * TODO - move logic from here to a method to deal with custom
 	 * representations Converts the given <code>openmrsObject</code> into a
@@ -261,34 +261,30 @@ public class RestUtil {
 	 */
 	public static RequestContext getRequestContext(WebRequest request) {
 		RequestContext ret = new RequestContext();
-
+		
 		// get the "v" param for the representations
-		String temp = request
-				.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
+		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if (StringUtils.isEmpty(temp)) {
 			ret.setRepresentation(Representation.DEFAULT);
 		} else if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
 			throw new IllegalArgumentException("Do not specify ?v=default");
 		} else {
-			ret.setRepresentation(Context.getService(RestService.class)
-					.getRepresentation(temp));
+			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
-
+		
 		// fetch the "limit" param
-		Integer limit = getIntegerParam(request,
-				RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
+		Integer limit = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
 		if (limit != null)
 			ret.setLimit(limit);
-
+		
 		// fetch the startIndex param
-		Integer startIndex = getIntegerParam(request,
-				RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
+		Integer startIndex = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
 		if (startIndex != null)
 			ret.setStartIndex(startIndex);
-
+		
 		return ret;
 	}
-
+	
 	/**
 	 * Convenience method to get the given param out of the given request.
 	 * 
@@ -305,23 +301,22 @@ public class RestUtil {
 			try {
 				Integer tempInt = new Integer(paramString);
 				return tempInt; // return the valid value
-			} catch (NumberFormatException e) {
-				log.debug("unable to parse '" + param
-						+ "' parameter into a valid integer: " + paramString);
+			}
+			catch (NumberFormatException e) {
+				log.debug("unable to parse '" + param + "' parameter into a valid integer: " + paramString);
 			}
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Sets the HTTP status on the response according to the exception
 	 * 
 	 * @param ex
 	 * @param response
 	 */
-	public static void setResponseStatus(Throwable ex,
-			HttpServletResponse response) {
+	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			if (StringUtils.isNotBlank(ann.reason()))
@@ -332,7 +327,7 @@ public class RestUtil {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	
 	/**
 	 * Sets the HTTP status on the response to no content, and returns an empty
 	 * value, suitable for returning from a @ResponseBody annotated Spring
@@ -345,7 +340,7 @@ public class RestUtil {
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 		return "";
 	}
-
+	
 	/**
 	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the
 	 * Location header attribute
@@ -359,9 +354,9 @@ public class RestUtil {
 		try {
 			String uri = (String) PropertyUtils.getProperty(created, "uri");
 			response.addHeader("Location", uri);
-		} catch (Exception ex) {
 		}
+		catch (Exception ex) {}
 		return created;
 	}
-
+	
 }

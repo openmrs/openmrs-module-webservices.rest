@@ -32,5 +32,5 @@ public interface Updatable extends Resource {
 	 * @throws ResponseException 
 	 */
 	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException;
-
+	
 }

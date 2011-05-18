@@ -26,12 +26,15 @@ import org.springframework.web.context.request.WebRequest;
  * the controller inherits those methods from a subclass
  */
 public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSensitiveTest {
-
+	
 	String idTypeUuid = "1a339fe9-38bc-4ab3-b180-320988c0b968";
 	
 	private PatientService service;
+	
 	private PatientIdentifierTypeController controller;
+	
 	private WebRequest request;
+	
 	private HttpServletResponse response;
 	
 	@Before
@@ -48,13 +51,14 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
 			toPrint = mapper.writeValueAsString(object);
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			toPrint = "" + object;
 		}
 		if (label != null)
 			toPrint = label + ": " + toPrint;
 		System.out.println(toPrint);
-	}	
+	}
 	
 	@Test
 	public void shouldGetOne() throws Exception {
@@ -65,7 +69,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		Assert.assertEquals("OpenMRS Identification Number", PropertyUtils.getProperty(result, "name"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-
+	
 	@Test
 	public void shouldListAll() throws Exception {
 		List<Object> result = controller.getAll(request, response);
@@ -77,7 +81,8 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	@Test
 	public void shouldCreate() throws Exception {
 		int before = service.getAllPatientIdentifierTypes().size();
-		String json = "{ \"name\":\"My Type\", \"description\":\"My Way\", \"required\":true, \"checkDigit\":true, \"validator\":\"" + VerhoeffIdentifierValidator.class.getName() + "\" }";
+		String json = "{ \"name\":\"My Type\", \"description\":\"My Way\", \"required\":true, \"checkDigit\":true, \"validator\":\""
+		        + VerhoeffIdentifierValidator.class.getName() + "\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object created = controller.create(post, request, response);
 		log("Created", created);
@@ -96,7 +101,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		Assert.assertEquals("OpenMRS Identification Number", updated.getName());
 		Assert.assertEquals("something new", updated.getDescription());
 	}
-
+	
 	@Test
 	public void shouldDelete() throws Exception {
 		PatientIdentifierType idType = service.getPatientIdentifierTypeByUuid(idTypeUuid);
@@ -107,12 +112,14 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		Assert.assertEquals("unit test", idType.getRetireReason());
 	}
 	
-	@Test(expected=Exception.class)
+	@Test(expected = Exception.class)
 	public void shouldFailToPurge() throws Exception {
-		Number before = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier_type", true).get(0).get(0);
+		Number before = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from patient_identifier_type", true).get(0).get(0);
 		controller.purge(idTypeUuid, request, response);
 		Context.flushSession();
-		Number after = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier_type", true).get(0).get(0);
+		Number after = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from patient_identifier_type", true).get(0).get(0);
 		Assert.assertEquals(before.intValue() - 1, after.intValue());
 	}
 	

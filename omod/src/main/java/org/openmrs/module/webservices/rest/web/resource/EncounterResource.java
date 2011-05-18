@@ -29,12 +29,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Resource for Encounters, supporting standard CRUD operations 
  */
 @Resource("encounter")
-@Handler(supports=Encounter.class, order=0)
+@Handler(supports = Encounter.class, order = 0)
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-	    if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("encounterDatetime");
@@ -45,23 +45,23 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("provider", new RefRepresentation());
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
-	    }
-	    return null;
+		}
+		return null;
 	}
-		
+	
 	@Override
 	public Encounter newDelegate() {
-	    return new Encounter();
+		return new Encounter();
 	}
 	
 	@Override
 	public Encounter save(Encounter enc) {
-	    return Context.getEncounterService().saveEncounter(enc);
+		return Context.getEncounterService().saveEncounter(enc);
 	}
 	
 	@Override
 	public Encounter getByUniqueId(String uuid) {
-	    return Context.getEncounterService().getEncounterByUuid(uuid);
+		return Context.getEncounterService().getEncounterByUuid(uuid);
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-	    Context.getEncounterService().voidEncounter(enc, reason);
+		Context.getEncounterService().voidEncounter(enc, reason);
 	}
 	
 	@Override
@@ -81,5 +81,5 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		}
 		Context.getEncounterService().purgeEncounter(enc);
 	}
-
+	
 }

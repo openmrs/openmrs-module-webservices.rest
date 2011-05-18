@@ -37,73 +37,73 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for User, supporting standard CRUD operations
  */
 @Resource("user")
-@Handler(supports=UserAndPassword.class, order=0)
+@Handler(supports = UserAndPassword.class, order = 0)
 public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword> {
 	
-    public UserResource() {
-        
-    }
-    
+	public UserResource() {
+		
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        if (rep instanceof RefRepresentation) {
+		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("display", findMethod("getDisplayString"));
 			return description;
-        }else if (rep instanceof DefaultRepresentation) {
+		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("username");
-            description.addProperty("systemId");
-            description.addProperty("userProperties");
+			description.addProperty("systemId");
+			description.addProperty("userProperties");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("roles", Representation.REF);
-	    	description.addProperty("uri", findMethod("getUri"));
-	    	return description;
-	    } else if (rep instanceof FullRepresentation) {
+			description.addProperty("uri", findMethod("getUri"));
+			return description;
+		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("username");
-            description.addProperty("systemId");
-            description.addProperty("userProperties");
+			description.addProperty("systemId");
+			description.addProperty("userProperties");
 			description.addProperty("person", Representation.DEFAULT);
 			description.addProperty("roles", Representation.REF);
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
-	    }
-	    return null;
+		}
+		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
-    public UserAndPassword newDelegate() {
-	    return new UserAndPassword();
-    }
-
-    /**
+	public UserAndPassword newDelegate() {
+		return new UserAndPassword();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-    public UserAndPassword save(UserAndPassword user) {
-        return new UserAndPassword (Context.getUserService().saveUser( user.getUser(), user.getPassword()) );
-
-    }
+	public UserAndPassword save(UserAndPassword user) {
+		return new UserAndPassword(Context.getUserService().saveUser(user.getUser(), user.getPassword()));
+		
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public UserAndPassword getByUniqueId(String uuid) {
-	    return new UserAndPassword(Context.getUserService().getUserByUuid( uuid ));
+		return new UserAndPassword(Context.getUserService().getUserByUuid(uuid));
 	}
 	
 	/**
@@ -115,7 +115,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-	    Context.getUserService().retireUser( Context.getUserService().getUser( user.getId() ), reason );
+		Context.getUserService().retireUser(Context.getUserService().getUser(user.getId()), reason);
 	}
 	
 	/**
@@ -127,7 +127,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getUserService().purgeUser( user.getUser() );
+		Context.getUserService().purgeUser(user.getUser());
 	}
 	
 	/**
@@ -135,48 +135,46 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	protected List<UserAndPassword> doSearch(String query, RequestContext context) {
-        ArrayList users = new ArrayList();
-        for(User user : Context.getUserService().getUsers( query, null, false ))
-        {
-            users.add( new UserAndPassword(user) );
-        }
-	    return users;
+		ArrayList users = new ArrayList();
+		for (User user : Context.getUserService().getUsers(query, null, false)) {
+			users.add(new UserAndPassword(user));
+		}
+		return users;
 	}
-
-    @Override
-    public Object getProperty( UserAndPassword instance, String propertyName ) throws ConversionException
-    {
-        try {
-            if(propertyName.equals( "password") )
-                return PropertyUtils.getProperty(instance, propertyName);
-            else
-                return PropertyUtils.getProperty(instance.getUser(), propertyName);
+	
+	@Override
+	public Object getProperty(UserAndPassword instance, String propertyName) throws ConversionException {
+		try {
+			if (propertyName.equals("password"))
+				return PropertyUtils.getProperty(instance, propertyName);
+			else
+				return PropertyUtils.getProperty(instance.getUser(), propertyName);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
-    }
-
-    @Override
-    public void setProperty( UserAndPassword instance, String propertyName, Object value ) throws ConversionException
-    {
-        try {
-            if(propertyName.equals( "password")){
-                Class<?> expectedType = PropertyUtils.getPropertyType(instance, propertyName);
-                if (value != null && !expectedType.isAssignableFrom(value.getClass()))
-                    value = ConversionUtil.convert(value, expectedType);
-                PropertyUtils.setProperty(instance, propertyName, value);
-            } else{
-                Class<?> expectedType = PropertyUtils.getPropertyType(instance.getUser(), propertyName);
-                if (value != null && !expectedType.isAssignableFrom(value.getClass()))
-                    value = ConversionUtil.convert(value, expectedType);
-                PropertyUtils.setProperty(instance.getUser(), propertyName, value);
-            }
-        }catch (Exception ex) {
+	}
+	
+	@Override
+	public void setProperty(UserAndPassword instance, String propertyName, Object value) throws ConversionException {
+		try {
+			if (propertyName.equals("password")) {
+				Class<?> expectedType = PropertyUtils.getPropertyType(instance, propertyName);
+				if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+					value = ConversionUtil.convert(value, expectedType);
+				PropertyUtils.setProperty(instance, propertyName, value);
+			} else {
+				Class<?> expectedType = PropertyUtils.getPropertyType(instance.getUser(), propertyName);
+				if (value != null && !expectedType.isAssignableFrom(value.getClass()))
+					value = ConversionUtil.convert(value, expectedType);
+				PropertyUtils.setProperty(instance.getUser(), propertyName, value);
+			}
+		}
+		catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
-    }
-    
+	}
+	
 	/**
 	 * @param user
 	 * @return username + fullname (for concise display purposes)

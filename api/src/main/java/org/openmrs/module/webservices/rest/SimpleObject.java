@@ -20,11 +20,11 @@ import java.util.LinkedHashMap;
  * pairs. If an object has subobjects those are just lists of SimpleObjects
  */
 public class SimpleObject extends LinkedHashMap<String, Object> {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	public SimpleObject() {
 		super();
 	}
-
+	
 }

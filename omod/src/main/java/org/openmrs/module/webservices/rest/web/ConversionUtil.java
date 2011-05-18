@@ -159,7 +159,7 @@ public class ConversionUtil {
 	 * @throws ConversionException
 	 */
 	public static Object getPropertyWithRepresentation(Object bean, String propertyName, Representation rep)
-	                                                                                                        throws ConversionException {
+	        throws ConversionException {
 		Object o;
 		try {
 			o = PropertyUtils.getProperty(bean, propertyName);

@@ -20,5 +20,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/rest/patient/{parentUuid}/identifiers")
 public class PatientIdentifierController extends BaseSubResourceController<PatientIdentifierResource> {
-	
+
 }

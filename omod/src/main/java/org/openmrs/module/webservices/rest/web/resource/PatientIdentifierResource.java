@@ -33,10 +33,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent=PatientResource.class, parentProperty="REMOVE-THIS-PROPERTY", path="identifiers")
-@Handler(supports=PatientIdentifier.class, order=0)
+@SubResource(parent = PatientResource.class, parentProperty = "REMOVE-THIS-PROPERTY", path = "identifiers")
+@Handler(supports = PatientIdentifier.class, order = 0)
 public class PatientIdentifierResource extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource> {
-
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof RefRepresentation) {
@@ -67,7 +67,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 		}
 		return null;
 	}
-
+	
 	private PatientService service() {
 		return Context.getPatientService();
 	}
@@ -77,7 +77,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 */
 	@Override
 	public Patient getParent(PatientIdentifier instance) {
-	    return instance.getPatient();
+		return instance.getPatient();
 	}
 	
 	/**
@@ -85,7 +85,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 */
 	@Override
 	public void setParent(PatientIdentifier instance, Patient patient) {
-	    instance.setPatient(patient);
+		instance.setPatient(patient);
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	}
 	
 	@Override
-    public PatientIdentifier newDelegate() {
+	public PatientIdentifier newDelegate() {
 		return new PatientIdentifier();
 	}
 	
@@ -128,16 +128,16 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 */
 	@Override
 	public List<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
-	    return parent.getActiveIdentifiers();
+		return parent.getActiveIdentifiers();
 	}
 	
 	/**
 	 * @param id
 	 * @return identifier type + identifier (for concise display purposes)
 	 *
-	*/
+	 */
 	public String getDisplayString(PatientIdentifier id) {
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}
-
+	
 }

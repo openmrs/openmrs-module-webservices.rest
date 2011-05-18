@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * definitions for property "retired"' you would otherwise get from Jackson JSON.
  */
 @Resource("temp hack")
-@Handler(supports=OpenmrsMetadata.class)
+@Handler(supports = OpenmrsMetadata.class)
 public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<OpenmrsMetadata> {
 	
 	@Override
@@ -34,15 +34,15 @@ public class TempHackMetadataConverter extends MetadataDelegatingCrudResource<Op
 	protected OpenmrsMetadata newDelegate() {
 		throw new RuntimeException("Not Implemented");
 	}
-
-	@Override
-    public OpenmrsMetadata getByUniqueId(String uniqueId) {
-		throw new RuntimeException("Not Implemented");
-    }
 	
 	@Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public OpenmrsMetadata getByUniqueId(String uniqueId) {
+		throw new RuntimeException("Not Implemented");
+	}
+	
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
-    }
+	}
 	
 }

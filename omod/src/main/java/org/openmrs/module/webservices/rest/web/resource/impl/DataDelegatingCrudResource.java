@@ -27,31 +27,31 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
  */
 public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends DelegatingCrudResource<T> {
 	
-    @RepHandler(RefRepresentation.class)
-    public SimpleObject asRef(T delegate) {
-    	SimpleObject ret = new SimpleObject();
-    	ret.put("uuid", delegate.getUuid());
-    	ret.put("display", delegate.toString());
-    	ret.put("uri", getUri(delegate));
-    	return ret;
-    }
-    
-    @RepHandler(DefaultRepresentation.class)
-    public SimpleObject asDefaultRep(T delegate) throws Exception {
-    	SimpleObject ret = new SimpleObject();
-    	ret.put("uuid", delegate.getUuid());
-    	ret.put("display", delegate.toString());
-    	ret.put("temp-hack", "this method should be overridden");
-    	ret.put("uri", getUri(delegate));
-    	return ret;
-    }
-    
-    public SimpleObject getAuditInfo(T delegate) throws Exception {
-    	SimpleObject ret = new SimpleObject();
-    	ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
-    	ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
-    	// TODO: add retired/retiredBy/dateRetired/retireReason/
-    	return ret;
-    }
-    
+	@RepHandler(RefRepresentation.class)
+	public SimpleObject asRef(T delegate) {
+		SimpleObject ret = new SimpleObject();
+		ret.put("uuid", delegate.getUuid());
+		ret.put("display", delegate.toString());
+		ret.put("uri", getUri(delegate));
+		return ret;
+	}
+	
+	@RepHandler(DefaultRepresentation.class)
+	public SimpleObject asDefaultRep(T delegate) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("uuid", delegate.getUuid());
+		ret.put("display", delegate.toString());
+		ret.put("temp-hack", "this method should be overridden");
+		ret.put("uri", getUri(delegate));
+		return ret;
+	}
+	
+	public SimpleObject getAuditInfo(T delegate) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
+		// TODO: add retired/retiredBy/dateRetired/retireReason/
+		return ret;
+	}
+	
 }

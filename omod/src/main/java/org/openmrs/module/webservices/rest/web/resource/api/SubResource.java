@@ -19,14 +19,14 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-
 public interface SubResource extends Resource {
-
+	
 	Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException;
-
+	
 	Object retrieve(String parentUniqueId, String uuid, RequestContext context) throws ResponseException;
 	
-	Object update(String parentUniqueId, String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException;
+	Object update(String parentUniqueId, String uuid, SimpleObject propertiesToUpdate, RequestContext context)
+	        throws ResponseException;
 	
 	void delete(String parentUniqueId, String uuid, String reason, RequestContext context) throws ResponseException;
 	

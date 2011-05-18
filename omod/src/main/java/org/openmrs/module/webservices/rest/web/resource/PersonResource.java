@@ -31,17 +31,16 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Just a placeholder representation. Was required for User (https://tickets.openmrs.org/browse/RESTWS-16)
  */
 @Resource("person")
-@Handler(supports=Person.class, order=0)
+@Handler(supports = Person.class, order = 0)
 public class PersonResource extends DataDelegatingCrudResource<Person> {
-
-    public PersonResource() {
-        
-    }
-    
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription( Representation rep )
-    {
-        if (rep instanceof RefRepresentation) {
+	
+	public PersonResource() {
+		
+	}
+	
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("uri", findMethod("getUri"));
@@ -60,9 +59,9 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("preferredName", "personName", Representation.REF);
 			description.addProperty("personAddress", Representation.REF);
 			description.addProperty("activeAttributes", Representation.REF);
-	    	description.addProperty("uri", findMethod("getUri"));
-	    	return description;
-	    } else if (rep instanceof FullRepresentation) {
+			description.addProperty("uri", findMethod("getUri"));
+			return description;
+		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
@@ -80,41 +79,36 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
-	    }
-	    return null;
-    }
-    
-    @Override
-    public Person getByUniqueId( String uuid )
-    {
-        return Context.getPersonService().getPersonByUuid( uuid );
-    }
-
-    @Override
-    protected Person newDelegate()
-    {
-        return new Person();
-    }
-
-    @Override
-    protected Person save( Person person )
-    {
-        return Context.getPersonService().savePerson( person );
-    }
-
-    @Override
-    protected void delete( Person delegate, String reason, RequestContext context ) throws ResponseException
-    {
-        throw new UnsupportedOperationException( "Not supported yet." );
-    }
-
-    @Override
-    public void purge( Person delegate, RequestContext context ) throws ResponseException
-    {
-        throw new UnsupportedOperationException( "Not supported yet." );
-    }
-    
-    /**
+		}
+		return null;
+	}
+	
+	@Override
+	public Person getByUniqueId(String uuid) {
+		return Context.getPersonService().getPersonByUuid(uuid);
+	}
+	
+	@Override
+	protected Person newDelegate() {
+		return new Person();
+	}
+	
+	@Override
+	protected Person save(Person person) {
+		return Context.getPersonService().savePerson(person);
+	}
+	
+	@Override
+	protected void delete(Person delegate, String reason, RequestContext context) throws ResponseException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	@Override
+	public void purge(Person delegate, RequestContext context) throws ResponseException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	
+	/**
 	 * @param person
 	 * @return identifier + name (for concise display purposes)
 	 */

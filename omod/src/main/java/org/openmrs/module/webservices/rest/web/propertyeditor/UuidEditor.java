@@ -30,9 +30,11 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 public class UuidEditor extends PropertyEditorSupport {
 	
 	Class<? extends OpenmrsService> serviceClass;
+	
 	Method method;
-		
-	public UuidEditor(Class<? extends OpenmrsService> serviceClass, String methodName) throws SecurityException, NoSuchMethodException {
+	
+	public UuidEditor(Class<? extends OpenmrsService> serviceClass, String methodName) throws SecurityException,
+	        NoSuchMethodException {
 		this.serviceClass = serviceClass;
 		OpenmrsService service = Context.getService(serviceClass);
 		method = service.getClass().getMethod(methodName, String.class);
@@ -46,9 +48,11 @@ public class UuidEditor extends PropertyEditorSupport {
 			if (val == null)
 				throw new RuntimeWrappedException(new ObjectNotFoundException());
 			setValue(val);
-		} catch (IllegalAccessException ex) {
+		}
+		catch (IllegalAccessException ex) {
 			throw new RuntimeException(ex);
-		} catch (InvocationTargetException ex) {
+		}
+		catch (InvocationTargetException ex) {
 			throw new RuntimeException(ex);
 		}
 	}

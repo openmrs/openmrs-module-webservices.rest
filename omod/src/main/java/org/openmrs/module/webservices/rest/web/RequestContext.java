@@ -20,23 +20,23 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
  * Holds information related to a REST web service request
  */
 public class RequestContext {
-
+	
 	private Representation representation = new DefaultRepresentation();
-
+	
 	private Integer startIndex = 0;
-
+	
 	private Integer limit = RestUtil.getDefaultLimit();
-
+	
 	public RequestContext() {
 	}
-
+	
 	/**
 	 * @return the representation
 	 */
 	public Representation getRepresentation() {
 		return representation;
 	}
-
+	
 	/**
 	 * @param representation
 	 *            the representation to set
@@ -44,7 +44,7 @@ public class RequestContext {
 	public void setRepresentation(Representation representation) {
 		this.representation = representation;
 	}
-
+	
 	/**
 	 * Should be used to limit the number of main results returned by search
 	 * methods
@@ -56,7 +56,7 @@ public class RequestContext {
 	public Integer getLimit() {
 		return limit;
 	}
-
+	
 	/**
 	 * @param limit
 	 *            the limit to set
@@ -64,7 +64,7 @@ public class RequestContext {
 	public void setLimit(Integer limit) {
 		this.limit = limit;
 	}
-
+	
 	/**
 	 * Should be used by search methods to jump results to start with this
 	 * number in the list. Set by users in a request parameter
@@ -76,7 +76,7 @@ public class RequestContext {
 	public Integer getStartIndex() {
 		return startIndex;
 	}
-
+	
 	/**
 	 * @param startIndex
 	 *            the startIndex to set
@@ -84,5 +84,5 @@ public class RequestContext {
 	public void setStartIndex(Integer startIndex) {
 		this.startIndex = startIndex;
 	}
-
+	
 }

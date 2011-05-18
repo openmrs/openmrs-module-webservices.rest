@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Object with given uuid doesn't exist")
 public class ObjectNotFoundException extends ResponseException {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 }

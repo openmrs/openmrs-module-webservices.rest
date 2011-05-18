@@ -124,7 +124,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 */
 	@Override
 	public Object update(String parentUniqueId, String uuid, SimpleObject propertiesToUpdate, RequestContext context)
-	                                                                                                                 throws ResponseException {
+	        throws ResponseException {
 		T delegate = getByUniqueId(uuid);
 		if (delegate == null)
 			throw new ObjectNotFoundException();

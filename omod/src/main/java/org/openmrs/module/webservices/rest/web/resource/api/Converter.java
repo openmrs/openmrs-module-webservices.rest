@@ -27,7 +27,7 @@ public interface Converter<T> {
 	 * @return the result of converting the String input to a T
 	 */
 	T getByUniqueId(String string);
-
+	
 	/**
 	 * @param instance
 	 * @param rep
@@ -51,5 +51,5 @@ public interface Converter<T> {
 	 * @throws ConversionException
 	 */
 	void setProperty(T instance, String propertyName, Object value) throws ConversionException;
-
+	
 }

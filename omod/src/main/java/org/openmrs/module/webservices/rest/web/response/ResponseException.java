@@ -18,15 +18,15 @@ package org.openmrs.module.webservices.rest.web.response;
  * these if an error has occurred or a status needs to be shown to a user
  */
 public abstract class ResponseException extends Exception {
-
+	
 	public ResponseException() {
 		super();
 	}
 	
 	public ResponseException(String message, Throwable cause) {
-	    super(message, cause);
-    }
-
+		super(message, cause);
+	}
+	
 	private static final long serialVersionUID = 1L;
-
+	
 }

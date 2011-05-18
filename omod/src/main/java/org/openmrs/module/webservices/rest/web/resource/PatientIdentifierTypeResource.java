@@ -32,9 +32,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
 @Resource("patientidentifiertype")
-@Handler(supports=PatientIdentifierType.class, order=0)
+@Handler(supports = PatientIdentifierType.class, order = 0)
 public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResource<PatientIdentifierType> {
-
+	
 	private PatientService service() {
 		return Context.getPatientService();
 	}
@@ -43,7 +43,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -73,46 +73,46 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			return description;
 		}
 		return null;
-    }
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-    public PatientIdentifierType getByUniqueId(String uniqueId) {
-	    return service().getPatientIdentifierTypeByUuid(uniqueId);
-    }
+	public PatientIdentifierType getByUniqueId(String uniqueId) {
+		return service().getPatientIdentifierTypeByUuid(uniqueId);
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected List<PatientIdentifierType> doGetAll(RequestContext context) throws ResponseException {
-	    return service().getAllPatientIdentifierTypes(true);
+		return service().getAllPatientIdentifierTypes(true);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-    protected PatientIdentifierType newDelegate() {
-	   return new PatientIdentifierType();
-    }
-
+	protected PatientIdentifierType newDelegate() {
+		return new PatientIdentifierType();
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
 	@Override
-    protected PatientIdentifierType save(PatientIdentifierType delegate) {
-	    return service().savePatientIdentifierType(delegate);
-    }
-
+	protected PatientIdentifierType save(PatientIdentifierType delegate) {
+		return service().savePatientIdentifierType(delegate);
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-    public void purge(PatientIdentifierType delegate, RequestContext context) throws ResponseException {
-	    service().purgePatientIdentifierType(delegate);
-    }
-
+	public void purge(PatientIdentifierType delegate, RequestContext context) throws ResponseException {
+		service().purgePatientIdentifierType(delegate);
+	}
+	
 }

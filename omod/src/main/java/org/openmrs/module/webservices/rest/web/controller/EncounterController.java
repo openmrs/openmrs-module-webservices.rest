@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/rest/encounter")
 public class EncounterController extends BaseCrudController<EncounterResource> {
-	
+
 }

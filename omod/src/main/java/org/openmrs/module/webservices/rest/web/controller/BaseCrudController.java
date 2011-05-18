@@ -51,7 +51,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@SuppressWarnings("unchecked")
 	protected R getResource() {
 		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
-        Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
+		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
 		return Context.getService(RestService.class).getResource(clazz);
 	}
 	
@@ -79,7 +79,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	public Object create(@RequestBody SimpleObject post, WebRequest request, HttpServletResponse response)
-	                                                                                                      throws ResponseException {
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		Object created = getResource().create(post, context);
 		return RestUtil.created(response, created);
@@ -96,7 +96,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post, WebRequest request,
-	                     HttpServletResponse response) throws ResponseException {
+	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource resource = getResource();
 		resource.update(uuid, post, context);
@@ -112,8 +112,8 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
 	public Object delete(@PathVariable("uuid") String uuid,
-	                     @RequestParam(value = "reason", defaultValue = "web service call") String reason,
-	                     WebRequest request, HttpServletResponse response) throws ResponseException {
+	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, WebRequest request,
+	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().delete(uuid, reason, context);
 		return RestUtil.noContent(response);
@@ -128,7 +128,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
 	public Object purge(@PathVariable("uuid") String uuid, WebRequest request, HttpServletResponse response)
-	                                                                                                        throws ResponseException {
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().purge(uuid, context);
 		return RestUtil.noContent(response);
@@ -144,7 +144,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
 	public List<Object> search(@RequestParam("q") String query, WebRequest request, HttpServletResponse response)
-	                                                                                                             throws ResponseException {
+	        throws ResponseException {
 		Searchable searchable;
 		try {
 			searchable = (Searchable) getResource();
