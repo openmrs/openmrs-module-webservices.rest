@@ -22,7 +22,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -41,13 +40,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("name");
-			description.addProperty("uri", findMethod("getUri"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name");
@@ -92,6 +85,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 			description.addProperty("tags", Representation.DEFAULT);
 			description.addProperty("parentLocation", Representation.DEFAULT);
 			description.addProperty("childLocations", Representation.DEFAULT);
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 		}
 		return null;

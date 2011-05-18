@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.Collection;
@@ -142,5 +155,21 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		Object result = controller.retrieve(parentUuid, request);
 		Assert.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
+	}
+	
+	@Test
+	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest();
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = controller.retrieve("167ce20c-4785-4285-9119-d197268f7f4a", new ServletWebRequest(httpReq));
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+	
+	@Test
+	public void shouldSearchAndReturnAListOfLocationsMatchingTheQueryString() throws Exception {
+		List<Object> hits = controller.search("xan", request, response);
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8", PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 }

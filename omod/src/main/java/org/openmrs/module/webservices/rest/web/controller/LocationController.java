@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.LocationResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +22,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping(value = "/rest/location")
-public class LocationController extends BaseCrudController<LocationResource> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.controller.BaseCrudController#getResource()
-	 */
-	@Override
-	public LocationResource getResource() {
-		return Context.getService(RestService.class).getResource(LocationResource.class);
-	}
-}
+public class LocationController extends BaseCrudController<LocationResource> {}
