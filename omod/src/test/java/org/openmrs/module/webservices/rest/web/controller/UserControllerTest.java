@@ -131,7 +131,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
      * @verifies return no results if there are no matching users
      */
     @Test
-    public void findPatients_shouldReturnNoResultsIfThereAreNoMatchingPatients() throws Exception {
+    public void findUsers_shouldReturnNoResultsIfThereAreNoMatchingUsers() throws Exception {
 	    List<Object> results = new UserController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
 	    Assert.assertEquals(0, results.size());
     }

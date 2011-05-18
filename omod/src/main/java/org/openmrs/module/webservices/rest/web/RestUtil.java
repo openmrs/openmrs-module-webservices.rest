@@ -25,8 +25,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
-import sun.security.action.GetIntegerAction;
-
 /**
  * Convenient helper methods for the Rest Web Services module.
  * 
@@ -43,9 +41,6 @@ public class RestUtil {
 	 * @see RestConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		// TODO check global property
-		// WSConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME;
-
 		String limit = Context.getAdministrationService().getGlobalProperty(
 				RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {

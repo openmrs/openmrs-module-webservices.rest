@@ -17,13 +17,14 @@ package org.openmrs.module.webservices.rest.web;
 import java.io.Serializable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.User;
 
 /**
  * This class is a custom class extending org.openmrs.User by adding 
  * password to it and being able to add it as a webservice
  */
-public class UserAndPassword extends User implements Serializable
+public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 {
 
     public static final long serialVersionUID = 102293L;
@@ -41,46 +42,14 @@ public class UserAndPassword extends User implements Serializable
     {
     }
 
+    /**
+     * @param user
+     */
     public UserAndPassword( User user )
     {
-        this.setId( user.getId() );
-        this.setPerson( user.getPerson() );
-        this.setRoles( user.getRoles() );
-        this.setSecretQuestion( user.getSecretQuestion() );
-        this.setSystemId( user.getSystemId() );
-        this.setUserId( user.getUserId() );
-        this.setUserProperties( user.getUserProperties() );
-        this.setUsername( user.getUsername() );
-        this.setUuid( user.getUuid() );
+        this.user = user;
     }
-
-    /**
-     * Compares two objects for similarity. This passes through to the parent object
-     * (org.openmrs.User) in order to check similarity of User-UserAndPassword
-     * 
-     * @param obj
-     * @return boolean true/false whether or not they are the same objects
-     * @see org.openmrs.User#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals( Object obj )
-    {
-        return super.equals( obj );
-    }
-
-    /**
-     * The hashcode for a patient/person is used to index the objects in a tree This must pass
-     * through to the parent object (org.openmrs.Person) in order to get similarity of
-     * person/patient objects
-     * 
-     * @see org.openmrs.User#hashCode()
-     */
-    @Override
-    public int hashCode()
-    {
-        return super.hashCode();
-    }
-
+    
     /**
      * @return password 
      */
@@ -95,5 +64,37 @@ public class UserAndPassword extends User implements Serializable
     public void setPassword( String password )
     {
         this.password = password;
+    }
+
+    /**
+     * @return user the User property 
+     */
+    public User getUser()
+    {
+        return user;
+    }
+    
+    /**
+     * @param user the user to set 
+     */
+    public void setUser( User user )
+    {
+        this.user = user;
+    }
+
+    /**
+     * @return id
+     */
+    public Integer getId()
+    {
+        return getUser().getId();
+    }
+
+    /**
+     * @param integer the Id to set
+     */
+    public void setId( Integer integer )
+    {
+        getUser().setId( integer );
     }
 }

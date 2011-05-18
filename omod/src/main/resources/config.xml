@@ -33,7 +33,7 @@
     <globalProperty>
         <property>@MODULE_ID@.maxresults</property>
         <defaultValue>50</defaultValue>
-        <description>The maximum list of a resource available in a webservice call</description>
+        <description>The default max results limit if the user does not provide a maximum when making the web service call.</description>
     </globalProperty>
 
 	<!-- DWR -->

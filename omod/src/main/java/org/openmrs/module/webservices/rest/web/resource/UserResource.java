@@ -16,10 +16,10 @@ package org.openmrs.module.webservices.rest.web.resource;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.User;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -29,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -92,14 +93,8 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
     public UserAndPassword save(UserAndPassword user) {
-        UserService us = Context.getUserService();
-        UserAndPassword userPass;
-        if(us.getUserByUuid( user.getUuid()) !=null ){
-            userPass =  new UserAndPassword (us.saveUser( us.getUserByUuid( user.getUuid()), user.getPassword()));
-        } else{
-            userPass =  new UserAndPassword (us.saveUser( new User(user.getPerson()), user.getPassword() ));
-        }
-        return userPass;
+        return new UserAndPassword (Context.getUserService().saveUser( user.getUser(), user.getPassword()) );
+
     }
 	
 	/**
@@ -131,7 +126,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getUserService().purgeUser( user );
+		Context.getUserService().purgeUser( user.getUser() );
 	}
 	
 	/**
@@ -146,13 +141,42 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
         }
 	    return users;
 	}
+
+    @Override
+    public Object getProperty( UserAndPassword instance, String propertyName ) throws ConversionException
+    {
+        try {
+            if(propertyName.equals( "password") )
+                return PropertyUtils.getProperty(instance, propertyName);
+            else
+                return PropertyUtils.getProperty(instance.getUser(), propertyName);
+		}
+		catch (Exception ex) {
+			throw new ConversionException(propertyName, ex);
+		}
+    }
+
+    @Override
+    public void setProperty( UserAndPassword instance, String propertyName, Object value ) throws ConversionException
+    {
+        try {
+            if(propertyName.equals( "password") ){
+                super.setProperty( instance, propertyName, value );
+            }
+            else{
+                PropertyUtils.setProperty( instance.getUser(), propertyName, value);
+            }
+        }catch (Exception ex) {
+			throw new ConversionException(propertyName, ex);
+		}
+    }
     
 	/**
 	 * @param user
 	 * @return username + fullname (for concise display purposes)
 	 */
 	public String getDisplayString(UserAndPassword user) {
-		return user.getUsername() + " - " + user.getPersonName().getFullName();
+		return user.getUser().getUsername() + " - " + user.getUser().getPersonName().getFullName();
 	}
 	
 }
