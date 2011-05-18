@@ -24,8 +24,6 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -81,30 +79,5 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		delegate.setDateRetired(new Date());
 		delegate.setRetireReason(reason);
 		save(delegate);
-	}
-	
-	/**
-	 * Should be implemented by named objects that have unique names.
-	 * 
-	 * @param name
-	 * @return
-	 * @throws ResponseException
-	 */
-	protected T getByUniqueName(String name) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException();
-	}
-	
-	/**
-	 * Assumes that the delegate property is retrievable by a unique name
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#retrieve(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
-	 */
-	public Object findByUniqueName(String name, RequestContext context) throws ResponseException {
-		T delegate = getByUniqueName(name);
-		if (delegate == null)
-			throw new ObjectNotFoundException();
-		
-		return asRepresentation(delegate, context.getRepresentation());
 	}
 }

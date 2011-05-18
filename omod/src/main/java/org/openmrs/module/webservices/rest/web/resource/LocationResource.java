@@ -67,11 +67,8 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 			description.addProperty("address5");
 			description.addProperty("address6");
 			description.addProperty("tags", Representation.REF);
-			//TODO parentLocation and childLocations can't be marshaled because jackson
-			//complains about having both isRetired() and getRetired() for a Java bean
-			
-			//description.addProperty("parentLocation", Representation.REF);
-			//description.addProperty("childLocations", Representation.REF);
+			description.addProperty("parentLocation", Representation.REF);
+			description.addProperty("childLocations", Representation.REF);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -93,8 +90,8 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 			description.addProperty("address5");
 			description.addProperty("address6");
 			description.addProperty("tags", Representation.DEFAULT);
-			//description.addProperty("parentLocation", Representation.DEFAULT);
-			//description.addProperty("childLocations", Representation.DEFAULT);
+			description.addProperty("parentLocation", Representation.DEFAULT);
+			description.addProperty("childLocations", Representation.DEFAULT);
 			return description;
 		}
 		return null;
@@ -117,19 +114,19 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	}
 	
 	/**
+	 * Fetches a location by uuid, if no match is found, it tries to look up one with a matching
+	 * name with the assumption that the passed parameter is a location name
+	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Location getByUniqueId(String uuid) {
-		return Context.getLocationService().getLocationByUuid(uuid);
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getByUniqueName(java.lang.String)
-	 */
-	@Override
-	protected Location getByUniqueName(String name) throws ResponseException {
-		return Context.getLocationService().getLocation(name);
+		Location location = Context.getLocationService().getLocationByUuid(uuid);
+		//We assume the caller was fetching by name
+		if (location == null)
+			location = Context.getLocationService().getLocation(uuid);
+		
+		return location;
 	}
 	
 	/**
