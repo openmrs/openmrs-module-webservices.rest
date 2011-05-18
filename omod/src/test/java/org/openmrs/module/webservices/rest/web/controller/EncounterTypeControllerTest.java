@@ -1,3 +1,16 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.List;
@@ -13,6 +26,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -41,7 +55,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldGetAEncounterTypeByUuid() throws Exception {
+	public void shouldGetAnEncounterTypeByUuid() throws Exception {
 		Object result = controller.retrieve("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", request);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", PropertyUtils.getProperty(result, "uuid"));
@@ -49,7 +63,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldGetAEncounterTypeByName() throws Exception {
+	public void shouldGetAnEncounterTypeByName() throws Exception {
 		Object result = controller.retrieve("Scheduled", request);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", PropertyUtils.getProperty(result, "uuid"));
@@ -64,7 +78,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldCreateAEncounterType() throws Exception {
+	public void shouldCreateAnEncounterType() throws Exception {
 		int originalCount = service.getAllEncounterTypes().size();
 		String json = "{ \"name\":\"test encounterType\", \"description\":\"description\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
@@ -74,7 +88,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldEditAEncounterType() throws Exception {
+	public void shouldEditAnEncounterType() throws Exception {
 		String json = "{ \"name\":\"new encounter type\", \"description\":\"new description\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.update("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", post, request, response);
@@ -85,7 +99,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldRetireAEncounterType() throws Exception {
+	public void shouldRetireAnEncounterType() throws Exception {
 		String uuid = "61ae96f4-6afe-4351-b6f8-cd4fc383cce1";
 		EncounterType encounterType = service.getEncounterTypeByUuid(uuid);
 		Assert.assertFalse(encounterType.isRetired());
@@ -96,7 +110,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	public void shouldPurgeAEncounterType() throws Exception {
+	public void shouldPurgeAnEncounterType() throws Exception {
 		//All the encounterTypes in the test dataset are already in use, so we need to
 		//create one that we can purge for testing purposes
 		EncounterType encounterType = new EncounterType();
@@ -117,5 +131,14 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
+	}
+	
+	@Test
+	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
+		MockHttpServletRequest httpReq = new MockHttpServletRequest();
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = controller.retrieve("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", new ServletWebRequest(httpReq));
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 }

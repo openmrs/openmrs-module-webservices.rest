@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.EncounterTypeResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,13 +23,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping(value = "/rest/encountertype")
-public class EncounterTypeController extends BaseCrudController<EncounterTypeResource> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.controller.BaseCrudController#getResource()
-	 */
-	@Override
-	public EncounterTypeResource getResource() {
-		return Context.getService(RestService.class).getResource(EncounterTypeResource.class);
-	}
-}
+public class EncounterTypeController extends BaseCrudController<EncounterTypeResource> {}

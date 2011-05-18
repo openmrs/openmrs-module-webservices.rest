@@ -22,7 +22,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -32,7 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link EncounterType}, supporting standard CRUD operations
  */
-@Resource("encounterType")
+@Resource("encountertype")
 @Handler(supports = EncounterType.class, order = 0)
 public class EncounterTypeResource extends MetadataDelegatingCrudResource<EncounterType> {
 	
@@ -41,18 +40,20 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name");
+			description.addProperty("description");
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		} else if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("description");
+			description.addProperty("uri", findMethod("getUri"));
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 		}
 		return null;
