@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
 @Resource("patient")
-@Handler(supports=Patient.class, order=0)
+@Handler(supports=Patient.class)
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
     public PatientResource() {
