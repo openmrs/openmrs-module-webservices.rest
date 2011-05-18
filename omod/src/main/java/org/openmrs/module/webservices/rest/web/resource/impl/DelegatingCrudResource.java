@@ -77,11 +77,11 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		T delegate = newDelegate();
-		ConversionUtil.setConvertedProperties(delegate, propertiesToCreate);
+		setConvertedProperties(delegate, propertiesToCreate);
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.SimpleObject)
@@ -91,7 +91,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		T delegate = getByUniqueId(uuid);
 		if (delegate == null)
 			throw new ObjectNotFoundException();
-		ConversionUtil.setConvertedProperties(delegate, propertiesToUpdate);
+		setConvertedProperties(delegate, propertiesToUpdate);
 		delegate = save(delegate);
 		return delegate;
 	}

@@ -11,6 +11,8 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -82,4 +84,42 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 		int after = service.getPatientByUuid(patientUuid).getActiveIdentifiers().size();
 		Assert.assertEquals(before + 1, after);
 	}
+	
+	@Test
+	public void shouldEditIdentifier() throws Exception {
+		String json = "{ \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		controller.update(patientUuid, "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", post, request, response);
+		PatientIdentifier updated = service.getPatientIdentifierByUuid("8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614");
+		log("Updated", updated);
+		Assert.assertNotNull(updated);
+		Assert.assertEquals("101-6", updated.getIdentifier());
+		Assert.assertEquals("Xanadu", updated.getLocation().getName());
+	}
+	
+	@Test
+	public void shouldVoidIdentifier() throws Exception {
+		String piUuid = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
+		PatientIdentifier pid = service.getPatientIdentifierByUuid(piUuid);
+		Assert.assertFalse(pid.isVoided());
+		controller.delete(patientUuid, piUuid, "unit test", request, response);
+		pid = service.getPatientIdentifierByUuid(piUuid);
+		Assert.assertTrue(pid.isVoided());
+		Assert.assertEquals("unit test", pid.getVoidReason());
+	}
+	
+	@Test
+	public void shouldPurgeIdentifier() throws Exception {
+		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
+		// complains that the identifier will be re-created since the patient is in the session.
+		String piUuid = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
+		Number before = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
+		
+		controller.purge(patientUuid, piUuid, request, response);
+		Context.flushSession();
+		Number after = (Number) Context.getAdministrationService().executeSQL("select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
+		Assert.assertEquals(before.intValue() - 1, after.intValue());
+		Assert.assertNull(service.getPatientIdentifierByUuid(piUuid));
+	}
+	
 }

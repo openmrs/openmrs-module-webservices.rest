@@ -157,6 +157,17 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	}
 	
 	/**
+	 * @param delegate
+	 * @param propertiesToCreate
+	 * @throws ConversionException 
+	 */
+	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap) throws ConversionException {
+		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
+			setProperty(delegate, prop.getKey(), prop.getValue());
+		}
+    }
+	
+	/**
 	 * Finds a method in this class or a superclass annotated with a {@link RepHandler} for the
 	 * given representation
 	 * 
