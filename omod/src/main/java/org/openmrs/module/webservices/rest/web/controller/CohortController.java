@@ -40,13 +40,12 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 @RequestMapping(value = "/rest/cohort")
 public class CohortController extends BaseCrudController<CohortResource> {
-
+	
 	@Override
 	public CohortResource getResource() {
-		return Context.getService(RestService.class).getResource(
-				CohortResource.class);
+		return Context.getService(RestService.class).getResource(CohortResource.class);
 	}
-
+	
 	/**
 	 * @param query
 	 * @param request
@@ -58,15 +57,14 @@ public class CohortController extends BaseCrudController<CohortResource> {
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
-	public Object findCohort(@RequestParam("q") String query,
-			WebRequest request, HttpServletResponse response)
-			throws ResponseException {
+	public Object findCohort(@RequestParam("q") String query, WebRequest request, HttpServletResponse response)
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		context.setRepresentation(Representation.DEFAULT);
 		CohortResource resource = getResource();
 		return resource.getCohortByName(query);
 	}
-
+	
 	/**
 	 * @param uuid
 	 * @param request
@@ -75,13 +73,12 @@ public class CohortController extends BaseCrudController<CohortResource> {
 	 */
 	@RequestMapping(value = "/{parentUuid}/patients", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Object> getCohortMemebers(
-			@PathVariable("parentUuid") String parentUuid, WebRequest request)
-			throws ResponseException {
+	public List<Object> getCohortMemebers(@PathVariable("parentUuid") String parentUuid, WebRequest request)
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		context.setRepresentation(Representation.REF);
 		CohortResource resource = getResource();
 		return resource.getCohortMembers(parentUuid);
 	}
-
+	
 }
