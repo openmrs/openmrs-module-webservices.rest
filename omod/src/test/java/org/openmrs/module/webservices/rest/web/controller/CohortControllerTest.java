@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -33,9 +31,14 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
+/**
+ * Tests functionality of {@link CohortController}.
+ */
 public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	private static final String cohortUUID = "05e08b3b-5690-41e1-b651-5391fd946c1a";
+	
+	private static final String cohortName = "B13 deficit";
 	
 	private static final String datasetFilename = "customTestDataset.xml";
 	
@@ -48,17 +51,12 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	private HttpServletResponse response;
 	
 	@Before
-	public void before() {
+	public void before() throws Exception {
 		this.service = Context.getCohortService();
 		this.controller = new CohortController();
 		this.request = new ServletWebRequest(new MockHttpServletRequest());
 		this.response = new MockHttpServletResponse();
-		try {
-			executeXmlDataSet(datasetFilename);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		executeXmlDataSet(datasetFilename);
 	}
 	
 	private void log(String label, Object object) {
@@ -95,11 +93,11 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	public void getCohortByName_shouldGetADefaultRepresentationOfACohort() throws Exception {
-		Object result = controller.findCohort("B13 deficit", request, response);
+	public void getCohortByFuzzyName_shouldGetADefaultRepresentationOfACohort() throws Exception {
+		Object result = controller.retrieve(cohortName, request);
 		Assert.assertNotNull(result);
 		log("Cohort fetched (default)", result);
-		Assert.assertEquals(cohortUUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(cohortName, PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -120,16 +118,6 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		Object editedCohort = controller.update(cohortUUID, post, request, response);
 		log("Edited cohort", editedCohort);
 		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUUID).getName());
-	}
-	
-	@Test
-	public void getCohortMembers_shouldReturnListOfCohortMembers() throws Exception {
-		int membersCount = service.getCohortByUuid(cohortUUID).getMemberIds().size();
-		List<Object> members = controller.getCohortMemebers(cohortUUID, request);
-		for (Object member : members) {
-			log("Member :", member);
-		}
-		Assert.assertEquals(membersCount, members.size());
 	}
 	
 	@Test()

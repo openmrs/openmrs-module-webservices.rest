@@ -13,12 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.Cohort;
-import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -40,8 +35,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 *      java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(Cohort cohort, String reason, RequestContext context) throws ResponseException {
@@ -50,15 +44,17 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 			return;
 		}
 		Context.getCohortService().voidCohort(cohort, reason);
-		
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public Cohort getByUniqueId(String uuid) {
-		return Context.getCohortService().getCohortByUuid(uuid);
+	public Cohort getByUniqueId(String param) {
+		Cohort result = Context.getCohortService().getCohortByUuid(param);
+		if (result == null)
+			return Context.getCohortService().getCohort(param);
+		return result;
 	}
 	
 	/**
@@ -88,6 +84,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds");
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		}
@@ -121,33 +118,6 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	@Override
 	protected Cohort save(Cohort cohort) {
 		return Context.getCohortService().saveCohort(cohort);
-	}
-	
-	/**
-	 * Returns a non-voided cohort object by its name
-	 */
-	public Cohort getCohortByName(String query) {
-		return Context.getCohortService().getCohort(query);
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
-	 */
-	@Override
-	protected List<String> propertiesToExposeAsSubResources() {
-		return Arrays.asList("memberIds");
-	}
-	
-	/**
-	 * Returns a cohort member by cohort's uuid
-	 */
-	public List<Object> getCohortMembers(String uuid) {
-		List<Object> ret = new ArrayList<Object>();
-		Cohort parent = Context.getCohortService().getCohortByUuid(uuid);
-		for (Integer patientId : parent.getMemberIds()) {
-			ret.add(Context.getPatientService().getPatient(patientId));
-		}
-		return ret;
 	}
 	
 }
