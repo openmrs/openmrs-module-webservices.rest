@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import java.util.List;
 import org.openmrs.Person;
+import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -27,8 +30,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * TODO: Rework
- * Just a placeholder representation. Was required for User (https://tickets.openmrs.org/browse/RESTWS-16)
+ * {@link Resource} for Person, supporting standard CRUD operations
  */
 @Resource("person")
 @Handler(supports = Person.class, order = 0)
@@ -38,6 +40,9 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
+	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof RefRepresentation) {
@@ -83,34 +88,90 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		return null;
 	}
 	
+	/**
+	 * Sets the preferred name for a person.
+	 * If no name exists new name is set as preferred.
+	 * @param instance
+	 * @param name
+	 */
+	@PropertySetter("preferredName")
+	public static void setPreferredName(Person instance, PersonName name) {
+		if (name.getId() == null) {
+			// adding a new name and set it as preferred
+			instance.addName(name);
+			name.setPreferred(true);
+		} else {
+			// switching which name is preferred
+			for (PersonName existing : instance.getNames()) {
+				if (existing.isVoided())
+					continue;
+				if (existing.isPreferred() && !existing.equals(name))
+					existing.setPreferred(false);
+			}
+			instance.addName(name);
+			name.setPreferred(true);
+		}
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
+	 */
 	@Override
 	public Person getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonByUuid(uuid);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
+	 */
 	@Override
 	protected Person newDelegate() {
 		return new Person();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
+	 */
 	@Override
 	protected Person save(Person person) {
 		return Context.getPersonService().savePerson(person);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
-	protected void delete(Person delegate, String reason, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("Not supported yet.");
+	protected List<Person> doSearch(String query, RequestContext context) {
+		return Context.getPersonService().getPeople(query, null);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
-	public void purge(Person delegate, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("Not supported yet.");
+	protected void delete(Person person, String reason, RequestContext context) throws ResponseException {
+		if (person.isVoided()) {
+			// DELETE is idempotent, so we return success here
+			return;
+		}
+		Context.getPersonService().voidPerson(person, reason);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public void purge(Person person, RequestContext context) throws ResponseException {
+		if (person == null) {
+			// DELETE is idempotent, so we return success here
+			return;
+		}
+		Context.getPersonService().purgePerson(person);
 	}
 	
 	/**
 	 * @param person
-	 * @return identifier + name (for concise display purposes)
+	 * @return fullname (for concise display purposes)
 	 */
 	public String getDisplayString(Person person) {
 		return person.getPersonName().getFullName();
