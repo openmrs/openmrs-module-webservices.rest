@@ -75,7 +75,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("roles", Representation.REF);
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		}
@@ -95,9 +95,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	public UserAndPassword save(UserAndPassword user) {
-        User openmrsUser = new User();
-        String password = user.getPassword();
-        openmrsUser = Context.getUserService().saveUser( user.getUser(), password);
+		User openmrsUser = new User();
+		String password = user.getPassword();
+		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
 		return new UserAndPassword(openmrsUser);
 		
 	}
@@ -146,15 +146,15 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		return users;
 	}
 	
-    /**
-     * Overrides BaseDelegatingResource getProperty method to get properties from User property of UserAndPassword
-     * instead of UserAndPassword itself
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
-     * @param instance
-     * @param propertyName
-     * @param value
-     * @throws ConversionException 
-     */
+	/**
+	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of UserAndPassword
+	 * instead of UserAndPassword itself
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
+	 * @param instance
+	 * @param propertyName
+	 * @param value
+	 * @throws ConversionException 
+	 */
 	@Override
 	public Object getProperty(UserAndPassword instance, String propertyName) throws ConversionException {
 		try {
@@ -168,15 +168,15 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 	}
 	
-    /**
-     * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User property of UserAndPassword
-     * instead of UserAndPassword itself
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
-     * @param instance
-     * @param propertyName
-     * @param value
-     * @throws ConversionException 
-     */
+	/**
+	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User property of UserAndPassword
+	 * instead of UserAndPassword itself
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
+	 * @param instance
+	 * @param propertyName
+	 * @param value
+	 * @throws ConversionException 
+	 */
 	@Override
 	public void setProperty(UserAndPassword instance, String propertyName, Object value) throws ConversionException {
 		try {
