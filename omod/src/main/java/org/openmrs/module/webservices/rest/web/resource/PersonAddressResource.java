@@ -21,6 +21,8 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -54,8 +56,6 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("stateProvince");
 			description.addProperty("country");
 			description.addProperty("postalCode");
-			description.addProperty("latitude");
-			description.addProperty("longitude");
 			description.addProperty("countyDistrict");
 			description.addProperty("address3");
 			description.addProperty("address4");
@@ -80,8 +80,11 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("address4");
 			description.addProperty("address5");
 			description.addProperty("address6");
-			description.addProperty("startDate");
-			description.addProperty("endDate");
+			//TODO These were introduced in 1.9, include them when we upgrade
+			//description.addProperty("startDate");
+			//description.addProperty("endDate");
+			description.addProperty("latitude");
+			description.addProperty("longitude");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 		}
@@ -202,5 +205,18 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 				nonVoidedAddresses.add(personAddress);
 		}
 		return nonVoidedAddresses;
+	}
+	
+	public SimpleObject getAuditInfo(PersonAddress address) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(address, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(address.getDateCreated(), Representation.DEFAULT));
+		ret.put("voided", ConversionUtil.convertToRepresentation(address.isVoided(), Representation.DEFAULT));
+		if (address.isVoided()) {
+			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(address, "voidedBy", Representation.REF));
+			ret.put("dateVoided", ConversionUtil.convertToRepresentation(address.getDateVoided(), Representation.DEFAULT));
+			ret.put("voidReason", ConversionUtil.convertToRepresentation(address.getVoidReason(), Representation.DEFAULT));
+		}
+		return ret;
 	}
 }

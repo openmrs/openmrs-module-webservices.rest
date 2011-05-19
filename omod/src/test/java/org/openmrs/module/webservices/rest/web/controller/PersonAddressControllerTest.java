@@ -27,6 +27,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -34,7 +35,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * Tests functionality of {@link PersonAddressController.
+ * Tests functionality of {@link PersonAddressController}.
  */
 public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -47,6 +48,8 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	private WebRequest request;
 	
 	private HttpServletResponse response;
+	
+	private static final String PERSON_NAME_XML = "personAddress-Test.xml";
 	
 	@Before
 	public void before() {
@@ -62,11 +65,15 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		Assert.assertNotNull(result);
 		Assert.assertEquals("3350d0b5-821c-4e5e-ad1d-a9bce331e118", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("1050 Wishard Blvd.", PropertyUtils.getProperty(result, "address1"));
+		//should have excluded the properties that are not included for default representation
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "latitude"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "longitude"));
 	}
 	
 	@Test
 	public void shouldGetAllNonVoidedAddressesForAPerson() throws Exception {
+		executeDataSet(PERSON_NAME_XML);//add the row with a voided address for testing purposes
 		List<Object> result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
@@ -130,4 +137,16 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		Assert.assertEquals(before - 1, service.getPersonByUuid(personUuid).getAddresses().size());
 	}
 	
+	@Test
+	public void shouldIncludeLatitudeLongituteAndAuditInfoForFullRepresentation() throws Exception {
+		executeDataSet(PERSON_NAME_XML);
+		MockHttpServletRequest httpReq = new MockHttpServletRequest();
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = controller.retrieve(personUuid, "8a806d8c-822d-11e0-872f-18a905e044dc", new ServletWebRequest(
+		        httpReq));
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
+	}
 }
