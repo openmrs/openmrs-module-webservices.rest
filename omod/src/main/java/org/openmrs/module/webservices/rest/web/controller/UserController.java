@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.UserResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +25,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/rest/user")
 public class UserController extends BaseCrudController<UserResource> {
 	
-	@Override
-	public UserResource getResource() {
-		return Context.getService(RestService.class).getResource(UserResource.class);
-	}
 }

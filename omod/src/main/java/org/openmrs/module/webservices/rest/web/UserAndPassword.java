@@ -20,12 +20,16 @@ import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.User;
 
 /**
- * This class is a custom class extending org.openmrs.User by adding 
- * password to it and being able to add it as a webservice
+ * This class is a wrapper for org.openmrs.User and password 
+ * that needs to be sent for creating a new User by a webservice call.
+ * 
+ * Requires extending BaseOpenmrsMetadata to be able to interact with
+ * MetadataDelegatingCrudResource and making instance of metadata type
+ * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource
  */
 public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable {
 	
-	public static final long serialVersionUID = 102293L;
+	public static final long serialVersionUID = 1L;
 	
 	private static final Log log = LogFactory.getLog(UserAndPassword.class);
 	
