@@ -56,7 +56,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		this.controller = new CohortController();
 		this.request = new ServletWebRequest(new MockHttpServletRequest());
 		this.response = new MockHttpServletResponse();
-		executeXmlDataSet(datasetFilename);
+		executeDataSet(datasetFilename);
 	}
 	
 	private void log(String label, Object object) {
