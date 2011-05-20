@@ -25,6 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -228,7 +229,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	private String getResourceUri(Resource res, T delegate) {
-		return "someprefix://" + res.value() + "/" + getUniqueId(delegate);
+		return RestUtil.getWebappUrlPrefix() + res.value() + "/" + getUniqueId(delegate);
 	}
 	
 	private String getSubResourceUri(SubResource sub, T delegate) {

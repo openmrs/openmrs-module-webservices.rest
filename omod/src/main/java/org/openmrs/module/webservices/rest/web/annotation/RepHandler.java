@@ -29,9 +29,9 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RepHandler {
-
+	
 	Class<? extends Representation> value();
-
+	
 	String name() default "";
-
+	
 }

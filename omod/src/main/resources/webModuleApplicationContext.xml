@@ -45,6 +45,14 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="restWebServiceWebEventListeners" parent="openmrsEventListeners">
+	    <property name="globalPropertyListeners">
+	        <list value-type="org.openmrs.api.GlobalPropertyListener" merge="true">
+	            <bean class="org.openmrs.module.webservices.rest.web.RestUtil" />
+	        </list>
+	    </property>
+	</bean>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
         <property name="order" value="1"/>

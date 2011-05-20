@@ -19,6 +19,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -27,11 +29,13 @@ import org.springframework.web.context.request.WebRequest;
 
 /**
  * Convenient helper methods for the Rest Web Services module.
- * 
  */
-public class RestUtil {
+public class RestUtil implements GlobalPropertyListener {
 	
 	private static Log log = LogFactory.getLog(RestUtil.class);
+	
+	//The Url prefix through which clients consuming web services will connect to the webapp
+	private static String webappUrlPrefix = RestConstants.WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE;
 	
 	/**
 	 * Looks up the admin defined global property for the system limit
@@ -247,14 +251,11 @@ public class RestUtil {
 
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
-	 * Determines number of results to limit to, if not provided, uses default
-	 * set by admin. <br/>
+	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
 	 * Determines how far into a list to start with given the startIndex param. <br/>
 	 * 
-	 * @param request
-	 *            the current http web request
-	 * @return a {@link RequestContext} object filled with all the necessary
-	 *         values
+	 * @param request the current http web request
+	 * @return a {@link RequestContext} object filled with all the necessary values
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
@@ -288,10 +289,8 @@ public class RestUtil {
 	/**
 	 * Convenience method to get the given param out of the given request.
 	 * 
-	 * @param request
-	 *            the WebRequest to look in
-	 * @param param
-	 *            the string name to fetch
+	 * @param request the WebRequest to look in
+	 * @param param the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
 	private static Integer getIntegerParam(WebRequest request, String param) {
@@ -329,9 +328,8 @@ public class RestUtil {
 	}
 	
 	/**
-	 * Sets the HTTP status on the response to no content, and returns an empty
-	 * value, suitable for returning from a @ResponseBody annotated Spring
-	 * controller method.
+	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
+	 * returning from a @ResponseBody annotated Spring controller method.
 	 * 
 	 * @param response
 	 * @return
@@ -342,8 +340,7 @@ public class RestUtil {
 	}
 	
 	/**
-	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the
-	 * Location header attribute
+	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute
 	 * 
 	 * @param response
 	 * @param created
@@ -359,4 +356,48 @@ public class RestUtil {
 		return created;
 	}
 	
+	/**
+	 * Gets the Url prefix through which clients consuming web services will connect to the web app
+	 * 
+	 * @return the webapp's Url prefix
+	 */
+	public static String getWebappUrlPrefix() {
+		if (webappUrlPrefix.equals(RestConstants.WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE)) {
+			webappUrlPrefix = Context.getAdministrationService().getGlobalProperty(
+			    RestConstants.WEBAPP_URL_PREFIX_GLOBAL_PROPERTY_NAME);
+			
+			if (StringUtils.isBlank(webappUrlPrefix)) {
+				//reset just in case it is a white space character or empty string
+				webappUrlPrefix = RestConstants.WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE;
+			}
+			
+			webappUrlPrefix = webappUrlPrefix + RestConstants.URL_PREFIX;
+		}
+		
+		return webappUrlPrefix;
+	}
+	
+	/**
+	 * @see org.openmrs.api.GlobalPropertyListener#supportsPropertyName(java.lang.String)
+	 */
+	@Override
+	public boolean supportsPropertyName(String propertyName) {
+		return propertyName.equals(RestConstants.WEBAPP_URL_PREFIX_GLOBAL_PROPERTY_NAME);
+	}
+	
+	/**
+	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyChanged(org.openmrs.GlobalProperty)
+	 */
+	@Override
+	public void globalPropertyChanged(GlobalProperty newValue) {
+		webappUrlPrefix = RestConstants.WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE;
+	}
+	
+	/**
+	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyDeleted(java.lang.String)
+	 */
+	@Override
+	public void globalPropertyDeleted(String propertyName) {
+		webappUrlPrefix = RestConstants.WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE;
+	}
 }
