@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -49,7 +50,18 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
-		rep.addProperty("uri", getClass().getMethod("getUri"));
+		rep.addProperty("uri", findMethod("getUri"));
+		return convertDelegateToRepresentation(delegate, rep);
+	}
+	
+	@RepHandler(FullRepresentation.class)
+	public SimpleObject asFullRep(T delegate) throws Exception {
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("name");
+		rep.addProperty("description");
+		rep.addProperty("uri", findMethod("getUri"));
+		rep.addProperty("auditInfo", findMethod("getAuditInfo"));
 		return convertDelegateToRepresentation(delegate, rep);
 	}
 	
