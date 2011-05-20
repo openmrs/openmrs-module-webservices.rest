@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -28,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
@@ -86,6 +88,12 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("latitude");
 			description.addProperty("longitude");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			return description;
+		} else if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("uri", findMethod("getUri"));
+			description.addProperty("display", findMethod("getDisplayString"));
 			return description;
 		}
 		return null;
@@ -218,5 +226,15 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			ret.put("voidReason", ConversionUtil.convertToRepresentation(address.getVoidReason(), Representation.DEFAULT));
 		}
 		return ret;
+	}
+	
+	/**
+	 * Gets the display string for a person address.
+	 * 
+	 * @param address the address object.
+	 * @return the display string.
+	 */
+	public String getDisplayString(PersonAddress address) {
+		return address.getAddress1();
 	}
 }
