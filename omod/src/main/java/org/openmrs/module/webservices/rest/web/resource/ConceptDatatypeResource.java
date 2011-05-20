@@ -18,6 +18,7 @@ import java.util.List;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -26,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -78,6 +80,16 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#update(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.SimpleObject,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
@@ -95,9 +107,16 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	 */
 	@Override
 	public void purge(ConceptDatatype conceptDatatype, RequestContext context) throws ResponseException {
-		if (conceptDatatype == null)
-			return;
-		Context.getConceptService().purgeConceptDatatype(conceptDatatype);
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#delete(org.openmrs.OpenmrsMetadata,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public void delete(ConceptDatatype delegate, String reason, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

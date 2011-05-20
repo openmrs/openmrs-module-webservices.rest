@@ -22,11 +22,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -87,35 +87,21 @@ public class ConceptDatatypeControllerTest extends BaseModuleWebContextSensitive
 		Assert.assertEquals(originalCount + 1, service.getAllConceptDatatypes().size());
 	}
 	
-	@Test
-	public void shouldEditAConceptDatatype() throws Exception {
-		String json = "{ \"name\":\"new coded name\", \"description\":\"new description\" }";
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldNotSupportEditingAConceptDatatype() throws Exception {
+		String json = "{ \"name\":\"test\", \"description\":\"ntest\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.update("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", post, request, response);
-		ConceptDatatype updated = service.getConceptDatatypeByUuid("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f");
-		Assert.assertNotNull(updated);
-		Assert.assertEquals("new coded name", updated.getName());
-		Assert.assertEquals("new description", updated.getDescription());
 	}
 	
-	@Test
-	public void shouldRetireAConceptDatatype() throws Exception {
-		String uuid = "8d4a606c-c2cc-11de-8d13-0010c6dffd0f";
-		ConceptDatatype conceptDatatype = service.getConceptDatatypeByUuid(uuid);
-		Assert.assertFalse(conceptDatatype.isRetired());
-		controller.delete(uuid, "test reason", request, response);
-		conceptDatatype = service.getConceptDatatypeByUuid(uuid);
-		Assert.assertTrue(conceptDatatype.isRetired());
-		Assert.assertEquals("test reason", conceptDatatype.getRetireReason());
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldNotSupportRetiringAConceptDatatype() throws Exception {
+		controller.delete("8d4a606c-c2cc-11de-8d13-0010c6dffd0f", "test reason", request, response);
 	}
 	
-	@Test
-	public void shouldPurgeAConceptDatatype() throws Exception {
-		int originalCount = service.getAllConceptDatatypes().size();
-		String uuid = "8d4a606c-c2cc-11de-8d13-0010c6dffd0f";
-		controller.purge(uuid, request, response);
-		Assert.assertNull(service.getConceptDatatypeByUuid(uuid));
-		Assert.assertEquals(originalCount - 1, service.getAllConceptDatatypes().size());
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldNotSupportPurgingAConceptDatatype() throws Exception {
+		controller.purge("8d4a606c-c2cc-11de-8d13-0010c6dffd0f", request, response);
 	}
 	
 	@Test
