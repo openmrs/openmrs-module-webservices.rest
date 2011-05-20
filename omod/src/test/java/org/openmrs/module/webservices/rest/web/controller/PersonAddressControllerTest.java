@@ -67,8 +67,8 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		Assert.assertEquals("1050 Wishard Blvd.", PropertyUtils.getProperty(result, "address1"));
 		//should have excluded the properties that are not included for default representation
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "latitude"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "longitude"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
 	}
 	
 	@Test

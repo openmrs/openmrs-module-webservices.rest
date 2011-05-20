@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
-import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -63,6 +62,8 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("address4");
 			description.addProperty("address5");
 			description.addProperty("address6");
+			description.addProperty("latitude");
+			description.addProperty("longitude");
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -115,21 +116,11 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	public void delete(PersonAddress address, String reason, RequestContext context) throws ResponseException {
 		///API had no void methods as of 1.8 other
 		//we should be calling voidPersonAddress that was added in 1.9
-		boolean needToRemove = false;
-		for (PersonAddress pa : address.getPerson().getAddresses()) {
-			if (pa.equals(address)) {
-				needToRemove = true;
-				break;
-			}
-		}
-		
-		if (needToRemove) {
-			address.setVoided(true);
-			address.setVoidedBy(Context.getAuthenticatedUser());
-			address.setDateVoided(new Date());
-			address.setVoidReason(reason);
-			Context.getPersonService().savePerson(address.getPerson());
-		}
+		address.setVoided(true);
+		address.setVoidedBy(Context.getAuthenticatedUser());
+		address.setDateVoided(new Date());
+		address.setVoidReason(reason);
+		Context.getPersonService().savePerson(address.getPerson());
 	}
 	
 	/**
@@ -140,18 +131,8 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	public void purge(PersonAddress address, RequestContext context) throws ResponseException {
 		///API has no void methods as of 1.8 and earlier versios,
 		//we should be calling voidPersonAddress(PersonAddress, Reason) that was added in 1.9
-		boolean needToRemove = false;
-		for (PersonAddress pa : address.getPerson().getAddresses()) {
-			if (pa.equals(address)) {
-				needToRemove = true;
-				break;
-			}
-		}
-		
-		if (needToRemove) {
-			address.getPerson().removeAddress(address);
-			Context.getPersonService().savePerson(address.getPerson());
-		}
+		address.getPerson().removeAddress(address);
+		Context.getPersonService().savePerson(address.getPerson());
 	}
 	
 	/**
