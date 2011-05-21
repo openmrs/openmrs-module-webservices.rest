@@ -36,7 +36,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String cohortUUID = "05e08b3b-5690-41e1-b651-5391fd946c1a";
+	private static final String cohortUuid = "05e08b3b-5690-41e1-b651-5391fd946c1a";
 	
 	private static final String cohortName = "B13 deficit";
 	
@@ -86,14 +86,14 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {
-		Object result = controller.retrieve(cohortUUID, request);
+		Object result = controller.retrieve(cohortUuid, request);
 		Assert.assertNotNull(result);
 		log("Cohort fetched (default)", result);
-		Assert.assertEquals(cohortUUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(cohortUuid, PropertyUtils.getProperty(result, "uuid"));
 	}
 	
 	@Test
-	public void getCohortByFuzzyName_shouldGetADefaultRepresentationOfACohort() throws Exception {
+	public void getCohortByExactName_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		Object result = controller.retrieve(cohortName, request);
 		Assert.assertNotNull(result);
 		log("Cohort fetched (default)", result);
@@ -104,7 +104,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void voidCohort_shouldVoidACohort() throws Exception {
 		Cohort cohort = service.getCohort(1);
 		Assert.assertFalse(cohort.isVoided());
-		controller.delete(cohortUUID, "unit test", request, response);
+		controller.delete(cohortUuid, "unit test", request, response);
 		cohort = service.getCohort(1);
 		Assert.assertTrue(cohort.isVoided());
 		Assert.assertEquals("unit test", cohort.getVoidReason());
@@ -115,15 +115,15 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		String json = "{ \"name\":\"EXTRA COHORT\", \"description\":\"THIS IS NEW COHORT\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object editedCohort = controller.update(cohortUUID, post, request, response);
+		Object editedCohort = controller.update(cohortUuid, post, request, response);
 		log("Edited cohort", editedCohort);
-		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUUID).getName());
+		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUuid).getName());
 	}
 	
 	@Test()
 	public void purgeCohort_shouldPurgeCohort() throws Exception {
 		int before = service.getAllCohorts().size();
-		controller.purge(cohortUUID, request, response);
+		controller.purge(cohortUuid, request, response);
 		Assert.assertEquals(before - 1, service.getAllCohorts().size());
 	}
 }

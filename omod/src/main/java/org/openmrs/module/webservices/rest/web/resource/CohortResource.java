@@ -71,7 +71,6 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("cohortId");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds", Representation.REF);
@@ -80,7 +79,6 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("cohortId");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds");
