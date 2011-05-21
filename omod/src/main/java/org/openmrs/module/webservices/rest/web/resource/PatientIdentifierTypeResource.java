@@ -35,6 +35,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports = PatientIdentifierType.class, order = 0)
 public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResource<PatientIdentifierType> {
 	
+	public PatientIdentifierTypeResource() {
+		allowedMissingProperties.add("locationBehavior");
+	}
+	
 	private PatientService service() {
 		return Context.getPatientService();
 	}
@@ -55,7 +59,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("required");
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
-			//description.addProperty("locationBehavior");
+			description.addProperty("locationBehavior");
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -68,7 +72,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("required");
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
-			//description.addProperty("locationBehavior");
+			description.addProperty("locationBehavior");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
 		}
@@ -88,7 +92,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 */
 	@Override
 	protected List<PatientIdentifierType> doGetAll(RequestContext context) throws ResponseException {
-		return service().getAllPatientIdentifierTypes(true);
+		return service().getAllPatientIdentifierTypes(false);
 	}
 	
 	/**

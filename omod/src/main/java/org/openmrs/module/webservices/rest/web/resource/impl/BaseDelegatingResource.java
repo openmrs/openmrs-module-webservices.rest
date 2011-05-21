@@ -15,10 +15,13 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.PatientIdentifierTypeResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
@@ -34,6 +38,16 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ReflectionUtils;
 
 public abstract class BaseDelegatingResource<T> implements Converter<T> {
+	
+	/**
+	 * Properties that should silently be ignored if you try to get them. 
+	 * Implementations should generally configure this property with a list of properties that were added
+	 * to their underlying domain object after the minimum OpenMRS version required by this module. For
+	 * example PatientIdentifierTypeResource will allow "locationBehavior" to be missing, since it
+	 * wasn't added to PatientIdentifierType until OpenMRS 1.9. 
+	 * delegate class    
+	 */
+	protected Set<String> allowedMissingProperties = new HashSet<String>();
 	
 	/**
 	 * Implementations should define mappings for properties that they want to expose with other
@@ -197,6 +211,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 		return ret;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(java.lang.Object, java.lang.String)
+	 */
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
@@ -206,10 +223,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
+			// some properties are allowed to be missing, since they may have been added in later OpenMRS versions
+			if (allowedMissingProperties.contains(propertyName))
+				return null;
 			throw new ConversionException(propertyName, ex);
 		}
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object, java.lang.String, java.lang.Object)
+	 */
 	@Override
 	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {
 		try {
