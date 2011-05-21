@@ -21,14 +21,11 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
@@ -216,33 +213,12 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@SuppressWarnings("unchecked")
 	public String getUri(Object delegate) {
-		SubResource sub = getClass().getAnnotation(SubResource.class);
-		if (sub != null) {
-			return getSubResourceUri(sub, (T) delegate);
-		}
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
-			return getResourceUri(res, (T) delegate);
+			return RestUtil.getWebappUrlPrefix() + res.value() + "/" + getUniqueId((T) delegate);
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 		
-	}
-	
-	private String getResourceUri(Resource res, T delegate) {
-		return RestUtil.getWebappUrlPrefix() + res.value() + "/" + getUniqueId(delegate);
-	}
-	
-	private String getSubResourceUri(SubResource sub, T delegate) {
-		try {
-			org.openmrs.module.webservices.rest.web.resource.api.Resource parentResource = Context.getService(
-			    RestService.class).getResource(sub.parent());
-			Object parentInstance = PropertyUtils.getProperty(delegate, sub.parentProperty());
-			String parentUri = parentResource.getUri(parentInstance);
-			return parentUri + "/" + sub.path() + "/" + getUniqueId(delegate);
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Failed to get URI from sub-resource " + delegate + " with annotation " + sub);
-		}
 	}
 	
 }

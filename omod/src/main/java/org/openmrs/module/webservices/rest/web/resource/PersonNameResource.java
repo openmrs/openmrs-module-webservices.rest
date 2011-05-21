@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
@@ -35,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "names", parentProperty = "person")
+@SubResource(parent = PersonResource.class, path = "names")
 @Handler(supports = PersonName.class, order = 0)
 public class PersonNameResource extends DelegatingSubResource<PersonName, Person, PersonResource> {
 	

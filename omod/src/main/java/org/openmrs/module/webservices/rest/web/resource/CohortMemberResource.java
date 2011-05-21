@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for cohort members
  */
-@SubResource(parent = CohortResource.class, parentProperty = "REMOVE-THIS-PROPERTY", path = "patients")
+@SubResource(parent = CohortResource.class, path = "patients")
 @Handler(supports = CohortMember.class, order = 0)
 public class CohortMemberResource extends DelegatingSubResource<CohortMember, Cohort, CohortResource> {
 	

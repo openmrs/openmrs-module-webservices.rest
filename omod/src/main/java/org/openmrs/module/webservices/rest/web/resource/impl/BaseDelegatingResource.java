@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,7 +28,6 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.PatientIdentifierTypeResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
@@ -37,6 +35,13 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ReflectionUtils;
 
+/**
+ * A base implementation of a resource or sub-resource that delegates operations to a wrapped object.
+ * Implementations generally should extend either {@link DelegatingCrudResource} or {@link DelegatingSubResource}
+ * rather than this class directly. 
+ * 
+ * @param <T> the class we're delegating to
+ */
 public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	
 	/**

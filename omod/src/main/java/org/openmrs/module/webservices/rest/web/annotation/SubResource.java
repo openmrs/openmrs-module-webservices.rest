@@ -27,10 +27,14 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubResource {
 	
+	/**
+	 * @return the resource class that this sub-resource is a child of
+	 */
 	Class<? extends Resource> parent();
 	
+	/**
+	 * @return the relative URI this sub-resource lives at (will be appended to the URI of the parent resource)
+	 */
 	String path();
-	
-	String parentProperty();
 	
 }

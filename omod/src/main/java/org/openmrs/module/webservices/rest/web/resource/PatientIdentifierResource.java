@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent = PatientResource.class, parentProperty = "REMOVE-THIS-PROPERTY", path = "identifiers")
+@SubResource(parent = PatientResource.class, path = "identifiers")
 @Handler(supports = PatientIdentifier.class, order = 0)
 public class PatientIdentifierResource extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource> {
 	
