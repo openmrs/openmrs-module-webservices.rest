@@ -73,6 +73,8 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
 		ret.put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(), Representation.DEFAULT));
 		ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(), Representation.DEFAULT));
+		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
+		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
 		return ret;
 	}
 	
