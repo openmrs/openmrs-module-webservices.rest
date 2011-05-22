@@ -25,7 +25,9 @@ import org.openmrs.module.webservices.rest.web.CohortMember;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -42,7 +44,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class CohortMemberResource extends DelegatingSubResource<CohortMember, Cohort, CohortResource> {
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public List<CohortMember> doGetAll(Cohort parent, RequestContext context) throws ResponseException {
@@ -62,7 +65,8 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setParent(CohortMember instance, Cohort parent) {
@@ -70,8 +74,8 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(CohortMember delegate, String reason, RequestContext context) throws ResponseException {
@@ -79,7 +83,6 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
@@ -88,20 +91,24 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
 			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("display", findMethod("getDisplayString"));
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("patient", Representation.DEFAULT);
+			description.addProperty("patient");
+			description.addProperty("uri", findMethod("getUri"));
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("patient");
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		}
@@ -109,7 +116,6 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
@@ -118,8 +124,8 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(CohortMember delegate, RequestContext context) throws ResponseException {
@@ -136,10 +142,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * Auto generated method comment
-	 * 
-	 * @param member
+	 * @param member the patient to be added to cohort
 	 */
 	public void addMemberToCohort(CohortMember member) {
 		getParent(member).addMember(member.getPatient().getId());
@@ -147,10 +150,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * Auto generated method comment
-	 * 
-	 * @param member
+	 * @param member the patient to be removed from cohort
 	 */
 	public void removeMemberFromCohort(CohortMember member) {
 		getParent(member).removeMember(member.getPatient().getId());
@@ -158,8 +158,9 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#create(java.lang.String, org.openmrs.module.webservices.rest.SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#create(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.SimpleObject,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
@@ -172,8 +173,9 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#delete(java.lang.String, java.lang.String, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#delete(java.lang.String,
+	 *      java.lang.String, java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(String parentUniqueId, String uuid, String reason, RequestContext context) throws ResponseException {
@@ -186,16 +188,54 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#retrieve(java.lang.String, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#retrieve(java.lang.String,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public Object retrieve(String parentUniqueId, String uuid, RequestContext context) throws ResponseException {
 		CohortMember delegate = getByUniqueId(uuid);
-		delegate.setCohort(Context.getCohortService().getCohortByUuid(parentUniqueId));
 		if (delegate == null)
 			throw new ObjectNotFoundException();
+		delegate.setCohort(Context.getCohortService().getCohortByUuid(parentUniqueId));
 		return asRepresentation(delegate, context.getRepresentation());
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getUri(java.lang.Object)
+	 */
+	@Override
+	public String getUri(Object instance) {
+		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
+		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
+		@SuppressWarnings("unchecked")
+		CohortMember instanceAsT = (CohortMember) instance;
+		String parentUri = Context.getService(RestService.class).getResource(sub.parent()).getUri(getParent(instanceAsT));
+		return parentUri + "/" + sub.path() + "/" + instanceAsT.getPatient().getUuid();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAll(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
+		Cohort parent = Context.getCohortService().getCohortByUuid(parentUniqueId);
+		List<Object> ret = new ArrayList<Object>();
+		if (context.getRepresentation().equals(Representation.DEFAULT))
+			context.setRepresentation(Representation.REF);
+		else if (context.getRepresentation().equals(Representation.FULL))
+			context.setRepresentation(Representation.DEFAULT);
+		for (CohortMember member : doGetAll(parent, context))
+			ret.add(asRepresentation(member, context.getRepresentation()));
+		return ret;
+	}
+	
+	/**
+	 * @param member
+	 * @return cohortname + patient fullname (for concise display purposes)
+	 */
+	public String getDisplayString(CohortMember member) {
+		return member.getCohort().getName() + " - " + member.getPatient().getGivenName() + " "
+		        + member.getPatient().getFamilyName();
+	}
 }

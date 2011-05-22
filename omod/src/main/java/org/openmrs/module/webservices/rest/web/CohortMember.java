@@ -17,18 +17,14 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 
 /**
  * This class is a wrapper for {@link org.openmrs.Cohort} and {@link org.openmrs.Patient} that needs 
- * to be sent for adding/removing members from a cohort. Requires extending {@link BaseOpenmrsData} to be 
- * able to interact with {@link DelegatingSubResource } and making instance of data type
- * 
- * @see DelegatingSubResource 
+ * to be sent for adding/removing members from a cohort.  
  */
-public class CohortMember extends BaseOpenmrsData implements Serializable {
+public class CohortMember implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
 	
@@ -51,7 +47,7 @@ public class CohortMember extends BaseOpenmrsData implements Serializable {
 	/**
 	 * Copier constructor to set fields 
 	 * @param patient
-	 * @param cohortUuid
+	 * @param cohort
 	 */
 	public CohortMember(Patient patient, Cohort cohort) {
 		super();
@@ -74,23 +70,6 @@ public class CohortMember extends BaseOpenmrsData implements Serializable {
 	}
 	
 	/**
-	 * @see org.openmrs.OpenmrsObject#getId()
-	 */
-	@Override
-	public Integer getId() {
-		return this.patient.getId();
-	}
-	
-	/**
-	 * @see org.openmrs.OpenmrsObject#setId(java.lang.Integer)
-	 */
-	@Override
-	public void setId(Integer id) {
-		this.patient.setId(id);
-		
-	}
-	
-	/**
 	 * @param patient the patient's object to set
 	 */
 	public void setPatient(Patient patient) {
@@ -103,5 +82,4 @@ public class CohortMember extends BaseOpenmrsData implements Serializable {
 	public Patient getPatient() {
 		return patient;
 	}
-	
 }
