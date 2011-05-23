@@ -14,7 +14,10 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.util.List;
+
+import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -28,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
@@ -62,7 +66,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("deathDate");
 			description.addProperty("causeOfDeath", Representation.REF);
 			description.addProperty("preferredName", "personName", Representation.REF);
-			description.addProperty("personAddress", Representation.REF);
+			description.addProperty("preferredAddress", "personAddress", Representation.REF);
 			description.addProperty("activeAttributes", Representation.REF);
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
@@ -77,7 +81,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("deathDate");
 			description.addProperty("causeOfDeath");
 			description.addProperty("preferredName", "personName", Representation.DEFAULT);
-			description.addProperty("personAddress");
+			description.addProperty("preferredAddress", "personAddress", Representation.DEFAULT);
 			description.addProperty("names");
 			description.addProperty("addresses");
 			description.addProperty("attributes");
@@ -89,8 +93,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * Sets the preferred name for a person.
-	 * If no name exists new name is set as preferred.
+	 * Sets the preferred name for a person. If no name exists new name is set as preferred.
+	 * 
 	 * @param instance
 	 * @param name
 	 */
@@ -111,6 +115,20 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			instance.addName(name);
 			name.setPreferred(true);
 		}
+	}
+	
+	@PropertySetter("preferredAddress")
+	public static void setPreferredAddress(Patient instance, PersonAddress address) {
+		//un mark the current preferred address as preferred if any
+		for (PersonAddress existing : instance.getAddresses()) {
+			if (existing.isVoided())
+				continue;
+			if (existing.isPreferred() && !OpenmrsUtil.nullSafeEquals(existing, address))
+				existing.setPreferred(false);
+		}
+		address.setPreferred(true);
+		if (address.getPersonAddressId() == null)
+			instance.addAddress(address);
 	}
 	
 	/**
@@ -138,7 +156,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected List<Person> doSearch(String query, RequestContext context) {
@@ -146,7 +165,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(Person person, String reason, RequestContext context) throws ResponseException {
@@ -158,7 +178,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Person person, RequestContext context) throws ResponseException {
