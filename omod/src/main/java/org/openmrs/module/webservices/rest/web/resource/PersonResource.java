@@ -13,7 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang.WordUtils;
+import org.openmrs.OpenmrsData;
 
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -22,6 +26,7 @@ import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -30,8 +35,10 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
@@ -67,7 +74,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("causeOfDeath", Representation.REF);
 			description.addProperty("preferredName", "personName", Representation.REF);
 			description.addProperty("preferredAddress", "personAddress", Representation.REF);
-			description.addProperty("activeAttributes", Representation.REF);
+			description.addProperty("attributes", Representation.REF);
 			description.addProperty("uri", findMethod("getUri"));
 			return description;
 		} else if (rep instanceof FullRepresentation) {
@@ -80,8 +87,6 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("dead");
 			description.addProperty("deathDate");
 			description.addProperty("causeOfDeath");
-			description.addProperty("preferredName", "personName", Representation.DEFAULT);
-			description.addProperty("preferredAddress", "personAddress", Representation.DEFAULT);
 			description.addProperty("names");
 			description.addProperty("addresses");
 			description.addProperty("attributes");
@@ -90,6 +95,24 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns non-voided elements for the attributes, names and addresses properties
+	 * @param instance
+	 * @param propertyName
+	 * @return
+	 * @throws ConversionException 
+	 */
+	@Override
+	public Object getProperty(Person instance, String propertyName) throws ConversionException {
+		if (propertyName.equals("attributes") || propertyName.equals("names") || propertyName.equals("addresses")) {
+			String getterName = "get" + WordUtils.capitalizeFully(propertyName);
+			Method getterMethod = ReflectionUtils.findMethod(instance.getClass(), getterName);
+			return RestUtil.removeVoidedData((Collection<OpenmrsData>) ReflectionUtils.invokeMethod(getterMethod, instance));
+		} else {
+			return super.getProperty(instance, propertyName);
+		}
 	}
 	
 	/**
@@ -102,8 +125,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	public static void setPreferredName(Person instance, PersonName name) {
 		if (name.getId() == null) {
 			// adding a new name and set it as preferred
-			instance.addName(name);
 			name.setPreferred(true);
+			instance.addName(name);
 		} else {
 			// switching which name is preferred
 			for (PersonName existing : instance.getNames()) {
@@ -112,8 +135,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 				if (existing.isPreferred() && !existing.equals(name))
 					existing.setPreferred(false);
 			}
-			instance.addName(name);
 			name.setPreferred(true);
+			instance.addName(name);
 		}
 	}
 	

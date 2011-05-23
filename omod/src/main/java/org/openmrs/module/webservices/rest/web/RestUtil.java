@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import java.util.Collection;
+import java.util.HashSet;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -20,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
+import org.openmrs.OpenmrsData;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -375,6 +378,21 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		return webappUrlPrefix;
+	}
+	
+	/**
+	 * Returns collection of OpenmrsData by removing voided data
+	 * @param c
+	 * @return non-voided OpenmrsData
+	 */
+	public static Collection<OpenmrsData> removeVoidedData(Collection<OpenmrsData> c) {
+		Collection<OpenmrsData> data = new HashSet<OpenmrsData>();
+		for (OpenmrsData d : c) {
+			if (!d.isVoided()) {
+				data.add(d);
+			}
+		}
+		return data;
 	}
 	
 	/**

@@ -17,10 +17,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
@@ -29,9 +30,12 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.resource.PersonResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -219,4 +223,53 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertFalse(oldPreferredAddress.isPreferred());
 	}
 	
+	/**
+	 * Tests if voided names are not shown in full representation.
+	 * Adds a name and shows full representation. Then voids the name and sees decrease in number of names in 
+	 * full representation.
+	 * @see PersonController#getProperty(Person,String)
+	 * @verifies do not show voided names in full representation
+	 * 
+	 * @throws Exception 
+	 */
+	@Test
+	public void shouldNotShowVoidedNamesInFullRepresentation() throws Exception {
+		Person p = new PersonResource().getByUniqueId("5946f880-b197-400b-9caa-a3c661d23041");
+		PersonName pn = new PersonName("SUNNY", "TEST", "PURKAYASTHA");
+		p.addName(pn);
+		Context.getPersonService().savePerson(p);
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Assert.assertEquals(2, StringUtils.countMatches(PropertyUtils.getProperty(result, "names").toString(), "givenName"));
+		pn.setVoided(true);
+		Context.getPersonService().savePerson(p);
+		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Assert.assertEquals(1, StringUtils.countMatches(PropertyUtils.getProperty(result, "names").toString(), "givenName"));
+	}
+	
+	/**
+	 * Tests if voided attributes are not shown in representation.
+	 * Voids all the person attributes and checks if they are not shown
+	 * @see PersonController#getProperty(Person,String)
+	 * @verifies do not show voided attributes
+	 * 
+	 * @throws Exception 
+	 */
+	@Test
+	public void shouldNotShowVoidedAttributesInRepresentation() throws Exception {
+		Person p = new PersonResource().getByUniqueId("5946f880-b197-400b-9caa-a3c661d23041");
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Assert.assertEquals(3, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(), "uuid"));
+		Set<PersonAttribute> attributes = p.getAttributes();
+		for (PersonAttribute pa : attributes) {
+			pa.setVoided(true);
+		}
+		p.setAttributes(attributes);
+		Context.getPersonService().savePerson(p);
+		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Assert.assertEquals(0, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(), "uuid"));
+	}
 }
