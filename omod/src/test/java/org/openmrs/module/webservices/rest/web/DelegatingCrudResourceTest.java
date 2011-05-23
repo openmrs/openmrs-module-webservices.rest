@@ -37,7 +37,7 @@ public class DelegatingCrudResourceTest extends BaseModuleContextSensitiveTest {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
-	public void testAllMethodsRepHandlerAnnotation() throws Exception {
+	public void testAllMethodsWithRepHandlerAnnotation() throws Exception {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		//only match DelegatingCrudResource and its subclasses
 		provider.addIncludeFilter(new AssignableTypeFilter(DelegatingCrudResource.class));
