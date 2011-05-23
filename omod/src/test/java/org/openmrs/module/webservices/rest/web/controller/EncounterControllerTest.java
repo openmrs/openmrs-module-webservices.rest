@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -49,16 +51,6 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * @see EncounterController#find(String,WebRequest,HttpServletResponse)
-	 * @verifies find matching encounters
-	 */
-	@Test
-	public void findEncounters_shouldFindMatchingEncounters() throws Exception {
-		List<Object> results = new EncounterController().search("Test", emptyRequest(), new MockHttpServletResponse());
-		Assert.assertEquals(0, results.size());
-	}
-	
-	/**
 	 * @see EncounterController#getEncounter(String,WebRequest)
 	 * @verifies get a default representation of a encounter
 	 */
@@ -69,13 +61,32 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("6519d653-393b-4118-9c83-a3715b82d4ac", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "encounterType"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "patient"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditinfo"));
+	}
+	
+	/**
+	 * @see EncounterController#getEncounter(String,WebRequest)
+	 * @verifies get a full representation of a encounter
+	 */
+	@Test
+	public void getEncounter_shouldGetAFullRepresentationOfAEncounter() throws Exception {
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		
+		Object result = new EncounterController().retrieve("6519d653-393b-4118-9c83-a3715b82d4ac",
+		    new ServletWebRequest(req));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("6519d653-393b-4118-9c83-a3715b82d4ac", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "encounterType"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "patient"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
 	 * @see EncounterController#purge(String,WebRequest,HttpServletResponse)
 	 * @verifies fail to purge a encounter with dependent data
 	 */
-	@Test(expected = Exception.class)
+	@Test(expected = ConstraintViolationException.class)
 	public void purgeEncounter_shouldNotPurgeAEncounterWithDependentData() throws Exception {
 		int size = Context.getEncounterService().getEncountersByPatient(new Patient(7)).size();
 		new EncounterController().purge("6519d653-393b-4118-9c83-a3715b82d4ac", emptyRequest(),

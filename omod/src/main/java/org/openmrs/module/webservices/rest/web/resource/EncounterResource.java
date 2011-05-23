@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
@@ -35,6 +36,16 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("encounterDatetime");
+			description.addProperty("patient", new RefRepresentation());
+			description.addProperty("location", new RefRepresentation());
+			description.addProperty("form", new RefRepresentation());
+			description.addProperty("encounterType", new RefRepresentation());
+			description.addProperty("provider", new RefRepresentation());
+			return description;
+		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("encounterDatetime");
