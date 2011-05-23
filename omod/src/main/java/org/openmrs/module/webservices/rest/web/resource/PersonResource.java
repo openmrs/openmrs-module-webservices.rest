@@ -87,6 +87,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("dead");
 			description.addProperty("deathDate");
 			description.addProperty("causeOfDeath");
+            description.addProperty("preferredName", "personName", Representation.DEFAULT);
+			description.addProperty("preferredAddress", "personAddress", Representation.DEFAULT);
 			description.addProperty("names");
 			description.addProperty("addresses");
 			description.addProperty("attributes");
