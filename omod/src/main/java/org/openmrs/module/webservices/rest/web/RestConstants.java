@@ -19,36 +19,40 @@ package org.openmrs.module.webservices.rest.web;
 public class RestConstants {
 	
 	/**
-	 * The number of results to limit lists of objects to if an admin has not
-	 * defined a global property
+	 * The number of results to limit lists of objects to if an admin has not defined a global
+	 * property
 	 * 
 	 * @see #MAX_RESULTS_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer MAX_RESULTS_DEFAULT = 50;
 	
 	/**
-	 * The key of the global property that an admin can set if they want to
-	 * restrict lists to larger or smaller numbers than the default
+	 * The key of the global property that an admin can set if they want to restrict lists to larger
+	 * or smaller numbers than the default
 	 * 
 	 * @see #MAX_RESULTS_DEFAULT
 	 */
 	public static String MAX_RESULTS_GLOBAL_PROPERTY_NAME = "webservices.rest.maxresults";
 	
 	/**
-	 * The key of the global property that an admin can set to restrict ws users
-	 * based on a range of IPs
+	 * The key of the global property that an admin can set to restrict ws users based on a range of
+	 * IPs
 	 */
 	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = "webservices.rest.allowedips";
 	
 	/**
-	 * String that goes before every request. Its in a constant just in case we
-	 * have to change it at some point for some strange reason
+	 * String that goes before every request. Its in a constant just in case we have to change it at
+	 * some point for some strange reason
 	 */
-	public static String URL_PREFIX = "/ws/rest/";
+	public static String URI_PREFIX;
+	
+	static {
+		RestUtil.setUriPrefix();
+	}
 	
 	/**
-	 * An optional request parameter used by methods that return lists of
-	 * patients to cut down on the number of potential results
+	 * An optional request parameter used by methods that return lists of patients to cut down on
+	 * the number of potential results
 	 * 
 	 * @see RequestContext#getLimit()
 	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
@@ -56,8 +60,8 @@ public class RestConstants {
 	public static String REQUEST_PROPERTY_FOR_LIMIT = "limit";
 	
 	/**
-	 * An optional request parameter used by methods that return lists of
-	 * patients to determine how far into a list to start returning results.
+	 * An optional request parameter used by methods that return lists of patients to determine how
+	 * far into a list to start returning results.
 	 * 
 	 * @see RequestContext#getStartIndex()()
 	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
@@ -65,8 +69,8 @@ public class RestConstants {
 	public static String REQUEST_PROPERTY_FOR_START_INDEX = "startIndex";
 	
 	/**
-	 * An optional request parameter used by rest methods. Will change the
-	 * properties on the results. Default is "default"
+	 * An optional request parameter used by rest methods. Will change the properties on the
+	 * results. Default is "default"
 	 * 
 	 * @see RequestContext#getRepresentation()
 	 */
@@ -83,8 +87,8 @@ public class RestConstants {
 	
 	public static String REPRESENTATION_CUSTOM_PREFIX = "custom:";
 	
-	public static final String WEBAPP_URL_PREFIX_GLOBAL_PROPERTY_NAME = "webservices.rest.webappUrlPrefix";
+	public static final String URI_PREFIX_GLOBAL_PROPERTY_NAME = "webservices.rest.uriPrefix";
 	
-	public static final String WEBAPP_URL_PREFIX_GP_DEFAULT_VALUE = "NEED-TO-CONFIGURE";
+	public static final String URI_PREFIX_GP_DEFAULT_VALUE = "NEED-TO-CONFIGURE";
 	
 }

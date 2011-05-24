@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
@@ -215,7 +215,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	public String getUri(Object delegate) {
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
-			return RestUtil.getWebappUrlPrefix() + res.value() + "/" + getUniqueId((T) delegate);
+			return RestConstants.URI_PREFIX + res.value() + "/" + getUniqueId((T) delegate);
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 		

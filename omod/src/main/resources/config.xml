@@ -36,8 +36,8 @@
         <description>The default max results limit if the user does not provide a maximum when making the web service call.</description>
     </globalProperty>
     <globalProperty>
-        <property>@MODULE_ID@.webappUrlPrefix</property>
-        <description>The Url prefix through which clients consuming web services will connect to the web application, should be of the form http://{ipAddress}:{port}/{contextPath}</description>
+        <property>@MODULE_ID@.uriPrefix</property>
+        <description>The Uri prefix through which clients consuming web services will connect to the web application, should be of the form http://{ipAddress}:{port}/{contextPath}</description>
     </globalProperty>
 
 	<!-- DWR -->
