@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for cohort members
  */
-@SubResource(parent = CohortResource.class, path = "patients")
+@SubResource(parent = CohortResource.class, path = "members")
 @Handler(supports = CohortMember.class, order = 0)
 public class CohortMemberResource extends DelegatingSubResource<CohortMember, Cohort, CohortResource> {
 	

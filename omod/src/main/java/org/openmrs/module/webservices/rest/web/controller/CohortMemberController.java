@@ -23,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * This class represents controller for REST web service access to {@link CohortMemberResource}.
  */
 @Controller
-@RequestMapping(value = "/rest/cohort/{parentUuid}/patients")
+@RequestMapping(value = "/rest/cohort/{parentUuid}/members")
 public class CohortMemberController extends BaseSubResourceController<CohortMemberResource> {
-	
-	public CohortMemberResource getResource() {
-		return Context.getService(RestService.class).getResource(CohortMemberResource.class);
-	}
+
 }
