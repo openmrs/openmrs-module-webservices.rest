@@ -221,12 +221,13 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	public List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
 		Cohort parent = Context.getCohortService().getCohortByUuid(parentUniqueId);
 		List<Object> ret = new ArrayList<Object>();
+		Representation rep = Representation.FULL;
 		if (context.getRepresentation().equals(Representation.DEFAULT))
-			context.setRepresentation(Representation.REF);
+			rep = Representation.REF;
 		else if (context.getRepresentation().equals(Representation.FULL))
-			context.setRepresentation(Representation.DEFAULT);
+			rep = Representation.DEFAULT;
 		for (CohortMember member : doGetAll(parent, context))
-			ret.add(asRepresentation(member, context.getRepresentation()));
+			ret.add(asRepresentation(member, rep));
 		return ret;
 	}
 	
@@ -235,7 +236,9 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @return cohortname + patient fullname (for concise display purposes)
 	 */
 	public String getDisplayString(CohortMember member) {
-		return member.getCohort().getName() + " - " + member.getPatient().getGivenName() + " "
-		        + member.getPatient().getFamilyName();
+		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
+		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
+		return ((PatientResource) Context.getService(RestService.class).getResource(sub.parent())).getDisplayString(member
+		        .getPatient());
 	}
 }
