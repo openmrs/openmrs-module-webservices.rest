@@ -114,14 +114,19 @@ public class ConversionUtil {
 			
 			if (toType.isAssignableFrom(Date.class)) {
 				try {
-					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
+					return new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss.SSS").parse(string);
 				}
 				catch (ParseException ex) {
 					try {
-						return new SimpleDateFormat("yyyy-MM-dd").parse(string);
+						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
 					}
 					catch (ParseException ex2) {
-						throw new ConversionException("converting date", ex);
+						try {
+							return new SimpleDateFormat("yyyy-MM-dd").parse(string);
+						}
+						catch (ParseException ex3) {
+							throw new ConversionException("converting date", ex);
+						}
 					}
 				}
 			}
@@ -198,7 +203,7 @@ public class ConversionUtil {
 		catch (APIException ex) {
 			// try a few known datatypes
 			if (o instanceof Date) {
-				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format((Date) o);
+				return new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss.SSS").format((Date) o);
 			}
 			// otherwise we have no choice but to return the plain object
 			return o;
