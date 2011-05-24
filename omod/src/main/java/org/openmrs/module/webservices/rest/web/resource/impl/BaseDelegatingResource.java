@@ -24,6 +24,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
@@ -222,6 +223,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
+			// first, try to find a @PropertyGetter-annotated method
+			Method annotatedGetter = findGetterMethod(propertyName);
+			if (annotatedGetter != null) {
+				return annotatedGetter.invoke(null, instance);
+			}
+			
+			// next use standard bean methods
 			String override = remappedProperties.get(propertyName);
 			if (override != null)
 				propertyName = override;
@@ -268,6 +276,15 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 	private Method findSetterMethod(String propName) {
 		for (Method candidate : getClass().getMethods()) {
 			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
+			if (ann != null && ann.value().equals(propName))
+				return candidate;
+		}
+		return null;
+	}
+	
+	private Method findGetterMethod(String propName) {
+		for (Method candidate : getClass().getMethods()) {
+			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
 			if (ann != null && ann.value().equals(propName))
 				return candidate;
 		}

@@ -13,20 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import org.apache.commons.lang.WordUtils;
 import org.openmrs.OpenmrsData;
 
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -35,10 +36,8 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
@@ -87,7 +86,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("dead");
 			description.addProperty("deathDate");
 			description.addProperty("causeOfDeath");
-            description.addProperty("preferredName", "personName", Representation.DEFAULT);
+			description.addProperty("preferredName", "personName", Representation.DEFAULT);
 			description.addProperty("preferredAddress", "personAddress", Representation.DEFAULT);
 			description.addProperty("names");
 			description.addProperty("addresses");
@@ -100,21 +99,33 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * Returns non-voided elements for the attributes, names and addresses properties
+	 * Returns only active attributes for a person
 	 * @param instance
-	 * @param propertyName
-	 * @return
-	 * @throws ConversionException 
+	 * @return 
 	 */
-	@Override
-	public Object getProperty(Person instance, String propertyName) throws ConversionException {
-		if (propertyName.equals("attributes") || propertyName.equals("names") || propertyName.equals("addresses")) {
-			String getterName = "get" + WordUtils.capitalizeFully(propertyName);
-			Method getterMethod = ReflectionUtils.findMethod(instance.getClass(), getterName);
-			return RestUtil.removeVoidedData((Collection<OpenmrsData>) ReflectionUtils.invokeMethod(getterMethod, instance));
-		} else {
-			return super.getProperty(instance, propertyName);
-		}
+	@PropertyGetter("attributes")
+	public static List<PersonAttribute> getAttributes(Person instance) {
+		return instance.getActiveAttributes();
+	}
+	
+	/**
+	 * Returns non-voided names for a person
+	 * @param instance
+	 * @return 
+	 */
+	@PropertyGetter("names")
+	public static Collection<OpenmrsData> getNames(Person instance) {
+		return RestUtil.removeVoidedData(new HashSet<OpenmrsData>(instance.getNames()));
+	}
+	
+	/**
+	 * Returns non-voided addresses for a person
+	 * @param instance
+	 * @return 
+	 */
+	@PropertyGetter("addresses")
+	public static Collection<OpenmrsData> getAddresses(Person instance) {
+		return RestUtil.removeVoidedData(new HashSet<OpenmrsData>(instance.getAddresses()));
 	}
 	
 	/**
@@ -142,6 +153,12 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		}
 	}
 	
+	/**
+	 * Sets the preferred address for a person. If no address exists new address is set as preferred.
+	 * 
+	 * @param instance
+	 * @param name
+	 */
 	@PropertySetter("preferredAddress")
 	public static void setPreferredAddress(Patient instance, PersonAddress address) {
 		//un mark the current preferred address as preferred if any
