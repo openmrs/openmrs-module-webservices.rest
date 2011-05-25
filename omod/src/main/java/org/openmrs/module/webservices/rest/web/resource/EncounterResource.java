@@ -36,17 +36,20 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports = Encounter.class, order = 0)
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
+	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("encounterDatetime");
-			description.addProperty("patient", new RefRepresentation());
-			description.addProperty("location", new RefRepresentation());
-			description.addProperty("form", new RefRepresentation());
-			description.addProperty("encounterType", new RefRepresentation());
-			description.addProperty("provider", new RefRepresentation());
+			description.addProperty("patient", Representation.REF);
+			description.addProperty("location", Representation.REF);
+			description.addProperty("form", Representation.REF);
+			description.addProperty("encounterType", Representation.REF);
+			description.addProperty("provider", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -54,11 +57,11 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("encounterDatetime");
-			description.addProperty("patient", new RefRepresentation());
-			description.addProperty("location", new RefRepresentation());
-			description.addProperty("form", new RefRepresentation());
-			description.addProperty("encounterType", new RefRepresentation());
-			description.addProperty("provider", new RefRepresentation());
+			description.addProperty("patient", Representation.REF);
+			description.addProperty("location", Representation.DEFAULT);
+			description.addProperty("form", Representation.DEFAULT);
+			description.addProperty("encounterType", Representation.DEFAULT);
+			description.addProperty("provider", Representation.DEFAULT);
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -66,21 +69,35 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		return null;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
+	 */
 	@Override
 	public Encounter newDelegate() {
 		return new Encounter();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(org.openmrs.Encounter)
+	 */
 	@Override
 	public Encounter save(Encounter enc) {
 		return Context.getEncounterService().saveEncounter(enc);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
+	 */
 	@Override
 	public Encounter getByUniqueId(String uuid) {
 		return Context.getEncounterService().getEncounterByUuid(uuid);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter, 
+	 * java.lang.String, 
+	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	public void delete(Encounter enc, String reason, RequestContext context) throws ResponseException {
 		if (enc.isVoided()) {
@@ -90,6 +107,10 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		Context.getEncounterService().voidEncounter(enc, reason);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.Encounter,
+	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	public void purge(Encounter enc, RequestContext context) throws ResponseException {
 		if (enc == null) {

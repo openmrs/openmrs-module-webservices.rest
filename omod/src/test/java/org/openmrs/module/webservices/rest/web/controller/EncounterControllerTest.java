@@ -32,7 +32,7 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void createEncounter_shouldCreateANewEncounter() throws Exception {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
-		String json = "{\"location\":\"3890\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
+		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newPatient = new EncounterController().create(post, emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNotNull(newPatient);
