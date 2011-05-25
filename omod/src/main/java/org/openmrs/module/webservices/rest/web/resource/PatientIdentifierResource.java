@@ -20,6 +20,8 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -76,7 +78,8 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setParent(PatientIdentifier instance, Patient patient) {
@@ -119,7 +122,8 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public List<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
@@ -129,10 +133,21 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	/**
 	 * @param id
 	 * @return identifier type + identifier (for concise display purposes)
-	 *
 	 */
 	public String getDisplayString(PatientIdentifier id) {
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}
 	
+	public SimpleObject getAuditInfo(PatientIdentifier id) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(id, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(id.getDateCreated(), Representation.DEFAULT));
+		ret.put("voided", ConversionUtil.convertToRepresentation(id.isVoided(), Representation.DEFAULT));
+		if (id.isVoided()) {
+			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(id, "voidedBy", Representation.REF));
+			ret.put("dateVoided", ConversionUtil.convertToRepresentation(id.getDateVoided(), Representation.DEFAULT));
+			ret.put("voidReason", ConversionUtil.convertToRepresentation(id.getVoidReason(), Representation.DEFAULT));
+		}
+		return ret;
+	}
 }

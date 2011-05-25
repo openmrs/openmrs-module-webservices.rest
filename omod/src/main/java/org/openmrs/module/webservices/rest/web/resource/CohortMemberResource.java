@@ -110,7 +110,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("patient");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			//description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
 		}
@@ -234,7 +234,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * @param member the patient 
+	 * @param member the patient
 	 * @return string that contains cohort member's identifier and full name
 	 */
 	public String getDisplayString(CohortMember member) {
