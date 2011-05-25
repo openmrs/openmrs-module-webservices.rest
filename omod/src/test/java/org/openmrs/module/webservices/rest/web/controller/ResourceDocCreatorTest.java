@@ -27,7 +27,7 @@ public class ResourceDocCreatorTest {
 	@Test
 	public void createDocumentation() throws Exception {
 		List<ResourceDoc> docs = ResourceDocCreator.create();
-		for(ResourceDoc doc : docs){
+		for (ResourceDoc doc : docs) {
 			System.out.println("");
 			System.out.println("=============================================");
 			System.out.println(doc.toString());

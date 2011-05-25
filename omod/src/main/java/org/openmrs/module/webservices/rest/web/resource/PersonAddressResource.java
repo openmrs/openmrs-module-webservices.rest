@@ -41,10 +41,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports = PersonAddress.class, order = 0)
 public class PersonAddressResource extends DelegatingSubResource<PersonAddress, Person, PersonResource> {
 	
-    public PersonAddressResource() {
-	    allowedMissingProperties.add("startDate");
-	    allowedMissingProperties.add("endDate");
-    }
+	public PersonAddressResource() {
+		allowedMissingProperties.add("startDate");
+		allowedMissingProperties.add("endDate");
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

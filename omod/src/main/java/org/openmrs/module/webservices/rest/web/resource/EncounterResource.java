@@ -127,7 +127,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	public String getDisplayString(Encounter encounter) {
 		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
 		ret += " ";
-		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(encounter.getEncounterDatetime());
+		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(
+		    encounter.getEncounterDatetime());
 		return ret;
 	}
 	

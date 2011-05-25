@@ -1,6 +1,5 @@
 package org.openmrs.module.webservices.rest.web;
 
-
 /**
  * A link to another resource
  */

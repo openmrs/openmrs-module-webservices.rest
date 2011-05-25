@@ -96,8 +96,8 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 								//TODO replace this hacky way that we are using to check if there is a get method for a 
 								//collection that has no actual getter e.g activeIdentifers and activeAttributes for Patient
 								if (!hasFieldOrPropertySetter) {
-									hasFieldOrPropertySetter = (ReflectionUtils.findMethod(openmrsClass,
-									    "get" + StringUtils.capitalize(key)) != null);
+									hasFieldOrPropertySetter = (ReflectionUtils.findMethod(openmrsClass, "get"
+									        + StringUtils.capitalize(key)) != null);
 									if (!hasFieldOrPropertySetter && isUserResource)
 										hasFieldOrPropertySetter = (ReflectionUtils.findMethod(User.class, "get"
 										        + StringUtils.capitalize(key)) != null);
@@ -149,8 +149,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@SuppressWarnings("rawtypes")
 	private static boolean isallowedMissingProperty(Class resourceClass, String propName) throws IllegalArgumentException,
-	                                                                                     IllegalAccessException,
-	                                                                                     InstantiationException {
+	        IllegalAccessException, InstantiationException {
 		List<Field> fields = Reflect.getAllFields(resourceClass);
 		if (CollectionUtils.isNotEmpty(fields)) {
 			for (Field field : fields) {

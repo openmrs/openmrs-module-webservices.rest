@@ -59,8 +59,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(List<Class<?>> classes, Map<String, ResourceDoc> resouceDocMap)
-	                                                                                                       throws IllegalAccessException,
-	                                                                                                       InstantiationException {
+	        throws IllegalAccessException, InstantiationException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {

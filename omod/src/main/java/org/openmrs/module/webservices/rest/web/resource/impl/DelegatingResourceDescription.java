@@ -66,9 +66,9 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	
 	public DelegatingResourceDescription addLink(String rel, String uri) {
 		links.add(new Hyperlink(rel, uri));
-	    return this;
-    }
-
+		return this;
+	}
+	
 	/**
 	 * @return the properties
 	 */
@@ -76,13 +76,12 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		return properties;
 	}
 	
-	
-    /**
-     * @return the links
-     */
-    public List<Hyperlink> getLinks() {
-    	return links;
-    }
+	/**
+	 * @return the links
+	 */
+	public List<Hyperlink> getLinks() {
+		return links;
+	}
 	
 	/**
 	 * A property that wil be included in a representation
