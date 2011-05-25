@@ -41,7 +41,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Sub-resource for cohort members
  */
 @SubResource(parent = CohortResource.class, path = "members")
-@Handler(supports = CohortMember.class, order = 1)
+@Handler(supports = CohortMember.class, order = 0)
 public class CohortMemberResource extends DelegatingSubResource<CohortMember, Cohort, CohortResource> {
 	
 	/**
@@ -234,8 +234,8 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * @param member
-	 * @return cohortname + patient fullname (for concise display purposes)
+	 * @param member the patient 
+	 * @return string that contains cohort member's identifier and full name
 	 */
 	public String getDisplayString(CohortMember member) {
 		return member.getPatient().getPatientIdentifier().getIdentifier() + " - "
