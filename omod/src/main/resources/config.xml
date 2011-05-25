@@ -37,7 +37,7 @@
     </globalProperty>
     <globalProperty>
         <property>@MODULE_ID@.uriPrefix</property>
-        <description>The Uri prefix through which clients consuming web services will connect to the web application, should be of the form http://{ipAddress}:{port}/{contextPath}</description>
+        <description>The URI prefix through which clients consuming web services will connect to the web application, should be of the form http://{ipAddress}:{port}/{contextPath}</description>
     </globalProperty>
 
 	<!-- DWR -->
