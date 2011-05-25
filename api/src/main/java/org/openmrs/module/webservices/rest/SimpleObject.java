@@ -27,4 +27,15 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 		super();
 	}
 	
+	/**
+	 * Puts a property in this map, and returns the map itself (for chained method calls)
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public SimpleObject add(String key, Object value) {
+		put(key, value);
+		return this;
+	}
+	
 }

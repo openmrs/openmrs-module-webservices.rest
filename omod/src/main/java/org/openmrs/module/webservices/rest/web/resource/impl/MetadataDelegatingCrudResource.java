@@ -20,11 +20,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -36,12 +38,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> extends DelegatingCrudResource<T> {
 	
 	@RepHandler(RefRepresentation.class)
-	public SimpleObject convertToRef(T delegate) {
-		SimpleObject ret = new SimpleObject();
-		ret.put("uuid", delegate.getUuid());
-		ret.put("display", delegate.getName());
-		ret.put("uri", getUri(delegate));
-		return ret;
+	public SimpleObject convertToRef(T delegate) throws ConversionException {
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("display", "name", Representation.DEFAULT);
+		rep.addSelfLink();
+		return convertDelegateToRepresentation(delegate, rep);
 	}
 	
 	@RepHandler(DefaultRepresentation.class)
@@ -50,7 +52,8 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
-		rep.addProperty("uri", findMethod("getUri"));
+		rep.addSelfLink();
+		rep.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 		return convertDelegateToRepresentation(delegate, rep);
 	}
 	
@@ -60,8 +63,8 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
-		rep.addProperty("uri", findMethod("getUri"));
 		rep.addProperty("auditInfo", findMethod("getAuditInfo"));
+		rep.addSelfLink();
 		return convertDelegateToRepresentation(delegate, rep);
 	}
 	

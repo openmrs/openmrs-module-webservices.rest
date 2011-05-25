@@ -14,8 +14,10 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -23,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -31,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -43,7 +47,7 @@ import org.springframework.util.ReflectionUtils;
  * 
  * @param <T> the class we're delegating to
  */
-public abstract class BaseDelegatingResource<T> implements Converter<T> {
+public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource {
 	
 	/**
 	 * Properties that should silently be ignored if you try to get them. 
@@ -173,6 +177,14 @@ public abstract class BaseDelegatingResource<T> implements Converter<T> {
 		for (Entry<String, Property> e : rep.getProperties().entrySet()) {
 			ret.put(e.getKey(), e.getValue().evaluate(this, delegate));
 		}
+		List<Hyperlink> links = new ArrayList<Hyperlink>();
+		for (Hyperlink link : rep.getLinks()) {
+			if (link.getUri().startsWith("."))
+				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
+			links.add(link);
+		}
+		if (links.size() > 0)
+			ret.put("links", links);
 		return ret;
 	}
 	

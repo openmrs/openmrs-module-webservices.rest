@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -32,6 +33,8 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 public class DelegatingResourceDescription implements RepresentationDescription {
 	
 	Map<String, Property> properties = new LinkedHashMap<String, Property>();
+	
+	List<Hyperlink> links = new ArrayList<Hyperlink>();
 	
 	public void addProperty(String propertyName) {
 		addProperty(propertyName, propertyName, null);
@@ -57,6 +60,15 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		properties.put(propertyName, new Property(method, rep));
 	}
 	
+	public DelegatingResourceDescription addSelfLink() {
+		return addLink("self", ".");
+	}
+	
+	public DelegatingResourceDescription addLink(String rel, String uri) {
+		links.add(new Hyperlink(rel, uri));
+	    return this;
+    }
+
 	/**
 	 * @return the properties
 	 */
@@ -64,6 +76,17 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		return properties;
 	}
 	
+	
+    /**
+     * @return the links
+     */
+    public List<Hyperlink> getLinks() {
+    	return links;
+    }
+	
+	/**
+	 * A property that wil be included in a representation
+	 */
 	class Property {
 		
 		private String delegateProperty;

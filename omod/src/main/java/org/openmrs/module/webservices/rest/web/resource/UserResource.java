@@ -13,20 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.User;
-
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -49,13 +49,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
-			description.addProperty("display", findMethod("getDisplayString"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("username");
@@ -63,7 +57,8 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("userProperties");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("roles", Representation.REF);
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -72,11 +67,11 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
 			description.addProperty("person", Representation.DEFAULT);
-			description.addProperty("roles", Representation.REF);
+			description.addProperty("roles", Representation.DEFAULT);
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -139,7 +134,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	protected List<UserAndPassword> doSearch(String query, RequestContext context) {
-		ArrayList users = new ArrayList();
+		List<UserAndPassword> users = new ArrayList<UserAndPassword>();
 		for (User user : Context.getUserService().getUsers(query, null, false)) {
 			users.add(new UserAndPassword(user));
 		}

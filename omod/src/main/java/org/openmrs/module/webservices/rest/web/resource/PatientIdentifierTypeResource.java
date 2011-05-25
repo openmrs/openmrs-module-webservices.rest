@@ -20,6 +20,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -51,7 +52,6 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
@@ -60,11 +60,12 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
@@ -74,6 +75,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;

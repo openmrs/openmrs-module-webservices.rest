@@ -14,9 +14,12 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import org.openmrs.Encounter;
+import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -44,6 +47,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("form", new RefRepresentation());
 			description.addProperty("encounterType", new RefRepresentation());
 			description.addProperty("provider", new RefRepresentation());
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -55,6 +60,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("encounterType", new RefRepresentation());
 			description.addProperty("provider", new RefRepresentation());
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -91,6 +97,17 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			return;
 		}
 		Context.getEncounterService().purgeEncounter(enc);
+	}
+	
+	/**
+	 * @param encounter
+	 * @return encounter type and date
+	 */
+	public String getDisplayString(Encounter encounter) {
+		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
+		ret += " ";
+		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(encounter.getEncounterDatetime());
+		return ret;
 	}
 	
 }

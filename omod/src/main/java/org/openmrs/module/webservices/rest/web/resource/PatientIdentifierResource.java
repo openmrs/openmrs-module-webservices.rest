@@ -21,10 +21,10 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
@@ -39,20 +39,15 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
-			description.addProperty("display", findMethod("getDisplayString"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("identifier");
 			description.addProperty("identifierType", Representation.REF);
 			description.addProperty("location", Representation.REF);
 			description.addProperty("preferred");
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -61,8 +56,8 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 			description.addProperty("identifierType", Representation.DEFAULT);
 			description.addProperty("location", Representation.DEFAULT);
 			description.addProperty("preferred");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;

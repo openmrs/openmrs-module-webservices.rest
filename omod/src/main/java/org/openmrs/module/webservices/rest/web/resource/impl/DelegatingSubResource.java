@@ -22,10 +22,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -183,6 +186,15 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
 		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
 		return (PR) Context.getService(RestService.class).getResource(sub.parent());
+	}
+	
+	@RepHandler(RefRepresentation.class)
+	public SimpleObject asRef(T delegate) throws ConversionException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display", findMethod("getDisplayString"));
+		description.addSelfLink();
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 }

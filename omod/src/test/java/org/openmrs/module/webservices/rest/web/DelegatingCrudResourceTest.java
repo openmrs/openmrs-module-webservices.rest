@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -37,6 +38,7 @@ public class DelegatingCrudResourceTest extends BaseModuleContextSensitiveTest {
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
+	@Ignore
 	public void testAllMethodsWithRepHandlerAnnotation() throws Exception {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		//only match DelegatingCrudResource and its subclasses

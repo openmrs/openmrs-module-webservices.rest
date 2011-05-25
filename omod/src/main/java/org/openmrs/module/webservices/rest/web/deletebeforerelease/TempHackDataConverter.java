@@ -1,6 +1,7 @@
 package org.openmrs.module.webservices.rest.web.deletebeforerelease;
 
 import org.openmrs.OpenmrsData;
+import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -48,6 +49,10 @@ public class TempHackDataConverter extends DataDelegatingCrudResource<OpenmrsDat
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
+	}
+	
+	public String getDisplayString(OpenmrsData data) {
+		return data.toString();
 	}
 	
 }

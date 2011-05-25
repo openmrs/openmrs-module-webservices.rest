@@ -16,11 +16,12 @@ package org.openmrs.module.webservices.rest.web.resource;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.CohortMember;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -62,19 +63,14 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
-			description.addProperty("display", findMethod("getDisplayString"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds", Representation.REF);
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -83,7 +79,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("description");
 			description.addProperty("memberIds");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -116,6 +112,14 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	@Override
 	protected Cohort save(Cohort cohort) {
 		return Context.getCohortService().saveCohort(cohort);
+	}
+	
+	/**
+	 * @param cohort
+	 * @return cohort's name
+	 */
+	public String getDisplayString(Cohort cohort) {
+		return cohort.getName();
 	}
 	
 }

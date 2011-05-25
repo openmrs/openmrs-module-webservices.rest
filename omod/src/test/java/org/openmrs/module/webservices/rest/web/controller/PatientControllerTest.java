@@ -174,7 +174,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		log("Found " + results.size() + " patient(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	

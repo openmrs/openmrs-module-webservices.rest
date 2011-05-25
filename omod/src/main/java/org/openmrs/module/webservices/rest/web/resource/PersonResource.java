@@ -16,8 +16,8 @@ package org.openmrs.module.webservices.rest.web.resource;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.openmrs.OpenmrsData;
 
+import org.openmrs.OpenmrsData;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
@@ -26,13 +26,13 @@ import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -55,13 +55,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
-			description.addProperty("display", findMethod("getDisplayString"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("gender");
@@ -74,7 +68,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("preferredName", "personName", Representation.REF);
 			description.addProperty("preferredAddress", "personAddress", Representation.REF);
 			description.addProperty("attributes", Representation.REF);
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -92,7 +87,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("addresses");
 			description.addProperty("attributes");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
-			description.addProperty("uri", findMethod("getUri"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;
