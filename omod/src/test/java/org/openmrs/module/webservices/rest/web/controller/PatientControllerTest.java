@@ -71,8 +71,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(result);
 		log("Patient fetched (default)", result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "preferredName"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "preferredAddress"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "identifiers"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
@@ -87,6 +87,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", new ServletWebRequest(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "identifiers"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		log("Patient fetched (full)", result);
 	}
@@ -119,23 +121,6 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		    new MockHttpServletResponse());
 		log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
-	}
-	
-	/**
-	 * DOES NOT WORK YET BECAUSE WE DON'T HAVE A CONVERTER FOR CONCEPTS
-	 * 
-	 * @see PatientController#updatePatient(String,SimpleObject,WebRequest)
-	 * @verifies change a complex property on a patient
-	 */
-	@Test
-	@Ignore
-	public void updatePatient_shouldChangeAComplexPropertyOnAPatient() throws Exception {
-		SimpleObject post = new ObjectMapper().readValue(
-		    "{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, emptyRequest(),
-		    new MockHttpServletResponse());
-		log("Set patient as dead", editedPatient);
-		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPatient, "causeOfDeath"));
 	}
 	
 	/**
