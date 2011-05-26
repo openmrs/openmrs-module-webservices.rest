@@ -113,22 +113,19 @@ public class ConversionUtil {
 				return converter.getByUniqueId(string);
 			
 			if (toType.isAssignableFrom(Date.class)) {
-				try {
-					return new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss.SSS").parse(string);
-				}
-				catch (ParseException ex) {
+				ParseException pex = null;
+				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
+				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
-						return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(string);
+						Date date = new SimpleDateFormat(supportedFormats[i]).parse(string);
+						return date;
 					}
-					catch (ParseException ex2) {
-						try {
-							return new SimpleDateFormat("yyyy-MM-dd").parse(string);
-						}
-						catch (ParseException ex3) {
-							throw new ConversionException("converting date", ex);
-						}
+					catch (ParseException ex) {
+						pex = ex;
 					}
 				}
+				throw new ConversionException("converting date", pex);
 			}
 		} else if (object instanceof Map) {
 			Object ret;
@@ -203,7 +200,7 @@ public class ConversionUtil {
 		catch (APIException ex) {
 			// try a few known datatypes
 			if (o instanceof Date) {
-				return new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ss.SSS").format((Date) o);
+				return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) o);
 			}
 			// otherwise we have no choice but to return the plain object
 			return o;
