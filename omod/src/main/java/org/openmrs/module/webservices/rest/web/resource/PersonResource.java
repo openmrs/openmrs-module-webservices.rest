@@ -13,15 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.openmrs.OpenmrsData;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
-import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -47,7 +44,7 @@ import org.openmrs.util.OpenmrsUtil;
 public class PersonResource extends DataDelegatingCrudResource<Person> {
 	
 	public PersonResource() {
-		
+		remappedProperties.put("attributes", "activeAttributes");
 	}
 	
 	/**
@@ -94,23 +91,13 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * Returns only active attributes for a person
-	 * @param instance
-	 * @return 
-	 */
-	@PropertyGetter("attributes")
-	public static List<PersonAttribute> getAttributes(Person instance) {
-		return instance.getActiveAttributes();
-	}
-	
-	/**
 	 * Returns non-voided names for a person
 	 * @param instance
 	 * @return 
 	 */
 	@PropertyGetter("names")
-	public static Collection<OpenmrsData> getNames(Person instance) {
-		return RestUtil.removeVoidedData(new HashSet<OpenmrsData>(instance.getNames()));
+	public static Set<PersonName> getNames(Person instance) {
+		return RestUtil.removeVoidedData(instance.getNames());
 	}
 	
 	/**
@@ -119,8 +106,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * @return 
 	 */
 	@PropertyGetter("addresses")
-	public static Collection<OpenmrsData> getAddresses(Person instance) {
-		return RestUtil.removeVoidedData(new HashSet<OpenmrsData>(instance.getAddresses()));
+	public static Set<PersonAddress> getAddresses(Person instance) {
+		return RestUtil.removeVoidedData(instance.getAddresses());
 	}
 	
 	/**

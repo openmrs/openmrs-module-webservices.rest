@@ -238,7 +238,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			// first, try to find a @PropertyGetter-annotated method
 			Method annotatedGetter = findGetterMethod(propertyName);
 			if (annotatedGetter != null) {
-				return annotatedGetter.invoke(null, instance);
+				return annotatedGetter.invoke(this, instance);
 			}
 			
 			// next use standard bean methods

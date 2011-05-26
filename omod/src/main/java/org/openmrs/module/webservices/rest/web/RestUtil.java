@@ -16,8 +16,9 @@ package org.openmrs.module.webservices.rest.web;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -446,14 +447,15 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Returns collection of OpenmrsData by removing voided data
+	 * A Set is returned by removing voided data from passed Collection.
+	 * The Collection passed as parameter is not modified
 	 * 
 	 * @param c
 	 * @return non-voided OpenmrsData
 	 */
-	public static Collection<OpenmrsData> removeVoidedData(Collection<OpenmrsData> c) {
-		Collection<OpenmrsData> data = new HashSet<OpenmrsData>();
-		for (OpenmrsData d : c) {
+	public static <D extends OpenmrsData, C extends Collection<D>> Set<D> removeVoidedData(C input) {
+		Set<D> data = new LinkedHashSet<D>();
+		for (D d : input) {
 			if (!d.isVoided()) {
 				data.add(d);
 			}
