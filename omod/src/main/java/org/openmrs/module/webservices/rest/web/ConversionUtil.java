@@ -125,7 +125,8 @@ public class ConversionUtil {
 						pex = ex;
 					}
 				}
-				throw new ConversionException("converting date", pex);
+				throw new ConversionException(
+				        "Error converting date - correct format (ISO8601 Long): yyyy-MM-dd'T'HH:mm:ss.SSSZ", pex);
 			}
 		} else if (object instanceof Map) {
 			Object ret;

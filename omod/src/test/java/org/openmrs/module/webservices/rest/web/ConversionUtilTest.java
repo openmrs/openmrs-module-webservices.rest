@@ -29,17 +29,29 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies String to Date conversion for multiple formatted date/dateTime strings
 	 */
 	@Test
-	public void convert_shouldReturnSameDateFromString() throws Exception {
+	public void convert_shouldReturnEqualsDateFromString() throws Exception {
 		Date expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2011-05-01T00:00:00.000+0530");
 		String[] dateFormats = { "2011-05-01", "2011-05-01 00:00:00", "2011-05-01T00:00:00.000",
-		        "2011-05-01T00:00:00.000+0530", "2011-05-01T00:00:00.000+0200" };
+		        "2011-05-01T00:00:00.000+0530" };
 		for (int i = 0; i < dateFormats.length; i++) {
 			Date result = (Date) ConversionUtil.convert(dateFormats[i], Date.class);
-			if (i != 4)
-				Assert.assertEquals(result, expected);
-			else
-				Assert.assertTrue(result != expected);
-			System.out.println("Passed " + i + ": " + result + " = " + expected);
+			Assert.assertEquals(result, expected);
+			System.out.println("Passed " + i + ": (" + result + ") = (" + expected + ")");
+		}
+	}
+	
+	/**
+	 * @see ConversionUtil#convert(Object,Class<?>)
+	 * @verifies String to Date conversion by assert false for date mismatches
+	 */
+	@Test
+	public void convert_shouldReturnFalseOnIncorrectDateFromString() throws Exception {
+		Date expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2011-05-01T00:00:00.000+0530");
+		String[] dateFormats = { "2011-05-01T00:00:00.000+0200", "2012-05-01T00:00:00.000" };
+		for (int i = 0; i < dateFormats.length; i++) {
+			Date result = (Date) ConversionUtil.convert(dateFormats[i], Date.class);
+			Assert.assertTrue(result != expected);
+			System.out.println("Passed " + i + ": (" + result + ") NOT EQUALS (" + expected + ")");
 		}
 	}
 	
