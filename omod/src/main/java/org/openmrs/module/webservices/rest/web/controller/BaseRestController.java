@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -51,8 +52,9 @@ public abstract class BaseRestController {
 				errorCode = HttpServletResponse.SC_FORBIDDEN;
 			} else {
 				// user is not logged in -> 401 UNAUTHORIZED
-				// TODO specify authentication mechanism
 				errorCode = HttpServletResponse.SC_UNAUTHORIZED;
+				
+				response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
 			}
 		}
 		response.sendError(errorCode, errorDetail);

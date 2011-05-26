@@ -44,6 +44,16 @@
 	
 	<!-- Servlets -->
 	
+	<!-- Filters -->
+	<filter>
+		<filter-name>REST Web Service Authentication</filter-name>
+		<filter-class>org.openmrs.module.webservices.rest.web.filter.AuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>REST Web Service Authentication</filter-name>
+		<url-pattern>/ws/rest/*</url-pattern>
+	</filter-mapping>
+	
 	<!-- Internationalization -->
 	<!-- All message codes should start with moduleId.* -->
 	<messages>
