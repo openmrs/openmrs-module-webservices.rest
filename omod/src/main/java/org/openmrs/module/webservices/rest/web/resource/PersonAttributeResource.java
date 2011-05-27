@@ -1,0 +1,150 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+package org.openmrs.module.webservices.rest.web.resource;
+
+import java.util.List;
+
+import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+/**
+ * {@link Resource} for PersonAttributes, supporting standard CRUD operations
+ */
+@SubResource(parent = PersonResource.class, path = "attributes")
+@Handler(supports = PersonAttribute.class, order = 0)
+public class PersonAttributeResource extends DelegatingSubResource<PersonAttribute, Person, PersonResource> {
+	
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("value");
+			description.addProperty("attributeType", Representation.REF);
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("value");
+			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
+			return description;
+		}
+		return null;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
+	 */
+	@Override
+	public Person getParent(PersonAttribute instance) {
+		return instance.getPerson();
+	}
+	
+	@Override
+	public PersonAttribute newDelegate() {
+		return new PersonAttribute();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
+	 *      java.lang.Object)
+	 */
+	@Override
+	public void setParent(PersonAttribute instance, Person person) {
+		instance.setPerson(person);
+	}
+	
+	@Override
+	public PersonAttribute getByUniqueId(String uniqueId) {
+		return Context.getPersonService().getPersonAttributeByUuid(uniqueId);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public List<PersonAttribute> doGetAll(Person parent, RequestContext context) throws ResponseException {
+		return parent.getActiveAttributes();
+	}
+	
+	@Override
+	protected PersonAttribute save(PersonAttribute delegate) {
+		// make sure it has not already been added to the person
+		boolean needToAdd = true;
+		for (PersonAttribute pa : delegate.getPerson().getActiveAttributes()) {
+			if (pa.equals(delegate)) {
+				needToAdd = false;
+				break;
+			}
+		}
+		if (needToAdd)
+			delegate.getPerson().addAttribute(delegate);
+		
+		Context.getPersonService().savePerson(delegate.getPerson());
+		
+		return delegate;
+	}
+	
+	@Override
+	protected void delete(PersonAttribute delegate, String reason, RequestContext context) throws ResponseException {
+		delegate.voidAttribute(reason);
+		Context.getPersonService().savePerson(delegate.getPerson());
+	}
+	
+	@Override
+	public void purge(PersonAttribute delegate, RequestContext context) throws ResponseException {
+		delegate.getPerson().removeAttribute(delegate);
+		Context.getPersonService().savePerson(delegate.getPerson());
+	}
+	
+	/**
+	 * @param pa
+	 * @return attribute type + value (for concise display purposes)
+	 */
+	public String getDisplayString(PersonAttribute pa) {
+		return pa.getAttributeType().getName() + " = " + pa.getValue();
+	}
+	
+	public SimpleObject getAuditInfo(PersonAttribute pa) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(pa, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(pa.getDateCreated(), Representation.DEFAULT));
+		ret.put("voided", ConversionUtil.convertToRepresentation(pa.isVoided(), Representation.DEFAULT));
+		if (pa.isVoided()) {
+			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(pa, "voidedBy", Representation.REF));
+			ret.put("dateVoided", ConversionUtil.convertToRepresentation(pa.getDateVoided(), Representation.DEFAULT));
+			ret.put("voidReason", ConversionUtil.convertToRepresentation(pa.getVoidReason(), Representation.DEFAULT));
+		}
+		return ret;
+	}
+}
