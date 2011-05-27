@@ -39,6 +39,12 @@
         <property>@MODULE_ID@.uriPrefix</property>
         <description>The URI prefix through which clients consuming web services will connect to the web application, should be of the form http://{ipAddress}:{port}/{contextPath}</description>
     </globalProperty>
+    <globalProperty>
+        <property>@MODULE_ID@.allowedips</property>
+        <defaultValue>*.*.*.*</defaultValue>
+        <description>A comma-separate list of IP addresses that are allowed to access the web services. A "*" character is a wildcard and denotes any match in that part of the IP.  An empty string means no access to any ws. (default value is *.*.*.* meaning all IPs are valid)</description>
+    </globalProperty>
+    
 
 	<!-- DWR -->
 	
@@ -46,11 +52,11 @@
 	
 	<!-- Filters -->
 	<filter>
-		<filter-name>REST Web Service Authentication</filter-name>
-		<filter-class>org.openmrs.module.webservices.rest.web.filter.AuthenticationFilter</filter-class>
+		<filter-name>REST Web Service Authorization</filter-name>
+		<filter-class>org.openmrs.module.webservices.rest.web.filter.AuthorizationFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>REST Web Service Authentication</filter-name>
+		<filter-name>REST Web Service Authorization</filter-name>
 		<url-pattern>/ws/rest/*</url-pattern>
 	</filter-mapping>
 	

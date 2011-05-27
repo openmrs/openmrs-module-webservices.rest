@@ -65,12 +65,13 @@ public class RestUtil implements GlobalPropertyListener {
 	
 	/**
 	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based
-	 * on a global property).
+	 * on a admin-settable global property).
 	 * <p>
 	 * NOTE: Supports only IPv4.
 	 * 
 	 * @param ip address of the client
 	 * @return <code>true</code> if client should be allowed access
+	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 */
 	public static boolean isIpAllowed(String ip) {
 		return ipMatches(ip, getAllowedIps());
@@ -89,7 +90,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @should return true for exact match
 	 * @should return true for match with asterisk
 	 */
-	static boolean ipMatches(String ip, List<String> candidateIps) {
+	public static boolean ipMatches(String ip, List<String> candidateIps) {
 		String[] splitIp = ip.split("\\.");
 		for (String candidateIp : candidateIps) {
 			String[] splitCandidateIp = candidateIp.split("\\.");
