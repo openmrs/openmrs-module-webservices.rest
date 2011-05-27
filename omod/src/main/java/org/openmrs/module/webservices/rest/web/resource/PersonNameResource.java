@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Person;
@@ -57,6 +58,11 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 			description.addProperty("middleName");
 			description.addProperty("familyName");
 			description.addProperty("familyName2");
+			description.addProperty("preferred");
+			description.addProperty("prefix");
+			description.addProperty("familyNamePrefix");
+			description.addProperty("familyNameSuffix");
+			description.addProperty("degree");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -103,12 +109,17 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	
 	@Override
 	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
-		// TODO Auto-generated function stub
+		pn.setVoided(true);
+		pn.setVoidedBy(Context.getAuthenticatedUser());
+		pn.setVoidReason(reason);
+		pn.setDateVoided(new Date());
+		Context.getPersonService().savePerson(pn.getPerson());
 	}
 	
 	@Override
 	public void purge(PersonName pn, RequestContext context) throws ResponseException {
-		// TODO Auto-generated function stub	
+		pn.getPerson().removeName(pn);
+		Context.getPersonService().savePerson(pn.getPerson());
 	}
 	
 	@Override

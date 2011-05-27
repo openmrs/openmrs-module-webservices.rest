@@ -22,7 +22,6 @@ import junit.framework.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
@@ -57,8 +56,6 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 		this.controller = new PersonNameController();
 		this.request = new ServletWebRequest(new MockHttpServletRequest());
 		this.response = new MockHttpServletResponse();
-		
-		executeDataSet("personNameTestDataset.xml");
 	}
 	
 	@Test
@@ -100,7 +97,6 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
-	@Ignore
 	public void shouldVoidName() throws Exception {
 		PersonName pname = service.getPersonNameByUuid(nameUuid);
 		Assert.assertFalse(pname.isVoided());
@@ -111,17 +107,16 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
-	@Ignore
 	public void shouldPurgeName() throws Exception {
 		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
 		// complains that the name will be re-created since the person is in the session.
-		Number before = (Number) Context.getAdministrationService().executeSQL(
-		    "select count(*) from person_name where person_id = 1", true).get(0).get(0);
+		Number before = (Number) Context.getAdministrationService()
+		        .executeSQL("select count(*) from person_name where person_id = 1", true).get(0).get(0);
 		
 		controller.purge(personUuid, nameUuid, request, response);
 		Context.flushSession();
-		Number after = (Number) Context.getAdministrationService().executeSQL(
-		    "select count(*) from person_name where person_id = 1", true).get(0).get(0);
+		Number after = (Number) Context.getAdministrationService()
+		        .executeSQL("select count(*) from person_name where person_id = 1", true).get(0).get(0);
 		Assert.assertEquals(before.intValue() - 1, after.intValue());
 		Assert.assertNull(service.getPersonNameByUuid(nameUuid));
 	}

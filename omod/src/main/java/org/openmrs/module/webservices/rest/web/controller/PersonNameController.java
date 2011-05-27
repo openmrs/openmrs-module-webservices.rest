@@ -14,8 +14,6 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import org.openmrs.PersonName;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.PersonNameResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +25,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/rest/person/{parentUuid}/names")
 public class PersonNameController extends BaseSubResourceController<PersonNameResource> {
-	
-	@Override
-	public PersonNameResource getResource() {
-		return Context.getService(RestService.class).getResource(PersonNameResource.class);
-	}
+
 }
