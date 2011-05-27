@@ -33,12 +33,11 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void convert_shouldReturnEqualsDateFromString() throws Exception {
 		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2011-05-01T00:00:00.000");
-        Calendar cal = Calendar.getInstance();
-        cal.setTime( date );
-        cal.setTimeZone( TimeZone.getDefault());
-        Date expected = cal.getTime();
-		String[] dateFormats = { "2011-05-01", "2011-05-01 00:00:00", "2011-05-01T00:00:00.000",
-		        "2011-05-01T00:00:00.000" };
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getDefault());
+		Date expected = cal.getTime();
+		String[] dateFormats = { "2011-05-01", "2011-05-01 00:00:00", "2011-05-01T00:00:00.000", "2011-05-01T00:00:00.000" };
 		for (int i = 0; i < dateFormats.length; i++) {
 			Date result = (Date) ConversionUtil.convert(dateFormats[i], Date.class);
 			Assert.assertEquals(result, expected);
