@@ -15,7 +15,9 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,13 +32,16 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void convert_shouldReturnEqualsDateFromString() throws Exception {
-		Date expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").parse("2011-05-01T00:00:00.000+0530");
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2011-05-01T00:00:00.000");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( date );
+        cal.setTimeZone( TimeZone.getDefault());
+        Date expected = cal.getTime();
 		String[] dateFormats = { "2011-05-01", "2011-05-01 00:00:00", "2011-05-01T00:00:00.000",
-		        "2011-05-01T00:00:00.000+0530" };
+		        "2011-05-01T00:00:00.000" };
 		for (int i = 0; i < dateFormats.length; i++) {
 			Date result = (Date) ConversionUtil.convert(dateFormats[i], Date.class);
 			Assert.assertEquals(result, expected);
-			System.out.println("Passed " + i + ": (" + result + ") = (" + expected + ")");
 		}
 	}
 	
@@ -51,7 +56,6 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		for (int i = 0; i < dateFormats.length; i++) {
 			Date result = (Date) ConversionUtil.convert(dateFormats[i], Date.class);
 			Assert.assertTrue(result != expected);
-			System.out.println("Passed " + i + ": (" + result + ") NOT EQUALS (" + expected + ")");
 		}
 	}
 	
@@ -65,6 +69,5 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		String expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(today);
 		String result = (String) ConversionUtil.convertToRepresentation(today, Representation.REF);
 		Assert.assertEquals(result, expected);
-		System.out.println("Passed: " + result + " = " + expected);
 	}
 }
