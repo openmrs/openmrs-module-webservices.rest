@@ -64,10 +64,10 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(result);
 		log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
-		
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(result);
 		log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
@@ -99,7 +99,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(results);
 		Object result = results.get(8);
 		Assert.assertEquals(9, results.size());
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uri"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 		

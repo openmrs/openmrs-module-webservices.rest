@@ -15,11 +15,13 @@ package org.openmrs.module.webservices.rest.web.resource;
 
 import java.text.ParseException;
 import java.util.List;
+
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -64,50 +66,41 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
-			description.addProperty("display", findMethod("getDisplayString"));
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			// TODO how to handle valueCodedName?
-			// TODO groupMember to  be  added to the  description only if the groupMember.size()>1
-			// TODO  Concept Resource  needs to be  implemeted to  get  the  representation of the concept
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept", Representation.REF);
-			description.addProperty("value", findMethod("getValueAsString"));
+			description.addProperty("value");
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
-			description.addProperty("groupMembers", findMethod("getObsMembersDefaultRepresentation"));
+			description.addProperty("groupMembers", Representation.REF);
 			description.addProperty("comment");
 			description.addProperty("location", Representation.REF);
 			description.addProperty("order", Representation.REF);
 			description.addProperty("encounter", Representation.REF);
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			// TODO how to handle valueCodedName?
-			//TODO groupMember to  be  added to the  description only if the groupMember.size()>1
-			//TODO  Concept Resource  needs to be  implemeted t  get  the  representatio of th concept
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("uri", findMethod("getUri"));
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept");
-			description.addProperty("value", findMethod("getValueAsString"));
+			description.addProperty("value");
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
-			description.addProperty("groupMembers", findMethod("getObsMembersDefaultRepresentation"));
+			description.addProperty("groupMembers");
 			description.addProperty("comment");
 			description.addProperty("location");
 			description.addProperty("order");
 			description.addProperty("encounter");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
 			return description;
 		}
 		return null;
@@ -164,8 +157,8 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @param obs
 	 * @return
 	 */
-	
-	public String getValueAsString(Obs obs) {
+	@PropertyGetter("value")
+	public static String getValueAsString(Obs obs) {
 		return obs.getValueAsString(Context.getLocale());
 	}
 	
@@ -177,25 +170,10 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @return Object
 	 * @throws ConversionException
 	 */
-	public Object getObsMembersDefaultRepresentation(Obs obs) throws ConversionException {
-		
+	@PropertyGetter("groupMembers")
+	public static Object getGroupMembers(Obs obs) throws ConversionException {
 		if (obs.getGroupMembers() != null && obs.getGroupMembers().size() > 1) {
-			return ConversionUtil.convertToRepresentation(obs.getGroupMembers(), Representation.DEFAULT);
-		}
-		return null;
-	}
-	
-	/**
-	 * Checks if there are more than one obs in GroupMembers and converts into a REF representation
-	 * 
-	 * @param obs
-	 * @return Object
-	 * @throws ConversionException
-	 */
-	public Object getObsMembersRefRepresentation(Obs obs) throws ConversionException {
-		
-		if (obs.getGroupMembers() != null && obs.getGroupMembers().size() > 1) {
-			return ConversionUtil.convertToRepresentation(obs.getGroupMembers(), Representation.REF);
+			return obs.getGroupMembers();
 		}
 		return null;
 	}
