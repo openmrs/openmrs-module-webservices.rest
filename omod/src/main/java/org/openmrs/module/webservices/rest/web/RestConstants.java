@@ -88,7 +88,10 @@ public class RestConstants {
 	public static String REPRESENTATION_CUSTOM_PREFIX = "custom:";
 	
 	//The URI prefix through which clients consuming web services will connect to the web application
-	public static final String URI_PREFIX_GLOBAL_PROPERTY_NAME = "webservices.rest.uriPrefix";
+	public static final String MODULE_ID = "webservices.rest";
+	
+	//The URI prefix through which clients consuming web services will connect to the web application
+	public static final String URI_PREFIX_GLOBAL_PROPERTY_NAME = MODULE_ID + ".uriPrefix";
 	
 	//The dafault value for URI prefix
 	public static final String URI_PREFIX_GP_DEFAULT_VALUE = "NEED-TO-CONFIGURE";

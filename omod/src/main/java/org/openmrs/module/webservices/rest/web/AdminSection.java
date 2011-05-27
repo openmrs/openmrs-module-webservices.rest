@@ -37,7 +37,7 @@ public class AdminSection extends AdministrationSectionExt {
 	 * @see org.openmrs.module.web.extension.AdministrationSectionExt#getTitle()
 	 */
 	public String getTitle() {
-		return "webservices.rest.title";
+		return RestConstants.MODULE_ID + ".title";
 	}
 	
 	/**
@@ -47,8 +47,9 @@ public class AdminSection extends AdministrationSectionExt {
 		
 		Map<String, String> map = new HashMap<String, String>();
 		
-		map.put("module/webservices/rest/help.form", "webservices.rest.help");
-		map.put("module/webservices/rest/test.htm", "webservices.rest.test");
+		map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
+		map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
+		map.put("module/webservices/rest/globalProperties.form", RestConstants.MODULE_ID + ".manage.globalProperties");
 		
 		return map;
 	}
