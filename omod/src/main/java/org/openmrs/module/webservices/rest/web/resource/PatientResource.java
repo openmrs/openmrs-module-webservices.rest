@@ -64,7 +64,8 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	public static void setPreferredIdentifier(Patient instance, PatientIdentifier id) throws ObjectMismatchException {
 		if (id.getId() != null) {
 			if (!instance.equals(id.getPatient()))
-				throw new ObjectMismatchException("Trying to set a preferred identifier that doesn't belong to the patient", null);
+				throw new ObjectMismatchException("Trying to set a preferred identifier that doesn't belong to the patient",
+				        null);
 		}
 		// unprefer any currently-preferred identifiers
 		for (PatientIdentifier existing : instance.getActiveIdentifiers()) {

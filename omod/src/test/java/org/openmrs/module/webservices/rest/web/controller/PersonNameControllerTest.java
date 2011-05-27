@@ -110,13 +110,13 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	public void shouldPurgeName() throws Exception {
 		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
 		// complains that the name will be re-created since the person is in the session.
-		Number before = (Number) Context.getAdministrationService()
-		        .executeSQL("select count(*) from person_name where person_id = 1", true).get(0).get(0);
+		Number before = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from person_name where person_id = 1", true).get(0).get(0);
 		
 		controller.purge(personUuid, nameUuid, request, response);
 		Context.flushSession();
-		Number after = (Number) Context.getAdministrationService()
-		        .executeSQL("select count(*) from person_name where person_id = 1", true).get(0).get(0);
+		Number after = (Number) Context.getAdministrationService().executeSQL(
+		    "select count(*) from person_name where person_id = 1", true).get(0).get(0);
 		Assert.assertEquals(before.intValue() - 1, after.intValue());
 		Assert.assertNull(service.getPersonNameByUuid(nameUuid));
 	}
