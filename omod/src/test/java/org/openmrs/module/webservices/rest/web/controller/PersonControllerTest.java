@@ -262,7 +262,9 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
-		Assert.assertEquals(3, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(), "uuid"));
+		Assert
+		        .assertEquals(3, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(),
+		            "value"));
 		Set<PersonAttribute> attributes = p.getAttributes();
 		for (PersonAttribute pa : attributes) {
 			pa.setVoided(true);
@@ -270,6 +272,8 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		p.setAttributes(attributes);
 		Context.getPersonService().savePerson(p);
 		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
-		Assert.assertEquals(0, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(), "uuid"));
+		Assert
+		        .assertEquals(0, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(),
+		            "value"));
 	}
 }
