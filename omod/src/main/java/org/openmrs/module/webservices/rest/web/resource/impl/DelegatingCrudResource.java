@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -29,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchResult;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -123,18 +123,16 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<Object> search(String query, RequestContext context) throws ResponseException {
-		List<Object> ret = new ArrayList<Object>();
-		for (T match : doSearch(query, context))
-			ret.add(asRepresentation(match, context.getRepresentation()));
-		return ret;
+	public SimpleObject search(String query, RequestContext context) throws ResponseException {
+		SearchResult result = doSearch(query, context);
+		return result.toSimpleObject();
 	}
 	
 	/**
 	 * Implementations should override this method if they are actually searchable.
 	 */
-	protected List<T> doSearch(String query, RequestContext context) {
-		return Collections.emptyList();
+	protected SearchResult doSearch(String query, RequestContext context) {
+		return new EmptySearchResult();
 	}
 	
 	/**

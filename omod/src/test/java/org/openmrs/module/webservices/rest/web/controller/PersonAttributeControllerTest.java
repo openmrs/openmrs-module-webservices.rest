@@ -46,7 +46,7 @@ public class PersonAttributeControllerTest extends BaseModuleWebContextSensitive
 	
 	private PersonAttributeController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -54,7 +54,7 @@ public class PersonAttributeControllerTest extends BaseModuleWebContextSensitive
 	public void before() throws Exception {
 		this.service = Context.getPersonService();
 		this.controller = new PersonAttributeController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	

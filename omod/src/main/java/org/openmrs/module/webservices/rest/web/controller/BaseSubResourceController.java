@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.api.context.Context;
@@ -31,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
@@ -61,7 +61,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
-	        WebRequest request) throws ResponseException {
+	        HttpServletRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		R resource = getResource();
 		return resource.retrieve(parentUuid, uuid, context);
@@ -76,7 +76,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<Object> getAll(@PathVariable("parentUuid") String parentUuid, WebRequest request,
+	public List<Object> getAll(@PathVariable("parentUuid") String parentUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		return getResource().getAll(parentUuid, context);
@@ -92,8 +92,8 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object create(@PathVariable("parentUuid") String parentUuid, @RequestBody SimpleObject post, WebRequest request,
-	        HttpServletResponse response) throws ResponseException {
+	public Object create(@PathVariable("parentUuid") String parentUuid, @RequestBody SimpleObject post,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		Object created = getResource().create(parentUuid, post, context);
 		return RestUtil.created(response, created);
@@ -111,7 +111,8 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
-	        @RequestBody SimpleObject post, WebRequest request, HttpServletResponse response) throws ResponseException {
+	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().update(parentUuid, uuid, post, context);
 		return RestUtil.noContent(response);
@@ -127,7 +128,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
 	public Object delete(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
-	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, WebRequest request,
+	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().delete(parentUuid, uuid, reason, context);
@@ -144,7 +145,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
 	public Object purge(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
-	        WebRequest request, HttpServletResponse response) throws ResponseException {
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().purge(parentUuid, uuid, context);
 		return RestUtil.noContent(response);

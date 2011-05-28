@@ -13,6 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 
@@ -21,6 +27,8 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
  */
 public class RequestContext {
 	
+	private HttpServletRequest request;
+	
 	private Representation representation = new DefaultRepresentation();
 	
 	private Integer startIndex = 0;
@@ -28,6 +36,20 @@ public class RequestContext {
 	private Integer limit = RestUtil.getDefaultLimit();
 	
 	public RequestContext() {
+	}
+	
+	/**
+	 * @return the request
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+	
+	/**
+	 * @param request the request to set
+	 */
+	public void setRequest(HttpServletRequest request) {
+		this.request = request;
 	}
 	
 	/**
@@ -83,6 +105,55 @@ public class RequestContext {
 	 */
 	public void setStartIndex(Integer startIndex) {
 		this.startIndex = startIndex;
+	}
+	
+	/**
+	 * (Assumes this was a search query)
+	 * 
+	 * @return the hyperlink you would GET to fetch the next page of results for the query
+	 */
+	public Hyperlink getNextLink() {
+		String query = getQueryWithoutStartIndex();
+		query += RestConstants.REQUEST_PROPERTY_FOR_START_INDEX + "=" + (startIndex + limit);
+		return new Hyperlink("next", request.getRequestURL().append(query).toString());
+	}
+	
+	/**
+	 * (Assumes this was a search query)
+	 * 
+	 * @return the hyperlink you would GET to fetch the previous page of results for the query
+	 */
+	public Hyperlink getPreviousLink() {
+		String query = getQueryWithoutStartIndex();
+		int prevStart = startIndex - limit;
+		if (prevStart < 0)
+			prevStart = 0;
+		if (prevStart > 0)
+			query += RestConstants.REQUEST_PROPERTY_FOR_START_INDEX + "=" + prevStart;
+		return new Hyperlink("prev", request.getRequestURL().append(query).toString());
+	}
+	
+	/**
+	 * @return the query string from this request, with the startIndex query parameter removed if it was present 
+	 */
+	@SuppressWarnings("unchecked")
+	private String getQueryWithoutStartIndex() {
+		StringBuilder query = new StringBuilder("?");
+		for (Map.Entry<String, String[]> e : ((Map<String, String[]>) (request.getParameterMap())).entrySet()) {
+			String param = e.getKey();
+			if (RestConstants.REQUEST_PROPERTY_FOR_START_INDEX.equals(param)) {
+				continue;
+			}
+			for (int i = 0; i < e.getValue().length; ++i) {
+				try {
+					query.append(e.getKey() + "=" + URLEncoder.encode(e.getValue()[i], "UTF-8") + "&");
+				}
+				catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException("UTF-8 encoding should always be supported", ex);
+				}
+			}
+		}
+		return query.toString();
 	}
 	
 }

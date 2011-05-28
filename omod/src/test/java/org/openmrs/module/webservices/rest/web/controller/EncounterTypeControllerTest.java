@@ -42,7 +42,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	
 	private EncounterTypeController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -50,7 +50,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	public void before() {
 		this.service = Context.getEncounterService();
 		this.controller = new EncounterTypeController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	
@@ -127,7 +127,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	
 	@Test
 	public void shouldSearchAndReturnAListOfEncounterTypesMatchingTheQueryString() throws Exception {
-		List<Object> hits = controller.search("Sch", request, response);
+		List<Object> hits = (List<Object>) controller.search("Sch", request, response).get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
@@ -137,7 +137,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = controller.retrieve("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", new ServletWebRequest(httpReq));
+		Object result = controller.retrieve("61ae96f4-6afe-4351-b6f8-cd4fc383cce1", httpReq);
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}

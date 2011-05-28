@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -98,7 +99,7 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<EncounterType> doSearch(String query, RequestContext context) {
-		return Context.getEncounterService().findEncounterTypes(query);
+	protected NeedsPaging<EncounterType> doSearch(String query, RequestContext context) {
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().findEncounterTypes(query), context);
 	}
 }

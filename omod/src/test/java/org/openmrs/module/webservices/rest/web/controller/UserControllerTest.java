@@ -14,11 +14,15 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -27,7 +31,6 @@ import org.openmrs.module.webservices.rest.web.resource.UserResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
@@ -47,8 +50,8 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		System.out.println(toPrint);
 	}
 	
-	private WebRequest emptyRequest() {
-		return new ServletWebRequest(new MockHttpServletRequest());
+	private MockHttpServletRequest emptyRequest() {
+		return new MockHttpServletRequest();
 	}
 	
 	/**
@@ -88,7 +91,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getUser_shouldGetAFullRepresentationOfAPatient() throws Exception {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", new ServletWebRequest(req));
+		Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", req);
 		log("User retrieved (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("c1d8f5c2-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
@@ -134,7 +137,8 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findUsers_shouldReturnNoResultsIfThereAreNoMatchingUsers() throws Exception {
-		List<Object> results = new UserController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new UserController().search("zzzznobody", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(0, results.size());
 	}
 	
@@ -144,7 +148,8 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findUsers_shouldFindMatchingUsers() throws Exception {
-		List<Object> results = new UserController().search("but", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new UserController().search("but", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
 		log("Found " + results.size() + " user(s)", results);
 		Object result = results.get(0);

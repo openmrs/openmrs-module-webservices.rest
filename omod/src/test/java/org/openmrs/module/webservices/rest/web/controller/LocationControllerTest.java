@@ -44,7 +44,7 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	private LocationController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -52,7 +52,7 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void before() {
 		this.service = Context.getLocationService();
 		this.controller = new LocationController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	
@@ -135,9 +135,8 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 		service.saveLocation(location);
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		request = new ServletWebRequest(httpReq);
 		
-		Object result = controller.retrieve(uuid, request);
+		Object result = controller.retrieve(uuid, httpReq);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));
 	}
 	
@@ -151,9 +150,8 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 		service.saveLocation(location);
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		request = new ServletWebRequest(httpReq);
 		
-		Object result = controller.retrieve(parentUuid, request);
+		Object result = controller.retrieve(parentUuid, httpReq);
 		Assert.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
 	}
 	
@@ -161,14 +159,14 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = controller.retrieve("167ce20c-4785-4285-9119-d197268f7f4a", new ServletWebRequest(httpReq));
+		Object result = controller.retrieve("167ce20c-4785-4285-9119-d197268f7f4a", httpReq);
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	@Test
 	public void shouldSearchAndReturnAListOfLocationsMatchingTheQueryString() throws Exception {
-		List<Object> hits = controller.search("xan", request, response);
+		List<Object> hits = (List<Object>) controller.search("xan", request, response).get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("9356400c-a5a2-4532-8f2b-2361b3446eb8", PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}

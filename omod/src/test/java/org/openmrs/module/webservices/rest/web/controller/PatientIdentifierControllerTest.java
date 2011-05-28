@@ -17,8 +17,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Tests functionality of {@link PatientIdentifierController}. This does not use @should annotations because
@@ -32,7 +30,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	
 	private PatientIdentifierController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -40,7 +38,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	public void before() {
 		this.service = Context.getPatientService();
 		this.controller = new PatientIdentifierController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	

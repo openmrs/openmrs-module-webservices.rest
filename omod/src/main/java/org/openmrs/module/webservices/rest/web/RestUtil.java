@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -93,6 +94,8 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean ipMatches(String ip, List<String> candidateIps) {
 		String[] splitIp = ip.split("\\.");
 		for (String candidateIp : candidateIps) {
+			if ("*".equals(candidateIp))
+				return true;
 			String[] splitCandidateIp = candidateIp.split("\\.");
 			if (splitCandidateIp.length == splitIp.length) {
 				boolean match = true;
@@ -332,8 +335,9 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 */
-	public static RequestContext getRequestContext(WebRequest request) {
+	public static RequestContext getRequestContext(HttpServletRequest request) {
 		RequestContext ret = new RequestContext();
+		ret.setRequest(request);
 		
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
@@ -365,7 +369,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param param the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
-	private static Integer getIntegerParam(WebRequest request, String param) {
+	private static Integer getIntegerParam(HttpServletRequest request, String param) {
 		String paramString = request.getParameter(param);
 		
 		if (paramString != null) {

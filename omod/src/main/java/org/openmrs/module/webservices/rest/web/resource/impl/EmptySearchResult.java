@@ -11,25 +11,25 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.resource.api;
+package org.openmrs.module.webservices.rest.web.resource.impl;
+
+import java.util.Collections;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Interface implemented by resources that have the standard-pattern Search operation. Implementations of this interface must
- * respect the values of startIndex and limit specified in the RequestContext 
+ * Empty list of search results
  */
-public interface Searchable extends Resource {
+public class EmptySearchResult implements SearchResult {
 	
 	/**
-	 * Searches for all instances of the given resource that match the given query.
-	 * @param uuid
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchResult#toSimpleObject()
 	 */
-	public SimpleObject search(String query, RequestContext context) throws ResponseException;
+	@Override
+	public SimpleObject toSimpleObject() throws ResponseException {
+		return new SimpleObject().add("results", Collections.emptyList());
+	}
 	
 }

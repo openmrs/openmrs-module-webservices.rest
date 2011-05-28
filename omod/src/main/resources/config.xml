@@ -41,8 +41,8 @@
     </globalProperty>
     <globalProperty>
         <property>@MODULE_ID@.allowedips</property>
-        <defaultValue>*.*.*.*</defaultValue>
-        <description>A comma-separate list of IP addresses that are allowed to access the web services. A "*" character is a wildcard and denotes any match in that part of the IP.  An empty string means no access to any ws. (default value is *.*.*.* meaning all IPs are valid)</description>
+        <defaultValue>*</defaultValue>
+        <description>A comma-separate list of IP addresses that are allowed to access the web services. A "*" character is a wildcard and denotes any match in that part of the IP.  An empty string means no access to any ws. The special value "*" allows all IPv4 and IPv6 addresses (this is the default).</description>
     </globalProperty>
     
 

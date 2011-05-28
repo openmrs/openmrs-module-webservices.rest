@@ -22,6 +22,7 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,8 +32,10 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -180,8 +183,9 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Patient> doSearch(String query, RequestContext context) {
-		return Context.getPatientService().getPatients(query, context.getStartIndex(), context.getLimit());
+	protected AlreadyPaged<Patient> doSearch(String query, RequestContext context) {
+		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients")
+		        .search(query, context);
 	}
 	
 	/**

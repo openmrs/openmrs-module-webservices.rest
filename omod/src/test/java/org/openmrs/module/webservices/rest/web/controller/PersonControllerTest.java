@@ -15,9 +15,11 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -39,7 +41,6 @@ import org.openmrs.module.webservices.rest.web.resource.PersonResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
@@ -59,8 +60,8 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		System.out.println(toPrint);
 	}
 	
-	private WebRequest emptyRequest() {
-		return new ServletWebRequest(new MockHttpServletRequest());
+	private MockHttpServletRequest emptyRequest() {
+		return new MockHttpServletRequest();
 	}
 	
 	/**
@@ -99,7 +100,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getPerson_shouldGetAFullRepresentationOfAPerson() throws Exception {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
 		log("Person fetched (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("5946f880-b197-400b-9caa-a3c661d23041", PropertyUtils.getProperty(result, "uuid"));
@@ -159,7 +160,8 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findPersons_shouldReturnNoResultsIfThereAreNoMatchingPersons() throws Exception {
-		List<Object> results = new PersonController().search("zzzznobody", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new PersonController().search("zzzznobody", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(0, results.size());
 	}
 	
@@ -169,7 +171,8 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findPersons_shouldFindMatchingPersons() throws Exception {
-		List<Object> results = new PersonController().search("Horatio", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new PersonController().search("Horatio", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
 		log("Found " + results.size() + " person(s)", results);
 		Object result = results.get(0);
@@ -186,8 +189,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertFalse(person.getPersonAddress().isPreferred());
 		String json = "{ \"preferredAddress\":\"3350d0b5-821c-4e5e-ad1d-a9bce331e118\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(personUuid, post, new ServletWebRequest(new MockHttpServletRequest()),
-		    new MockHttpServletResponse());
+		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Assert.assertTrue(person.getPersonAddress().isPreferred());
 		Assert.assertEquals("1050 Wishard Blvd.", person.getPersonAddress().getAddress1());
 	}
@@ -200,8 +202,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertFalse(person.getPersonAddress().isPreferred());
 		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(personUuid, post, new ServletWebRequest(new MockHttpServletRequest()),
-		    new MockHttpServletResponse());
+		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Assert.assertTrue(person.getPersonAddress().isPreferred());
 		Assert.assertEquals("test address", person.getPersonAddress().getAddress1());
 	}
@@ -218,8 +219,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(person.getPersonAddress().isPreferred());
 		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(personUuid, post, new ServletWebRequest(new MockHttpServletRequest()),
-		    new MockHttpServletResponse());
+		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Assert.assertFalse(oldPreferredAddress.isPreferred());
 	}
 	
@@ -240,11 +240,11 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Context.getPersonService().savePerson(p);
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
 		Assert.assertEquals(2, StringUtils.countMatches(PropertyUtils.getProperty(result, "names").toString(), "givenName"));
 		pn.setVoided(true);
 		Context.getPersonService().savePerson(p);
-		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
 		Assert.assertEquals(1, StringUtils.countMatches(PropertyUtils.getProperty(result, "names").toString(), "givenName"));
 	}
 	
@@ -261,19 +261,45 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Person p = new PersonResource().getByUniqueId("5946f880-b197-400b-9caa-a3c661d23041");
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
-		Assert
-		        .assertEquals(3, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(),
-		            "value"));
+		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
+		Assert.assertEquals(3, ((Collection<?>) PropertyUtils.getProperty(result, "attributes")).size());
 		Set<PersonAttribute> attributes = p.getAttributes();
 		for (PersonAttribute pa : attributes) {
 			pa.setVoided(true);
 		}
 		p.setAttributes(attributes);
 		Context.getPersonService().savePerson(p);
-		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", new ServletWebRequest(req));
+		result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
 		Assert
 		        .assertEquals(0, StringUtils.countMatches(PropertyUtils.getProperty(result, "attributes").toString(),
 		            "value"));
 	}
+	
+	@Test
+	public void shouldRespectStartIndexAndLimit() throws Exception {
+		MockHttpServletRequest hsr = new MockHttpServletRequest("GET",
+		        "http://localhost:8080/openmrs/ws/rest/patient?q=Test");
+		SimpleObject wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
+		log("Everything", wrapper);
+		List<Object> results = (List<Object>) wrapper.get("results");
+		int fullCount = results.size();
+		Assert.assertTrue("This test assumes >2 matching patients", fullCount > 2);
+		
+		hsr.removeAllParameters();
+		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
+		wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
+		log("First 2", wrapper);
+		results = (List<Object>) wrapper.get("results");
+		int firstCount = results.size();
+		Assert.assertEquals(2, firstCount);
+		
+		hsr.removeAllParameters();
+		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX, "2");
+		wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
+		log("The rest", wrapper);
+		results = (List<Object>) wrapper.get("results");
+		int restCount = results.size();
+		Assert.assertEquals(fullCount, firstCount + restCount);
+	}
+	
 }

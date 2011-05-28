@@ -45,7 +45,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	
 	private PersonAddressController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -55,7 +55,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	public void before() {
 		this.service = Context.getPersonService();
 		this.controller = new PersonAddressController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	
@@ -142,8 +142,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		executeDataSet(PERSON_NAME_XML);
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = controller.retrieve(personUuid, "8a806d8c-822d-11e0-872f-18a905e044dc", new ServletWebRequest(
-		        httpReq));
+		Object result = controller.retrieve(personUuid, "8a806d8c-822d-11e0-872f-18a905e044dc", httpReq);
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "latitude"));

@@ -28,8 +28,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Tests functionality of {@link CohortController}.
@@ -46,7 +44,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	private CohortController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -54,7 +52,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
 		this.controller = new CohortController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 		executeDataSet(datasetFilename);
 	}

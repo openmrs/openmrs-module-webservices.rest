@@ -30,7 +30,6 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Tests functionality of {@link CohortMemberController}.
@@ -47,7 +46,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	
 	private CohortMemberController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -55,7 +54,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
 		this.controller = new CohortMemberController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 		executeDataSet(datasetFilename);
 	}
@@ -96,7 +95,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		int size = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		List<Object> result = controller.getAll(cohortUuid, new ServletWebRequest(req), response);
+		List<Object> result = controller.getAll(cohortUuid, req, response);
 		Assert.assertNotNull(result);
 		log("Cohort member fetched (default)", result);
 		Assert.assertEquals(result.size(), size);

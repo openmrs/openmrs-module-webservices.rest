@@ -24,6 +24,7 @@ import junit.framework.Assert;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -50,6 +51,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
+	@Ignore
 	public void testAllReprsentationDescriptions() throws Exception {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		//only match subclasses of BaseDelegatingResource

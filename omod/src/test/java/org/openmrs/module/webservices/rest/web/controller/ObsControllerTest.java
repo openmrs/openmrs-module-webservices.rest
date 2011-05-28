@@ -34,8 +34,8 @@ import org.springframework.web.context.request.WebRequest;
 
 public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private WebRequest emptyRequest() {
-		return new ServletWebRequest(new MockHttpServletRequest());
+	private MockHttpServletRequest emptyRequest() {
+		return new MockHttpServletRequest();
 	}
 	
 	private void log(String label, Object object) {
@@ -78,7 +78,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getObs_shouldGetAFullRepresentationOfAObs() throws Exception {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", new ServletWebRequest(req));
+		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", req);
 		Assert.assertNotNull(result);
 		log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
@@ -95,7 +95,8 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getObsByPatientId_shouldGetADefaultRepresentationOfAllObs() throws Exception {
-		List<Object> results = new ObsController().search("6TS-4", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new ObsController().search("6TS-4", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertNotNull(results);
 		Object result = results.get(8);
 		Assert.assertEquals(9, results.size());

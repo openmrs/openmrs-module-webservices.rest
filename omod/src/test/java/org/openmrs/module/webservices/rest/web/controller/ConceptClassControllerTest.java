@@ -42,7 +42,7 @@ public class ConceptClassControllerTest extends BaseModuleWebContextSensitiveTes
 	
 	private ConceptClassController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -50,7 +50,7 @@ public class ConceptClassControllerTest extends BaseModuleWebContextSensitiveTes
 	public void before() {
 		this.service = Context.getConceptService();
 		this.controller = new ConceptClassController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	
@@ -129,7 +129,7 @@ public class ConceptClassControllerTest extends BaseModuleWebContextSensitiveTes
 	public void shouldIncludeTheAuditInfoForTheFullRepresentation() throws Exception {
 		MockHttpServletRequest httpReq = new MockHttpServletRequest();
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = controller.retrieve("97097dd9-b092-4b68-a2dc-e5e5be961d42", new ServletWebRequest(httpReq));
+		Object result = controller.retrieve("97097dd9-b092-4b68-a2dc-e5e5be961d42", httpReq);
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}

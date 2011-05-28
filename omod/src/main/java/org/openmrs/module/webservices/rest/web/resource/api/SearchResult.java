@@ -14,22 +14,13 @@
 package org.openmrs.module.webservices.rest.web.resource.api;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Interface implemented by resources that have the standard-pattern Search operation. Implementations of this interface must
- * respect the values of startIndex and limit specified in the RequestContext 
+ * Helper interface used by Searchable implementations
  */
-public interface Searchable extends Resource {
+public interface SearchResult {
 	
-	/**
-	 * Searches for all instances of the given resource that match the given query.
-	 * @param uuid
-	 * @param context
-	 * @return
-	 * @throws ResponseException
-	 */
-	public SimpleObject search(String query, RequestContext context) throws ResponseException;
+	SimpleObject toSimpleObject() throws ResponseException;
 	
 }

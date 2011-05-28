@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -64,7 +65,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("causeOfDeath", Representation.REF);
 			description.addProperty("preferredName", "personName", Representation.REF);
 			description.addProperty("preferredAddress", "personAddress", Representation.REF);
-			description.addProperty("attributes", Representation.REF);
+			description.addProperty("attributes", "activeAttributes", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -82,7 +83,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("preferredAddress", "personAddress", Representation.DEFAULT);
 			description.addProperty("names");
 			description.addProperty("addresses");
-			description.addProperty("attributes");
+			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -184,8 +185,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Person> doSearch(String query, RequestContext context) {
-		return Context.getPersonService().getPeople(query, null);
+	protected NeedsPaging<Person> doSearch(String query, RequestContext context) {
+		return new NeedsPaging<Person>(Context.getPersonService().getPeople(query, null), context);
 	}
 	
 	/**

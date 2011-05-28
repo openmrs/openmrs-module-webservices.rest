@@ -45,8 +45,8 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void findEncounters_shouldReturnNoResultsIfThereAreNoMatchingEncounters() throws Exception {
-		List<Object> results = new EncounterController()
-		        .search("noencounter", emptyRequest(), new MockHttpServletResponse());
+		List<Object> results = (List<Object>) new EncounterController().search("noencounter", emptyRequest(),
+		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(0, results.size());
 	}
 	
@@ -73,8 +73,7 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		
-		Object result = new EncounterController().retrieve("6519d653-393b-4118-9c83-a3715b82d4ac",
-		    new ServletWebRequest(req));
+		Object result = new EncounterController().retrieve("6519d653-393b-4118-9c83-a3715b82d4ac", req);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("6519d653-393b-4118-9c83-a3715b82d4ac", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "encounterType"));
@@ -124,7 +123,7 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("unit test", enc.getVoidReason());
 	}
 	
-	private WebRequest emptyRequest() {
-		return new ServletWebRequest(new MockHttpServletRequest());
+	private MockHttpServletRequest emptyRequest() {
+		return new MockHttpServletRequest();
 	}
 }

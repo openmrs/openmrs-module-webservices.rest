@@ -30,8 +30,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Tests functionality of {@link PersonNameController}.
@@ -46,7 +44,7 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	
 	private PersonNameController controller;
 	
-	private WebRequest request;
+	private MockHttpServletRequest request;
 	
 	private HttpServletResponse response;
 	
@@ -54,7 +52,7 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	public void before() throws Exception {
 		this.service = Context.getPersonService();
 		this.controller = new PersonNameController();
-		this.request = new ServletWebRequest(new MockHttpServletRequest());
+		this.request = new MockHttpServletRequest();
 		this.response = new MockHttpServletResponse();
 	}
 	

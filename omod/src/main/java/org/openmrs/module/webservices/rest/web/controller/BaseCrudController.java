@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.api.context.Context;
@@ -35,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
@@ -63,7 +63,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object retrieve(@PathVariable("uuid") String uuid, WebRequest request) throws ResponseException {
+	public Object retrieve(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		R resource = getResource();
 		return resource.retrieve(uuid, context);
@@ -78,7 +78,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object create(@RequestBody SimpleObject post, WebRequest request, HttpServletResponse response)
+	public Object create(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		Object created = getResource().create(post, context);
@@ -95,7 +95,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public Object update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post, WebRequest request,
+	public Object update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource resource = getResource();
@@ -112,7 +112,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
 	public Object delete(@PathVariable("uuid") String uuid,
-	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, WebRequest request,
+	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().delete(uuid, reason, context);
@@ -127,7 +127,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
-	public Object purge(@PathVariable("uuid") String uuid, WebRequest request, HttpServletResponse response)
+	public Object purge(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		getResource().purge(uuid, context);
@@ -143,7 +143,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
-	public List<Object> search(@RequestParam("q") String query, WebRequest request, HttpServletResponse response)
+	public SimpleObject search(@RequestParam("q") String query, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		Searchable searchable;
 		try {
@@ -166,7 +166,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<Object> getAll(WebRequest request, HttpServletResponse response) throws ResponseException {
+	public List<Object> getAll(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		Listable listable;
 		try {
 			listable = (Listable) getResource();

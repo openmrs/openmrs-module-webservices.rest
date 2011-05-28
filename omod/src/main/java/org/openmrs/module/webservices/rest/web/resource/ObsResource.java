@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -137,8 +138,8 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Obs> doSearch(String query, RequestContext context) {
-		return Context.getObsService().getObservations(query);
+	protected NeedsPaging<Obs> doSearch(String query, RequestContext context) {
+		return new NeedsPaging<Obs>(Context.getObsService().getObservations(query), context);
 	}
 	
 	/**
