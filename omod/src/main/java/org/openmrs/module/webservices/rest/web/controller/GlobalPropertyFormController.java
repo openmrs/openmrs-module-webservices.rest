@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.GlobalProperty;
@@ -24,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller behind the webservices module's "globalProperties.jsp" page.
+ * Controller behind the webservices module's "settings.jsp" page.
  */
 @Controller
-@RequestMapping("/module/webservices/rest/globalProperties")
+@RequestMapping("/module/webservices/rest/settings")
 public class GlobalPropertyFormController {
 	
 	@RequestMapping(method = RequestMethod.GET)
@@ -44,8 +45,18 @@ public class GlobalPropertyFormController {
 	 */
 	@ModelAttribute("globalPropertiesModel")
 	public GlobalPropertiesModel getModel() {
-		return (new GlobalPropertiesModel(Context.getAdministrationService().getGlobalPropertiesByPrefix(
-		    RestConstants.MODULE_ID)));
+		List<GlobalProperty> editableProps = new ArrayList<GlobalProperty>();
+		List<GlobalProperty> props = Context.getAdministrationService().getGlobalPropertiesByPrefix(RestConstants.MODULE_ID);
+		
+		//remove the properties we dont want to edit
+		for (GlobalProperty globalProperty : props) {
+			if (!globalProperty.getProperty().equals(RestConstants.MODULE_ID + ".started")
+			        && !globalProperty.getProperty().equals(RestConstants.MODULE_ID + ".mandatory")) {
+				editableProps.add(globalProperty);
+			}
+		}
+		
+		return new GlobalPropertiesModel(editableProps);
 	}
 	
 	/**
@@ -76,7 +87,6 @@ public class GlobalPropertyFormController {
 		public void setProperties(List<GlobalProperty> properties) {
 			this.properties = properties;
 		}
-		
 	}
 	
 }

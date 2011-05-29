@@ -49,7 +49,7 @@ public class AdminSection extends AdministrationSectionExt {
 		
 		map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
 		map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
-		map.put("module/webservices/rest/globalProperties.form", RestConstants.MODULE_ID + ".manage.globalProperties");
+		map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.globalProperties");
 		
 		return map;
 	}

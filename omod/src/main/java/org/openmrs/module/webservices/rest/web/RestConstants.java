@@ -26,13 +26,16 @@ public class RestConstants {
 	 */
 	public static Integer MAX_RESULTS_DEFAULT = 50;
 	
+	//module id or name
+	public static final String MODULE_ID = "webservices.rest";
+	
 	/**
 	 * The key of the global property that an admin can set if they want to restrict lists to larger
 	 * or smaller numbers than the default
 	 * 
 	 * @see #MAX_RESULTS_DEFAULT
 	 */
-	public static String MAX_RESULTS_GLOBAL_PROPERTY_NAME = "webservices.rest.maxresults";
+	public static String MAX_RESULTS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults";
 	
 	/**
 	 * The key of the global property that an admin can set to restrict ws users based on a range of
@@ -90,13 +93,12 @@ public class RestConstants {
 	
 	// The URI prefix through which clients consuming web services will connect
 	// to the web application
-	public static final String MODULE_ID = "webservices.rest";
-	
-	// The URI prefix through which clients consuming web services will connect
-	// to the web application
 	public static final String URI_PREFIX_GLOBAL_PROPERTY_NAME = MODULE_ID + ".uriPrefix";
 	
 	// The dafault value for URI prefix
 	public static final String URI_PREFIX_GP_DEFAULT_VALUE = "NEED-TO-CONFIGURE";
 	
+	//The suffix to be used for all messages codes for logic names of global properties 
+	//e.g "webservices.rest.fooBar.label for the 'webservices.rest.fooBar' global property
+	public static final String GLOBAL_PROPERTY_LOGICAL_NAME_MESSAGE_CODE_SUFFIX = ".label";
 }
