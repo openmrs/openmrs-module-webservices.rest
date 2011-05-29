@@ -124,13 +124,33 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <providerImplementations>
+                        <svn>javasvn</svn>
+                    </providerImplementations> 
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
 	<properties>
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
-		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
+		<MODULE_VERSION>${project.parent.version}.${buildNumber}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
