@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +24,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -57,28 +57,13 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		executeDataSet(datasetFilename);
 	}
 	
-	private void log(String label, Object object) {
-		String toPrint;
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
-			toPrint = mapper.writeValueAsString(object);
-		}
-		catch (Exception ex) {
-			toPrint = "" + object;
-		}
-		if (label != null)
-			toPrint = label + ": " + toPrint;
-		System.out.println(toPrint);
-	}
-	
 	@Test
 	public void createCohort_shouldCreateANewCohort() throws Exception {
 		int before = service.getAllCohorts().size();
 		String json = "{ \"name\":\"NEW COHORT\", \"description\":\"THIS IS NEW COHORT\", \"memberIds\": [ 2, 6 ]}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newCohort = controller.create(post, request, response);
-		log("Created cohort", newCohort);
+		TestUtil.log("Created cohort", newCohort);
 		Assert.assertEquals(before + 1, service.getAllCohorts().size());
 	}
 	
@@ -86,7 +71,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		Object result = controller.retrieve(cohortUuid, request);
 		Assert.assertNotNull(result);
-		log("Cohort fetched (default)", result);
+		TestUtil.log("Cohort fetched (default)", result);
 		Assert.assertEquals(cohortUuid, PropertyUtils.getProperty(result, "uuid"));
 	}
 	
@@ -94,7 +79,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getCohortByExactName_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		Object result = controller.retrieve(cohortName, request);
 		Assert.assertNotNull(result);
-		log("Cohort fetched (default)", result);
+		TestUtil.log("Cohort fetched (default)", result);
 		Assert.assertEquals(cohortName, PropertyUtils.getProperty(result, "name"));
 	}
 	
@@ -114,7 +99,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"name\":\"EXTRA COHORT\", \"description\":\"THIS IS NEW COHORT\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object editedCohort = controller.update(cohortUuid, post, request, response);
-		log("Edited cohort", editedCohort);
+		TestUtil.log("Edited cohort", editedCohort);
 		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUuid).getName());
 	}
 	

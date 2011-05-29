@@ -19,12 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.TestUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.resource.UserResource;
@@ -34,21 +34,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.context.request.WebRequest;
 
 public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
-	
-	private void log(String label, Object object) {
-		String toPrint;
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
-			toPrint = mapper.writeValueAsString(object);
-		}
-		catch (Exception ex) {
-			toPrint = "" + object;
-		}
-		if (label != null)
-			toPrint = label + ": " + toPrint;
-		System.out.println(toPrint);
-	}
 	
 	private MockHttpServletRequest emptyRequest() {
 		return new MockHttpServletRequest();
@@ -64,7 +49,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{\"username\":\"test\",\"password\":\"Admin@123\",\"person\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\"}}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newUser = new UserController().create(post, emptyRequest(), new MockHttpServletResponse());
-		log("Created User", newUser);
+		TestUtil.log("Created User", newUser);
 		Assert.assertEquals(before + 1, Context.getUserService().getAllUsers().size());
 	}
 	
@@ -76,7 +61,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getUser_shouldGetADefaultRepresentationOfAUser() throws Exception {
 		Object result = new UserController().retrieve("c98a1558-e131-11de-babe-001e378eb67e", emptyRequest());
 		Assert.assertNotNull(result);
-		log("User retrieved (default)", result);
+		TestUtil.log("User retrieved (default)", result);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		Assert.assertEquals("butch", PropertyUtils.getProperty(result, "username"));
@@ -92,7 +77,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", req);
-		log("User retrieved (full)", result);
+		TestUtil.log("User retrieved (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("c1d8f5c2-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
@@ -111,7 +96,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		    SimpleObject.class);
 		Object editedUser = new UserController().update("c98a1558-e131-11de-babe-001e378eb67e", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		log("Edited SystemId", editedUser);
+		TestUtil.log("Edited SystemId", editedUser);
 		user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
 		Assert.assertEquals("5-6", user.getUser().getSystemId());
 	}
@@ -151,7 +136,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		List<Object> results = (List<Object>) new UserController().search("but", emptyRequest(),
 		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
-		log("Found " + results.size() + " user(s)", results);
+		TestUtil.log("Found " + results.size() + " user(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 	}

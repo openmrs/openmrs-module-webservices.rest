@@ -18,39 +18,23 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Test;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.TestUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.ExpectedException;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	private MockHttpServletRequest emptyRequest() {
 		return new MockHttpServletRequest();
-	}
-	
-	private void log(String label, Object object) {
-		String toPrint;
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
-			toPrint = mapper.writeValueAsString(object);
-		}
-		catch (Exception ex) {
-			toPrint = "" + object;
-		}
-		if (label != null)
-			toPrint = label + ": " + toPrint;
-		System.out.println(toPrint);
 	}
 	
 	/**
@@ -62,7 +46,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getObs_shouldGetADefaultRepresentationOfAObs() throws Exception {
 		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest());
 		Assert.assertNotNull(result);
-		log("Obs fetched (default)", result);
+		TestUtil.log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
@@ -80,7 +64,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", req);
 		Assert.assertNotNull(result);
-		log("Obs fetched (default)", result);
+		TestUtil.log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
@@ -206,7 +190,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void purgeObs_shouldFailToPurgeAnObsWithDependentData() throws Exception {
 		executeDataSet("org/openmrs/api/include/ObsServiceTest-complex.xml");
 		new ObsController().purge("9b6639b2-5785-4603-a364-075c2d61cd51", emptyRequest(), new MockHttpServletResponse());
-		
 	}
 	
 	/**
@@ -218,7 +201,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
 		new ObsController().purge("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNull(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
-		
 	}
 	
 }

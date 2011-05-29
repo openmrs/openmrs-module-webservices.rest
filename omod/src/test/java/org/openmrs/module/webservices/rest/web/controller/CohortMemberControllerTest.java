@@ -18,18 +18,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.TestUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.ServletWebRequest;
 
 /**
  * Tests functionality of {@link CohortMemberController}.
@@ -59,26 +58,11 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		executeDataSet(datasetFilename);
 	}
 	
-	private void log(String label, Object object) {
-		String toPrint;
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
-			toPrint = mapper.writeValueAsString(object);
-		}
-		catch (Exception ex) {
-			toPrint = "" + object;
-		}
-		if (label != null)
-			toPrint = label + ": " + toPrint;
-		System.out.println(toPrint);
-	}
-	
 	@Test
 	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
 		Object result = controller.retrieve(cohortUuid, patientUuid, request);
 		Assert.assertNotNull(result);
-		log("Cohort member fetched (default)", result);
+		TestUtil.log("Cohort member fetched (default)", result);
 	}
 	
 	@Test
@@ -86,7 +70,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		int size = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		List<Object> result = controller.getAll(cohortUuid, request, response);
 		Assert.assertNotNull(result);
-		log("Cohort member fetched (ref)", result);
+		TestUtil.log("Cohort member fetched (ref)", result);
 		Assert.assertEquals(result.size(), size);
 	}
 	
@@ -97,7 +81,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		List<Object> result = controller.getAll(cohortUuid, req, response);
 		Assert.assertNotNull(result);
-		log("Cohort member fetched (default)", result);
+		TestUtil.log("Cohort member fetched (default)", result);
 		Assert.assertEquals(result.size(), size);
 	}
 	
@@ -107,7 +91,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		String json = "{ \"patient\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object result = controller.create(cohortUuid, post, request, response);
-		log("Add patient to cohort : ", result);
+		TestUtil.log("Add patient to cohort : ", result);
 		Assert.assertEquals(before + 1, service.getCohortByUuid(cohortUuid).getMemberIds().size());
 	}
 	
@@ -115,7 +99,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
 		int before = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		Object result = controller.delete(cohortUuid, patientUuid, "because", request, response);
-		log("Removed patient from cohort : ", result);
+		TestUtil.log("Removed patient from cohort : ", result);
 		Assert.assertEquals(before - 1, service.getCohortByUuid(cohortUuid).getMemberIds().size());
 	}
 	
