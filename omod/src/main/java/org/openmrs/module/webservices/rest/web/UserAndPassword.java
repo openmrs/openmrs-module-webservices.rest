@@ -82,6 +82,7 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 	/**
 	 * @return id
 	 */
+	@Override
 	public Integer getId() {
 		return getUser().getId();
 	}
@@ -89,6 +90,7 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 	/**
 	 * @param integer the Id to set
 	 */
+	@Override
 	public void setId(Integer integer) {
 		getUser().setId(integer);
 	}

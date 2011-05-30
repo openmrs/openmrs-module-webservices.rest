@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -50,7 +51,13 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
+			description.addSelfLink();
+			return description;
+		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("username");
@@ -198,4 +205,13 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		return user.getUser().getUsername() + " - " + user.getUser().getPersonName().getFullName();
 	}
 	
+	@Override
+	public String getUri(Object instance) {
+		Resource res = getClass().getAnnotation(Resource.class);
+		if (res != null) {
+			UserAndPassword userPass = (UserAndPassword) instance;
+			return RestConstants.URI_PREFIX + res.value() + "/" + userPass.getUser().getUuid();
+		}
+		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
+	}
 }
