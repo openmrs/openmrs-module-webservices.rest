@@ -448,7 +448,11 @@ public class RestUtil implements GlobalPropertyListener {
 			RestConstants.URI_PREFIX = RestConstants.URI_PREFIX_GP_DEFAULT_VALUE;
 		}
 		
-		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "/ws/rest/";
+		// append the trailing slash in case the user forgot it
+		if (!RestConstants.URI_PREFIX.endsWith("/"))
+			RestConstants.URI_PREFIX += "/";
+		
+		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "ws/rest/";
 	}
 	
 	/**
