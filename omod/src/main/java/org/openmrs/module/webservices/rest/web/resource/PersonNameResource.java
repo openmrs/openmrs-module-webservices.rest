@@ -102,11 +102,17 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 		return names;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
+	 */
 	@Override
 	public PersonName getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonNameByUuid(uuid);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
 		pn.setVoided(true);
@@ -116,12 +122,18 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 		Context.getPersonService().savePerson(pn.getPerson());
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	public void purge(PersonName pn, RequestContext context) throws ResponseException {
 		pn.getPerson().removeName(pn);
 		Context.getPersonService().savePerson(pn.getPerson());
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 */
 	@Override
 	protected PersonName save(PersonName newName) {
 		// make sure that the name has actually been added to the person
@@ -138,6 +150,9 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 		return newName;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
+	 */
 	@Override
 	protected PersonName newDelegate() {
 		return new PersonName();
@@ -153,6 +168,13 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 		return personName.getFullName();
 	}
 	
+	/**
+	 * Gets extra book-keeping info, for the full representation
+	 * 
+	 * @param name
+	 * @return
+	 * @throws Exception
+	 */
 	public SimpleObject getAuditInfo(PersonName name) throws Exception {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(name, "creator", Representation.REF));
