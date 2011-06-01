@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,6 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.management.RuntimeErrorException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,12 +68,11 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based
-	 * on a admin-settable global property).
-	 * <p>
-	 * NOTE: Supports only IPv4.
+	 * Tests whether or not a client's IP address is allowed to have access to
+	 * the REST API (based on a admin-settable global property).
 	 * 
-	 * @param ip address of the client
+	 * @param ip
+	 *            address of the client
 	 * @return <code>true</code> if client should be allowed access
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 */
@@ -79,44 +81,84 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Tests whether or not there is a match between the given IP address and the candidates.
-	 * <p>
-	 * NOTE: Supports only IPv4.
+	 * Tests whether or not there is a match between the given IP address and
+	 * the candidates.
 	 * 
 	 * @param ip
 	 * @param candidateIps
 	 * @return <code>true</code> if there is a match
-	 * @should return false if list is empty
+	 * @should return true if list is empty
 	 * @should return false if there is no match
 	 * @should return true for exact match
-	 * @should return true for match with asterisk
+	 * @should return true for match with submask
+	 * @should return false if there is no match with submask
+	 * @should return true for exact ipv6 match
 	 */
 	public static boolean ipMatches(String ip, List<String> candidateIps) {
-		String[] splitIp = ip.split("\\.");
+		if (candidateIps.isEmpty()) {
+			return true;
+		}
+		
+		InetAddress address;
+		try {
+			address = InetAddress.getByName(ip);
+		}
+		catch (UnknownHostException e) {
+			throw new IllegalArgumentException("Invalid IP in the ip parameter" + ip, e);
+		}
+		
 		for (String candidateIp : candidateIps) {
-			if ("*".equals(candidateIp))
-				return true;
-			String[] splitCandidateIp = candidateIp.split("\\.");
-			if (splitCandidateIp.length == splitIp.length) {
-				boolean match = true;
-				for (int i = 0; i < splitCandidateIp.length; i++) {
-					if (!splitCandidateIp[i].equals(splitIp[i]) && !splitCandidateIp[i].equals("*")) {
-						match = false;
+			// split IP and mask
+			String[] candidateIpPattern = candidateIp.split("/");
+			
+			InetAddress candidateAddress;
+			try {
+				candidateAddress = InetAddress.getByName(candidateIpPattern[0]);
+			}
+			catch (UnknownHostException e) {
+				throw new IllegalArgumentException("Invalid IP in the candidateIps parameter", e);
+			}
+			
+			if (candidateIpPattern.length == 1) { // there's no mask
+				if (address.equals(candidateAddress)) {
+					return true;
+				}
+			} else {
+				if (address.getAddress().length != candidateAddress.getAddress().length) {
+					continue;
+				}
+				
+				// compare bytes based on the given mask
+				boolean matched = true;
+				int bits = Integer.parseInt(candidateIpPattern[1]);
+				for (int bytes = 0; bits > 0; bytes++, bits -= 8) {
+					int mask = 0x000000FF; // mask the entire byte
+					if (bits < 8) {
+						// mask only some first bits of a byte
+						mask = (mask << (8 - bits));
+					}
+					if ((address.getAddress()[bytes] & mask) != (candidateAddress.getAddress()[bytes] & mask)) {
+						matched = false;
 						break;
 					}
 				}
-				if (match)
+				if (matched) {
 					return true;
+				}
 			}
+			
 		}
 		return false;
 	}
 	
 	/**
-	 * Returns a list of IPs which can access the REST API based on a global property. In case the
-	 * property is empty, returns an empty list.
+	 * Returns a list of IPs which can access the REST API based on a global
+	 * property. In case the property is empty, returns an empty list.
 	 * <p>
-	 * IPs should be separated by a whitespace or a comma.
+	 * IPs should be separated by a whitespace or a comma. IPs can be declared
+	 * with bit masks e.g. <code>10.0.0.0/30</code> matches
+	 * <code>10.0.0.0 - 10.0.0.3</code> and <code>10.0.0.0/24</code> matches
+	 * <code>10.0.0.0 - 10.0.0.255</code>.
 	 * 
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 * @return the list of IPs
@@ -326,11 +368,14 @@ public class RestUtil implements GlobalPropertyListener {
 
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
-	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
+	 * Determines number of results to limit to, if not provided, uses default
+	 * set by admin. <br/>
 	 * Determines how far into a list to start with given the startIndex param. <br/>
 	 * 
-	 * @param request the current http web request
-	 * @return a {@link RequestContext} object filled with all the necessary values
+	 * @param request
+	 *            the current http web request
+	 * @return a {@link RequestContext} object filled with all the necessary
+	 *         values
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
@@ -365,8 +410,10 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Convenience method to get the given param out of the given request.
 	 * 
-	 * @param request the WebRequest to look in
-	 * @param param the string name to fetch
+	 * @param request
+	 *            the WebRequest to look in
+	 * @param param
+	 *            the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
 	private static Integer getIntegerParam(HttpServletRequest request, String param) {
@@ -404,8 +451,9 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
-	 * returning from a @ResponseBody annotated Spring controller method.
+	 * Sets the HTTP status on the response to no content, and returns an empty
+	 * value, suitable for returning from a @ResponseBody annotated Spring
+	 * controller method.
 	 * 
 	 * @param response
 	 * @return
@@ -416,7 +464,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute
+	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the
+	 * Location header attribute
 	 * 
 	 * @param response
 	 * @param created
@@ -433,8 +482,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Updates the Uri prefix through which clients consuming web services will connect to the web
-	 * app
+	 * Updates the Uri prefix through which clients consuming web services will
+	 * connect to the web app
 	 * 
 	 * @return the webapp's Url prefix
 	 */
@@ -456,8 +505,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * A Set is returned by removing voided data from passed Collection.
-	 * The Collection passed as parameter is not modified
+	 * A Set is returned by removing voided data from passed Collection. The
+	 * Collection passed as parameter is not modified
 	 * 
 	 * @param c
 	 * @return non-voided OpenmrsData

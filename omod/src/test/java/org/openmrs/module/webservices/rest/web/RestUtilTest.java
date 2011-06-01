@@ -26,11 +26,11 @@ public class RestUtilTest {
 	
 	/**
 	 * @see RestUtil#ipMatches(String,List)
-	 * @verifies return false if list is empty
+	 * @verifies return true if list is empty
 	 */
 	@Test
-	public void ipMatches_shouldReturnFalseIfListIsEmpty() throws Exception {
-		Assert.assertFalse(RestUtil.ipMatches("0.0.0.0", new ArrayList<String>()));
+	public void ipMatches_shouldReturnTrueIfListIsEmpty() throws Exception {
+		Assert.assertTrue(RestUtil.ipMatches("10.0.0.0", new ArrayList<String>()));
 	}
 	
 	/**
@@ -40,10 +40,10 @@ public class RestUtilTest {
 	@Test
 	public void ipMatches_shouldReturnFalseIfThereIsNoMatch() throws Exception {
 		List<String> candidateIps = new ArrayList<String>();
-		candidateIps.add("0.0.0.0");
-		candidateIps.add("1.1.1.1");
+		candidateIps.add("10.0.0.0");
+		candidateIps.add("10.0.0.1");
 		
-		Assert.assertFalse(RestUtil.ipMatches("2.2.2.2", candidateIps));
+		Assert.assertFalse(RestUtil.ipMatches("10.0.0.2", candidateIps));
 	}
 	
 	/**
@@ -53,23 +53,46 @@ public class RestUtilTest {
 	@Test
 	public void ipMatches_shouldReturnTrueForExactMatch() throws Exception {
 		List<String> candidateIps = new ArrayList<String>();
-		candidateIps.add("0.0.0.0");
-		candidateIps.add("1.1.1.1");
+		candidateIps.add("10.0.0.0");
+		candidateIps.add("10.0.0.1");
 		
-		Assert.assertTrue(RestUtil.ipMatches("1.1.1.1", candidateIps));
+		Assert.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
 	}
 	
 	/**
 	 * @see RestUtil#ipMatches(String,List)
-	 * @verifies return true for match with asteriks
+	 * @verifies return true for match with submask
 	 */
 	@Test
-	public void ipMatches_shouldReturnTrueForMatchWithAsteriks() throws Exception {
+	public void ipMatches_shouldReturnTrueForMatchWithSubmask() throws Exception {
 		List<String> candidateIps = new ArrayList<String>();
-		candidateIps.add("0.0.0.0");
-		candidateIps.add("1.1.*.1");
+		candidateIps.add("10.0.0.0/30");
 		
-		Assert.assertTrue(RestUtil.ipMatches("1.1.1.1", candidateIps));
+		Assert.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
+	}
+	
+	/**
+	 * @see RestUtil#ipMatches(String,List)
+	 * @verifies return false if there is no match with submask
+	 */
+	@Test
+	public void ipMatches_shouldReturnFalseIfThereIsNoMatchWithSubmask() throws Exception {
+		List<String> candidateIps = new ArrayList<String>();
+		candidateIps.add("10.0.0.0/30");
+		
+		Assert.assertFalse(RestUtil.ipMatches("10.0.0.4", candidateIps));
+	}
+	
+	/**
+	 * @see RestUtil#ipMatches(String,List)
+	 * @verifies return true for exact ipv6 match
+	 */
+	@Test
+	public void ipMatches_shouldReturnTrueForExactIpv6Match() throws Exception {
+		List<String> candidateIps = new ArrayList<String>();
+		candidateIps.add("fe80:0:0:0:202:b3ff:fe1e:8329");
+		
+		Assert.assertTrue(RestUtil.ipMatches("fe80::202:b3ff:fe1e:8329", candidateIps));
 	}
 	
 }
