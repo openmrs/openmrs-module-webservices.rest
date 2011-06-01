@@ -39,6 +39,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Handler(supports = PersonAttribute.class, order = 0)
 public class PersonAttributeResource extends DelegatingSubResource<PersonAttribute, Person, PersonResource> {
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
+	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
@@ -69,6 +72,9 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		return instance.getPerson();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
+	 */
 	@Override
 	public PersonAttribute newDelegate() {
 		return new PersonAttribute();
@@ -83,6 +89,9 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		instance.setPerson(person);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
+	 */
 	@Override
 	public PersonAttribute getByUniqueId(String uniqueId) {
 		return Context.getPersonService().getPersonAttributeByUuid(uniqueId);
@@ -97,6 +106,9 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		return parent.getActiveAttributes();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 */
 	@Override
 	protected PersonAttribute save(PersonAttribute delegate) {
 		// make sure it has not already been added to the person
@@ -115,12 +127,20 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		return delegate;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	protected void delete(PersonAttribute delegate, String reason, RequestContext context) throws ResponseException {
 		delegate.voidAttribute(reason);
 		Context.getPersonService().savePerson(delegate.getPerson());
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	public void purge(PersonAttribute delegate, RequestContext context) throws ResponseException {
 		delegate.getPerson().removeAttribute(delegate);
@@ -128,7 +148,9 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	}
 	
 	/**
-	 * @param pa
+	 * Gets the display string for a person attribute.
+	 * 
+	 * @param pa the person attribute.
 	 * @return attribute type + value (for concise display purposes)
 	 */
 	public String getDisplayString(PersonAttribute pa) {
