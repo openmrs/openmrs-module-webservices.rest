@@ -43,9 +43,9 @@ import org.springframework.web.context.request.WebRequest;
  * Convenient helper methods for the Rest Web Services module.
  */
 public class RestUtil implements GlobalPropertyListener {
-	
+
 	private static Log log = LogFactory.getLog(RestUtil.class);
-	
+
 	/**
 	 * Looks up the admin defined global property for the system limit
 	 * 
@@ -54,19 +54,19 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService().getGlobalProperty(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
+		String limit = Context.getAdministrationService().getGlobalProperty(
+				RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
-			}
-			catch (NumberFormatException nfex) {
+			} catch (NumberFormatException nfex) {
 				return RestConstants.MAX_RESULTS_DEFAULT;
 			}
 		} else {
 			return RestConstants.MAX_RESULTS_DEFAULT;
 		}
 	}
-	
+
 	/**
 	 * Tests whether or not a client's IP address is allowed to have access to
 	 * the REST API (based on a admin-settable global property).
@@ -79,7 +79,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean isIpAllowed(String ip) {
 		return ipMatches(ip, getAllowedIps());
 	}
-	
+
 	/**
 	 * Tests whether or not there is a match between the given IP address and
 	 * the candidates.
@@ -93,51 +93,60 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @should return true for match with submask
 	 * @should return false if there is no match with submask
 	 * @should return true for exact ipv6 match
+	 * @should throw IllegalArgumentException for invalid mask
 	 */
 	public static boolean ipMatches(String ip, List<String> candidateIps) {
 		if (candidateIps.isEmpty()) {
 			return true;
 		}
-		
+
 		InetAddress address;
 		try {
 			address = InetAddress.getByName(ip);
+		} catch (UnknownHostException e) {
+			throw new IllegalArgumentException("Invalid IP in the ip parameter"
+					+ ip, e);
 		}
-		catch (UnknownHostException e) {
-			throw new IllegalArgumentException("Invalid IP in the ip parameter" + ip, e);
-		}
-		
+
 		for (String candidateIp : candidateIps) {
 			// split IP and mask
 			String[] candidateIpPattern = candidateIp.split("/");
-			
+
 			InetAddress candidateAddress;
 			try {
 				candidateAddress = InetAddress.getByName(candidateIpPattern[0]);
+			} catch (UnknownHostException e) {
+				throw new IllegalArgumentException(
+						"Invalid IP in the candidateIps parameter", e);
 			}
-			catch (UnknownHostException e) {
-				throw new IllegalArgumentException("Invalid IP in the candidateIps parameter", e);
-			}
-			
+
 			if (candidateIpPattern.length == 1) { // there's no mask
 				if (address.equals(candidateAddress)) {
 					return true;
 				}
 			} else {
-				if (address.getAddress().length != candidateAddress.getAddress().length) {
+				if (address.getAddress().length != candidateAddress
+						.getAddress().length) {
 					continue;
 				}
-				
+
+				int bits = Integer.parseInt(candidateIpPattern[1]);
+				if (candidateAddress.getAddress().length < Math.ceil((double) bits / 8)) {
+					throw new IllegalArgumentException("Invalid mask " + bits
+							+ " for IP " + candidateIp
+							+ " in the candidateIps parameter");
+				}
+
 				// compare bytes based on the given mask
 				boolean matched = true;
-				int bits = Integer.parseInt(candidateIpPattern[1]);
 				for (int bytes = 0; bits > 0; bytes++, bits -= 8) {
 					int mask = 0x000000FF; // mask the entire byte
 					if (bits < 8) {
 						// mask only some first bits of a byte
 						mask = (mask << (8 - bits));
 					}
-					if ((address.getAddress()[bytes] & mask) != (candidateAddress.getAddress()[bytes] & mask)) {
+					if ((address.getAddress()[bytes] & mask) != (candidateAddress
+							.getAddress()[bytes] & mask)) {
 						matched = false;
 						break;
 					}
@@ -146,11 +155,11 @@ public class RestUtil implements GlobalPropertyListener {
 					return true;
 				}
 			}
-			
+
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns a list of IPs which can access the REST API based on a global
 	 * property. In case the property is empty, returns an empty list.
@@ -164,9 +173,10 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @return the list of IPs
 	 */
 	public static List<String> getAllowedIps() {
-		String allowedIpsProperty = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
-		
+		String allowedIpsProperty = Context.getAdministrationService()
+				.getGlobalProperty(
+						RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
+
 		if (allowedIpsProperty.isEmpty()) {
 			return Collections.emptyList();
 		} else {
@@ -174,7 +184,7 @@ public class RestUtil implements GlobalPropertyListener {
 			return Arrays.asList(allowedIps);
 		}
 	}
-	
+
 	/*
 	 * TODO - move logic from here to a method to deal with custom
 	 * representations Converts the given <code>openmrsObject</code> into a
@@ -383,30 +393,34 @@ public class RestUtil implements GlobalPropertyListener {
 	public static RequestContext getRequestContext(HttpServletRequest request) {
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
-		
+
 		// get the "v" param for the representations
-		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
+		String temp = request
+				.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if (StringUtils.isEmpty(temp)) {
 			ret.setRepresentation(Representation.DEFAULT);
 		} else if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
 			throw new IllegalArgumentException("Do not specify ?v=default");
 		} else {
-			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
+			ret.setRepresentation(Context.getService(RestService.class)
+					.getRepresentation(temp));
 		}
-		
+
 		// fetch the "limit" param
-		Integer limit = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
+		Integer limit = getIntegerParam(request,
+				RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
 		if (limit != null)
 			ret.setLimit(limit);
-		
+
 		// fetch the startIndex param
-		Integer startIndex = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
+		Integer startIndex = getIntegerParam(request,
+				RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
 		if (startIndex != null)
 			ret.setStartIndex(startIndex);
-		
+
 		return ret;
 	}
-	
+
 	/**
 	 * Convenience method to get the given param out of the given request.
 	 * 
@@ -416,29 +430,31 @@ public class RestUtil implements GlobalPropertyListener {
 	 *            the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
-	private static Integer getIntegerParam(HttpServletRequest request, String param) {
+	private static Integer getIntegerParam(HttpServletRequest request,
+			String param) {
 		String paramString = request.getParameter(param);
-		
+
 		if (paramString != null) {
 			try {
 				Integer tempInt = new Integer(paramString);
 				return tempInt; // return the valid value
-			}
-			catch (NumberFormatException e) {
-				log.debug("unable to parse '" + param + "' parameter into a valid integer: " + paramString);
+			} catch (NumberFormatException e) {
+				log.debug("unable to parse '" + param
+						+ "' parameter into a valid integer: " + paramString);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Sets the HTTP status on the response according to the exception
 	 * 
 	 * @param ex
 	 * @param response
 	 */
-	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
+	public static void setResponseStatus(Throwable ex,
+			HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			if (StringUtils.isNotBlank(ann.reason()))
@@ -449,7 +465,7 @@ public class RestUtil implements GlobalPropertyListener {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	/**
 	 * Sets the HTTP status on the response to no content, and returns an empty
 	 * value, suitable for returning from a @ResponseBody annotated Spring
@@ -462,7 +478,7 @@ public class RestUtil implements GlobalPropertyListener {
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 		return "";
 	}
-	
+
 	/**
 	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the
 	 * Location header attribute
@@ -476,11 +492,11 @@ public class RestUtil implements GlobalPropertyListener {
 		try {
 			String uri = (String) PropertyUtils.getProperty(created, "uri");
 			response.addHeader("Location", uri);
+		} catch (Exception ex) {
 		}
-		catch (Exception ex) {}
 		return created;
 	}
-	
+
 	/**
 	 * Updates the Uri prefix through which clients consuming web services will
 	 * connect to the web app
@@ -488,22 +504,23 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @return the webapp's Url prefix
 	 */
 	public static void setUriPrefix() {
-		RestConstants.URI_PREFIX = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
-		
+		RestConstants.URI_PREFIX = Context.getAdministrationService()
+				.getGlobalProperty(
+						RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
 			// reset just in case it is a white space character or empty
 			// string
 			RestConstants.URI_PREFIX = RestConstants.URI_PREFIX_GP_DEFAULT_VALUE;
 		}
-		
+
 		// append the trailing slash in case the user forgot it
 		if (!RestConstants.URI_PREFIX.endsWith("/"))
 			RestConstants.URI_PREFIX += "/";
-		
+
 		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "ws/rest/";
 	}
-	
+
 	/**
 	 * A Set is returned by removing voided data from passed Collection. The
 	 * Collection passed as parameter is not modified
@@ -511,7 +528,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param c
 	 * @return non-voided OpenmrsData
 	 */
-	public static <D extends OpenmrsData, C extends Collection<D>> Set<D> removeVoidedData(C input) {
+	public static <D extends OpenmrsData, C extends Collection<D>> Set<D> removeVoidedData(
+			C input) {
 		Set<D> data = new LinkedHashSet<D>();
 		for (D d : input) {
 			if (!d.isVoided()) {
@@ -520,15 +538,16 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		return data;
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#supportsPropertyName(java.lang.String)
 	 */
 	@Override
 	public boolean supportsPropertyName(String propertyName) {
-		return propertyName.equals(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+		return propertyName
+				.equals(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyChanged(org.openmrs.GlobalProperty)
 	 */
@@ -536,7 +555,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public void globalPropertyChanged(GlobalProperty newValue) {
 		setUriPrefix();
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyDeleted(java.lang.String)
 	 */
