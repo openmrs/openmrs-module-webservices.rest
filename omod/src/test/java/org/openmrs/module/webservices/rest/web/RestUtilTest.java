@@ -94,12 +94,12 @@ public class RestUtilTest {
 		
 		Assert.assertTrue(RestUtil.ipMatches("fe80::202:b3ff:fe1e:8329", candidateIps));
 	}
-
+	
 	/**
 	 * @see RestUtil#ipMatches(String,List)
 	 * @verifies throw IllegalArgumentException for invalid mask
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void ipMatches_shouldThrowIllegalArgumentExceptionForInvalidMask() throws Exception {
 		List<String> candidateIps = new ArrayList<String>();
 		candidateIps.add("10.0.0.0/33");

@@ -4,26 +4,27 @@
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
+<%@ include file="localHeader.jsp"%>
+
 <style type="text/css">
 .propHeader{
 	text-align: left; padding-left: 20px;
 }
 </style>
 
-<a href="<openmrs:contextPath />/admin"><spring:message code="general.back"/></a>
-<h2><spring:message code="webservices.rest.manage.globalProperties" /></h2>
+<h2><spring:message code="webservices.rest.manage.settings.title" /></h2>
 
 <form:form method="post" modelAttribute="globalPropertiesModel">
 <div class="box">
 <table cellspacing="0" cellpadding="3" width="100%">
 	<c:forEach var="prop" items="${globalPropertiesModel.properties}" varStatus="varStatus">
 		<spring:nestedPath path="properties[${varStatus.index}]">
-		<tr <c:if test="${varStatus.index % 2 == 0}">class='evenRow'</c:if>>
+		<tr class='evenRow'>
 			<th>
 				<spring:message code="${prop.property}.label" />
 			</th>
 		</tr>
-		<tr <c:if test="${varStatus.index % 2 == 0}">class='evenRow'</c:if>>
+		<tr class='oddRow'>
 			<td>
 			<spring:bind path="propertyValue">
 				<c:set var="inputSize" value="50" scope="page" />

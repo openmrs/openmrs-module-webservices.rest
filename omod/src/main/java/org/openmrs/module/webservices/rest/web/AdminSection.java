@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
+import org.openmrs.util.OpenmrsConstants;
 
 /**
  * This class defines the links that will appear on the administration page under the
@@ -45,11 +47,14 @@ public class AdminSection extends AdministrationSectionExt {
 	 */
 	public Map<String, String> getLinks() {
 		
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 		
-		map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
+		// using deprecated call here so that the module can be used on OpenMRS 1.6
+		if (Context.hasPrivilege(OpenmrsConstants.PRIV_MANAGE_GLOBAL_PROPERTIES))
+			map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.settings");
+		
 		map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
-		map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.globalProperties");
+		map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
 		
 		return map;
 	}

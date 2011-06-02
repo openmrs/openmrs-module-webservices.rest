@@ -2,14 +2,45 @@
 
 <%@ include file="/WEB-INF/template/header.jsp"%>
 
-type: <input id="type" type="text" value="GET" size="12"/> (GET, POST, PUT, or DELETE)
-<br/>
-url: <input id="url" type="text" value="/openmrs/ws/rest/patient/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
-<br/>
-json content: <input type="text" id="json" value="{patient:'39234823'}" size="45"/>
-<br/><br/>
-representation: <input id="rep" type="text" value="" size="12"/> (default, full, custom:)
-<br/><br/>
+<%@ include file="localHeader.jsp"%>
+
+<h2><spring:message code="webservices.rest.test.title" /></h2>
+
+<table>
+<tr>
+	<td>
+	Type
+	</td>
+	<td>
+	<input id="type" type="text" value="GET" size="12"/> (GET, POST, PUT, or DELETE)
+	</td>
+</tr>
+
+<tr>
+	<td>
+	URI
+	</td>
+	<td>
+	<input id="url" type="text" value="/openmrs/ws/rest/patient/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
+	</td>
+</tr>
+<tr>
+	<td>
+	Body content
+	</td>
+	<td>
+	<input type="text" id="json" value="{patient:'39234823'}" size="45"/>
+	</td>
+</tr>
+<tr>
+	<td>
+	Representation
+	</td>
+	<td>
+	<input id="rep" type="text" value="" size="12"/> (ref, full, custom:)
+	</td>
+</tr>
+</table>
 <input type="button" name="button" value="send" onclick="sendToServer()"/>
 
 
