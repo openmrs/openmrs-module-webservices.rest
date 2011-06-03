@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import java.util.List;
 import java.util.Set;
 
 import org.openmrs.Patient;
