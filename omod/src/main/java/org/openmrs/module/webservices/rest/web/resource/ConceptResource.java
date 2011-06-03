@@ -14,9 +14,9 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptSearchResult;
@@ -186,8 +186,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		// get the user's locales...and then convert that from a set to a list
 		List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 		
-		searchResults = service.getConcepts(query, locales, false, null, null, null, null, null, context.getStartIndex(),
-		    context.getLimit());
+		searchResults = service.getConcepts(query, locales, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+		    Collections.EMPTY_LIST, Collections.EMPTY_LIST, null, context.getStartIndex(), context.getLimit());
 		
 		// convert search results into list of concepts
 		List<Concept> results = new ArrayList<Concept>(searchResults.size());
@@ -195,7 +195,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			results.add(csr.getConcept());
 		}
 		
-		Integer count = service.getCountOfConcepts(query, locales, false, null, null, null, null, null);
+		Integer count = service.getCountOfConcepts(query, locales, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
+		    Collections.EMPTY_LIST, Collections.EMPTY_LIST, null);
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
 		
 		return new AlreadyPaged<Concept>(context, results, hasMore);
