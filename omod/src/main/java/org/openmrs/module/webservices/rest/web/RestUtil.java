@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -556,6 +557,18 @@ public class RestUtil implements GlobalPropertyListener {
 	@Override
 	public void globalPropertyDeleted(String propertyName) {
 		setUriPrefix();
+	}
+	
+	/**
+	 * Inspects the cause chain for the given throwable, looking for an exception of the given class (e.g. to find an
+	 * APIAuthenticationException wrapped in an InvocationTargetException)
+	 * 
+	 * @param throwable
+	 * @param causeClassToLookFor
+	 * @return whether any exception in the cause chain of throwable is an instance of causeClassToLookFor
+	 */
+	public static boolean hasCause(Throwable throwable, Class<? extends Throwable> causeClassToLookFor) {
+		return ExceptionUtils.indexOfType(throwable, causeClassToLookFor) >= 0;
 	}
 	
 	/**

@@ -20,6 +20,7 @@ import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -46,7 +47,7 @@ public abstract class BaseRestController {
 		if (errorDetail == null) {
 			errorDetail = ex.getClass().getName() + ": " + ex.getMessage();
 		}
-		if (ex instanceof APIAuthenticationException) {
+		if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
 			if (Context.isAuthenticated()) {
 				// user is logged in but doesn't have the relevant privilege -> 403 FORBIDDEN
 				errorCode = HttpServletResponse.SC_FORBIDDEN;
