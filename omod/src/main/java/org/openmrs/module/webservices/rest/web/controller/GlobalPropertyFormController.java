@@ -14,15 +14,21 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 
 /**
  * Controller behind the webservices module's "settings.jsp" page.
@@ -36,8 +42,15 @@ public class GlobalPropertyFormController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void handleSubmission(@ModelAttribute("globalPropertiesModel") GlobalPropertiesModel globalPropertiesModel) {
+	public String handleSubmission(@ModelAttribute("globalPropertiesModel") GlobalPropertiesModel globalPropertiesModel,
+	        Errors errors, WebRequest request) {
+		globalPropertiesModel.validate(globalPropertiesModel, errors);
+		if (errors.hasErrors())
+			return null; // show the form again
 		Context.getAdministrationService().saveGlobalProperties(globalPropertiesModel.getProperties());
+		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, Context.getMessageSourceService().getMessage("general.saved"),
+		    WebRequest.SCOPE_SESSION);
+		return "redirect:settings.form";
 	}
 	
 	/**
@@ -46,14 +59,16 @@ public class GlobalPropertyFormController {
 	@ModelAttribute("globalPropertiesModel")
 	public GlobalPropertiesModel getModel() {
 		List<GlobalProperty> editableProps = new ArrayList<GlobalProperty>();
-		List<GlobalProperty> props = Context.getAdministrationService().getGlobalPropertiesByPrefix(RestConstants.MODULE_ID);
+		
+		Set<String> props = new LinkedHashSet<String>();
+		props.add(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+		props.add(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME);
+		props.add(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
 		
 		//remove the properties we dont want to edit
-		for (GlobalProperty globalProperty : props) {
-			if (!globalProperty.getProperty().equals(RestConstants.MODULE_ID + ".started")
-			        && !globalProperty.getProperty().equals(RestConstants.MODULE_ID + ".mandatory")) {
-				editableProps.add(globalProperty);
-			}
+		for (GlobalProperty gp : Context.getAdministrationService().getGlobalPropertiesByPrefix(RestConstants.MODULE_ID)) {
+			if (props.contains(gp.getProperty()))
+				editableProps.add(gp);
 		}
 		
 		return new GlobalPropertiesModel(editableProps);
@@ -61,9 +76,10 @@ public class GlobalPropertyFormController {
 	
 	/**
 	 * Represents the model object for the form, which is typically used as a wrapper for the list
-	 * of global properties list so that spring can bind the properties of the objects in the list
+	 * of global properties list so that spring can bind the properties of the objects in the list.
+	 * Also capable of validating itself
 	 */
-	public class GlobalPropertiesModel {
+	public class GlobalPropertiesModel implements Validator {
 		
 		private List<GlobalProperty> properties;
 		
@@ -72,6 +88,38 @@ public class GlobalPropertyFormController {
 		
 		public GlobalPropertiesModel(List<GlobalProperty> properties) {
 			this.properties = properties;
+		}
+		
+		/**
+		 * @see org.springframework.validation.Validator#supports(java.lang.Class)
+		 */
+		@Override
+		public boolean supports(Class<?> clazz) {
+			return clazz.equals(getClass());
+		}
+		
+		/**
+		 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+		 */
+		@Override
+		public void validate(Object target, Errors errors) {
+			GlobalPropertiesModel model = (GlobalPropertiesModel) target;
+			for (int i = 0; i < model.getProperties().size(); ++i) {
+				GlobalProperty gp = model.getProperties().get(i);
+				if (gp.getProperty().equals(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME)) {
+					// TODO validate legal uri prefix
+				} else if (gp.getProperty().equals(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME)) {
+					// TODO validate legal comma-separated IPv4 or IPv6 addresses, wildcards, etc
+				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME)) {
+					boolean okay = false;
+					try {
+						okay = Integer.valueOf(gp.getPropertyValue()) > 0;
+					}
+					catch (Exception ex) {}
+					if (!okay)
+						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID + ".maxresults.errorMessage");
+				}
+			}
 		}
 		
 		/**
