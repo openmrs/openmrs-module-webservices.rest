@@ -83,6 +83,8 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	//	@Test
+	//  @Ignore
+	//  // This test is ignored until we set up proper concept creation in the controller.
 	//	public void shouldCreateAConcept() throws Exception {
 	//		int originalCount = service.getAllConcepts().size();
 	//		String json = "{ \"name\":\"test concept\", \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
@@ -94,6 +96,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	@Ignore
+	// This test is ignored until we set up proper concept editing in the controller.
 	public void shouldEditAConcept() throws Exception {
 		final String changedVersion = "1.2.3";
 		
@@ -118,12 +121,6 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void shouldPurgeAConcept() throws Exception {
-		//All the concepts in the test dataset are already in use, so we need to
-		//create one that we can purge for testing purposes
-		//		Concept concept = new Concept();
-		//		concept.setName("new test concept");
-		//		service.saveConcept(concept);
-		//		Assert.assertNotNull(concept.getUuid());//should have been inserted for the test to be valid
 		int originalCount = service.getAllConcepts().size();
 		String uuid = "11716f9c-1434-4f8d-b9fc-9aa14c4d6129";
 		controller.purge(uuid, request, response);

@@ -83,10 +83,11 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("uuid");
 			description.addProperty("name", Representation.DEFAULT);
 			description.addProperty("description", Representation.DEFAULT);
-			description.addProperty("datatype", Representation.REF);
-			description.addProperty("conceptClass", Representation.REF);
+			description.addProperty("datatype", Representation.DEFAULT);
+			description.addProperty("conceptClass", Representation.DEFAULT);
 			description.addProperty("set");
 			description.addProperty("version");
+			description.addProperty("retired");
 			
 			description.addProperty("names", Representation.DEFAULT);
 			description.addProperty("descriptions", Representation.DEFAULT);
@@ -145,9 +146,12 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	@Override
 	public Concept getByUniqueId(String uuidOrName) {
 		Concept concept = Context.getConceptService().getConceptByUuid(uuidOrName);
-		//We assume the caller was fetching by name
-		if (concept == null)
-			concept = Context.getConceptService().getConceptByName(uuidOrName); // NOT using getConcept here because that also searches on conceptId
+		
+		if (concept == null) {
+			//We assume the caller was fetching by name if no concept was after looking up by uuid
+			// NOT using getConcept here because that also searches on conceptId
+			concept = Context.getConceptService().getConceptByName(uuidOrName);
+		}
 			
 		return concept;
 	}
