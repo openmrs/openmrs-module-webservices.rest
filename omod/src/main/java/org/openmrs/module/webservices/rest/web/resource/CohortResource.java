@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import java.util.List;
+
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -121,6 +123,14 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 */
 	public String getDisplayString(Cohort cohort) {
 		return cohort.getName();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected List<Cohort> doGetAll(RequestContext context) throws ResponseException {
+		return Context.getCohortService().getAllCohorts();
 	}
 	
 }
