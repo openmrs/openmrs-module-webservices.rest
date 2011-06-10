@@ -19,7 +19,7 @@ import org.codehaus.jackson.map.SerializationConfig;
 /**
  * Utilities requires for unit tests
  */
-public class TestUtil {
+public class Util {
 	
 	public static void log(String label, Object object) {
 		String toPrint;

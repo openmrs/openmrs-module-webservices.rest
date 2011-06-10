@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.resource.UserResource;
@@ -49,7 +49,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{\"username\":\"test\",\"password\":\"Admin@123\",\"person\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\"}}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newUser = new UserController().create(post, emptyRequest(), new MockHttpServletResponse());
-		TestUtil.log("Created User", newUser);
+		Util.log("Created User", newUser);
 		Assert.assertEquals(before + 1, Context.getUserService().getAllUsers().size());
 	}
 	
@@ -61,7 +61,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getUser_shouldGetADefaultRepresentationOfAUser() throws Exception {
 		Object result = new UserController().retrieve("c98a1558-e131-11de-babe-001e378eb67e", emptyRequest());
 		Assert.assertNotNull(result);
-		TestUtil.log("User retrieved (default)", result);
+		Util.log("User retrieved (default)", result);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		Assert.assertEquals("butch", PropertyUtils.getProperty(result, "username"));
@@ -77,7 +77,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new UserController().retrieve("c1d8f5c2-e131-11de-babe-001e378eb67e", req);
-		TestUtil.log("User retrieved (full)", result);
+		Util.log("User retrieved (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("c1d8f5c2-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
@@ -96,7 +96,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		    SimpleObject.class);
 		Object editedUser = new UserController().update("c98a1558-e131-11de-babe-001e378eb67e", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		TestUtil.log("Edited SystemId", editedUser);
+		Util.log("Edited SystemId", editedUser);
 		user = new UserResource().getByUniqueId("c98a1558-e131-11de-babe-001e378eb67e");
 		Assert.assertEquals("5-6", user.getUser().getSystemId());
 	}
@@ -136,7 +136,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		List<Object> results = (List<Object>) new UserController().search("but", emptyRequest(),
 		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
-		TestUtil.log("Found " + results.size() + " user(s)", results);
+		Util.log("Found " + results.size() + " user(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
 	}

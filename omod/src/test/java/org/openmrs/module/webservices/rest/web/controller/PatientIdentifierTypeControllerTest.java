@@ -26,7 +26,7 @@ import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.patient.impl.VerhoeffIdentifierValidator;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -60,7 +60,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	public void shouldGetOne() throws Exception {
 		Object result = controller.retrieve(idTypeUuid, request);
 		Assert.assertNotNull(result);
-		TestUtil.log("Patient Identifier Type fetched (default)", result);
+		Util.log("Patient Identifier Type fetched (default)", result);
 		Assert.assertEquals(idTypeUuid, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("OpenMRS Identification Number", PropertyUtils.getProperty(result, "name"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
@@ -69,7 +69,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	@Test
 	public void shouldListAll() throws Exception {
 		List<Object> result = controller.getAll(request, response);
-		TestUtil.log("All non-retired identifier types", result);
+		Util.log("All non-retired identifier types", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(2, result.size());
 	}
@@ -81,7 +81,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		        + VerhoeffIdentifierValidator.class.getName() + "\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object created = controller.create(post, request, response);
-		TestUtil.log("Created", created);
+		Util.log("Created", created);
 		int after = service.getAllPatientIdentifierTypes().size();
 		Assert.assertEquals(before + 1, after);
 	}
@@ -92,7 +92,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.update(idTypeUuid, post, request, response);
 		PatientIdentifierType updated = service.getPatientIdentifierTypeByUuid(idTypeUuid);
-		TestUtil.log("Updated", updated);
+		Util.log("Updated", updated);
 		Assert.assertNotNull(updated);
 		Assert.assertEquals("OpenMRS Identification Number", updated.getName());
 		Assert.assertEquals("something new", updated.getDescription());

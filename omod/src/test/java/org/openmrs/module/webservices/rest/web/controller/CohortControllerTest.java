@@ -24,7 +24,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -63,7 +63,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"name\":\"NEW COHORT\", \"description\":\"THIS IS NEW COHORT\", \"memberIds\": [ 2, 6 ]}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newCohort = controller.create(post, request, response);
-		TestUtil.log("Created cohort", newCohort);
+		Util.log("Created cohort", newCohort);
 		Assert.assertEquals(before + 1, service.getAllCohorts().size());
 	}
 	
@@ -71,7 +71,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		Object result = controller.retrieve(cohortUuid, request);
 		Assert.assertNotNull(result);
-		TestUtil.log("Cohort fetched (default)", result);
+		Util.log("Cohort fetched (default)", result);
 		Assert.assertEquals(cohortUuid, PropertyUtils.getProperty(result, "uuid"));
 	}
 	
@@ -79,7 +79,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getCohortByExactName_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		Object result = controller.retrieve(cohortName, request);
 		Assert.assertNotNull(result);
-		TestUtil.log("Cohort fetched (default)", result);
+		Util.log("Cohort fetched (default)", result);
 		Assert.assertEquals(cohortName, PropertyUtils.getProperty(result, "name"));
 	}
 	
@@ -99,7 +99,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"name\":\"EXTRA COHORT\", \"description\":\"THIS IS NEW COHORT\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object editedCohort = controller.update(cohortUuid, post, request, response);
-		TestUtil.log("Edited cohort", editedCohort);
+		Util.log("Edited cohort", editedCohort);
 		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUuid).getName());
 	}
 	

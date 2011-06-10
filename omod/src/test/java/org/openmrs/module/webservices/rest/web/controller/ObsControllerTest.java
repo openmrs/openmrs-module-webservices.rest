@@ -23,7 +23,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -46,7 +46,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getObs_shouldGetADefaultRepresentationOfAObs() throws Exception {
 		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest());
 		Assert.assertNotNull(result);
-		TestUtil.log("Obs fetched (default)", result);
+		Util.log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
@@ -64,7 +64,7 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", req);
 		Assert.assertNotNull(result);
-		TestUtil.log("Obs fetched (default)", result);
+		Util.log("Obs fetched (default)", result);
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));

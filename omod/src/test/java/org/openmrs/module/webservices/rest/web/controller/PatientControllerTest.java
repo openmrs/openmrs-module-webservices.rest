@@ -17,7 +17,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -37,7 +37,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newPatient = new PatientController()
 		        .create(post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		TestUtil.log("Created patient", newPatient);
+		Util.log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
 	}
 	
@@ -50,7 +50,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Object result = new PatientController().retrieve("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    new MockHttpServletRequest());
 		Assert.assertNotNull(result);
-		TestUtil.log("Patient fetched (default)", result);
+		Util.log("Patient fetched (default)", result);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "identifiers"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
@@ -71,7 +71,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "identifiers"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-		TestUtil.log("Patient fetched (full)", result);
+		Util.log("Patient fetched (full)", result);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
 		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post,
 		    new MockHttpServletRequest(), new MockHttpServletResponse());
-		TestUtil.log("Edited patient", editedPatient);
+		Util.log("Edited patient", editedPatient);
 		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
 	
@@ -140,7 +140,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		List<?> results = (List<?>) new PatientController().search("Horatio", new MockHttpServletRequest(),
 		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
-		TestUtil.log("Found " + results.size() + " patient(s)", results);
+		Util.log("Found " + results.size() + " patient(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
@@ -194,7 +194,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest hsr = new MockHttpServletRequest("GET",
 		        "http://localhost:8080/openmrs/ws/rest/patient?q=Test");
 		SimpleObject wrapper = new PatientController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("Everything", wrapper);
+		Util.log("Everything", wrapper);
 		List<Object> results = (List<Object>) wrapper.get("results");
 		int fullCount = results.size();
 		Assert.assertTrue("This test assumes >2 matching patients", fullCount > 2);
@@ -202,7 +202,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		hsr.removeAllParameters();
 		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		wrapper = new PatientController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("First 2", wrapper);
+		Util.log("First 2", wrapper);
 		results = (List<Object>) wrapper.get("results");
 		int firstCount = results.size();
 		Assert.assertEquals(2, firstCount);
@@ -210,7 +210,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		hsr.removeAllParameters();
 		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX, "2");
 		wrapper = new PatientController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("The rest", wrapper);
+		Util.log("The rest", wrapper);
 		results = (List<Object>) wrapper.get("results");
 		int restCount = results.size();
 		Assert.assertEquals(fullCount, firstCount + restCount);

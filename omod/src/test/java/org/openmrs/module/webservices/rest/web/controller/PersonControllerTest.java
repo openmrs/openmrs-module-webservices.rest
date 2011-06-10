@@ -35,7 +35,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.PersonResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -59,7 +59,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"preferredName\":{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, \"birthdate\":\"1200-01-01\", \"gender\":\"F\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object beautifulPerson = new PersonController().create(post, emptyRequest(), new MockHttpServletResponse());
-		TestUtil.log("Created person", beautifulPerson);
+		Util.log("Created person", beautifulPerson);
 		Assert.assertEquals(before + 1, Context.getPersonService().getPeople("", false).size());
 	}
 	
@@ -71,7 +71,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getPerson_shouldGetADefaultRepresentationOfAPerson() throws Exception {
 		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", emptyRequest());
 		Assert.assertNotNull(result);
-		TestUtil.log("Person fetched (default)", result);
+		Util.log("Person fetched (default)", result);
 		Assert.assertEquals("5946f880-b197-400b-9caa-a3c661d23041", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "preferredName"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
@@ -86,7 +86,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		Object result = new PersonController().retrieve("5946f880-b197-400b-9caa-a3c661d23041", req);
-		TestUtil.log("Person fetched (full)", result);
+		Util.log("Person fetched (full)", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("5946f880-b197-400b-9caa-a3c661d23041", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
@@ -103,7 +103,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
 		Object editedPerson = new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		TestUtil.log("Edited person", editedPerson);
+		Util.log("Edited person", editedPerson);
 		Assert.assertEquals(df.format(now), df.format(Context.getPersonService().getPerson(7).getBirthdate()));
 	}
 	
@@ -120,7 +120,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		    "{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
 		Object editedPerson = new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		TestUtil.log("Set Person as dead", editedPerson);
+		Util.log("Set Person as dead", editedPerson);
 		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPerson, "causeOfDeath"));
 	}
 	
@@ -159,7 +159,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		List<Object> results = (List<Object>) new PersonController().search("Horatio", emptyRequest(),
 		    new MockHttpServletResponse()).get("results");
 		Assert.assertEquals(1, results.size());
-		TestUtil.log("Found " + results.size() + " person(s)", results);
+		Util.log("Found " + results.size() + " person(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
@@ -265,7 +265,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest hsr = new MockHttpServletRequest("GET",
 		        "http://localhost:8080/openmrs/ws/rest/patient?q=Test");
 		SimpleObject wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("Everything", wrapper);
+		Util.log("Everything", wrapper);
 		List<Object> results = (List<Object>) wrapper.get("results");
 		int fullCount = results.size();
 		Assert.assertTrue("This test assumes >2 matching patients", fullCount > 2);
@@ -273,7 +273,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		hsr.removeAllParameters();
 		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("First 2", wrapper);
+		Util.log("First 2", wrapper);
 		results = (List<Object>) wrapper.get("results");
 		int firstCount = results.size();
 		Assert.assertEquals(2, firstCount);
@@ -281,7 +281,7 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		hsr.removeAllParameters();
 		hsr.setParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX, "2");
 		wrapper = new PersonController().search("Test", hsr, new MockHttpServletResponse());
-		TestUtil.log("The rest", wrapper);
+		Util.log("The rest", wrapper);
 		results = (List<Object>) wrapper.get("results");
 		int restCount = results.size();
 		Assert.assertEquals(fullCount, firstCount + restCount);

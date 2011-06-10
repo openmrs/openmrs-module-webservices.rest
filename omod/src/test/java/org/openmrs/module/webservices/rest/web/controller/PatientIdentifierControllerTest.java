@@ -13,7 +13,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -46,7 +46,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	public void shouldGetAnIdentifier() throws Exception {
 		Object result = controller.retrieve(patientUuid, "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", request);
 		Assert.assertNotNull(result);
-		TestUtil.log("Patient Identifier fetched (default)", result);
+		Util.log("Patient Identifier fetched (default)", result);
 		Assert.assertEquals("8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
@@ -54,7 +54,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	@Test
 	public void shouldListIdentifiersForPatient() throws Exception {
 		List<Object> result = controller.getAll(patientUuid, request, response);
-		TestUtil.log("All identifiers for a patient", result);
+		Util.log("All identifiers for a patient", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(2, result.size());
 	}
@@ -65,7 +65,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 		String json = "{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object created = controller.create(patientUuid, post, request, response);
-		TestUtil.log("Created", created);
+		Util.log("Created", created);
 		int after = service.getPatientByUuid(patientUuid).getActiveIdentifiers().size();
 		Assert.assertEquals(before + 1, after);
 	}
@@ -76,7 +76,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.update(patientUuid, "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", post, request, response);
 		PatientIdentifier updated = service.getPatientIdentifierByUuid("8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614");
-		TestUtil.log("Updated", updated);
+		Util.log("Updated", updated);
 		Assert.assertNotNull(updated);
 		Assert.assertEquals("101-6", updated.getIdentifier());
 		Assert.assertEquals("Xanadu", updated.getLocation().getName());

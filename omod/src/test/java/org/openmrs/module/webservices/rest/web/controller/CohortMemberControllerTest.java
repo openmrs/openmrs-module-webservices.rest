@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.TestUtil;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -62,7 +62,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
 		Object result = controller.retrieve(cohortUuid, patientUuid, request);
 		Assert.assertNotNull(result);
-		TestUtil.log("Cohort member fetched (default)", result);
+		Util.log("Cohort member fetched (default)", result);
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		int size = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		List<Object> result = controller.getAll(cohortUuid, request, response);
 		Assert.assertNotNull(result);
-		TestUtil.log("Cohort member fetched (ref)", result);
+		Util.log("Cohort member fetched (ref)", result);
 		Assert.assertEquals(result.size(), size);
 	}
 	
@@ -81,7 +81,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		List<Object> result = controller.getAll(cohortUuid, req, response);
 		Assert.assertNotNull(result);
-		TestUtil.log("Cohort member fetched (default)", result);
+		Util.log("Cohort member fetched (default)", result);
 		Assert.assertEquals(result.size(), size);
 	}
 	
@@ -91,7 +91,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		String json = "{ \"patient\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object result = controller.create(cohortUuid, post, request, response);
-		TestUtil.log("Add patient to cohort : ", result);
+		Util.log("Add patient to cohort : ", result);
 		Assert.assertEquals(before + 1, service.getCohortByUuid(cohortUuid).getMemberIds().size());
 	}
 	
@@ -99,7 +99,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
 		int before = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		Object result = controller.delete(cohortUuid, patientUuid, "because", request, response);
-		TestUtil.log("Removed patient from cohort : ", result);
+		Util.log("Removed patient from cohort : ", result);
 		Assert.assertEquals(before - 1, service.getCohortByUuid(cohortUuid).getMemberIds().size());
 	}
 	
