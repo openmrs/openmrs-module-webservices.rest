@@ -49,6 +49,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 			description.addProperty("middleName");
 			description.addProperty("familyName");
 			description.addProperty("familyName2");
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -63,6 +64,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 			description.addProperty("familyNamePrefix");
 			description.addProperty("familyNameSuffix");
 			description.addProperty("degree");
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -179,7 +181,6 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(name, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(name.getDateCreated(), Representation.DEFAULT));
-		ret.put("voided", ConversionUtil.convertToRepresentation(name.isVoided(), Representation.DEFAULT));
 		if (name.isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(name, "voidedBy", Representation.REF));
 			ret.put("dateVoided", ConversionUtil.convertToRepresentation(name.getDateVoided(), Representation.DEFAULT));

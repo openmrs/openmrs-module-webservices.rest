@@ -113,6 +113,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("uuid");
 			description.addProperty("identifiers", Representation.REF);
 			description.addProperty("person", Representation.DEFAULT);
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -121,6 +122,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("uuid");
 			description.addProperty("identifiers", Representation.DEFAULT);
 			description.addProperty("person", Representation.FULL);
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

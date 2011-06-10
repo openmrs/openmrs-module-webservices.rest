@@ -49,6 +49,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 			description.addProperty("uuid");
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -57,6 +58,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 			description.addProperty("uuid");
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -161,7 +163,6 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(pa, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(pa.getDateCreated(), Representation.DEFAULT));
-		ret.put("voided", ConversionUtil.convertToRepresentation(pa.isVoided(), Representation.DEFAULT));
 		if (pa.isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(pa, "voidedBy", Representation.REF));
 			ret.put("dateVoided", ConversionUtil.convertToRepresentation(pa.getDateVoided(), Representation.DEFAULT));

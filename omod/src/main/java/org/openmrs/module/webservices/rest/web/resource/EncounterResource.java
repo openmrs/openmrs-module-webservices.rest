@@ -50,6 +50,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("form", Representation.REF);
 			description.addProperty("encounterType", Representation.REF);
 			description.addProperty("provider", Representation.REF);
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -62,6 +63,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("form", Representation.DEFAULT);
 			description.addProperty("encounterType", Representation.DEFAULT);
 			description.addProperty("provider", Representation.DEFAULT);
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

@@ -152,7 +152,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			// NOT using getConcept here because that also searches on conceptId
 			concept = Context.getConceptService().getConceptByName(uuidOrName);
 		}
-			
+		
 		return concept;
 	}
 	

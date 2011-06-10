@@ -65,6 +65,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 			description.addProperty("tags", Representation.REF);
 			description.addProperty("parentLocation", Representation.REF);
 			description.addProperty("childLocations", Representation.REF);
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -89,6 +90,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 			description.addProperty("tags", Representation.DEFAULT);
 			description.addProperty("parentLocation", Representation.DEFAULT);
 			description.addProperty("childLocations", Representation.DEFAULT);
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

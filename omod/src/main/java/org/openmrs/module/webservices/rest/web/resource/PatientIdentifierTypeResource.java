@@ -60,6 +60,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -74,6 +75,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
+			description.addProperty("validator");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

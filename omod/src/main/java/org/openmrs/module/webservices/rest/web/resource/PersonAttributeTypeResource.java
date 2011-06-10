@@ -59,6 +59,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 			description.addProperty("sortWeight");
 			description.addProperty("searchable");
 			description.addProperty("editPrivilege");
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -72,6 +73,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 			description.addProperty("sortWeight");
 			description.addProperty("searchable");
 			description.addProperty("editPrivilege");
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

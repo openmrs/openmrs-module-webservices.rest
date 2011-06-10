@@ -65,6 +65,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("userProperties");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("roles", Representation.REF);
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -78,6 +79,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("roles", Representation.DEFAULT);
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

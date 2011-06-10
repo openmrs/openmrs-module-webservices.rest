@@ -52,6 +52,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
+		rep.addProperty("retired");
 		rep.addSelfLink();
 		rep.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 		return convertDelegateToRepresentation(delegate, rep);
@@ -63,6 +64,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("uuid");
 		rep.addProperty("name");
 		rep.addProperty("description");
+		rep.addProperty("retired");
 		rep.addProperty("auditInfo", findMethod("getAuditInfo"));
 		rep.addSelfLink();
 		return convertDelegateToRepresentation(delegate, rep);
@@ -72,10 +74,14 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
-		ret.put("retired", ConversionUtil.convertToRepresentation(delegate.isRetired(), Representation.DEFAULT));
-		ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
-		ret.put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(), Representation.DEFAULT));
-		ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(), Representation.DEFAULT));
+		if (delegate.isRetired()) {
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
+			ret
+			        .put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(),
+			            Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(),
+			    Representation.DEFAULT));
+		}
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
 		return ret;

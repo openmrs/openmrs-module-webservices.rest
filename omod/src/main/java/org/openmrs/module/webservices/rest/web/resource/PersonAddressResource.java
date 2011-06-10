@@ -70,6 +70,7 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("endDate");
 			description.addProperty("latitude");
 			description.addProperty("longitude");
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -94,6 +95,7 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 			description.addProperty("endDate");
 			description.addProperty("latitude");
 			description.addProperty("longitude");
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -201,7 +203,6 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(address, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(address.getDateCreated(), Representation.DEFAULT));
-		ret.put("voided", ConversionUtil.convertToRepresentation(address.isVoided(), Representation.DEFAULT));
 		if (address.isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(address, "voidedBy", Representation.REF));
 			ret.put("dateVoided", ConversionUtil.convertToRepresentation(address.getDateVoided(), Representation.DEFAULT));

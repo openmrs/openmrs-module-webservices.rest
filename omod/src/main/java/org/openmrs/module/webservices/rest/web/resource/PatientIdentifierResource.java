@@ -48,6 +48,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 			description.addProperty("identifierType", Representation.REF);
 			description.addProperty("location", Representation.REF);
 			description.addProperty("preferred");
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -58,6 +59,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 			description.addProperty("identifierType", Representation.DEFAULT);
 			description.addProperty("location", Representation.DEFAULT);
 			description.addProperty("preferred");
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -142,7 +144,6 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(id, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(id.getDateCreated(), Representation.DEFAULT));
-		ret.put("voided", ConversionUtil.convertToRepresentation(id.isVoided(), Representation.DEFAULT));
 		if (id.isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(id, "voidedBy", Representation.REF));
 			ret.put("dateVoided", ConversionUtil.convertToRepresentation(id.getDateVoided(), Representation.DEFAULT));

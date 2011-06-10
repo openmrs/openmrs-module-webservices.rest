@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.resource;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.CohortMember;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -68,6 +67,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("voided");
 			description.addProperty("memberIds", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -78,6 +78,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds");
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

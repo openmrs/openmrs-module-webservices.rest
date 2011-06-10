@@ -65,6 +65,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("preferredName", "personName", Representation.REF);
 			description.addProperty("preferredAddress", "personAddress", Representation.REF);
 			description.addProperty("attributes", "activeAttributes", Representation.REF);
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -83,6 +84,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 			description.addProperty("names");
 			description.addProperty("addresses");
 			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

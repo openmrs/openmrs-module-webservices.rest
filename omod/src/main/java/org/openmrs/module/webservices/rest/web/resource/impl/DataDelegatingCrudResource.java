@@ -42,6 +42,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 		SimpleObject ret = new SimpleObject();
 		ret.put("uuid", delegate.getUuid());
 		ret.put("display", delegate.toString());
+		ret.put("voided", delegate.isVoided());
 		ret.put("links", "[ All Data resources need to define their representations ]");
 		return ret;
 	}
@@ -52,9 +53,11 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
-		ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "voidedBy", Representation.REF));
-		ret.put("dateVoided", ConversionUtil.convertToRepresentation(delegate.getDateVoided(), Representation.DEFAULT));
-		ret.put("voidReason", ConversionUtil.convertToRepresentation(delegate.getVoidReason(), Representation.DEFAULT));
+		if (delegate.isVoided()) {
+			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "voidedBy", Representation.REF));
+			ret.put("dateVoided", ConversionUtil.convertToRepresentation(delegate.getDateVoided(), Representation.DEFAULT));
+			ret.put("voidReason", ConversionUtil.convertToRepresentation(delegate.getVoidReason(), Representation.DEFAULT));
+		}
 		return ret;
 	}
 	

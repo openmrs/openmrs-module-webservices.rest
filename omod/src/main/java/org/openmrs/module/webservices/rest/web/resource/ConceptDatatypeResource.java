@@ -49,6 +49,7 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("hl7Abbreviation");
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -58,6 +59,7 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("hl7Abbreviation");
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
