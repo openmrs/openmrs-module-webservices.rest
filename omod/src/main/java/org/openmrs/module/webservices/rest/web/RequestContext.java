@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import org.openmrs.api.APIException;
 
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -84,7 +85,10 @@ public class RequestContext {
 	 *            the limit to set
 	 */
 	public void setLimit(Integer limit) {
-		this.limit = limit;
+		if (limit > RestUtil.getAbsoluteLimit())
+			throw new APIException("Administrator has set absolute limit at " + RestUtil.getAbsoluteLimit());
+		else
+			this.limit = limit;
 	}
 	
 	/**

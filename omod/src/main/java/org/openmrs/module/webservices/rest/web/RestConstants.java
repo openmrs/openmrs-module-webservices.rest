@@ -19,12 +19,20 @@ package org.openmrs.module.webservices.rest.web;
 public class RestConstants {
 	
 	/**
-	 * The number of results to limit lists of objects to if an admin has not defined a global
+	 * The number of results to limit lists of objects to, if an admin has not defined a global
 	 * property
 	 * 
-	 * @see #MAX_RESULTS_GLOBAL_PROPERTY_NAME
+	 * @see #MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer MAX_RESULTS_DEFAULT = 50;
+	
+	/**
+	 * The absolute number of results to limit lists of objects to, even if the call requests a 
+	 * larger list.
+	 * 
+	 * @see #MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
+	 */
+	public static Integer MAX_RESULTS_ABSOLUTE = 1000;
 	
 	//module id or name
 	public static final String MODULE_ID = "webservices.rest";
@@ -35,14 +43,22 @@ public class RestConstants {
 	 * 
 	 * @see #MAX_RESULTS_DEFAULT
 	 */
-	public static String MAX_RESULTS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults";
+	public static String MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults_default";
+	
+	/**
+	 * The key of the global property that an admin can set if they want an absolute limit to the
+	 * maximum lists that can be returned in a webservice call
+	 * 
+	 * @see #MAX_RESULTS_DEFAULT
+	 */
+	public static String MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults_absolute";
 	
 	/**
 	 * The key of the global property that an admin can set to restrict ws users based on a range of
 	 * IPs. Should be a comma separated list of IP addresses. "*" in any part of it denotes a
 	 * wildcard match.
 	 */
-	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = "webservices.rest.allowedips";
+	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".allowedips";
 	
 	/**
 	 * String that goes before every request. Its in a constant just in case we have to change it at

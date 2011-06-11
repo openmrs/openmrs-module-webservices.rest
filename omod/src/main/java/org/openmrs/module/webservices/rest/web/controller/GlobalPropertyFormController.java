@@ -63,7 +63,8 @@ public class GlobalPropertyFormController {
 		Set<String> props = new LinkedHashSet<String>();
 		props.add(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
 		props.add(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME);
-		props.add(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
+		props.add(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
+		props.add(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
 		
 		//remove the properties we dont want to edit
 		for (GlobalProperty gp : Context.getAdministrationService().getGlobalPropertiesByPrefix(RestConstants.MODULE_ID)) {
@@ -110,7 +111,15 @@ public class GlobalPropertyFormController {
 					// TODO validate legal uri prefix
 				} else if (gp.getProperty().equals(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME)) {
 					// TODO validate legal comma-separated IPv4 or IPv6 addresses, wildcards, etc
-				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME)) {
+				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME)) {
+					boolean okay = false;
+					try {
+						okay = Integer.valueOf(gp.getPropertyValue()) > 0;
+					}
+					catch (Exception ex) {}
+					if (!okay)
+						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID + ".maxresults.errorMessage");
+				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME)) {
 					boolean okay = false;
 					try {
 						okay = Integer.valueOf(gp.getPropertyValue()) > 0;

@@ -59,10 +59,11 @@ public class RestUtil implements GlobalPropertyListener {
 	 * 
 	 * @return Integer limit
 	 * @see #getLimit(WebRequest)
-	 * @see RestConstants#MAX_RESULTS_GLOBAL_PROPERTY_NAME
+	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService().getGlobalProperty(RestConstants.MAX_RESULTS_GLOBAL_PROPERTY_NAME);
+		String limit = Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
@@ -72,6 +73,28 @@ public class RestUtil implements GlobalPropertyListener {
 			}
 		} else {
 			return RestConstants.MAX_RESULTS_DEFAULT;
+		}
+	}
+	
+	/**
+	 * Looks up the admin defined global property for the absolute limit to results of REST calls
+	 * 
+	 * @return Integer limit
+	 * @see #getLimit(WebRequest)
+	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
+	 */
+	public static Integer getAbsoluteLimit() {
+		String limit = Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+		if (StringUtils.isNotEmpty(limit)) {
+			try {
+				return Integer.parseInt(limit);
+			}
+			catch (NumberFormatException nfex) {
+				return RestConstants.MAX_RESULTS_ABSOLUTE;
+			}
+		} else {
+			return RestConstants.MAX_RESULTS_ABSOLUTE;
 		}
 	}
 	
