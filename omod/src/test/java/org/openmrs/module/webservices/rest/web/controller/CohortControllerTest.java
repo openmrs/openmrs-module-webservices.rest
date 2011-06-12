@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -37,6 +38,8 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	private static final String cohortUuid = "05e08b3b-5690-41e1-b651-5391fd946c1a";
 	
 	private static final String cohortName = "B13 deficit";
+	
+	private static final String cohortQuery = "B13";
 	
 	private static final String datasetFilename = "customTestDataset.xml";
 	
@@ -81,6 +84,13 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(result);
 		Util.log("Cohort fetched (default)", result);
 		Assert.assertEquals(cohortName, PropertyUtils.getProperty(result, "name"));
+	}
+	
+	@Test
+	public void getCohorts_shouldSearchForCohortsByName() throws Exception {
+		List<Object> results = (List<Object>) controller.search(cohortQuery, request, response).get("results");
+		Assert.assertEquals(2, results.size());
+		Util.log("Found " + results.size() + " cohort(s)", results);
 	}
 	
 	@Test

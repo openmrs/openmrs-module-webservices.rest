@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -131,6 +132,16 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	@Override
 	protected List<Cohort> doGetAll(RequestContext context) throws ResponseException {
 		return Context.getCohortService().getAllCohorts();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected NeedsPaging<Cohort> doSearch(String query, RequestContext context) {
+		List<Cohort> cohorts = Context.getCohortService().getCohorts(query);
+		return new NeedsPaging<Cohort>(cohorts, context);
 	}
 	
 }
