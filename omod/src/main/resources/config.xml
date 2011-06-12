@@ -57,11 +57,20 @@
 	<!-- Servlets -->
 	
 	<!-- Filters -->
+    <filter>
+		<filter-name>shallowEtagHeaderFilter</filter-name>
+		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
+	</filter>
+    <filter-mapping>
+		<filter-name>shallowEtagHeaderFilter</filter-name>
+		<url-pattern>/ws/rest/*</url-pattern>
+	</filter-mapping>
+    
 	<filter>
 		<filter-name>REST Web Service Authorization</filter-name>
 		<filter-class>org.openmrs.module.webservices.rest.web.filter.AuthorizationFilter</filter-class>
 	</filter>
-	<filter-mapping>
+    <filter-mapping>
 		<filter-name>REST Web Service Authorization</filter-name>
 		<url-pattern>/ws/rest/*</url-pattern>
 	</filter-mapping>
