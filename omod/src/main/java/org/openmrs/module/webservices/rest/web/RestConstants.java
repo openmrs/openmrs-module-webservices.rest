@@ -32,7 +32,7 @@ public class RestConstants {
 	 * 
 	 * @see #MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
-	public static Integer MAX_RESULTS_ABSOLUTE = 1000;
+	public static Integer MAX_RESULTS_ABSOLUTE = 100;
 	
 	//module id or name
 	public static final String MODULE_ID = "webservices.rest";
@@ -43,15 +43,15 @@ public class RestConstants {
 	 * 
 	 * @see #MAX_RESULTS_DEFAULT
 	 */
-	public static String MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults_default";
+	public static String MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxResultsDefault";
 	
 	/**
 	 * The key of the global property that an admin can set if they want an absolute limit to the
 	 * maximum lists that can be returned in a webservice call
 	 * 
-	 * @see #MAX_RESULTS_DEFAULT
+	 * @see #MAX_RESULTS_ABSOLUTE
 	 */
-	public static String MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxresults_absolute";
+	public static String MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME = MODULE_ID + ".maxResultsAbsolute";
 	
 	/**
 	 * The key of the global property that an admin can set to restrict ws users based on a range of

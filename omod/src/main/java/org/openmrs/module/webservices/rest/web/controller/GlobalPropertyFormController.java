@@ -114,11 +114,17 @@ public class GlobalPropertyFormController {
 				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME)) {
 					boolean okay = false;
 					try {
-						okay = Integer.valueOf(gp.getPropertyValue()) > 0;
+						Integer maxResultsAbsoluteVal = Integer.valueOf(Context.getAdministrationService()
+						        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME));
+						if (Integer.valueOf(gp.getPropertyValue()) > 0
+						        && Integer.valueOf(gp.getPropertyValue()) <= maxResultsAbsoluteVal) {
+							okay = true;
+						}
 					}
 					catch (Exception ex) {}
 					if (!okay)
-						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID + ".maxresults.errorMessage");
+						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID
+						        + ".maxResultsDefault.errorMessage");
 				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME)) {
 					boolean okay = false;
 					try {
@@ -126,7 +132,8 @@ public class GlobalPropertyFormController {
 					}
 					catch (Exception ex) {}
 					if (!okay)
-						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID + ".maxresults.errorMessage");
+						errors.rejectValue("properties[" + i + "]", RestConstants.MODULE_ID
+						        + ".maxResultsAbsolute.errorMessage");
 				}
 			}
 		}

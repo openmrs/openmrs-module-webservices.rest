@@ -45,7 +45,9 @@
 				<span class="settingValue">
 					<spring:bind path="propertyValue">
 						<c:set var="inputSize" value="50" scope="page" />
-						<c:if test="${prop.property == 'webservices.rest.maxresults'}"><c:set var="inputSize" value="2" /></c:if>
+						<c:if test="${prop.property == 'webservices.rest.maxResultsDefault' || prop.property == 'webservices.rest.maxResultsAbsolute' }">
+                             <c:set var="inputSize" value="3" />
+                        </c:if>
 						<input type="text" name="${status.expression}" value="${status.value}" size="${inputSize}">
 						<form:errors cssClass="error"/>
 					</spring:bind>

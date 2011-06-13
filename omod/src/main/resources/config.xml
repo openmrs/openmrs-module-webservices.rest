@@ -31,13 +31,13 @@
 
 	<!-- Required Global Properties -->
     <globalProperty>
-        <property>@MODULE_ID@.maxresults_default</property>
+        <property>@MODULE_ID@.maxResultsDefault</property>
         <defaultValue>50</defaultValue>
         <description>The default max results limit if the user does not provide a maximum when making the web service call.</description>
     </globalProperty>
     <globalProperty>
-        <property>@MODULE_ID@.maxresults_absolute</property>
-        <defaultValue>1000</defaultValue>
+        <property>@MODULE_ID@.maxResultsAbsolute</property>
+        <defaultValue>100</defaultValue>
         <description>The absolute max results limit. If the client requests a larger number of results, then will get an error</description>
     </globalProperty>
     <globalProperty>
