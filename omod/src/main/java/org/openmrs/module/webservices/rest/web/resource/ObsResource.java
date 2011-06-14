@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.text.ParseException;
-import java.util.List;
 
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
@@ -26,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -77,7 +75,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
-			description.addProperty("groupMembers", Representation.REF);
+			description.addProperty("groupMembers");
 			description.addProperty("comment");
 			description.addProperty("location", Representation.REF);
 			description.addProperty("order", Representation.REF);
@@ -96,7 +94,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
-			description.addProperty("groupMembers");
+			description.addProperty("groupMembers", Representation.FULL);
 			description.addProperty("comment");
 			description.addProperty("location");
 			description.addProperty("order");
@@ -151,7 +149,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @return String ConceptName = value
 	 */
 	public String getDisplayString(Obs obs) {
-		return obs.getConcept().getName() + "=" + obs.getValueAsString(Context.getLocale());
+		return obs.getConcept().getName() + " = " + obs.getValueAsString(Context.getLocale());
 	}
 	
 	/**
@@ -162,7 +160,10 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 */
 	@PropertyGetter("value")
 	public static String getValueAsString(Obs obs) {
-		return obs.getValueAsString(Context.getLocale());
+		if (obs.isObsGrouping())
+			return null;
+		else
+			return obs.getValueAsString(Context.getLocale());
 	}
 	
 	/**

@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -54,6 +55,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("form", Representation.REF);
 			description.addProperty("encounterType", Representation.REF);
 			description.addProperty("provider", Representation.REF);
+			description.addProperty("obs", Representation.REF);
+			description.addProperty("orders", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -63,10 +66,12 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			description.addProperty("uuid");
 			description.addProperty("encounterDatetime");
 			description.addProperty("patient", Representation.REF);
-			description.addProperty("location", Representation.DEFAULT);
-			description.addProperty("form", Representation.DEFAULT);
-			description.addProperty("encounterType", Representation.DEFAULT);
-			description.addProperty("provider", Representation.DEFAULT);
+			description.addProperty("location");
+			description.addProperty("form");
+			description.addProperty("encounterType");
+			description.addProperty("provider");
+			description.addProperty("obs");
+			description.addProperty("orders");
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -153,6 +158,15 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			throw new ObjectNotFoundException();
 		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
 		return new NeedsPaging<Encounter>(encs, context).toSimpleObject();
+	}
+	
+	/**
+	 * @param instance
+	 * @return all non-voided top-level obs from the given encounter
+	 */
+	@PropertyGetter("obs")
+	public static Object getObsAtTopLevel(Encounter instance) {
+		return instance.getObsAtTopLevel(false);
 	}
 	
 }
