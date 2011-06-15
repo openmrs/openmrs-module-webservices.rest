@@ -37,6 +37,7 @@ public class ObsController extends BaseCrudController<ObsResource> {
 	
 	/**
 	 * Fetch obs for a given encounter
+	 * 
 	 * @param encounterUniqueId
 	 * @param request
 	 * @param response
@@ -50,6 +51,22 @@ public class ObsController extends BaseCrudController<ObsResource> {
 		ObsResource resource = getResource();
 		RequestContext context = RestUtil.getRequestContext(request);
 		return resource.getObsByEncounter(encounterUniqueId, context);
+	}
+	
+	/**
+	 * Fetch obs for a given patient
+	 * 
+	 * @param patientUuid
+	 * @param request
+	 * @param response
+	 * @return obs for the given patient
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@ResponseBody
+	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		return getResource().getObsByPatient(patientUuid, RestUtil.getRequestContext(request));
 	}
 	
 }

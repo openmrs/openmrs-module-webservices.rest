@@ -15,8 +15,11 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
+
 import junit.framework.Assert;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -26,6 +29,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.resource.ObsResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -210,6 +214,26 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
 		new ObsController().purge("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNull(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
+	}
+	
+	/**
+	 * @see ObsResource#getObsByPatient(String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	public void searchByPatient_shouldGetObsForAPatient() throws Exception {
+		executeDataSet("org/openmrs/api/include/ObsServiceTest-initial.xml");
+		SimpleObject search = new ObsController().searchByPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", emptyRequest(),
+		    new MockHttpServletResponse());
+		List<Object> results = (List<Object>) search.get("results");
+		Assert.assertEquals(3, results.size());
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
+		    results.get(1), "uuid"), PropertyUtils.getProperty(results.get(2), "uuid"));
+		Assert.assertTrue(uuids.contains("be3a4d7a-f9ab-47bb-aaad-bc0b452fcda4"));
+		Assert.assertTrue(uuids.contains("b5499df2-b17c-4b39-88a6-44591c165569"));
+		Assert.assertTrue(uuids.contains("0ee1248e-08aa-4a2c-9f38-fb3875f605e3"));
 	}
 	
 }

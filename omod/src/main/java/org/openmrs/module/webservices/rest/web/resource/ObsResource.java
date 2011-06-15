@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -214,10 +215,11 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	/**
 	 * Gets obs for the given encounter (paged according to context if necessary)
 	 * 
-	 * @param encounterUniqueId @see {@link EncounterResource#getByUniqueId(String)} for interpretation
+	 * @param encounterUniqueId @see {@link EncounterResource#getByUniqueId(String)} for
+	 *            interpretation
 	 * @param context
 	 * @return
-	 * @throws ResponseException 
+	 * @throws ResponseException
 	 */
 	public SimpleObject getObsByEncounter(String encounterUniqueId, RequestContext context) throws ResponseException {
 		Encounter enc = Context.getService(RestService.class).getResource(EncounterResource.class).getByUniqueId(
@@ -225,6 +227,23 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 		if (enc == null)
 			throw new ObjectNotFoundException();
 		List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
+		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
+	}
+	
+	/**
+	 * Gets Fetch Obs for a given patient (paged according to context if necessary)
+	 * 
+	 * @param patientUuid @see {@link PatientResource#getByUniqueId(String)} for interpretation
+	 * @param context
+	 * @return
+	 * @throws ResponseException
+	 */
+	public SimpleObject getObsByPatient(String patientUuid, RequestContext context) throws ResponseException {
+		Patient patient = Context.getService(RestService.class).getResource(PatientResource.class)
+		        .getByUniqueId(patientUuid);
+		if (patient == null)
+			throw new ObjectNotFoundException();
+		List<Obs> obs = Context.getObsService().getObservationsByPerson(patient);
 		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
 	}
 	
