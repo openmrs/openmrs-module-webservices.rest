@@ -41,7 +41,7 @@ public class Util {
 			toPrint = label + ": " + toPrint;
 		System.out.println(toPrint);
 	}
-
+	
 	/**
 	 * @param object
 	 * @param path something like "obs[0]/concept/uuid"
@@ -51,37 +51,39 @@ public class Util {
 		return getByPath(object, path.split("/"));
 	}
 	
-    /**
-     * @param object
-     * @param pathElements something like { "obs[0]", "concept", "uuid" }
-     * @return
-     */
-    public static Object getByPath(Object object, String[] pathElements) {
-    	// I tried to use PropertyUtils.getIndexedProperty but I couldn't get it to work
-	    try {
-	    	for (int i = 0; i < pathElements.length; ++i) {
-	    		String property;
-	    		Integer index;
-	    		if (pathElements[i].indexOf("[") > 0) {
-	    			property = pathElements[i].substring(0, pathElements[i].indexOf("["));
-	    			index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1, pathElements[i].indexOf("]")));
-	    		} else {
-	    			property = pathElements[i];
-	    			index = null;
-	    		}
-	    		if (property != null)
-	    			object = PropertyUtils.getProperty(object, property);
-	    		if (index != null) {
-	    			if (object instanceof List) {
-	    				object = ((List<?>) object).get(index);
-	    			} else if (object instanceof Object[]) {
-	    				object = ((Object[]) object)[index];
-	    			}
-	    		}
-	    	}
-	    	return object;
-	    } catch (Exception ex) {
-	    	throw new RuntimeException("Failed to get path " + OpenmrsUtil.join(Arrays.asList(pathElements), " . "), ex);
-	    }
-    }
+	/**
+	 * @param object
+	 * @param pathElements something like { "obs[0]", "concept", "uuid" }
+	 * @return
+	 */
+	public static Object getByPath(Object object, String[] pathElements) {
+		// I tried to use PropertyUtils.getIndexedProperty but I couldn't get it to work
+		try {
+			for (int i = 0; i < pathElements.length; ++i) {
+				String property;
+				Integer index;
+				if (pathElements[i].indexOf("[") > 0) {
+					property = pathElements[i].substring(0, pathElements[i].indexOf("["));
+					index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1, pathElements[i]
+					        .indexOf("]")));
+				} else {
+					property = pathElements[i];
+					index = null;
+				}
+				if (property != null)
+					object = PropertyUtils.getProperty(object, property);
+				if (index != null) {
+					if (object instanceof List) {
+						object = ((List<?>) object).get(index);
+					} else if (object instanceof Object[]) {
+						object = ((Object[]) object)[index];
+					}
+				}
+			}
+			return object;
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("Failed to get path " + OpenmrsUtil.join(Arrays.asList(pathElements), " . "), ex);
+		}
+	}
 }

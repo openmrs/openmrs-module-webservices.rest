@@ -90,25 +90,30 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		executeDataSet("org/openmrs/module/webservices/rest/web/controller/include/EncounterWithObsGroup.xml");
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-
-		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");		
-
+		
+		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+		
 		SimpleObject result = (SimpleObject) new EncounterController().retrieve("62967e68-96bb-11e0-8d6b-9b9415a91465", req);
 		Util.log("full", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", result.get("uuid"));
 		Assert.assertNotNull(result.get("obs"));
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result, "obs[0]/concept/uuid"));
-		Assert.assertEquals("96408258-000b-424e-af1a-403919332938", Util.getByPath(result, "obs[0]/groupMembers[0]/concept/uuid"));
+		Assert.assertEquals("96408258-000b-424e-af1a-403919332938", Util.getByPath(result,
+		    "obs[0]/groupMembers[0]/concept/uuid"));
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[0]/value"));
-		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result, "obs[0]/groupMembers[1]/concept/uuid"));
+		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result,
+		    "obs[0]/groupMembers[1]/concept/uuid"));
 		// failing because of date format: Assert.assertEquals(ymd.parse("2011-06-12"), Util.getByPath(result, "obs[0]/groupMembers[1]/value"));
-
+		
 		// make sure there's a group in the group
-		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result, "obs[0]/groupMembers[2]/concept/uuid"));
-		Assert.assertEquals("96408258-000b-424e-af1a-403919332938", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/concept/uuid"));
+		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result,
+		    "obs[0]/groupMembers[2]/concept/uuid"));
+		Assert.assertEquals("96408258-000b-424e-af1a-403919332938", Util.getByPath(result,
+		    "obs[0]/groupMembers[2]/groupMembers[0]/concept/uuid"));
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/value"));
-		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/concept/uuid"));
+		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result,
+		    "obs[0]/groupMembers[2]/groupMembers[1]/concept/uuid"));
 		// failing because of date format: Assert.assertEquals(ymd.parse("2011-06-12"), Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/value"));
 	}
 	
