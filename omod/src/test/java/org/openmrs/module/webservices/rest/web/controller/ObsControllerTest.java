@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import junit.framework.Assert;
@@ -70,7 +71,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-		
 	}
 	
 	/**
@@ -87,7 +87,18 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-		
+	}
+	
+	@Test
+	public void searchByEncounter_shouldGetObsInAnEncounter() throws Exception {
+		SimpleObject search = new ObsController().searchByEncounter("6519d653-393b-4118-9c83-a3715b82d4ac", emptyRequest(),
+		    new MockHttpServletResponse());
+		List<Object> results = (List<Object>) search.get("results");
+		Assert.assertEquals(2, results.size());
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
+		    results.get(1), "uuid"));
+		Assert.assertTrue(uuids.contains("39fb7f47-e80a-4056-9285-bd798be13c63"));
+		Assert.assertTrue(uuids.contains("be48cdcb-6a76-47e3-9f2e-2635032f3a9a"));
 	}
 	
 	/**
@@ -149,7 +160,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void updateObs_shouldChangeAPropertyOnAnObs() throws Exception {
-		
 		SimpleObject post = new ObjectMapper().readValue("{\"valueNumeric\": 35.0}", SimpleObject.class);
 		Object editedObs = new ObsController().update("39fb7f47-e80a-4056-9285-bd798be13c63", post, emptyRequest(),
 		    new MockHttpServletResponse());
@@ -178,7 +188,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63").isVoided());
 		Assert.assertFalse(new Integer(2).equals(oldObs.getLocation().getId()));
 		Assert.assertTrue(new Integer(2).equals(newObs.getLocation().getId()));
-		
 	}
 	
 	/**

@@ -14,9 +14,19 @@
 
 package org.openmrs.module.webservices.rest.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.ObsResource;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Controller for REST web service access to the Obs resource. Supports CRUD on the resource itself.
@@ -24,5 +34,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/rest/obs")
 public class ObsController extends BaseCrudController<ObsResource> {
-
+	
+	/**
+	 * Fetch obs for a given encounter
+	 * @param encounterUniqueId
+	 * @param request
+	 * @param response
+	 * @return obs for the given encounter
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "encounter")
+	@ResponseBody
+	public SimpleObject searchByEncounter(@RequestParam("encounter") String encounterUniqueId, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		ObsResource resource = getResource();
+		RequestContext context = RestUtil.getRequestContext(request);
+		return resource.getObsByEncounter(encounterUniqueId, context);
+	}
+	
 }

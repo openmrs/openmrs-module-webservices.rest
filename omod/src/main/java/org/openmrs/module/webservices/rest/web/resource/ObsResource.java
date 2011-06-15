@@ -14,15 +14,20 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -30,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -204,4 +210,22 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	public static void setValue(Obs obs, Object value) throws ParseException {
 		obs.setValueAsString((String) value);
 	}
+	
+	/**
+	 * Gets obs for the given encounter (paged according to context if necessary)
+	 * 
+	 * @param encounterUniqueId @see {@link EncounterResource#getByUniqueId(String)} for interpretation
+	 * @param context
+	 * @return
+	 * @throws ResponseException 
+	 */
+	public SimpleObject getObsByEncounter(String encounterUniqueId, RequestContext context) throws ResponseException {
+		Encounter enc = Context.getService(RestService.class).getResource(EncounterResource.class).getByUniqueId(
+		    encounterUniqueId);
+		if (enc == null)
+			throw new ObjectNotFoundException();
+		List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
+		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
+	}
+	
 }
