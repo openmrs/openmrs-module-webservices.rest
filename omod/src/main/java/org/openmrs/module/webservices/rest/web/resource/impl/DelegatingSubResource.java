@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Base implementation of a sub-resource of a DelegatingCrudResource that delegates to a domain object
@@ -193,6 +195,17 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display", findMethod("getDisplayString"));
+		
+		Method method = ReflectionUtils.findMethod(delegate.getClass(), "isVoided");
+		
+		if (method != null)
+			description.addProperty("voided");
+		else {
+			// couldn't find an "isVoided" method, look for "isRetired"
+			method = ReflectionUtils.findMethod(delegate.getClass(), "isRetired");
+			description.addProperty("retired");
+		}
+		
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}

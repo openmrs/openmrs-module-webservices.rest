@@ -33,6 +33,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display", findMethod("getDisplayString"));
+		description.addProperty("voided");
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}

@@ -76,6 +76,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
 			description.addProperty("validator");
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

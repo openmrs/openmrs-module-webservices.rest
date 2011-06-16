@@ -55,6 +55,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", "displayString", Representation.DEFAULT);
+			description.addProperty("retired");
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
@@ -113,9 +114,12 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(concept, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(concept.getDateCreated(), Representation.DEFAULT));
-		ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(concept, "retiredBy", Representation.REF));
-		ret.put("dateRetired", ConversionUtil.convertToRepresentation(concept.getDateRetired(), Representation.DEFAULT));
-		ret.put("retireReason", ConversionUtil.convertToRepresentation(concept.getRetireReason(), Representation.DEFAULT));
+		if (concept.isRetired()) {
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(concept, "retiredBy", Representation.REF));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(concept.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil
+			        .convertToRepresentation(concept.getRetireReason(), Representation.DEFAULT));
+		}
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(concept, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(concept.getDateChanged(), Representation.DEFAULT));
 		return ret;
