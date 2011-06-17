@@ -87,7 +87,7 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getEncounter_shouldGetAFullRepresentationOfAEncounterIncludingObsGroups() throws Exception {
-		executeDataSet("org/openmrs/module/webservices/rest/web/controller/include/EncounterWithObsGroup.xml");
+		executeDataSet("EncounterWithObsGroup.xml");
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		
