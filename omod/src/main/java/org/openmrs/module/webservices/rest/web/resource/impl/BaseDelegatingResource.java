@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -269,9 +270,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			// first, try to find a @PropertySetter-annotated method
 			Method annotatedSetter = findSetterMethod(propertyName);
 			if (annotatedSetter != null) {
-				Class<?> expectedType = annotatedSetter.getParameterTypes()[1];
-				if (value != null && !expectedType.isAssignableFrom(value.getClass()))
-					value = ConversionUtil.convert(value, expectedType);
+				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
+				value = ConversionUtil.convert(value, expectedType);
 				annotatedSetter.invoke(null, instance, value);
 				return;
 			}
@@ -280,9 +280,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			String override = remappedProperties.get(propertyName);
 			if (override != null)
 				propertyName = override;
-			Class<?> expectedType = PropertyUtils.getPropertyType(instance, propertyName);
-			if (value != null && !expectedType.isAssignableFrom(value.getClass()))
-				value = ConversionUtil.convert(value, expectedType);
+			
+			// we need the generic type of this property, not just the class
+			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
+			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
 			PropertyUtils.setProperty(instance, propertyName, value);
 		}
 		catch (Exception ex) {

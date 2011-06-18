@@ -14,8 +14,10 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -23,6 +25,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -180,6 +183,12 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	@PropertyGetter("obs")
 	public static Object getObsAtTopLevel(Encounter instance) {
 		return instance.getObsAtTopLevel(false);
+	}
+	
+	@PropertySetter("obs")
+	public static void setObs(Encounter instance, Set<Obs> obs) {
+		for (Obs o : obs)
+			instance.addObs(o);
 	}
 	
 }

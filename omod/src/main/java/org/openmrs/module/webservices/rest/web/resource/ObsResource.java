@@ -209,7 +209,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 */
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException {
-		obs.setValueAsString((String) value);
+		obs.setValueAsString(value.toString());
 	}
 	
 	/**
