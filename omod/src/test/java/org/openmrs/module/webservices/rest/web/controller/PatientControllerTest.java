@@ -39,6 +39,7 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		        .create(post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Util.log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
+		Assert.assertEquals("Darius Programmer", Util.getByPath(newPatient, "preferredName/display"));
 	}
 	
 	/**
