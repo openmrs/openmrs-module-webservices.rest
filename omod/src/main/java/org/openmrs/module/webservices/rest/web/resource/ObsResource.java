@@ -17,12 +17,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -206,10 +208,17 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @param obs
 	 * @param value
 	 * @throws ParseException
+	 * @throws ConversionException
 	 */
 	@PropertySetter("value")
-	public static void setValue(Obs obs, Object value) throws ParseException {
-		obs.setValueAsString(value.toString());
+	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException {
+		if (obs.getConcept().getDatatype().isCoded()) {
+			// setValueAsString is not implemented for coded obs (in core)
+			Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
+			obs.setValueCoded(valueCoded);
+		} else {
+			obs.setValueAsString(value.toString());
+		}
 	}
 	
 	/**

@@ -3,7 +3,11 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,14 +50,33 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
-		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\" ";
-		json += ", \"obs\": [ { \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 } ]";
-		json += "}";
+		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", \"obs\": [ ";
+		// weight in kg = 70
+		json += "{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }";
+		// civil status = married
+		json += ", { \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }";
+		// favorite food, non-coded = fried chicken
+		json += ", { \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }";
+		// date of food assistance = 2011-06-21
+		json += ", { \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21\" }";
+		json += "] }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newEncounter = new EncounterController().create(post, emptyRequest(), new MockHttpServletResponse());
+		SimpleObject newEncounter = (SimpleObject) new EncounterController().create(post, emptyRequest(),
+		    new MockHttpServletResponse());
 		Assert.assertNotNull(newEncounter);
-		// TODO check for obs
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		
+		Util.log("encounter created", newEncounter);
+		List<SimpleObject> obs = (List<SimpleObject>) newEncounter.get("obs");
+		Assert.assertEquals(4, obs.size());
+		Set<String> obsDisplayValues = new HashSet<String>();
+		for (SimpleObject o : obs) {
+			obsDisplayValues.add((String) o.get("display"));
+		}
+		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS = MARRIED"));
+		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED = fried chicken"));
+		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG) = 70.0"));
+		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 PDT"));
 	}
 	
 	/**
