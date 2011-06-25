@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
@@ -35,7 +37,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 @Controller
 @RequestMapping("/module/webservices/rest/settings")
-public class GlobalPropertyFormController {
+public class SettingsFormController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public void showForm() {
@@ -114,8 +116,8 @@ public class GlobalPropertyFormController {
 				} else if (gp.getProperty().equals(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME)) {
 					boolean okay = false;
 					try {
-						Integer maxResultsAbsoluteVal = Integer.valueOf(Context.getAdministrationService()
-						        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME));
+						Integer maxResultsAbsoluteVal = Integer.valueOf(model.getProperty(
+						    RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME).getPropertyValue());
 						if (Integer.valueOf(gp.getPropertyValue()) > 0
 						        && Integer.valueOf(gp.getPropertyValue()) <= maxResultsAbsoluteVal) {
 							okay = true;
@@ -136,6 +138,22 @@ public class GlobalPropertyFormController {
 						        + ".maxResultsAbsolute.errorMessage");
 				}
 			}
+		}
+		
+		/**
+		 * Returns the global property for the given propertyName
+		 * @param propertyName
+		 * @return 
+		 */
+		public GlobalProperty getProperty(String propertyName) {
+			GlobalProperty prop = null;
+			for (GlobalProperty gp : getProperties()) {
+				if (gp.getProperty().equals(propertyName)) {
+					prop = gp;
+					break;
+				}
+			}
+			return prop;
 		}
 		
 		/**
