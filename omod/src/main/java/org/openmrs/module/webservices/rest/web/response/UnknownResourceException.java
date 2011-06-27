@@ -13,25 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
-/**
- * This exception should be thrown from controllers when passed a uuid that does not represent an
- * existing resource.
- */
-public class ObjectNotFoundException extends ResponseException {
+public class UnknownResourceException extends ResponseException {
 	
-	private static final long serialVersionUID = 1L;
-	
-	public String reason = "Object with given uuid doesn't exist";
+	public String reason = "Unknown Resource Requested";
 	
 	public String code = "404";
 	
-	public String detail = "You have requested a uuid that is not available in the database. Use q parameter to query using a String";
+	private static final long serialVersionUID = 1L;
 	
-	public ObjectNotFoundException() {
+	public UnknownResourceException() {
 		super.reason = reason;
 		super.code = code;
-		super.detail = detail;
-		// DOESNT WORK FOR BUG: https://jira.springsource.org/browse/SPR-6902
-		//sendErrorResponse();
+		super.detail = super.getMessage();
+		sendErrorResponse();
 	}
 }
