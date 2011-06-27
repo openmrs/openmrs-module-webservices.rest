@@ -17,10 +17,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import org.openmrs.GlobalProperty;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.WebConstants;
@@ -49,7 +48,12 @@ public class SettingsFormController {
 		globalPropertiesModel.validate(globalPropertiesModel, errors);
 		if (errors.hasErrors())
 			return null; // show the form again
-		Context.getAdministrationService().saveGlobalProperties(globalPropertiesModel.getProperties());
+		
+		AdministrationService administrationService = Context.getAdministrationService();
+		for (GlobalProperty p : globalPropertiesModel.getProperties()) {
+			administrationService.saveGlobalProperty(p);
+		}
+		
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, Context.getMessageSourceService().getMessage("general.saved"),
 		    WebRequest.SCOPE_SESSION);
 		return "redirect:settings.form";
