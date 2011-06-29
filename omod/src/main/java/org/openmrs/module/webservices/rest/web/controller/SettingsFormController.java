@@ -48,7 +48,7 @@ public class SettingsFormController {
 		globalPropertiesModel.validate(globalPropertiesModel, errors);
 		if (errors.hasErrors())
 			return null; // show the form again
-		
+			
 		AdministrationService administrationService = Context.getAdministrationService();
 		for (GlobalProperty p : globalPropertiesModel.getProperties()) {
 			administrationService.saveGlobalProperty(p);

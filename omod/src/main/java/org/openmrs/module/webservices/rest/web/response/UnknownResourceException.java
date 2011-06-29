@@ -19,12 +19,13 @@ public class UnknownResourceException extends ResponseException {
 	
 	public String code = "404";
 	
+	public String detail = "Resource does not exist. Please check documentation for implemented resources and their paths";
+	
 	private static final long serialVersionUID = 1L;
 	
 	public UnknownResourceException() {
-		super.reason = reason;
-		super.code = code;
-		super.detail = super.getMessage();
-		sendErrorResponse();
+		super.reason = this.reason;
+		super.code = this.code;
+		super.detail = this.detail;
 	}
 }

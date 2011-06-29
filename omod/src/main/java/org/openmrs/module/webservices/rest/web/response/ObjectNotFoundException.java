@@ -31,7 +31,5 @@ public class ObjectNotFoundException extends ResponseException {
 		super.reason = reason;
 		super.code = code;
 		super.detail = detail;
-		// DOESNT WORK FOR BUG: https://jira.springsource.org/browse/SPR-6902
-		//sendErrorResponse();
 	}
 }

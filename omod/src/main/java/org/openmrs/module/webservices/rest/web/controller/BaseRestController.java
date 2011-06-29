@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
@@ -50,24 +51,18 @@ public class BaseRestController {
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ResponseBody
 	private SimpleObject objectNotFoundExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		errorDetail = ex.getMessage();
-		SimpleObject ret = new SimpleObject();
-		ret.put("message", "Object not found");
-		ret.put("code", HttpStatus.NOT_FOUND);
-		ret.put("detail", errorDetail);
-		return ret;
+		return new ObjectNotFoundException().sendErrorResponse();
 	}
 	
 	@ExceptionHandler(APIException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	private SimpleObject apiExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		errorDetail = ex.getMessage();
-		SimpleObject ret = new SimpleObject();
-		ret.put("message", "OpenMRS API Exception");
-		ret.put("code", HttpStatus.BAD_REQUEST);
-		ret.put("detail", errorDetail);
-		return ret;
+		LinkedHashMap map = new LinkedHashMap();
+		map.put("message", "OpenMRS API Exception");
+		map.put("code", HttpStatus.BAD_REQUEST);
+		map.put("detail", ex.getMessage());
+		return new SimpleObject().add("error", map);
 	}
 	
 	@ExceptionHandler(APIAuthenticationException.class)
@@ -84,48 +79,42 @@ public class BaseRestController {
 			response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
 		}
 		response.setStatus(errorCode);
-		errorDetail = ex.getMessage();
-		SimpleObject ret = new SimpleObject();
-		ret.put("message", "APIAuthentication Exception");
-		ret.put("code", errorCode);
-		ret.put("detail", errorDetail);
-		return ret;
+		LinkedHashMap map = new LinkedHashMap();
+		map.put("message", "API Authentication Exception");
+		map.put("code", errorCode);
+		map.put("detail", errorDetail);
+		return new SimpleObject().add("error", map);
 	}
 	
 	@ExceptionHandler(ResourceDoesNotSupportOperationException.class)
 	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	private SimpleObject operationNotSupportedExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		errorDetail = ex.getMessage();
-		SimpleObject ret = new SimpleObject();
-		ret.put("message", "APIAuthentication Exception");
-		ret.put("code", errorCode);
-		ret.put("detail", errorDetail);
-		return ret;
+		return new ResourceDoesNotSupportOperationException().sendErrorResponse();
 	}
 	
 	@ExceptionHandler(Exception.class)
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	private SimpleObject handleException(Exception ex, HttpServletResponse response) throws Exception {
+		String className = ex.getClass().getName();
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			errorCode = ann.value().value();
 			if (StringUtils.isNotEmpty(ann.reason())) {
 				errorDetail = ann.reason();
 			}
-			if (errorDetail == null) {
-				errorDetail = ex.getClass().getName() + ": " + ex.getMessage();
-			}
 			
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
 			return apiAuthenticationExceptionHandler(ex, response);
 		}
-		response.setStatus(errorCode);
-		SimpleObject ret = new SimpleObject();
-		ret.put("message", "APIAuthentication Exception");
-		ret.put("code", errorCode);
-		ret.put("detail", errorDetail);
-		return ret;
+		if (errorDetail == null)
+			errorDetail = className.substring(className.lastIndexOf('.') + 1);
+		LinkedHashMap map = new LinkedHashMap();
+		map.put("message", ex.getMessage());
+		map.put("code", "400");
+		map.put("detail", errorDetail);
+		return new SimpleObject().add("error", map);
 	}
 	
 	/**
