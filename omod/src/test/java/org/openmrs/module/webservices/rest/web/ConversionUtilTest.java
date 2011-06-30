@@ -78,9 +78,9 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void convert_shouldSConvertStringsToEnumsValues() throws Exception {
-		Object locale = ConversionUtil.convert("en", Locale.class);
-		Assert.assertNotNull(locale);
-		Assert.assertTrue(locale.getClass().isAssignableFrom(Locale.class));
+		Object conceptNameType = ConversionUtil.convert("FULLY_SPECIFIED", ConceptNameType.class);
+		Assert.assertNotNull(conceptNameType);
+		Assert.assertTrue(conceptNameType.getClass().isAssignableFrom(ConceptNameType.class));
 	}
 	
 	/**
@@ -88,8 +88,8 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void convert_shouldConvertStringsToLocales() throws Exception {
-		Object conceptNameType = ConversionUtil.convert("FULLY_SPECIFIED", ConceptNameType.class);
-		Assert.assertNotNull(conceptNameType);
-		Assert.assertTrue(conceptNameType.getClass().isAssignableFrom(ConceptNameType.class));
+		Object locale = ConversionUtil.convert("en", Locale.class);
+		Assert.assertNotNull(locale);
+		Assert.assertTrue(locale.getClass().isAssignableFrom(Locale.class));
 	}
 }
