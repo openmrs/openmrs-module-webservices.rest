@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -36,6 +37,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
 
 public class ConversionUtil {
 	
@@ -106,6 +108,8 @@ public class ConversionUtil {
 	 * @param toType a simple class or generic type
 	 * @return
 	 * @throws ConversionException
+	 * @should convert strings to locales
+	 * @should convert strings to enum values
 	 */
 	@SuppressWarnings( { "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
@@ -170,6 +174,10 @@ public class ConversionUtil {
 				}
 				throw new ConversionException(
 				        "Error converting date - correct format (ISO8601 Long): yyyy-MM-dd'T'HH:mm:ss.SSSZ", pex);
+			} else if (toClass.isAssignableFrom(Locale.class)) {
+				return LocaleUtility.fromSpecification(object.toString());
+			} else if (toClass.isEnum()) {
+				return Enum.valueOf((Class<? extends Enum>) toClass, object.toString());
 			}
 		} else if (object instanceof Map) {
 			Object ret;

@@ -14,13 +14,16 @@
 
 package org.openmrs.module.webservices.rest.web;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
@@ -68,5 +71,25 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		String expected = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(today);
 		String result = (String) ConversionUtil.convertToRepresentation(today, Representation.REF);
 		Assert.assertEquals(result, expected);
+	}
+	
+	/**
+	 * @see {@link ConversionUtil#convert(Object,Type)}
+	 */
+	@Test
+	public void convert_shouldSConvertStringsToEnumsValues() throws Exception {
+		Object locale = ConversionUtil.convert("en", Locale.class);
+		Assert.assertNotNull(locale);
+		Assert.assertTrue(locale.getClass().isAssignableFrom(Locale.class));
+	}
+	
+	/**
+	 * @see {@link ConversionUtil#convert(Object,Type)}
+	 */
+	@Test
+	public void convert_shouldConvertStringsToLocales() throws Exception {
+		Object conceptNameType = ConversionUtil.convert("FULLY_SPECIFIED", ConceptNameType.class);
+		Assert.assertNotNull(conceptNameType);
+		Assert.assertTrue(conceptNameType.getClass().isAssignableFrom(ConceptNameType.class));
 	}
 }
