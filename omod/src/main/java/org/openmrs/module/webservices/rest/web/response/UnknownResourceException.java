@@ -13,19 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource does not exist. Please check documentation for implemented resources and their paths")
 public class UnknownResourceException extends ResponseException {
-	
-	public String reason = "Unknown Resource Requested";
-	
-	public String code = "404";
-	
-	public String detail = "Resource does not exist. Please check documentation for implemented resources and their paths";
 	
 	private static final long serialVersionUID = 1L;
 	
 	public UnknownResourceException() {
-		super.reason = this.reason;
-		super.code = this.code;
-		super.detail = this.detail;
 	}
 }

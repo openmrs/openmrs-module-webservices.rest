@@ -13,20 +13,15 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import org.openmrs.api.APIAuthenticationException;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,24 +42,6 @@ public class BaseRestController {
 	
 	private String errorDetail;
 	
-	@ExceptionHandler(ObjectNotFoundException.class)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
-	@ResponseBody
-	private SimpleObject objectNotFoundExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		return new ObjectNotFoundException().sendErrorResponse();
-	}
-	
-	@ExceptionHandler(APIException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	private SimpleObject apiExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		LinkedHashMap map = new LinkedHashMap();
-		map.put("message", "OpenMRS API Exception");
-		map.put("code", HttpStatus.BAD_REQUEST);
-		map.put("detail", ex.getMessage());
-		return new SimpleObject().add("error", map);
-	}
-	
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody
 	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
@@ -79,25 +56,12 @@ public class BaseRestController {
 			response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
 		}
 		response.setStatus(errorCode);
-		LinkedHashMap map = new LinkedHashMap();
-		map.put("message", "API Authentication Exception");
-		map.put("code", errorCode);
-		map.put("detail", errorDetail);
-		return new SimpleObject().add("error", map);
-	}
-	
-	@ExceptionHandler(ResourceDoesNotSupportOperationException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	@ResponseBody
-	private SimpleObject operationNotSupportedExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
-		return new ResourceDoesNotSupportOperationException().sendErrorResponse();
+		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
 	
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	private SimpleObject handleException(Exception ex, HttpServletResponse response) throws Exception {
-		String className = ex.getClass().getName();
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			errorCode = ann.value().value();
@@ -108,13 +72,8 @@ public class BaseRestController {
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
 			return apiAuthenticationExceptionHandler(ex, response);
 		}
-		if (errorDetail == null)
-			errorDetail = className.substring(className.lastIndexOf('.') + 1);
-		LinkedHashMap map = new LinkedHashMap();
-		map.put("message", ex.getMessage());
-		map.put("code", "400");
-		map.put("detail", errorDetail);
-		return new SimpleObject().add("error", map);
+		response.setStatus(errorCode);
+		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
 	
 	/**
@@ -123,9 +82,8 @@ public class BaseRestController {
 	 * @throws Exception 
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	@ResponseBody
 	private SimpleObject handleUnknownResource() throws Exception {
-		return new UnknownResourceException().sendErrorResponse();
+		throw new UnknownResourceException();
 	}
 }

@@ -13,23 +13,19 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * This exception should be thrown from controllers when passed a uuid that does not represent an
  * existing resource.
  */
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Object with given uuid doesn't exist")
 public class ObjectNotFoundException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public String reason = "Object with given uuid doesn't exist";
-	
-	public String code = "404";
-	
-	public String detail = "You have requested a uuid that is not available in the database. Use q parameter to query using a String";
-	
 	public ObjectNotFoundException() {
-		super.reason = reason;
-		super.code = code;
-		super.detail = detail;
+		
 	}
 }

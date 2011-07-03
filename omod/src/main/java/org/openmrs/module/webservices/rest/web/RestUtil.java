@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.OpenmrsData;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -404,7 +406,6 @@ public class RestUtil implements GlobalPropertyListener {
 	 * return null; // throw new NoSuchMethodException("No method on class " + c
 	 * + // " with name " + name + " with param " + param); }
 	 */
-
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
 	 * Determines number of results to limit to, if not provided, uses default
@@ -427,21 +428,25 @@ public class RestUtil implements GlobalPropertyListener {
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if (StringUtils.isEmpty(temp)) {
 			ret.setRepresentation(Representation.DEFAULT);
-		} else if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
-			throw new IllegalArgumentException("Do not specify ?v=default");
 		} else {
-			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
+			if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
+				throw new IllegalArgumentException("Do not specify ?v=default");
+			} else {
+				ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
+			}
 		}
 		
 		// fetch the "limit" param
 		Integer limit = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
-		if (limit != null)
+		if (limit != null) {
 			ret.setLimit(limit);
+		}
 		
 		// fetch the startIndex param
 		Integer startIndex = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
-		if (startIndex != null)
+		if (startIndex != null) {
 			ret.setStartIndex(startIndex);
+		}
 		
 		return ret;
 	}
@@ -480,10 +485,11 @@ public class RestUtil implements GlobalPropertyListener {
 	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
-			if (StringUtils.isNotBlank(ann.reason()))
+			if (StringUtils.isNotBlank(ann.reason())) {
 				response.setStatus(ann.value().value(), ann.reason());
-			else
+			} else {
 				response.setStatus(ann.value().value());
+			}
 		} else {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
@@ -537,8 +543,9 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		// append the trailing slash in case the user forgot it
-		if (!RestConstants.URI_PREFIX.endsWith("/"))
+		if (!RestConstants.URI_PREFIX.endsWith("/")) {
 			RestConstants.URI_PREFIX += "/";
+		}
 		
 		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "ws/rest/";
 	}
@@ -674,5 +681,23 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		return classes;
+	}
+	
+	/**
+	 * Wraps the exception message as a SimpleObject to be sent to client
+	 * @param ex
+	 * @param reason
+	 * @return 
+	 */
+	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
+		LinkedHashMap map = new LinkedHashMap();
+		if (reason != null && !reason.isEmpty()) {
+			map.put("message", reason);
+		} else
+			map.put("message", ex.getMessage());
+		StackTraceElement ste = ex.getStackTrace()[0];
+		map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
+		map.put("detail", ExceptionUtils.getStackTrace(ex));
+		return new SimpleObject().add("error", map);
 	}
 }

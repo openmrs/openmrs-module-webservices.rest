@@ -16,28 +16,16 @@ package org.openmrs.module.webservices.rest.web.response;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "The Resource Does not Support the Requested Operation")
 public class ResourceDoesNotSupportOperationException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
 	
-	public String reason = "Resource Does Not Support Operation";
-	
-	public String code = "400";
-	
-	public String detail = "The Resource Does not Support the Requested Operation";
-	
 	public ResourceDoesNotSupportOperationException() {
-		super.reason = this.reason;
-		super.code = this.code;
-		super.detail = this.detail;
+		
 	}
 	
 	public ResourceDoesNotSupportOperationException(String message, Throwable cause) {
 		super(message, cause);
-		super.reason = message;
-		super.code = this.code;
-		super.detail = cause.getMessage();
 	}
-	
 }
