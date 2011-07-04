@@ -15,17 +15,23 @@ package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 
 /**
  * Unit test for generating as much documentation as can be got from the source code.
  */
 public class ResourceDocCreatorTest {
 	
+	//@Ignore
 	@Test
 	public void createDocumentation() throws Exception {
+		List<Class<?>> controllers = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.controller", "Controller.class");
+		System.out.println(controllers.size());
+		
 		List<ResourceDoc> docs = ResourceDocCreator.create();
 		for (ResourceDoc doc : docs) {
 			System.out.println("");
