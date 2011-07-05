@@ -63,16 +63,18 @@ public class ResourceDoc {
 	public String toString() {
 		String text = name;
 		
-		text += System.getProperty("line.separator");
-		text += "OPERATIONS:";
-		
-		for (ResourceOperation operation : operations) {
+		if (operations.size() > 0) {
 			text += System.getProperty("line.separator");
-			text += operation.toString();
+			text += "h2. Available HTTP Verbs";
+			
+			for (ResourceOperation operation : operations) {
+				text += System.getProperty("line.separator");
+				text += "* " + operation.toString();
+			}
 		}
 		
 		text += System.getProperty("line.separator");
-		text += "REPRESENTATIONS:";
+		text += "h2. Representations";
 		
 		for (ResourceRepresentation representation : representations) {
 			text += System.getProperty("line.separator");

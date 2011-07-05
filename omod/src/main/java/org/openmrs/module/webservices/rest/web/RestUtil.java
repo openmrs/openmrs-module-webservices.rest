@@ -617,7 +617,7 @@ public class RestUtil implements GlobalPropertyListener {
 		File directory = null;
 		String relPath = pkgname.replace('.', '/');
 		Enumeration<URL> resources = ClassLoader.getSystemClassLoader().getResources(relPath);
-		while(resources.hasMoreElements()){
+		while (resources.hasMoreElements()) {
 			
 			URL resource = resources.nextElement();
 			if (resource == null) {

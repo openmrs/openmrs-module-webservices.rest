@@ -45,6 +45,6 @@ public class ResourceOperation {
 	
 	@Override
 	public String toString() {
-		return name + ": " + description;
+		return "*" + name + "*: " + description;
 	}
 }

@@ -81,8 +81,8 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		//TODO Temporarily commented out because it fails on my computer where currentTimezone has EAST yet my value is EAT.
 		//Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 " + currentTimezone));
-		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 PDT") ||
-			obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 EAT"));
+		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 PDT")
+		        || obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 EAT"));
 	}
 	
 	/**

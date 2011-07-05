@@ -45,7 +45,8 @@ public class ResourceDocCreator {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
-		List<Class<?>> classes = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.resource", "Resource.class");
+		List<Class<?>> classes = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.resource",
+		    "Resource.class");
 		
 		fillRepresentations(classes, resouceDocMap);
 		fillOperations(resouceDocMap);
@@ -83,21 +84,21 @@ public class ResourceDocCreator {
 				        .getRepresentationDescription(Representation.DEFAULT);
 				
 				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("DEFAULT", resoureDescription.getProperties()
+					resourceDoc.addRepresentation(new ResourceRepresentation("ref", resoureDescription.getProperties()
 					        .keySet()));
 				}
 				
 				//Get the ref representation of this resource.
 				resoureDescription = resoure.getRepresentationDescription(Representation.REF);
 				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("REF", resoureDescription.getProperties()
+					resourceDoc.addRepresentation(new ResourceRepresentation("default", resoureDescription.getProperties()
 					        .keySet()));
 				}
 				
 				//Get the fill representation of this resource.
 				resoureDescription = resoure.getRepresentationDescription(Representation.FULL);
 				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("FULL", resoureDescription.getProperties()
+					resourceDoc.addRepresentation(new ResourceRepresentation("full", resoureDescription.getProperties()
 					        .keySet()));
 				}
 			}
