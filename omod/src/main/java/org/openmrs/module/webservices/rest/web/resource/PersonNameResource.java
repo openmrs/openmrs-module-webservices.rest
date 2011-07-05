@@ -45,6 +45,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");
 			description.addProperty("familyName");
@@ -55,6 +56,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");
 			description.addProperty("familyName");
@@ -113,7 +115,8 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
@@ -125,7 +128,8 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(PersonName pn, RequestContext context) throws ResponseException {

@@ -47,6 +47,7 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("locale");
 			description.addProperty("localePreferred");
@@ -56,6 +57,7 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("locale");
 			description.addProperty("localePreferred");

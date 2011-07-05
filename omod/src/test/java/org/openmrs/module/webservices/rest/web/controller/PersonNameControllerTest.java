@@ -63,6 +63,7 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 		Assert.assertEquals("Super", PropertyUtils.getProperty(result, "givenName"));
 		Assert.assertEquals("User", PropertyUtils.getProperty(result, "familyName"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 	}
 	
 	@Test

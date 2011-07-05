@@ -63,6 +63,7 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 		Assert.assertNotNull(result);
 		Assert.assertEquals("COUGH SYRUP", PropertyUtils.getProperty(result, "name"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 	}
 	
 	@Test
