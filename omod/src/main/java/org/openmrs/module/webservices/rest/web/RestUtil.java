@@ -602,7 +602,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	public static boolean hasCause(Throwable throwable, Class<? extends Throwable> causeClassToLookFor) {
 		return ExceptionUtils.indexOfType(throwable, causeClassToLookFor) >= 0;
-	}	
+	}
 	
 	/**
 	 * Gets a list of classes in a given package.
@@ -619,7 +619,7 @@ public class RestUtil implements GlobalPropertyListener {
 		String relPath = pkgname.replace('.', '/');
 		Enumeration<URL> resources = OpenmrsClassLoader.getInstance().getResources(relPath);
 		while (resources.hasMoreElements()) {
-
+			
 			URL resource = resources.nextElement();
 			if (resource == null) {
 				throw new RuntimeException("No resource for " + relPath);

@@ -13,24 +13,67 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.resource.ResourceData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Controller behind the "help.jsp" page. Should list off available urls and
- * representations.
- * 
+ * Controller behind the "help.jsp" page. Should list off available urls and representations.
  */
 @Controller
 @RequestMapping("/module/webservices/rest/help")
 public class HelpController {
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public void showPage(ModelMap map) {
+	public void showPage(ModelMap map, HttpServletRequest request) throws IOException {
 		
 		// TODO put content into map about controller annotations and resource
 		// views
+		
+		List<ResourceData> resources = new ArrayList<ResourceData>();
+		
+		StringBuffer url = new StringBuffer();
+		String scheme = request.getScheme();
+		int port = request.getServerPort();
+		
+		url.append(scheme); // http, https
+		url.append("://");
+		url.append(request.getServerName());
+		if ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)) {
+			url.append(':');
+			url.append(request.getServerPort());
+		}
+		
+		url.append(request.getContextPath());
+		url.append("/ws");
+		
+		String rootPath = url.toString();
+		
+		List<Class<?>> controllers = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.controller",
+		    "Controller.class");
+		
+		for (Class<?> cls : controllers) {
+			RequestMapping annotation = (RequestMapping) cls.getAnnotation(RequestMapping.class);
+			if (annotation == null)
+				continue;
+			
+			if (cls.getSimpleName().equals("BaseRestController") || cls.getSimpleName().equals("SettingsFormController")
+			        || cls.getSimpleName().equals("SessionController") || cls.getSimpleName().equals("HelpController")) {
+				continue;
+			}
+			
+			resources.add(new ResourceData(cls.getSimpleName().replace("Controller", ""), rootPath + annotation.value()[0]));
+		}
+		
+		map.put("data", resources);
 	}
 }
