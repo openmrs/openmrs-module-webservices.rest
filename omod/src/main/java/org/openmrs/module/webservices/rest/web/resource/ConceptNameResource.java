@@ -25,6 +25,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -47,18 +48,18 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("name");
-			//description.addProperty("locale");
+			description.addProperty("locale");
 			description.addProperty("localePreferred");
-			//description.addProperty("conceptNameType");
+			description.addProperty("conceptNameType");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("name");
-			//description.addProperty("locale");
+			description.addProperty("locale");
 			description.addProperty("localePreferred");
-			//description.addProperty("conceptNameType");
+			description.addProperty("conceptNameType");
 			description.addProperty("tags");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -190,4 +191,14 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 		return ret;
 	}
 	
+	/**
+	 * Sets the locale as a string
+	 * 
+	 * @param conceptName
+	 * @return
+	 */
+	@PropertyGetter("locale")
+	public String getLocaleAsString(ConceptName instance) {
+		return instance.getLocale().toString();
+	}
 }
