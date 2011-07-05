@@ -46,6 +46,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
@@ -601,7 +602,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	public static boolean hasCause(Throwable throwable, Class<? extends Throwable> causeClassToLookFor) {
 		return ExceptionUtils.indexOfType(throwable, causeClassToLookFor) >= 0;
-	}
+	}	
 	
 	/**
 	 * Gets a list of classes in a given package.
@@ -616,9 +617,9 @@ public class RestUtil implements GlobalPropertyListener {
 		//Get a File object for the package
 		File directory = null;
 		String relPath = pkgname.replace('.', '/');
-		Enumeration<URL> resources = ClassLoader.getSystemClassLoader().getResources(relPath);
+		Enumeration<URL> resources = OpenmrsClassLoader.getInstance().getResources(relPath);
 		while (resources.hasMoreElements()) {
-			
+
 			URL resource = resources.nextElement();
 			if (resource == null) {
 				throw new RuntimeException("No resource for " + relPath);
@@ -631,9 +632,12 @@ public class RestUtil implements GlobalPropertyListener {
 				throw new RuntimeException(pkgname + " (" + resource
 				        + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...", e);
 			}
+			catch (IllegalArgumentException ex) {
+				//ex.printStackTrace();
+			}
 			
 			//If folder exists, look for all resource class files in it.
-			if (directory.exists()) {
+			if (directory != null && directory.exists()) {
 				
 				//Get the list of the files contained in the package
 				String[] files = directory.list();
