@@ -24,10 +24,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.resource.ConceptResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -146,5 +149,21 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(2, hits.size());
 		Assert.assertEquals("0dde1358-7fcf-4341-a330-f119241a46e8", PropertyUtils.getProperty(hits.get(0), "uuid"));
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", PropertyUtils.getProperty(hits.get(1), "uuid"));
+	}
+	
+	/**
+	 * {@link ConceptResource#getByUniqueId(String)}
+	 * 
+	 * @throws Exception
+	 */
+	@Test(expected = APIException.class)
+	public void shouldFailToFetchAConceptByNameIfTheNameIsNeitherPreferredNorFullySpecified() throws Exception {
+		///sanity test to ensure that actually a none retired concept exists with this name
+		ConceptName name = Context.getConceptService().getConceptNameByUuid("8230adbf-30a9-4e18-b6d7-fc57e0c23cab");
+		Assert.assertNotNull(name);
+		Concept concept = Context.getConceptService().getConceptByName(name.getName());
+		Assert.assertFalse(concept.isRetired());
+		
+		controller.retrieve(name.getName(), request);
 	}
 }

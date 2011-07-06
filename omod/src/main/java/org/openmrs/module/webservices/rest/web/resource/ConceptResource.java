@@ -19,8 +19,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -104,7 +106,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
-	 * Must put this here because we cannot extend {@link MetadataDelegatingCrudResource} 
+	 * Must put this here because we cannot extend {@link MetadataDelegatingCrudResource}
 	 * 
 	 * @param concept the delegate concept
 	 * @return audit information
@@ -155,6 +157,17 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			//We assume the caller was fetching by name if no concept was after looking up by uuid
 			// NOT using getConcept here because that also searches on conceptId
 			concept = Context.getConceptService().getConceptByName(uuidOrName);
+			if (concept != null) {
+				boolean isPreferredOrFullySpecified = false;
+				for (ConceptName name : concept.getNames()) {
+					if (name.getName().equalsIgnoreCase(uuidOrName) && (name.isPreferred() || name.isFullySpecifiedName())) {
+						isPreferredOrFullySpecified = true;
+						break;
+					}
+				}
+				if (!isPreferredOrFullySpecified)
+					throw new APIException("The concept name should be either a fully specified or locale preferred name");
+			}
 		}
 		
 		return concept;
