@@ -16,40 +16,30 @@ package org.openmrs.module.webservices.rest.web.resource;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
 
 /**
- * {@link Resource} for {@link IncomingHl7Message}, supporting standard CRUD operations
+ * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
  */
-@Resource("hl7")
-@Handler(supports = IncomingHl7Message.class, order = 0)
-public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Message> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	@Override
-	protected void delete(IncomingHl7Message delegate, String reason, RequestContext context) throws ResponseException {
-		throw new APIException("Deleting of hl7 message currently isn't supported");
-	}
+@Resource("hl7source")
+@Handler(supports = HL7Source.class, order = 0)
+public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public IncomingHl7Message getByUniqueId(String uniqueId) {
-		// currently it's returning null because we don't have methods within HL7 service, which are returning hl7 message
-		// by its uuid. It will be fixed when such methods will be implemented 
-		return null;
+	public HL7Source getByUniqueId(String uniqueId) {
+		return Context.getHL7Service().getHL7SourceByName(uniqueId);
 	}
 	
 	/**
@@ -60,17 +50,13 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("messageState");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("source", Representation.DEFAULT);
-			description.addProperty("sourceKey");
-			description.addProperty("data");
-			description.addProperty("messageState");
+			description.addProperty("name");
 			description.addSelfLink();
 			return description;
 		}
@@ -81,24 +67,24 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected IncomingHl7Message newDelegate() {
-		return new IncomingHl7Message();
+	protected HL7Source newDelegate() {
+		return new HL7Source();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(IncomingHl7Message delegate, RequestContext context) throws ResponseException {
-		throw new APIException("Purging of hl7 message currently isn't supported");
+	public void purge(HL7Source delegate, RequestContext context) throws ResponseException {
+		throw new APIException("Purging of hl7 source currently isn't supported");
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
 	@Override
-	protected IncomingHl7Message save(IncomingHl7Message delegate) {
-		return new IncomingHl7Message(Context.getHL7Service().saveHL7InQueue(delegate.getHl7InQueueMessage()));
+	protected HL7Source save(HL7Source delegate) {
+		return Context.getHL7Service().saveHL7Source(delegate);
 	}
 	
 }

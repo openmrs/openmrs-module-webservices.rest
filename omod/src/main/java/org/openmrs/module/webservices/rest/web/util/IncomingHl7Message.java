@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Constants;
 import org.openmrs.hl7.HL7InQueue;
 import org.openmrs.hl7.HL7Source;
@@ -29,11 +28,11 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Integer hl7SourceId;
+	private HL7Source source;
 	
-	private String hl7SourceKey;
+	private String sourceKey;
 	
-	private String hl7Data;
+	private String data;
 	
 	/** Status of hl7 message*/
 	private Integer messageState;
@@ -48,16 +47,16 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	/**
 	 * Creates incoming hl7 message from fields
 	 * 
-	 * @param hl7SourceId the identifier of Hl7Source for this message
-	 * @param hl7SourceKey the key of source
-	 * @param hl7Data hl7 message pay-load
+	 * @param source the identifier of Hl7Source for this message
+	 * @param sourceKey the key of source
+	 * @param data hl7 message pay-load
 	 * @param messageState (optional) state of hl7 message
 	 */
-	public IncomingHl7Message(Integer hl7SourceId, String hl7SourceKey, String hl7Data, Integer messageState) {
+	public IncomingHl7Message(HL7Source hl7Source, String hl7SourceKey, String hl7Data, Integer messageState) {
 		super();
-		this.hl7SourceId = hl7SourceId;
-		this.hl7SourceKey = hl7SourceKey;
-		this.hl7Data = hl7Data;
+		this.source = hl7Source;
+		this.sourceKey = hl7SourceKey;
+		this.data = hl7Data;
 		this.messageState = messageState;
 	}
 	
@@ -65,9 +64,9 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	 * Creates new {@link HL7InQueue} instance from hl7 in queue message
 	 */
 	public IncomingHl7Message(HL7InQueue message) {
-		setHl7SourceId(message.getHL7Source().getId());
-		setHl7SourceKey(message.getHL7SourceKey());
-		setHl7Data(message.getHL7Data());
+		setSource(message.getHL7Source());
+		setSourceKey(message.getHL7SourceKey());
+		setData(message.getHL7Data());
 		setMessageState(message.getMessageState());
 		setUuid(message.getUuid());
 	}
@@ -79,9 +78,9 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	 */
 	public HL7InQueue getHl7InQueueMessage() {
 		HL7InQueue result = new HL7InQueue();
-		result.setHL7Source(Context.getHL7Service().getHL7Source(getHl7SourceId()));
-		result.setHL7SourceKey(getHl7SourceKey());
-		result.setHL7Data(getHl7Data());
+		result.setHL7Source(getSource());
+		result.setHL7SourceKey(getSourceKey());
+		result.setHL7Data(getData());
 		if (getMessageState() != null)
 			result.setMessageState(getMessageState());
 		else
@@ -106,45 +105,45 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	}
 	
 	/**
-	 * @param hl7SourceId the hl7SourceId to set
+	 * @param source the source to set
 	 */
-	public void setHl7SourceId(Integer hl7SourceId) {
-		this.hl7SourceId = hl7SourceId;
+	public void setSource(HL7Source source) {
+		this.source = source;
 	}
 	
 	/**
-	 * @return the hl7SourceId
+	 * @return the source
 	 */
-	public Integer getHl7SourceId() {
-		return hl7SourceId;
+	public HL7Source getSource() {
+		return source;
 	}
 	
 	/**
-	 * @param hl7SourceKey the hl7SourceKey to set
+	 * @param sourceKey the sourceKey to set
 	 */
-	public void setHl7SourceKey(String hl7SourceKey) {
-		this.hl7SourceKey = hl7SourceKey;
+	public void setSourceKey(String sourceKey) {
+		this.sourceKey = sourceKey;
 	}
 	
 	/**
-	 * @return the hl7SourceKey
+	 * @return the sourceKey
 	 */
-	public String getHl7SourceKey() {
-		return hl7SourceKey;
+	public String getSourceKey() {
+		return sourceKey;
 	}
 	
 	/**
-	 * @param hl7Data the hl7Data to set
+	 * @param data the data to set
 	 */
-	public void setHl7Data(String hl7Data) {
-		this.hl7Data = hl7Data;
+	public void setData(String data) {
+		this.data = data;
 	}
 	
 	/**
-	 * @return the hl7Data
+	 * @return the data
 	 */
-	public String getHl7Data() {
-		return hl7Data;
+	public String getData() {
+		return data;
 	}
 	
 	/**
