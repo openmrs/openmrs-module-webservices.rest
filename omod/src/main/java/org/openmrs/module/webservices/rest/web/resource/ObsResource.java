@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -212,13 +214,27 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 */
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException {
-		if (obs.getConcept().getDatatype().isCoded()) {
-			// setValueAsString is not implemented for coded obs (in core)
-			Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
-			obs.setValueCoded(valueCoded);
-		} else {
-			obs.setValueAsString(value.toString());
-		}
+		if (value != null) {
+			if (obs.getConcept().getDatatype().isCoded()) {
+				// setValueAsString is not implemented for coded obs (in core)
+				Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
+				obs.setValueCoded(valueCoded);
+			} else {
+				if (obs.getConcept().isNumeric()) {
+					//get the actual persistent object rather than the hibernate proxy
+					ConceptNumeric concept = Context.getConceptService().getConceptNumeric(obs.getConcept().getId());
+					String units = concept.getUnits();
+					if (units != null) {
+						String originalValue = value.toString().trim();
+						if (originalValue.endsWith(units))
+							value = originalValue.substring(0, originalValue.indexOf(units)).trim();
+					}
+				}
+				
+				obs.setValueAsString(value.toString());
+			}
+		} else
+			throw new APIException("The value for an observation cannot be null");
 	}
 	
 	/**

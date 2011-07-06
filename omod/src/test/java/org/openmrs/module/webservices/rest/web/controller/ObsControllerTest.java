@@ -236,4 +236,27 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(uuids.contains("0ee1248e-08aa-4a2c-9f38-fb3875f605e3"));
 	}
 	
+	/**
+	 * @see ObsResource#create(SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @throws Exception
+	 */
+	@Test
+	public void createObs_shouldCreateAnObsWhenUnitsAreSpecifiedForAConceptNumeric() throws Exception {
+		String conceptUuid = "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
+		List<Obs> observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		int before = observationsByPerson.size();
+		String json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\""
+		        + conceptUuid
+		        + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"90.0 kg\"}";
+		
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new ObsController().create(post, emptyRequest(), new MockHttpServletResponse());
+		List<Obs> observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		Obs newObs = observationsByPersonAfterSave.get(0);
+		Assert.assertEquals(90.0, newObs.getValueNumeric());
+	}
+	
 }
