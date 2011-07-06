@@ -228,6 +228,15 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 						String originalValue = value.toString().trim();
 						if (originalValue.endsWith(units))
 							value = originalValue.substring(0, originalValue.indexOf(units)).trim();
+						else {
+							//check that that this value has no invalid units
+							try {
+								Double.parseDouble(originalValue);
+							}
+							catch (NumberFormatException e) {
+								throw new APIException(originalValue + " has invalid units", e);
+							}
+						}
 					}
 				}
 				

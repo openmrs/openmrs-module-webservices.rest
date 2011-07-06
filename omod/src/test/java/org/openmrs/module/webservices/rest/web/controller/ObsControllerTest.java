@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.ObsResource;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -257,6 +258,18 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
 		Obs newObs = observationsByPersonAfterSave.get(0);
 		Assert.assertEquals(90.0, newObs.getValueNumeric());
+	}
+	
+	/**
+	 * @see ObsResource#create(SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @throws Exception
+	 */
+	@Test(expected = ConversionException.class)
+	public void createObs_shouldFailIfAnObsHasInvalidUnitsForAConceptNumeric() throws Exception {
+		String json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"c607c80f-1ea9-4da3-bb88-6276ce8868dd\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"90.0 KGs\"}";
+		
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new ObsController().create(post, emptyRequest(), new MockHttpServletResponse());
 	}
 	
 }
