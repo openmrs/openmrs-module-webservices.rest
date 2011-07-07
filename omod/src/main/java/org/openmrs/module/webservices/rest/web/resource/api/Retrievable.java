@@ -13,7 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
+import java.util.List;
+
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -29,5 +32,10 @@ public interface Retrievable extends Resource {
 	 * @throws ResponseException
 	 */
 	public Object retrieve(String uuid, RequestContext context) throws ResponseException;
+	
+	/**
+	 * @return all representations under which resource can be retrieved
+	 */
+	List<Representation> getAvailableRepresentations();
 	
 }

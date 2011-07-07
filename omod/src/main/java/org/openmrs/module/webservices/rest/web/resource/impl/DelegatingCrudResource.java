@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -67,6 +68,15 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		
 		return asRepresentation(delegate, context.getRepresentation());
+	}
+	
+	/**
+	 * Default implementation that returns REF, DEFAULT, and FULL
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#getAvailableRepresentations()
+	 */
+	@Override
+	public List<Representation> getAvailableRepresentations() {
+		return Arrays.asList(Representation.DEFAULT, Representation.FULL, Representation.REF);
 	}
 	
 	/**
