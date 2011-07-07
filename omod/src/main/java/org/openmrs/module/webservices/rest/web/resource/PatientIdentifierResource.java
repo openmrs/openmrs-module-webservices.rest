@@ -139,16 +139,4 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	public String getDisplayString(PatientIdentifier id) {
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}
-	
-	public SimpleObject getAuditInfo(PatientIdentifier id) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(id, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(id.getDateCreated(), Representation.DEFAULT));
-		if (id.isVoided()) {
-			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(id, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(id.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(id.getVoidReason(), Representation.DEFAULT));
-		}
-		return ret;
-	}
 }

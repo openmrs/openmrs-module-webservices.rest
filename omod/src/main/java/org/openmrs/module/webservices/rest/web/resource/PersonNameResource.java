@@ -21,8 +21,6 @@ import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -172,24 +170,5 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	 */
 	public String getDisplayString(PersonName personName) {
 		return personName.getFullName();
-	}
-	
-	/**
-	 * Gets extra book-keeping info, for the full representation
-	 * 
-	 * @param name
-	 * @return
-	 * @throws Exception
-	 */
-	public SimpleObject getAuditInfo(PersonName name) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(name, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(name.getDateCreated(), Representation.DEFAULT));
-		if (name.isVoided()) {
-			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(name, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(name.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(name.getVoidReason(), Representation.DEFAULT));
-		}
-		return ret;
 	}
 }

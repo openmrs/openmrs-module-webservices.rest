@@ -199,18 +199,6 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 		return nonVoidedAddresses;
 	}
 	
-	public SimpleObject getAuditInfo(PersonAddress address) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(address, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(address.getDateCreated(), Representation.DEFAULT));
-		if (address.isVoided()) {
-			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(address, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(address.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(address.getVoidReason(), Representation.DEFAULT));
-		}
-		return ret;
-	}
-	
 	/**
 	 * Gets the display string for a person address.
 	 * 

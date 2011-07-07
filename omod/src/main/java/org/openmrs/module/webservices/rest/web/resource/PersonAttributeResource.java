@@ -158,16 +158,4 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	public String getDisplayString(PersonAttribute pa) {
 		return pa.getAttributeType().getName() + " = " + pa.getValue();
 	}
-	
-	public SimpleObject getAuditInfo(PersonAttribute pa) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(pa, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(pa.getDateCreated(), Representation.DEFAULT));
-		if (pa.isVoided()) {
-			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(pa, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(pa.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(pa.getVoidReason(), Representation.DEFAULT));
-		}
-		return ret;
-	}
 }
