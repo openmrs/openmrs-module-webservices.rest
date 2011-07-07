@@ -26,7 +26,6 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -203,16 +202,12 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getUri(java.lang.Object)
+	 * Overridden here since the unique id is not on CohortMember directly
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUniqueId(java.lang.Object)
 	 */
 	@Override
-	public String getUri(Object instance) {
-		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
-		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
-		@SuppressWarnings("unchecked")
-		CohortMember instanceAsT = (CohortMember) instance;
-		String parentUri = Context.getService(RestService.class).getResource(sub.parent()).getUri(getParent(instanceAsT));
-		return parentUri + "/" + sub.path() + "/" + instanceAsT.getPatient().getUuid();
+	protected String getUniqueId(CohortMember delegate) {
+	    return delegate.getPatient().getUuid();
 	}
 	
 	/**

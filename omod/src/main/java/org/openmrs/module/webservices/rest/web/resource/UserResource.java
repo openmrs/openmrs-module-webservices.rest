@@ -211,13 +211,13 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		return user.getUser().getUsername() + " - " + user.getUser().getPersonName().getFullName();
 	}
 	
+	/**
+	 * Overridden here since the unique id is not on UserAndPassword directly 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUniqueId(java.lang.Object)
+	 */
 	@Override
-	public String getUri(Object instance) {
-		Resource res = getClass().getAnnotation(Resource.class);
-		if (res != null) {
-			UserAndPassword userPass = (UserAndPassword) instance;
-			return RestConstants.URI_PREFIX + res.value() + "/" + userPass.getUser().getUuid();
-		}
-		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
+	protected String getUniqueId(UserAndPassword delegate) {
+	    return delegate.getUser().getUuid();
 	}
+	
 }
