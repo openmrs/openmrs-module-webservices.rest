@@ -212,7 +212,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	}
 	
 	/**
-	 * Gets the edit information of a resource.
+	 * Gets the audit information of a resource.
 	 * 
 	 * @param resource the resource.
 	 * @return a {@link SimpleObject} with the audit information.
