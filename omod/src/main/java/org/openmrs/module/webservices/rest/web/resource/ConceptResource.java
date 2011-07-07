@@ -64,7 +64,6 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name", Representation.DEFAULT);
-			description.addProperty("description", Representation.DEFAULT);
 			description.addProperty("datatype", Representation.REF);
 			description.addProperty("conceptClass", Representation.REF);
 			description.addProperty("set");
@@ -72,7 +71,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("retired");
 			
 			description.addProperty("names", Representation.REF);
-			description.addProperty("descriptions", Representation.REF);
+			//description.addProperty("descriptions", Representation.REF);
 			
 			//description.addProperty("answers", Representation.REF);  add as subresource
 			//description.addProperty("conceptSets", Representation.REF);  add as subresource
@@ -85,7 +84,6 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name", Representation.DEFAULT);
-			description.addProperty("description", Representation.DEFAULT);
 			description.addProperty("datatype", Representation.DEFAULT);
 			description.addProperty("conceptClass", Representation.DEFAULT);
 			description.addProperty("set");
@@ -93,7 +91,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("retired");
 			
 			description.addProperty("names", Representation.DEFAULT);
-			description.addProperty("descriptions", Representation.DEFAULT);
+			//description.addProperty("descriptions", Representation.DEFAULT);
 			
 			//description.addProperty("answers", Representation.DEFAULT);  add as subresource
 			//description.addProperty("conceptSets", Representation.DEFAULT);  add as subresource
