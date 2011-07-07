@@ -104,11 +104,10 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Tests whether or not a client's IP address is allowed to have access to
-	 * the REST API (based on a admin-settable global property).
+	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based
+	 * on a admin-settable global property).
 	 * 
-	 * @param ip
-	 *            address of the client
+	 * @param ip address of the client
 	 * @return <code>true</code> if client should be allowed access
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 */
@@ -117,8 +116,7 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Tests whether or not there is a match between the given IP address and
-	 * the candidates.
+	 * Tests whether or not there is a match between the given IP address and the candidates.
 	 * 
 	 * @param ip
 	 * @param candidateIps
@@ -194,13 +192,12 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Returns a list of IPs which can access the REST API based on a global
-	 * property. In case the property is empty, returns an empty list.
+	 * Returns a list of IPs which can access the REST API based on a global property. In case the
+	 * property is empty, returns an empty list.
 	 * <p>
-	 * IPs should be separated by a whitespace or a comma. IPs can be declared
-	 * with bit masks e.g. <code>10.0.0.0/30</code> matches
-	 * <code>10.0.0.0 - 10.0.0.3</code> and <code>10.0.0.0/24</code> matches
-	 * <code>10.0.0.0 - 10.0.0.255</code>.
+	 * IPs should be separated by a whitespace or a comma. IPs can be declared with bit masks e.g.
+	 * <code>10.0.0.0/30</code> matches <code>10.0.0.0 - 10.0.0.3</code> and
+	 * <code>10.0.0.0/24</code> matches <code>10.0.0.0 - 10.0.0.255</code>.
 	 * 
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 * @return the list of IPs
@@ -409,14 +406,11 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
-	 * Determines number of results to limit to, if not provided, uses default
-	 * set by admin. <br/>
+	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
 	 * Determines how far into a list to start with given the startIndex param. <br/>
 	 * 
-	 * @param request
-	 *            the current http web request
-	 * @return a {@link RequestContext} object filled with all the necessary
-	 *         values
+	 * @param request the current http web request
+	 * @return a {@link RequestContext} object filled with all the necessary values
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
@@ -455,10 +449,8 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Convenience method to get the given param out of the given request.
 	 * 
-	 * @param request
-	 *            the WebRequest to look in
-	 * @param param
-	 *            the string name to fetch
+	 * @param request the WebRequest to look in
+	 * @param param the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
 	private static Integer getIntegerParam(HttpServletRequest request, String param) {
@@ -497,9 +489,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status on the response to no content, and returns an empty
-	 * value, suitable for returning from a @ResponseBody annotated Spring
-	 * controller method.
+	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
+	 * returning from a @ResponseBody annotated Spring controller method.
 	 * 
 	 * @param response
 	 * @return
@@ -510,8 +501,7 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the
-	 * Location header attribute
+	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute
 	 * 
 	 * @param response
 	 * @param created
@@ -528,8 +518,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Updates the Uri prefix through which clients consuming web services will
-	 * connect to the web app
+	 * Updates the Uri prefix through which clients consuming web services will connect to the web
+	 * app
 	 * 
 	 * @return the webapp's Url prefix
 	 */
@@ -552,8 +542,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * A Set is returned by removing voided data from passed Collection. The
-	 * Collection passed as parameter is not modified
+	 * A Set is returned by removing voided data from passed Collection. The Collection passed as
+	 * parameter is not modified
 	 * 
 	 * @param c
 	 * @return non-voided OpenmrsData
@@ -593,19 +583,20 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Inspects the cause chain for the given throwable, looking for an exception of the given class (e.g. to find an
-	 * APIAuthenticationException wrapped in an InvocationTargetException)
+	 * Inspects the cause chain for the given throwable, looking for an exception of the given class
+	 * (e.g. to find an APIAuthenticationException wrapped in an InvocationTargetException)
 	 * 
 	 * @param throwable
 	 * @param causeClassToLookFor
-	 * @return whether any exception in the cause chain of throwable is an instance of causeClassToLookFor
+	 * @return whether any exception in the cause chain of throwable is an instance of
+	 *         causeClassToLookFor
 	 */
 	public static boolean hasCause(Throwable throwable, Class<? extends Throwable> causeClassToLookFor) {
 		return ExceptionUtils.indexOfType(throwable, causeClassToLookFor) >= 0;
 	}
 	
 	/**
-	 * Gets a list of classes in a given package.
+	 * Gets a list of classes in a given package. Note that interfaces are not returned.
 	 * 
 	 * @param pkgname the package name.
 	 * @param suffix the ending text on name. eg "Resource.class"
@@ -651,7 +642,9 @@ public class RestUtil implements GlobalPropertyListener {
 						String className = pkgname + '.' + files[i].substring(0, files[i].length() - 6);
 						
 						try {
-							classes.add(Class.forName(className));
+							Class<?> cls = Class.forName(className);
+							if (!cls.isInterface())
+								classes.add(cls);
 						}
 						catch (ClassNotFoundException e) {
 							throw new RuntimeException("ClassNotFoundException loading " + className);
@@ -671,11 +664,17 @@ public class RestUtil implements GlobalPropertyListener {
 						JarEntry entry = entries.nextElement();
 						
 						String entryName = entry.getName();
+						
+						if (!entryName.endsWith(suffix))
+							continue;
+						
 						if (entryName.startsWith(relPath) && entryName.length() > (relPath.length() + "/".length())) {
 							String className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
 							
 							try {
-								classes.add(Class.forName(className));
+								Class<?> cls = Class.forName(className);
+								if (!cls.isInterface())
+									classes.add(cls);
 							}
 							catch (ClassNotFoundException e) {
 								throw new RuntimeException("ClassNotFoundException loading " + className);
@@ -694,9 +693,10 @@ public class RestUtil implements GlobalPropertyListener {
 	
 	/**
 	 * Wraps the exception message as a SimpleObject to be sent to client
+	 * 
 	 * @param ex
 	 * @param reason
-	 * @return 
+	 * @return
 	 */
 	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
 		LinkedHashMap map = new LinkedHashMap();

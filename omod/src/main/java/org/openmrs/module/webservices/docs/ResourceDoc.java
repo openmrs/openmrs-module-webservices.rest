@@ -23,6 +23,8 @@ public class ResourceDoc {
 	
 	private String name;
 	
+	private String url;
+	
 	private List<ResourceOperation> operations = new ArrayList<ResourceOperation>();
 	
 	private List<ResourceRepresentation> representations = new ArrayList<ResourceRepresentation>();
@@ -37,6 +39,14 @@ public class ResourceDoc {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public void setUrl(String url) {
+		this.url = url;
 	}
 	
 	public List<ResourceOperation> getOperations() {
@@ -62,6 +72,9 @@ public class ResourceDoc {
 	@Override
 	public String toString() {
 		String text = name;
+		
+		text += System.getProperty("line.separator");
+		text += url;
 		
 		if (operations.size() > 0) {
 			text += System.getProperty("line.separator");
