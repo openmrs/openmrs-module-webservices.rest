@@ -71,10 +71,10 @@ public class ResourceDoc {
 	
 	@Override
 	public String toString() {
-		String text = name;
+		String text = "h1. " + name;
 		
 		text += System.getProperty("line.separator");
-		text += url;
+		text += "URL: " + url;
 		
 		if (operations.size() > 0) {
 			text += System.getProperty("line.separator");

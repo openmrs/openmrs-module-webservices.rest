@@ -101,4 +101,13 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 		return new IncomingHl7Message(Context.getHL7Service().saveHL7InQueue(delegate.getHl7InQueueMessage()));
 	}
 	
+	/**
+	 * Gets the display string for an incoming hl7 message resource.
+	 * 
+	 * @param message the hl7 message.
+	 * @return the display string.
+	 */
+	public String getDisplayString(IncomingHl7Message message) {
+		return message.toString();
+	}
 }

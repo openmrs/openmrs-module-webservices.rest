@@ -203,6 +203,9 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @return identifier + name (for concise display purposes)
 	 */
 	public String getDisplayString(Patient patient) {
+		if (patient.getPatientIdentifier() == null)
+			return "";
+		
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName();
 	}
 	

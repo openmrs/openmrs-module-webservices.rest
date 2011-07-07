@@ -212,6 +212,9 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getUri(Object delegate) {
+		if (delegate == null)
+			return "";
+		
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
 			return RestConstants.URI_PREFIX + res.value() + "/" + getUniqueId((T) delegate);

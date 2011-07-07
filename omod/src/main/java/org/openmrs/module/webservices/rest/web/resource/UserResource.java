@@ -205,6 +205,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 * @return username + fullname (for concise display purposes)
 	 */
 	public String getDisplayString(UserAndPassword user) {
+		if (user.getUser().getUsername() == null)
+			return "";
+		
 		return user.getUser().getUsername() + " - " + user.getUser().getPersonName().getFullName();
 	}
 	

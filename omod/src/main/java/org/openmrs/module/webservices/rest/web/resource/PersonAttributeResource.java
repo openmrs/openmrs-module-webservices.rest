@@ -156,6 +156,9 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	 * @return attribute type + value (for concise display purposes)
 	 */
 	public String getDisplayString(PersonAttribute pa) {
+		if (pa.getAttributeType() == null)
+			return "";
+		
 		return pa.getAttributeType().getName() + " = " + pa.getValue();
 	}
 }

@@ -160,6 +160,9 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @return String ConceptName = value
 	 */
 	public String getDisplayString(Obs obs) {
+		if (obs.getConcept() == null)
+			return "";
+		
 		return obs.getConcept().getName() + " = " + obs.getValueAsString(Context.getLocale());
 	}
 	

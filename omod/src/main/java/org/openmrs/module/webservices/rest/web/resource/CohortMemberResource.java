@@ -238,6 +238,10 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @return string that contains cohort member's identifier and full name
 	 */
 	public String getDisplayString(CohortMember member) {
+		
+		if (member.getPatient().getPatientIdentifier() == null)
+			return "";
+		
 		return member.getPatient().getPatientIdentifier().getIdentifier() + " - "
 		        + member.getPatient().getPersonName().getFullName();
 	}

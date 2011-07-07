@@ -137,6 +137,9 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 * @return identifier type + identifier (for concise display purposes)
 	 */
 	public String getDisplayString(PatientIdentifier id) {
+		if (id.getIdentifierType() == null)
+			return "";
+		
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}
 }

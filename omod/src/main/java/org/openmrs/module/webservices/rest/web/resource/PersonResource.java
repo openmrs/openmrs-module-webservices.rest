@@ -221,6 +221,9 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * @return fullname (for concise display purposes)
 	 */
 	public String getDisplayString(Person person) {
+		if (person.getPersonName() == null)
+			return "";
+		
 		return person.getPersonName().getFullName();
 	}
 }

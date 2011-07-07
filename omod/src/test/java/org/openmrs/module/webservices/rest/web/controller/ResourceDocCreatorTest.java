@@ -29,10 +29,14 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	public void createDocumentation() throws Exception {
 		List<ResourceDoc> docs = ResourceDocCreator.create("http://server:port/context/ws");
 		for (ResourceDoc doc : docs) {
-			System.out.println("");
-			System.out.println("=============================================");
-			System.out.println(doc.toString());
-			System.out.println("=============================================");
+			
+			String text = doc.toString();
+			
+			//Wiki syntax will think these are macros and complain like: Unknown macro: {......}
+			text = text.replace("{", "\"");
+			text = text.replace("}", "\"");
+			
+			System.out.println(text);
 		}
 	}
 }

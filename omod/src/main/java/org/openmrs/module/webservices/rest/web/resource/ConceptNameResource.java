@@ -181,6 +181,10 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	 */
 	@PropertyGetter("locale")
 	public String getLocaleAsString(ConceptName instance) {
+		
+		if (instance.getLocale() == null)
+			return "";
+		
 		return instance.getLocale().toString();
 	}
 }

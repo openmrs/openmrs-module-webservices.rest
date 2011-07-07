@@ -15,15 +15,18 @@ package org.openmrs.module.webservices.docs;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,36 +96,65 @@ public class ResourceDocCreator {
 				continue;
 			}
 			
-			if (instance instanceof BaseDelegatingResource) {
-				
-				ResourceDoc resourceDoc = new ResourceDoc(cls.getSimpleName().replace("Resource", ""));
-				resouceDocMap.put(resourceDoc.getName(), resourceDoc);
-				
-				//Object obj = ((BaseDelegatingResource<Object>) instance).asRepresentation(((DelegatingCrudResource)instance).newDelegate(), Representation.DEFAULT);
-				
-				//Get the default representation of this resource.
-				BaseDelegatingResource<?> resoure = (BaseDelegatingResource<?>) instance;
-				DelegatingResourceDescription resoureDescription = resoure
-				        .getRepresentationDescription(Representation.DEFAULT);
-				
-				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("ref", resoureDescription.getProperties()
-					        .keySet()));
+			try {
+				if (instance instanceof BaseDelegatingResource) {
+					
+					ResourceDoc resourceDoc = new ResourceDoc(cls.getSimpleName().replace("Resource", ""));
+					resouceDocMap.put(resourceDoc.getName(), resourceDoc);
+					
+					Method method = instance.getClass().getDeclaredMethod("newDelegate", null);
+					method.setAccessible(true);
+					Object delegate = method.invoke(instance, null);
+					
+					//Get the default representation of this resource..
+					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate,
+					    Representation.DEFAULT);
+					Set<String> properties = ((SimpleObject) rep).keySet();
+					properties.remove("links");
+					resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
+					
+					//Get the full representation of this resource.
+					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
+					properties = ((SimpleObject) rep).keySet();
+					properties.remove("links");
+					resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
+					
+					//Get the ref representation of this resource.
+					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
+					properties = ((SimpleObject) rep).keySet();
+					properties.remove("links");
+					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
+					
+					/*BaseDelegatingResource<?> resoure = (BaseDelegatingResource<?>) instance;
+					
+					//Get the default representation of this resource..
+					DelegatingResourceDescription resoureDescription = resoure
+					        .getRepresentationDescription(Representation.DEFAULT);
+					if (resoureDescription != null) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("default", resoureDescription
+						        .getProperties().keySet()));
+					}
+					
+					//Get the full representation of this resource.
+					resoureDescription = resoure.getRepresentationDescription(Representation.FULL);
+					if (resoureDescription != null) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("full", resoureDescription.getProperties()
+						        .keySet()));
+					}
+					
+					//Get the ref representation of this resource.
+					resoureDescription = resoure.getRepresentationDescription(Representation.REF);
+					if (resoureDescription != null) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("ref", resoureDescription.getProperties()
+						        .keySet()));
+					}*/
 				}
-				
-				//Get the ref representation of this resource.
-				resoureDescription = resoure.getRepresentationDescription(Representation.REF);
-				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("default", resoureDescription.getProperties()
-					        .keySet()));
-				}
-				
-				//Get the fill representation of this resource.
-				resoureDescription = resoure.getRepresentationDescription(Representation.FULL);
-				if (resoureDescription != null) {
-					resourceDoc.addRepresentation(new ResourceRepresentation("full", resoureDescription.getProperties()
-					        .keySet()));
-				}
+			}
+			catch (NoSuchMethodException ex) {
+				ex.printStackTrace();
+			}
+			catch (InvocationTargetException ex) {
+				ex.printStackTrace();
 			}
 		}
 	}

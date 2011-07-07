@@ -19,7 +19,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.BaseOpenmrsData;
+import org.openmrs.Auditable;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -218,14 +220,17 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 * @return a {@link SimpleObject} with the audit information.
 	 * @throws Exception
 	 */
-	public SimpleObject getAuditInfo(BaseOpenmrsData resource) throws Exception {
+	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(resource.getDateCreated(), Representation.DEFAULT));
-		if (resource.isVoided()) {
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
+		    Representation.DEFAULT));
+		if (((Voidable) resource).isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(resource, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(resource.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(resource.getVoidReason(), Representation.DEFAULT));
+			ret.put("dateVoided", ConversionUtil.convertToRepresentation(((Voidable) resource).getDateVoided(),
+			    Representation.DEFAULT));
+			ret.put("voidReason", ConversionUtil.convertToRepresentation(((Voidable) resource).getVoidReason(),
+			    Representation.DEFAULT));
 		}
 		return ret;
 	}
