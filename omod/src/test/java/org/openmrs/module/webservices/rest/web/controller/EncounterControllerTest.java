@@ -21,7 +21,11 @@ import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.util.Format;
+import org.openmrs.util.Format.FORMAT_TYPE;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -79,10 +83,11 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED = fried chicken"));
 		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG) = 70.0"));
 		
-		//TODO Temporarily commented out because it fails on my computer where currentTimezone has EAST yet my value is EAT.
-		//Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 " + currentTimezone));
-		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 PDT")
-		        || obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = 21 June 2011 00:00:00 EAT"));
+		// obs.getValueAsString() uses application Locale and hence have to do this
+		Calendar cal = Calendar.getInstance();
+		cal.set(2011, Calendar.JUNE, 21, 0, 0, 0);
+		String format = Format.format(cal.getTime(), Context.getLocale(), FORMAT_TYPE.TIMESTAMP);
+		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = " + format));
 	}
 	
 	/**
@@ -150,8 +155,8 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[0]/value"));
 		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result,
 		    "obs[0]/groupMembers[1]/concept/uuid"));
-		// failing because of date format: Assert.assertEquals(ymd.parse("2011-06-12"), Util.getByPath(result, "obs[0]/groupMembers[1]/value"));
-		
+		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT), Util
+		        .getByPath(result, "obs[0]/groupMembers[1]/value"));
 		// make sure there's a group in the group
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result,
 		    "obs[0]/groupMembers[2]/concept/uuid"));
@@ -160,7 +165,8 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/value"));
 		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result,
 		    "obs[0]/groupMembers[2]/groupMembers[1]/concept/uuid"));
-		// failing because of date format: Assert.assertEquals(ymd.parse("2011-06-12"), Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/value"));
+		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT), Util
+		        .getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/value"));
 	}
 	
 	/**
