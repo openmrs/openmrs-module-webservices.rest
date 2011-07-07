@@ -29,6 +29,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -37,7 +38,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.LocaleUtility;
 
@@ -101,6 +101,17 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * Sets the name property to be the fully specified name of the Concept in the current locale
+	 * @param instance
+	 * @param name 
+	 */
+	@PropertySetter("name")
+	public static void setFullySpecifiedName(Concept instance, String name) {
+		ConceptName fullySpecifiedName = new ConceptName(name, Context.getLocale());
+		instance.setFullySpecifiedName(fullySpecifiedName);
 	}
 	
 	/**

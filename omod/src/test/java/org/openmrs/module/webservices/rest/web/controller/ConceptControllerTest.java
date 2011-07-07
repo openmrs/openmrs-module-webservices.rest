@@ -30,7 +30,6 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.resource.ConceptResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -85,24 +84,30 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(24, result.size()); // there are 25 concepts and one is retired, so should only get 24 here
 	}
 	
-	//	@Test
-	//  @Ignore
-	//  // This test is ignored until we set up proper concept creation in the controller.
-	//	public void shouldCreateAConcept() throws Exception {
-	//		int originalCount = service.getAllConcepts().size();
-	//		String json = "{ \"name\":\"test concept\", \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
-	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-	//		Object newConcept = controller.create(post, request, response);
-	//		Assert.assertNotNull(PropertyUtils.getProperty(newConcept, "uuid"));
-	//		Assert.assertEquals(originalCount + 1, service.getAllConcepts().size());
-	//	}
+	@Test
+	public void shouldCreateAConcept() throws Exception {
+		int originalCount = service.getAllConcepts().size();
+		String json = "{ \"name\":\"test concept\", \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object newConcept = controller.create(post, request, response);
+		Assert.assertNotNull(PropertyUtils.getProperty(newConcept, "uuid"));
+		Assert.assertEquals(originalCount + 1, service.getAllConcepts().size());
+	}
 	
 	@Test
-	@Ignore
-	// This test is ignored until we set up proper concept editing in the controller.
+	public void shouldEditFullySpecifiedNameOfAConcept() throws Exception {
+		final String changedName = "TESTING NAME";
+		String json = "{ \"name\":\"" + changedName + "\" }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		controller.update("f923524a-b90c-4870-a948-4125638606fd", post, request, response);
+		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
+		Assert.assertNotNull(updated);
+		Assert.assertEquals(changedName, updated.getFullySpecifiedName(Context.getLocale()).getName());
+	}
+	
+	@Test
 	public void shouldEditAConcept() throws Exception {
 		final String changedVersion = "1.2.3";
-		
 		String json = "{ \"version\":\"" + changedVersion + "\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.update("f923524a-b90c-4870-a948-4125638606fd", post, request, response);
