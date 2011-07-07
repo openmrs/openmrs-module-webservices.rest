@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,9 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.ObsResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -272,4 +275,18 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		new ObsController().create(post, emptyRequest(), new MockHttpServletResponse());
 	}
 	
+	/**
+	 * @see ObsController#getObs(String,WebRequest)
+	 * @verifies get a dateTime obs value correctly represented as ISO8601 long format
+	 */
+	@Test
+	public void getObs_shouldGetADateObs() throws Exception {
+		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
+		Object result = new ObsController().retrieve("99b92980-db62-40cd-8bca-733357c48126", emptyRequest());
+		Assert.assertNotNull(result);
+		Util.log("DateTime Obs fetched (default)", result);
+		Assert.assertEquals("99b92980-db62-40cd-8bca-733357c48126", PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2008-08-14"), Representation.DEFAULT),
+		    PropertyUtils.getProperty(result, "value"));
+	}
 }

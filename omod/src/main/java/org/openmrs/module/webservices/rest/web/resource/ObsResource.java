@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.resource;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -173,9 +174,11 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @return
 	 */
 	@PropertyGetter("value")
-	public static String getValueAsString(Obs obs) {
+	public static Object getValue(Obs obs) throws ConversionException {
 		if (obs.isObsGrouping())
 			return null;
+		else if (obs.getValueDatetime() != null)
+			return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
 		else
 			return obs.getValueAsString(Context.getLocale());
 	}
