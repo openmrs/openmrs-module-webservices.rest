@@ -16,8 +16,10 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.util.List;
 
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -27,7 +29,9 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void createDocumentation() throws Exception {
-		List<ResourceDoc> docs = ResourceDocCreator.create("http://server:port/context/ws");
+		List<ResourceDoc> docs = ResourceDocCreator.create(Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, "http://server:port/context/ws"));
+		
 		for (ResourceDoc doc : docs) {
 			
 			String text = doc.toString();

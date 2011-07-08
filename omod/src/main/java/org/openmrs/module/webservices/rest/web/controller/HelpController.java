@@ -17,7 +17,9 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,8 +40,6 @@ public class HelpController {
 		// TODO put content into map about controller annotations and resource
 		// views
 		
-		System.out.println(request.getRealPath(""));
-		
 		StringBuffer baseUrl = new StringBuffer();
 		String scheme = request.getScheme();
 		int port = request.getServerPort();
@@ -55,6 +55,7 @@ public class HelpController {
 		baseUrl.append(request.getContextPath());
 		baseUrl.append("/ws");
 		
-		map.put("data", ResourceDocCreator.create(baseUrl.toString()));
+		map.put("data", ResourceDocCreator.create(Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString())));
 	}
 }
