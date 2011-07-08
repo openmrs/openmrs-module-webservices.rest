@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Data structure containing documentation about a web service resource.
  */
-public class ResourceDoc {
+public class ResourceDoc implements Comparable<ResourceDoc> {
 	
 	private String name;
 	
@@ -95,5 +95,10 @@ public class ResourceDoc {
 		}
 		
 		return text;
+	}
+	
+	@Override
+	public int compareTo(ResourceDoc doc) {
+		return name.compareTo(doc.getName());
 	}
 }

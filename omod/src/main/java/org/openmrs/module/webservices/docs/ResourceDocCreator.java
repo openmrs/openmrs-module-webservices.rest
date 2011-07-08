@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,9 +69,9 @@ public class ResourceDocCreator {
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
 	        IOException, ConversionException {
 		
-		List<ResourceDoc> docList = new ArrayList<ResourceDoc>();
-		docList.addAll(createDocMap(baseUrl).values());
-		return docList;
+		ResourceDoc[] docArray = createDocMap(baseUrl).values().toArray(new ResourceDoc[0]);
+		Arrays.sort(docArray);
+		return Arrays.asList(docArray);
 	}
 	
 	/**
