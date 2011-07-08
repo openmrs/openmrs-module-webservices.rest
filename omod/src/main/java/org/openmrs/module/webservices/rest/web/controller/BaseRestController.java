@@ -13,11 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.lang.StringUtils;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.docs.ResourceDocCreator;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -31,9 +33,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Resource controllers should extend this base class to have standard exception handling done automatically.
- * (This is necessary to send error messages as HTTP statuses rather than just as html content, as the
- * core web application does.)
+ * Resource controllers should extend this base class to have standard exception handling done
+ * automatically. (This is necessary to send error messages as HTTP statuses rather than just as
+ * html content, as the core web application does.)
  */
 @Controller
 @RequestMapping(value = "/rest/**")
@@ -81,12 +83,28 @@ public class BaseRestController {
 	
 	/**
 	 * Shows response for unknown resource calls that give default 404
+	 * 
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	private SimpleObject handleUnknownResource() throws Exception {
 		throw new UnknownResourceException();
+	}
+	
+	/**
+	 * Gets a catalog of all available resources.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/catalog")
+	@ResponseBody
+	public final SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
+		SimpleObject resourceCatalog = new SimpleObject();
+		resourceCatalog.put("catalog", ResourceDocCreator.create(RestConstants.URI_PREFIX));
+		
+		return resourceCatalog;
 	}
 }

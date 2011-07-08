@@ -271,7 +271,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	}
 	
 	/**
-	 * Gets Fetch Obs for a given patient (paged according to context if necessary)
+	 * Gets Obs for a given patient (paged according to context if necessary)
 	 * 
 	 * @param patientUuid @see {@link PatientResource#getByUniqueId(String)} for interpretation
 	 * @param context
