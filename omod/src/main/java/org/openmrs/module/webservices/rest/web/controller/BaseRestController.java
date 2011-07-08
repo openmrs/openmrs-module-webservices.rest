@@ -101,7 +101,7 @@ public class BaseRestController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/catalog")
 	@ResponseBody
-	public final SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
+	private SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
 		SimpleObject resourceCatalog = new SimpleObject();
 		resourceCatalog.put("catalog", ResourceDocCreator.create(RestConstants.URI_PREFIX));
 		
