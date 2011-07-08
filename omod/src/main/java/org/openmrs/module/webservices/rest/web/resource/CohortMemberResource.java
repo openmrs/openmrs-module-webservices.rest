@@ -207,7 +207,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 */
 	@Override
 	protected String getUniqueId(CohortMember delegate) {
-	    return delegate.getPatient().getUuid();
+		return delegate.getPatient().getUuid();
 	}
 	
 	/**

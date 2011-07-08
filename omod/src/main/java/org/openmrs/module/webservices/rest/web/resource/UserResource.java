@@ -217,7 +217,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 */
 	@Override
 	protected String getUniqueId(UserAndPassword delegate) {
-	    return delegate.getUser().getUuid();
+		return delegate.getUser().getUuid();
 	}
 	
 }

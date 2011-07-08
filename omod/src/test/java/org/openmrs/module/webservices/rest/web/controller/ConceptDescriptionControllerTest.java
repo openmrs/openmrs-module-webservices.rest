@@ -132,8 +132,8 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 		List<Object> results = controller.getAll(conceptUuid, request, response);
 		Assert.assertNotNull(results);
 		Assert.assertEquals(2, results.size());
-		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(results.get(0), "description"),
-		    PropertyUtils.getProperty(results.get(1), "description"));
+		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(results.get(0), "description"), PropertyUtils
+		        .getProperty(results.get(1), "description"));
 		
 		Assert.assertTrue(descriptions.contains("Affirmative"));
 		Assert.assertTrue(descriptions.contains("another description"));
