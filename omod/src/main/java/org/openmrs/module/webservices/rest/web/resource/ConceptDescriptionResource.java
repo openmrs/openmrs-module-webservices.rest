@@ -140,15 +140,7 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 	 */
 	@Override
 	protected ConceptDescription save(ConceptDescription newDescription) {
-		boolean needToAdd = true;
-		for (ConceptDescription cd : newDescription.getConcept().getDescriptions()) {
-			if (cd.equals(newDescription)) {
-				needToAdd = false;
-				break;
-			}
-		}
-		if (needToAdd)
-			newDescription.getConcept().addDescription(newDescription);
+		newDescription.getConcept().addDescription(newDescription);
 		Context.getConceptService().saveConcept(newDescription.getConcept());
 		return newDescription;
 	}
