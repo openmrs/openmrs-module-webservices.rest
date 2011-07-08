@@ -196,6 +196,9 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 	 */
 	@PropertyGetter("locale")
 	public String getLocaleAsString(ConceptDescription instance) {
+		if (instance.getLocale() == null)
+			return "";
+		
 		return instance.getLocale().toString();
 	}
 }
