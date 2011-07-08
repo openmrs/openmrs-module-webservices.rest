@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
 
@@ -39,7 +40,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	protected void delete(IncomingHl7Message delegate, String reason, RequestContext context) throws ResponseException {
-		throw new APIException("Deleting of hl7 message currently isn't supported");
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -90,7 +91,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	public void purge(IncomingHl7Message delegate, RequestContext context) throws ResponseException {
-		throw new APIException("Purging of hl7 message currently isn't supported");
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	protected IncomingHl7Message save(IncomingHl7Message delegate) {
-		return new IncomingHl7Message(Context.getHL7Service().saveHL7InQueue(delegate.getHl7InQueueMessage()));
+		return new IncomingHl7Message(Context.getHL7Service().saveHL7InQueue(delegate.toHL7InQueue()));
 	}
 	
 	/**

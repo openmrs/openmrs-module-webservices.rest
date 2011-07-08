@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.HL7MessageResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +23,4 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping(value = "/rest/hl7")
-public class HL7MessageController extends BaseCrudController<HL7MessageResource> {
-	
-	@Override
-	public HL7MessageResource getResource() {
-		return Context.getService(RestService.class).getResource(HL7MessageResource.class);
-	}
-}
+public class HL7MessageController extends BaseCrudController<HL7MessageResource> {}

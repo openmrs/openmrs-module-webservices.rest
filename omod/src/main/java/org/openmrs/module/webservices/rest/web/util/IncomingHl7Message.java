@@ -76,7 +76,7 @@ public class IncomingHl7Message extends BaseOpenmrsData implements Serializable 
 	 * 
 	 * @return new {@link HL7InQueue} instance
 	 */
-	public HL7InQueue getHl7InQueueMessage() {
+	public HL7InQueue toHL7InQueue() {
 		HL7InQueue result = new HL7InQueue();
 		result.setHL7Source(getSource());
 		result.setHL7SourceKey(getSourceKey());

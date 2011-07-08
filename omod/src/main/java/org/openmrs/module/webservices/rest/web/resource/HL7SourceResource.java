@@ -14,17 +14,14 @@
 package org.openmrs.module.webservices.rest.web.resource;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -63,7 +60,7 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 	 */
 	@Override
 	public void purge(HL7Source delegate, RequestContext context) throws ResponseException {
-		throw new APIException("Purging of hl7 source currently isn't supported");
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
