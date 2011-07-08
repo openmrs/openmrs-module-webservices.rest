@@ -9,7 +9,7 @@
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>webservices.rest-api</artifactId>
 	<packaging>jar</packaging>
-	<name>Webservices Rest API</name>
+	<name>Rest Web Services API</name>
 	<description>API project for Web Services Rest Module</description>
 
 	<dependencies>
