@@ -62,7 +62,7 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 			description.addProperty("locale");
 			description.addProperty("localePreferred");
 			description.addProperty("conceptNameType");
-			description.addProperty("tags");
+			//description.addProperty("tags");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
