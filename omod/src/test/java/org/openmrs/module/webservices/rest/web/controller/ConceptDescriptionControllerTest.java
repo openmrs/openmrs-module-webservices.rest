@@ -69,7 +69,6 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("Affirmative", PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals("en", PropertyUtils.getProperty(result, "locale"));
 	}
 	
 	/**
