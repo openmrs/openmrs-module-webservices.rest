@@ -39,6 +39,8 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		
 		System.out.println(header);
 		
+		System.out.println("{toc}");
+		
 		for (ResourceDoc doc : docs) {
 			
 			//Skip resources without controllers. Controllers provide the urls.
