@@ -37,7 +37,7 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		
 		System.out.println(header);
 		
-		System.out.println("{toc}");
+		System.out.println("{toc:maxLevel=1}");
 		
 		for (ResourceDoc doc : docs) {
 			
