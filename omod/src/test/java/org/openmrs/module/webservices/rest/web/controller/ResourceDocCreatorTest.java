@@ -16,10 +16,8 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.util.List;
 
 import org.junit.Test;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**

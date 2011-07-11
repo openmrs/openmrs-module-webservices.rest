@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +44,8 @@ public class ResourceDocCreator {
 	 * @throws IOException
 	 */
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
-	        InstantiationException, IOException, ConversionException {
+	                                                                   InstantiationException, IOException,
+	                                                                   ConversionException {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
@@ -53,7 +53,7 @@ public class ResourceDocCreator {
 		    "Resource.class");
 		
 		fillRepresentations(classes, resouceDocMap);
-		fillOperations(resouceDocMap);
+		//fillOperations(resouceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
 		return resouceDocMap;
@@ -67,7 +67,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
-	        IOException, ConversionException {
+	                                                      IOException, ConversionException {
 		
 		ResourceDoc[] docArray = createDocMap(baseUrl).values().toArray(new ResourceDoc[0]);
 		Arrays.sort(docArray);
@@ -83,7 +83,9 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(List<Class<?>> classes, Map<String, ResourceDoc> resouceDocMap)
-	        throws IllegalAccessException, InstantiationException, ConversionException {
+	                                                                                                       throws IllegalAccessException,
+	                                                                                                       InstantiationException,
+	                                                                                                       ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {
@@ -106,7 +108,7 @@ public class ResourceDocCreator {
 					Method method = instance.getClass().getDeclaredMethod("newDelegate", null);
 					method.setAccessible(true);
 					Object delegate = method.invoke(instance, null);
-							
+					
 					//Get the ref representation of this resource.
 					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
 					Set<String> properties = ((SimpleObject) rep).keySet();
@@ -114,8 +116,7 @@ public class ResourceDocCreator {
 					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
 					
 					//Get the default representation of this resource..
-					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate,
-					    Representation.DEFAULT);
+					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
 					properties = ((SimpleObject) rep).keySet();
 					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
@@ -216,7 +217,77 @@ public class ResourceDocCreator {
 				continue;
 			}
 			
-			resouceDocMap.get(cls.getSimpleName().replace("Controller", "")).setUrl(baseUrl + annotation.value()[0]);
+			String url = baseUrl + annotation.value()[0];
+			ResourceDoc doc = resouceDocMap.get(cls.getSimpleName().replace("Controller", ""));
+			
+			Method[] methods = cls.getMethods();
+			for (Method method : methods) {
+				RequestMapping antn = (RequestMapping) method.getAnnotation(RequestMapping.class);
+				if (antn == null)
+					continue;
+				
+				String operationUrl = antn.method()[0].name() + " " + url;
+				
+				if (antn.value().length > 0)
+					operationUrl += antn.value()[0];
+				
+				String paramString = null;
+				for (String param : antn.params()) {
+					if (paramString == null)
+						paramString = param;
+					else
+						paramString += ("&" + param);
+				}
+				
+				if (paramString != null)
+					operationUrl += "?" + paramString;
+				
+				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name())));
+			}
+			
+			//Set the root url.
+			doc.setUrl(url);
+			
+			//Sort the operations
+			ResourceOperation[] operations = doc.getOperations().toArray(new ResourceOperation[0]);
+			Arrays.sort(operations);
+			doc.setOperations(Arrays.asList(operations));
 		}
+	}
+	
+	/**
+	 * Gets a request method description specified in a RequestMapping annotation.
+	 * 
+	 * @param requestMapping the request mapping annotation.
+	 * @param method the HTTP operation method.
+	 * @return the method description string.
+	 */
+	private static String getMethodDescription(RequestMapping requestMapping, String method) {
+		String value = null;
+		if (requestMapping.value().length > 0)
+			value = requestMapping.value()[0];
+		
+		if (method.equals("GET")) {
+			if (value != null && value.contains("uuid"))
+				return "Fetch by unique uuid";
+			else if (value == null && requestMapping.params().length == 0)
+				return "Fetch all non-retired";
+			else if (value == null && requestMapping.params().length > 0)
+				return "Fetch all non-retired that match this parameter";
+			
+		} else if (method.equals("POST")) {
+			if (value != null && value.contains("uuid"))
+				return "Edit with given uuid, only modifying properties in request";
+			else
+				return "Create with properties in request";
+			
+		} else if (method.equals("DELETE")) {
+			if(requestMapping.params().length > 0)
+				return "Delete this object from the database";
+			else
+				return "Retire this object";
+		}
+		
+		return null;
 	}
 }

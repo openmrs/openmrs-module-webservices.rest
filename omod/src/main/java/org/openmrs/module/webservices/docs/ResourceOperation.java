@@ -16,7 +16,7 @@ package org.openmrs.module.webservices.docs;
 /**
  * Represents an operation on a web service resource.
  */
-public class ResourceOperation {
+public class ResourceOperation implements Comparable<ResourceOperation> {
 	
 	private String name;
 	
@@ -46,5 +46,29 @@ public class ResourceOperation {
 	@Override
 	public String toString() {
 		return "*" + name + "*: " + description;
+	}
+	
+	@Override
+	public int compareTo(ResourceOperation operation) {
+		if (name.startsWith("GET")){
+			if(operation.getName().startsWith("GET"))
+				return 0;
+			else
+				return -1;
+		}
+		else if (name.startsWith("POST")){
+			if(operation.getName().startsWith("POST"))
+				return 0;
+			else if(operation.getName().startsWith("GET"))
+				return 1;
+			else
+				return -1;
+		}
+		else{ //Must be a DELETE
+			if(operation.getName().startsWith("DELETE"))
+				return 0;
+			else
+				return 1;
+		}
 	}
 }
