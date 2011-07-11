@@ -28,5 +28,5 @@ public @interface WSDoc {
 	/**
 	 * @return the description for the web service method.
 	 */
-	String description();
+	String value();
 }

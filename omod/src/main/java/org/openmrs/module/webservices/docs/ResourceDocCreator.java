@@ -269,7 +269,7 @@ public class ResourceDocCreator {
 		//If the documentation annotation exists, then no need for auto generating the description.
 		WSDoc docAnnotation = (WSDoc) method.getAnnotation(WSDoc.class);
 		if (docAnnotation != null)
-			return docAnnotation.description();
+			return docAnnotation.value();
 		
 		String value = null;
 		if (requestMapping.value().length > 0)
