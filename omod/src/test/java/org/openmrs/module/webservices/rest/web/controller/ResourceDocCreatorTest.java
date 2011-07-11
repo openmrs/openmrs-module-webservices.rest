@@ -32,6 +32,14 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		List<ResourceDoc> docs = ResourceDocCreator.create(Context.getAdministrationService().getGlobalProperty(
 		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, "http://server:port/context/ws"));
 		
+		String header = "This page describes the urls/resources published by the [docs:Webservices.rest Module].";
+		header += System.getProperty("line.separator");
+		header += System.getProperty("line.separator");
+		header += "For more information on conventions, authentication, and setup, see the main [docs:REST Web Services API] page.";
+		header += System.getProperty("line.separator");
+		
+		System.out.println(header);
+		
 		for (ResourceDoc doc : docs) {
 			
 			String text = doc.toString();
