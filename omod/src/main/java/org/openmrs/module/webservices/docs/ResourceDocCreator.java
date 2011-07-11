@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -242,7 +243,7 @@ public class ResourceDocCreator {
 				if (paramString != null)
 					operationUrl += "?" + paramString;
 				
-				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name())));
+				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name(), method)));
 			}
 			
 			//Set the root url.
@@ -256,18 +257,25 @@ public class ResourceDocCreator {
 	}
 	
 	/**
-	 * Gets a request method description specified in a RequestMapping annotation.
+	 * Gets a request method description specified for a given web service request handling method.
 	 * 
 	 * @param requestMapping the request mapping annotation.
-	 * @param method the HTTP operation method.
+	 * @param operation the HTTP operation method.
+	 * @param method the method.
 	 * @return the method description string.
 	 */
-	private static String getMethodDescription(RequestMapping requestMapping, String method) {
+	private static String getMethodDescription(RequestMapping requestMapping, String operation, Method method) {
+		
+		//If the documentation annotation exists, then no need for auto generating the description.
+		WSDoc docAnnotation = (WSDoc) method.getAnnotation(WSDoc.class);
+		if (docAnnotation != null)
+			return docAnnotation.description();
+		
 		String value = null;
 		if (requestMapping.value().length > 0)
 			value = requestMapping.value()[0];
 		
-		if (method.equals("GET")) {
+		if (operation.equals("GET")) {
 			if (value != null && value.contains("uuid"))
 				return "Fetch by unique uuid";
 			else if (value == null && requestMapping.params().length == 0)
@@ -275,13 +283,13 @@ public class ResourceDocCreator {
 			else if (value == null && requestMapping.params().length > 0)
 				return "Fetch all non-retired that match this parameter";
 			
-		} else if (method.equals("POST")) {
+		} else if (operation.equals("POST")) {
 			if (value != null && value.contains("uuid"))
 				return "Edit with given uuid, only modifying properties in request";
 			else
 				return "Create with properties in request";
 			
-		} else if (method.equals("DELETE")) {
+		} else if (operation.equals("DELETE")) {
 			if(requestMapping.params().length > 0)
 				return "Delete this object from the database";
 			else

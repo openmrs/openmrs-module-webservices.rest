@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.resource.EncounterResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class EncounterController extends BaseCrudController<EncounterResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@WSDoc(description = "Fetch all non-retired encounters for a given patient")
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUniqueId, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
