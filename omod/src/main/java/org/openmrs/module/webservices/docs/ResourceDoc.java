@@ -74,7 +74,14 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		String text = "h1. " + name;
 		
 		text += System.getProperty("line.separator");
-		text += "URL: " + url;
+		text += "h2. URLs";
+		
+		text += System.getProperty("line.separator");
+		text += "|| url || description ||";
+		
+		text += System.getProperty("line.separator");
+		text += "| GET " + url + " | ";
+		text += "Fetches a list of..... | ";
 		
 		if (operations.size() > 0) {
 			text += System.getProperty("line.separator");
@@ -89,9 +96,19 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		text += System.getProperty("line.separator");
 		text += "h2. Representations";
 		
+		text += System.getProperty("line.separator");
+		text += "|| ";
+		
 		for (ResourceRepresentation representation : representations) {
-			text += System.getProperty("line.separator");
+			text += representation.getName();
+			text += " || ";
+		}
+		
+		text += System.getProperty("line.separator");
+		text += "| ";
+		for (ResourceRepresentation representation : representations) {
 			text += representation.toString();
+			text += " | ";
 		}
 		
 		return text;
