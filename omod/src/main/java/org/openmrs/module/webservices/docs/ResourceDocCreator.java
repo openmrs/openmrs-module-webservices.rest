@@ -106,11 +106,17 @@ public class ResourceDocCreator {
 					Method method = instance.getClass().getDeclaredMethod("newDelegate", null);
 					method.setAccessible(true);
 					Object delegate = method.invoke(instance, null);
+							
+					//Get the ref representation of this resource.
+					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
+					Set<String> properties = ((SimpleObject) rep).keySet();
+					properties.remove("links");
+					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
 					
 					//Get the default representation of this resource..
-					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate,
+					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate,
 					    Representation.DEFAULT);
-					Set<String> properties = ((SimpleObject) rep).keySet();
+					properties = ((SimpleObject) rep).keySet();
 					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
 					
@@ -119,12 +125,6 @@ public class ResourceDocCreator {
 					properties = ((SimpleObject) rep).keySet();
 					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
-					
-					//Get the ref representation of this resource.
-					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
-					properties = ((SimpleObject) rep).keySet();
-					properties.remove("links");
-					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
 					
 					/*BaseDelegatingResource<?> resoure = (BaseDelegatingResource<?>) instance;
 					
