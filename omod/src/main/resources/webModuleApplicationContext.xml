@@ -61,7 +61,7 @@
 				<ref bean="stringHttpMessageConverter"/>
 				<ref bean="jsonHttpMessageConverter"/>
 				<!-- This bean is defined in the core 'openmrs-servlet.xml' file -->
-				<ref bean="marshallingHttpMessageConverter"/>
+				<ref bean="xmlMarshallingHttpMessageConverter"/>
 			</list>
 		</property>
     </bean>
