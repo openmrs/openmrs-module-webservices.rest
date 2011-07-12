@@ -45,8 +45,7 @@ public class ResourceDocCreator {
 	 * @throws IOException
 	 */
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
-	                                                                   InstantiationException, IOException,
-	                                                                   ConversionException {
+	        InstantiationException, IOException, ConversionException {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
@@ -68,7 +67,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
-	                                                      IOException, ConversionException {
+	        IOException, ConversionException {
 		
 		ResourceDoc[] docArray = createDocMap(baseUrl).values().toArray(new ResourceDoc[0]);
 		Arrays.sort(docArray);
@@ -84,9 +83,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(List<Class<?>> classes, Map<String, ResourceDoc> resouceDocMap)
-	                                                                                                       throws IllegalAccessException,
-	                                                                                                       InstantiationException,
-	                                                                                                       ConversionException {
+	        throws IllegalAccessException, InstantiationException, ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {
@@ -243,7 +240,8 @@ public class ResourceDocCreator {
 				if (paramString != null)
 					operationUrl += "?" + paramString;
 				
-				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name(), method)));
+				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name(),
+				    method)));
 			}
 			
 			//Set the root url.
@@ -290,7 +288,7 @@ public class ResourceDocCreator {
 				return "Create with properties in request";
 			
 		} else if (operation.equals("DELETE")) {
-			if(requestMapping.params().length > 0)
+			if (requestMapping.params().length > 0)
 				return "Delete this object from the database";
 			else
 				return "Retire this object";

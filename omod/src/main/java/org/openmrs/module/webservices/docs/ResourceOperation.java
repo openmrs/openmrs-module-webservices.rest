@@ -50,22 +50,20 @@ public class ResourceOperation implements Comparable<ResourceOperation> {
 	
 	@Override
 	public int compareTo(ResourceOperation operation) {
-		if (name.startsWith("GET")){
-			if(operation.getName().startsWith("GET"))
+		if (name.startsWith("GET")) {
+			if (operation.getName().startsWith("GET"))
 				return 0;
 			else
 				return -1;
-		}
-		else if (name.startsWith("POST")){
-			if(operation.getName().startsWith("POST"))
+		} else if (name.startsWith("POST")) {
+			if (operation.getName().startsWith("POST"))
 				return 0;
-			else if(operation.getName().startsWith("GET"))
+			else if (operation.getName().startsWith("GET"))
 				return 1;
 			else
 				return -1;
-		}
-		else{ //Must be a DELETE
-			if(operation.getName().startsWith("DELETE"))
+		} else { //Must be a DELETE
+			if (operation.getName().startsWith("DELETE"))
 				return 0;
 			else
 				return 1;

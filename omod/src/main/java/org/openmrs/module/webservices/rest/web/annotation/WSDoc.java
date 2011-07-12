@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 @Target( { ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WSDoc {
-
+	
 	/**
 	 * @return the description for the web service method.
 	 */
