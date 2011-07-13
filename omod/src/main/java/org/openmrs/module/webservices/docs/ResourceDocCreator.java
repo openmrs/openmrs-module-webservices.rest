@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.OpenmrsUtil;
@@ -49,10 +52,9 @@ public class ResourceDocCreator {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
-		List<Class<?>> classes = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.resource",
-		    "Resource.class");
+		List<Class<? extends Resource>> classes = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
 		
-		fillRepresentations(classes, resouceDocMap);
+		fillRepresentations(Arrays.asList(classes.toArray(new Class<?>[0])), resouceDocMap);
 		//fillOperations(resouceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
@@ -69,9 +71,20 @@ public class ResourceDocCreator {
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
 	        IOException, ConversionException {
 		
+		List<ResourceDoc> docs = new ArrayList<ResourceDoc>();
+		
 		ResourceDoc[] docArray = createDocMap(baseUrl).values().toArray(new ResourceDoc[0]);
 		Arrays.sort(docArray);
-		return Arrays.asList(docArray);
+		
+		//Remove resources without controllers
+		for (int index = 0; index < docArray.length; index++) {
+			ResourceDoc doc = docArray[index];
+			if (doc.getUrl() != null) {
+				docs.add(doc);
+			}
+		}
+		
+		return docs;
 	}
 	
 	/**
@@ -202,8 +215,9 @@ public class ResourceDocCreator {
 	 * @param resouceDocMap a map of each resource name and its corresponding documentation object.
 	 */
 	private static void fillUrls(String baseUrl, Map<String, ResourceDoc> resouceDocMap) throws IOException {
-		List<Class<?>> controllers = RestUtil.getClassesForPackage("org.openmrs.module.webservices.rest.web.controller",
-		    "Controller.class");
+		
+		List<Class<? extends BaseRestController>> controllers = OpenmrsClassScanner.getInstance().getClasses(
+		    BaseRestController.class, true);
 		
 		for (Class<?> cls : controllers) {
 			RequestMapping annotation = (RequestMapping) cls.getAnnotation(RequestMapping.class);
@@ -217,6 +231,8 @@ public class ResourceDocCreator {
 			
 			String url = baseUrl + annotation.value()[0];
 			ResourceDoc doc = resouceDocMap.get(cls.getSimpleName().replace("Controller", ""));
+			if (doc == null)
+				continue;
 			
 			Method[] methods = cls.getMethods();
 			for (Method method : methods) {

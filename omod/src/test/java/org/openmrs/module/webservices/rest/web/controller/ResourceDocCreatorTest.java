@@ -27,6 +27,7 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void createDocumentation() throws Exception {
+		
 		List<ResourceDoc> docs = ResourceDocCreator.create("/ws");
 		
 		String header = "This page describes the urls/resources published by the [docs:Webservices.rest Module].";
