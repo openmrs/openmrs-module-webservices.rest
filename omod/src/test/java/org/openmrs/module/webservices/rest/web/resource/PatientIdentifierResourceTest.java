@@ -13,15 +13,17 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
-import org.openmrs.Encounter;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class EncounterResourceTest extends BaseDelegatingResourceTest<EncounterResource, Encounter> {
+public class PatientIdentifierResourceTest extends BaseDelegatingResourceTest<PatientIdentifierResource, PatientIdentifier> {
 	
 	@Override
-	public Encounter newObject() {
-		return Context.getEncounterService().getEncounterByUuid(ResourceTestConstants.ENCOUNTER_UUID);
+	public PatientIdentifier newObject() {
+		return Context.getService(PatientService.class).getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5")
+		        .getPatientIdentifier();
 	}
 	
 	@Override
@@ -33,28 +35,20 @@ public class EncounterResourceTest extends BaseDelegatingResourceTest<EncounterR
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		assertEquals("uuid", getObject().getUuid());
-		assertEquals("encounterDatetime", getObject().getEncounterDatetime());
-		assertContains("patient");
+		assertEquals("identifier", getObject().getIdentifier());
+		assertContains("identifierType");
 		assertContains("location");
-		assertContains("form");
-		assertContains("encounterType");
-		assertContains("provider");
-		assertContains("obs");
-		assertContains("orders");
+		assertEquals("preferred", getObject().getPreferred());
 		assertEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		assertEquals("uuid", getObject().getUuid());
-		assertEquals("encounterDatetime", getObject().getEncounterDatetime());
-		assertContains("patient");
+		assertEquals("identifier", getObject().getIdentifier());
+		assertContains("identifierType");
 		assertContains("location");
-		assertContains("form");
-		assertContains("encounterType");
-		assertContains("provider");
-		assertContains("obs");
-		assertContains("orders");
+		assertEquals("preferred", getObject().getPreferred());
 		assertEquals("voided", getObject().getVoided());
 		assertContains("auditInfo");
 	}

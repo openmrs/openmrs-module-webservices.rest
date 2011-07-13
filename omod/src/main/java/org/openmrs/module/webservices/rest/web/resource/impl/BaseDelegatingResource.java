@@ -140,9 +140,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * 
 	 * @param representation
 	 * @return
-	 * @should return RefRepresentation
-	 * @should return DefaultRepresentation
-	 * @should return FullRepresentation
+	 * @should return valid RefRepresentation
+	 * @should return valid DefaultRepresentation
+	 * @should return valid FullRepresentation
 	 */
 	@Override
 	public Object asRepresentation(T delegate, Representation representation) throws ConversionException {

@@ -1,53 +1,148 @@
+/**
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
-public abstract class BaseDelegatingResourceTest<T> extends BaseModuleContextSensitiveTest {
+import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * Is designed to be extended by classes testing BaseDelegatingResource.
+ *
+ * @param <R> resource
+ * @param <T> object
+ */
+public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResource, T> extends BaseModuleContextSensitiveTest {
 	
-	public abstract BaseDelegatingResource<T> getResource();
+	private T object;
 	
-	public abstract T getObject();
+	private R resource;
 	
-	/**
-	 * @see BaseDelegatingResource#asRepresentation(T,Representation)
-	 * @verifies return RefRepresentation
-	 */
-	@Test
-	public void asRepresentation_shouldReturnRefRepresentation() throws Exception {
-		T object = getObject();
-		Assert.assertNotNull("Object must not be null", object);
-		
-		Object result = getResource().asRepresentation(object, Representation.REF);
-		Assert.assertNotNull("Result must not be null", result);
-	}
-	
-	/**
-	 * @see BaseDelegatingResource#asRepresentation(T,Representation)
-	 * @verifies return DefaultRepresentation
-	 */
-	@Test
-	public void asRepresentation_shouldReturnDefaultRepresentation() throws Exception {
-		T object = getObject();
-		Assert.assertNotNull("Object must not be null", object);
-		
-		Object result = getResource().asRepresentation(object, Representation.DEFAULT);
-		Assert.assertNotNull("Result must not be null", result);
-	}
+	private SimpleObject representation;
 	
 	/**
-	 * @see BaseDelegatingResource#asRepresentation(T,Representation)
-	 * @verifies return FullRepresentation
+	 * Creates an instance of an object that will be used to test the resource.
+	 *
+	 * @return the new object
 	 */
-	@Test
-	public void asRepresentation_shouldReturnFullRepresentation() throws Exception {
-		T object = getObject();
-		Assert.assertNotNull("Object must not be null", object);
-		
-		Object result = getResource().asRepresentation(object, Representation.FULL);
-		Assert.assertNotNull("Result must not be null", result);
+	public abstract T newObject();
+	
+	/**
+	 * Validates RefRepresentation of the object returned by the resource.
+	 *
+	 * @throws Exception
+	 */
+	public abstract void validateRefRepresentation() throws Exception;
+	
+	/**
+	 * Validates DefaultRepresentation of the object returned by the resource.
+	 *
+	 * @throws Exception
+	 */
+	public abstract void validateDefaultRepresentation() throws Exception;
+	
+	/**
+	 * Validates FullRepresentation of the object returned by the resource.
+	 *
+	 * @throws Exception
+	 */
+	public abstract void validateFullRepresentation() throws Exception;
+	
+	/**
+	 * Instantiates BaseDelegatingResource.
+	 *
+	 * @return the new resource
+	 */
+	public R newResource() {
+		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
+		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
+		return Context.getService(RestService.class).getResource(clazz);
 	}
 	
+	public T getObject() {
+		if (object == null) {
+			object = newObject();
+		}
+		Assert.assertNotNull("newObject must not return null", object);
+		return object;
+	}
+	
+	public SimpleObject getRepresentation() {
+		Assert.assertNotNull("representation must not be null", representation);
+		return representation;
+	}
+	
+	public R getResource() {
+		if (resource == null) {
+			resource = newResource();
+		}
+		Assert.assertNotNull("newResource must not return null", resource);
+		return resource;
+	}
+	
+	public SimpleObject getRefRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.REF);
+	}
+	
+	public SimpleObject getDefaultRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+	}
+	
+	public SimpleObject getFullRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.FULL);
+	}
+	
+	public void assertEquals(String property, Object value) {
+		if (value instanceof Date) {
+			value = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) value);
+		} else if (value instanceof Locale) {
+			value = value.toString();
+		}
+		Assert.assertEquals(property, value, representation.get(property));
+	}
+	
+	public void assertContains(String property) {
+		Assert.assertTrue(representation.containsKey(property));
+	}
+	
+	@Test
+	public void asRepresentation_shouldReturnValidRefRepresentation() throws Exception {
+		representation = getRefRepresentation();
+		
+		validateRefRepresentation();
+	}
+	
+	@Test
+	public void asRepresentation_shouldReturnValidDefaultRepresentation() throws Exception {
+		representation = getDefaultRepresentation();
+		
+		validateDefaultRepresentation();
+	}
+	
+	@Test
+	public void asRepresentation_shouldReturnValidFullRepresentation() throws Exception {
+		representation = getFullRepresentation();
+		
+		validateFullRepresentation();
+	}
 }
