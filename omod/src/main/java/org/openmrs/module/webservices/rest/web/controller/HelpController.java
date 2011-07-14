@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller;
+package org.openmrs.module.webservices.rest.web.controller;
 
 import java.io.IOException;
 
@@ -40,7 +40,7 @@ public class HelpController {
 		// TODO put content into map about controller annotations and resource
 		// views
 		
-		StringBuffer baseUrl = new StringBuffer();
+		StringBuilder baseUrl = new StringBuilder();
 		String scheme = request.getScheme();
 		int port = request.getServerPort();
 		

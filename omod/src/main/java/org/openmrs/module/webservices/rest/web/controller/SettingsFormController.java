@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller;
+package org.openmrs.module.webservices.rest.web.controller;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
