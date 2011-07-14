@@ -16,6 +16,15 @@ Main documentation page for the module is on the wiki:
 	{
 		border: 1px solid black;
 	}
+	
+	table.resourceData tr.d0 td {
+	background-color: #FCF6CF;
+	}
+	
+	table.resourceData tr.d1 td {
+		background-color: #FEFEF2;
+	}
+	
 </style>
 
 <table class="resourceData">
@@ -24,8 +33,9 @@ Main documentation page for the module is on the wiki:
    <th>Url</th>
    <th>Representations</th>
   </tr>
-  <c:forEach var="resource" items="${data}">
-      <tr>
+  <c:forEach var="resource" items="${data}" varStatus="status">
+      <tr class="<c:choose><c:when test="${status.index % 2 == 0}">d0</c:when><c:otherwise>d1</c:otherwise></c:choose>">
+	    
         <td>${resource.name}</td>
         <td>${resource.url}</td>
         
