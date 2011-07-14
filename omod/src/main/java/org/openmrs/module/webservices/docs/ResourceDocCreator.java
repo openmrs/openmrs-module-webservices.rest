@@ -27,7 +27,7 @@ import java.util.Set;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
-import org.openmrs.module.webservices.rest.web.controller.BaseRestController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;

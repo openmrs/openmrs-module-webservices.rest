@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import org.openmrs.module.webservices.rest.web.v1_0.resource.CohortMemberResource;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.PersonController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -37,7 +38,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.resource.PersonResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

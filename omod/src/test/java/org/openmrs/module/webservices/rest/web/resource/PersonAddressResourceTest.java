@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonAddressResource;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;

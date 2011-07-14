@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import org.openmrs.module.webservices.rest.web.v1_0.resource.EncounterTypeResource;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;

@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource;
 
+import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientIdentifierTypeResource;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;

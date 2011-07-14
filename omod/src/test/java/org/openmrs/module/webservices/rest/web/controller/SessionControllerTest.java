@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.SessionController;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;

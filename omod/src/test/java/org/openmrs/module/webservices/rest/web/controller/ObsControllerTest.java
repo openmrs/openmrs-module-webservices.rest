@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.ObsController;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.ObsResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;

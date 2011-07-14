@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.LocationController;
 import java.util.Collection;
 import java.util.List;
 

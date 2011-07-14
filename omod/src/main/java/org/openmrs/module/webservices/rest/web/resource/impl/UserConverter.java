@@ -19,7 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.UserResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 

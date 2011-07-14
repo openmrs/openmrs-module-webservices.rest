@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.ConceptDescriptionController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +32,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.resource.ConceptDescriptionResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptDescriptionResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

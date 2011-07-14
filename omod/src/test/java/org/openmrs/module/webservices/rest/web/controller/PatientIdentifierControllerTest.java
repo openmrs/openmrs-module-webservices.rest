@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.PatientIdentifierController;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;

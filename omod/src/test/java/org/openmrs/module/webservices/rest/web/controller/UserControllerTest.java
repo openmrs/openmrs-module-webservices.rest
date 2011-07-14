@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
+import org.openmrs.module.webservices.rest.web.v1_0.controller.UserController;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
-import org.openmrs.module.webservices.rest.web.resource.UserResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
