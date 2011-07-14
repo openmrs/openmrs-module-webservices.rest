@@ -103,7 +103,12 @@ public class BaseRestController {
 	@ResponseBody
 	private SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
 		SimpleObject resourceCatalog = new SimpleObject();
-		resourceCatalog.put("catalog", ResourceDocCreator.create(RestConstants.URI_PREFIX));
+		String prefix = RestConstants.URI_PREFIX;
+		//strip the ending forward slash if any because it will be added by ResourceDocCreator.create
+		if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/"))
+			prefix = prefix.substring(0, prefix.lastIndexOf("/"));
+		
+		resourceCatalog.put("catalog", ResourceDocCreator.create(prefix));
 		
 		return resourceCatalog;
 	}
