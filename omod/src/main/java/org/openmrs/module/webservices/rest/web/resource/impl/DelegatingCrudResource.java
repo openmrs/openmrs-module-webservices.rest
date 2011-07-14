@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,21 +163,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	protected List<T> doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
-	}
-	
-	/**
-	 * @param bean
-	 * @param property
-	 * @return the given property on the given bean, if it exists and is accessible. returns null
-	 *         otherwise.
-	 */
-	private Object getPropertyIfExists(Object bean, String property) {
-		try {
-			if (PropertyUtils.isReadable(bean, property))
-				return PropertyUtils.getProperty(bean, property);
-		}
-		catch (Exception ex) {}
-		return null;
 	}
 	
 	/**

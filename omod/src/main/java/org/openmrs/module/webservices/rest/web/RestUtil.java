@@ -72,7 +72,8 @@ public class RestUtil implements GlobalPropertyListener {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
-				log.error(nfex.getMessage());
+				log.error(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME + " must be an integer. "
+				        + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_DEFAULT;
 			}
 		} else {
@@ -95,7 +96,8 @@ public class RestUtil implements GlobalPropertyListener {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
-				log.error(nfex.getMessage());
+				log.error(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME + " must be an integer. "
+				        + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_ABSOLUTE;
 			}
 		} else {

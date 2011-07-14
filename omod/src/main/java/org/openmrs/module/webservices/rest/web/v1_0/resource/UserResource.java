@@ -20,10 +20,12 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
+import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -46,19 +48,23 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		
 	}
 	
+	@RepHandler(RefRepresentation.class)
+	public SimpleObject asRef(UserAndPassword delegate) throws ConversionException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display", findMethod("getDisplayString"));
+		if (delegate.isRetired())
+			description.addProperty("retired");
+		description.addSelfLink();
+		return convertDelegateToRepresentation(delegate, description);
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof RefRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("retired");
-			description.addSelfLink();
-			return description;
-		} else if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("username");

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,12 +202,38 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		
 		Method method = ReflectionUtils.findMethod(delegate.getClass(), "isVoided");
 		
-		if (method != null)
-			description.addProperty("voided");
-		else {
+		if (method != null) {
+			try {
+				if ((Boolean) method.invoke(delegate))
+					description.addProperty("voided");
+			}
+			catch (IllegalArgumentException e) {
+				log.debug("unable to get voided status", e);
+			}
+			catch (IllegalAccessException e) {
+				log.debug("unable to get voided status", e);
+			}
+			catch (InvocationTargetException e) {
+				log.debug("unable to get voided status", e);
+			}
+		} else {
 			// couldn't find an "isVoided" method, look for "isRetired"
 			method = ReflectionUtils.findMethod(delegate.getClass(), "isRetired");
-			description.addProperty("retired");
+			if (method != null) {
+				try {
+					if ((Boolean) method.invoke(delegate))
+						description.addProperty("retired");
+				}
+				catch (IllegalArgumentException e) {
+					log.debug("unable to get retired status", e);
+				}
+				catch (IllegalAccessException e) {
+					log.debug("unable to get retired status", e);
+				}
+				catch (InvocationTargetException e) {
+					log.debug("unable to get retired status", e);
+				}
+			}
 		}
 		
 		description.addSelfLink();

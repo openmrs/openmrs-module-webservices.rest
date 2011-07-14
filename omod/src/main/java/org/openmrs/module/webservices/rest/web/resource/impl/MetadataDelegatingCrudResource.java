@@ -42,7 +42,8 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
 		rep.addProperty("display", "name", Representation.DEFAULT);
-		rep.addProperty("retired");
+		if (delegate.isRetired())
+			rep.addProperty("retired");
 		rep.addSelfLink();
 		return convertDelegateToRepresentation(delegate, rep);
 	}
