@@ -123,19 +123,16 @@ public class ResourceDocCreator {
 					//Get the ref representation of this resource.
 					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
 					Set<String> properties = ((SimpleObject) rep).keySet();
-					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
 					
 					//Get the default representation of this resource..
 					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
 					properties = ((SimpleObject) rep).keySet();
-					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
 					
 					//Get the full representation of this resource.
 					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
 					properties = ((SimpleObject) rep).keySet();
-					properties.remove("links");
 					resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
 					
 					/*BaseDelegatingResource<?> resoure = (BaseDelegatingResource<?>) instance;
