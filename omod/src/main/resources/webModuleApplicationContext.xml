@@ -75,10 +75,13 @@
 	<mvc:annotation-driven />
 	-->
 	
-	<!-- so spring finds the Handlers for the resources -->
-	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.resource"/>
+	<!-- so spring finds the Handlers for the v1.0 resources -->
+	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.v1_0.resource"/>
 	
-	<!-- so spring finds our controllers -->
-	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.controller" />
+	<!-- so spring finds our v1.0 controllers -->
+	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.v1_0.controller" />
+    
+    <!-- so spring finds our controllers -->
+    <context:component-scan base-package="org.openmrs.module.webservices.rest.web.controller" />
 	
 </beans>
