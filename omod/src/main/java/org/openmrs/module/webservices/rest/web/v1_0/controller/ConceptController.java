@@ -22,5 +22,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controller for REST web service access to the {@link Concept}. Supports CRUD on the resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/concept")
+@RequestMapping(value = "/rest/v1/concept")
 public class ConceptController extends BaseCrudController<ConceptResource> {}

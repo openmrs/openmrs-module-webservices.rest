@@ -28,7 +28,7 @@ import org.springframework.web.context.request.WebRequest;
  * any other resource.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/session")
+@RequestMapping(value = "/rest/v1/session")
 public class SessionController extends BaseRestController {
 	
 	/**

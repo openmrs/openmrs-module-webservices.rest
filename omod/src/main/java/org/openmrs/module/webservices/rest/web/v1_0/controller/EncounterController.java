@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/encounter")
+@RequestMapping(value = "/rest/v1/encounter")
 public class EncounterController extends BaseCrudController<EncounterResource> {
 	
 	/**

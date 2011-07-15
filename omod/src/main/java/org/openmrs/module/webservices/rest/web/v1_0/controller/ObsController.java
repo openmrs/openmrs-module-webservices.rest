@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller for REST web service access to the Obs resource. Supports CRUD on the resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/obs")
+@RequestMapping(value = "/rest/v1/obs")
 public class ObsController extends BaseCrudController<ObsResource> {
 	
 	/**

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/person/{parentUuid}/addresses")
+@RequestMapping(value = "/rest/v1/person/{parentUuid}/addresses")
 public class PersonAddressController extends BaseSubResourceController<PersonAddressResource> {
 
 }

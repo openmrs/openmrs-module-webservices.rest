@@ -18,7 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/rest/1.0/patient/{parentUuid}/identifiers")
+@RequestMapping(value = "/rest/v1/patient/{parentUuid}/identifiers")
 public class PatientIdentifierController extends BaseSubResourceController<PatientIdentifierResource> {
 
 }

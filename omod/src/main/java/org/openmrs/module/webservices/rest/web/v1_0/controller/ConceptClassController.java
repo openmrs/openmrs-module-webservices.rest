@@ -23,5 +23,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/conceptclass")
+@RequestMapping(value = "/rest/v1/conceptclass")
 public class ConceptClassController extends BaseCrudController<ConceptClassResource> {}

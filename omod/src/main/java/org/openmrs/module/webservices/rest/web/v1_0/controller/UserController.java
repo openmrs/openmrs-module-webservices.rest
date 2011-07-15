@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/user")
+@RequestMapping(value = "/rest/v1/user")
 public class UserController extends BaseCrudController<UserResource> {
 
 }

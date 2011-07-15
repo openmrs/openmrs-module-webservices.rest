@@ -22,5 +22,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * and reviewing on the resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/hl7")
+@RequestMapping(value = "/rest/v1/hl7")
 public class HL7MessageController extends BaseCrudController<HL7MessageResource> {}

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/patient")
+@RequestMapping(value = "/rest/v1/patient")
 public class PatientController extends BaseCrudController<PatientResource> {
 
 }

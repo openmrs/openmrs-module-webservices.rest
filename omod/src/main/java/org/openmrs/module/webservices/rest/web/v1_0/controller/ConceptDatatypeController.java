@@ -22,5 +22,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/conceptdatatype")
+@RequestMapping(value = "/rest/v1/conceptdatatype")
 public class ConceptDatatypeController extends BaseCrudController<ConceptDatatypeResource> {}

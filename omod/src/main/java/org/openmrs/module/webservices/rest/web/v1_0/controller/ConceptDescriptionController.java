@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping(value = "/rest/1.0/concept/{parentUuid}/descriptions")
+@RequestMapping(value = "/rest/v1/concept/{parentUuid}/descriptions")
 public class ConceptDescriptionController extends BaseSubResourceController<ConceptDescriptionResource> {
 
 }

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controllers that allows access to the {@link PatientIdentifierTypeResource} for CRUD
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/patientidentifiertype")
+@RequestMapping(value = "/rest/v1/patientidentifiertype")
 public class PatientIdentifierTypeController extends BaseCrudController<PatientIdentifierTypeResource> {
 
 }

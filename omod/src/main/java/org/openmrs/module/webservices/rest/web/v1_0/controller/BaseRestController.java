@@ -99,14 +99,14 @@ public class BaseRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/rest/1.0/catalog")
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/v1/catalog")
 	@ResponseBody
 	private SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
 		SimpleObject resourceCatalog = new SimpleObject();
 		String prefix = RestConstants.URI_PREFIX;
-		//strip the ending forward slash if any because it will be added by ResourceDocCreator.create
-		if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/"))
-			prefix = prefix.substring(0, prefix.lastIndexOf("/"));
+		//strip the ending string '/rest/' because it will be added by ResourceDocCreator.create
+		if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/rest/"))
+			prefix = prefix.substring(0, prefix.lastIndexOf("/rest/"));
 		
 		resourceCatalog.put("catalog", ResourceDocCreator.create(prefix));
 		

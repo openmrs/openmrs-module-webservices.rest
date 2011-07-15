@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/1.0/cohort")
+@RequestMapping(value = "/rest/v1/cohort")
 public class CohortController extends BaseCrudController<CohortResource> {
 	
 	@Override
