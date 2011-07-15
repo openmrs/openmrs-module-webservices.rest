@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientIdentifierTypeResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controllers that allows access to the {@link PatientIdentifierTypeResource} for CRUD
  */
 @Controller
-@RequestMapping(value = "/rest/v1/patientidentifiertype")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patientidentifiertype")
 public class PatientIdentifierTypeController extends BaseCrudController<PatientIdentifierTypeResource> {
 
 }

@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.CohortResource;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/cohort")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/cohort")
 public class CohortController extends BaseCrudController<CohortResource> {
 	
 	@Override

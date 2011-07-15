@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.EncounterResource;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/encounter")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/encounter")
 public class EncounterController extends BaseCrudController<EncounterResource> {
 	
 	/**

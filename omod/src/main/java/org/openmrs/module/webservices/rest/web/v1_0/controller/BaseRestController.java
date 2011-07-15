@@ -99,7 +99,7 @@ public class BaseRestController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/rest/v1/catalog")
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/" + RestConstants.VERSION_1 + "/catalog")
 	@ResponseBody
 	private SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
 		SimpleObject resourceCatalog = new SimpleObject();

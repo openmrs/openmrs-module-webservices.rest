@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -32,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller for REST web service access to the Obs resource. Supports CRUD on the resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/obs")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/obs")
 public class ObsController extends BaseCrudController<ObsResource> {
 	
 	/**

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself, and listing and addition of some subresources.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/user")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/user")
 public class UserController extends BaseCrudController<UserResource> {
 
 }

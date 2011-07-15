@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ import org.springframework.web.context.request.WebRequest;
  * any other resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/session")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController extends BaseRestController {
 	
 	/**

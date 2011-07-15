@@ -211,7 +211,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
-			return RestConstants.URI_PREFIX + res.value() + "/" + getUniqueId((T) delegate);
+			//TODO Deciding the version number from here is bad, it should be passed in to this method
+			return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + res.value() + "/" + getUniqueId((T) delegate);
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 		

@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientIdentifierResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(value = "/rest/v1/patient/{parentUuid}/identifiers")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patient/{parentUuid}/identifiers")
 public class PatientIdentifierController extends BaseSubResourceController<PatientIdentifierResource> {
 
 }

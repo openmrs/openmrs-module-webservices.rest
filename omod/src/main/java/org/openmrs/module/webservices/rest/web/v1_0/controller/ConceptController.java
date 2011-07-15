@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.Concept;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Controller for REST web service access to the {@link Concept}. Supports CRUD on the resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/concept")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/concept")
 public class ConceptController extends BaseCrudController<ConceptResource> {}

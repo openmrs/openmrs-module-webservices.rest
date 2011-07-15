@@ -193,8 +193,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void shouldRespectStartIndexAndLimit() throws Exception {
-		MockHttpServletRequest hsr = new MockHttpServletRequest("GET",
-		        "http://localhost:8080/openmrs/ws/rest/patient?q=Test");
+		MockHttpServletRequest hsr = new MockHttpServletRequest("GET", "http://localhost:8080/openmrs/ws/rest/"
+		        + RestConstants.VERSION_1 + "/patient?q=Test");
 		SimpleObject wrapper = new PatientController().search("Test", hsr, new MockHttpServletResponse());
 		Util.log("Everything", wrapper);
 		List<Object> results = (List<Object>) wrapper.get("results");

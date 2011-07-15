@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.CohortMemberResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * This class represents controller for REST web service access to {@link CohortMemberResource}.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/cohort/{parentUuid}/members")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/cohort/{parentUuid}/members")
 public class CohortMemberController extends BaseSubResourceController<CohortMemberResource> {
 
 }

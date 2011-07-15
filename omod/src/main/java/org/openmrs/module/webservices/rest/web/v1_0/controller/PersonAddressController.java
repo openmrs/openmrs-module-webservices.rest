@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.PersonAddress;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonAddressResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/person/{parentUuid}/addresses")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/person/{parentUuid}/addresses")
 public class PersonAddressController extends BaseSubResourceController<PersonAddressResource> {
 
 }

@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.EncounterTypeResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,5 +23,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/encountertype")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/encountertype")
 public class EncounterTypeController extends BaseCrudController<EncounterTypeResource> {}

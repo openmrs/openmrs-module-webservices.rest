@@ -27,7 +27,7 @@ public class RestConstants {
 	public static Integer MAX_RESULTS_DEFAULT = 50;
 	
 	/**
-	 * The absolute number of results to limit lists of objects to, even if the call requests a 
+	 * The absolute number of results to limit lists of objects to, even if the call requests a
 	 * larger list.
 	 * 
 	 * @see #MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
@@ -59,6 +59,11 @@ public class RestConstants {
 	 * wildcard match.
 	 */
 	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".allowedips";
+	
+	/**
+	 * The version number for the first rest web services representations
+	 */
+	public static final String VERSION_1 = "v1";
 	
 	/**
 	 * String that goes before every request. Its in a constant just in case we have to change it at
