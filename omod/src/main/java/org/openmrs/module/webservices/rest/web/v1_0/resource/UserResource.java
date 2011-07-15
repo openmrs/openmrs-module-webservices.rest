@@ -226,4 +226,23 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		return delegate.getUser().getUuid();
 	}
 	
+	/**
+	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getAuditInfo(java.lang.Object)
+	 */
+	@Override
+	public SimpleObject getAuditInfo(UserAndPassword delegate) throws Exception {
+		User user = delegate.getUser();
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(user, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(user.getDateCreated(), Representation.DEFAULT));
+		if (user.isRetired()) {
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(user, "retiredBy", Representation.REF));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(user.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(user.getRetireReason(), Representation.DEFAULT));
+		}
+		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(user, "changedBy", Representation.REF));
+		ret.put("dateChanged", ConversionUtil.convertToRepresentation(user.getDateChanged(), Representation.DEFAULT));
+		return ret;
+	}
 }
