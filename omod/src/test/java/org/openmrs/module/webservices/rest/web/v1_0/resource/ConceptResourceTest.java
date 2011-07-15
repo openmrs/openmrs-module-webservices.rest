@@ -13,51 +13,55 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptResource;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResource, Concept> {
 	
 	@Override
 	public Concept newObject() {
-		return Context.getConceptService().getConceptByUuid(ResourceTestConstants.CONCEPT_UUID);
+		return Context.getConceptService().getConceptByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getObject().getDisplayString());
-		assertEquals("retired", getObject().getRetired());
+		assertPropEquals("retired", getObject().isRetired());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("name");
-		assertContains("datatype");
-		assertContains("conceptClass");
-		assertEquals("set", getObject().getSet());
-		assertEquals("version", getObject().getVersion());
-		assertEquals("retired", getObject().getRetired());
-		assertContains("names");
-		assertContains("descriptions");
+		assertPropPresent("name");
+		assertPropPresent("datatype");
+		assertPropPresent("conceptClass");
+		assertPropEquals("set", getObject().getSet());
+		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("names");
+		assertPropPresent("descriptions");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("name");
-		assertContains("datatype");
-		assertContains("conceptClass");
-		assertEquals("set", getObject().getSet());
-		assertEquals("version", getObject().getVersion());
-		assertEquals("retired", getObject().getRetired());
-		assertContains("names");
-		assertContains("descriptions");
-		assertContains("auditInfo");
+		assertPropPresent("name");
+		assertPropPresent("datatype");
+		assertPropPresent("conceptClass");
+		assertPropEquals("set", getObject().getSet());
+		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("names");
+		assertPropPresent("descriptions");
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "YES";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.CONCEPT_UUID;
 	}
 	
 }

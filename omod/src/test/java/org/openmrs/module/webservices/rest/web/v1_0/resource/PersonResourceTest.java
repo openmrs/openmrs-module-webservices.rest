@@ -13,59 +13,62 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonResource;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonResourceTest extends BaseDelegatingResourceTest<PersonResource, Person> {
 	
 	@Override
 	public Person newObject() {
-		return Context.getPersonService().getPersonByUuid(ResourceTestConstants.PERSON_UUID);
+		return Context.getPersonService().getPersonByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("gender", getObject().getGender());
-		assertEquals("age", getObject().getAge());
-		assertEquals("birthdate", getObject().getBirthdate());
-		assertEquals("birthdateEstimated", getObject().getBirthdateEstimated());
-		assertEquals("dead", getObject().getDead());
-		assertEquals("deathDate", getObject().getDeathDate());
-		assertContains("causeOfDeath");
-		assertContains("preferredName");
-		assertContains("preferredAddress");
-		assertContains("attributes");
-		assertEquals("voided", getObject().getVoided());
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("attributes");
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("gender", getObject().getGender());
-		assertEquals("age", getObject().getAge());
-		assertEquals("birthdate", getObject().getBirthdate());
-		assertEquals("birthdateEstimated", getObject().getBirthdateEstimated());
-		assertEquals("dead", getObject().getDead());
-		assertEquals("deathDate", getObject().getDeathDate());
-		assertContains("causeOfDeath");
-		assertContains("preferredName");
-		assertContains("preferredAddress");
-		assertContains("names");
-		assertContains("addresses");
-		assertContains("attributes");
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("names");
+		assertPropPresent("addresses");
+		assertPropPresent("attributes");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Mr. Horatio Test Hornblower Esq.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PERSON_UUID;
 	}
 	
 }

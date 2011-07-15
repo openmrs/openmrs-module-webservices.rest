@@ -13,12 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.HL7SourceResource;
 import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class HL7SourceResourceTest extends BaseDelegatingResourceTest<HL7SourceResource, HL7Source> {
@@ -35,17 +32,24 @@ public class HL7SourceResourceTest extends BaseDelegatingResourceTest<HL7SourceR
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "TEST";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return getObject().getUuid();
 	}
 	
 }

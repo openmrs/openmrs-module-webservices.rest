@@ -22,42 +22,48 @@ public class EncounterResourceTest extends BaseDelegatingResourceTest<EncounterR
 	
 	@Override
 	public Encounter newObject() {
-		return Context.getEncounterService().getEncounterByUuid(ResourceTestConstants.ENCOUNTER_UUID);
+		return Context.getEncounterService().getEncounterByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("encounterDatetime", getObject().getEncounterDatetime());
-		assertContains("patient");
-		assertContains("location");
-		assertContains("form");
-		assertContains("encounterType");
-		assertContains("provider");
-		assertContains("obs");
-		assertContains("orders");
-		assertEquals("voided", getObject().getVoided());
+		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
+		assertPropPresent("patient");
+		assertPropPresent("location");
+		assertPropPresent("form");
+		assertPropPresent("encounterType");
+		assertPropPresent("provider");
+		assertPropPresent("obs");
+		assertPropPresent("orders");
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("encounterDatetime", getObject().getEncounterDatetime());
-		assertContains("patient");
-		assertContains("location");
-		assertContains("form");
-		assertContains("encounterType");
-		assertContains("provider");
-		assertContains("obs");
-		assertContains("orders");
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
+		assertPropPresent("patient");
+		assertPropPresent("location");
+		assertPropPresent("form");
+		assertPropPresent("encounterType");
+		assertPropPresent("provider");
+		assertPropPresent("obs");
+		assertPropPresent("orders");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Emergency 01/08/2008";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.ENCOUNTER_UUID;
 	}
 	
 }

@@ -13,33 +13,37 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.EncounterTypeResource;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class EncounterTypeResourceTest extends BaseDelegatingResourceTest<EncounterTypeResource, EncounterType> {
 	
 	@Override
 	public EncounterType newObject() {
-		return Context.getEncounterService().getEncounterTypeByUuid(ResourceTestConstants.ENCOUNTER_TYPE_UUID);
+		return Context.getEncounterService().getEncounterTypeByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Scheduled";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.ENCOUNTER_TYPE_UUID;
 	}
 	
 }

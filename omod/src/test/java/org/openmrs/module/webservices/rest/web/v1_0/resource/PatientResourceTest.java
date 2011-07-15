@@ -13,43 +13,45 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientResource;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PatientResourceTest extends BaseDelegatingResourceTest<PatientResource, Patient> {
 	
 	@Override
 	public Patient newObject() {
-		return Context.getService(PatientService.class).getPatientByUuid(ResourceTestConstants.PATIENT_UUID);
+		return Context.getService(PatientService.class).getPatientByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("identifiers");
-		assertContains("person");
-		assertEquals("voided", getObject().getVoided());
+		assertPropPresent("identifiers");
+		assertPropPresent("person");
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("identifiers");
-		assertContains("person");
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropPresent("identifiers");
+		assertPropPresent("person");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "101-6 - Mr. Horatio Test Hornblower Esq.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PATIENT_UUID;
 	}
 	
 }

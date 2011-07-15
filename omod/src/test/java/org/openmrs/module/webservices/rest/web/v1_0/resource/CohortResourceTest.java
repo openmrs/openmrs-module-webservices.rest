@@ -28,32 +28,38 @@ public class CohortResourceTest extends BaseDelegatingResourceTest<CohortResourc
 	
 	@Override
 	public Cohort newObject() {
-		return Context.getCohortService().getCohortByUuid(ResourceTestConstants.COHORT_UUID);
+		return Context.getCohortService().getCohortByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("voided", getObject().getVoided());
-		assertContains("memberIds");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("memberIds");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("voided", getObject().getVoided());
-		assertContains("memberIds");
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("memberIds");
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "B13 deficit";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.COHORT_UUID;
 	}
 	
 }

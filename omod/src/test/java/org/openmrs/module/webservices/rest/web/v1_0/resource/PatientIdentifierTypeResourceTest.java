@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientIdentifierTypeResource;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -23,42 +22,47 @@ public class PatientIdentifierTypeResourceTest extends BaseDelegatingResourceTes
 	
 	@Override
 	public PatientIdentifierType newObject() {
-		return Context.getService(PatientService.class).getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5")
-		        .getPatientIdentifier().getIdentifierType();
+		return Context.getService(PatientService.class).getPatientIdentifierTypeByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("display"); //no getter
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("format", getObject().getFormat());
-		assertEquals("formatDescription", getObject().getFormatDescription());
-		assertEquals("required", getObject().getRequired());
-		assertEquals("checkDigit", getObject().getCheckDigit());
-		assertEquals("validator", getObject().getValidator());
-		assertContains("locationBehavior"); //no getter
-		assertEquals("retired", getObject().getRetired());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("format", getObject().getFormat());
+		assertPropEquals("formatDescription", getObject().getFormatDescription());
+		assertPropEquals("required", getObject().getRequired());
+		assertPropEquals("checkDigit", getObject().getCheckDigit());
+		assertPropEquals("validator", getObject().getValidator());
+		assertPropPresent("locationBehavior");
+		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("format", getObject().getFormat());
-		assertEquals("formatDescription", getObject().getFormatDescription());
-		assertEquals("required", getObject().getRequired());
-		assertEquals("checkDigit", getObject().getCheckDigit());
-		assertEquals("validator", getObject().getValidator());
-		assertContains("locationBehavior"); //no getter
-		assertEquals("retired", getObject().getRetired());
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("format", getObject().getFormat());
+		assertPropEquals("formatDescription", getObject().getFormatDescription());
+		assertPropEquals("required", getObject().getRequired());
+		assertPropEquals("checkDigit", getObject().getCheckDigit());
+		assertPropEquals("validator", getObject().getValidator());
+		assertPropPresent("locationBehavior");
+		assertPropEquals("retired", getObject().getRetired());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "OpenMRS Identification Number";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PATIENT_IDENTIFIER_TYPE_UUID;
 	}
 }

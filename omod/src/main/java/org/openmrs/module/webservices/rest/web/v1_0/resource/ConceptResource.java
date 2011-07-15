@@ -56,8 +56,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display", "displayString", Representation.DEFAULT);
-		if (delegate.isRetired())
-			description.addProperty("retired");
+		description.addProperty("retired");
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}

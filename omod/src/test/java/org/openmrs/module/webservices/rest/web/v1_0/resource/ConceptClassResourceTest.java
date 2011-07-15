@@ -13,33 +13,44 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptClassResource;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptClassResourceTest extends BaseDelegatingResourceTest<ConceptClassResource, ConceptClass> {
 	
 	@Override
 	public ConceptClass newObject() {
-		return Context.getConceptService().getConceptByUuid(ResourceTestConstants.CONCEPT_UUID).getConceptClass();
+		return Context.getConceptService().getConceptClassByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
+		
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Misc";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.CONCEPT_CLASS_UUID;
 	}
 	
 }

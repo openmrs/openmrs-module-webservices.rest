@@ -13,11 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.HL7MessageResource;
 import org.junit.Before;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
 
@@ -31,7 +29,8 @@ public class HL7MessageResourceTest extends BaseDelegatingResourceTest<HL7Messag
 	@Override
 	public IncomingHl7Message newObject() {
 		HL7InQueue msg = new HL7InQueue();
-		msg.setHL7Data(ResourceTestConstants.HL7_SOURCE_NAME);
+		msg.setHL7Data("hl7Data");
+		msg.setHL7SourceKey("sourceKey");
 		msg.setHL7Source(Context.getHL7Service().getHL7SourceByName(ResourceTestConstants.HL7_SOURCE_NAME));
 		Context.getHL7Service().saveHL7InQueue(msg);
 		return new IncomingHl7Message(msg);
@@ -39,22 +38,29 @@ public class HL7MessageResourceTest extends BaseDelegatingResourceTest<HL7Messag
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("messageState", getObject().getMessageState());
+		assertPropEquals("messageState", getObject().getMessageState());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("source");
-		assertEquals("sourceKey", getObject().getSourceKey());
-		assertEquals("data", getObject().getData());
-		assertEquals("messageState", getObject().getMessageState());
+		assertPropPresent("source");
+		assertPropEquals("sourceKey", getObject().getSourceKey());
+		assertPropEquals("data", getObject().getData());
+		assertPropEquals("messageState", getObject().getMessageState());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "sourceKey - hl7Data";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return getObject().getUuid();
 	}
 	
 }

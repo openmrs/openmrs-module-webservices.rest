@@ -23,35 +23,40 @@ public class PatientIdentifierResourceTest extends BaseDelegatingResourceTest<Pa
 	
 	@Override
 	public PatientIdentifier newObject() {
-		return Context.getService(PatientService.class).getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5")
-		        .getPatientIdentifier();
+		return Context.getService(PatientService.class).getPatientIdentifierByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("identifier", getObject().getIdentifier());
-		assertContains("identifierType");
-		assertContains("location");
-		assertEquals("preferred", getObject().getPreferred());
-		assertEquals("voided", getObject().getVoided());
+		assertPropEquals("identifier", getObject().getIdentifier());
+		assertPropPresent("identifierType");
+		assertPropPresent("location");
+		assertPropEquals("preferred", getObject().getPreferred());
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("identifier", getObject().getIdentifier());
-		assertContains("identifierType");
-		assertContains("location");
-		assertEquals("preferred", getObject().getPreferred());
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropEquals("identifier", getObject().getIdentifier());
+		assertPropPresent("identifierType");
+		assertPropPresent("location");
+		assertPropEquals("preferred", getObject().getPreferred());
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "OpenMRS Identification Number = 101-6";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PATIENT_IDENTIFIER_UUID;
 	}
 	
 }

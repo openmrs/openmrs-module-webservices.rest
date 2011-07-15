@@ -13,50 +13,53 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, UserAndPassword> {
 	
 	@Override
 	public UserAndPassword newObject() {
-		UserAndPassword userAndPassword = new UserAndPassword(Context.getAuthenticatedUser());
+		UserAndPassword userAndPassword = new UserAndPassword(Context.getUserService().getUserByUuid(getUuidProperty()));
 		userAndPassword.setPassword("topsecret");
 		return userAndPassword;
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUser().getUuid());
-		assertEquals("retired", getObject().getUser().getRetired());
-		assertEquals("display", getResource().getDisplayString(getObject()));
+		assertPropEquals("retired", getObject().getUser().getRetired());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUser().getUuid());
-		assertEquals("username", getObject().getUser().getUsername());
-		assertEquals("systemId", getObject().getUser().getSystemId());
-		assertEquals("userProperties", getObject().getUser().getUserProperties());
-		assertContains("person");
-		assertContains("roles");
-		assertEquals("retired", getObject().getUser().getRetired());
+		assertPropEquals("username", getObject().getUser().getUsername());
+		assertPropEquals("systemId", getObject().getUser().getSystemId());
+		assertPropEquals("userProperties", getObject().getUser().getUserProperties());
+		assertPropPresent("person");
+		assertPropPresent("roles");
+		assertPropEquals("retired", getObject().getUser().getRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUser().getUuid());
-		assertEquals("username", getObject().getUser().getUsername());
-		assertEquals("systemId", getObject().getUser().getSystemId());
-		assertEquals("userProperties", getObject().getUser().getUserProperties());
-		assertContains("person");
-		assertContains("roles");
-		assertEquals("proficientLocales", getObject().getUser().getProficientLocales());
-		assertEquals("secretQuestion", getObject().getUser().getSecretQuestion());
-		assertEquals("retired", getObject().getUser().getRetired());
+		assertPropEquals("username", getObject().getUser().getUsername());
+		assertPropEquals("systemId", getObject().getUser().getSystemId());
+		assertPropEquals("userProperties", getObject().getUser().getUserProperties());
+		assertPropPresent("person");
+		assertPropPresent("roles");
+		assertPropEquals("proficientLocales", getObject().getUser().getProficientLocales());
+		assertPropEquals("secretQuestion", getObject().getUser().getSecretQuestion());
+		assertPropEquals("retired", getObject().getUser().getRetired());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "butch - Hippocrates of Cos";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.USER_UUID;
 	}
 }

@@ -13,50 +13,53 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonAttributeTypeResource;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonAttributeTypeResourceTest extends BaseDelegatingResourceTest<PersonAttributeTypeResource, PersonAttributeType> {
 	
 	@Override
 	public PersonAttributeType newObject() {
-		return Context.getPersonService().getPersonAttributeTypeByUuid(ResourceTestConstants.PERSON_ATTRIBUTE_TYPE_UUID);
+		return Context.getPersonService().getPersonAttributeTypeByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("display"); //no getter
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("format", getObject().getFormat());
-		assertEquals("foreignKey", getObject().getForeignKey());
-		assertEquals("sortWeight", getObject().getSortWeight());
-		assertEquals("searchable", getObject().getSearchable());
-		assertEquals("editPrivilege", getObject().getEditPrivilege());
-		assertEquals("retired", getObject().getRetired());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("format", getObject().getFormat());
+		assertPropEquals("foreignKey", getObject().getForeignKey());
+		assertPropEquals("sortWeight", getObject().getSortWeight());
+		assertPropEquals("searchable", getObject().getSearchable());
+		assertPropEquals("editPrivilege", getObject().getEditPrivilege());
+		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("format", getObject().getFormat());
-		assertEquals("foreignKey", getObject().getForeignKey());
-		assertEquals("sortWeight", getObject().getSortWeight());
-		assertEquals("searchable", getObject().getSearchable());
-		assertEquals("editPrivilege", getObject().getEditPrivilege());
-		assertEquals("retired", getObject().getRetired());
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("format", getObject().getFormat());
+		assertPropEquals("foreignKey", getObject().getForeignKey());
+		assertPropEquals("sortWeight", getObject().getSortWeight());
+		assertPropEquals("searchable", getObject().getSearchable());
+		assertPropEquals("editPrivilege", getObject().getEditPrivilege());
+		assertPropEquals("retired", getObject().getRetired());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Race";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PERSON_ATTRIBUTE_TYPE_UUID;
 	}
 }

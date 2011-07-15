@@ -13,13 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.CohortMemberResource;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.CohortMember;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class CohortMemberResourceTest extends BaseDelegatingResourceTest<CohortMemberResource, CohortMember> {
@@ -33,16 +30,25 @@ public class CohortMemberResourceTest extends BaseDelegatingResourceTest<CohortM
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertContains("patient");
+		assertPropPresent("patient");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertContains("patient");
+		assertPropPresent("patient");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "101-6 - Mr. Horatio Test Hornblower Esq.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return null;
 	}
 }

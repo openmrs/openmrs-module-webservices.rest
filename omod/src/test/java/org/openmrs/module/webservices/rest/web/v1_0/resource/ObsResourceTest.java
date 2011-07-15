@@ -22,48 +22,54 @@ public class ObsResourceTest extends BaseDelegatingResourceTest<ObsResource, Obs
 	
 	@Override
 	public Obs newObject() {
-		return Context.getObsService().getObsByUuid(ResourceTestConstants.OBS_UUID);
+		return Context.getObsService().getObsByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("person");
-		assertContains("concept");
-		assertContains("value"); //no getter
-		assertEquals("obsDatetime", getObject().getObsDatetime());
-		assertEquals("accessionNumber", getObject().getAccessionNumber());
-		assertEquals("obsGroup", getObject().getObsGroup());
-		assertContains("groupMembers");
-		assertEquals("comment", getObject().getComment());
-		assertContains("location");
-		assertContains("order");
-		assertContains("encounter");
-		assertEquals("voided", getObject().getVoided());
+		assertPropPresent("person");
+		assertPropPresent("concept");
+		assertPropPresent("value");
+		assertPropEquals("obsDatetime", getObject().getObsDatetime());
+		assertPropEquals("accessionNumber", getObject().getAccessionNumber());
+		assertPropEquals("obsGroup", getObject().getObsGroup());
+		assertPropPresent("groupMembers");
+		assertPropEquals("comment", getObject().getComment());
+		assertPropPresent("location");
+		assertPropPresent("order");
+		assertPropPresent("encounter");
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("person");
-		assertContains("concept");
-		assertContains("value"); //no getter
-		assertEquals("obsDatetime", getObject().getObsDatetime());
-		assertEquals("accessionNumber", getObject().getAccessionNumber());
-		assertEquals("obsGroup", getObject().getObsGroup());
-		assertContains("groupMembers");
-		assertEquals("comment", getObject().getComment());
-		assertContains("location");
-		assertContains("order");
-		assertContains("encounter");
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropPresent("person");
+		assertPropPresent("concept");
+		assertPropPresent("value");
+		assertPropEquals("obsDatetime", getObject().getObsDatetime());
+		assertPropEquals("accessionNumber", getObject().getAccessionNumber());
+		assertPropEquals("obsGroup", getObject().getObsGroup());
+		assertPropPresent("groupMembers");
+		assertPropEquals("comment", getObject().getComment());
+		assertPropPresent("location");
+		assertPropPresent("order");
+		assertPropPresent("encounter");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "WEIGHT (KG) = 50.0";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.OBS_UUID;
 	}
 	
 }

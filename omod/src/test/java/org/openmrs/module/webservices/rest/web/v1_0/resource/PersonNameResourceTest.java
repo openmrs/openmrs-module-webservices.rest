@@ -13,50 +13,53 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonNameResource;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonNameResourceTest extends BaseDelegatingResourceTest<PersonNameResource, PersonName> {
 	
 	@Override
 	public PersonName newObject() {
-		return Context.getPersonService().getPersonByUuid(ResourceTestConstants.PERSON_UUID).getPersonName();
+		return Context.getPersonService().getPersonNameByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("givenName", getObject().getGivenName());
-		assertEquals("middleName", getObject().getMiddleName());
-		assertEquals("familyName", getObject().getFamilyName());
-		assertEquals("familyName2", getObject().getFamilyName2());
-		assertEquals("voided", getObject().getVoided());
+		assertPropEquals("givenName", getObject().getGivenName());
+		assertPropEquals("middleName", getObject().getMiddleName());
+		assertPropEquals("familyName", getObject().getFamilyName());
+		assertPropEquals("familyName2", getObject().getFamilyName2());
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("givenName", getObject().getGivenName());
-		assertEquals("middleName", getObject().getMiddleName());
-		assertEquals("familyName", getObject().getFamilyName());
-		assertEquals("familyName2", getObject().getFamilyName2());
-		assertEquals("preferred", getObject().getPreferred());
-		assertEquals("prefix", getObject().getPrefix());
-		assertEquals("familyNamePrefix", getObject().getFamilyNamePrefix());
-		assertEquals("familyNameSuffix", getObject().getFamilyNameSuffix());
-		assertEquals("degree", getObject().getDegree());
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropEquals("givenName", getObject().getGivenName());
+		assertPropEquals("middleName", getObject().getMiddleName());
+		assertPropEquals("familyName", getObject().getFamilyName());
+		assertPropEquals("familyName2", getObject().getFamilyName2());
+		assertPropEquals("preferred", getObject().getPreferred());
+		assertPropEquals("prefix", getObject().getPrefix());
+		assertPropEquals("familyNamePrefix", getObject().getFamilyNamePrefix());
+		assertPropEquals("familyNameSuffix", getObject().getFamilyNameSuffix());
+		assertPropEquals("degree", getObject().getDegree());
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Mr. Horatio Test Hornblower Esq.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PERSON_NAME_UUID;
 	}
 	
 }

@@ -22,58 +22,64 @@ public class PersonAddressResourceTest extends BaseDelegatingResourceTest<Person
 	
 	@Override
 	public PersonAddress newObject() {
-		return Context.getPersonService().getPersonByUuid(ResourceTestConstants.PERSON_UUID).getPersonAddress();
+		return Context.getPersonService().getPersonAddressByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("preferred", getObject().getPreferred());
-		assertEquals("address1", getObject().getAddress1());
-		assertEquals("address2", getObject().getAddress2());
-		assertEquals("cityVillage", getObject().getCityVillage());
-		assertEquals("stateProvince", getObject().getStateProvince());
-		assertEquals("country", getObject().getCountry());
-		assertEquals("postalCode", getObject().getPostalCode());
-		assertEquals("countyDistrict", getObject().getCountyDistrict());
-		assertEquals("address3", getObject().getAddress3());
-		assertEquals("address4", getObject().getAddress4());
-		assertEquals("address5", getObject().getAddress5());
-		assertEquals("address6", getObject().getAddress6());
-		assertContains("startDate"); //no getter
-		assertContains("endDate"); //no getter
-		assertEquals("latitude", getObject().getLatitude());
-		assertEquals("longitude", getObject().getLongitude());
-		assertEquals("voided", getObject().getVoided());
+		assertPropEquals("preferred", getObject().getPreferred());
+		assertPropEquals("address1", getObject().getAddress1());
+		assertPropEquals("address2", getObject().getAddress2());
+		assertPropEquals("cityVillage", getObject().getCityVillage());
+		assertPropEquals("stateProvince", getObject().getStateProvince());
+		assertPropEquals("country", getObject().getCountry());
+		assertPropEquals("postalCode", getObject().getPostalCode());
+		assertPropEquals("countyDistrict", getObject().getCountyDistrict());
+		assertPropEquals("address3", getObject().getAddress3());
+		assertPropEquals("address4", getObject().getAddress4());
+		assertPropEquals("address5", getObject().getAddress5());
+		assertPropEquals("address6", getObject().getAddress6());
+		assertPropPresent("startDate");
+		assertPropPresent("endDate");
+		assertPropEquals("latitude", getObject().getLatitude());
+		assertPropEquals("longitude", getObject().getLongitude());
+		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("preferred", getObject().getPreferred());
-		assertEquals("address1", getObject().getAddress1());
-		assertEquals("address2", getObject().getAddress2());
-		assertEquals("cityVillage", getObject().getCityVillage());
-		assertEquals("stateProvince", getObject().getStateProvince());
-		assertEquals("country", getObject().getCountry());
-		assertEquals("postalCode", getObject().getPostalCode());
-		assertEquals("countyDistrict", getObject().getCountyDistrict());
-		assertEquals("address3", getObject().getAddress3());
-		assertEquals("address4", getObject().getAddress4());
-		assertEquals("address5", getObject().getAddress5());
-		assertEquals("address6", getObject().getAddress6());
-		assertContains("startDate"); //no getter
-		assertContains("endDate"); //no getter
-		assertEquals("latitude", getObject().getLatitude());
-		assertEquals("longitude", getObject().getLongitude());
-		assertEquals("voided", getObject().getVoided());
-		assertContains("auditInfo");
+		assertPropEquals("preferred", getObject().getPreferred());
+		assertPropEquals("address1", getObject().getAddress1());
+		assertPropEquals("address2", getObject().getAddress2());
+		assertPropEquals("cityVillage", getObject().getCityVillage());
+		assertPropEquals("stateProvince", getObject().getStateProvince());
+		assertPropEquals("country", getObject().getCountry());
+		assertPropEquals("postalCode", getObject().getPostalCode());
+		assertPropEquals("countyDistrict", getObject().getCountyDistrict());
+		assertPropEquals("address3", getObject().getAddress3());
+		assertPropEquals("address4", getObject().getAddress4());
+		assertPropEquals("address5", getObject().getAddress5());
+		assertPropEquals("address6", getObject().getAddress6());
+		assertPropPresent("startDate");
+		assertPropPresent("endDate");
+		assertPropEquals("latitude", getObject().getLatitude());
+		assertPropEquals("longitude", getObject().getLongitude());
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "1050 Wishard Blvd.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.PERSON_ADDRESS_UUID;
 	}
 	
 }

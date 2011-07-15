@@ -22,32 +22,38 @@ public class ConceptDatatypeResourceTest extends BaseDelegatingResourceTest<Conc
 	
 	@Override
 	public ConceptDatatype newObject() {
-		return Context.getConceptService().getConceptByUuid(ResourceTestConstants.CONCEPT_UUID).getDatatype();
+		return Context.getConceptService().getConceptDatatypeByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("display"); //no getter
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("hl7Abbreviation", getObject().getHl7Abbreviation());
-		assertEquals("retired", getObject().getRetired());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("hl7Abbreviation", getObject().getHl7Abbreviation());
+		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("hl7Abbreviation", getObject().getHl7Abbreviation());
-		assertEquals("retired", getObject().getRetired());
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("hl7Abbreviation", getObject().getHl7Abbreviation());
+		assertPropEquals("retired", getObject().getRetired());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "N/A";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.CONCEPT_DATATYPE_UUID;
 	}
 	
 }

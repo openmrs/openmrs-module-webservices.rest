@@ -13,39 +13,44 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptDescriptionResource;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptDescriptionResourceTest extends BaseDelegatingResourceTest<ConceptDescriptionResource, ConceptDescription> {
 	
 	@Override
 	public ConceptDescription newObject() {
-		return Context.getConceptService().getConceptByUuid(ResourceTestConstants.CONCEPT_UUID).getDescription();
+		return Context.getConceptService().getConceptDescriptionByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("description", getObject().getDescription());
+		assertPropEquals("description", getObject().getDescription());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("locale", getObject().getLocale());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("locale", getObject().getLocale());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("locale", getObject().getLocale());
-		assertContains("auditInfo");
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("locale", getObject().getLocale());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.CONCEPT_DESCRIPTION_UUID;
 	}
 	
 }

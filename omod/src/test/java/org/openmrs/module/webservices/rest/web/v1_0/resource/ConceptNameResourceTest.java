@@ -22,32 +22,38 @@ public class ConceptNameResourceTest extends BaseDelegatingResourceTest<ConceptN
 	
 	@Override
 	public ConceptName newObject() {
-		return Context.getConceptService().getConceptByUuid(ResourceTestConstants.CONCEPT_UUID).getName();
+		return Context.getConceptService().getConceptNameByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("display", getResource().getDisplayString(getObject()));
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("locale", getObject().getLocale());
-		assertEquals("localePreferred", getObject().getLocalePreferred());
-		assertEquals("conceptNameType", getObject().getConceptNameType());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("locale", getObject().getLocale());
+		assertPropEquals("localePreferred", getObject().getLocalePreferred());
+		assertPropEquals("conceptNameType", getObject().getConceptNameType());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("locale", getObject().getLocale());
-		assertEquals("localePreferred", getObject().getLocalePreferred());
-		assertEquals("conceptNameType", getObject().getConceptNameType());
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("locale", getObject().getLocale());
+		assertPropEquals("localePreferred", getObject().getLocalePreferred());
+		assertPropEquals("conceptNameType", getObject().getConceptNameType());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "YES";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.CONCEPT_NAME_UUID;
 	}
 	
 }

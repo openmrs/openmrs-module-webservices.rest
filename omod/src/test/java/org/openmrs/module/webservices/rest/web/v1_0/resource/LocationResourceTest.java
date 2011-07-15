@@ -13,72 +13,76 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.LocationResource;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class LocationResourceTest extends BaseDelegatingResourceTest<LocationResource, Location> {
 	
 	@Override
 	public Location newObject() {
-		return Context.getLocationService().getLocationByUuid(ResourceTestConstants.LOCATION_UUID);
+		return Context.getLocationService().getLocationByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertContains("display"); //no getter
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("address1", getObject().getAddress1());
-		assertEquals("address2", getObject().getAddress2());
-		assertEquals("cityVillage", getObject().getCityVillage());
-		assertEquals("stateProvince", getObject().getStateProvince());
-		assertEquals("country", getObject().getCountry());
-		assertEquals("postalCode", getObject().getPostalCode());
-		assertEquals("latitude", getObject().getLatitude());
-		assertEquals("longitude", getObject().getLongitude());
-		assertEquals("countyDistrict", getObject().getCountyDistrict());
-		assertEquals("address3", getObject().getAddress3());
-		assertEquals("address4", getObject().getAddress4());
-		assertEquals("address5", getObject().getAddress5());
-		assertEquals("address6", getObject().getAddress6());
-		assertContains("tags");
-		assertContains("parentLocation");
-		assertContains("childLocations");
-		assertEquals("retired", getObject().getRetired());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("address1", getObject().getAddress1());
+		assertPropEquals("address2", getObject().getAddress2());
+		assertPropEquals("cityVillage", getObject().getCityVillage());
+		assertPropEquals("stateProvince", getObject().getStateProvince());
+		assertPropEquals("country", getObject().getCountry());
+		assertPropEquals("postalCode", getObject().getPostalCode());
+		assertPropEquals("latitude", getObject().getLatitude());
+		assertPropEquals("longitude", getObject().getLongitude());
+		assertPropEquals("countyDistrict", getObject().getCountyDistrict());
+		assertPropEquals("address3", getObject().getAddress3());
+		assertPropEquals("address4", getObject().getAddress4());
+		assertPropEquals("address5", getObject().getAddress5());
+		assertPropEquals("address6", getObject().getAddress6());
+		assertPropPresent("tags");
+		assertPropPresent("parentLocation");
+		assertPropPresent("childLocations");
+		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-		assertEquals("uuid", getObject().getUuid());
-		assertEquals("name", getObject().getName());
-		assertEquals("description", getObject().getDescription());
-		assertEquals("address1", getObject().getAddress1());
-		assertEquals("address2", getObject().getAddress2());
-		assertEquals("cityVillage", getObject().getCityVillage());
-		assertEquals("stateProvince", getObject().getStateProvince());
-		assertEquals("country", getObject().getCountry());
-		assertEquals("postalCode", getObject().getPostalCode());
-		assertEquals("latitude", getObject().getLatitude());
-		assertEquals("longitude", getObject().getLongitude());
-		assertEquals("countyDistrict", getObject().getCountyDistrict());
-		assertEquals("address3", getObject().getAddress3());
-		assertEquals("address4", getObject().getAddress4());
-		assertEquals("address5", getObject().getAddress5());
-		assertEquals("address6", getObject().getAddress6());
-		assertContains("tags");
-		assertContains("parentLocation");
-		assertContains("childLocations");
-		assertEquals("retired", getObject().getRetired());
-		assertContains("auditInfo");
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("address1", getObject().getAddress1());
+		assertPropEquals("address2", getObject().getAddress2());
+		assertPropEquals("cityVillage", getObject().getCityVillage());
+		assertPropEquals("stateProvince", getObject().getStateProvince());
+		assertPropEquals("country", getObject().getCountry());
+		assertPropEquals("postalCode", getObject().getPostalCode());
+		assertPropEquals("latitude", getObject().getLatitude());
+		assertPropEquals("longitude", getObject().getLongitude());
+		assertPropEquals("countyDistrict", getObject().getCountyDistrict());
+		assertPropEquals("address3", getObject().getAddress3());
+		assertPropEquals("address4", getObject().getAddress4());
+		assertPropEquals("address5", getObject().getAddress5());
+		assertPropEquals("address6", getObject().getAddress6());
+		assertPropPresent("tags");
+		assertPropPresent("parentLocation");
+		assertPropPresent("childLocations");
+		assertPropEquals("retired", getObject().getRetired());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Never Never Land";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return ResourceTestConstants.LOCATION_UUID;
 	}
 	
 }
