@@ -26,7 +26,6 @@ public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResou
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertPropEquals("retired", getObject().isRetired());
 	}
 	
 	@Override
@@ -34,7 +33,7 @@ public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResou
 		assertPropPresent("name");
 		assertPropPresent("datatype");
 		assertPropPresent("conceptClass");
-		assertPropEquals("set", getObject().getSet());
+		assertPropPresent("set");
 		assertPropEquals("version", getObject().getVersion());
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("names");
@@ -46,7 +45,7 @@ public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResou
 		assertPropPresent("name");
 		assertPropPresent("datatype");
 		assertPropPresent("conceptClass");
-		assertPropEquals("set", getObject().getSet());
+		assertPropPresent("set");
 		assertPropEquals("version", getObject().getVersion());
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("names");

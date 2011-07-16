@@ -108,6 +108,6 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 * @return the display string.
 	 */
 	public String getDisplayString(IncomingHl7Message message) {
-		return message.getSourceKey() + " - " + message.getData();
+		return message.getSourceKey();
 	}
 }

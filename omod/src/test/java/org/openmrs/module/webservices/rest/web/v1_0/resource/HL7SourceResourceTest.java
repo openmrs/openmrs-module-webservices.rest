@@ -36,10 +36,17 @@ public class HL7SourceResourceTest extends BaseDelegatingResourceTest<HL7SourceR
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("auditInfo");
 	}
 	
 	@Override

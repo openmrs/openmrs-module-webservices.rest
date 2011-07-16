@@ -41,6 +41,7 @@ public class ConceptClassResourceTest extends BaseDelegatingResourceTest<Concept
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("auditInfo");
 	}
 	
 	@Override

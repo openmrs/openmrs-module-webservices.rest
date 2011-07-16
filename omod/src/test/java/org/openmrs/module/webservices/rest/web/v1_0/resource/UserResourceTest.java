@@ -28,7 +28,6 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
-		assertPropEquals("retired", getObject().getUser().getRetired());
 	}
 	
 	@Override

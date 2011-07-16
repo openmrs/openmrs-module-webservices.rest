@@ -55,7 +55,7 @@ public class HL7MessageResourceTest extends BaseDelegatingResourceTest<HL7Messag
 	
 	@Override
 	public String getDisplayProperty() {
-		return "sourceKey - hl7Data";
+		return "sourceKey";
 	}
 	
 	@Override

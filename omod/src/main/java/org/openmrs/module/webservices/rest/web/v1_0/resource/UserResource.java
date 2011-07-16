@@ -53,7 +53,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display", findMethod("getDisplayString"));
-		description.addProperty("retired");
+		if (delegate.isRetired()) {
+			description.addProperty("retired");
+		}
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}

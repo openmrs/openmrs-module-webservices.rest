@@ -145,6 +145,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		assertPropEquals("uuid", getUuidProperty());
 		assertPropEquals("display", getDisplayProperty());
 		assertPropPresent("links");
+		
 		@SuppressWarnings("unchecked")
 		List<Hyperlink> links = (List<Hyperlink>) getRepresentation().get("links");
 		boolean self = false;
@@ -165,6 +166,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		representation = newDefaultRepresentation();
 		
 		assertPropEquals("uuid", getUuidProperty());
+		assertPropPresent("links");
 		
 		validateDefaultRepresentation();
 	}
@@ -174,6 +176,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		representation = getFullRepresentation();
 		
 		assertPropEquals("uuid", getUuidProperty());
+		assertPropPresent("links");
 		
 		validateFullRepresentation();
 	}

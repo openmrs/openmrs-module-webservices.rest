@@ -49,6 +49,7 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("description");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
@@ -155,11 +156,11 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 	/**
 	 * Gets the display string for a concept description including its locale.
 	 * 
-	 * @param ConceptDescription the concept description object.
+	 * @param conceptDescription the concept description object.
 	 * @return the display string.
 	 */
-	public String getDisplayString(ConceptDescription ConceptDescription) {
-		return ConceptDescription.getDescription() + ", Locale: " + getLocaleAsString(ConceptDescription);
+	public String getDisplayString(ConceptDescription conceptDescription) {
+		return conceptDescription.getDescription();
 	}
 	
 	/**

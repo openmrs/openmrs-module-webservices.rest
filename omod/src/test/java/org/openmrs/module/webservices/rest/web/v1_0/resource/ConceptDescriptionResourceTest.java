@@ -44,8 +44,7 @@ public class ConceptDescriptionResourceTest extends BaseDelegatingResourceTest<C
 	
 	@Override
 	public String getDisplayProperty() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Drug used for pain relief, fever, and antiplatelet actions.";
 	}
 	
 	@Override
