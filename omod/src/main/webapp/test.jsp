@@ -52,7 +52,12 @@ function sendToServer() {
 	var u = jQuery("#url").val()
 	var d = jQuery("#json").val();
 	var type = jQuery("#type").val();
-	var qparam = "?v=" + jQuery("#rep").val();
+    if(u.indexOf("?") >= 0){
+        var qparam = "&v=";
+    } else {
+        var qparam = "?v=";
+    }
+    qparam = qparam + jQuery("#rep").val();
 	u = u + qparam;
 	jQuery.ajax({
 	   type: type,
@@ -66,7 +71,7 @@ function sendToServer() {
 		    404: function() {
 		      alert('404 thrown: page/object not found');
 		    }
-		  },
+		  }
 	});
 	    	    
 	return false;
