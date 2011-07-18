@@ -26,17 +26,20 @@ public class ConceptDescriptionResourceTest extends BaseDelegatingResourceTest<C
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
+		super.validateRefRepresentation();
 		assertPropEquals("description", getObject().getDescription());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("locale", getObject().getLocale());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("locale", getObject().getLocale());
 		assertPropPresent("auditInfo");

@@ -25,12 +25,8 @@ public class ConceptClassResourceTest extends BaseDelegatingResourceTest<Concept
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-		
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
@@ -38,6 +34,7 @@ public class ConceptClassResourceTest extends BaseDelegatingResourceTest<Concept
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());

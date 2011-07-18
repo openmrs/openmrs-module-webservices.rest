@@ -25,11 +25,8 @@ public class PersonNameResourceTest extends BaseDelegatingResourceTest<PersonNam
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("givenName", getObject().getGivenName());
 		assertPropEquals("middleName", getObject().getMiddleName());
 		assertPropEquals("familyName", getObject().getFamilyName());
@@ -39,6 +36,7 @@ public class PersonNameResourceTest extends BaseDelegatingResourceTest<PersonNam
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("givenName", getObject().getGivenName());
 		assertPropEquals("middleName", getObject().getMiddleName());
 		assertPropEquals("familyName", getObject().getFamilyName());

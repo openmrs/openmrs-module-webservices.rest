@@ -32,11 +32,8 @@ public class CohortResourceTest extends BaseDelegatingResourceTest<CohortResourc
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("voided", getObject().getVoided());
@@ -45,6 +42,7 @@ public class CohortResourceTest extends BaseDelegatingResourceTest<CohortResourc
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("voided", getObject().getVoided());

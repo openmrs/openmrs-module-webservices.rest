@@ -26,11 +26,8 @@ public class EncounterResourceTest extends BaseDelegatingResourceTest<EncounterR
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
 		assertPropPresent("patient");
 		assertPropPresent("location");
@@ -44,6 +41,7 @@ public class EncounterResourceTest extends BaseDelegatingResourceTest<EncounterR
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("encounterDatetime", getObject().getEncounterDatetime());
 		assertPropPresent("patient");
 		assertPropPresent("location");

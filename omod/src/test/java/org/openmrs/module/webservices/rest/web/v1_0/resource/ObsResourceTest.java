@@ -26,11 +26,8 @@ public class ObsResourceTest extends BaseDelegatingResourceTest<ObsResource, Obs
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropPresent("person");
 		assertPropPresent("concept");
 		assertPropPresent("value");
@@ -47,6 +44,7 @@ public class ObsResourceTest extends BaseDelegatingResourceTest<ObsResource, Obs
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropPresent("person");
 		assertPropPresent("concept");
 		assertPropPresent("value");

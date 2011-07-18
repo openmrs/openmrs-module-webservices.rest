@@ -27,11 +27,8 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("username", getObject().getUser().getUsername());
 		assertPropEquals("systemId", getObject().getUser().getSystemId());
 		assertPropEquals("userProperties", getObject().getUser().getUserProperties());
@@ -42,6 +39,7 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("username", getObject().getUser().getUsername());
 		assertPropEquals("systemId", getObject().getUser().getSystemId());
 		assertPropEquals("userProperties", getObject().getUser().getUserProperties());

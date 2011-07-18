@@ -26,11 +26,8 @@ public class ConceptDatatypeResourceTest extends BaseDelegatingResourceTest<Conc
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("hl7Abbreviation", getObject().getHl7Abbreviation());
@@ -39,6 +36,7 @@ public class ConceptDatatypeResourceTest extends BaseDelegatingResourceTest<Conc
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("hl7Abbreviation", getObject().getHl7Abbreviation());

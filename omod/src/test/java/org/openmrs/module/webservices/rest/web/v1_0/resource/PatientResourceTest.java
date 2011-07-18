@@ -26,11 +26,8 @@ public class PatientResourceTest extends BaseDelegatingResourceTest<PatientResou
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropPresent("identifiers");
 		assertPropPresent("person");
 		assertPropEquals("voided", getObject().getVoided());
@@ -38,6 +35,7 @@ public class PatientResourceTest extends BaseDelegatingResourceTest<PatientResou
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropPresent("identifiers");
 		assertPropPresent("person");
 		assertPropEquals("voided", getObject().getVoided());

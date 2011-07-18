@@ -25,11 +25,8 @@ public class PersonResourceTest extends BaseDelegatingResourceTest<PersonResourc
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("gender", getObject().getGender());
 		assertPropEquals("age", getObject().getAge());
 		assertPropEquals("birthdate", getObject().getBirthdate());
@@ -45,6 +42,7 @@ public class PersonResourceTest extends BaseDelegatingResourceTest<PersonResourc
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("gender", getObject().getGender());
 		assertPropEquals("age", getObject().getAge());
 		assertPropEquals("birthdate", getObject().getBirthdate());

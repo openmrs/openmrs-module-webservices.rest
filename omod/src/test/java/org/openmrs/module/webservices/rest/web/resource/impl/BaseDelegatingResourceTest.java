@@ -30,6 +30,10 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
  * Is designed to be extended by classes testing BaseDelegatingResource.
+ * <p>
+ * Typically aside from implementing abstract methods of this class, you will want to override
+ * {@link #validateRefRepresentation()}, {@link #validateDefaultRepresentation()} and
+ * {@link #validateFullRepresentation()}.
  * 
  * @param <R> resource
  * @param <T> object
@@ -50,98 +54,37 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	public abstract T newObject();
 	
 	/**
-	 * Validates RefRepresentation of the object returned by the resource.
+	 * Needs to be implemented in order to validate the display property in each representation.
+	 * <p>
+	 * It is called by {@link #asRepresentation_shouldReturnValidDefaultRepresentation()},
+	 * {@link #asRepresentation_shouldReturnValidFullRepresentation()} and
+	 * {@link #asRepresentation_shouldReturnValidRefRepresentation()} to test precisely each
+	 * representation.
 	 * 
-	 * @throws Exception
-	 */
-	public abstract void validateRefRepresentation() throws Exception;
-	
-	/**
-	 * Validates DefaultRepresentation of the object returned by the resource.
-	 * 
-	 * @throws Exception
-	 */
-	public abstract void validateDefaultRepresentation() throws Exception;
-	
-	/**
-	 * Validates FullRepresentation of the object returned by the resource.
-	 * 
-	 * @throws Exception
-	 */
-	public abstract void validateFullRepresentation() throws Exception;
-	
-	/**
 	 * @return the display property
 	 */
 	public abstract String getDisplayProperty();
 	
 	/**
+	 * Needs to be implemented in order to validate the uuid property in each representation.
+	 * <p>
+	 * It is called by {@link #asRepresentation_shouldReturnValidDefaultRepresentation()},
+	 * {@link #asRepresentation_shouldReturnValidFullRepresentation()} and
+	 * {@link #asRepresentation_shouldReturnValidRefRepresentation()}.
+	 * 
 	 * @return the uuid property
 	 */
 	public abstract String getUuidProperty();
 	
 	/**
-	 * Instantiates BaseDelegatingResource.
+	 * Validates RefRepresentation of the object returned by the resource.
+	 * <p>
+	 * Tests the value of the uuid and display property and the presence of a self link in the links
+	 * property.
 	 * 
-	 * @return the new resource
+	 * @throws Exception
 	 */
-	public R newResource() {
-		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
-		@SuppressWarnings("unchecked")
-		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
-		return Context.getService(RestService.class).getResource(clazz);
-	}
-	
-	public T getObject() {
-		if (object == null) {
-			object = newObject();
-		}
-		Assert.assertNotNull("newObject must not return null", object);
-		return object;
-	}
-	
-	public SimpleObject getRepresentation() {
-		Assert.assertNotNull("representation must not be null", representation);
-		return representation;
-	}
-	
-	public R getResource() {
-		if (resource == null) {
-			resource = newResource();
-		}
-		Assert.assertNotNull("newResource must not return null", resource);
-		return resource;
-	}
-	
-	public SimpleObject newRefRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.REF);
-	}
-	
-	public SimpleObject newDefaultRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
-	}
-	
-	public SimpleObject getFullRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.FULL);
-	}
-	
-	public void assertPropEquals(String property, Object value) {
-		if (value instanceof Date) {
-			value = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) value);
-		} else if (value instanceof Locale) {
-			value = value.toString();
-		}
-		Assert.assertEquals(property, value, getRepresentation().get(property));
-	}
-	
-	public void assertPropPresent(String property) {
-		Assert.assertTrue(getRepresentation().containsKey(property));
-	}
-	
-	@Test
-	public void asRepresentation_shouldReturnValidRefRepresentation() throws Exception {
-		representation = newRefRepresentation();
-		
+	public void validateRefRepresentation() throws Exception {
 		assertPropEquals("uuid", getUuidProperty());
 		assertPropEquals("display", getDisplayProperty());
 		assertPropPresent("links");
@@ -157,26 +100,185 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 			}
 		}
 		Assert.assertTrue(self);
+	}
+	
+	/**
+	 * Validates DefaultRepresentation of the object returned by the resource.
+	 * <p>
+	 * Tests the value of the uuid property and the presence of the links property.
+	 * 
+	 * @throws Exception
+	 */
+	public void validateDefaultRepresentation() throws Exception {
+		assertPropEquals("uuid", getUuidProperty());
+		assertPropPresent("links");
+	}
+	
+	/**
+	 * Validates FullRepresentation of the object returned by the resource.
+	 * <p>
+	 * Tests the value of the uuid property and the presence of the links property.
+	 * 
+	 * @throws Exception
+	 */
+	public void validateFullRepresentation() throws Exception {
+		assertPropEquals("uuid", getUuidProperty());
+		assertPropPresent("links");
+	}
+	
+	/**
+	 * Instantiates BaseDelegatingResource.
+	 * 
+	 * @return the new resource
+	 */
+	public R newResource() {
+		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
+		@SuppressWarnings("unchecked")
+		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
+		return Context.getService(RestService.class).getResource(clazz);
+	}
+	
+	/**
+	 * Returns an instance of an object to test the resource.
+	 * 
+	 * @return the object
+	 */
+	public T getObject() {
+		if (object == null) {
+			object = newObject();
+		}
+		Assert.assertNotNull("newObject must not return null", object);
+		return object;
+	}
+	
+	/**
+	 * Returns a created representation.
+	 * 
+	 * @return the representation
+	 */
+	public SimpleObject getRepresentation() {
+		Assert.assertNotNull("representation must not be null", representation);
+		return representation;
+	}
+	
+	/**
+	 * Returns an instantiated resource.
+	 * 
+	 * @return the resource
+	 */
+	public R getResource() {
+		if (resource == null) {
+			resource = newResource();
+		}
+		Assert.assertNotNull("newResource must not return null", resource);
+		return resource;
+	}
+	
+	/**
+	 * Creates {@link Representation#REF}.
+	 * <p>
+	 * Calls {@link BaseDelegatingResource#asRepresentation(Object, Representation)} on the resource
+	 * with the given object.
+	 * 
+	 * @return the representation
+	 * @throws Exception
+	 */
+	public SimpleObject newRefRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.REF);
+	}
+	
+	/**
+	 * Creates {@link Representation#DEFAULT}.
+	 * <p>
+	 * Calls {@link BaseDelegatingResource#asRepresentation(Object, Representation)} on the resource
+	 * with the given object.
+	 * 
+	 * @return the representation
+	 * @throws Exception
+	 */
+	public SimpleObject newDefaultRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+	}
+	
+	/**
+	 * Creates {@link Representation#FULL}.
+	 * <p>
+	 * Calls {@link BaseDelegatingResource#asRepresentation(Object, Representation)} on the resource
+	 * with the given object.
+	 * 
+	 * @return the representation
+	 * @throws Exception
+	 */
+	public SimpleObject getFullRepresentation() throws Exception {
+		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.FULL);
+	}
+	
+	/**
+	 * Equivalent to:
+	 * <p>
+	 * <code>
+	 * Assert.assertEquals(property, value, getRepresentation().get(property));
+	 * </code>
+	 * <p>
+	 * Performs data conversion like formatting a date for your convenience.
+	 * 
+	 * @param property
+	 * @param value
+	 */
+	public void assertPropEquals(String property, Object value) {
+		if (value instanceof Date) {
+			value = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) value);
+		} else if (value instanceof Locale) {
+			value = value.toString();
+		}
+		Assert.assertEquals(property, value, getRepresentation().get(property));
+	}
+	
+	/**
+	 * Equivalent to:
+	 * <p>
+	 * <code>
+	 * Assert.assertTrue(getRepresentation().containsKey(property));
+	 * </code>
+	 * 
+	 * @param property
+	 */
+	public void assertPropPresent(String property) {
+		Assert.assertTrue(getRepresentation().containsKey(property));
+	}
+	
+	/**
+	 * Tests {@link Representation#REF}
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void asRepresentation_shouldReturnValidRefRepresentation() throws Exception {
+		representation = newRefRepresentation();
 		
 		validateRefRepresentation();
 	}
 	
+	/**
+	 * Tests {@link Representation#DEFAULT}
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void asRepresentation_shouldReturnValidDefaultRepresentation() throws Exception {
 		representation = newDefaultRepresentation();
 		
-		assertPropEquals("uuid", getUuidProperty());
-		assertPropPresent("links");
-		
 		validateDefaultRepresentation();
 	}
 	
+	/**
+	 * Tests {@link Representation#FULL}
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void asRepresentation_shouldReturnValidFullRepresentation() throws Exception {
 		representation = getFullRepresentation();
-		
-		assertPropEquals("uuid", getUuidProperty());
-		assertPropPresent("links");
 		
 		validateFullRepresentation();
 	}

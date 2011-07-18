@@ -26,11 +26,13 @@ public class LocationResourceTest extends BaseDelegatingResourceTest<LocationRes
 	
 	@Override
 	public void validateRefRepresentation() throws Exception {
+		super.validateRefRepresentation();
 		assertPropEquals("retired", getObject().isRetired());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("address1", getObject().getAddress1());
@@ -54,6 +56,7 @@ public class LocationResourceTest extends BaseDelegatingResourceTest<LocationRes
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("address1", getObject().getAddress1());

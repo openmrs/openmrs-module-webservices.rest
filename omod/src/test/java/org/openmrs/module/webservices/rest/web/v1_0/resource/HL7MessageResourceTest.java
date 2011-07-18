@@ -37,16 +37,14 @@ public class HL7MessageResourceTest extends BaseDelegatingResourceTest<HL7Messag
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("messageState", getObject().getMessageState());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropPresent("source");
 		assertPropEquals("sourceKey", getObject().getSourceKey());
 		assertPropEquals("data", getObject().getData());

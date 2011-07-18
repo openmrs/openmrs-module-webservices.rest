@@ -26,11 +26,8 @@ public class ConceptNameResourceTest extends BaseDelegatingResourceTest<ConceptN
 	}
 	
 	@Override
-	public void validateRefRepresentation() throws Exception {
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("locale", getObject().getLocale());
 		assertPropEquals("localePreferred", getObject().getLocalePreferred());
@@ -39,6 +36,7 @@ public class ConceptNameResourceTest extends BaseDelegatingResourceTest<ConceptN
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("locale", getObject().getLocale());
 		assertPropEquals("localePreferred", getObject().getLocalePreferred());
