@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
  * Is designed to be extended by classes testing BaseDelegatingResource.
@@ -34,7 +34,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
  * @param <R> resource
  * @param <T> object
  */
-public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResource<T>, T> extends BaseModuleContextSensitiveTest {
+public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResource<T>, T> extends BaseModuleWebContextSensitiveTest {
 	
 	private T object;
 	
