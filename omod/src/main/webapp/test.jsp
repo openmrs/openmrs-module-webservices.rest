@@ -29,7 +29,7 @@
 	Body content
 	</td>
 	<td>
-	<input type="text" id="json" value="{patient:'39234823'}" size="45"/>
+	<input type="text" id="json" value='{"patient":"39234823"}' size="45"/>
 	</td>
 </tr>
 <tr>
