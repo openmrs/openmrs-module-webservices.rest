@@ -28,13 +28,10 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
-import org.springframework.stereotype.Component;
 
 /**
  * Reflection utilities to search the classpath for classes
  */
-
-@Component
 public class OpenmrsClassScanner {
 	
 	protected final Log log = LogFactory.getLog(getClass());
