@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
@@ -25,6 +26,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  */
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
+	@Ignore
 	@Test
 	public void createDocumentation() throws Exception {
 		
@@ -35,10 +37,20 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		header += System.getProperty("line.separator");
 		header += "For more information on conventions, authentication, and setup, see the main [docs:REST Web Services API] page.";
 		header += System.getProperty("line.separator");
+		header += System.getProperty("line.separator");
+		header += "{toc:maxLevel=1}";
+		header += System.getProperty("line.separator");
+		header += "{note}";
+		header += System.getProperty("line.separator");
+		header += System.getProperty("line.separator");
+		header += "When a parameter has a bang \"!\" in front of it, it means that url will only be called if that parameter does NOT exist";
+		header += System.getProperty("line.separator");
+		header += System.getProperty("line.separator");
+		header += "{note}";
+		header += System.getProperty("line.separator");
 		
 		System.out.println(header);
-		
-		System.out.println("{toc:maxLevel=1}");
+
 		
 		for (ResourceDoc doc : docs) {
 			
