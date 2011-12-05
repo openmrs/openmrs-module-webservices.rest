@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -120,5 +121,14 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	@Override
 	public void purge(PersonAttributeType delegate, RequestContext context) throws ResponseException {
 		service().purgePersonAttributeType(delegate);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected NeedsPaging<PersonAttributeType> doSearch(String query, RequestContext context) {
+		return new NeedsPaging<PersonAttributeType>(service().getPersonAttributeTypes(query, null, null, null), context);
 	}
 }
