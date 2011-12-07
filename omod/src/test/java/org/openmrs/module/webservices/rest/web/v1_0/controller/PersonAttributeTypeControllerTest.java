@@ -99,7 +99,7 @@ public class PersonAttributeTypeControllerTest extends BaseModuleWebContextSensi
 	 */
 	@Test
 	public void updatePersonAttributeType_shouldChangeAPropertyOnAPersonAttributeType() throws Exception {
-		SimpleObject post = new ObjectMapper().readValue("{\"Birthplace\":\"Updated description\"}", SimpleObject.class);
+		SimpleObject post = new ObjectMapper().readValue("{\"description\":\"Updated description\"}", SimpleObject.class);
 		Object editedPersonAttributeType = new PersonAttributeTypeController().update(
 		    "b3b6d540-a32e-44c7-91b3-292d97667518", post, emptyRequest(), new MockHttpServletResponse());
 		Util.log("Edited person", editedPersonAttributeType);
@@ -114,11 +114,11 @@ public class PersonAttributeTypeControllerTest extends BaseModuleWebContextSensi
 	public void retirePersonAttributeType_shouldRetireAPersonAttributeType() throws Exception {
 		PersonAttributeType personAttributeType = Context.getPersonService().getPersonAttributeType(2);
 		Assert.assertFalse(personAttributeType.isRetired());
-		new PersonAttributeTypeController().delete("54fc8400-1683-4d71-a1ac-98d40836ff7c", "test delete", emptyRequest(),
+		new PersonAttributeTypeController().delete("54fc8400-1683-4d71-a1ac-98d40836ff7c", "test", emptyRequest(),
 		    new MockHttpServletResponse());
 		personAttributeType = Context.getPersonService().getPersonAttributeType(1);
 		Assert.assertTrue(personAttributeType.isRetired());
-		Assert.assertEquals("test delete", personAttributeType.isRetired());
+		Assert.assertEquals("test", personAttributeType.getRetireReason());
 	}
 	
 	/**
