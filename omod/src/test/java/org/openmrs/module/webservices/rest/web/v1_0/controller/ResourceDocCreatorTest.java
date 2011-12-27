@@ -50,7 +50,6 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		header += System.getProperty("line.separator");
 		
 		System.out.println(header);
-
 		
 		for (ResourceDoc doc : docs) {
 			
