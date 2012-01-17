@@ -21,7 +21,7 @@
 	URI
 	</td>
 	<td>
-	<input id="url" type="text" value="/openmrs/ws/rest/v1/patient/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
+	<input id="url" type="text" value="${pageContext.request.contextPath}/ws/rest/v1/patient/495b10c4-56bd-11df-a35e-0027136865c4" size="45"/>
 	</td>
 </tr>
 <tr>
