@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PersonAttributeController;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
