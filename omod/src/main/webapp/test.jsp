@@ -6,7 +6,7 @@
 
 <h2><spring:message code="webservices.rest.test.title" /></h2>
 
-<table>
+<table id="target">
 <tr>
 	<td>
 	Type
@@ -47,8 +47,18 @@
 <br/><br/>
 <div id="output">
 </div>
-<script>
+<script type="text/javascript">
+
+jQuery("#target").keypress(function(e) {
+    if(e.keyCode == 13) {
+    	sendToServer();
+    }
+});
+
 function sendToServer() {
+	
+	jQuery("#output").html('<spring:message code="webservices.rest.test.send.request"/>' + " <img id='spinner' src='" + openmrsContextPath + "/images/loading.gif'/>");
+	
 	var u = jQuery("#url").val()
 	var d = jQuery("#json").val();
 	var type = jQuery("#type").val();
