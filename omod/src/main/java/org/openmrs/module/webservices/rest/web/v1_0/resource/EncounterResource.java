@@ -65,6 +65,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("encounterDatetime");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("location", Representation.REF);
@@ -80,6 +81,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("encounterDatetime");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("location");

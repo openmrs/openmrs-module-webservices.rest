@@ -60,6 +60,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("messageState");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -67,6 +68,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("source", Representation.DEFAULT);
 			description.addProperty("sourceKey");
 			description.addProperty("data");

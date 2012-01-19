@@ -55,6 +55,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("gender");
 			description.addProperty("age");
 			description.addProperty("birthdate");
@@ -72,6 +73,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("gender");
 			description.addProperty("age");
 			description.addProperty("birthdate");

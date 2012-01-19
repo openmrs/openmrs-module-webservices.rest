@@ -81,6 +81,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			// TODO how to handle valueCodedName?
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("value");
@@ -100,6 +101,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			// TODO how to handle valueCodedName?
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept");
 			description.addProperty("value");

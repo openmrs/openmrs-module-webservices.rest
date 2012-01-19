@@ -68,6 +68,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("username");
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
@@ -80,6 +81,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("username");
 			description.addProperty("systemId");
 			description.addProperty("userProperties");

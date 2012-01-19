@@ -43,7 +43,7 @@ public class ConceptClassResourceTest extends BaseDelegatingResourceTest<Concept
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Misc";
+		return "Misc - Terms which don't fit other categories";
 	}
 	
 	@Override

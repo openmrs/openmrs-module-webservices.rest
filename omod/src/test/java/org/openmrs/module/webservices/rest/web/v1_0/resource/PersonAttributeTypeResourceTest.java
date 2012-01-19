@@ -53,7 +53,7 @@ public class PersonAttributeTypeResourceTest extends BaseDelegatingResourceTest<
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Race";
+		return "Race - Group of persons related by common descent or heredity";
 	}
 	
 	@Override

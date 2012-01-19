@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -41,7 +42,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject convertToRef(T delegate) throws ConversionException {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
-		rep.addProperty("display", "name", Representation.DEFAULT);
+		rep.addProperty("display", findMethod("getDisplayString"));
 		if (delegate.isRetired())
 			rep.addProperty("retired");
 		rep.addSelfLink();
@@ -52,6 +53,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject asDefaultRep(T delegate) throws Exception {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
+		rep.addProperty("display", findMethod("getDisplayString"));
 		rep.addProperty("name");
 		rep.addProperty("description");
 		rep.addProperty("retired");
@@ -64,6 +66,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject asFullRep(T delegate) throws Exception {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
+		rep.addProperty("display", findMethod("getDisplayString"));
 		rep.addProperty("name");
 		rep.addProperty("description");
 		rep.addProperty("retired");
@@ -104,5 +107,25 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		delegate.setDateRetired(new Date());
 		delegate.setRetireReason(reason);
 		save(delegate);
+	}
+	
+	/**
+	 * Gets the display string, which is specific to {@link OpenmrsMetadata}
+	 * 
+	 * @param delegate the meta-data object.
+	 * @return the display string.
+	 */
+	public String getDisplayString(T delegate) {
+		StringBuilder displayString = null;
+		if (StringUtils.isNotBlank(delegate.getName())) {
+			displayString = new StringBuilder(delegate.getName());
+		} else {
+			displayString = new StringBuilder();
+		}
+		displayString.append(" - ");
+		if (StringUtils.isNotBlank(delegate.getDescription())) {
+			displayString.append(delegate.getDescription());
+		}
+		return displayString.toString();
 	}
 }

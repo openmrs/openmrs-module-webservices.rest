@@ -35,6 +35,7 @@ public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResou
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("names");
 		assertPropPresent("descriptions");
+		assertPropEquals("display", getDisplayProperty());
 	}
 	
 	@Override
@@ -49,6 +50,7 @@ public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResou
 		assertPropPresent("names");
 		assertPropPresent("descriptions");
 		assertPropPresent("auditInfo");
+		assertPropEquals("display", getDisplayProperty());
 	}
 	
 	@Override

@@ -111,6 +111,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("identifiers", Representation.REF);
 			description.addProperty("person", Representation.DEFAULT);
 			description.addProperty("voided");
@@ -120,6 +121,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("identifiers", Representation.DEFAULT);
 			description.addProperty("person", Representation.FULL);
 			description.addProperty("voided");

@@ -43,6 +43,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");
@@ -54,6 +55,7 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");

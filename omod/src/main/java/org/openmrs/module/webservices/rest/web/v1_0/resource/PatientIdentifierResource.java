@@ -41,6 +41,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("identifier");
 			description.addProperty("identifierType", Representation.REF);
@@ -52,6 +53,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("identifier");
 			description.addProperty("identifierType", Representation.DEFAULT);

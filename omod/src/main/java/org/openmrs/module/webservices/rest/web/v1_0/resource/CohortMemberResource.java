@@ -102,12 +102,14 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("patient");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("patient");
 			//description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();

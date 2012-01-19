@@ -49,7 +49,7 @@ public class HL7SourceResourceTest extends BaseDelegatingResourceTest<HL7SourceR
 	
 	@Override
 	public String getDisplayProperty() {
-		return "TEST";
+		return "TEST - test";
 	}
 	
 	@Override

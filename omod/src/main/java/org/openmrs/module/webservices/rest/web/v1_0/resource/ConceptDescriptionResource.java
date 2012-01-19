@@ -54,6 +54,7 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("description");
 			description.addProperty("locale");

@@ -46,6 +46,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
@@ -55,6 +56,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);

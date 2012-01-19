@@ -52,6 +52,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
@@ -66,6 +67,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
