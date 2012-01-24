@@ -82,18 +82,6 @@ public class BaseRestController {
 	}
 	
 	/**
-	 * Shows response for unknown resource calls that give default 404
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	private SimpleObject handleUnknownResource() throws Exception {
-		throw new UnknownResourceException();
-	}
-	
-	/**
 	 * Gets a catalog of all available resources.
 	 * 
 	 * @return
