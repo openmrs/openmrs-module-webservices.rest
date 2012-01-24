@@ -30,7 +30,7 @@ import org.springframework.web.context.request.WebRequest;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
-public class SessionController {
+public class SessionController extends BaseRestController {
 	
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
