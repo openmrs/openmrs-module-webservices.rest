@@ -121,50 +121,46 @@ public class ResourceDocCreator {
 					Object delegate = method.invoke(instance, null);
 					
 					//Get the ref representation of this resource.
-					Object rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
-					Set<String> properties = ((SimpleObject) rep).keySet();
-					resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
+					Object rep;
+					Set<String> properties;
+					try {
+						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
+						properties = ((SimpleObject) rep).keySet();
+						resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
+					}
+					catch (Exception ex) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("ref", Arrays.asList("Programming Error!",
+						    ex.getClass().getName(), ex.getMessage())));
+					}
 					
 					//Get the default representation of this resource..
-					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
-					properties = ((SimpleObject) rep).keySet();
-					resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
-					
-					//Get the full representation of this resource.
-					rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
-					properties = ((SimpleObject) rep).keySet();
-					resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
-					
-					/*BaseDelegatingResource<?> resoure = (BaseDelegatingResource<?>) instance;
-					
-					//Get the default representation of this resource..
-					DelegatingResourceDescription resoureDescription = resoure
-					        .getRepresentationDescription(Representation.DEFAULT);
-					if (resoureDescription != null) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("default", resoureDescription
-						        .getProperties().keySet()));
+					try {
+						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
+						properties = ((SimpleObject) rep).keySet();
+						resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
+					}
+					catch (Exception ex) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("default", Arrays.asList(
+						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
 					}
 					
 					//Get the full representation of this resource.
-					resoureDescription = resoure.getRepresentationDescription(Representation.FULL);
-					if (resoureDescription != null) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("full", resoureDescription.getProperties()
-						        .keySet()));
+					try {
+						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
+						properties = ((SimpleObject) rep).keySet();
+						resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
 					}
-					
-					//Get the ref representation of this resource.
-					resoureDescription = resoure.getRepresentationDescription(Representation.REF);
-					if (resoureDescription != null) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("ref", resoureDescription.getProperties()
-						        .keySet()));
-					}*/
+					catch (Exception ex) {
+						resourceDoc.addRepresentation(new ResourceRepresentation("full", Arrays.asList("Programming Error!",
+						    ex.getClass().getName(), ex.getMessage())));
+					}
 				}
 			}
 			catch (NoSuchMethodException ex) {
-				ex.printStackTrace();
+				throw new RuntimeException(ex);
 			}
 			catch (InvocationTargetException ex) {
-				ex.printStackTrace();
+				throw new RuntimeException(ex);
 			}
 		}
 	}

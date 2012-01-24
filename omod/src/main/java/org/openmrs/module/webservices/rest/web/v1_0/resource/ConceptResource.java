@@ -129,7 +129,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 * @param instance the delegate instance to get the display name off
 	 */
 	public String getDisplayName(Concept instance) {
-		return instance.getName().getName();
+		ConceptName cn = instance.getName();
+		return cn == null ? null : cn.getName();
 	}
 	
 	/**
