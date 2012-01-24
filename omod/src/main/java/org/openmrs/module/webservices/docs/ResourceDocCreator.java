@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +28,11 @@ import java.util.Set;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -125,7 +126,7 @@ public class ResourceDocCreator {
 					Set<String> properties;
 					try {
 						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
-						properties = ((SimpleObject) rep).keySet();
+						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
 						resourceDoc.addRepresentation(new ResourceRepresentation("ref", properties));
 					}
 					catch (Exception ex) {
@@ -136,7 +137,7 @@ public class ResourceDocCreator {
 					//Get the default representation of this resource..
 					try {
 						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
-						properties = ((SimpleObject) rep).keySet();
+						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
 						resourceDoc.addRepresentation(new ResourceRepresentation("default", properties));
 					}
 					catch (Exception ex) {
@@ -147,7 +148,7 @@ public class ResourceDocCreator {
 					//Get the full representation of this resource.
 					try {
 						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
-						properties = ((SimpleObject) rep).keySet();
+						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
 						resourceDoc.addRepresentation(new ResourceRepresentation("full", properties));
 					}
 					catch (Exception ex) {

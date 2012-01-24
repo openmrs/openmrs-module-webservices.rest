@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.util.LinkedHashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -88,7 +90,7 @@ public class BaseRestController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/rest/" + RestConstants.VERSION_1 + "/catalog")
 	@ResponseBody
-	private SimpleObject getResourceCatalog(HttpServletRequest request) throws Exception {
+	public Object getResourceCatalog(HttpServletRequest request) throws Exception {
 		SimpleObject resourceCatalog = new SimpleObject();
 		String prefix = RestConstants.URI_PREFIX;
 		//strip the ending string '/rest/' because it will be added by ResourceDocCreator.create
@@ -97,6 +99,6 @@ public class BaseRestController {
 		
 		resourceCatalog.put("catalog", ResourceDocCreator.create(prefix));
 		
-		return resourceCatalog;
+		return new LinkedHashMap<String, Object>(resourceCatalog);
 	}
 }
