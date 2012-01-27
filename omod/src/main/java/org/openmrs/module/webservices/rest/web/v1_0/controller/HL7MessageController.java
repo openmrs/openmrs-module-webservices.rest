@@ -23,6 +23,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.context.Context;
+import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -82,8 +83,8 @@ public class HL7MessageController extends BaseCrudController<HL7MessageResource>
 		post.add("source", source);
 		post.add("data", hl7);
 		
-		ConceptSource conceptSource = Context.getConceptService().getConceptSourceByName(source);
-		if (conceptSource == null) {
+		HL7Source hl7Source = Context.getHL7Service().getHL7SourceByName(source);
+		if (hl7Source == null) {
 			throw new ConversionException("The " + source + " source was not recognized");
 		}
 		
