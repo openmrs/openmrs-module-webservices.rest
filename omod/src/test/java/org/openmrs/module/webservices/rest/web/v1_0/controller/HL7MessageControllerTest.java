@@ -13,17 +13,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.HL7MessageController;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.hl7.HL7InQueue;
 import org.openmrs.hl7.HL7Service;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -33,11 +33,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String hl7SourceName = "TEST";
+	private static final String hl7Data = "MSH|^~|FORMENTRY|AMRS.ELD|HL7LISTENER|AMRS.ELD|20110805104142||ORU^R01|REl7wt78q9Pzlqe9ecJB|P|2.5|1||||||||3^AMRS.ELD.FORMID";
 	
-	private static final String hl7SourceKey = "test";
-	
-	private static final String hl7Data = "OBR|1|||1238^MEDICAL RECORD OBSERVATIONS^DCT|";
+	private static final String hl7InvalidSourceData = "MSH|^~|FORMENTRY|NONEXISTINGSOURCE|HL7LISTENER|AMRS.ELD|20110805104142||ORU^R01|REl7wt78q9Pzlqe9ecJB|P|2.5|1||||||||3^AMRS.ELD.FORMID";
 	
 	private HL7Service service;
 	
@@ -59,13 +57,36 @@ public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
-	public void enqueHl7Message_shouldEnqueueHl7InQueueMessage() throws Exception {
+	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
-		String json = "{ \"source\":\"" + hl7SourceName + "\", \"sourceKey\": \"" + hl7SourceKey + "\", \"data\": \""
-		        + hl7Data + "\" }";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newHl7Message = controller.create(post, request, response);
+		SimpleObject newHl7Message = (SimpleObject) controller.create(hl7Data, request, response);
 		Util.log("Enqued hl7 message", newHl7Message);
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
+			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
+				Assert.assertEquals("AMRS.ELD", hl7InQueue.getHL7Source().getName());
+				Assert.assertEquals("REl7wt78q9Pzlqe9ecJB", hl7InQueue.getHL7SourceKey());
+			}
+		}
+	}
+	
+	@Test
+	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
+		int before = service.getAllHL7InQueues().size();
+		SimpleObject newHl7Message = (SimpleObject) controller
+		        .create("{ \"hl7\" : \"" + hl7Data + "\" }", request, response);
+		Util.log("Enqued hl7 message", newHl7Message);
+		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
+			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
+				Assert.assertEquals("AMRS.ELD", hl7InQueue.getHL7Source().getName());
+				Assert.assertEquals("REl7wt78q9Pzlqe9ecJB", hl7InQueue.getHL7SourceKey());
+			}
+		}
+	}
+	
+	@Test(expected = ConversionException.class)
+	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
+		controller.create(hl7InvalidSourceData, request, response);
 	}
 }

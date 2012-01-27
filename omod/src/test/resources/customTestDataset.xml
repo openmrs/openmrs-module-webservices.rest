@@ -6,5 +6,5 @@
   <cohort_member cohort_id="1" patient_id="7" />
   <cohort_member cohort_id="1" patient_id="8" />
   <cohort_member cohort_id="2" patient_id="2" />
-  <hl7_source hl7_source_id="0" name="TEST" creator="1" description="test" date_created="2006-09-01 00:00:00" uuid="8d6b8bb6-c2cc-11de-8d13-0010c6dffd0f"/>
+  <hl7_source hl7_source_id="0" name="AMRS.ELD" creator="1" description="AMRS.ELD" date_created="2006-09-01 00:00:00" uuid="8d6b8bb6-c2cc-11de-8d13-0010c6dffd0f"/>
 </dataset>

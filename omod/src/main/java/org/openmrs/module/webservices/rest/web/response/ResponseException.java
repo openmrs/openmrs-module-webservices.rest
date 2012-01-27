@@ -14,8 +14,8 @@
 package org.openmrs.module.webservices.rest.web.response;
 
 /**
- * This is a marker class for all response exceptions. Controllers should throw
- * these if an error has occurred or a status needs to be shown to a user
+ * This is a marker class for all response exceptions. Controllers should throw these if an error
+ * has occurred or a status needs to be shown to a user
  */
 public abstract class ResponseException extends Exception {
 	
@@ -25,7 +25,26 @@ public abstract class ResponseException extends Exception {
 		super();
 	}
 	
+	/**
+	 * @param message
+	 * @param cause
+	 */
 	public ResponseException(String message, Throwable cause) {
 		super(message, cause);
 	}
+	
+	/**
+	 * @param message
+	 */
+	public ResponseException(String message) {
+		super(message);
+	}
+	
+	/**
+	 * @param cause
+	 */
+	public ResponseException(Throwable cause) {
+		super(cause);
+	}
+	
 }
