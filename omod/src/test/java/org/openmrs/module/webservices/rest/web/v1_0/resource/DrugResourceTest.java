@@ -13,58 +13,42 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class ConceptResourceTest extends BaseDelegatingResourceTest<ConceptResource, Concept> {
+public class DrugResourceTest extends BaseDelegatingResourceTest<DrugResource, Drug> {
 	
 	@Override
-	public Concept newObject() {
-		return Context.getConceptService().getConceptByUuid(getUuidProperty());
+	public Drug newObject() {
+		return Context.getConceptService().getDrugByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
-		assertPropPresent("name");
-		assertPropPresent("datatype");
-		assertPropPresent("conceptClass");
-		assertPropPresent("set");
-		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropPresent("names");
-		assertPropPresent("descriptions");
-		assertPropEquals("display", getDisplayProperty());
-		assertPropPresent("answers");
-		assertPropPresent("setMembers");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
-		assertPropPresent("name");
-		assertPropPresent("datatype");
-		assertPropPresent("conceptClass");
-		assertPropPresent("set");
-		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropPresent("names");
-		assertPropPresent("descriptions");
 		assertPropPresent("auditInfo");
-		assertPropEquals("display", getDisplayProperty());
-		assertPropPresent("answers");
-		assertPropPresent("setMembers");
 	}
 	
 	@Override
 	public String getDisplayProperty() {
-		return "YES";
+		return "Aspirin - ";
 	}
 	
 	@Override
 	public String getUuidProperty() {
-		return ResourceTestConstants.CONCEPT_UUID;
+		return ResourceTestConstants.DRUG_UUID;
 	}
 	
 }

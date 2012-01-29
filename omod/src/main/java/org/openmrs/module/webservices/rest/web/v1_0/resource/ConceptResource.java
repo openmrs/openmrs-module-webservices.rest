@@ -15,10 +15,14 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.annotation.Handler;
@@ -29,6 +33,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -41,6 +46,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.LocaleUtility;
 
@@ -82,8 +88,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("names", Representation.REF);
 			description.addProperty("descriptions", Representation.REF);
 			
-			//description.addProperty("answers", Representation.REF);  add as subresource
-			//description.addProperty("conceptSets", Representation.REF);  add as subresource
+			description.addProperty("answers", Representation.REF);
+			description.addProperty("setMembers", Representation.REF);
 			//description.addProperty("conceptMappings", Representation.REF);  add as subresource
 			
 			description.addSelfLink();
@@ -103,8 +109,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("names", Representation.DEFAULT);
 			description.addProperty("descriptions", Representation.DEFAULT);
 			
-			//description.addProperty("answers", Representation.DEFAULT);  add as subresource
-			//description.addProperty("conceptSets", Representation.DEFAULT);  add as subresource
+			description.addProperty("answers", Representation.REF);
+			description.addProperty("setMembers", Representation.REF);
 			//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -115,8 +121,9 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	
 	/**
 	 * Sets the name property to be the fully specified name of the Concept in the current locale
+	 * 
 	 * @param instance
-	 * @param name 
+	 * @param name
 	 */
 	@PropertySetter("name")
 	public static void setFullySpecifiedName(Concept instance, String name) {
@@ -126,6 +133,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	
 	/**
 	 * Gets the display name of the Concept delegate
+	 * 
 	 * @param instance the delegate instance to get the display name off
 	 */
 	public String getDisplayName(Concept instance) {
@@ -258,5 +266,77 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			return;
 		}
 		Context.getConceptService().retireConcept(c, reason);
+	}
+	
+	/**
+	 * @param instance
+	 * @return the list of Concepts or Drugs
+	 */
+	@PropertyGetter("answers")
+	public static Object getAnswers(Concept instance) {
+		List<Object> answers = new ArrayList<Object>();
+		Set<ConceptAnswer> conceptAnswers = new TreeSet<ConceptAnswer>(new Comparator<ConceptAnswer>() {
+			
+			/**
+			 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+			 */
+			@Override
+			public int compare(ConceptAnswer o1, ConceptAnswer o2) {
+				if (o1.getSortWeight() != null) {
+					if (o2.getSortWeight() != null) {
+						return o1.getSortWeight().compareTo(o2.getSortWeight());
+					} else {
+						return 1;
+					}
+				} else {
+					if (o2.getSortWeight() != null) {
+						return -1;
+					} else {
+						return 0;
+					}
+				}
+			}
+		});
+		conceptAnswers.addAll(instance.getAnswers());
+		
+		for (ConceptAnswer conceptAnswer : conceptAnswers) {
+			if (conceptAnswer.getAnswerDrug() != null) {
+				answers.add(conceptAnswer.getAnswerDrug());
+			} else if (conceptAnswer.getAnswerConcept() != null) {
+				answers.add(conceptAnswer.getAnswerConcept());
+			}
+		}
+		return answers;
+	}
+	
+	/**
+	 * @param instance
+	 * @param answers the list of Concepts or Drugs
+	 * @throws ResourceDoesNotSupportOperationException
+	 */
+	@PropertySetter("answers")
+	public static void setAnswers(Concept instance, List<Object> answers) throws ResourceDoesNotSupportOperationException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * @param instance
+	 * @return the list of Concepts
+	 */
+	@PropertyGetter("setMembers")
+	public static Object getSetMembers(Concept instance) {
+		return instance.getSetMembers();
+	}
+	
+	/**
+	 * @param instance
+	 * @param setMembers the list of Concepts
+	 */
+	@PropertySetter("setMembers")
+	public static void setSetMembers(Concept instance, List<Concept> setMembers) {
+		instance.getConceptSets().clear();
+		for (Concept setMember : setMembers) {
+			instance.addSetMember(setMember);
+		}
 	}
 }
