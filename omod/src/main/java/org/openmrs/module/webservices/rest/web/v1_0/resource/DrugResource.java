@@ -71,6 +71,7 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		//Let the superclass handle this
 		return null;
 	}
 	

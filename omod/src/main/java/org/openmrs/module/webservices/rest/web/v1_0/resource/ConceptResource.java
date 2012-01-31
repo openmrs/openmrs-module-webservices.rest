@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -275,28 +274,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	@PropertyGetter("answers")
 	public static Object getAnswers(Concept instance) {
 		List<Object> answers = new ArrayList<Object>();
-		Set<ConceptAnswer> conceptAnswers = new TreeSet<ConceptAnswer>(new Comparator<ConceptAnswer>() {
-			
-			/**
-			 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-			 */
-			@Override
-			public int compare(ConceptAnswer o1, ConceptAnswer o2) {
-				if (o1.getSortWeight() != null) {
-					if (o2.getSortWeight() != null) {
-						return o1.getSortWeight().compareTo(o2.getSortWeight());
-					} else {
-						return 1;
-					}
-				} else {
-					if (o2.getSortWeight() != null) {
-						return -1;
-					} else {
-						return 0;
-					}
-				}
-			}
-		});
+		Set<ConceptAnswer> conceptAnswers = new TreeSet<ConceptAnswer>();
 		conceptAnswers.addAll(instance.getAnswers());
 		
 		for (ConceptAnswer conceptAnswer : conceptAnswers) {
@@ -306,6 +284,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 				answers.add(conceptAnswer.getAnswerConcept());
 			}
 		}
+		
 		return answers;
 	}
 	
@@ -321,20 +300,14 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	
 	/**
 	 * @param instance
-	 * @return the list of Concepts
-	 */
-	@PropertyGetter("setMembers")
-	public static Object getSetMembers(Concept instance) {
-		return instance.getSetMembers();
-	}
-	
-	/**
-	 * @param instance
 	 * @param setMembers the list of Concepts
 	 */
 	@PropertySetter("setMembers")
 	public static void setSetMembers(Concept instance, List<Concept> setMembers) {
 		instance.getConceptSets().clear();
+		
+		instance.setSet(!setMembers.isEmpty());
+		
 		for (Concept setMember : setMembers) {
 			instance.addSetMember(setMember);
 		}
