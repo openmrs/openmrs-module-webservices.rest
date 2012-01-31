@@ -20,8 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.openmrs.ConceptSource;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -47,7 +45,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class HL7MessageController extends BaseCrudController<HL7MessageResource> {
 	
 	/**
-	 * Overridden to disable standard POST request processing
+	 * Overridden to disable handling POST requests by this method as they need to be handled in a
+	 * special way by {@link #create(String, HttpServletRequest, HttpServletResponse)}. No two
+	 * methods can handle the same RequestMethod.
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudController#create(org.openmrs.module.webservices.rest.SimpleObject,
 	 *      javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -67,8 +67,8 @@ public class HL7MessageController extends BaseCrudController<HL7MessageResource>
 		SimpleObject post = new SimpleObject();
 		
 		if (hl7.trim().startsWith("{")) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			SimpleObject object = objectMapper.readValue(hl7, SimpleObject.class);
+			//hl7 is wrapped up in a json format
+			SimpleObject object = SimpleObject.parseJson(hl7);
 			hl7 = (String) object.get("hl7");
 		}
 		

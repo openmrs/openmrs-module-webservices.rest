@@ -13,11 +13,16 @@
  */
 package org.openmrs.module.webservices.rest;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 /**
- * This is the Map returned for all objects. The properties are just key/value
- * pairs. If an object has subobjects those are just lists of SimpleObjects
+ * This is the Map returned for all objects. The properties are just key/value pairs. If an object
+ * has subobjects those are just lists of SimpleObjects
  */
 public class SimpleObject extends LinkedHashMap<String, Object> {
 	
@@ -29,6 +34,7 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	
 	/**
 	 * Puts a property in this map, and returns the map itself (for chained method calls)
+	 * 
 	 * @param key
 	 * @param value
 	 * @return
@@ -38,4 +44,18 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 		return this;
 	}
 	
+	/**
+	 * Creates an instance from the given json string.
+	 * 
+	 * @param json
+	 * @return the simpleObject
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
+	public static SimpleObject parseJson(String json) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		SimpleObject object = objectMapper.readValue(json, SimpleObject.class);
+		return object;
+	}
 }
