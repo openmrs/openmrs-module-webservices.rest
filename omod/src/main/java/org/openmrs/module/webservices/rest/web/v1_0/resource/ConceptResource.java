@@ -306,10 +306,14 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	public static void setSetMembers(Concept instance, List<Concept> setMembers) {
 		instance.getConceptSets().clear();
 		
-		instance.setSet(!setMembers.isEmpty());
-		
-		for (Concept setMember : setMembers) {
-			instance.addSetMember(setMember);
+		if (setMembers == null || setMembers.isEmpty()) {
+			instance.setSet(false);
+		} else {
+			instance.setSet(true);
+			
+			for (Concept setMember : setMembers) {
+				instance.addSetMember(setMember);
+			}
 		}
 	}
 }
