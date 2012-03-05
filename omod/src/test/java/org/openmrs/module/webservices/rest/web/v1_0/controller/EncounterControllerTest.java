@@ -1,14 +1,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -210,6 +204,27 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		enc = Context.getEncounterService().getEncounter(3);
 		Assert.assertTrue(enc.isVoided());
 		Assert.assertEquals("unit test", enc.getVoidReason());
+	}
+	
+	/**
+	 * @see EncounterController#searchByPatient(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 * @verifies return a list of encounters
+	 */
+	@Test
+	public void searchByPatient_shouldReturnAListOfEncounters() throws Exception {
+		MockHttpServletRequest req = new MockHttpServletRequest();
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		
+		Object result = new EncounterController().searchByPatient("5946f880-b197-400b-9caa-a3c661d23041", req, null);
+		Assert.assertNotNull(result);
+		List encList = (List) PropertyUtils.getProperty(result, "results");
+		Assert.assertNotNull(encList);
+		Assert.assertTrue(encList.size() > 0);
+		List<String> uuids = new ArrayList<String>();
+		for (Object encounter : encList) {
+			uuids.add((String) PropertyUtils.getProperty(encounter, "uuid"));
+		}
+		Assert.assertTrue(uuids.contains("6519d653-393b-4118-9c83-a3715b82d4ac"));
 	}
 	
 	private MockHttpServletRequest emptyRequest() {
