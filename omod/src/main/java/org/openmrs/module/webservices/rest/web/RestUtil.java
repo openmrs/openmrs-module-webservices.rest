@@ -406,25 +406,27 @@ public class RestUtil implements GlobalPropertyListener {
 	 * return null; // throw new NoSuchMethodException("No method on class " + c
 	 * + // " with name " + name + " with param " + param); }
 	 */
+
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
 	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
 	 * Determines how far into a list to start with given the startIndex param. <br/>
 	 * 
 	 * @param request the current http web request
+	 * @param defaultView the representation to use if none specified
 	 * @return a {@link RequestContext} object filled with all the necessary values
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 */
-	public static RequestContext getRequestContext(HttpServletRequest request) {
+	public static RequestContext getRequestContext(HttpServletRequest request, Representation defaultView) {
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
 		
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if (StringUtils.isEmpty(temp)) {
-			ret.setRepresentation(Representation.DEFAULT);
+			ret.setRepresentation(defaultView != null ? defaultView : Representation.DEFAULT);
 		} else {
 			if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
 				throw new IllegalArgumentException("Do not specify ?v=default");
@@ -446,6 +448,17 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Determines the request representation with Representation.DEFAULT as the default view.
+	 * 
+	 * @param request the current http web request
+	 * @return a {@link RequestContext} object filled with all the necessary values
+	 * @see getRequestContext(javax.servlet.http.HttpServletRequest, org.openmrs.module.webservices.rest.web.representation.Representation) 
+	 */
+	public static RequestContext getRequestContext(HttpServletRequest request) {
+		return getRequestContext(request, Representation.DEFAULT);
 	}
 	
 	/**

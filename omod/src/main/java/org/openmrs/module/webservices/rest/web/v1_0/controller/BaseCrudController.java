@@ -153,8 +153,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 			throw new ResourceDoesNotSupportOperationException(getResource().getClass().getSimpleName()
 			        + " is not Searchable", null);
 		}
-		RequestContext context = RestUtil.getRequestContext(request);
-		context.setRepresentation(Representation.REF);
+		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 		return searchable.search(query, context);
 	}
 	
@@ -175,8 +174,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 			throw new ResourceDoesNotSupportOperationException(
 			        getResource().getClass().getSimpleName() + " is not Listable", null);
 		}
-		RequestContext context = RestUtil.getRequestContext(request);
-		context.setRepresentation(Representation.REF);
+		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 		return listable.getAll(context);
 	}
 	
