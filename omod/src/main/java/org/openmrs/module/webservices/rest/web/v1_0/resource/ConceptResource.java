@@ -108,8 +108,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("names", Representation.DEFAULT);
 			description.addProperty("descriptions", Representation.DEFAULT);
 			
-			description.addProperty("answers", Representation.REF);
-			description.addProperty("setMembers", Representation.REF);
+			description.addProperty("answers", Representation.DEFAULT);
+			description.addProperty("setMembers", Representation.DEFAULT);
 			//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
