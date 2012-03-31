@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.UserController;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -140,6 +139,15 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		Util.log("Found " + results.size() + " user(s)", results);
 		Object result = results.get(0);
 		Assert.assertEquals("c98a1558-e131-11de-babe-001e378eb67e", PropertyUtils.getProperty(result, "uuid"));
+	}
+	
+	@Test
+	public void shouldListAllUsers() throws Exception {
+		int totalCount = Context.getUserService().getAllUsers().size();
+		
+		List<Object> result = new UserController().getAll(emptyRequest(), new MockHttpServletResponse());
+		Assert.assertNotNull(result);
+		Assert.assertEquals(totalCount, result.size());
 	}
 	
 }
