@@ -86,6 +86,21 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
+		List<Object> result = controller.getAll(request, response);
+		Object aResult = result.get(0);
+		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
+	}
+	
+	@Test
+	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
+		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		List<Object> result = controller.getAll(request, response);
+		Object aResult = result.get(0);
+		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
+	}
+	
+	@Test
 	public void shouldCreateAConcept() throws Exception {
 		int originalCount = service.getAllConcepts().size();
 		String json = "{ \"name\":\"test concept\", \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
