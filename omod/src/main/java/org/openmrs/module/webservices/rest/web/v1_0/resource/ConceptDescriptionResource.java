@@ -48,7 +48,6 @@ public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDes
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("description");
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addSelfLink();
 			return description;

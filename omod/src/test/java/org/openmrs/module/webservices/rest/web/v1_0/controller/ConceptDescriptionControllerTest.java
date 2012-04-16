@@ -69,7 +69,7 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 		Object result = controller.retrieve(conceptUuid, descriptionUuid, request);
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("Affirmative", PropertyUtils.getProperty(result, "description"));
+		Assert.assertEquals("Affirmative", PropertyUtils.getProperty(result, "display"));
 	}
 	
 	/**
