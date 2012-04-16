@@ -1,5 +1,6 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
+ * The contents of this file are subject 
+ * to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
@@ -16,7 +17,7 @@ package org.openmrs.module.webservices.rest.web.representation;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 
 /**
- * A named representation, like "minimal" or "full"
+ * A named representation, like "minimal"
  */
 public class NamedRepresentation implements Representation {
 	
@@ -24,13 +25,15 @@ public class NamedRepresentation implements Representation {
 	
 	public NamedRepresentation(String representation) {
 		if (representation == null)
-			representation = "default";
+			throw new IllegalArgumentException("representation is required");
 		this.representation = representation;
 	}
 	
 	/**
 	 * @return the representation
+	 * @see Representation#getRepresentation()
 	 */
+	@Override
 	public String getRepresentation() {
 		return representation;
 	}
@@ -47,7 +50,7 @@ public class NamedRepresentation implements Representation {
 	 * @return true if ann is for {@link NamedRepresentation} with the correct name specified
 	 */
 	public boolean matchesAnnotation(RepHandler ann) {
-		return ann.name().equals(representation);
+		return NamedRepresentation.class.isAssignableFrom(ann.value()) && ann.name().equals(representation);
 	}
 	
 }

@@ -21,6 +21,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
@@ -49,7 +50,7 @@ public class RestServiceImpl implements RestService {
 				return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
 			}
 		}
-		throw new APIException("Unknown representation: " + requested);
+		return new NamedRepresentation(requested);
 	}
 	
 	/**

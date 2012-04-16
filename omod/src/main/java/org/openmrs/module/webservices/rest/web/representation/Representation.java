@@ -26,4 +26,9 @@ public interface Representation {
 	
 	Representation FULL = new FullRepresentation();
 	
+	/**
+	 * @return a unique string that distinguishes this representation from all others
+	 */
+	String getRepresentation();
+	
 }

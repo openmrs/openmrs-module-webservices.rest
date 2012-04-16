@@ -18,19 +18,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 
 /**
  * Method-level annotation, which marks a method as being the "get" handler for
  * a particular representation. Methods marked with this annotation are only
- * called if there is not getRepresentationDescription method returns null for
- * the given rep
+ * called if there is not a getRepresentationDescription method, or it returns null
+ * for the given rep
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RepHandler {
 	
-	Class<? extends Representation> value();
+	Class<? extends Representation> value() default NamedRepresentation.class;
 	
 	String name() default "";
 	

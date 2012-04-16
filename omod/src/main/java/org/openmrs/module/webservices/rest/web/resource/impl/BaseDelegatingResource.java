@@ -170,7 +170,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 		}
 		
-		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as " + representation, null);
+		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + " as "
+		        + representation.getRepresentation(), null);
 	}
 	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
@@ -215,11 +216,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		for (Method method : getClass().getMethods()) {
 			RepHandler ann = method.getAnnotation(RepHandler.class);
 			if (ann != null) {
-				if (ann.value().isAssignableFrom(rep.getClass())) {
-					if (rep instanceof NamedRepresentation && !((NamedRepresentation) rep).matchesAnnotation(ann))
-						continue;
+				if (ann.name().equals(rep.getRepresentation()))
 					return method;
-				}
+				if (ann.value().isAssignableFrom(rep.getClass()))
+					return method;
 			}
 		}
 		return null;

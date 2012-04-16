@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.representation;
 
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 
 /**
@@ -20,5 +21,9 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
  * can be fetched from
  */
 public class RefRepresentation implements Representation {
-
+	
+	public String getRepresentation() {
+		return RestConstants.REPRESENTATION_REF;
+	}
+	
 }

@@ -25,6 +25,10 @@ public interface RestService {
 	 * Parses a representation requested by the client via the http request
 	 * @param requested
 	 * @return
+	 * @should get ref representation when specified
+	 * @should get default representation when specified
+	 * @should get full representation when specified
+	 * @should get a named representation when specified
 	 */
 	public Representation getRepresentation(String requested);
 	
