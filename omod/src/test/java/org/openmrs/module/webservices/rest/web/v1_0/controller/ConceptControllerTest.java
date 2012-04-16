@@ -65,6 +65,12 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
 	}
 	
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfYouTryToSpecifyDefaultRepOnGetConceptByUuid() throws Exception {
+		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
+		controller.retrieve("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", request);
+	}
+	
 	@Test
 	public void shouldGetAConceptByName() throws Exception {
 		Object result = controller.retrieve("TREATMENT STATUS", request);
@@ -94,7 +100,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
-		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		List<Object> result = controller.getAll(request, response);
 		Object aResult = result.get(0);
 		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));

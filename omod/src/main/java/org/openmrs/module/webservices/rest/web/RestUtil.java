@@ -420,19 +420,23 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, Representation defaultView) {
+		if (defaultView == null)
+			defaultView = Representation.DEFAULT;
+		
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
 		
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
-		if (StringUtils.isEmpty(temp)) {
-			ret.setRepresentation(defaultView != null ? defaultView : Representation.DEFAULT);
+		if ("".equals(temp)) {
+			throw new IllegalArgumentException("?v=(empty string) is not allowed");
+		} else if (temp == null) {
+			ret.setRepresentation(defaultView);
+		} else if (temp.equals(defaultView.getRepresentation())) {
+			throw new IllegalArgumentException("Do not specify ?v=" + temp
+			        + " because it is the default behavior for this request");
 		} else {
-			if (temp.equals(RestConstants.REPRESENTATION_DEFAULT)) {
-				throw new IllegalArgumentException("Do not specify ?v=default");
-			} else {
-				ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
-			}
+			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
 		
 		// fetch the "limit" param
