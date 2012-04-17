@@ -26,6 +26,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  */
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
+	@Ignore
 	@Test
 	public void createDocumentation() throws Exception {
 		
