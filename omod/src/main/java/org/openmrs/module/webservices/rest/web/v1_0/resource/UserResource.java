@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -214,10 +215,12 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 * @return username + fullname (for concise display purposes)
 	 */
 	public String getDisplayString(UserAndPassword user) {
-		if (user.getUser().getUsername() == null)
-			return "";
-		
-		return user.getUser().getUsername() + " - " + user.getUser().getPersonName().getFullName();
+		StringBuilder ret = new StringBuilder();
+		User u = user.getUser();
+		ret.append(StringUtils.isNotEmpty(u.getUsername()) ? u.getUsername() : u.getSystemId());
+		if (u.getPerson() != null)
+			ret.append(" - ").append(u.getPersonName().getFullName());
+		return ret.toString();
 	}
 	
 	/**
