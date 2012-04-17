@@ -26,7 +26,6 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  */
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
-	@Ignore
 	@Test
 	public void createDocumentation() throws Exception {
 		
@@ -60,8 +59,8 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 			String text = doc.toString();
 			
 			//Wiki syntax will think these are macros and complain like: Unknown macro: {......}
-			text = text.replace("{", "\"");
-			text = text.replace("}", "\"");
+			text = text.replace("{", "\\{");
+			text = text.replace("}", "\\}");
 			
 			System.out.println(text);
 		}

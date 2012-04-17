@@ -230,11 +230,22 @@ public class ResourceDocCreator {
 			
 			Method[] methods = cls.getMethods();
 			for (Method method : methods) {
+				if (method.getName().equals("getResourceCatalog")) {
+					continue;
+				}
+				
 				RequestMapping antn = (RequestMapping) method.getAnnotation(RequestMapping.class);
 				if (antn == null)
 					continue;
 				
-				String operationUrl = antn.method()[0].name() + " " + url;
+				String requestMethod = antn.method()[0].name();
+				
+				if (requestMethod.equals("TRACE")) {
+					//Skip TRACE, which is used to disable a method in HL7MessageController.
+					continue;
+				}
+				
+				String operationUrl = requestMethod + " " + url;
 				
 				if (antn.value().length > 0)
 					operationUrl += antn.value()[0];

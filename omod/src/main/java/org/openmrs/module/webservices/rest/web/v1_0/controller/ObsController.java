@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,7 @@ public class ObsController extends BaseCrudController<ObsResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "encounter")
+	@WSDoc("Fetch all non-retired obs for an encounter with the given id")
 	@ResponseBody
 	public SimpleObject searchByEncounter(@RequestParam("encounter") String encounterUniqueId, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
@@ -64,6 +66,7 @@ public class ObsController extends BaseCrudController<ObsResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@WSDoc("Fetch all non-retired obs for a patient with the given uuid")
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
