@@ -33,7 +33,7 @@ public class EncounterController extends BaseCrudController<EncounterResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "patient")
-	@WSDoc("Fetch all non-retired encounters for a patient with the given id")
+	@WSDoc("Fetch all non-retired encounters for a patient with the given uuid")
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUniqueId, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {

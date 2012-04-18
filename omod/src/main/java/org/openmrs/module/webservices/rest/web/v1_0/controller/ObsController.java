@@ -47,7 +47,7 @@ public class ObsController extends BaseCrudController<ObsResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "encounter")
-	@WSDoc("Fetch all non-retired obs for an encounter with the given id")
+	@WSDoc("Fetch all non-retired obs for an encounter with the given uuid")
 	@ResponseBody
 	public SimpleObject searchByEncounter(@RequestParam("encounter") String encounterUniqueId, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
