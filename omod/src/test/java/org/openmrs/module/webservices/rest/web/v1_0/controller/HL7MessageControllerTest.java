@@ -13,8 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +37,9 @@ import org.springframework.mock.web.MockHttpServletResponse;
  */
 public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String hl7Data = "MSH|^~|FORMENTRY|AMRS.ELD|HL7LISTENER|AMRS.ELD|20110805104142||ORU^R01|REl7wt78q9Pzlqe9ecJB|P|2.5|1||||||||3^AMRS.ELD.FORMID";
+	private static final String hl7Data = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
 	
-	private static final String hl7InvalidSourceData = "MSH|^~|FORMENTRY|NONEXISTINGSOURCE|HL7LISTENER|AMRS.ELD|20110805104142||ORU^R01|REl7wt78q9Pzlqe9ecJB|P|2.5|1||||||||3^AMRS.ELD.FORMID";
+	private static final String hl7InvalidSourceData = "MSH|^~\\&|NES|nonexistingsource|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
 	
 	private HL7Service service;
 	
@@ -59,8 +63,10 @@ public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest 
 	@Test
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
+		
 		SimpleObject newHl7Message = (SimpleObject) controller.create(hl7Data, request, response);
 		Util.log("Enqued hl7 message", newHl7Message);
+		
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
@@ -73,9 +79,14 @@ public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest 
 	@Test
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
-		SimpleObject newHl7Message = (SimpleObject) controller
-		        .create("{ \"hl7\" : \"" + hl7Data + "\" }", request, response);
+		
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("hl7", hl7Data);
+		String jsonHl7Data = new ObjectMapper().writeValueAsString(map);
+		
+		SimpleObject newHl7Message = (SimpleObject) controller.create(jsonHl7Data, request, response);
 		Util.log("Enqued hl7 message", newHl7Message);
+		
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {

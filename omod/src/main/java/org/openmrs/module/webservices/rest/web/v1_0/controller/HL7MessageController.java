@@ -36,6 +36,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import ca.uhn.hl7v2.HL7Exception;
+import ca.uhn.hl7v2.model.Composite;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.Segment;
+import ca.uhn.hl7v2.model.Type;
+import ca.uhn.hl7v2.parser.GenericParser;
+import ca.uhn.hl7v2.parser.Parser;
+
 /**
  * Controller for REST web service access to the HL7 message resource. Supports pushing, retrieving
  * and reviewing on the resource itself.
@@ -72,20 +80,34 @@ public class HL7MessageController extends BaseCrudController<HL7MessageResource>
 			hl7 = (String) object.get("hl7");
 		}
 		
-		String[] hl7split = hl7.split("\\|");
-		if (hl7split.length < 10) {
-			throw new ConversionException("The HL7 message is too short or has a wrong format: " + hl7);
+		try {
+			Parser parser = new GenericParser();
+			Message msg = parser.parse(hl7);
+			//There are different versions of the HL7 model in HAPI and I'm not quite sure, 
+			//if it's safe to code against a specific version, thus I'll code against all of them.
+			Segment msh = (Segment) msg.get("MSH");
+			
+			Type mshSource = msh.getField(4)[0];
+			Type mshSourceKey = msh.getField(10)[0];
+			
+			String source = mshSource.toString();
+			if (mshSource instanceof Composite) {
+				//It's Composite since the model in version 23.
+				source = ((Composite) mshSource).getComponent(0).toString();
+			}
+			String sourceKey = mshSourceKey.toString();
+			
+			post.add("source", source);
+			post.add("sourceKey", sourceKey);
+			post.add("data", hl7);
+			
+			HL7Source hl7Source = Context.getHL7Service().getHL7SourceByName(source);
+			if (hl7Source == null) {
+				throw new ConversionException("The " + source + " source was not recognized");
+			}
 		}
-		String sourceKey = hl7split[9];
-		String source = hl7split[3];
-		
-		post.add("sourceKey", sourceKey);
-		post.add("source", source);
-		post.add("data", hl7);
-		
-		HL7Source hl7Source = Context.getHL7Service().getHL7SourceByName(source);
-		if (hl7Source == null) {
-			throw new ConversionException("The " + source + " source was not recognized");
+		catch (HL7Exception e) {
+			throw new ConversionException(e.getMessage(), e);
 		}
 		
 		Object created = getResource().create(post, context);
