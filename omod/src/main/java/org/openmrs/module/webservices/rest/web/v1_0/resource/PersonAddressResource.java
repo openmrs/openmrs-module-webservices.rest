@@ -21,8 +21,6 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -37,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "addresses")
+@SubResource(parent = PersonResource.class, path = "address")
 @Handler(supports = PersonAddress.class, order = 0)
 public class PersonAddressResource extends DelegatingSubResource<PersonAddress, Person, PersonResource> {
 	

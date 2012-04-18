@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for ConceptNames, supporting standard CRUD operations
  */
 
-@SubResource(parent = ConceptResource.class, path = "names")
+@SubResource(parent = ConceptResource.class, path = "name")
 @Handler(supports = ConceptName.class, order = 0)
 public class ConceptNameResource extends DelegatingSubResource<ConceptName, Concept, ConceptResource> {
 	

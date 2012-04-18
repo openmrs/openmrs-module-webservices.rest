@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "names")
+@SubResource(parent = PersonResource.class, path = "name")
 @Handler(supports = PersonName.class, order = 0)
 public class PersonNameResource extends DelegatingSubResource<PersonName, Person, PersonResource> {
 	
