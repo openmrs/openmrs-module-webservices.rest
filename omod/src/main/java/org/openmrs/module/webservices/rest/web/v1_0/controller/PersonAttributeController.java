@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * itself.
  */
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/person/{parentUuid}/attributes")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/person/{parentUuid}/attribute")
 public class PersonAttributeController extends BaseSubResourceController<PersonAttributeResource> {
 
 }
