@@ -225,12 +225,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		Map<String, Property> nonFinalProperties = new HashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.
+		Set<String> notAllowedProperties = new HashSet<String>();
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
 			if (nonFinalProperties.remove(prop.getKey()) != null) {
 				setProperty(delegate, prop.getKey(), prop.getValue());
 			} else {
-				throw new ConversionException(prop.getKey() + " is not allowed to be changed");
+				notAllowedProperties.add(prop.getKey());
 			}
+		}
+		if (!notAllowedProperties.isEmpty()) {
+			throw new ConversionException("Some properties are not allowed to be set: " + StringUtils.join(notAllowedProperties, ","));
 		}
 		
 		//Fail, if any required properties are missing.
