@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
@@ -40,6 +41,7 @@ public class PersonAttributeTypeControllerTest extends BaseModuleWebContextSensi
 	 * @verifies create a new PersonAttributeType
 	 */
 	@Test
+	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void createPersonAttributeType_shouldCreateANewPersonAttributeType() throws Exception {
 		int before = Context.getPersonService().getAllPersonAttributeTypes().size();
 		String json = "{ \"name\":\"Some attributeType\",\"description\":\"Attribute Type for test\",\"format\":\"java.lang.String\",\"searchable\":false}";
@@ -84,6 +86,7 @@ public class PersonAttributeTypeControllerTest extends BaseModuleWebContextSensi
 	 * @verifies change a property on a person
 	 */
 	@Test
+	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void updatePersonAttributeType_shouldChangeAPropertyOnAPersonAttributeType() throws Exception {
 		SimpleObject post = new ObjectMapper().readValue("{\"description\":\"Updated description\"}", SimpleObject.class);
 		Object editedPersonAttributeType = new PersonAttributeTypeController().update(

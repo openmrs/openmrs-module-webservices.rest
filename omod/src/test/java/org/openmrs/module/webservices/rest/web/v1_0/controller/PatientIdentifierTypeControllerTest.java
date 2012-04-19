@@ -22,6 +22,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
@@ -76,6 +77,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	}
 	
 	@Test
+	@Ignore("RESTWS-239: Define creatable/updatable properties on PatientIdentifierType resource")
 	public void shouldCreate() throws Exception {
 		int before = service.getAllPatientIdentifierTypes().size();
 		String json = "{ \"name\":\"My Type\", \"description\":\"My Way\", \"required\":true, \"checkDigit\":true, \"validator\":\""
@@ -88,6 +90,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	}
 	
 	@Test
+	@Ignore("RESTWS-239: Define creatable/updatable properties on PatientIdentifierType resource")
 	public void shouldUpdate() throws Exception {
 		String json = "{ \"description\":\"something new\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);

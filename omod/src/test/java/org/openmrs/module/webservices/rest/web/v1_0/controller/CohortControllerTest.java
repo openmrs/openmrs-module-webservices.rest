@@ -21,6 +21,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.CohortService;
@@ -105,6 +106,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-227: Define creatable/updatable properties on Cohort and CohortMember resources")
 	public void updateCohort_shouldChangeAPropertyOnACohort() throws Exception {
 		
 		String json = "{ \"name\":\"EXTRA COHORT\", \"description\":\"THIS IS NEW COHORT\" }";

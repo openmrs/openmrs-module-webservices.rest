@@ -22,6 +22,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -77,6 +78,7 @@ public class ConceptDatatypeControllerTest extends BaseModuleWebContextSensitive
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldCreateAConceptDatatype() throws Exception {
 		int originalCount = service.getAllConceptDatatypes().size();
 		String json = "{ \"name\":\"test conceptDatatype\", \"description\":\"test descr\" }";

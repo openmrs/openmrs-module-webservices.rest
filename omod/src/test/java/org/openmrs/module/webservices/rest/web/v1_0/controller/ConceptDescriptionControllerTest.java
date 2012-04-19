@@ -25,6 +25,7 @@ import junit.framework.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
@@ -106,6 +107,7 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldAddADescriptionToConcept() throws Exception {
 		int before = service.getConceptByUuid(conceptUuid).getDescriptions().size();
 		String json = "{ \"description\":\"New Description\", \"locale\":\"fr\"}";
@@ -144,6 +146,7 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConceptDescription() throws Exception {
 		List<Object> results = controller.getAll(conceptUuid, request, response);
 		Assert.assertEquals(1, results.size());

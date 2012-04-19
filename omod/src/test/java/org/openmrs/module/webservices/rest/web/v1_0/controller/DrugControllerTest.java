@@ -21,6 +21,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
@@ -73,6 +74,7 @@ public class DrugControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-230: Define creatable/updatable properties on Drug resource")
 	public void shouldCreateADrug() throws Exception {
 		int originalCount = service.getAllDrugs().size();
 		String json = "{ \"name\":\"test drug\", \"concept\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\" }";
@@ -83,6 +85,7 @@ public class DrugControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-230: Define creatable/updatable properties on Drug resource")
 	public void shouldEditADrug() throws Exception {
 		final String changedDescription = "some description";
 		String json = "{ \"description\":\"" + changedDescription + "\" }";
@@ -104,6 +107,7 @@ public class DrugControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-230: Define creatable/updatable properties on Drug resource")
 	public void shouldPurgeADrug() throws Exception {
 		String json = "{ \"name\":\"test drug\", \"concept\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);

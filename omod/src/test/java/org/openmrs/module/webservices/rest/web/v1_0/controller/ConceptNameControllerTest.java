@@ -24,6 +24,7 @@ import junit.framework.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
@@ -68,6 +69,7 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldAddNameToConcept() throws Exception {
 		int before = service.getConceptByUuid(conceptUuid).getNames().size();
 		String json = "{ \"name\":\"COUGH SYRUP II\", \"locale\":\"en\", \"conceptNameType\":\""
@@ -92,6 +94,7 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConceptName() throws Exception {
 		List<Object> results = controller.getAll(conceptUuid, request, response);
 		Assert.assertEquals(1, results.size());

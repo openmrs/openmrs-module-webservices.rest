@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
@@ -61,6 +62,7 @@ public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
+	@Ignore("RESTWS-235: Define creatable/updatable properties on HL7Message resource")
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
 		
@@ -77,6 +79,7 @@ public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
+	@Ignore("RESTWS-235: Define creatable/updatable properties on HL7Message resource")
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
 		

@@ -107,6 +107,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldCreateAConcept() throws Exception {
 		int originalCount = service.getAllConcepts().size();
 		String json = "{ \"name\":\"test concept\", \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
@@ -117,6 +118,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditFullySpecifiedNameOfAConcept() throws Exception {
 		final String changedName = "TESTING NAME";
 		String json = "{ \"name\":\"" + changedName + "\" }";
@@ -128,6 +130,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConcept() throws Exception {
 		final String changedVersion = "1.2.3";
 		String json = "{ \"version\":\"" + changedVersion + "\" }";

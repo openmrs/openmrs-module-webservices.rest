@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
@@ -61,6 +62,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	}
 	
 	@Test
+	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
 	public void shouldAddIdentifierToPatient() throws Exception {
 		int before = service.getPatientByUuid(patientUuid).getActiveIdentifiers().size();
 		String json = "{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
@@ -72,6 +74,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	}
 	
 	@Test
+	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
 	public void shouldEditIdentifier() throws Exception {
 		String json = "{ \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);

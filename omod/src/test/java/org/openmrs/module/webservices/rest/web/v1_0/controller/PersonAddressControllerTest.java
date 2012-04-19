@@ -22,6 +22,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
@@ -91,6 +92,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
+	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldAddAnAddressToAPerson() throws Exception {
 		int before = service.getPersonByUuid(personUuid).getAddresses().size();
 		String json = "{ \"address1\":\"test address\", \"country\":\"USA\", \"preferred\":true }";
@@ -101,6 +103,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
+	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldEditIAnAddress() throws Exception {
 		String json = "{ \"address1\":\"new address1\", \"address2\":\"new address2\"  }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
