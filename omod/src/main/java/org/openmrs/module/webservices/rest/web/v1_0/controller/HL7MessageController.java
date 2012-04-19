@@ -43,6 +43,7 @@ import ca.uhn.hl7v2.model.Segment;
 import ca.uhn.hl7v2.model.Type;
 import ca.uhn.hl7v2.parser.GenericParser;
 import ca.uhn.hl7v2.parser.Parser;
+import ca.uhn.hl7v2.util.Terser;
 
 /**
  * Controller for REST web service access to the HL7 message resource. Supports pushing, retrieving
@@ -83,19 +84,10 @@ public class HL7MessageController extends BaseCrudController<HL7MessageResource>
 		try {
 			Parser parser = new GenericParser();
 			Message msg = parser.parse(hl7);
-			//There are different versions of the HL7 model in HAPI and I'm not quite sure, 
-			//if it's safe to code against a specific version, thus I'll code against all of them.
-			Segment msh = (Segment) msg.get("MSH");
+			Terser terser = new Terser(msg);
 			
-			Type mshSource = msh.getField(4)[0];
-			Type mshSourceKey = msh.getField(10)[0];
-			
-			String source = mshSource.toString();
-			if (mshSource instanceof Composite) {
-				//It's Composite since the model in version 23.
-				source = ((Composite) mshSource).getComponent(0).toString();
-			}
-			String sourceKey = mshSourceKey.toString();
+			String source = terser.get("MSH-4");
+			String sourceKey = terser.get("MSH-10");
 			
 			post.add("source", source);
 			post.add("sourceKey", sourceKey);
