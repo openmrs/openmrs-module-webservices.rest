@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.ConceptController;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +31,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -94,16 +95,14 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
-		Object aResult = result.get(0);
-		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
+		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
 		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = controller.getAll(request, response);
-		Object aResult = result.get(0);
-		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
+		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test
