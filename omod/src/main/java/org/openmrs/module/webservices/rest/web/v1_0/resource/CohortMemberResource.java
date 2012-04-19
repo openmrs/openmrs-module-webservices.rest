@@ -32,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -48,12 +49,12 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<CohortMember> doGetAll(Cohort parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<CohortMember> doGetAll(Cohort parent, RequestContext context) throws ResponseException {
 		List<CohortMember> members = new ArrayList<CohortMember>();
 		for (Patient cohortMember : Context.getPatientSetService().getPatients(parent.getMemberIds())) {
 			members.add(new CohortMember(cohortMember, parent));
 		}
-		return members;
+		return new NeedsPaging<CohortMember>(members, context);
 	}
 	
 	/**
@@ -236,20 +237,22 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAll(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
+	/*
+	 * TODO: Should be deleted since doGetAll is already overridden
 	@Override
 	public List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
-		Cohort parent = Context.getCohortService().getCohortByUuid(parentUniqueId);
-		List<Object> ret = new ArrayList<Object>();
-		Representation rep = Representation.FULL;
-		if (context.getRepresentation().equals(Representation.DEFAULT))
-			rep = Representation.REF;
-		else if (context.getRepresentation().equals(Representation.FULL))
-			rep = Representation.DEFAULT;
-		for (CohortMember member : doGetAll(parent, context))
-			ret.add(asRepresentation(member, rep));
-		return ret;
-	}
-	
+	Cohort parent = Context.getCohortService().getCohortByUuid(parentUniqueId);
+	List<Object> ret = new ArrayList<Object>();
+	Representation rep = Representation.FULL;
+	if (context.getRepresentation().equals(Representation.DEFAULT))
+		rep = Representation.REF;
+	else if (context.getRepresentation().equals(Representation.FULL))
+		rep = Representation.DEFAULT;
+	for (CohortMember member : doGetAll(parent, context))
+		ret.add(asRepresentation(member, rep));
+	return ret;
+	}*/
+
 	/**
 	 * @param member the patient
 	 * @return string that contains cohort member's identifier and full name

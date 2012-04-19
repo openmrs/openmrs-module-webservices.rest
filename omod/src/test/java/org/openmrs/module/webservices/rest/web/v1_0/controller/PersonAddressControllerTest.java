@@ -74,9 +74,9 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 	@Test
 	public void shouldGetAllNonVoidedAddressesForAPerson() throws Exception {
 		executeDataSet(PERSON_NAME_XML);//add the row with a voided address for testing purposes
-		List<Object> result = controller.getAll(personUuid, request, response);
+		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test
@@ -86,9 +86,9 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		PersonAddress ad = p.getAddresses().iterator().next();
 		ad.setVoided(true);
 		service.savePerson(p);
-		List<Object> result = controller.getAll(personUuid, request, response);
+		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(0, result.size());
+		Assert.assertEquals(0, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

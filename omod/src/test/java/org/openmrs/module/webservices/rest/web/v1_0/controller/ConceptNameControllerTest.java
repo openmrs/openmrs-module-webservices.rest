@@ -82,11 +82,12 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	
 	@Test
 	public void shouldListNamesForAConcept() throws Exception {
-		List<Object> results = controller.getAll(conceptUuid2, request, response);
+		SimpleObject results = controller.getAll(conceptUuid2, request, response);
+		List<Object> resultsList = (List<Object>) PropertyUtils.getProperty(results, "results");
 		Assert.assertNotNull(results);
-		Assert.assertEquals(3, results.size());
-		List<Object> names = Arrays.asList(PropertyUtils.getProperty(results.get(0), "name"), PropertyUtils.getProperty(
-		    results.get(1), "name"), PropertyUtils.getProperty(results.get(2), "name"));
+		Assert.assertEquals(3, resultsList.size());
+		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "name"), PropertyUtils.getProperty(
+		    resultsList.get(1), "name"), PropertyUtils.getProperty(resultsList.get(2), "name"));
 		
 		Assert.assertTrue(names.contains("CD4 COUNT"));
 		Assert.assertTrue(names.contains("CD4"));
@@ -96,8 +97,9 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	@Test
 	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConceptName() throws Exception {
-		List<Object> results = controller.getAll(conceptUuid, request, response);
-		Assert.assertEquals(1, results.size());
+		SimpleObject results = controller.getAll(conceptUuid, request, response);
+		List<Object> resultsList = (List<Object>) PropertyUtils.getProperty(results, "results");
+		Assert.assertEquals(1, resultsList.size());
 		ConceptName conceptName = service.getConceptNameByUuid(nameUuid);
 		Assert.assertNotNull(conceptName);
 		Assert.assertEquals("COUGH SYRUP", conceptName.getName());
@@ -109,10 +111,11 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 		ConceptName updateConceptName = service.getConceptNameByUuid(nameUuid);
 		//should have voided the old edited name
 		Assert.assertTrue(updateConceptName.isVoided());
-		List<Object> results2 = controller.getAll(conceptUuid, request, response);
-		Assert.assertEquals(1, results.size());
+		SimpleObject results2 = controller.getAll(conceptUuid, request, response);
+		List<Object> results2List = (List<Object>) PropertyUtils.getProperty(results2, "results");
+		Assert.assertEquals(1, results2List.size());
 		//should have created a new one with the new name
-		Assert.assertTrue(PropertyUtils.getProperty(results2.get(0), "name").equals("NEW TEST NAME"));
+		Assert.assertTrue(PropertyUtils.getProperty(results2List.get(0), "name").equals("NEW TEST NAME"));
 	}
 	
 	@Test

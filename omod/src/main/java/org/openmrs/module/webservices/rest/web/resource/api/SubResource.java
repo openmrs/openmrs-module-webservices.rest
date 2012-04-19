@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import java.util.List;
-
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -90,6 +88,6 @@ public interface SubResource extends Resource {
 	 * @return
 	 * @throws ResponseException
 	 */
-	List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException;
+	SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException;
 	
 }

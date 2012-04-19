@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.CohortMemberContr
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.beanutils.PropertyUtils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -69,10 +70,10 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 	@Test
 	public void getAllCohortMembers_shouldGetARefRepresentationOfAllCohortMembers() throws Exception {
 		int size = service.getCohortByUuid(cohortUuid).getMemberIds().size();
-		List<Object> result = controller.getAll(cohortUuid, request, response);
+		SimpleObject result = controller.getAll(cohortUuid, request, response);
 		Assert.assertNotNull(result);
 		Util.log("Cohort member fetched (ref)", result);
-		Assert.assertEquals(result.size(), size);
+		Assert.assertEquals(((List<Object>) PropertyUtils.getProperty(result, "results")).size(), size);
 	}
 	
 	@Test
@@ -80,10 +81,10 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		int size = service.getCohortByUuid(cohortUuid).getMemberIds().size();
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		List<Object> result = controller.getAll(cohortUuid, req, response);
+		SimpleObject result = controller.getAll(cohortUuid, req, response);
 		Assert.assertNotNull(result);
 		Util.log("Cohort member fetched (default)", result);
-		Assert.assertEquals(result.size(), size);
+		Assert.assertEquals(((List<Object>) PropertyUtils.getProperty(result, "results")).size(), size);
 	}
 	
 	@Test

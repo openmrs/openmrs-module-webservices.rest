@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -92,17 +93,15 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<ConceptName> doGetAll(Concept parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<ConceptName> doGetAll(Concept parent, RequestContext context) throws ResponseException {
 		List<ConceptName> names = new ArrayList<ConceptName>();
-		
 		if (parent != null) {
 			for (ConceptName name : parent.getNames()) {
 				if (!name.isVoided())
 					names.add(name);
 			}
 		}
-		
-		return names;
+		return new NeedsPaging<ConceptName>(names, context);
 	}
 	
 	/**

@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -189,14 +190,14 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<PersonAddress> doGetAll(Person parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<PersonAddress> doGetAll(Person parent, RequestContext context) throws ResponseException {
 		//We don't return voided addresses
 		List<PersonAddress> nonVoidedAddresses = new ArrayList<PersonAddress>(parent.getAddresses().size());
 		for (PersonAddress personAddress : parent.getAddresses()) {
 			if (!personAddress.isVoided())
 				nonVoidedAddresses.add(personAddress);
 		}
-		return nonVoidedAddresses;
+		return new NeedsPaging<PersonAddress>(nonVoidedAddresses, context);
 	}
 	
 	/**

@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.annotation.Handler;
@@ -28,6 +26,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -128,8 +127,8 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
-		return parent.getActiveIdentifiers();
+	public NeedsPaging<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
+		return new NeedsPaging<PatientIdentifier>(parent.getActiveIdentifiers(), context);
 	}
 	
 	/**

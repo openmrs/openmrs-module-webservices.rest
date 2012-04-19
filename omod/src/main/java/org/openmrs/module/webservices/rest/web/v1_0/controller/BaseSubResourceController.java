@@ -76,7 +76,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<Object> getAll(@PathVariable("parentUuid") String parentUuid, HttpServletRequest request,
+	public SimpleObject getAll(@PathVariable("parentUuid") String parentUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		return getResource().getAll(parentUuid, context);

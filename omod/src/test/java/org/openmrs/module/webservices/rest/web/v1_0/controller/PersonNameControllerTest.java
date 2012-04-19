@@ -70,9 +70,9 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	
 	@Test
 	public void shouldListNamesForPerson() throws Exception {
-		List<Object> result = controller.getAll(personUuid, request, response);
+		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

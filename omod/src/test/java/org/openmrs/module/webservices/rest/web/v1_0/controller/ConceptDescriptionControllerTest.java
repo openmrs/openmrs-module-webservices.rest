@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.ConceptDescriptionController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -131,11 +130,12 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 		Assert.assertNotNull(testDescription.getConceptDescriptionId());
 		Assert.assertEquals(2, testConcept.getDescriptions().size());
 		
-		List<Object> results = controller.getAll(conceptUuid, request, response);
+		SimpleObject results = controller.getAll(conceptUuid, request, response);
+		List<Object> resultsList = (List<Object>) PropertyUtils.getProperty(results, "results");
 		Assert.assertNotNull(results);
-		Assert.assertEquals(2, results.size());
-		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(results.get(0), "description"), PropertyUtils
-		        .getProperty(results.get(1), "description"));
+		Assert.assertEquals(2, resultsList.size());
+		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "description"),
+		    PropertyUtils.getProperty(resultsList.get(1), "description"));
 		
 		Assert.assertTrue(descriptions.contains("Affirmative"));
 		Assert.assertTrue(descriptions.contains("another description"));
@@ -148,8 +148,9 @@ public class ConceptDescriptionControllerTest extends BaseModuleWebContextSensit
 	@Test
 	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConceptDescription() throws Exception {
-		List<Object> results = controller.getAll(conceptUuid, request, response);
-		Assert.assertEquals(1, results.size());
+		SimpleObject results = controller.getAll(conceptUuid, request, response);
+		List<Object> resultsList = (List<Object>) PropertyUtils.getProperty(results, "results");
+		Assert.assertEquals(1, resultsList.size());
 		ConceptDescription conceptDescription = service.getConceptDescriptionByUuid(descriptionUuid);
 		Assert.assertEquals("Affirmative", conceptDescription.getDescription());
 		

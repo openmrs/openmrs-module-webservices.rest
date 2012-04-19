@@ -68,9 +68,9 @@ public class PersonAttributeControllerTest extends BaseModuleWebContextSensitive
 	
 	@Test
 	public void shouldListAttributesForPerson() throws Exception {
-		List<Object> result = controller.getAll(personUuid, request, response);
+		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(3, result.size());
+		Assert.assertEquals(3, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

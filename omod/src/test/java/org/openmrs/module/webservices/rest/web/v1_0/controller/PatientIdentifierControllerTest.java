@@ -55,10 +55,10 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void shouldListIdentifiersForPatient() throws Exception {
-		List<Object> result = controller.getAll(patientUuid, request, response);
+		SimpleObject result = controller.getAll(patientUuid, request, response);
 		Util.log("All identifiers for a patient", result);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, result.size());
+		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

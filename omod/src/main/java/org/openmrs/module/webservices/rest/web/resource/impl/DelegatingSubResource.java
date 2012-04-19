@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -71,7 +72,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 * 
 	 * @throws ResponseException
 	 */
-	public abstract List<T> doGetAll(P parent, RequestContext context) throws ResponseException;
+	public abstract PageableResult doGetAll(P parent, RequestContext context) throws ResponseException;
 	
 	/**
 	 * @see Resource#getUri(java.lang.Object)
@@ -175,12 +176,10 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 * @see SubResource#getAll(java.lang.String, RequestContext)
 	 */
 	@Override
-	public List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
+	public SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException {
 		P parent = getParentResource().getByUniqueId(parentUniqueId);
-		List<Object> ret = new ArrayList<Object>();
-		for (T match : doGetAll(parent, context))
-			ret.add(asRepresentation(match, context.getRepresentation()));
-		return ret;
+		PageableResult result = doGetAll(parent, context);
+		return result.toSimpleObject();
 	}
 	
 	private String getParentUri(T instance) {
