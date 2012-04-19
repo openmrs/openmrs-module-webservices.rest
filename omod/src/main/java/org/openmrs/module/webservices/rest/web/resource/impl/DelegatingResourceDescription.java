@@ -27,8 +27,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescri
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
- * Used by implementations of {@link DelegatingCrudResource} to indicate what delegate properties, and what
- * methods they want to include in a particular representation 
+ * Used by implementations of {@link DelegatingCrudResource} to indicate what delegate properties,
+ * and what methods they want to include in a particular representation
  */
 public class DelegatingResourceDescription implements RepresentationDescription {
 	
@@ -37,27 +37,39 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	List<Hyperlink> links = new ArrayList<Hyperlink>();
 	
 	public void addProperty(String propertyName) {
-		addProperty(propertyName, propertyName, null);
+		addProperty(propertyName, propertyName, null, false);
+	}
+	
+	public void addRequiredProperty(String propertyName) {
+		addProperty(propertyName, propertyName, null, true);
 	}
 	
 	public void addProperty(String propertyName, Representation rep) {
-		addProperty(propertyName, propertyName, rep);
+		addProperty(propertyName, propertyName, rep, false);
 	}
 	
 	public void addProperty(String propertyName, Method method) {
-		addProperty(propertyName, method, null);
+		addProperty(propertyName, method, null, false);
 	}
 	
 	public void addProperty(String propertyName, String delegatePropertyName, Representation rep) {
-		if (rep == null)
-			rep = Representation.DEFAULT;
-		properties.put(propertyName, new Property(delegatePropertyName, rep));
+		addProperty(propertyName, delegatePropertyName, null, false);
 	}
 	
 	public void addProperty(String propertyName, Method method, Representation rep) {
+		addProperty(propertyName, method, null, false);
+	}
+	
+	protected void addProperty(String propertyName, String delegatePropertyName, Representation rep, boolean required) {
 		if (rep == null)
 			rep = Representation.DEFAULT;
-		properties.put(propertyName, new Property(method, rep));
+		properties.put(propertyName, new Property(delegatePropertyName, rep, required));
+	}
+	
+	protected void addProperty(String propertyName, Method method, Representation rep, boolean required) {
+		if (rep == null)
+			rep = Representation.DEFAULT;
+		properties.put(propertyName, new Property(method, rep, required));
 	}
 	
 	public DelegatingResourceDescription addSelfLink() {
@@ -84,7 +96,7 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	}
 	
 	/**
-	 * A property that wil be included in a representation
+	 * A property that will be included in a representation
 	 */
 	class Property {
 		
@@ -94,14 +106,30 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		
 		private Representation rep;
 		
+		private boolean required;
+		
 		public Property(String delegateProperty, Representation rep) {
 			this.delegateProperty = delegateProperty;
 			this.rep = rep;
+			this.required = false;
+		}
+		
+		public Property(String delegateProperty, Representation rep, boolean required) {
+			this.delegateProperty = delegateProperty;
+			this.rep = rep;
+			this.required = required;
 		}
 		
 		public Property(Method method, Representation rep) {
 			this.method = method;
 			this.rep = rep;
+			this.required = false;
+		}
+		
+		public Property(Method method, Representation rep, boolean required) {
+			this.method = method;
+			this.rep = rep;
+			this.required = required;
 		}
 		
 		/**
@@ -144,6 +172,20 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		 */
 		public void setRep(Representation rep) {
 			this.rep = rep;
+		}
+		
+		/**
+		 * @return the required
+		 */
+		public boolean isRequired() {
+			return required;
+		}
+		
+		/**
+		 * @param required the required to set
+		 */
+		public void setRequired(boolean required) {
+			this.required = required;
 		}
 		
 		public <T> Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {

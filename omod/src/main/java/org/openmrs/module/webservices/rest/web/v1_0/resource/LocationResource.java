@@ -101,6 +101,47 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("name");
+		
+		description.addProperty("description");
+		description.addProperty("address1");
+		description.addProperty("address2");
+		description.addProperty("cityVillage");
+		description.addProperty("stateProvince");
+		description.addProperty("country");
+		description.addProperty("postalCode");
+		description.addProperty("latitude");
+		description.addProperty("longitude");
+		description.addProperty("countyDistrict");
+		description.addProperty("address3");
+		description.addProperty("address4");
+		description.addProperty("address5");
+		description.addProperty("address6");
+		description.addProperty("tags");
+		description.addProperty("parentLocation");
+		description.addProperty("childLocations");
+		
+		description.addProperty("retired");
+		description.addProperty("retireReason");
+		
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties();
+	}
+	
+	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
 	@Override

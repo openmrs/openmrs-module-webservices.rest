@@ -97,7 +97,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 			throw new ObjectNotFoundException();
 		T delegate = newDelegate();
 		setParent(delegate, parent);
-		setConvertedProperties(delegate, post);
+		setConvertedProperties(delegate, post, getCreatableProperties());
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
@@ -138,7 +138,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		if (delegate == null)
 			throw new ObjectNotFoundException();
 		testParent(delegate, parentUniqueId);
-		setConvertedProperties(delegate, propertiesToUpdate);
+		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties());
 		delegate = save(delegate);
 		return delegate;
 	}

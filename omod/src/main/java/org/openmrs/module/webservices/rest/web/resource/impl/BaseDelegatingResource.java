@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
@@ -31,32 +32,31 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
-import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * A base implementation of a resource or sub-resource that delegates operations to a wrapped object.
- * Implementations generally should extend either {@link DelegatingCrudResource} or {@link DelegatingSubResource}
- * rather than this class directly. 
+ * A base implementation of a resource or sub-resource that delegates operations to a wrapped
+ * object. Implementations generally should extend either {@link DelegatingCrudResource} or
+ * {@link DelegatingSubResource} rather than this class directly.
  * 
  * @param <T> the class we're delegating to
  */
 public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource {
 	
 	/**
-	 * Properties that should silently be ignored if you try to get them. 
-	 * Implementations should generally configure this property with a list of properties that were added
-	 * to their underlying domain object after the minimum OpenMRS version required by this module. For
+	 * Properties that should silently be ignored if you try to get them. Implementations should
+	 * generally configure this property with a list of properties that were added to their
+	 * underlying domain object after the minimum OpenMRS version required by this module. For
 	 * example PatientIdentifierTypeResource will allow "locationBehavior" to be missing, since it
-	 * wasn't added to PatientIdentifierType until OpenMRS 1.9. 
-	 * delegate class    
+	 * wasn't added to PatientIdentifierType until OpenMRS 1.9. delegate class
 	 */
 	protected Set<String> allowedMissingProperties = new HashSet<String>();
 	
@@ -121,7 +121,29 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public abstract DelegatingResourceDescription getRepresentationDescription(Representation rep);
 	
 	/**
-	 * Implementations should override this method if T is not uniquely identified by a "uuid" property.
+	 * Gets a description of resource's properties which can be edited.
+	 * 
+	 * @return the description
+	 * @throws ResponseException
+	 */
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * Gets a description of resource's properties which can be set on creation.
+	 * 
+	 * @return the description
+	 * @throws ResponseException
+	 */
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * Implementations should override this method if T is not uniquely identified by a "uuid"
+	 * property.
+	 * 
 	 * @param delegate
 	 * @return the uuid property of delegate
 	 */
@@ -196,11 +218,31 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * @param delegate
 	 * @param propertiesToCreate
-	 * @throws ConversionException 
+	 * @throws ResponseException
 	 */
-	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap) throws ConversionException {
+	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
+	        DelegatingResourceDescription description) throws ResponseException {
+		Map<String, Property> nonFinalProperties = new HashMap<String, Property>(description.getProperties());
+		
+		//Set properties that are allowed to be changed or fail.
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
-			setProperty(delegate, prop.getKey(), prop.getValue());
+			if (nonFinalProperties.remove(prop.getKey()) != null) {
+				setProperty(delegate, prop.getKey(), prop.getValue());
+			} else {
+				throw new ConversionException(prop.getKey() + " is not allowed to be changed");
+			}
+		}
+		
+		//Fail, if any required properties are missing.
+		Set<String> missingProperties = new HashSet<String>();
+		for (Entry<String, Property> prop : nonFinalProperties.entrySet()) {
+			if (prop.getValue().isRequired()) {
+				missingProperties.add(prop.getKey());
+			}
+		}
+		if (!missingProperties.isEmpty()) {
+			throw new ConversionException("Some required properties are missing: "
+			        + StringUtils.join(missingProperties, ","));
 		}
 	}
 	
@@ -239,7 +281,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(java.lang.Object, java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(java.lang.Object,
+	 *      java.lang.String)
 	 */
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
@@ -265,7 +308,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object, java.lang.String, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object,
+	 *      java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {

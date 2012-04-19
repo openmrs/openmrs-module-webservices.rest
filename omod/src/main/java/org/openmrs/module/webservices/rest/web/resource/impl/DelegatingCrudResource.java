@@ -84,7 +84,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		T delegate = newDelegate();
-		setConvertedProperties(delegate, propertiesToCreate);
+		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties());
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
@@ -98,7 +98,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		T delegate = getByUniqueId(uuid);
 		if (delegate == null)
 			throw new ObjectNotFoundException();
-		setConvertedProperties(delegate, propertiesToUpdate);
+		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties());
 		delegate = save(delegate);
 		return delegate;
 	}
