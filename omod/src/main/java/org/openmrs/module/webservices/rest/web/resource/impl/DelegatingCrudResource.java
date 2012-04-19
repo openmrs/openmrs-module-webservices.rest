@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -198,6 +197,21 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
+	 * Resources provided by this module itself are published without any particular namespace (e.g. /ws/rest/v1/concept)
+	 * but when modules publish resources, they should be namespaced (e.g. /ws/rest/v1/moduleId/moduleresource).
+	 * 
+	 * We recommend that module resources override this method and return their module id as a namespace. (Note that you
+	 * also need to include that same namespace in your resource's controller.)
+	 * 
+	 * The default implementation just returns null.
+	 * 
+	 * @return a namespace that you want appended to the standard URI prefix before your resource's name
+	 */
+	protected String getNamespacePrefix() {
+		return null;
+	}
+	
+	/**
 	 * @param delegate
 	 * @return the URI for the given delegate object
 	 */
@@ -210,10 +224,16 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
 			//TODO Deciding the version number from here is bad, it should be passed in to this method
-			return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + res.value() + "/" + getUniqueId((T) delegate);
+			
+			// if this resource defines a namespace, we need to append that
+			String namespacePrefix = "";
+			if (StringUtils.isNotBlank(getNamespacePrefix())) {
+				namespacePrefix = getNamespacePrefix().concat("/");
+			}
+			return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.value() + "/"
+			        + getUniqueId((T) delegate);
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
-		
 	}
 	
 }
