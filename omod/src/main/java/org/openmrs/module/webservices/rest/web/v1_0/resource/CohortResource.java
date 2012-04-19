@@ -97,11 +97,11 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-
+		
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		description.addRequiredProperty("memberIds");	
-
+		description.addRequiredProperty("memberIds");
+		
 		return description;
 	}
 	
@@ -110,7 +110,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-	    return getCreatableProperties();
+		return getCreatableProperties();
 	}
 	
 	/**

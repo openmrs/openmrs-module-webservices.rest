@@ -127,7 +127,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 		
 		description.addRequiredProperty("patient");
 		
-	    return description;
+		return description;
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-	    return getCreatableProperties();
+		return getCreatableProperties();
 	}
 	
 	/**
