@@ -43,13 +43,14 @@
         var u = jQuery("#url").val()
         var d = jQuery("#json").val();
         var type = jQuery("#type").val();
-        if(jQuery("#rep").val().length !== 0) {
+        var rep = jQuery("#rep").val();
+        if(rep.length !== 0) {
             if(u.indexOf("?") >= 0){
                 var qparam = "&v=";
             } else {
                 var qparam = "?v=";
             }
-            qparam = qparam + jQuery("#rep").val();
+            qparam = qparam + rep;
             u = u + qparam;
         }
 
