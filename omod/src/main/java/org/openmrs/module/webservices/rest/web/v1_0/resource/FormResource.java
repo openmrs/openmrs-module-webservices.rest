@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.Form;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -117,8 +115,8 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Form> doGetAll(RequestContext context) throws ResponseException {
-		return Context.getFormService().getAllForms(false);
+	protected NeedsPaging<Form> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<Form>(Context.getFormService().getAllForms(false), context);
 	}
 	
 	/**

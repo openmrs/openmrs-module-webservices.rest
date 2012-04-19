@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -85,8 +86,8 @@ public class ConceptClassResource extends MetadataDelegatingCrudResource<Concept
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<ConceptClass> doGetAll(RequestContext context) {
-		return Context.getConceptService().getAllConceptClasses(false);
+	protected NeedsPaging<ConceptClass> doGetAll(RequestContext context) {
+		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(false), context);
 	}
 	
 }

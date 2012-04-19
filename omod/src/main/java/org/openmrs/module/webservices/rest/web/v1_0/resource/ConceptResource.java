@@ -44,6 +44,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -225,8 +226,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Concept> doGetAll(RequestContext context) {
-		return Context.getConceptService().getAllConcepts(null, true, false);
+	protected NeedsPaging<Concept> doGetAll(RequestContext context) {
+		return new NeedsPaging<Concept>(Context.getConceptService().getAllConcepts(null, true, false), context);
 	}
 	
 	/**

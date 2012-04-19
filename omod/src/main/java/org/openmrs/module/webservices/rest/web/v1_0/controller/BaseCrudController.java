@@ -174,7 +174,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 			        getResource().getClass().getSimpleName() + " is not Listable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-		return listable.getAll(context).toSimpleObject();
+		return listable.getAll(context);
 	}
 	
 }

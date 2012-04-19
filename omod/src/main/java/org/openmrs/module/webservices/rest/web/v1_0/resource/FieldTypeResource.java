@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
 import org.openmrs.FieldType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -25,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -103,7 +103,7 @@ public class FieldTypeResource extends MetadataDelegatingCrudResource<FieldType>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<FieldType> doGetAll(RequestContext context) throws ResponseException {
-		return Context.getFormService().getAllFieldTypes();
+	protected NeedsPaging<FieldType> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<FieldType>(Context.getFormService().getAllFieldTypes(), context);
 	}
 }

@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PersonService;
@@ -95,8 +94,8 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<PersonAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return service().getAllPersonAttributeTypes(false);
+	protected NeedsPaging<PersonAttributeType> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<PersonAttributeType>(service().getAllPersonAttributeTypes(false), context);
 	}
 	
 	/**

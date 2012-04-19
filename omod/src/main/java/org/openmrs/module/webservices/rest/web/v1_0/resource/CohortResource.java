@@ -154,8 +154,8 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Cohort> doGetAll(RequestContext context) throws ResponseException {
-		return Context.getCohortService().getAllCohorts();
+	protected NeedsPaging<Cohort> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<Cohort>(Context.getCohortService().getAllCohorts(), context);
 	}
 	
 	/**

@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
  * Typically this will be used by implementations of {@link Searchable} and {@link Listable} that do not have a native query capable of doing a page-limited search
  * @param <T> the generic type of the list of results
  */
-public class NeedsPaging<T> extends BaseSearchResult<T> {
+public class NeedsPaging<T> extends BasePageableResult<T> {
 	
 	private List<T> unpagedResults;
 	
@@ -33,7 +33,7 @@ public class NeedsPaging<T> extends BaseSearchResult<T> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseSearchResult#getPageOfResults()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#getPageOfResults()
 	 */
 	@Override
 	public List<T> getPageOfResults() {
@@ -48,7 +48,7 @@ public class NeedsPaging<T> extends BaseSearchResult<T> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseSearchResult#hasMoreResults()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#hasMoreResults()
 	 */
 	@Override
 	public boolean hasMoreResults() {

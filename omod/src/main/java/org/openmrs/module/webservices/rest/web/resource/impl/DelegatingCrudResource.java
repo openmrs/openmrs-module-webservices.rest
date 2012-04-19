@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -133,14 +133,14 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	public SimpleObject search(String query, RequestContext context) throws ResponseException {
-		SearchResult result = doSearch(query, context);
+		PageableResult result = doSearch(query, context);
 		return result.toSimpleObject();
 	}
 	
 	/**
 	 * Implementations should override this method if they are actually searchable.
 	 */
-	protected SearchResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(String query, RequestContext context) {
 		return new EmptySearchResult();
 	}
 	
@@ -148,11 +148,9 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<Object> getAll(RequestContext context) throws ResponseException {
-		List<Object> ret = new ArrayList<Object>();
-		for (T match : doGetAll(context))
-			ret.add(asRepresentation(match, context.getRepresentation()));
-		return new NeedsPaging<Object>(ret, context);
+	public SimpleObject getAll(RequestContext context) throws ResponseException {
+		PageableResult result = doGetAll(context);
+		return result.toSimpleObject();
 	}
 	
 	/**
@@ -161,7 +159,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * 
 	 * @throws ResponseException
 	 */
-	protected List<T> doGetAll(RequestContext context) throws ResponseException {
+	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	

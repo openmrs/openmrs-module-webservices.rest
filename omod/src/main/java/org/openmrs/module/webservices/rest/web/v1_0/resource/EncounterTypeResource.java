@@ -90,8 +90,8 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<EncounterType> doGetAll(RequestContext context) {
-		return Context.getEncounterService().getAllEncounterTypes(false);
+	protected NeedsPaging<EncounterType> doGetAll(RequestContext context) {
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().getAllEncounterTypes(false), context);
 	}
 	
 	/**

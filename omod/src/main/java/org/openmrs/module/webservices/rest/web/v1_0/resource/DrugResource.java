@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.Drug;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -23,6 +21,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -79,7 +78,7 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Drug> doGetAll(RequestContext context) throws ResponseException {
-		return Context.getConceptService().getAllDrugs(false);
+	protected NeedsPaging<Drug> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(false), context);
 	}
 }

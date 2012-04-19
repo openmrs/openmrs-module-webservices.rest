@@ -16,13 +16,13 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.util.Collections;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Empty list of search results
  */
-public class EmptySearchResult implements SearchResult {
+public class EmptySearchResult implements PageableResult {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchResult#toSimpleObject()

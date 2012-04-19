@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.LocationService;
@@ -29,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -188,8 +187,8 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected List<Location> doGetAll(RequestContext context) {
-		return Context.getLocationService().getAllLocations(false);
+	protected NeedsPaging<Location> doGetAll(RequestContext context) {
+		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(false), context);
 	}
 	
 	/**

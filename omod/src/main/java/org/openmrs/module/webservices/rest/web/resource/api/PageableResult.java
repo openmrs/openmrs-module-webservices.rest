@@ -17,9 +17,9 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Helper interface used by Searchable implementations
+ * Helper interface used by implementations that want to do pagination
  */
-public interface SearchResult {
+public interface PageableResult {
 	
 	SimpleObject toSimpleObject() throws ResponseException;
 	

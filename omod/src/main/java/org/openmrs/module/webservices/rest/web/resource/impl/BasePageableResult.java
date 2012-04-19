@@ -20,14 +20,14 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Base implementation that converts the result list to the requested representation, and adds next/prev links if necessary 
  * @param <T> the generic type of the list of results
  */
-public abstract class BaseSearchResult<T> implements SearchResult {
+public abstract class BasePageableResult<T> implements PageableResult {
 	
 	protected RequestContext context;
 	

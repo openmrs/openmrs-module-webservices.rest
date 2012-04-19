@@ -13,8 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -31,6 +30,6 @@ public interface Listable extends Resource {
 	 * @return a list of all objects in the database represented by the implementing resource
 	 * @throws ResponseException
 	 */
-	public NeedsPaging<Object> getAll(RequestContext context) throws ResponseException;
+	public SimpleObject getAll(RequestContext context) throws ResponseException;
 	
 }
