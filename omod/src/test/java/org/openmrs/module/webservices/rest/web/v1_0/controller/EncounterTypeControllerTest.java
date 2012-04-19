@@ -71,9 +71,9 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	
 	@Test
 	public void shouldListAllUnRetiredEncounterTypes() throws Exception {
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, result.size());
+		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

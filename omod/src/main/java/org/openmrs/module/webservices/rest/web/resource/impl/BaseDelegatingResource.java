@@ -234,7 +234,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 		}
 		if (!notAllowedProperties.isEmpty()) {
-			throw new ConversionException("Some properties are not allowed to be set: " + StringUtils.join(notAllowedProperties, ","));
+			throw new ConversionException("Some properties are not allowed to be set: "
+			        + StringUtils.join(notAllowedProperties, ","));
 		}
 		
 		//Fail, if any required properties are missing.

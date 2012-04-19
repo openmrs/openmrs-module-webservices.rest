@@ -66,10 +66,10 @@ public class DrugControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void shouldListAllUnRetiredDrugs() throws Exception {
 		int totalCount = service.getAllDrugs(true).size();
 		
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(2, result.size());
+		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

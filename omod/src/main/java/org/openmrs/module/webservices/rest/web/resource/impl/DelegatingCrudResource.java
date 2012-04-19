@@ -148,11 +148,11 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public List<Object> getAll(RequestContext context) throws ResponseException {
+	public NeedsPaging<Object> getAll(RequestContext context) throws ResponseException {
 		List<Object> ret = new ArrayList<Object>();
 		for (T match : doGetAll(context))
 			ret.add(asRepresentation(match, context.getRepresentation()));
-		return ret;
+		return new NeedsPaging<Object>(ret, context);
 	}
 	
 	/**

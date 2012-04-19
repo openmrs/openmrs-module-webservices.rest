@@ -69,10 +69,10 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	
 	@Test
 	public void shouldListAll() throws Exception {
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Util.log("All non-retired identifier types", result);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, result.size());
+		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

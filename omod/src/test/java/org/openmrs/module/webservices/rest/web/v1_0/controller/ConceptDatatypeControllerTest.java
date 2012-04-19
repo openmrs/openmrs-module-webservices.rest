@@ -71,9 +71,9 @@ public class ConceptDatatypeControllerTest extends BaseModuleWebContextSensitive
 	
 	@Test
 	public void shouldListAllConceptDatatypes() throws Exception {
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, result.size());
+		Assert.assertEquals(12, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test

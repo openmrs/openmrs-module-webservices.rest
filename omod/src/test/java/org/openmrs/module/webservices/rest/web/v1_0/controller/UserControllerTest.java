@@ -145,9 +145,9 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void shouldListAllUsers() throws Exception {
 		int totalCount = Context.getUserService().getAllUsers().size();
 		
-		List<Object> result = new UserController().getAll(emptyRequest(), new MockHttpServletResponse());
+		SimpleObject result = new UserController().getAll(emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNotNull(result);
-		Assert.assertEquals(totalCount, result.size());
+		Assert.assertEquals(totalCount, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 }

@@ -85,15 +85,15 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void shouldListAllUnRetiredConcepts() throws Exception {
 		int totalCount = service.getAllConcepts(null, true, true).size();
 		
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(24, result.size()); // there are 25 concepts and one is retired, so should only get 24 here
+		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size()); // there are 25 concepts and one is retired, so should only get 24 here
 	}
 	
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Object aResult = result.get(0);
 		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
@@ -101,7 +101,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
 		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Object aResult = result.get(0);
 		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}

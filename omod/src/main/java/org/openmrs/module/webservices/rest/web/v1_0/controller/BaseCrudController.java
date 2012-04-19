@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -165,7 +164,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<Object> getAll(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+	public SimpleObject getAll(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		Listable listable;
 		try {
 			listable = (Listable) getResource();
@@ -175,7 +174,7 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 			        getResource().getClass().getSimpleName() + " is not Listable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-		return listable.getAll(context);
+		return listable.getAll(context).toSimpleObject();
 	}
 	
 }

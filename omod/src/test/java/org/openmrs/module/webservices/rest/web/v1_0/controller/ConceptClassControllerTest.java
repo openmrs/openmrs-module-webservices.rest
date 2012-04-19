@@ -71,9 +71,9 @@ public class ConceptClassControllerTest extends BaseModuleWebContextSensitiveTes
 	
 	@Test
 	public void shouldListAllConceptClasss() throws Exception {
-		List<Object> result = controller.getAll(request, response);
+		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(18, result.size());
+		Assert.assertEquals(18, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
 	}
 	
 	@Test
