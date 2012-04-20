@@ -62,7 +62,6 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
