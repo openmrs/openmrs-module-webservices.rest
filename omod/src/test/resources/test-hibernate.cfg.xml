@@ -5,6 +5,6 @@
 
 <hibernate-configuration>
 	<session-factory>
-		${hbmConfig}
+		
 	</session-factory>
 </hibernate-configuration>
