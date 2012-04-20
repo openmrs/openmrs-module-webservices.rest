@@ -94,7 +94,6 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("order", Representation.REF);
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
