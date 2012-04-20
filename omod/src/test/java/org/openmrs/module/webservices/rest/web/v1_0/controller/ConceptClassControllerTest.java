@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.ConceptClassController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -28,6 +25,7 @@ import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -74,7 +72,7 @@ public class ConceptClassControllerTest extends BaseModuleWebContextSensitiveTes
 	public void shouldListAllConceptClasss() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(18, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(18, Util.getResultsSize(result));
 	}
 	
 	@Test

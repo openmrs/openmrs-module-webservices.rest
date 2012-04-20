@@ -150,7 +150,7 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject result = new UserController().getAll(emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNotNull(result);
-		Assert.assertEquals(totalCount, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(totalCount, Util.getResultsSize(result));
 	}
 	
 }

@@ -86,4 +86,25 @@ public class Util {
 			throw new RuntimeException("Failed to get path " + OpenmrsUtil.join(Arrays.asList(pathElements), " . "), ex);
 		}
 	}
+	
+	/**
+	 * 
+	 * @param result the SimpleObject that contains results
+	 * @return
+	 * @throws Exception 
+	 */
+	public static List<Object> getResultsList(SimpleObject result) throws Exception {
+		return (List<Object>) PropertyUtils.getProperty(result, "results");
+	}
+	
+	/**
+	 * 
+	 * @param result
+	 * @return
+	 * @throws Exception 
+	 */
+	public static int getResultsSize(SimpleObject result) throws Exception {
+		return getResultsList(result).size();
+	}
+	
 }

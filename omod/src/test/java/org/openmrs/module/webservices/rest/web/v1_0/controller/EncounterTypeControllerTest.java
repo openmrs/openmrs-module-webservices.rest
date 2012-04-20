@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterTypeController;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +27,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -74,7 +74,7 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	public void shouldListAllUnRetiredEncounterTypes() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 	@Test

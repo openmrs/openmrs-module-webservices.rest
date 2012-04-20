@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PersonAddressController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -29,6 +26,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -76,7 +74,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		executeDataSet(PERSON_NAME_XML);//add the row with a voided address for testing purposes
 		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(1, Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -88,7 +86,7 @@ public class PersonAddressControllerTest extends BaseModuleWebContextSensitiveTe
 		service.savePerson(p);
 		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(0, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(0, Util.getResultsSize(result));
 	}
 	
 	@Test

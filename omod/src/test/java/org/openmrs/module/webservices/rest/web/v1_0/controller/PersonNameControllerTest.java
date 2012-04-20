@@ -13,13 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PersonNameController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.Assert;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -29,6 +25,7 @@ import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -72,7 +69,7 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	public void shouldListNamesForPerson() throws Exception {
 		SimpleObject result = controller.getAll(personUuid, request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(1, Util.getResultsSize(result));
 	}
 	
 	@Test

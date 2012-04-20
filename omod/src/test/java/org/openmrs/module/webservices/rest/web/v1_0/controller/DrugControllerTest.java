@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -27,6 +25,7 @@ import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ResourceTestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -70,7 +69,7 @@ public class DrugControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 	@Test

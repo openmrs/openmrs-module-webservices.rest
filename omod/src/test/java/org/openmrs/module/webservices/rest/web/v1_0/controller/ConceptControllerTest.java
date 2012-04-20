@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +29,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -89,14 +89,13 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size()); // there are 25 concepts and one is retired, so should only get 24 here
+		Assert.assertEquals(24, Util.getResultsList(result).size()); // there are 25 concepts and one is retired, so should only get 24 here
 	}
 	
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
-		List<Object> resultList = (List<Object>) PropertyUtils.getProperty(result, "results");
-		Object aResult = resultList.get(0);
+		Object aResult = Util.getResultsList(result).get(0);
 		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
@@ -104,8 +103,7 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
 		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = controller.getAll(request, response);
-		List<Object> resultList = (List<Object>) PropertyUtils.getProperty(result, "results");
-		Object aResult = resultList.get(0);
+		Object aResult = Util.getResultsList(result).get(0);
 		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	

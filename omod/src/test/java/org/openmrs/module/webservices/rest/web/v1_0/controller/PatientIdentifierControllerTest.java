@@ -1,8 +1,5 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PatientIdentifierController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -58,7 +55,7 @@ public class PatientIdentifierControllerTest extends BaseModuleWebContextSensiti
 		SimpleObject result = controller.getAll(patientUuid, request, response);
 		Util.log("All identifiers for a patient", result);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 	@Test

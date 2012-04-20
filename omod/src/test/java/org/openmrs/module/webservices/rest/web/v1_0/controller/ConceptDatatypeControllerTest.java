@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.ConceptDatatypeController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -27,6 +24,7 @@ import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -74,7 +72,7 @@ public class ConceptDatatypeControllerTest extends BaseModuleWebContextSensitive
 	public void shouldListAllConceptDatatypes() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(12, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(12, Util.getResultsSize(result));
 	}
 	
 	@Test

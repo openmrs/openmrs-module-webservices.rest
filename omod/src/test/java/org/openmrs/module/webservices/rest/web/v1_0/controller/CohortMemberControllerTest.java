@@ -13,11 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.CohortMemberController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.beanutils.PropertyUtils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -73,7 +69,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject result = controller.getAll(cohortUuid, request, response);
 		Assert.assertNotNull(result);
 		Util.log("Cohort member fetched (ref)", result);
-		Assert.assertEquals(((List<Object>) PropertyUtils.getProperty(result, "results")).size(), size);
+		Assert.assertEquals(Util.getResultsSize(result), size);
 	}
 	
 	@Test
@@ -84,7 +80,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject result = controller.getAll(cohortUuid, req, response);
 		Assert.assertNotNull(result);
 		Util.log("Cohort member fetched (default)", result);
-		Assert.assertEquals(((List<Object>) PropertyUtils.getProperty(result, "results")).size(), size);
+		Assert.assertEquals(Util.getResultsSize(result), size);
 	}
 	
 	@Test

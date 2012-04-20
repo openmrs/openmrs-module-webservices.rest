@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PatientIdentifierTypeController;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -73,7 +70,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		SimpleObject result = controller.getAll(request, response);
 		Util.log("All non-retired identifier types", result);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		Assert.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 	@Test
