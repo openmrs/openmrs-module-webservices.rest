@@ -54,8 +54,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * Assumes that the delegate property is the already-retrieved object with the given uuid
-	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#retrieve(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
