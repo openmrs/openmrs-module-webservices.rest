@@ -95,14 +95,18 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
 		SimpleObject result = controller.getAll(request, response);
-		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		List<Object> resultList = (List<Object>) PropertyUtils.getProperty(result, "results");
+		Object aResult = resultList.get(0);
+		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
 		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = controller.getAll(request, response);
-		Assert.assertEquals(24, ((List<Object>) PropertyUtils.getProperty(result, "results")).size());
+		List<Object> resultList = (List<Object>) PropertyUtils.getProperty(result, "results");
+		Object aResult = resultList.get(0);
+		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
 	@Test
