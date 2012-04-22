@@ -98,7 +98,7 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	/**
 	 * A property that will be included in a representation
 	 */
-	class Property {
+	public class Property {
 		
 		private String delegateProperty;
 		

@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
@@ -25,8 +24,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  * Unit test for generating as much documentation as can be got from the source code.
  */
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
-	
-	@Ignore
+
 	@Test
 	public void createDocumentation() throws Exception {
 		
