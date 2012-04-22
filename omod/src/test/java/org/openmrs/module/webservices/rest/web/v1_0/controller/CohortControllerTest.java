@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.module.webservices.rest.web.v1_0.controller.CohortController;
+
+import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
@@ -106,9 +108,7 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	@Ignore("RESTWS-227: Define creatable/updatable properties on Cohort and CohortMember resources")
 	public void updateCohort_shouldChangeAPropertyOnACohort() throws Exception {
-		
 		String json = "{ \"name\":\"EXTRA COHORT\", \"description\":\"THIS IS NEW COHORT\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object editedCohort = controller.update(cohortUuid, post, request, response);
@@ -116,7 +116,20 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUuid).getName());
 	}
 	
-	@Test()
+	@Test
+	public void updateCohort_shouldOverwriteMemberIdsOnACohort() throws Exception {
+		Assert.assertEquals(3, service.getCohortByUuid(cohortUuid).getMemberIds().size());
+		
+		String json = "{ \"memberIds\": [ 2, 6 ] }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object editedCohort = controller.update(cohortUuid, post, request, response);
+		Util.log("Edited cohort", editedCohort);
+		
+		Assert.assertEquals(2, service.getCohortByUuid(cohortUuid).getMemberIds().size());
+		Assert.assertTrue(service.getCohortByUuid(cohortUuid).getMemberIds().containsAll(Arrays.asList(2, 6)));
+	}
+	
+	@Test
 	public void purgeCohort_shouldPurgeCohort() throws Exception {
 		int before = service.getAllCohorts().size();
 		controller.purge(cohortUuid, request, response);
