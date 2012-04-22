@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.Map;
+
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,7 +37,8 @@ import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
 public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Message> {
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(IncomingHl7Message delegate, String reason, RequestContext context) throws ResponseException {
@@ -80,6 +83,32 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("hl7");
+		return description;
+	}
+	
+	/**
+	 * Needs to be overwritten to allow for hidden properties.
+	 * 
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.HL7MessageController#create(String, HttpServletRequest, HttpServletResponse) 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setConvertedProperties(java.lang.Object,
+	 *      java.util.Map,
+	 *      org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription)
+	 */
+	@Override
+	protected void setConvertedProperties(IncomingHl7Message delegate, Map<String, Object> propertyMap,
+	                                      DelegatingResourceDescription description) throws ResponseException {
+		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
+			setProperty(delegate, prop.getKey(), prop.getValue());
+		}
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
@@ -88,7 +117,8 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(IncomingHl7Message delegate, RequestContext context) throws ResponseException {
