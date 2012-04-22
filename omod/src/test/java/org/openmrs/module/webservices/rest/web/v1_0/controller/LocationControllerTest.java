@@ -100,6 +100,20 @@ public class LocationControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
+	public void shouldOverwriteAListOfChildLocations() throws Exception {
+		Location location = service.getLocationByUuid("167ce20c-4785-4285-9119-d197268f7f4a");
+		location.addChildLocation(service.getLocationByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
+		service.saveLocation(location);
+		
+		String json = "{ \"childLocations\": [] }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		controller.update("167ce20c-4785-4285-9119-d197268f7f4a", post, request, response);
+		
+		Location updated = service.getLocationByUuid("167ce20c-4785-4285-9119-d197268f7f4a");
+		Assert.assertTrue(updated.getChildLocations().isEmpty());
+	}
+	
+	@Test
 	public void shouldRetireALocation() throws Exception {
 		String uuid = "dc5c1fcc-0459-4201-bf70-0b90535ba362";
 		Location location = service.getLocationByUuid(uuid);
