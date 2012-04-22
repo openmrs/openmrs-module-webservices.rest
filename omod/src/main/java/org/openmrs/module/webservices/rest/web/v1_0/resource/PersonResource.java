@@ -95,6 +95,35 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("gender");
+		description.addRequiredProperty("preferredName", "personName");
+		description.addProperty("age");
+		description.addProperty("birthdate");
+		description.addProperty("birthdateEstimated");
+		description.addProperty("dead");
+		description.addProperty("deathDate");
+		description.addProperty("causeOfDeath");
+		description.addProperty("preferredAddress", "personAddress");
+		description.addProperty("names");
+		description.addProperty("addresses");
+		description.addProperty("attributes", "activeAttributes");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties().unrequireAllProperties();
+	}
+	
+	/**
 	 * Returns non-voided names for a person
 	 * @param instance
 	 * @return 

@@ -105,6 +105,41 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("preferred");
+		description.addProperty("address1");
+		description.addProperty("address2");
+		description.addProperty("cityVillage");
+		description.addProperty("stateProvince");
+		description.addProperty("country");
+		description.addProperty("postalCode");
+		description.addProperty("latitude");
+		description.addProperty("longitude");
+		description.addProperty("countyDistrict");
+		description.addProperty("address3");
+		description.addProperty("address4");
+		description.addProperty("address5");
+		description.addProperty("address6");
+		description.addProperty("startDate");
+		description.addProperty("endDate");
+		description.addProperty("latitude");
+		description.addProperty("longitude");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties().unrequireAllProperties();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override

@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -336,7 +337,21 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
 			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
-			PropertyUtils.setProperty(instance, propertyName, value);
+			
+			if (value instanceof Collection) {
+				//We need to handle collections in a way that Hibernate can track.
+				Collection<?> newCollection = (Collection<?>) value;
+				Object oldValue = PropertyUtils.getProperty(instance, propertyName);
+				if (oldValue instanceof Collection) {
+					Collection collection = (Collection) oldValue;
+					collection.clear();
+					collection.addAll(newCollection);
+				} else {
+					PropertyUtils.setProperty(instance, propertyName, value);
+				}
+			} else {
+				PropertyUtils.setProperty(instance, propertyName, value);
+			}
 		}
 		catch (Exception ex) {
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);

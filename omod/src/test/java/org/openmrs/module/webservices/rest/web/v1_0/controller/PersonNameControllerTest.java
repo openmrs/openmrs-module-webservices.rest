@@ -16,10 +16,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.Assert;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
@@ -73,7 +73,6 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldAddNameToPerson() throws Exception {
 		int before = service.getPersonByUuid(personUuid).getNames().size();
 		String json = "{ \"givenName\":\"name1\", \"middleName\":\"name2\", \"familyName\":\"name3\" }";
@@ -84,7 +83,6 @@ public class PersonNameControllerTest extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldEditName() throws Exception {
 		String json = "{ \"familyName\":\"newName\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);

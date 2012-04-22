@@ -76,6 +76,32 @@ public class PersonNameResource extends DelegatingSubResource<PersonName, Person
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("givenName");
+		description.addRequiredProperty("familyName");
+		description.addProperty("middleName");
+		description.addProperty("familyName2");
+		description.addProperty("preferred");
+		description.addProperty("prefix");
+		description.addProperty("familyNamePrefix");
+		description.addProperty("familyNameSuffix");
+		description.addProperty("degree");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties().unrequireAllProperties();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
 	@Override

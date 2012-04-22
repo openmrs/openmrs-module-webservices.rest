@@ -16,10 +16,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.Assert;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
@@ -72,7 +72,6 @@ public class PersonAttributeControllerTest extends BaseModuleWebContextSensitive
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldAddAttributeToPerson() throws Exception {
 		int before = service.getPersonByUuid(personUuid).getAttributes().size();
 		String json = "{ \"attributeType\":\"b3b6d540-a32e-44c7-91b3-292d97667518\", \"value\":\"testing\"}";
@@ -83,7 +82,6 @@ public class PersonAttributeControllerTest extends BaseModuleWebContextSensitive
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldEditAttribute() throws Exception {
 		String json = "{ \"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);

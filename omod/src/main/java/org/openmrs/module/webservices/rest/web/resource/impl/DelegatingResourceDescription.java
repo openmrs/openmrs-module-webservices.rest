@@ -52,12 +52,20 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		addProperty(propertyName, method, null, false);
 	}
 	
-	public void addProperty(String propertyName, String delegatePropertyName, Representation rep) {
+	public void addProperty(String propertyName, String delegatePropertyName) {
 		addProperty(propertyName, delegatePropertyName, null, false);
 	}
 	
+	public void addRequiredProperty(String propertyName, String delegatePropertyName) {
+		addProperty(propertyName, delegatePropertyName, null, true);
+	}
+	
+	public void addProperty(String propertyName, String delegatePropertyName, Representation rep) {
+		addProperty(propertyName, delegatePropertyName, rep, false);
+	}
+	
 	public void addProperty(String propertyName, Method method, Representation rep) {
-		addProperty(propertyName, method, null, false);
+		addProperty(propertyName, method, rep, false);
 	}
 	
 	protected void addProperty(String propertyName, String delegatePropertyName, Representation rep, boolean required) {

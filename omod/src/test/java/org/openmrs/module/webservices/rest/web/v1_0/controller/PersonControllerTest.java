@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PersonController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -27,9 +26,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -55,7 +52,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies create a new Person
 	 */
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void createPerson_shouldCreateANewPerson() throws Exception {
 		int before = Context.getPersonService().getPeople("", false).size();
 		String json = "{ \"preferredName\":{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, \"birthdate\":\"1200-01-01\", \"gender\":\"F\" }";
@@ -99,7 +95,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies change a property on a person
 	 */
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void updatePerson_shouldChangeAPropertyOnAPerson() throws Exception {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -111,22 +106,55 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * DOES NOT WORK YET BECAUSE WE DON'T HAVE A CONVERTER FOR CONCEPTS
-	 * 
-	 * WE SHOULD HAVE IT NOW
-	 * 
 	 * @see PersonController#updatePerson(String,SimpleObject,WebRequest)
 	 * @verifies change a complex property on a person
 	 */
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void updatePerson_shouldChangeAComplexPropertyOnAPerson() throws Exception {
 		SimpleObject post = new ObjectMapper().readValue(
 		    "{\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}", SimpleObject.class);
-		Object editedPerson = new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
+		new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		Util.log("Set Person as dead", editedPerson);
-		Assert.assertEquals(new Concept(88), PropertyUtils.getProperty(editedPerson, "causeOfDeath"));
+		Person person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
+		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", person.getCauseOfDeath().getUuid());
+	}
+	
+	/**
+	 * @see PersonController#updatePerson(String,SimpleObject,WebRequest)
+	 * @verifies change a complex property on a person
+	 */
+	@Test
+	public void updatePerson_shouldOverwriteNamesOnAPerson() throws Exception {
+		Person person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
+		Assert.assertEquals(1, person.getNames().size());
+		Assert.assertEquals("Collet", person.getGivenName());
+		
+		SimpleObject post = new ObjectMapper().readValue(
+		    "{\"names\": [{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\", \"preferred\": true }] }",
+		    SimpleObject.class);
+		new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
+		    new MockHttpServletResponse());
+		
+		person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
+		Assert.assertEquals(1, person.getNames().size());
+		Assert.assertEquals("Helen", person.getGivenName());
+	}
+	
+	/**
+	 * @see PersonController#updatePerson(String,SimpleObject,WebRequest)
+	 * @verifies change a complex property on a person
+	 */
+	@Test
+	public void updatePerson_shouldOverwriteAddressesOnAPerson() throws Exception {
+		Person person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
+		Assert.assertEquals(1, person.getAddresses().size());
+		
+		SimpleObject post = new ObjectMapper().readValue("{\"addresses\": [ ] }", SimpleObject.class);
+		new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
+		    new MockHttpServletResponse());
+		
+		person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
+		Assert.assertEquals(0, person.getAddresses().size());
 	}
 	
 	/**
@@ -172,7 +200,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldSetThePreferredAddress() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
@@ -186,7 +213,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNew() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
@@ -200,7 +226,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	@Ignore("RESTWS-241: Define creatable/updatable properties on Person, PersonAddress, and PersonName resources")
 	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddress() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
@@ -217,13 +242,13 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * Tests if voided names are not shown in full representation.
-	 * Adds a name and shows full representation. Then voids the name and sees decrease in number of names in 
-	 * full representation.
+	 * Tests if voided names are not shown in full representation. Adds a name and shows full
+	 * representation. Then voids the name and sees decrease in number of names in full
+	 * representation.
+	 * 
 	 * @see PersonController#getProperty(Person,String)
 	 * @verifies do not show voided names in full representation
-	 * 
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Test
 	public void shouldNotShowVoidedNamesInFullRepresentation() throws Exception {
@@ -242,12 +267,12 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * Tests if voided attributes are not shown in representation.
-	 * Voids all the person attributes and checks if they are not shown
+	 * Tests if voided attributes are not shown in representation. Voids all the person attributes
+	 * and checks if they are not shown
+	 * 
 	 * @see PersonController#getProperty(Person,String)
 	 * @verifies do not show voided attributes
-	 * 
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@Test
 	public void shouldNotShowVoidedAttributesInRepresentation() throws Exception {
