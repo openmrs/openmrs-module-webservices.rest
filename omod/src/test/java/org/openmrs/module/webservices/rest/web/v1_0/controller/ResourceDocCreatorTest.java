@@ -24,7 +24,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
  * Unit test for generating as much documentation as can be got from the source code.
  */
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
-
+	
 	@Test
 	public void createDocumentation() throws Exception {
 		

@@ -74,8 +74,8 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	
 	public DelegatingResourceDescription unrequireAllProperties() {
 		for (Property property : properties.values()) {
-	        property.setRequired(false);
-        }
+			property.setRequired(false);
+		}
 		return this;
 	}
 	
