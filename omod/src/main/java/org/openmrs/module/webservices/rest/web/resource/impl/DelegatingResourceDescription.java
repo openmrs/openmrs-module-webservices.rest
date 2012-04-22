@@ -72,6 +72,13 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		properties.put(propertyName, new Property(method, rep, required));
 	}
 	
+	public DelegatingResourceDescription unrequireAllProperties() {
+		for (Property property : properties.values()) {
+	        property.setRequired(false);
+        }
+		return this;
+	}
+	
 	public DelegatingResourceDescription addSelfLink() {
 		return addLink("self", ".");
 	}
