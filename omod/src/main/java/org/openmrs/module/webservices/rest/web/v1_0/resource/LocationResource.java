@@ -126,9 +126,6 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 		description.addProperty("parentLocation");
 		description.addProperty("childLocations");
 		
-		description.addProperty("retired");
-		description.addProperty("retireReason");
-		
 		return description;
 	}
 	
