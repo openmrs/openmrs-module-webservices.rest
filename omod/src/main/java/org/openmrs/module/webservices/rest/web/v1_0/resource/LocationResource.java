@@ -137,7 +137,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties();
+		return getCreatableProperties().unrequireAllProperties();
 	}
 	
 	/**
