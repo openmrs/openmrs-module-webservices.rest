@@ -122,16 +122,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public abstract DelegatingResourceDescription getRepresentationDescription(Representation rep);
 	
 	/**
-	 * Gets a description of resource's properties which can be edited.
-	 * 
-	 * @return the description
-	 * @throws ResponseException
-	 */
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException();
-	}
-	
-	/**
 	 * Gets a description of resource's properties which can be set on creation.
 	 * 
 	 * @return the description
@@ -139,6 +129,18 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * Gets a description of resource's properties which can be edited.
+	 * <p>
+	 * By default delegates to {@link #getCreatableProperties()}.
+	 * 
+	 * @return the description
+	 * @throws ResponseException
+	 */
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties();
 	}
 	
 	/**
@@ -222,13 +224,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
-	        DelegatingResourceDescription description) throws ResponseException {
-		Map<String, Property> nonFinalProperties = new HashMap<String, Property>(description.getProperties());
+	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
+		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.
 		Set<String> notAllowedProperties = new HashSet<String>();
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
-			if (nonFinalProperties.remove(prop.getKey()) != null) {
+			if (allowedProperties.remove(prop.getKey()) != null && prop.getValue() != null) {
 				setProperty(delegate, prop.getKey(), prop.getValue());
 			} else {
 				notAllowedProperties.add(prop.getKey());
@@ -239,16 +241,18 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			        + StringUtils.join(notAllowedProperties, ","));
 		}
 		
-		//Fail, if any required properties are missing.
-		Set<String> missingProperties = new HashSet<String>();
-		for (Entry<String, Property> prop : nonFinalProperties.entrySet()) {
-			if (prop.getValue().isRequired()) {
-				missingProperties.add(prop.getKey());
+		if (mustIncludeRequiredProperties) {
+			//Fail, if any required properties are missing.
+			Set<String> missingProperties = new HashSet<String>();
+			for (Entry<String, Property> prop : allowedProperties.entrySet()) {
+				if (prop.getValue().isRequired()) {
+					missingProperties.add(prop.getKey());
+				}
 			}
-		}
-		if (!missingProperties.isEmpty()) {
-			throw new ConversionException("Some required properties are missing: "
-			        + StringUtils.join(missingProperties, ","));
+			if (!missingProperties.isEmpty()) {
+				throw new ConversionException("Some required properties are missing: "
+				        + StringUtils.join(missingProperties, ","));
+			}
 		}
 	}
 	

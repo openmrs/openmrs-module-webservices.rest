@@ -110,7 +110,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties().unrequireAllProperties();
+		return getCreatableProperties();
 	}
 	
 	/**

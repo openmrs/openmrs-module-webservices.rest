@@ -15,8 +15,6 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,7 +96,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 			throw new ObjectNotFoundException();
 		T delegate = newDelegate();
 		setParent(delegate, parent);
-		setConvertedProperties(delegate, post, getCreatableProperties());
+		setConvertedProperties(delegate, post, getCreatableProperties(), true);
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
@@ -139,7 +137,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		if (delegate == null)
 			throw new ObjectNotFoundException();
 		testParent(delegate, parentUniqueId);
-		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties());
+		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), false);
 		delegate = save(delegate);
 		return delegate;
 	}

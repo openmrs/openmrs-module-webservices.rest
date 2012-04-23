@@ -48,6 +48,10 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		addProperty(propertyName, propertyName, rep, false);
 	}
 	
+	public void addRequiredProperty(String propertyName, Representation rep) {
+		addProperty(propertyName, propertyName, rep, true);
+	}
+	
 	public void addProperty(String propertyName, Method method) {
 		addProperty(propertyName, method, null, false);
 	}
@@ -64,6 +68,10 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		addProperty(propertyName, delegatePropertyName, rep, false);
 	}
 	
+	public void addRequiredProperty(String propertyName, String delegatePropertyName, Representation rep) {
+		addProperty(propertyName, delegatePropertyName, rep, true);
+	}
+	
 	public void addProperty(String propertyName, Method method, Representation rep) {
 		addProperty(propertyName, method, rep, false);
 	}
@@ -78,13 +86,6 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		if (rep == null)
 			rep = Representation.DEFAULT;
 		properties.put(propertyName, new Property(method, rep, required));
-	}
-	
-	public DelegatingResourceDescription unrequireAllProperties() {
-		for (Property property : properties.values()) {
-			property.setRequired(false);
-		}
-		return this;
 	}
 	
 	public DelegatingResourceDescription addSelfLink() {
@@ -227,5 +228,4 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		}
 		
 	}
-	
 }

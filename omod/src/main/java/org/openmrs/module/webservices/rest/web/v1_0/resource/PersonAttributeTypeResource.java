@@ -103,7 +103,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties().unrequireAllProperties();
+		return getCreatableProperties();
 	}
 	
 	/**

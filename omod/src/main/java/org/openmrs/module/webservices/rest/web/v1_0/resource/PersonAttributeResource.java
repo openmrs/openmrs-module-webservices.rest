@@ -77,7 +77,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties().unrequireAllProperties();
+		return getCreatableProperties();
 	}
 	
 	/**

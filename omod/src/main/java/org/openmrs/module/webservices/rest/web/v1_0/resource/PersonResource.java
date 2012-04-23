@@ -120,7 +120,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties().unrequireAllProperties();
+		return getCreatableProperties();
 	}
 	
 	/**
