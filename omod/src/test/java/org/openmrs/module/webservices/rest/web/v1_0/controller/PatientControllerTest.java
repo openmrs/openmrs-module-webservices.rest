@@ -1,6 +1,5 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.PatientController;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,16 +32,15 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies create a new patient
 	 */
 	@Test
-	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
 	public void createPatient_shouldCreateANewPatient() throws Exception {
 		int before = Context.getPatientService().getAllPatients().size();
-		String json = "{ \"preferredIdentifier\":{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, \"preferredName\":{ \"givenName\":\"Darius\", \"familyName\":\"Programmer\" }, \"birthdate\":\"1978-01-15\", \"gender\":\"M\" }";
+		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", \"identifiers\": [{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true }] }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newPatient = new PatientController()
 		        .create(post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Util.log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
-		Assert.assertEquals("Darius Programmer", Util.getByPath(newPatient, "preferredName/display"));
+		Assert.assertEquals("Super User", Util.getByPath(newPatient, "preferredName/display"));
 	}
 	
 	/**
@@ -95,18 +94,15 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see PatientController#updatePatient(Patient,SimpleObject,WebRequest)
-	 * @verifies change a property on a patient
+	 * @verifies should fail when changing a property on a patient
 	 */
-	@Test
-	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
-	public void updatePatient_shouldChangeAPropertyOnAPatient() throws Exception {
+	@Test(expected = ConversionException.class)
+	public void updatePatient_shouldFailWhenChangingAPropertyOnAPatient() throws Exception {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
 		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post,
 		    new MockHttpServletRequest(), new MockHttpServletResponse());
-		Util.log("Edited patient", editedPatient);
-		Assert.assertEquals(df.format(now), df.format(Context.getPatientService().getPatient(2).getBirthdate()));
 	}
 	
 	/**
@@ -151,9 +147,8 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
-	@Test
-	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
-	public void shouldSetThePreferredAddress() throws Exception {
+	@Test(expected = ConversionException.class)
+	public void shouldFailWhenSetingThePreferredAddressOnAPatient() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
@@ -161,27 +156,24 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"preferredAddress\":\"3350d0b5-821c-4e5e-ad1d-a9bce331e118\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		new PatientController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertTrue(patient.getPersonAddress().isPreferred());
-		Assert.assertEquals("1050 Wishard Blvd.", patient.getPersonAddress().getAddress1());
 	}
 	
 	@Test
-	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
-	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNew() throws Exception {
+	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNewOnAPersonWhoIsPatient() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
 		Assert.assertFalse(patient.getPersonAddress().isPreferred());
 		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PatientController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
+		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Assert.assertTrue(patient.getPersonAddress().isPreferred());
 		Assert.assertEquals("test address", patient.getPersonAddress().getAddress1());
 	}
 	
 	@Test
-	@Ignore("RESTWS-240: Define creatable/updatable properties on Patient and PatientIdentifier resources")
-	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddress() throws Exception {
+	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddressOnAPersonWhoIsPatient()
+	        throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
@@ -192,8 +184,33 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertTrue(patient.getPersonAddress().isPreferred());
 		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PatientController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
+		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Assert.assertFalse(oldPreferredAddress.isPreferred());
+	}
+	
+	@Test(expected = ConversionException.class)
+	public void shouldFailWhenUpdatingAPersonOnAPatient() throws Exception {
+		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\" }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, new MockHttpServletRequest(),
+		    new MockHttpServletResponse());
+	}
+	
+	@Test
+	public void shouldOverwriteIdentifiers() throws Exception {
+		Patient patient = Context.getPatientService().getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		Assert.assertEquals(2, patient.getIdentifiers().size());
+		Assert.assertEquals("101-6", patient.getPatientIdentifier().getIdentifier());
+		Context.evictFromSession(patient);
+		
+		String json = "{ \"identifiers\": [{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true }] }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, new MockHttpServletRequest(),
+		    new MockHttpServletResponse());
+		
+		patient = Context.getPatientService().getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		Assert.assertEquals(1, patient.getIdentifiers().size());
+		Assert.assertEquals("abc123ez", patient.getPatientIdentifier().getIdentifier());
 	}
 	
 	@Test

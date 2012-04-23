@@ -86,6 +86,24 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("description");
+		description.addProperty("format");
+		description.addProperty("formatDescription");
+		description.addProperty("required");
+		description.addProperty("checkDigit");
+		description.addProperty("validator");
+		description.addProperty("locationBehavior");
+		description.addProperty("validator");
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override

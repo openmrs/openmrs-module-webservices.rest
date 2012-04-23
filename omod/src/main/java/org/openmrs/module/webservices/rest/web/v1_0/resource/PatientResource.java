@@ -14,16 +14,18 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
-import org.openmrs.PersonAddress;
-import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -36,7 +38,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
-import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -47,8 +49,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
 	public PatientResource() {
-		remappedProperties.put("preferredIdentifier", "patientIdentifier");
-		remappedProperties.put("identifiers", "activeIdentifiers");
 	}
 	
 	@PropertyGetter("person")
@@ -57,50 +57,27 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	/**
-	 * Switches the preferred identifier for a Patient. Can create a new identifier, or switch the preferred bit 
+	 * It is empty, because we set that already in the create method.
+	 * <p>
+	 * It takes String instead of Person so that the uuid is not resolved to a person, which
+	 * leads to the Hibernate exception: the object is already associated with the session.
 	 * 
 	 * @param instance
-	 * @param id
-	 * @throws ObjectMismatchException 
+	 * @param personUuid
 	 */
-	@PropertySetter("preferredIdentifier")
-	public static void setPreferredIdentifier(Patient instance, PatientIdentifier id) throws ObjectMismatchException {
-		if (id.getId() != null) {
-			if (!instance.equals(id.getPatient()))
-				throw new ObjectMismatchException("Trying to set a preferred identifier that doesn't belong to the patient",
-				        null);
-		}
-		// unprefer any currently-preferred identifiers
-		for (PatientIdentifier existing : instance.getActiveIdentifiers()) {
-			if (existing.isPreferred() && !existing.equals(id))
-				existing.setPreferred(false);
-		}
-		// make sure this is preferred, and belongs to this patient
-		id.setPreferred(true);
-		instance.addIdentifier(id);
+	@PropertySetter("person")
+	public static void setPerson(Patient instance, String personUuid) {
 	}
 	
-	/**
-	 * We include this to allow creating a new patient (not extending an existing Person). Delegates to the equivalent PersonResource method.
-	 * @param instance
-	 * @param name
-	 * @see PersonResource#setPreferredName(Person, PersonName)
-	 */
-	@PropertySetter("preferredName")
-	public static void setPreferredName(Patient instance, PersonName name) {
-		PersonResource.setPreferredName(instance, name);
+	@PropertyGetter("identifiers")
+	public static Set<PatientIdentifier> getIdentifiers(Patient instance) {
+		return new HashSet<PatientIdentifier>(instance.getActiveIdentifiers());
 	}
 	
-	/**
-	 * We include this to allow creating a new patient (not extending an existing Person). Delegates to the equivalent PersonResource method.
-	 * 
-	 * @param instance
-	 * @param address
-	 * @see PersonResource#setPreferredAddress(Patient, PersonAddress)
-	 */
-	@PropertySetter("preferredAddress")
-	public static void setPreferredAddress(Patient instance, PersonAddress address) {
-		PersonResource.setPreferredAddress(instance, address);
+	@PropertySetter("identifiers")
+	public static void setPerson(Patient instance, Set<PatientIdentifier> identifiers) {
+		instance.getIdentifiers().clear();
+		instance.getIdentifiers().addAll(identifiers);
 	}
 	
 	/**
@@ -130,6 +107,48 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("person");
+		description.addRequiredProperty("identifiers");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("identifiers");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#create(org.openmrs.module.webservices.rest.SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
+		//We need to create a patient from an existing person.
+		Object object = propertiesToCreate.get("person");
+		if (object == null) {
+			throw new ConversionException("The person property is missing");
+		}
+		Person person = Context.getPersonService().getPersonByUuid((String) object);
+		
+		Patient delegate = new Patient(person);
+		
+		Context.evictFromSession(person);
+		
+		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
+		delegate = save(delegate);
+		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
 	
 	/**
