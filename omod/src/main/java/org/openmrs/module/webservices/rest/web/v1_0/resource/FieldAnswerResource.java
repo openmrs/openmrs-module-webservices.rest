@@ -20,13 +20,16 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -36,6 +39,15 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("fieldanswer")
 @Handler(supports = FieldAnswer.class, order = 0)
 public class FieldAnswerResource extends DelegatingCrudResource<FieldAnswer> {
+	
+	@RepHandler(RefRepresentation.class)
+	public SimpleObject asRef(FieldAnswer delegate) throws ConversionException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display", findMethod("getDisplayString"));
+		description.addSelfLink();
+		return convertDelegateToRepresentation(delegate, description);
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

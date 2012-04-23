@@ -41,7 +41,8 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 		header += "{note}";
 		header += System.getProperty("line.separator");
 		header += System.getProperty("line.separator");
-		header += "When a parameter has a bang \"!\" in front of it, it means that url will only be called if that parameter does NOT exist";
+		header += "When a parameter has a bang \"!\" in front of it, it means that url will only be called if that parameter does NOT exist.\n\n";
+		header += "Properties listed in *bold* must not be null.";
 		header += System.getProperty("line.separator");
 		header += System.getProperty("line.separator");
 		header += "{note}";
