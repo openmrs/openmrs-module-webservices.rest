@@ -69,7 +69,7 @@ public class CohortMemberControllerTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject result = controller.getAll(cohortUuid, request, response);
 		Assert.assertNotNull(result);
 		Util.log("Cohort member fetched (ref)", result);
-		Assert.assertEquals(Util.getResultsSize(result), size);
+		Assert.assertEquals(size, Util.getResultsSize(result));
 	}
 	
 	@Test
