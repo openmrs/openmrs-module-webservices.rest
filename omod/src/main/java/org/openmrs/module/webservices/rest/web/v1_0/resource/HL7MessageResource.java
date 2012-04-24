@@ -29,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.HL7MessageController;
 
 /**
  * {@link Resource} for {@link IncomingHl7Message}, supporting standard CRUD operations
@@ -94,7 +95,10 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	}
 	
 	/**
-	 * It needs to be overwritten to allow for hidden properties.
+	 * It needs to be overwritten to allow for hidden properties: source, sourceKey and data. They
+	 * are automatically extracted from the hl7 property and populated in
+	 * {@link HL7MessageController#create(String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+	 * . They should not be POSTed by the user.
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setConvertedProperties(java.lang.Object,
 	 *      java.util.Map,
@@ -103,7 +107,8 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	protected void setConvertedProperties(IncomingHl7Message delegate, Map<String, Object> propertyMap,
-	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
+	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
+	    throws ConversionException {
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
 			setProperty(delegate, prop.getKey(), prop.getValue());
 		}
