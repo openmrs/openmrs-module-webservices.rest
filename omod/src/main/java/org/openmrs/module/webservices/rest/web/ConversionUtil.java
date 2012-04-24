@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -179,6 +181,14 @@ public class ConversionUtil {
 			} else if (toClass.isEnum()) {
 				return Enum.valueOf((Class<? extends Enum>) toClass, object.toString());
 			}
+			// look for a static valueOf(String) method (e.g. Double, Integer, Boolean)
+			try {
+				Method method = toClass.getMethod("valueOf", String.class);
+				if (Modifier.isStatic(method.getModifiers()) && toClass.isAssignableFrom(method.getReturnType())) {
+					return method.invoke(null, string);
+				}
+			}
+			catch (Exception ex) {}
 		} else if (object instanceof Map) {
 			Object ret;
 			try {
