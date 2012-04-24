@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openmrs.Field;
 import org.openmrs.FieldAnswer;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -22,23 +26,23 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link Resource} for {@link FieldAnswer}, supporting standard CRUD operations
- * TODO THIS SHOULD PROBABLY BE A SUBRESOURCE UNDER FIELD, RIGHT?
  */
-@Resource("fieldanswer")
+@SubResource(parent = FieldResource.class, path = "answer")
 @Handler(supports = FieldAnswer.class, order = 0)
-public class FieldAnswerResource extends DelegatingCrudResource<FieldAnswer> {
+public class FieldAnswerResource extends DelegatingSubResource<FieldAnswer, Field, FieldResource> {
 	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(FieldAnswer delegate) throws ConversionException {
@@ -101,20 +105,12 @@ public class FieldAnswerResource extends DelegatingCrudResource<FieldAnswer> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(FieldAnswer delegate, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("A field answer must be removed from a field, not purged on its own.");
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	@Override
-	protected NeedsPaging<FieldAnswer> doGetAll(RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException(
-		        "Field answers must be retrieved from a field or by uuid, but not on their own.");
 	}
 	
 	@Override
@@ -127,7 +123,7 @@ public class FieldAnswerResource extends DelegatingCrudResource<FieldAnswer> {
 	 * 
 	 * @param delegate
 	 * @return the auditInfo
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public SimpleObject getAuditInfo(FieldAnswer delegate) throws Exception {
 		SimpleObject ret = new SimpleObject();
@@ -147,6 +143,36 @@ public class FieldAnswerResource extends DelegatingCrudResource<FieldAnswer> {
 		return new StringBuilder().append(delegate.getField() == null ? "Null Field" : delegate.getField().getName())
 		        .append(" - ").append(
 		            delegate.getConcept() == null ? "Null Concept" : delegate.getConcept().getName().toString()).toString();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
+	 */
+	@Override
+	public Field getParent(FieldAnswer instance) {
+		return instance.getField();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
+	 *      java.lang.Object)
+	 */
+	@Override
+	public void setParent(FieldAnswer instance, Field parent) {
+		instance.setField(parent);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public NeedsPaging<FieldAnswer> doGetAll(Field parent, RequestContext context) throws ResponseException {
+		List<FieldAnswer> fieldAnswers = new ArrayList<FieldAnswer>();
+		if (parent.getAnswers() != null) {
+			fieldAnswers.addAll(parent.getAnswers());
+		}
+		return new NeedsPaging<FieldAnswer>(fieldAnswers, context);
 	}
 	
 }

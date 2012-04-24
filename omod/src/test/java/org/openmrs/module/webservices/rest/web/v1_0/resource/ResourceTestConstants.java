@@ -57,4 +57,12 @@ public class ResourceTestConstants {
 	
 	public static final String USER_UUID = "c98a1558-e131-11de-babe-001e378eb67e";
 	
+	public static final String FORM_UUID = "d9218f76-6c39-45f4-8efa-4c5c6c199f50";
+	
+	public static final String FORM_FIELD_UUID = "1c822b7b-7840-463d-ba70-e0c8338a4c2d";
+	
+	public static final String FIELD_TYPE_UUID = "abf16b7d-39a5-4911-89da-0eefbfef7cb4";
+	
+	public static final String FIELD_UUID = "db016b7d-39a5-4911-89da-0eefbfef7cb2";
+	
 }

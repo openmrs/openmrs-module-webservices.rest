@@ -74,7 +74,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject getAll(@PathVariable("parentUuid") String parentUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
@@ -90,7 +90,7 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
 	public Object create(@PathVariable("parentUuid") String parentUuid, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {

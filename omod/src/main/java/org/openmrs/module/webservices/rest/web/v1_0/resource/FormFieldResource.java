@@ -13,26 +13,36 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openmrs.Auditable;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.Form;
 import org.openmrs.FormField;
+import org.openmrs.Retireable;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
-@Resource("formfield")
+@SubResource(parent = FormResource.class, path = "formfield")
 @Handler(supports = FormField.class, order = 0)
-public class FormFieldResource extends MetadataDelegatingCrudResource<FormField> {
+public class FormFieldResource extends DelegatingSubResource<FormField, Form, FormResource> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -84,6 +94,35 @@ public class FormFieldResource extends MetadataDelegatingCrudResource<FormField>
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAuditInfo(org.openmrs.BaseOpenmrsObject)
+	 */
+	@Override
+	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
+		    Representation.DEFAULT));
+		if (((Retireable) resource).isRetired()) {
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(resource, "retiredBy", Representation.REF));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(),
+			    Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(),
+			    Representation.DEFAULT));
+		}
+		return ret;
+	}
+	
+	/**
+	 * Gets the display string.
+	 * 
+	 * @param formField the formField name object
+	 * @return the display string
+	 */
+	public String getDisplayString(FormField formField) {
+		return formField.getName();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
@@ -118,10 +157,44 @@ public class FormFieldResource extends MetadataDelegatingCrudResource<FormField>
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
 	@Override
-	protected NeedsPaging<FormField> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<FormField>(Context.getFormService().getAllFormFields(), context);
+	public Form getParent(FormField instance) {
+		return instance.getForm();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object, java.lang.Object)
+	 */
+	@Override
+	public void setParent(FormField instance, Form parent) {
+		instance.setForm(parent);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public NeedsPaging<FormField> doGetAll(Form parent, RequestContext context) throws ResponseException {
+		List<FormField> formFields = new ArrayList<FormField>();
+		for (FormField formField : parent.getFormFields()) {
+			if (!formField.isRetired()) {
+				formFields.add(formField);
+			}
+		}
+		
+		return new NeedsPaging<FormField>(formFields, context);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected void delete(FormField delegate, String reason, RequestContext context) throws ResponseException {
+		delegate.setRetired(true);
+		delegate.setRetireReason(reason);
+		delegate.setRetiredBy(Context.getAuthenticatedUser());
+		Context.getFormService().saveFormField(delegate);
 	}
 }

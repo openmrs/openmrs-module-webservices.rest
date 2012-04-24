@@ -24,5 +24,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * resource itself.
  */
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/fieldanswer")
-public class FieldAnswerController extends BaseCrudController<FieldAnswerResource> {}
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/field/{parentUuid}/answer")
+public class FieldAnswerController extends BaseSubResourceController<FieldAnswerResource> {}
