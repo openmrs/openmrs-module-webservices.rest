@@ -14,12 +14,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptName;
@@ -40,6 +40,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -231,32 +232,74 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
+	 * Concept searches support the following additional query parameters:
+	 * <ul>
+	 *  <li>answerTo=(uuid): restricts results to concepts that are answers to the given concept uuid</li>
+	 *  <li>memberOf=(uuid): restricts to concepts that are set members of the given concept set's uuid</li>
+	 * </ul>
+	 * @throws ResponseException 
+	 *   
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Concept> doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(String query, RequestContext context) {
 		ConceptService service = Context.getConceptService();
+		Integer startIndex = null;
+		Integer limit = null;
+		boolean canPage = true;
+		
+		// Collect information for answerTo and memberOf query parameters
+		String answerToUuid = context.getRequest().getParameter("answerTo");
+		String memberOfUuid = context.getRequest().getParameter("memberOf");
+		Concept answerTo = null;
+		List<Concept> memberOfList = null;
+		if (StringUtils.isNotBlank(answerToUuid)) {
+			try {
+				answerTo = (Concept) ConversionUtil.convert(answerToUuid, Concept.class);
+			}
+			catch (ConversionException ex) {
+				log.error("Unexpected exception while retrieving answerTo Concept with UUID " + answerToUuid, ex);
+			}
+		}
+		
+		if (StringUtils.isNotBlank(memberOfUuid)) {
+			Concept memberOf = service.getConceptByUuid(memberOfUuid);
+			memberOfList = service.getConceptsByConceptSet(memberOf);
+			canPage = false; // ConceptService does not support memberOf searches, so paging must be deferred.
+		}
+		
+		// Only set startIndex and limit if we can return paged results
+		if (canPage) {
+			startIndex = context.getStartIndex();
+			limit = context.getLimit();
+		}
 		
 		List<ConceptSearchResult> searchResults;
 		
 		// get the user's locales...and then convert that from a set to a list
 		List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 		
-		searchResults = service.getConcepts(query, locales, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
-		    Collections.EMPTY_LIST, Collections.EMPTY_LIST, null, context.getStartIndex(), context.getLimit());
+		searchResults = service.getConcepts(query, locales, false, null, null, null, null, answerTo, startIndex, limit);
 		
 		// convert search results into list of concepts
 		List<Concept> results = new ArrayList<Concept>(searchResults.size());
 		for (ConceptSearchResult csr : searchResults) {
-			results.add(csr.getConcept());
+			// apply memberOf filter
+			if (memberOfList == null || memberOfList.contains(csr.getConcept()))
+				results.add(csr.getConcept());
 		}
 		
-		Integer count = service.getCountOfConcepts(query, locales, false, Collections.EMPTY_LIST, Collections.EMPTY_LIST,
-		    Collections.EMPTY_LIST, Collections.EMPTY_LIST, null);
-		boolean hasMore = count > context.getStartIndex() + context.getLimit();
+		PageableResult result = null;
+		if (canPage) {
+			Integer count = service.getCountOfConcepts(query, locales, false, null, null, null, null, answerTo);
+			boolean hasMore = count > startIndex + limit;
+			result = new AlreadyPaged<Concept>(context, results, hasMore);
+		} else {
+			result = new NeedsPaging<Concept>(results, context);
+		}
 		
-		return new AlreadyPaged<Concept>(context, results, hasMore);
+		return result;
 	}
 	
 	@Override

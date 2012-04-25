@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -172,14 +173,36 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	@Ignore
-	//Ignored because H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause
-	// see TRUNK-1956
+	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
 		List<Object> hits = (List<Object>) controller.search("food", request, response).get("results");
 		Assert.assertEquals(2, hits.size());
 		Assert.assertEquals("0dde1358-7fcf-4341-a330-f119241a46e8", PropertyUtils.getProperty(hits.get(0), "uuid"));
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", PropertyUtils.getProperty(hits.get(1), "uuid"));
+	}
+	
+	@Test
+	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
+	public void doSearch_shouldReturnMembersOfConcept() throws Exception {
+		String memberOfUuid = "0f97e14e-cdc2-49ac-9255-b5126f8a5147"; // FOOD CONSTRUCT
+		HttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute("memberOf", memberOfUuid);
+		
+		List<Object> hits = (List<Object>) controller.search("no", request, response).get("results");
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals("f4d0b584-6ce5-40e2-9ce5-fa7ec07b32b4", PropertyUtils.getProperty(hits.get(0), "uuid")); // FAVORITE FOOD, NON-CODED
+	}
+	
+	@Test
+	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
+	public void doSearch_shouldReturnAnswersToConcept() throws Exception {
+		String answerToUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65"; // FOOD ASSISTANCE FOR ENTIRE FAMILY
+		HttpServletRequest request = new MockHttpServletRequest();
+		request.setAttribute("answerTo", answerToUuid);
+		
+		List<Object> hits = (List<Object>) controller.search("no", request, response).get("results");
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals("b98a6ed4-77e7-4cee-aae2-81957fcd7f48", PropertyUtils.getProperty(hits.get(0), "uuid")); // NO
 	}
 	
 	/**
