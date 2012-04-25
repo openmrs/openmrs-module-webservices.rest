@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.CohortController;
 
 import java.util.Arrays;
@@ -116,17 +117,13 @@ public class CohortControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("EXTRA COHORT", service.getCohortByUuid(cohortUuid).getName());
 	}
 	
-	@Test
-	public void updateCohort_shouldOverwriteMemberIdsOnACohort() throws Exception {
+	@Test(expected = ConversionException.class)
+	public void updateCohort_shouldFailToOverwriteMemberIdsOnACohort() throws Exception {
 		Assert.assertEquals(3, service.getCohortByUuid(cohortUuid).getMemberIds().size());
 		
 		String json = "{ \"memberIds\": [ 2, 6 ] }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object editedCohort = controller.update(cohortUuid, post, request, response);
-		Util.log("Edited cohort", editedCohort);
-		
-		Assert.assertEquals(2, service.getCohortByUuid(cohortUuid).getMemberIds().size());
-		Assert.assertTrue(service.getCohortByUuid(cohortUuid).getMemberIds().containsAll(Arrays.asList(2, 6)));
+		controller.update(cohortUuid, post, request, response);
 	}
 	
 	@Test
