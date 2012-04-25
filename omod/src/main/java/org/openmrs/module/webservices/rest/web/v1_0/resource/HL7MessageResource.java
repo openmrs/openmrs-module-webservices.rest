@@ -107,8 +107,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	protected void setConvertedProperties(IncomingHl7Message delegate, Map<String, Object> propertyMap,
-	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
-	    throws ConversionException {
+	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
 			setProperty(delegate, prop.getKey(), prop.getValue());
 		}
