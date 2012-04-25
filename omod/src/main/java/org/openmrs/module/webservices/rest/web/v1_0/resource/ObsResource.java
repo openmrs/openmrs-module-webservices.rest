@@ -88,6 +88,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
+			description.addProperty("valueCodedName", Representation.REF);
 			description.addProperty("groupMembers");
 			description.addProperty("comment");
 			description.addProperty("location", Representation.REF);
@@ -108,6 +109,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
+			description.addProperty("valueCodedName");
 			description.addProperty("groupMembers", Representation.FULL);
 			description.addProperty("comment");
 			description.addProperty("location");
@@ -179,10 +181,26 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	public static Object getValue(Obs obs) throws ConversionException {
 		if (obs.isObsGrouping())
 			return null;
-		else if (obs.getValueDatetime() != null)
+		
+		if (obs.getValueDatetime() != null)
 			return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
-		else
-			return obs.getValueAsString(Context.getLocale());
+		
+		if (obs.getValueCoded() != null)
+			return obs.getValueCoded();
+		
+		if (obs.getValueComplex() != null)
+			return obs.getValueComplex();
+		
+		if (obs.getValueDrug() != null)
+			return obs.getValueDrug();
+		
+		if (obs.getValueText() != null)
+			return obs.getValueText();
+		
+		if (obs.getValueNumeric() != null)
+			return obs.getValueNumeric();
+		
+		return null;
 	}
 	
 	/**
