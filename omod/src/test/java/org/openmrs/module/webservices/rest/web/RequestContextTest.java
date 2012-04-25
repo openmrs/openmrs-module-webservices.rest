@@ -26,14 +26,14 @@ public class RequestContextTest {
 	public void setLimit_shouldNotAcceptAValueLessThanOne() throws Exception {
 		new RequestContext().setLimit(0);
 	}
-
+	
 	/**
-     * @see RequestContext#setLimit(Integer)
-     * @verifies not accept a null value
-     */
+	 * @see RequestContext#setLimit(Integer)
+	 * @verifies not accept a null value
+	 */
 	@Test(expected = APIException.class)
-    public void setLimit_shouldNotAcceptANullValue() throws Exception {
+	public void setLimit_shouldNotAcceptANullValue() throws Exception {
 		new RequestContext().setLimit(null);
-    }
-
+	}
+	
 }
