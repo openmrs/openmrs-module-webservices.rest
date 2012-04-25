@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -318,6 +319,36 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		results = (List<Object>) wrapper.get("results");
 		int restCount = results.size();
 		Assert.assertEquals(fullCount, firstCount + restCount);
+	}
+	
+	@Test
+	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNewOnAPersonWhoIsPatient() throws Exception {
+		executeDataSet("personAddress-Test.xml");
+		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+		Assert.assertFalse(patient.getPersonAddress().isPreferred());
+		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
+		Assert.assertTrue(patient.getPersonAddress().isPreferred());
+		Assert.assertEquals("test address", patient.getPersonAddress().getAddress1());
+	}
+	
+	@Test
+	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddressOnAPersonWhoIsPatient()
+	        throws Exception {
+		executeDataSet("personAddress-Test.xml");
+		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+		//set a preferred address for testing purposes
+		PersonAddress oldPreferredAddress = patient.getPersonAddress();
+		oldPreferredAddress.setPreferred(true);
+		Context.getPatientService().savePatient(patient);
+		Assert.assertTrue(patient.getPersonAddress().isPreferred());
+		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
+		Assert.assertFalse(oldPreferredAddress.isPreferred());
 	}
 	
 }

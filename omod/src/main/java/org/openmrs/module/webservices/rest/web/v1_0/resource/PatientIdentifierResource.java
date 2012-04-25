@@ -74,9 +74,17 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("identifier");
 		description.addRequiredProperty("identifierType");
-		description.addRequiredProperty("location");
+		description.addProperty("location");
 		description.addProperty("preferred");
 		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties();
 	}
 	
 	private PatientService service() {

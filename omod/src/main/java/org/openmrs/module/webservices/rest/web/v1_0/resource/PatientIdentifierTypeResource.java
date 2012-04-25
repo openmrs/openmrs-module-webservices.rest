@@ -37,6 +37,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	
 	public PatientIdentifierTypeResource() {
 		allowedMissingProperties.add("locationBehavior");
+		allowedMissingProperties.add("uniquenessBehavior");
 	}
 	
 	private PatientService service() {
@@ -99,8 +100,17 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 		description.addProperty("checkDigit");
 		description.addProperty("validator");
 		description.addProperty("locationBehavior");
+		description.addProperty("uniquenessBehavior");
 		description.addProperty("validator");
 		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		return getCreatableProperties();
 	}
 	
 	/**

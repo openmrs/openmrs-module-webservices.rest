@@ -13,7 +13,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
-import org.openmrs.PersonAddress;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -94,15 +93,15 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see PatientController#updatePatient(Patient,SimpleObject,WebRequest)
-	 * @verifies should fail when changing a property on a patient
+	 * @verifies should fail when changing a person property on a patient
 	 */
 	@Test(expected = ConversionException.class)
-	public void updatePatient_shouldFailWhenChangingAPropertyOnAPatient() throws Exception {
+	public void updatePatient_shouldFailWhenChangingAPersonPropertyOnAPatient() throws Exception {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		SimpleObject post = new ObjectMapper().readValue("{\"birthdate\":\"" + df.format(now) + "\"}", SimpleObject.class);
-		Object editedPatient = new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post,
-		    new MockHttpServletRequest(), new MockHttpServletResponse());
+		new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, new MockHttpServletRequest(),
+		    new MockHttpServletResponse());
 	}
 	
 	/**
@@ -158,36 +157,6 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		new PatientController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 	}
 	
-	@Test
-	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNewOnAPersonWhoIsPatient() throws Exception {
-		executeDataSet("personAddress-Test.xml");
-		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		Assert.assertFalse(patient.getPersonAddress().isPreferred());
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertTrue(patient.getPersonAddress().isPreferred());
-		Assert.assertEquals("test address", patient.getPersonAddress().getAddress1());
-	}
-	
-	@Test
-	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddressOnAPersonWhoIsPatient()
-	        throws Exception {
-		executeDataSet("personAddress-Test.xml");
-		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		//set a preferred address for testing purposes
-		PersonAddress oldPreferredAddress = patient.getPersonAddress();
-		oldPreferredAddress.setPreferred(true);
-		Context.getPatientService().savePatient(patient);
-		Assert.assertTrue(patient.getPersonAddress().isPreferred());
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertFalse(oldPreferredAddress.isPreferred());
-	}
-	
 	@Test(expected = ConversionException.class)
 	public void shouldFailWhenUpdatingAPersonOnAPatient() throws Exception {
 		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\" }";
@@ -196,21 +165,12 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		    new MockHttpServletResponse());
 	}
 	
-	@Test
-	public void shouldOverwriteIdentifiers() throws Exception {
-		Patient patient = Context.getPatientService().getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
-		Assert.assertEquals(2, patient.getIdentifiers().size());
-		Assert.assertEquals("101-6", patient.getPatientIdentifier().getIdentifier());
-		Context.evictFromSession(patient);
-		
+	@Test(expected = Exception.class)
+	public void shouldFailToOverwriteIdentifiers() throws Exception {
 		String json = "{ \"identifiers\": [{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true }] }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		new PatientController().update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", post, new MockHttpServletRequest(),
 		    new MockHttpServletResponse());
-		
-		patient = Context.getPatientService().getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
-		Assert.assertEquals(1, patient.getIdentifiers().size());
-		Assert.assertEquals("abc123ez", patient.getPatientIdentifier().getIdentifier());
 	}
 	
 	@Test

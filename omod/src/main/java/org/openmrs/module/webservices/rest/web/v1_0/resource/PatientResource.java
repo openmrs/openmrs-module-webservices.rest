@@ -14,7 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +39,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -59,8 +60,8 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	/**
 	 * It is empty, because we set that already in the create method.
 	 * <p>
-	 * It takes String instead of Person so that the uuid is not resolved to a person, which
-	 * leads to the Hibernate exception: the object is already associated with the session.
+	 * It takes String instead of Person so that the uuid is not resolved to a person, which leads
+	 * to the Hibernate exception: the object is already associated with the session.
 	 * 
 	 * @param instance
 	 * @param personUuid
@@ -71,13 +72,16 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
 	@PropertyGetter("identifiers")
 	public static Set<PatientIdentifier> getIdentifiers(Patient instance) {
-		return new HashSet<PatientIdentifier>(instance.getActiveIdentifiers());
+		return new LinkedHashSet<PatientIdentifier>(instance.getActiveIdentifiers());
 	}
 	
 	@PropertySetter("identifiers")
-	public static void setPerson(Patient instance, Set<PatientIdentifier> identifiers) {
-		instance.getIdentifiers().clear();
-		instance.getIdentifiers().addAll(identifiers);
+	public static void setIdentifiers(Patient instance, Set<PatientIdentifier> identifiers)
+	        throws ResourceDoesNotSupportOperationException {
+		if (instance.getIdentifiers() != null && !instance.getIdentifiers().isEmpty()) {
+			throw new ResourceDoesNotSupportOperationException("Identifiers can only be set for newly created objects!");
+		}
+		instance.setIdentifiers(identifiers);
 	}
 	
 	/**
@@ -126,16 +130,20 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addRequiredProperty("identifiers");
 		return description;
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#create(org.openmrs.module.webservices.rest.SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * The method is overwritten, because we need to create a patient from an existing person. In
+	 * the POST body only person and identifiers are provided and other properties must come from
+	 * the existing person. We need to promote the existing person to be a patient by overwriting it
+	 * and at the same time preserving all person properties.
+	 * 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#create(org.openmrs.module.webservices.rest.SimpleObject,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
-		//We need to create a patient from an existing person.
 		Object object = propertiesToCreate.get("person");
 		if (object == null) {
 			throw new ConversionException("The person property is missing");

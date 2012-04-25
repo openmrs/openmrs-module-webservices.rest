@@ -25,6 +25,14 @@ public class ResourceDoesNotSupportOperationException extends ResponseException 
 		
 	}
 	
+	public ResourceDoesNotSupportOperationException(String message) {
+		super(message);
+	}
+	
+	public ResourceDoesNotSupportOperationException(Throwable cause) {
+		super(cause);
+	}
+	
 	public ResourceDoesNotSupportOperationException(String message, Throwable cause) {
 		super(message, cause);
 	}
