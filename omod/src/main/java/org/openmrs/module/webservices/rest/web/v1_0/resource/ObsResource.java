@@ -124,6 +124,29 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("person");
+		description.addRequiredProperty("obsDatetime");
+		description.addRequiredProperty("concept");
+		
+		description.addProperty("location");
+		description.addProperty("order");
+		description.addProperty("encounter");
+		description.addProperty("value");
+		description.addProperty("accessionNumber");
+		description.addProperty("groupMembers");
+		description.addProperty("valueCodedName");
+		description.addProperty("comment");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
