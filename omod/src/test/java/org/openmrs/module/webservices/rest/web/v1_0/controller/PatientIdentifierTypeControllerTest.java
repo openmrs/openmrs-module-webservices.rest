@@ -117,4 +117,35 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 		Assert.assertEquals(before.intValue() - 1, after.intValue());
 	}
 	
+	/**
+	 * @see PatientIdentifierTypeController#create(SimpleObject, HttpServletRequest, HttpServletResponse) 
+	 * @verifies create a new patient identifier type
+	 */
+	@Test
+	public void createPatientIdentifierType_shouldCreateANewPatientIdentifierType() throws Exception {
+		int before = service.getAllPatientIdentifierTypes().size();
+		String json = "{ \"name\":\"Old Identification Number\", \"description\":\"Unique number used in OpenMRS\", \"checkDigit\":true, \"required\":true, \"format\":\"\", \"formatDescription\":\"NULL\",\"validator\":\""
+		        + VerhoeffIdentifierValidator.class.getName() + "\" }";
+		SimpleObject post = SimpleObject.parseJson(json);
+		Object created = controller.create(post, request, new MockHttpServletResponse());
+		Util.log("Created patient identifier type", created);
+		int after = service.getAllPatientIdentifierTypes().size();
+		Assert.assertEquals(before + 1, after);
+	}
+	
+	/**
+	 * @see PatientIdentifierTypeController#update(String, SimpleObject, HttpServletRequest, HttpServletResponse)
+	 * @verifies overwrite name on a patient identifier type
+	 */
+	@Test
+	public void updatePatientIdentifierType_shouldOverwriteNameOnAPatientIdentifierType() throws Exception {
+		String json = "{ \"name\":\"OpenMRS Identification Number\" }";
+		SimpleObject post = SimpleObject.parseJson(json);
+		controller.update(idTypeUuid, post, request, response);
+		PatientIdentifierType updated = service.getPatientIdentifierTypeByUuid(idTypeUuid);
+		Util.log("Updated", updated);
+		Assert.assertNotNull(updated);
+		Assert.assertEquals("OpenMRS Identification Number", updated.getName());
+	}
+	
 }
