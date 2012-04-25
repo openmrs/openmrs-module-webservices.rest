@@ -39,19 +39,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations 
- * 
- * @getDocumentation given a uuid the encounter is returned.  If not found, 404
- * @postDocumentation Post here to do something
- *                    asdf
- *                    asdf
- *          sadf
- *          sadf
- * @putDocumentation if you use put you're a fool
- *  asdfsdf
- *  asdf
- *  asd
- *  f
- * @deleteDocumentation Mark the encounter with the given uuid as retired/deleted.  If "purge" parameter passed, a delete in the db is attempted.
  */
 @Resource("encounter")
 @Handler(supports = Encounter.class, order = 0)
@@ -96,6 +83,27 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 * @should create an encounter type
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("encounterDatetime");
+		description.addRequiredProperty("patient");
+		description.addRequiredProperty("encounterType");
+		
+		description.addProperty("location");
+		description.addProperty("form");
+		description.addProperty("provider");
+		description.addProperty("orders");
+		description.addProperty("obs");
+		
+		return description;
 	}
 	
 	/**
