@@ -21,4 +21,30 @@ public class IllegalPropertyException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
 	
+	public IllegalPropertyException() {
+		super();
+	}
+	
+	/**
+	 * @param message
+	 * @param cause
+	 */
+	public IllegalPropertyException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	/**
+	 * @param message
+	 */
+	public IllegalPropertyException(String message) {
+		super(message);
+	}
+	
+	/**
+	 * @param cause
+	 */
+	public IllegalPropertyException(Throwable cause) {
+		super(cause);
+	}
+	
 }

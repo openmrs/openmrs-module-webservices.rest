@@ -41,6 +41,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.OpenmrsData;
+import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -564,7 +565,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * A Set is returned by removing voided data from passed Collection. The Collection passed as
 	 * parameter is not modified
 	 * 
-	 * @param c
+	 * @param input collection of OpenmrsData
 	 * @return non-voided OpenmrsData
 	 */
 	public static <D extends OpenmrsData, C extends Collection<D>> Set<D> removeVoidedData(C input) {
@@ -572,6 +573,23 @@ public class RestUtil implements GlobalPropertyListener {
 		for (D d : input) {
 			if (!d.isVoided()) {
 				data.add(d);
+			}
+		}
+		return data;
+	}
+	
+	/**
+	 * A Set is returned by removing retired data from passed Collection. The Collection passed as
+	 * parameter is not modified
+	 * 
+	 * @param input collection of OpenmrsMetadata
+	 * @return non-retired OpenmrsMetaData
+	 */
+	public static <M extends OpenmrsMetadata, C extends Collection<M>> Set<M> removeRetiredData(C input) {
+		Set<M> data = new LinkedHashSet<M>();
+		for (M m : input) {
+			if (!m.isRetired()) {
+				data.add(m);
 			}
 		}
 		return data;

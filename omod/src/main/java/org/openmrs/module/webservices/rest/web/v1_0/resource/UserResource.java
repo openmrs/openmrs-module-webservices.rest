@@ -15,8 +15,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.openmrs.Role;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
@@ -25,6 +27,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -74,6 +77,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
 			description.addProperty("person", Representation.REF);
+			description.addProperty("privileges", Representation.REF);
 			description.addProperty("roles", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
@@ -87,7 +91,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
 			description.addProperty("person", Representation.DEFAULT);
+			description.addProperty("privileges", Representation.DEFAULT);
 			description.addProperty("roles", Representation.DEFAULT);
+			description.addProperty("allRoles", Representation.DEFAULT);
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
 			description.addProperty("retired");
@@ -96,6 +102,25 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			return description;
 		}
 		return null;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("username");
+		description.addRequiredProperty("password");
+		description.addRequiredProperty("person");
+		
+		description.addProperty("systemId");
+		description.addProperty("userProperties");
+		description.addProperty("roles");
+		description.addProperty("proficientLocales");
+		description.addProperty("secretQuestion");
+		
+		return description;
 	}
 	
 	/**
@@ -174,10 +199,11 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	@Override
 	public Object getProperty(UserAndPassword instance, String propertyName) throws ConversionException {
 		try {
-			if (propertyName.equals("password"))
+			if (propertyName.equals("password")) {
 				return instance.getPassword();
-			else
+			} else {
 				return PropertyUtils.getProperty(instance.getUser(), propertyName);
+			}
 		}
 		catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
@@ -208,6 +234,28 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
+	}
+	
+	/**
+	 * @param user
+	 * @return roles for user
+	 * @see User#getRoles()
+	 */
+	public Set<Role> getRoles(UserAndPassword user) {
+		if (user.getUser().getRoles() == null)
+			return null;
+		return RestUtil.removeRetiredData(user.getUser().getRoles());
+	}
+	
+	/**
+	 * @param user
+	 * @return all roles for user
+	 * @see User#getAllRoles()
+	 */
+	public Set<Role> getAllRoles(UserAndPassword user) {
+		if (user.getUser().getRoles() == null)
+			return null;
+		return RestUtil.removeRetiredData(user.getUser().getAllRoles()); //Get all active roles, including inherited roles
 	}
 	
 	/**

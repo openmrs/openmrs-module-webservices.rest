@@ -33,6 +33,7 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 		assertPropEquals("systemId", getObject().getUser().getSystemId());
 		assertPropEquals("userProperties", getObject().getUser().getUserProperties());
 		assertPropPresent("person");
+		assertPropPresent("privileges");
 		assertPropPresent("roles");
 		assertPropEquals("retired", getObject().getUser().getRetired());
 	}
@@ -44,7 +45,9 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 		assertPropEquals("systemId", getObject().getUser().getSystemId());
 		assertPropEquals("userProperties", getObject().getUser().getUserProperties());
 		assertPropPresent("person");
+		assertPropPresent("privileges");
 		assertPropPresent("roles");
+		assertPropPresent("allRoles");
 		assertPropEquals("proficientLocales", getObject().getUser().getProficientLocales());
 		assertPropEquals("secretQuestion", getObject().getUser().getSecretQuestion());
 		assertPropEquals("retired", getObject().getUser().getRetired());
