@@ -75,7 +75,7 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			description.addProperty("parent", Representation.REF);
+			description.addProperty("parent");
 			description.addProperty("form");
 			description.addProperty("field");
 			description.addProperty("fieldNumber");

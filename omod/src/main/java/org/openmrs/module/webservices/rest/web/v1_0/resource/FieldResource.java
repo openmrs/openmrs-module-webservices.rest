@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Field;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -117,5 +120,13 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	@Override
 	protected NeedsPaging<Field> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<Field>(Context.getFormService().getAllFields(), context);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
+	 */
+	@Override
+	protected List<String> propertiesToExposeAsSubResources() {
+		return Arrays.asList("answers");
 	}
 }

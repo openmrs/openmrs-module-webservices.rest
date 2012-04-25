@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Form;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -125,6 +128,14 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	@Override
 	protected NeedsPaging<Form> doSearch(String query, RequestContext context) {
 		return new NeedsPaging<Form>(Context.getFormService().getForms(query, false), context);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
+	 */
+	@Override
+	protected List<String> propertiesToExposeAsSubResources() {
+		return Arrays.asList("formFields");
 	}
 	
 }
