@@ -81,10 +81,13 @@ public class RequestContext {
 	}
 	
 	/**
-	 * @param limit
-	 *            the limit to set
+	 * @param limit the limit to set
+	 * @should not accept a value less than one
+	 * @should not accept a null value
 	 */
 	public void setLimit(Integer limit) {
+		if (limit == null || limit <= 0)
+			throw new APIException("If you specify a number of results to return, it must be >0 and not null");
 		if (limit > RestUtil.getAbsoluteLimit())
 			throw new APIException("Administrator has set absolute limit at " + RestUtil.getAbsoluteLimit());
 		else
