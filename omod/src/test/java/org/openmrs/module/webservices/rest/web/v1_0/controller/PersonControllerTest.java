@@ -55,11 +55,16 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void createPerson_shouldCreateANewPerson() throws Exception {
 		int before = Context.getPersonService().getPeople("", false).size();
-		String json = "{ \"preferredName\":{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, \"birthdate\":\"1200-01-01\", \"gender\":\"F\" }";
+		String json = "{ \"names\": [{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, {\"givenName\":\"Leda\", \"familyName\":\"Nemesis\"} ], \"birthdate\":\"1200-01-01\", \"gender\":\"F\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object beautifulPerson = new PersonController().create(post, emptyRequest(), new MockHttpServletResponse());
 		Util.log("Created person", beautifulPerson);
 		Assert.assertEquals(before + 1, Context.getPersonService().getPeople("", false).size());
+		Person person = Context.getPersonService().getPersonByUuid(
+		    (String) PropertyUtils.getProperty(beautifulPerson, "uuid"));
+		Assert.assertNotNull(person);
+		Assert.assertEquals(2, person.getNames().size());
+		Assert.assertEquals("Helen of Troy", person.getPersonName().getFullName());
 	}
 	
 	/**
@@ -124,8 +129,8 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @see PersonController#updatePerson(String,SimpleObject,WebRequest)
 	 * @verifies change a complex property on a person
 	 */
-	@Test
-	public void updatePerson_shouldOverwriteNamesOnAPerson() throws Exception {
+	@Test(expected = Exception.class)
+	public void updatePerson_shouldNotOverwriteNamesOnAPerson() throws Exception {
 		Person person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
 		Assert.assertEquals(1, person.getNames().size());
 		Assert.assertEquals("Collet", person.getGivenName());
@@ -135,27 +140,20 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		    SimpleObject.class);
 		new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		
-		person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
-		Assert.assertEquals(1, person.getNames().size());
-		Assert.assertEquals("Helen", person.getGivenName());
 	}
 	
 	/**
 	 * @see PersonController#updatePerson(String,SimpleObject,WebRequest)
 	 * @verifies change a complex property on a person
 	 */
-	@Test
-	public void updatePerson_shouldOverwriteAddressesOnAPerson() throws Exception {
+	@Test(expected = Exception.class)
+	public void updatePerson_shouldNotOverwriteAddressesOnAPerson() throws Exception {
 		Person person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
 		Assert.assertEquals(1, person.getAddresses().size());
 		
 		SimpleObject post = new ObjectMapper().readValue("{\"addresses\": [ ] }", SimpleObject.class);
 		new PersonController().update("5946f880-b197-400b-9caa-a3c661d23041", post, emptyRequest(),
 		    new MockHttpServletResponse());
-		
-		person = Context.getPersonService().getPersonByUuid("5946f880-b197-400b-9caa-a3c661d23041");
-		Assert.assertEquals(0, person.getAddresses().size());
 	}
 	
 	/**

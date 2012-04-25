@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -100,18 +102,16 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("names");
 		description.addRequiredProperty("gender");
-		description.addRequiredProperty("preferredName", "personName");
 		description.addProperty("age");
 		description.addProperty("birthdate");
 		description.addProperty("birthdateEstimated");
 		description.addProperty("dead");
 		description.addProperty("deathDate");
 		description.addProperty("causeOfDeath");
-		description.addProperty("preferredAddress", "personAddress");
-		description.addProperty("names");
 		description.addProperty("addresses");
-		description.addProperty("attributes", "activeAttributes");
+		description.addProperty("attributes");
 		return description;
 	}
 	
@@ -120,13 +120,26 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties();
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("gender");
+		description.addProperty("age");
+		description.addProperty("birthdate");
+		description.addProperty("birthdateEstimated");
+		description.addProperty("dead");
+		description.addProperty("deathDate");
+		description.addProperty("causeOfDeath");
+		
+		description.addProperty("preferredName");
+		description.addProperty("preferredAddress");
+		return description;
 	}
 	
 	/**
 	 * Returns non-voided names for a person
+	 * 
 	 * @param instance
-	 * @return 
+	 * @return
 	 */
 	@PropertyGetter("names")
 	public static Set<PersonName> getNames(Person instance) {
@@ -134,13 +147,74 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * Returns non-voided addresses for a person
+	 * Sets names and marks the first one as preferred if none is marked. It also makes sure that
+	 * only one name is marked as preferred and changes the rest to non-preferred.
+	 * <p> 
+	 * It takes the list so that the order is preserved.
+	 * 
 	 * @param instance
-	 * @return 
+	 * @param names
+	 */
+	@PropertySetter("names")
+	public static void setNames(Person instance, List<PersonName> names) {
+		boolean hasPreferred = false;
+		for (PersonName name : names) {
+			if (name.isPreferred()) {
+				if (!hasPreferred) {
+					hasPreferred = true;
+				} else {
+					name.setPreferred(false);
+				}
+			}
+		}
+		
+		if (!hasPreferred) {
+			names.iterator().next().setPreferred(true);
+		}
+		
+		//Hibernate expects java.util.SortedSet
+		instance.setNames(new TreeSet<PersonName>(names));
+	}
+	
+	/**
+	 * Returns non-voided addresses for a person
+	 * 
+	 * @param instance
+	 * @return
 	 */
 	@PropertyGetter("addresses")
 	public static Set<PersonAddress> getAddresses(Person instance) {
 		return RestUtil.removeVoidedData(instance.getAddresses());
+	}
+	
+	/**
+	 * Sets addresses and marks the first one as preferred if none is marked. It also makes sure
+	 * that only one address is marked as preferred and changes the rest to non-preferred.
+	 * <p>
+	 * It takes the list so that the order is preserved.
+	 * 
+	 * @param instance
+	 * @param addresses
+	 */
+	@PropertySetter("addresses")
+	public static void setAddresses(Person instance, List<PersonAddress> addresses) {
+		boolean hasPreferred = false;
+		for (PersonAddress address : addresses) {
+			if (address.isPreferred()) {
+				if (!hasPreferred) {
+					hasPreferred = true;
+				} else {
+					address.setPreferred(false);
+				}
+			}
+		}
+		
+		if (!hasPreferred) {
+			addresses.iterator().next().setPreferred(true);
+		}
+		
+		//Hibernate expects java.util.SortedSet
+		instance.setAddresses(new TreeSet<PersonAddress>(addresses));
 	}
 	
 	/**
@@ -169,7 +243,8 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * Sets the preferred address for a person. If no address exists new address is set as preferred.
+	 * Sets the preferred address for a person. If no address exists new address is set as
+	 * preferred.
 	 * 
 	 * @param instance
 	 * @param name
