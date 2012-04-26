@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -134,13 +135,27 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Gets a description of resource's properties which can be edited.
 	 * <p>
-	 * By default delegates to {@link #getCreatableProperties()}.
+	 * By default delegates to {@link #getCreatableProperties()} and removes sub-resources returned
+	 * by {@link #getPropertiesToExposeAsSubResources()}.
 	 * 
 	 * @return the description
 	 * @throws ResponseException
 	 */
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		return getCreatableProperties();
+		DelegatingResourceDescription description = getCreatableProperties();
+		for (String property : getPropertiesToExposeAsSubResources()) {
+			description.getProperties().remove(property);
+		}
+		return description;
+	}
+	
+	/**
+	 * Implementations should override this method if they support sub-resources
+	 * 
+	 * @return a list of properties available as sub-resources or an empty list
+	 */
+	public List<String> getPropertiesToExposeAsSubResources() {
+		return Collections.emptyList();
 	}
 	
 	/**
@@ -200,7 +215,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	        throws ConversionException {
+	    throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
@@ -224,7 +239,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
-	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
+	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
+	    throws ConversionException {
 		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.

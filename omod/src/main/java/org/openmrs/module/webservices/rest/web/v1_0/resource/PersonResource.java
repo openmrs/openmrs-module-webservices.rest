@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -120,19 +122,18 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
-		description.addRequiredProperty("gender");
-		description.addProperty("age");
-		description.addProperty("birthdate");
-		description.addProperty("birthdateEstimated");
-		description.addProperty("dead");
-		description.addProperty("deathDate");
-		description.addProperty("causeOfDeath");
-		
+		DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("preferredName");
 		description.addProperty("preferredAddress");
 		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
+	 */
+	@Override
+	public List<String> getPropertiesToExposeAsSubResources() {
+		return Arrays.asList("names", "addresses", "attributes");
 	}
 	
 	/**
@@ -149,7 +150,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	/**
 	 * Sets names and marks the first one as preferred if none is marked. It also makes sure that
 	 * only one name is marked as preferred and changes the rest to non-preferred.
-	 * <p> 
+	 * <p>
 	 * It takes the list so that the order is preserved.
 	 * 
 	 * @param instance
@@ -222,24 +223,23 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * 
 	 * @param instance
 	 * @param name
+	 * @throws ResourceDoesNotSupportOperationException
 	 */
 	@PropertySetter("preferredName")
-	public static void setPreferredName(Person instance, PersonName name) {
+	public static void setPreferredName(Person instance, PersonName name) throws ResourceDoesNotSupportOperationException {
 		if (name.getId() == null) {
-			// adding a new name and set it as preferred
-			name.setPreferred(true);
-			instance.addName(name);
-		} else {
-			// switching which name is preferred
-			for (PersonName existing : instance.getNames()) {
-				if (existing.isVoided())
-					continue;
-				if (existing.isPreferred() && !existing.equals(name))
-					existing.setPreferred(false);
-			}
-			name.setPreferred(true);
-			instance.addName(name);
+			throw new ResourceDoesNotSupportOperationException("Only an existing name can be marked as preferred!");
 		}
+		
+		// switching which name is preferred
+		for (PersonName existing : instance.getNames()) {
+			if (existing.isVoided())
+				continue;
+			if (existing.isPreferred() && !existing.equals(name))
+				existing.setPreferred(false);
+		}
+		name.setPreferred(true);
+		instance.addName(name);	
 	}
 	
 	/**
@@ -248,9 +248,15 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * 
 	 * @param instance
 	 * @param name
+	 * @throws ResourceDoesNotSupportOperationException
 	 */
 	@PropertySetter("preferredAddress")
-	public static void setPreferredAddress(Patient instance, PersonAddress address) {
+	public static void setPreferredAddress(Patient instance, PersonAddress address)
+	    throws ResourceDoesNotSupportOperationException {
+		if (address.getPersonAddressId() == null) {
+			throw new ResourceDoesNotSupportOperationException("Only an exsiting address can be markes as preferred!");
+		}
+		
 		//un mark the current preferred address as preferred if any
 		for (PersonAddress existing : instance.getAddresses()) {
 			if (existing.isVoided())
@@ -259,8 +265,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 				existing.setPreferred(false);
 		}
 		address.setPreferred(true);
-		if (address.getPersonAddressId() == null)
-			instance.addAddress(address);
+		
 	}
 	
 	/**

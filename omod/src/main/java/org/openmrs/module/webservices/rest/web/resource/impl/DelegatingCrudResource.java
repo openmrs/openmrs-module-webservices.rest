@@ -45,15 +45,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
-	 * Implementations should override this method if they support sub-resources
-	 * 
-	 * @return a list of properties available as sub-resources, if any
-	 */
-	protected List<String> propertiesToExposeAsSubResources() {
-		return null;
-	}
-	
-	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#retrieve(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -170,7 +161,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @throws ResponseException
 	 */
 	public Object listSubResource(String delegateUuid, String subResourceName, Representation rep) throws ResponseException {
-		List<String> legal = propertiesToExposeAsSubResources();
+		List<String> legal = getPropertiesToExposeAsSubResources();
 		if (legal == null || !legal.contains(subResourceName))
 			throw new IllegalPropertyException();
 		T delegate = getByUniqueId(delegateUuid);

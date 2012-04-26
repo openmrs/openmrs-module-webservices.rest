@@ -123,10 +123,10 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#propertiesToExposeAsSubResources()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getPropertiesToExposeAsSubResources()
 	 */
 	@Override
-	protected List<String> propertiesToExposeAsSubResources() {
+	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("answers");
 	}
 }

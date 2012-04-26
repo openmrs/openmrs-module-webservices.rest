@@ -27,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -36,6 +35,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.PersonResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -211,33 +211,93 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("1050 Wishard Blvd.", person.getPersonAddress().getAddress1());
 	}
 	
-	@Test
-	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNew() throws Exception {
+	@Test(expected = ConversionException.class)
+	public void shouldFailIfThePreferredAddressBeingSetIsNew() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		Person person = Context.getPersonService().getPersonByUuid(personUuid);
-		Assert.assertFalse(person.getPersonAddress().isPreferred());
+		Assert.assertNotNull(person);
 		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertTrue(person.getPersonAddress().isPreferred());
-		Assert.assertEquals("test address", person.getPersonAddress().getAddress1());
 	}
 	
 	@Test
-	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddress() throws Exception {
+	public void shouldSetThePreferredAddressAndUnmarkTheOldPreferredAddress() throws Exception {
 		executeDataSet("personAddress-Test.xml");
 		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		String preferredAddress = "3350d0b5-821c-4e5e-ad1d-a9bce331e118";
+		String otherAddress = "8a806d8c-822d-11e0-872f-18a905e044dc";
 		Person person = Context.getPersonService().getPersonByUuid(personUuid);
-		//set a preferred address for testing purposes
-		PersonAddress oldPreferredAddress = person.getPersonAddress();
-		oldPreferredAddress.setPreferred(true);
+		int addressesCount = person.getAddresses().size();
+		for (PersonAddress address : person.getAddresses()) {
+	        if (address.getUuid().equals(preferredAddress)) {
+	        	address.setPreferred(true);
+	        } else if (address.getUuid().equals(otherAddress)) {
+	        	address.setPreferred(false);
+	        }
+        }
 		Context.getPersonService().savePerson(person);
-		Assert.assertTrue(person.getPersonAddress().isPreferred());
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
+		
+		String json = "{\"preferredAddress\": \"" + otherAddress + "\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertFalse(oldPreferredAddress.isPreferred());
+		
+		person = Context.getPersonService().getPersonByUuid(personUuid);
+		for (PersonAddress address : person.getAddresses()) {
+	        if (address.getUuid().equals(preferredAddress)) {
+	        	Assert.assertFalse(address.isPreferred());
+	        } else if (address.getUuid().equals(otherAddress)) {
+	        	Assert.assertTrue(address.isPreferred());
+	        } else {
+	        	Assert.assertFalse(address.isPreferred());
+	        }
+        }
+		Assert.assertEquals(addressesCount, person.getAddresses().size());
+	}
+	
+	@Test
+	public void shouldSetThePreferredNameAndUnmarkTheOldPreferredName() throws Exception {
+		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		String otherName = "399e3a7b-6482-487d-94ce-c07bb3ca3cc7";
+		Person person = Context.getPersonService().getPersonByUuid(personUuid);
+		int namesCount = person.getNames().size();
+		for (PersonName name : person.getNames()) {
+			name.setPreferred(false);
+		}
+		
+		PersonName personName = new PersonName("Joe", "", "Smith");
+		personName.setPreferred(true);
+		person.addName(personName);
+		Context.getPersonService().savePerson(person);
+		String preferredName = personName.getUuid();
+		namesCount++;
+		
+		String json = "{\"preferredName\": \"" + otherName + "\"}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
+		
+		person = Context.getPersonService().getPersonByUuid(personUuid);
+		for (PersonName name : person.getNames()) {
+	        if (name.getUuid().equals(preferredName)) {
+	        	Assert.assertFalse(name.isPreferred());
+	        } else if (name.getUuid().equals(otherName)) {
+	        	Assert.assertTrue(name.isPreferred());
+	        } else {
+	        	Assert.assertFalse(name.isPreferred());
+	        }
+        }
+		Assert.assertEquals(namesCount, person.getNames().size());
+	}
+	
+	@Test(expected = ConversionException.class)
+	public void shouldFailIfThePreferreNameBeingSetIsNew() throws Exception {
+		String personUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		Person person = Context.getPersonService().getPersonByUuid(personUuid);
+		Assert.assertNotNull(person);
+		String json = "{\"preferredName\":{ \"givenName\":\"Joe\", \"familyName\":\"Smith\" }}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new PersonController().update(personUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
 	}
 	
 	/**
@@ -317,36 +377,6 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		results = (List<Object>) wrapper.get("results");
 		int restCount = results.size();
 		Assert.assertEquals(fullCount, firstCount + restCount);
-	}
-	
-	@Test
-	public void shouldAddTheAddressIfThePreferredAddressBeingSetIsNewOnAPersonWhoIsPatient() throws Exception {
-		executeDataSet("personAddress-Test.xml");
-		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		Assert.assertFalse(patient.getPersonAddress().isPreferred());
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertTrue(patient.getPersonAddress().isPreferred());
-		Assert.assertEquals("test address", patient.getPersonAddress().getAddress1());
-	}
-	
-	@Test
-	public void shouldUnmarkTheOldPreferredAddressAsPreferredWhenSettingANewPreferredAddressOnAPersonWhoIsPatient()
-	        throws Exception {
-		executeDataSet("personAddress-Test.xml");
-		String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		//set a preferred address for testing purposes
-		PersonAddress oldPreferredAddress = patient.getPersonAddress();
-		oldPreferredAddress.setPreferred(true);
-		Context.getPatientService().savePatient(patient);
-		Assert.assertTrue(patient.getPersonAddress().isPreferred());
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		new PersonController().update(patientUuid, post, new MockHttpServletRequest(), new MockHttpServletResponse());
-		Assert.assertFalse(oldPreferredAddress.isPreferred());
 	}
 	
 }
