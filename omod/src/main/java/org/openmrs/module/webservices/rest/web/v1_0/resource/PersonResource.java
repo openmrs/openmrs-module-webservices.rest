@@ -239,7 +239,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 				existing.setPreferred(false);
 		}
 		name.setPreferred(true);
-		instance.addName(name);	
+		instance.addName(name);
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 */
 	@PropertySetter("preferredAddress")
 	public static void setPreferredAddress(Patient instance, PersonAddress address)
-	    throws ResourceDoesNotSupportOperationException {
+	        throws ResourceDoesNotSupportOperationException {
 		if (address.getPersonAddressId() == null) {
 			throw new ResourceDoesNotSupportOperationException("Only an exsiting address can be markes as preferred!");
 		}

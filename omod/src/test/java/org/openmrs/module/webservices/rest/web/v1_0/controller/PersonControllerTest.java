@@ -231,12 +231,12 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		Person person = Context.getPersonService().getPersonByUuid(personUuid);
 		int addressesCount = person.getAddresses().size();
 		for (PersonAddress address : person.getAddresses()) {
-	        if (address.getUuid().equals(preferredAddress)) {
-	        	address.setPreferred(true);
-	        } else if (address.getUuid().equals(otherAddress)) {
-	        	address.setPreferred(false);
-	        }
-        }
+			if (address.getUuid().equals(preferredAddress)) {
+				address.setPreferred(true);
+			} else if (address.getUuid().equals(otherAddress)) {
+				address.setPreferred(false);
+			}
+		}
 		Context.getPersonService().savePerson(person);
 		
 		String json = "{\"preferredAddress\": \"" + otherAddress + "\"}";
@@ -245,14 +245,14 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		person = Context.getPersonService().getPersonByUuid(personUuid);
 		for (PersonAddress address : person.getAddresses()) {
-	        if (address.getUuid().equals(preferredAddress)) {
-	        	Assert.assertFalse(address.isPreferred());
-	        } else if (address.getUuid().equals(otherAddress)) {
-	        	Assert.assertTrue(address.isPreferred());
-	        } else {
-	        	Assert.assertFalse(address.isPreferred());
-	        }
-        }
+			if (address.getUuid().equals(preferredAddress)) {
+				Assert.assertFalse(address.isPreferred());
+			} else if (address.getUuid().equals(otherAddress)) {
+				Assert.assertTrue(address.isPreferred());
+			} else {
+				Assert.assertFalse(address.isPreferred());
+			}
+		}
 		Assert.assertEquals(addressesCount, person.getAddresses().size());
 	}
 	
@@ -279,14 +279,14 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		person = Context.getPersonService().getPersonByUuid(personUuid);
 		for (PersonName name : person.getNames()) {
-	        if (name.getUuid().equals(preferredName)) {
-	        	Assert.assertFalse(name.isPreferred());
-	        } else if (name.getUuid().equals(otherName)) {
-	        	Assert.assertTrue(name.isPreferred());
-	        } else {
-	        	Assert.assertFalse(name.isPreferred());
-	        }
-        }
+			if (name.getUuid().equals(preferredName)) {
+				Assert.assertFalse(name.isPreferred());
+			} else if (name.getUuid().equals(otherName)) {
+				Assert.assertTrue(name.isPreferred());
+			} else {
+				Assert.assertFalse(name.isPreferred());
+			}
+		}
 		Assert.assertEquals(namesCount, person.getNames().size());
 	}
 	
