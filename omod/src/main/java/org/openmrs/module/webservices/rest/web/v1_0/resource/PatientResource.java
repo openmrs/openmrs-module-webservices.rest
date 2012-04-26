@@ -76,12 +76,32 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	@PropertySetter("identifiers")
-	public static void setIdentifiers(Patient instance, Set<PatientIdentifier> identifiers)
+	public static void setIdentifiers(Patient instance, List<PatientIdentifier> identifiers)
 	        throws ResourceDoesNotSupportOperationException {
 		if (instance.getIdentifiers() != null && !instance.getIdentifiers().isEmpty()) {
 			throw new ResourceDoesNotSupportOperationException("Identifiers can only be set for newly created objects!");
 		}
-		instance.setIdentifiers(identifiers);
+		if (identifiers == null || identifiers.isEmpty()) {
+			throw new ResourceDoesNotSupportOperationException("At least one identifier required");
+		}
+		
+		boolean hasPreferred = false;
+		for (PatientIdentifier identifier : identifiers) {
+			if (identifier.isPreferred()) {
+				if (!hasPreferred) {
+					hasPreferred = true;
+				} else {
+					throw new ResourceDoesNotSupportOperationException("Only one preferred identifier allowed");
+				}
+			}
+        }
+		
+		if (!hasPreferred) {
+			//Mark the first one as preferred if none marked
+			identifiers.iterator().next().setPreferred(true);
+		}
+		
+		instance.setIdentifiers(new LinkedHashSet<PatientIdentifier>(identifiers));
 	}
 	
 	/**

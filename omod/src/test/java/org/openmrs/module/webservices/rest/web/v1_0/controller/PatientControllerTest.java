@@ -13,18 +13,20 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
-public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
+public class PatientControllerTest extends BaseCrudControllerTest {
 	
 	/**
 	 * @see PatientController#createPatient(SimpleObject,WebRequest)
@@ -200,4 +202,95 @@ public class PatientControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(fullCount, firstCount + restCount);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "patient";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return "5946f880-b197-400b-9caa-a3c661d23041";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return 0;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+	 */
+	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldGetAll() throws Exception {
+		super.shouldGetAll();
+	}
+	
+	@Test
+	public void shouldMarkTheFirstIdentifierAsPreferredIfNoneMarked() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI());
+		String personUUID = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+		String json = "{ \"person\": \""
+		        + personUUID
+		        + "\", \"identifiers\": ["
+		        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, "
+		        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"} ] }";
+		request.setContent(json.getBytes());
+		handle(request);
+		
+		Patient patient = Context.getPatientService().getPatientByUuid(personUUID);
+		for (PatientIdentifier id : patient.getIdentifiers()) {
+			if (id.getIdentifier().equals("1234")) {
+				Assert.assertTrue(id.isPreferred());
+			} else {
+				Assert.assertFalse(id.isPreferred());
+			}
+		}
+	}
+	
+	@Test
+	public void shouldRespectPreferredIdentifier() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI());
+		String personUUID = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+		String json = "{ \"person\": \""
+		        + personUUID
+		        + "\", \"identifiers\": ["
+		        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, "
+		        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true}, "
+		        + "{\"identifier\":\"1234567890\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"} ] }";
+		request.setContent(json.getBytes());
+		handle(request);
+		
+		Patient patient = Context.getPatientService().getPatientByUuid(personUUID);
+		for (PatientIdentifier id : patient.getIdentifiers()) {
+			if (id.getIdentifier().equals("12345678")) {
+				Assert.assertTrue(id.isPreferred());
+			} else {
+				Assert.assertFalse(id.isPreferred());
+			}
+		}
+	}
+	
+	@Test(expected = Exception.class)
+	public void shouldFailIfMorePreferredIdentifiers() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI());
+		String personUUID = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+		String json = "{ \"person\": \""
+		        + personUUID
+		        + "\", \"identifiers\": ["
+		        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, "
+		        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true}, "
+		        + "{\"identifier\":\"1234567890\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true} ] }";
+		request.setContent(json.getBytes());
+		handle(request);
+	}
 }

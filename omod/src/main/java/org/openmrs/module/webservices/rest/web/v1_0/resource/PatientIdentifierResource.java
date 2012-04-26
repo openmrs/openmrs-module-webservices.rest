@@ -74,7 +74,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("identifier");
 		description.addRequiredProperty("identifierType");
-		description.addProperty("location");
+		description.addRequiredProperty("location");
 		description.addProperty("preferred");
 		return description;
 	}
