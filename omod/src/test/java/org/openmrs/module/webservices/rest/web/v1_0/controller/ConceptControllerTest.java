@@ -257,4 +257,31 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Concept concept = Context.getConceptService().getConceptByUuid(getUuid());
 		Assert.assertEquals(2, concept.getSetMembers().size());
 	}
+	
+	@Test
+	public void shouldModifySetMembersOnConcept() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		String json = "{ \"setMembers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\", \"54d2dce5-0357-4253-a91a-85ce519137f5\"] }";
+		request.setContent(json.getBytes());
+		handle(request);
+		
+		Concept concept = Context.getConceptService().getConceptByUuid(getUuid());
+		Assert.assertEquals(2, concept.getSetMembers().size());
+		
+		json = "{ \"setMembers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\"] }";
+		request.setContent(json.getBytes());
+		handle(request);
+		
+		concept = Context.getConceptService().getConceptByUuid(getUuid());
+		Assert.assertEquals(1, concept.getSetMembers().size());
+	}
+	
+	@Test(expected = Exception.class)
+	public void shouldFailToAddAnswersToConcept() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		String json = "{ \"answers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\", \"54d2dce5-0357-4253-a91a-85ce519137f5\"] }";
+		request.setContent(json.getBytes());
+		
+		handle(request);
+	}
 }
