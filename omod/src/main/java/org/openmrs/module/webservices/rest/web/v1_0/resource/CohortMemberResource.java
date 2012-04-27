@@ -123,7 +123,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("patient");
 		return description;
@@ -133,7 +133,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -141,7 +141,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected CohortMember newDelegate() {
+	public CohortMember newDelegate() {
 		return new CohortMember();
 	}
 	
@@ -158,7 +158,7 @@ public class CohortMemberResource extends DelegatingSubResource<CohortMember, Co
 	 * @should add patient to cohort
 	 */
 	@Override
-	protected CohortMember save(CohortMember delegate) {
+	public CohortMember save(CohortMember delegate) {
 		addMemberToCohort(delegate);
 		return delegate;
 	}

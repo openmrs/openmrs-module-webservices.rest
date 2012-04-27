@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
@@ -21,6 +22,12 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
  * Can convert from T -> json-friendly version of a given Representation 
  */
 public interface Converter<T> {
+	
+	/**
+	 * @param type user-friendly type name, if relevant for this converter (@see DelegatingSubclassHandler)
+	 * @return a new instance of the given type
+	 */
+	T newInstance(String type);
 	
 	/**
 	 * @param string
@@ -34,7 +41,7 @@ public interface Converter<T> {
 	 * @return a convertible-to-json object for instance in the given representation
 	 * @throws Exception 
 	 */
-	Object asRepresentation(T instance, Representation rep) throws ConversionException;
+	SimpleObject asRepresentation(T instance, Representation rep) throws ConversionException;
 	
 	/**
 	 * @param instance

@@ -108,7 +108,7 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("preferred");
 		description.addProperty("address1");
@@ -135,7 +135,7 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -175,10 +175,10 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected PersonAddress save(PersonAddress newAddress) {
+	public PersonAddress save(PersonAddress newAddress) {
 		// make sure that the name has actually been added to the person
 		boolean needToAdd = true;
 		for (PersonAddress pa : newAddress.getPerson().getAddresses()) {
@@ -199,7 +199,7 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected PersonAddress newDelegate() {
+	public PersonAddress newDelegate() {
 		return new PersonAddress();
 	}
 	

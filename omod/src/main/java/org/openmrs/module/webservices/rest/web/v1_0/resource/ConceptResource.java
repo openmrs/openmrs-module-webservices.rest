@@ -127,7 +127,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("names");
 		description.addRequiredProperty("datatype");
@@ -145,7 +145,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		
 		description.addProperty("name");

@@ -88,6 +88,15 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		properties.put(propertyName, new Property(method, rep, required));
 	}
 	
+	/**
+	 * Removes the given property
+	 * 
+	 * @param propertyName
+	 */
+	public void removeProperty(String propertyName) {
+		properties.remove(propertyName);
+	}
+	
 	public DelegatingResourceDescription addSelfLink() {
 		return addLink("self", ".");
 	}

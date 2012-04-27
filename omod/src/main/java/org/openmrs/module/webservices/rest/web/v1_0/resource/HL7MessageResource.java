@@ -88,7 +88,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("hl7");
 		return description;
@@ -117,7 +117,7 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected IncomingHl7Message newDelegate() {
+	public IncomingHl7Message newDelegate() {
 		return new IncomingHl7Message();
 	}
 	
@@ -131,10 +131,10 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected IncomingHl7Message save(IncomingHl7Message delegate) {
+	public IncomingHl7Message save(IncomingHl7Message delegate) {
 		return new IncomingHl7Message(Context.getHL7Service().saveHL7InQueue(delegate.toHL7InQueue()));
 	}
 	

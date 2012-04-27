@@ -108,7 +108,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("username");
 		description.addRequiredProperty("password");

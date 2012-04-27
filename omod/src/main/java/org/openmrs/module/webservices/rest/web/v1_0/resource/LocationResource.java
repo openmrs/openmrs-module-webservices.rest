@@ -103,7 +103,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");
@@ -133,7 +133,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	

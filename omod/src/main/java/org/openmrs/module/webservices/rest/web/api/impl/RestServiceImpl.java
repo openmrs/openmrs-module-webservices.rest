@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,12 @@ public class RestServiceImpl implements RestService {
 		if (resource == null) {
 			try {
 				resource = resourceClass.newInstance();
+				// if the resource has an init() method, we invoke it
+				try {
+					Method method = resource.getClass().getMethod("init");
+					method.invoke(resource);
+				}
+				catch (Exception ex) {}
 			}
 			catch (Exception ex) {
 				throw new APIException("Failed to instantiate " + resourceClass, ex);

@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -39,10 +40,18 @@ public class UserConverter implements Converter<User> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#newInstance(java.lang.String)
+	 */
+	@Override
+	public User newInstance(String type) {
+		return new User();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T, org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public Object asRepresentation(User instance, Representation rep) throws ConversionException {
+	public SimpleObject asRepresentation(User instance, Representation rep) throws ConversionException {
 		UserAndPassword userPass = new UserAndPassword(instance);
 		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
 		return userResource.asRepresentation(userPass, rep);

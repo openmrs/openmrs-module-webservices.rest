@@ -440,6 +440,15 @@ public class RestUtil implements GlobalPropertyListener {
 			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
 		
+		// get the "t" param for subclass-specific requests
+		temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE);
+		if ("".equals(temp)) {
+			throw new IllegalArgumentException("?" + RestConstants.REQUEST_PROPERTY_FOR_TYPE
+			        + "=(empty string) is not allowed");
+		} else {
+			ret.setType(temp);
+		}
+		
 		// fetch the "limit" param
 		Integer limit = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
 		if (limit != null) {

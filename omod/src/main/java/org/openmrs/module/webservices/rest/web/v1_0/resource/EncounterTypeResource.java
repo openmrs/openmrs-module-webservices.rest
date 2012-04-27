@@ -44,7 +44,7 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");

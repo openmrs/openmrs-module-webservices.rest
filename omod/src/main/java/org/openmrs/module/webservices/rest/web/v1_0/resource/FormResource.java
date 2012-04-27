@@ -92,15 +92,15 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected Form newDelegate() {
+	public Form newDelegate() {
 		return new Form();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected Form save(Form delegate) {
+	public Form save(Form delegate) {
 		return Context.getFormService().saveForm(delegate);
 	}
 	

@@ -46,7 +46,7 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected Privilege newDelegate() {
+	public Privilege newDelegate() {
 		return new Privilege();
 	}
 	
@@ -54,7 +54,7 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
 	@Override
-	protected Privilege save(Privilege delegate) {
+	public Privilege save(Privilege delegate) {
 		return Context.getUserService().savePrivilege(delegate);
 	}
 	
@@ -82,7 +82,7 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		// you aren't allowed to edit the name of an existing privilege, since that is its PK.
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
@@ -94,7 +94,7 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		

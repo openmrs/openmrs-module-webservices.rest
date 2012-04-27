@@ -43,15 +43,15 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected Drug newDelegate() {
+	public Drug newDelegate() {
 		return new Drug();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected Drug save(Drug delegate) {
+	public Drug save(Drug delegate) {
 		return Context.getConceptService().saveDrug(delegate);
 	}
 	

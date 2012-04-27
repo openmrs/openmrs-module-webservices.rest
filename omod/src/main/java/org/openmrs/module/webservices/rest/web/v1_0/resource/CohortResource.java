@@ -95,7 +95,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");
@@ -109,7 +109,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");
@@ -122,7 +122,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
-	protected Cohort newDelegate() {
+	public Cohort newDelegate() {
 		return new Cohort();
 	}
 	
@@ -143,7 +143,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-	protected Cohort save(Cohort cohort) {
+	public Cohort save(Cohort cohort) {
 		return Context.getCohortService().saveCohort(cohort);
 	}
 	

@@ -75,7 +75,7 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("locale");
@@ -149,10 +149,10 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected ConceptName save(ConceptName newName) {
+	public ConceptName save(ConceptName newName) {
 		// make sure that the name has actually been added to the concept
 		boolean needToAdd = true;
 		for (ConceptName cn : newName.getConcept().getNames()) {
@@ -171,7 +171,7 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected ConceptName newDelegate() {
+	public ConceptName newDelegate() {
 		return new ConceptName();
 	}
 	
@@ -186,9 +186,9 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	}
 	
 	/**
-	 * Sets the locale as a string
+	 * Gets the locale as a string
 	 * 
-	 * @param conceptName
+	 * @param instance
 	 * @return
 	 */
 	@PropertyGetter("locale")

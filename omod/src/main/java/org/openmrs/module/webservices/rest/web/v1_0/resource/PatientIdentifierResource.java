@@ -70,7 +70,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("identifier");
 		description.addRequiredProperty("identifierType");
@@ -83,7 +83,7 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -108,13 +108,19 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 		instance.setPatient(patient);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
+	 */
 	@Override
 	public PatientIdentifier getByUniqueId(String uniqueId) {
 		return service().getPatientIdentifierByUuid(uniqueId);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
+	 */
 	@Override
-	protected PatientIdentifier save(PatientIdentifier delegate) {
+	public PatientIdentifier save(PatientIdentifier delegate) {
 		// make sure it has already been added to the patient
 		boolean needToAdd = true;
 		for (PatientIdentifier pi : delegate.getPatient().getActiveIdentifiers()) {

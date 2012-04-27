@@ -86,7 +86,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
@@ -102,7 +102,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -126,15 +126,15 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected PersonAttributeType newDelegate() {
+	public PersonAttributeType newDelegate() {
 		return new PersonAttributeType();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected PersonAttributeType save(PersonAttributeType delegate) {
+	public PersonAttributeType save(PersonAttributeType delegate) {
 		return service().savePersonAttributeType(delegate);
 	}
 	

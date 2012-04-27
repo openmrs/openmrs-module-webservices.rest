@@ -51,7 +51,7 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected HL7Source newDelegate() {
+	public HL7Source newDelegate() {
 		return new HL7Source();
 	}
 	
@@ -64,10 +64,10 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected HL7Source save(HL7Source delegate) {
+	public HL7Source save(HL7Source delegate) {
 		return Context.getHL7Service().saveHL7Source(delegate);
 	}
 	

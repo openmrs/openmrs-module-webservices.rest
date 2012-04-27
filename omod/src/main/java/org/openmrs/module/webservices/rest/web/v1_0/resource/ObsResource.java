@@ -127,7 +127,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("person");
@@ -150,7 +150,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected Obs newDelegate() {
+	public Obs newDelegate() {
 		return new Obs();
 	}
 	
@@ -165,10 +165,10 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected Obs save(Obs delegate) {
+	public Obs save(Obs delegate) {
 		return Context.getObsService().saveObs(delegate, "REST web service");
 	}
 	

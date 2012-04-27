@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -90,7 +93,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 * @should create an encounter type
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("encounterDatetime");
@@ -111,7 +114,10 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 */
 	@Override
 	public Encounter newDelegate() {
-		return new Encounter();
+		Encounter enc = new Encounter();
+		// As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
+		enc.setOrders(new LinkedHashSet<Order>());
+		return enc;
 	}
 	
 	/**
@@ -199,6 +205,12 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	public static void setObs(Encounter instance, Set<Obs> obs) {
 		for (Obs o : obs)
 			instance.addObs(o);
+	}
+	
+	@PropertySetter("order")
+	public static void setOrders(Encounter instance, Set<Order> orders) {
+		for (Order o : orders)
+			instance.addOrder(o);
 	}
 	
 }

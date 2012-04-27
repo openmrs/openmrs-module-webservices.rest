@@ -90,7 +90,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
@@ -109,7 +109,7 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -133,15 +133,15 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected PatientIdentifierType newDelegate() {
+	public PatientIdentifierType newDelegate() {
 		return new PatientIdentifierType();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected PatientIdentifierType save(PatientIdentifierType delegate) {
+	public PatientIdentifierType save(PatientIdentifierType delegate) {
 		return service().savePatientIdentifierType(delegate);
 	}
 	

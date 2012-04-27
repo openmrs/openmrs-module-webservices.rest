@@ -101,6 +101,18 @@ public class RestConstants {
 	 */
 	public static String REQUEST_PROPERTY_FOR_REPRESENTATION = "v";
 	
+	/**
+	 * An optional request parameter usable with resources that represent class hierarchies.
+	 * Indicates that you only want results from a specific subclass
+	 */
+	public static final String REQUEST_PROPERTY_FOR_TYPE = "t";
+	
+	/**
+	 * Used in object representations to indicate which specific type an instance belongs to for a
+	 * resource that represents a full class hierarchy
+	 */
+	public static final String PROPERTY_FOR_TYPE = "type";
+	
 	// a ref is just a uuid/uri/display value
 	public static String REPRESENTATION_REF = "ref";
 	
@@ -122,4 +134,5 @@ public class RestConstants {
 	//The suffix to be used for all messages codes for logic names of global properties 
 	//e.g "webservices.rest.fooBar.label for the 'webservices.rest.fooBar' global property
 	public static final String GLOBAL_PROPERTY_LOGICAL_NAME_MESSAGE_CODE_SUFFIX = ".label";
+	
 }

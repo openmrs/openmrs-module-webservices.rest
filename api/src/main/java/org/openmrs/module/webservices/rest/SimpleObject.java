@@ -45,6 +45,17 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
+	 * Removes a property from the map, and returns the map itself (for chained method calls)
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public SimpleObject removeProperty(String key) {
+		remove(key);
+		return this;
+	}
+	
+	/**
 	 * Creates an instance from the given json string.
 	 * 
 	 * @param json

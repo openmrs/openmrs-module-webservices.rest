@@ -36,6 +36,9 @@ public class RequestContext {
 	
 	private Integer limit = RestUtil.getDefaultLimit();
 	
+	// for resources that represent class hierarchies, this allows requests for a specific type
+	private String type;
+	
 	public RequestContext() {
 	}
 	
@@ -66,6 +69,20 @@ public class RequestContext {
 	 */
 	public void setRepresentation(Representation representation) {
 		this.representation = representation;
+	}
+	
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+	
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	/**

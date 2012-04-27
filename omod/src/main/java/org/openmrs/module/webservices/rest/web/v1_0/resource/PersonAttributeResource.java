@@ -65,7 +65,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 		return null;
 	}
 	
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("value");
 		description.addRequiredProperty("attributeType");
@@ -76,7 +76,7 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
 	
@@ -123,10 +123,10 @@ public class PersonAttributeResource extends DelegatingSubResource<PersonAttribu
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected PersonAttribute save(PersonAttribute delegate) {
+	public PersonAttribute save(PersonAttribute delegate) {
 		// make sure it has not already been added to the person
 		boolean needToAdd = true;
 		for (PersonAttribute pa : delegate.getPerson().getActiveAttributes()) {

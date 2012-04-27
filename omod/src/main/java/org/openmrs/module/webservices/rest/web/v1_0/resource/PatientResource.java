@@ -137,7 +137,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("person");
 		description.addRequiredProperty("identifiers");
@@ -148,7 +148,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		return description;
 	}

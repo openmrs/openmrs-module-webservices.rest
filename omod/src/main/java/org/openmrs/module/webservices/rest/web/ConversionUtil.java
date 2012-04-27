@@ -35,8 +35,11 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
@@ -94,9 +97,16 @@ public class ConversionUtil {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
 		try {
-			return HandlerUtil.getPreferredHandler(Converter.class, clazz);
+			Converter<T> converter = HandlerUtil.getPreferredHandler(Converter.class, clazz);
+			if (converter instanceof Resource) {
+				// make sure we use the service-managed singleton resource
+				converter = (Converter<T>) Context.getService(RestService.class).getResource(
+				    ((Resource) converter).getClass());
+			}
+			return converter;
 		}
 		catch (APIException ex) {
 			return null;
@@ -190,14 +200,16 @@ public class ConversionUtil {
 			}
 			catch (Exception ex) {}
 		} else if (object instanceof Map) {
-			Object ret;
-			try {
-				ret = toClass.newInstance();
+			Map<String, ?> map = (Map<String, ?>) object;
+			// TODO handle refs by fetching the object at their URI
+			Converter converter = getConverter(toClass);
+			String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
+			Object ret = converter.newInstance(type);
+			for (Map.Entry<String, ?> prop : map.entrySet()) {
+				if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
+					continue;
+				converter.setProperty(ret, prop.getKey(), prop.getValue());
 			}
-			catch (Exception ex) {
-				throw new ConversionException("instantiating " + toType + " (actually " + toClass + ")", ex);
-			}
-			setConvertedProperties(ret, (Map<String, ?>) object);
 			return ret;
 		}
 		throw new ConversionException("Don't know how to convert from " + object.getClass() + " to " + toType, null);
@@ -235,11 +247,8 @@ public class ConversionUtil {
 	public static <S> Object convertToRepresentation(S o, Representation rep) throws ConversionException {
 		if (o == null)
 			return null;
-		Converter<S> converter = null;
-		try {
-			converter = HandlerUtil.getPreferredHandler(Converter.class, o.getClass());
-		}
-		catch (APIException ex) {
+		Converter<S> converter = (Converter<S>) getConverter(o.getClass());
+		if (converter == null) {
 			// try a few known datatypes
 			if (o instanceof Date) {
 				return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) o);
@@ -248,7 +257,6 @@ public class ConversionUtil {
 			return o;
 		}
 		try {
-			converter = converter.getClass().newInstance();
 			return converter.asRepresentation(o, rep);
 		}
 		catch (Exception ex) {

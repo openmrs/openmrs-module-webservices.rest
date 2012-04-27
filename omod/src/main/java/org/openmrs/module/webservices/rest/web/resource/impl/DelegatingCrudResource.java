@@ -14,11 +14,14 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -54,7 +57,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		if (delegate == null)
 			throw new ObjectNotFoundException();
 		
-		return asRepresentation(delegate, context.getRepresentation());
+		SimpleObject ret = asRepresentation(delegate, context.getRepresentation());
+		if (hasTypesDefined())
+			ret.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
+		return ret;
 	}
 	
 	/**
@@ -71,10 +77,29 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
-		T delegate = newDelegate();
-		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
+		DelegatingResourceHandler<? extends T> handler;
+		if (hasTypesDefined()) {
+			String type = (String) propertiesToCreate.remove(RestConstants.PROPERTY_FOR_TYPE);
+			if (type == null)
+				throw new IllegalArgumentException(
+				        "When creating a resource that supports subclasses, you must indicate the particular subclass with a "
+				                + RestConstants.PROPERTY_FOR_TYPE + " property");
+			handler = getResourceHandler(type);
+		} else {
+			handler = this;
+		}
+		
+		T delegate = handler.newDelegate();
+		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
 		delegate = save(delegate);
-		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+		
+		// add the 'type' discriminator if we support subclasses
+		if (hasTypesDefined()) {
+			ret.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
+		}
+		
+		return ret;
 	}
 	
 	/**
@@ -86,7 +111,24 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		T delegate = getByUniqueId(uuid);
 		if (delegate == null)
 			throw new ObjectNotFoundException();
-		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), false);
+		
+		if (hasTypesDefined()) {
+			// if they specify a type discriminator it must match the expected one--type can't me modified
+			if (propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
+				String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
+				if (!delegate.getClass().equals(getActualSubclass(type))) {
+					String nameToShow = getTypeName(delegate);
+					if (nameToShow == null)
+						nameToShow = delegate.getClass().getName();
+					throw new IllegalArgumentException("You passed " + RestConstants.PROPERTY_FOR_TYPE + "=" + type
+					        + " but this instance is a " + nameToShow);
+				}
+			}
+		}
+		
+		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
+		
+		setConvertedProperties(delegate, propertiesToUpdate, handler.getUpdatableProperties(), false);
 		delegate = save(delegate);
 		return delegate;
 	}
@@ -137,13 +179,31 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
-		PageableResult result = doGetAll(context);
-		return result.toSimpleObject();
+		if (context.getType() != null) {
+			if (!hasTypesDefined())
+				throw new IllegalArgumentException(getClass() + " does not support "
+				        + RestConstants.REQUEST_PROPERTY_FOR_TYPE);
+			if (context.getType().equals(getResourceName()))
+				throw new IllegalArgumentException("You may not specify " + RestConstants.REQUEST_PROPERTY_FOR_TYPE + "="
+				        + context.getType() + " because it is the default behavior for this resource");
+			DelegatingSubclassHandler<T, ? extends T> handler = getSubclassHandler(context.getType());
+			if (handler == null)
+				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
+				        + "=" + context.getType());
+			PageableResult result = handler.getAllByType(context);
+			return result.toSimpleObject();
+		} else {
+			PageableResult result = doGetAll(context);
+			return result.toSimpleObject();
+		}
 	}
 	
 	/**
 	 * Implementations should override this method to return a list of all instances represented by
-	 * the specified rest resource in the database
+	 * the specified rest resource in the database.
+	 * 
+	 * (If the resource supports subclasses, this method should return all of its documents regardless of their
+	 * type/subclass.)
 	 * 
 	 * @throws ResponseException
 	 */
@@ -161,6 +221,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @throws ResponseException
 	 */
 	public Object listSubResource(String delegateUuid, String subResourceName, Representation rep) throws ResponseException {
+		// TODO SUBCLASSHANDLER
 		List<String> legal = getPropertiesToExposeAsSubResources();
 		if (legal == null || !legal.contains(subResourceName))
 			throw new IllegalPropertyException();
@@ -168,21 +229,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		if (delegate == null)
 			throw new ObjectNotFoundException();
 		return ConversionUtil.getPropertyWithRepresentation(delegate, subResourceName, rep);
-	}
-	
-	/**
-	 * Gets the URI fragment from the @RestResource annotation on the concrete subclass
-	 * 
-	 * @return
-	 */
-	protected String getUriFragment() {
-		Resource ann = getClass().getAnnotation(Resource.class);
-		if (ann == null)
-			throw new RuntimeException("There is no " + Resource.class + " annotation on " + getClass());
-		if (StringUtils.isEmpty(ann.value()))
-			throw new RuntimeException(Resource.class.getSimpleName() + " annotation on " + getClass()
-			        + " must specify a value");
-		return ann.value();
 	}
 	
 	/**

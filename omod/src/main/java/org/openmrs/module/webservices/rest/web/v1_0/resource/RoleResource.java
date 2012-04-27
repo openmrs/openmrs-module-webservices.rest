@@ -53,7 +53,7 @@ public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected Role newDelegate() {
+	public Role newDelegate() {
 		return new Role();
 	}
 	
@@ -61,7 +61,7 @@ public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
 	@Override
-	protected Role save(Role delegate) {
+	public Role save(Role delegate) {
 		return Context.getUserService().saveRole(delegate);
 	}
 	
@@ -115,7 +115,7 @@ public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		// you cannot edit the name of an existing role, since that is the PK
 		description.addProperty("description");
@@ -129,7 +129,7 @@ public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		

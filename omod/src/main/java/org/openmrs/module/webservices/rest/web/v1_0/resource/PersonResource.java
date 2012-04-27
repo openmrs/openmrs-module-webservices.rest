@@ -102,7 +102,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("names");
 		description.addRequiredProperty("gender");
@@ -118,10 +118,11 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
+	 * @throws ResourceDoesNotSupportOperationException 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("preferredName");
 		description.addProperty("preferredAddress");
@@ -280,7 +281,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
-	protected Person newDelegate() {
+	public Person newDelegate() {
 		return new Person();
 	}
 	
@@ -288,7 +289,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-	protected Person save(Person person) {
+	public Person save(Person person) {
 		return Context.getPersonService().savePerson(person);
 	}
 	

@@ -134,15 +134,15 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected FormField newDelegate() {
+	public FormField newDelegate() {
 		return new FormField();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected FormField save(FormField delegate) {
+	public FormField save(FormField delegate) {
 		return Context.getFormService().saveFormField(delegate);
 	}
 	

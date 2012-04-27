@@ -92,15 +92,15 @@ public class FieldAnswerResource extends DelegatingSubResource<FieldAnswer, Fiel
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected FieldAnswer newDelegate() {
+	public FieldAnswer newDelegate() {
 		return new FieldAnswer();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected FieldAnswer save(FieldAnswer delegate) {
+	public FieldAnswer save(FieldAnswer delegate) {
 		throw new UnsupportedOperationException("A field answer must be added to a field, not created on its own.");
 	}
 	

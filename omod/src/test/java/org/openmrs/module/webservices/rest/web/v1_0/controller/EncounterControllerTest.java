@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -7,6 +8,8 @@ import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Assert;
@@ -45,6 +48,26 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 	}
 	
+	private SimpleObject encounterWithObs() throws Exception {
+		List<SimpleObject> obs = new ArrayList<SimpleObject>();
+		// weight in kg = 70
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }"));
+		// civil status = married
+		obs
+		        .add(SimpleObject
+		                .parseJson("{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
+		// favorite food, non-coded = fried chicken
+		obs.add(SimpleObject
+		        .parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
+		// date of food assistance = 2011-06-21
+		obs.add(SimpleObject
+		        .parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21\" }"));
+		
+		return new SimpleObject().add("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8").add("encounterType",
+		    "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2011-01-15").add("patient",
+		    "da7f524f-27ce-4bb2-86d6-6d1d05312bd5").add("provider", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562").add("obs", obs);
+	}
+	
 	/**
 	 * @see EncounterController#create(SimpleObject,WebRequest,HttpServletResponse)
 	 * @verifies create a new encounter with obs
@@ -52,23 +75,13 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
-		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", \"obs\": [ ";
-		// weight in kg = 70
-		json += "{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }";
-		// civil status = married
-		json += ", { \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }";
-		// favorite food, non-coded = fried chicken
-		json += ", { \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }";
-		// date of food assistance = 2011-06-21
-		json += ", { \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21\" }";
-		json += "] }";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		SimpleObject post = encounterWithObs();
 		SimpleObject newEncounter = (SimpleObject) new EncounterController().create(post, emptyRequest(),
 		    new MockHttpServletResponse());
 		Assert.assertNotNull(newEncounter);
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		
-		Util.log("encounter created", newEncounter);
+		Util.log("created encounter with obs", newEncounter);
 		List<SimpleObject> obs = (List<SimpleObject>) newEncounter.get("obs");
 		Assert.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
@@ -84,6 +97,37 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		cal.set(2011, Calendar.JUNE, 21, 0, 0, 0);
 		String format = Format.format(cal.getTime(), Context.getLocale(), FORMAT_TYPE.TIMESTAMP);
 		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = " + format));
+	}
+	
+	@Test
+	public void shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes() throws Exception {
+		String foodAssistanceUuid = "0dde1358-7fcf-4341-a330-f119241a46e8";
+		String lunchOrderUuid = "e23733ab-787e-4096-8ba2-577a902d2c2b";
+		String lunchInstructions = "Give them yummy food please";
+		String triomuneConceptUuid = "d144d24f-6913-4b63-9660-a9108c2bebef";
+		String triomuneDrugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
+		
+		int before = Context.getEncounterService().getAllEncounters(null).size();
+		SimpleObject post = encounterWithObs();
+		List<SimpleObject> orders = new ArrayList<SimpleObject>();
+		orders.add(SimpleObject.parseJson("{ \"type\": \"order\", \"concept\": \"" + foodAssistanceUuid
+		        + "\", \"orderType\": \"" + lunchOrderUuid + "\", \"instructions\": \"" + lunchInstructions + "\" }"));
+		orders.add(SimpleObject.parseJson("{ \"type\": \"drugorder\", \"concept\": \"" + triomuneConceptUuid
+		        + "\", \"drug\": \"" + triomuneDrugUuid + "\", \"dose\": \"1\", \"units\": \"tablet\" }"));
+		post.add("orders", orders);
+		SimpleObject newEncounter = (SimpleObject) new EncounterController().create(post, emptyRequest(),
+		    new MockHttpServletResponse());
+		Assert.assertNotNull(newEncounter);
+		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Util.log("created encounter with obs and orders", newEncounter);
+		
+		List<SimpleObject> newOrders = (List<SimpleObject>) newEncounter.get("orders");
+		Assert.assertEquals(2, newOrders.size());
+		List<String> lookFor = new ArrayList<String>(Arrays.asList("FOOD ASSISTANCE", "Triomune-30: 1.0 tablet"));
+		for (SimpleObject o : newOrders) {
+			lookFor.remove(o.get("display"));
+		}
+		Assert.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
 	}
 	
 	/**

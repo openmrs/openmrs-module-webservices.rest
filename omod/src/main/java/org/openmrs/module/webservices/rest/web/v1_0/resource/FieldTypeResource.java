@@ -77,15 +77,15 @@ public class FieldTypeResource extends MetadataDelegatingCrudResource<FieldType>
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	protected FieldType newDelegate() {
+	public FieldType newDelegate() {
 		return new FieldType();
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	protected FieldType save(FieldType delegate) {
+	public FieldType save(FieldType delegate) {
 		return Context.getFormService().saveFieldType(delegate);
 	}
 	
