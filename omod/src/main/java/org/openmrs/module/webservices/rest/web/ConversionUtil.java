@@ -48,55 +48,6 @@ public class ConversionUtil {
 	
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
-	/**
-	 * Sets all the given properties on the bean, converting them to resources as necessary.
-	 * 
-	 * @param bean
-	 * @param properties
-	 */
-	public static void setConvertedProperties(Object bean, Map<String, ?> propertyMap) throws ConversionException {
-		for (Map.Entry<String, ?> prop : propertyMap.entrySet()) {
-			setConvertedProperty(bean, prop.getKey(), prop.getValue());
-		}
-	}
-	
-	/**
-	 * Sets the given property on the bean, converting types as necessary
-	 * 
-	 * @param property
-	 * @param value
-	 * @throws ConversionException
-	 */
-	public static <T> void setConvertedProperty(T bean, String property, Object value) throws ConversionException {
-		try {
-			// first see if we have a Converter for the given object
-			Converter<T> converter = (Converter<T>) getConverter(bean.getClass());
-			if (converter != null) {
-				converter.setProperty(bean, property, value);
-			} else {
-				// otherwise we try the regular method
-				if (log.isTraceEnabled())
-					log.trace("applying " + property + " which is a " + value.getClass() + " = " + value);
-				PropertyDescriptor pd = PropertyUtils.getPropertyDescriptor(bean, property);
-				if (log.isTraceEnabled())
-					log.trace("property exists and is a: " + pd.getPropertyType());
-				if (value == null || pd.getPropertyType().isAssignableFrom(value.getClass())) {
-					if (log.isTraceEnabled())
-						log.trace("compatible type, so setting directly");
-					pd.getWriteMethod().invoke(bean, value);
-				} else {
-					if (log.isTraceEnabled())
-						log.trace("need to convert " + value.getClass() + " to " + pd.getPropertyType());
-					Object converted = convert(value, pd.getPropertyType());
-					pd.getWriteMethod().invoke(bean, converted);
-				}
-			}
-		}
-		catch (Exception ex) {
-			throw new ConversionException("setting " + property + " on " + bean.getClass(), ex);
-		}
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
 		try {
@@ -200,19 +151,31 @@ public class ConversionUtil {
 			}
 			catch (Exception ex) {}
 		} else if (object instanceof Map) {
-			Map<String, ?> map = (Map<String, ?>) object;
-			// TODO handle refs by fetching the object at their URI
-			Converter converter = getConverter(toClass);
-			String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
-			Object ret = converter.newInstance(type);
-			for (Map.Entry<String, ?> prop : map.entrySet()) {
-				if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
-					continue;
-				converter.setProperty(ret, prop.getKey(), prop.getValue());
-			}
-			return ret;
+			return convertMap((Map<String, ?>) object, toClass);
 		}
 		throw new ConversionException("Don't know how to convert from " + object.getClass() + " to " + toType, null);
+	}
+	
+	/**
+	 * Converts a map to the given type, using the registered converter
+	 * 
+	 * @param map the map (typically a SimpleObject submitted as json) to convert
+	 * @param toClass the class to convert map to
+	 * @return the result of using a converter to instantiate a new class and set map's properties on it
+	 * @throws ConversionException 
+	 */
+	@SuppressWarnings( { "rawtypes", "unchecked" })
+	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {
+		// TODO handle refs by fetching the object at their URI
+		Converter converter = getConverter(toClass);
+		String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
+		Object ret = converter.newInstance(type);
+		for (Map.Entry<String, ?> prop : map.entrySet()) {
+			if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
+				continue;
+			converter.setProperty(ret, prop.getKey(), prop.getValue());
+		}
+		return ret;
 	}
 	
 	/**
