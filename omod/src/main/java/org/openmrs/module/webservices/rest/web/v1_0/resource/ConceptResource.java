@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -22,6 +24,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.annotation.Handler;
@@ -121,6 +124,44 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("names");
+		description.addRequiredProperty("datatype");
+		description.addRequiredProperty("conceptClass");
+		
+		description.addProperty("descriptions");
+		description.addProperty("set");
+		description.addProperty("version");
+		description.addProperty("answers");
+		description.addProperty("setMembers");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		
+		description.addProperty("name");
+		
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
+	 */
+	@Override
+	public List<String> getPropertiesToExposeAsSubResources() {
+		return Arrays.asList("names", "descriptions");
+	}
+	
+	/**
 	 * Sets the name property to be the fully specified name of the Concept in the current locale
 	 * 
 	 * @param instance
@@ -130,6 +171,30 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	public static void setFullySpecifiedName(Concept instance, String name) {
 		ConceptName fullySpecifiedName = new ConceptName(name, Context.getLocale());
 		instance.setFullySpecifiedName(fullySpecifiedName);
+	}
+	
+	/**
+	 * It's needed, because of ConversionException: Don't know how to handle collection class:
+	 * interface java.util.Collection
+	 * 
+	 * @param instance
+	 * @param names
+	 */
+	@PropertySetter("names")
+	public static void setNames(Concept instance, List<ConceptName> names) {
+		instance.setNames(new HashSet<ConceptName>(names));
+	}
+	
+	/**
+	 * It's needed, because of ConversionException: Don't know how to handle collection class:
+	 * interface java.util.Collection
+	 * 
+	 * @param instance
+	 * @param descriptions
+	 */
+	@PropertySetter("descriptions")
+	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions) {
+		instance.setDescriptions(new HashSet<ConceptDescription>(descriptions));
 	}
 	
 	/**
@@ -234,11 +299,13 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	/**
 	 * Concept searches support the following additional query parameters:
 	 * <ul>
-	 *  <li>answerTo=(uuid): restricts results to concepts that are answers to the given concept uuid</li>
-	 *  <li>memberOf=(uuid): restricts to concepts that are set members of the given concept set's uuid</li>
+	 * <li>answerTo=(uuid): restricts results to concepts that are answers to the given concept uuid
+	 * </li>
+	 * <li>memberOf=(uuid): restricts to concepts that are set members of the given concept set's
+	 * uuid</li>
 	 * </ul>
-	 * @throws ResponseException 
-	 *   
+	 * 
+	 * @throws ResponseException
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

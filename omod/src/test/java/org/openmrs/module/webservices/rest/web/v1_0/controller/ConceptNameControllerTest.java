@@ -69,11 +69,9 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	}
 	
 	@Test
-	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldAddNameToConcept() throws Exception {
 		int before = service.getConceptByUuid(conceptUuid).getNames().size();
-		String json = "{ \"name\":\"COUGH SYRUP II\", \"locale\":\"en\", \"conceptNameType\":\""
-		        + ConceptNameType.FULLY_SPECIFIED + "\" }";
+		String json = "{ \"name\":\"COUGH SYRUP II\", \"locale\":\"en\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.create(conceptUuid, post, request, response);
 		int after = service.getConceptByUuid(conceptUuid).getNames().size();
@@ -95,7 +93,6 @@ public class ConceptNameControllerTest extends BaseModuleWebContextSensitiveTest
 	}
 	
 	@Test
-	@Ignore("RESTWS-229: Define creatable/updatable properties on Concept, ConceptName, and ConceptDescription resources")
 	public void shouldEditAConceptName() throws Exception {
 		SimpleObject results = controller.getAll(conceptUuid, request, response);
 		List<Object> resultsList = (List<Object>) PropertyUtils.getProperty(results, "results");

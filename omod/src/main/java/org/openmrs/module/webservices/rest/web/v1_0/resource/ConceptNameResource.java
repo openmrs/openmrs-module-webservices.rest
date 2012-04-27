@@ -72,6 +72,19 @@ public class ConceptNameResource extends DelegatingSubResource<ConceptName, Conc
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("locale");
+		description.addProperty("localePreferred");
+		description.addProperty("conceptNameType");
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
 	@Override
