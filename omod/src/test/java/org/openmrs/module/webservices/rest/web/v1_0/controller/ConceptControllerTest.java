@@ -34,15 +34,16 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ConceptResource;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Tests functionality of {@link ConceptController}. This does not use @should annotations because
  * the controller inherits those methods from a subclass
  */
-public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
+public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	private ConceptService service;
 	
@@ -219,5 +220,41 @@ public class ConceptControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertFalse(concept.isRetired());
 		
 		controller.retrieve(name.getName(), request);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "concept";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.CONCEPT_UUID;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return 24;
+	}
+	
+	@Test
+	public void shouldAddSetMembersToConcept() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		String json = "{ \"setMembers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\", \"54d2dce5-0357-4253-a91a-85ce519137f5\"] }";
+		request.setContent(json.getBytes());
+		
+		handle(request);
+		
+		Concept concept = Context.getConceptService().getConceptByUuid(getUuid());
+		Assert.assertEquals(2, concept.getSetMembers().size());
 	}
 }
