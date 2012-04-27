@@ -66,7 +66,7 @@ public class ObsController extends BaseCrudController<ObsResource> {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "patient")
-	@WSDoc("Fetch all non-retired obs for a patient with the given uuid")
+	@WSDoc("Fetch all non-voided obs for a patient with the given uuid")
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
