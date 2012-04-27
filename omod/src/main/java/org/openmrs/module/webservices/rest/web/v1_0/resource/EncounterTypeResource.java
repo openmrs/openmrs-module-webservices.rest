@@ -1,5 +1,4 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
@@ -12,8 +11,6 @@
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
-
-import java.util.List;
 
 import org.openmrs.EncounterType;
 import org.openmrs.annotation.Handler;
@@ -41,6 +38,19 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		// superclass has the desired behavior
 		return null;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResponseException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("description");
+		
+		return description;
 	}
 	
 	/**

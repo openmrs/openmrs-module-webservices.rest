@@ -78,7 +78,6 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	@Ignore("RESTWS-231: Define creatable/updatable properties on EncounterType resource")
 	public void shouldCreateAnEncounterType() throws Exception {
 		int originalCount = service.getAllEncounterTypes().size();
 		String json = "{ \"name\":\"test encounterType\", \"description\":\"description\" }";
@@ -89,7 +88,6 @@ public class EncounterTypeControllerTest extends BaseModuleWebContextSensitiveTe
 	}
 	
 	@Test
-	@Ignore("RESTWS-231: Define creatable/updatable properties on EncounterType resource")
 	public void shouldEditAnEncounterType() throws Exception {
 		String json = "{ \"name\":\"new encounter type\", \"description\":\"new description\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
