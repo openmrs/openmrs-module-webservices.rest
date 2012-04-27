@@ -94,7 +94,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 					throw new ResourceDoesNotSupportOperationException("Only one preferred identifier allowed");
 				}
 			}
-        }
+		}
 		
 		if (!hasPreferred) {
 			//Mark the first one as preferred if none marked

@@ -19,16 +19,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
@@ -344,7 +342,7 @@ public class ResourceDocCreator {
 			return docAnnotation.value();
 		
 		String value = null;
-		if (requestMapping.value().length > 0)
+		if (requestMapping.value().length > 0 && StringUtils.isNotEmpty(requestMapping.value()[0]))
 			value = requestMapping.value()[0];
 		
 		if (operation.equals("GET")) {
