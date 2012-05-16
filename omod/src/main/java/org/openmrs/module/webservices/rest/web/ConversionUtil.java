@@ -116,6 +116,11 @@ public class ConversionUtil {
 		if (toClass.isAssignableFrom(object.getClass()))
 			return object;
 		
+		// Numbers with a decimal are always assumed to be Double, so convert to Float, if necessary
+		if (toClass.isAssignableFrom(Float.class) && object instanceof Double) {
+			return new Float((Double) object);
+		}
+		
 		if (object instanceof String) {
 			String string = (String) object;
 			Converter<?> converter = getConverter(toClass);
