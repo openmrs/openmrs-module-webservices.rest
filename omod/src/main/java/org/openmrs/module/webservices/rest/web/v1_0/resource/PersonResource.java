@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -241,6 +242,14 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		}
 		name.setPreferred(true);
 		instance.addName(name);
+	}
+	
+	@PropertySetter("age")
+	public static void setAge(Person person, Integer age) throws ResourceDoesNotSupportOperationException {
+		if (person.getBirthdate() == null && age != null) {
+			person.setBirthdateFromAge(age, new Date());
+			person.setBirthdateEstimated(true);
+		}
 	}
 	
 	/**
