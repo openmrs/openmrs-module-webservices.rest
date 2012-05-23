@@ -125,6 +125,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.removeProperty("age");
 		description.addProperty("preferredName");
 		description.addProperty("preferredAddress");
 		return description;
