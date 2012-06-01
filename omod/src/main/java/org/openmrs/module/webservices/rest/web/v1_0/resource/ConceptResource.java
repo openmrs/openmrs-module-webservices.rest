@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,8 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
@@ -359,7 +362,9 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		
 		PageableResult result = null;
 		if (canPage) {
-			Integer count = service.getCountOfConcepts(query, locales, false, null, null, null, null, answerTo);
+			Integer count = service.getCountOfConcepts(query, locales, false, Collections.<ConceptClass> emptyList(),
+			    Collections.<ConceptClass> emptyList(), Collections.<ConceptDatatype> emptyList(), Collections
+			            .<ConceptDatatype> emptyList(), answerTo);
 			boolean hasMore = count > startIndex + limit;
 			result = new AlreadyPaged<Concept>(context, results, hasMore);
 		} else {
