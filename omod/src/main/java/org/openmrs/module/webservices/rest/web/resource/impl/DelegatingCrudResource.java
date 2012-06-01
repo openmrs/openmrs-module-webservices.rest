@@ -14,14 +14,11 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -265,8 +262,14 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			if (StringUtils.isNotBlank(getNamespacePrefix())) {
 				namespacePrefix = getNamespacePrefix().concat("/");
 			}
-			return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.value() + "/"
-			        + getUniqueId((T) delegate);
+			// TODO: Better if the @Resource annotation had version property in it
+			if (getClass().getName().contains("v2_0")) {
+				return RestConstants.URI_PREFIX + RestConstants.VERSION_2 + "/" + namespacePrefix + res.value() + "/"
+				        + getUniqueId((T) delegate);
+			} else if (getClass().getName().contains("v1_0")) {
+				return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.value() + "/"
+				        + getUniqueId((T) delegate);
+			}
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 	}

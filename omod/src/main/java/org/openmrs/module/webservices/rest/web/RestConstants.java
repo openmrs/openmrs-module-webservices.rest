@@ -66,6 +66,11 @@ public class RestConstants {
 	public static final String VERSION_1 = "v1";
 	
 	/**
+	 * The version number for the second rest web services representations
+	 */
+	public static final String VERSION_2 = "v2";
+	
+	/**
 	 * String that goes before every request. Its in a constant just in case we have to change it at
 	 * some point for some strange reason
 	 */
