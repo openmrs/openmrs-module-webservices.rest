@@ -50,7 +50,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -74,6 +73,41 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		}
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
+	}
+	
+	@RepHandler(FullRepresentation.class)
+	public SimpleObject asFull(Concept delegate) throws ConversionException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display", findMethod("getDisplayName"));
+		description.addProperty("name", Representation.DEFAULT);
+		description.addProperty("datatype", Representation.DEFAULT);
+		description.addProperty("conceptClass", Representation.DEFAULT);
+		description.addProperty("set");
+		description.addProperty("version");
+		description.addProperty("retired");
+		
+		description.addProperty("names", Representation.DEFAULT);
+		description.addProperty("descriptions", Representation.DEFAULT);
+		
+		description.addProperty("answers", Representation.DEFAULT);
+		description.addProperty("setMembers", Representation.DEFAULT);
+		//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
+		description.addProperty("auditInfo", findMethod("getAuditInfo"));
+		description.addSelfLink();
+		if (delegate.isNumeric()) {
+			description.addProperty("hiNormal");
+			description.addProperty("hiAbsolute");
+			description.addProperty("hiCritical");
+			description.addProperty("lowNormal");
+			description.addProperty("lowAbsolute");
+			description.addProperty("lowCritical");
+			description.addProperty("units");
+			description.addProperty("precise");
+			return convertDelegateToRepresentation(delegate, description);
+		} else {
+			return convertDelegateToRepresentation(delegate, description);
+		}
 	}
 	
 	/**
@@ -101,26 +135,6 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-			return description;
-		} else if (rep instanceof FullRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayName"));
-			description.addProperty("name", Representation.DEFAULT);
-			description.addProperty("datatype", Representation.DEFAULT);
-			description.addProperty("conceptClass", Representation.DEFAULT);
-			description.addProperty("set");
-			description.addProperty("version");
-			description.addProperty("retired");
-			
-			description.addProperty("names", Representation.DEFAULT);
-			description.addProperty("descriptions", Representation.DEFAULT);
-			
-			description.addProperty("answers", Representation.DEFAULT);
-			description.addProperty("setMembers", Representation.DEFAULT);
-			//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
-			description.addSelfLink();
 			return description;
 		}
 		return null;
