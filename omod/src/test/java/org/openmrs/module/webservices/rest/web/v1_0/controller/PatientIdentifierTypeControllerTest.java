@@ -107,6 +107,7 @@ public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSen
 	}
 	
 	@Test(expected = Exception.class)
+	// should fail to purge an item referenced by other data
 	public void shouldFailToPurge() throws Exception {
 		Number before = (Number) Context.getAdministrationService().executeSQL(
 		    "select count(*) from patient_identifier_type", true).get(0).get(0);
