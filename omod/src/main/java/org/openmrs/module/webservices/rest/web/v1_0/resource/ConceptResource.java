@@ -104,10 +104,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("lowCritical");
 			description.addProperty("units");
 			description.addProperty("precise");
-			return convertDelegateToRepresentation(delegate, description);
-		} else {
-			return convertDelegateToRepresentation(delegate, description);
 		}
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 	/**
