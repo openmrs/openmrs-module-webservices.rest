@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.openmrs.Role;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -225,10 +225,8 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			if (propertyName.equals("password")) {
 				instance.setPassword(value != null ? value.toString() : null);
 			} else {
-				Class<?> expectedType = PropertyUtils.getPropertyType(instance.getUser(), propertyName);
-				if (value != null && !expectedType.isAssignableFrom(value.getClass()))
-					value = ConversionUtil.convert(value, expectedType);
-				PropertyUtils.setProperty(instance.getUser(), propertyName, value);
+				// just treat every other property like a we're on the User object
+				super.setProperty(instance.getUser(), propertyName, value);
 			}
 		}
 		catch (Exception ex) {

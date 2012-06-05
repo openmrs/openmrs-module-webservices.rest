@@ -45,7 +45,6 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies create a new user
 	 */
 	@Test
-	@Ignore("RESTWS-242: Define creatable/updatable properties on UserResource resource")
 	public void createUser_shouldCreateANewUser() throws Exception {
 		int before = Context.getUserService().getAllUsers().size();
 		String json = "{\"username\":\"test\",\"password\":\"Admin@123\",\"person\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\"}}";
@@ -53,6 +52,22 @@ public class UserControllerTest extends BaseModuleWebContextSensitiveTest {
 		Object newUser = new UserController().create(post, emptyRequest(), new MockHttpServletResponse());
 		Util.log("Created User", newUser);
 		Assert.assertEquals(before + 1, Context.getUserService().getAllUsers().size());
+	}
+	
+	/**
+	 * @see UserController#createUser(SimpleObject,WebRequest)
+	 * @verifies create a new user
+	 */
+	@Test
+	public void createUser_shouldCreateANewUserWithRoles() throws Exception {
+		int before = Context.getUserService().getAllUsers().size();
+		String json = "{\"username\":\"test\",\"password\":\"Admin@123\",\"person\":\"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\",\"roles\":[\"3480cb6d-c291-46c8-8d3a-96dc33d199fb\"]}";
+ 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object newUser = new UserController().create(post, emptyRequest(), new MockHttpServletResponse());
+		Util.log("Created another user with a role this time", newUser);
+		Assert.assertEquals(before + 1, Context.getUserService().getAllUsers().size());
+		User createdUser = Context.getUserService().getUserByUsername("test");
+		Assert.assertTrue(createdUser.hasRole("Provider"));
 	}
 	
 	/**

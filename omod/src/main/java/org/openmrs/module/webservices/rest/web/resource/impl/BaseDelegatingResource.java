@@ -537,9 +537,19 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 *      java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {
+	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+		
 		try {
-			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
+			DelegatingResourceHandler<? extends T> handler;
+			
+			try {
+				handler = getResourceHandler((T)instance);
+			}
+			catch (Exception e) {
+				// this try/catch isn't really needed because of java erasure behaviour at run time. 
+				// but I'm putting in here just in case
+				handler = this;
+			}
 			
 			// first, try to find a @PropertySetter-annotated method
 			Method annotatedSetter = findSetterMethod(handler, propertyName);
