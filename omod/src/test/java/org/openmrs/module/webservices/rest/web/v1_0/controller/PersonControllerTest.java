@@ -58,13 +58,32 @@ public class PersonControllerTest extends BaseModuleWebContextSensitiveTest {
 		String json = "{ \"names\": [{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, {\"givenName\":\"Leda\", \"familyName\":\"Nemesis\"} ], \"birthdate\":\"1200-01-01\", \"gender\":\"F\" }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object beautifulPerson = new PersonController().create(post, emptyRequest(), new MockHttpServletResponse());
-		Util.log("Created person", beautifulPerson);
+		//Util.log("Created person", beautifulPerson);
 		Assert.assertEquals(before + 1, Context.getPersonService().getPeople("", false).size());
 		Person person = Context.getPersonService().getPersonByUuid(
 		    (String) PropertyUtils.getProperty(beautifulPerson, "uuid"));
 		Assert.assertNotNull(person);
 		Assert.assertEquals(2, person.getNames().size());
 		Assert.assertEquals("Helen of Troy", person.getPersonName().getFullName());
+	}
+	
+	/**
+	 * @see PersonController#createPerson(SimpleObject,WebRequest)
+	 * @verifies create a new Person
+	 */
+	@Test
+	public void createPerson_shouldCreateANewPersonWithAttributes() throws Exception {
+		int before = Context.getPersonService().getPeople("", false).size();
+		
+		String json = "{ \"names\": [{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }, {\"givenName\":\"Leda\", \"familyName\":\"Nemesis\"} ], \"birthdate\":\"1200-01-01\", \"gender\":\"F\", \"attributes\":[{\"attributeType\":\"b3b6d540-a32e-44c7-91b3-292d97667518\",\"value\": \"Purple\"}] }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object beautifulPerson = new PersonController().create(post, emptyRequest(), new MockHttpServletResponse());
+		//Util.log("Created person", beautifulPerson);
+		Assert.assertEquals(before + 1, Context.getPersonService().getPeople("", false).size());
+		Person person = Context.getPersonService().getPersonByUuid(
+		    (String) PropertyUtils.getProperty(beautifulPerson, "uuid"));
+		Assert.assertNotNull(person);
+		Assert.assertEquals("Purple", person.getAttribute("Race").getValue());
 	}
 	
 	/**

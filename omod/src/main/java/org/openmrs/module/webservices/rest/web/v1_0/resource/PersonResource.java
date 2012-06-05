@@ -22,6 +22,7 @@ import java.util.TreeSet;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -178,6 +179,18 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 		
 		//Hibernate expects java.util.SortedSet
 		instance.setNames(new TreeSet<PersonName>(names));
+	}
+	
+	/**
+	 * Sets attributes on the given person.
+	 * 
+	 * @param instance
+	 * @param names
+	 */
+	@PropertySetter("attributes")
+	public static void setAttributes(Person instance, List<PersonAttribute> attrs) {
+		for (PersonAttribute attr : attrs)
+			instance.addAttribute(attr);
 	}
 	
 	/**
