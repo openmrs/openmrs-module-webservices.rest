@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -77,6 +78,14 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	 */
 	public void purge(Subclass delegate, RequestContext context) throws ResponseException {
 		getResource().purge(delegate, context);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return RestConstants.PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE;
 	}
 	
 	/**

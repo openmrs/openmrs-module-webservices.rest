@@ -40,6 +40,9 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
@@ -77,14 +80,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	protected Map<String, String> remappedProperties = new HashMap<String, String>();
 	
 	/**
-	 * If this resource represents a class hierarchy (rather than a single class), this will hold handlers
-	 * for each subclass
+	 * If this resource represents a class hierarchy (rather than a single class), this will hold
+	 * handlers for each subclass
 	 */
 	protected List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
 	
 	/**
-	 * All our resources support letting modules register subclass handlers. If any are registered, then the
-	 * resource represents a class hierarchy, e.g. requiring a "type" parameter when creating a new instance.
+	 * All our resources support letting modules register subclass handlers. If any are registered,
+	 * then the resource represents a class hierarchy, e.g. requiring a "type" parameter when
+	 * creating a new instance.
+	 * 
 	 * @return whether there are any subclass handlers registered with this resource
 	 */
 	public boolean hasTypesDefined() {
@@ -92,8 +97,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * This will be automatically called whenever RestService instantiates a new instance of this class.
-	 * It finds all subclass handlers intented for this resource, and registers them.
+	 * This will be automatically called whenever RestService instantiates a new instance of this
+	 * class. It finds all subclass handlers intented for this resource, and registers them.
 	 */
 	@SuppressWarnings( { "unchecked", "rawtypes" })
 	public void init() {
@@ -111,6 +116,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Registers the given subclass handler.
+	 * 
 	 * @param handler
 	 */
 	public void registerSubclassHandler(DelegatingSubclassHandler<T, ? extends T> handler) {
@@ -126,8 +132,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * @return the value of the {@link org.openmrs.module.webservices.rest.web.annotation.Resource} annotation
-	 * on the concrete subclass
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return RestConstants.PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE;
+	}
+	
+	/**
+	 * @return the value of the {@link org.openmrs.module.webservices.rest.web.annotation.Resource}
+	 *         annotation on the concrete subclass
 	 */
 	protected String getResourceName() {
 		org.openmrs.module.webservices.rest.web.annotation.Resource ann = getClass().getAnnotation(
@@ -261,7 +275,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		// first call getRepresentationDescription()
 		DelegatingResourceDescription repDescription = handler.getRepresentationDescription(representation);
 		if (repDescription != null) {
-			return maybeDecorateWithType(convertDelegateToRepresentation(delegate, repDescription), delegate);
+			SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
+			
+			maybeDecorateWithType(simple, delegate);
+			decorateWithResourceVersion(simple);
+			
+			return simple;
 		}
 		
 		// otherwise look for a method annotated to handle this representation
@@ -269,12 +288,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		if (meth != null) {
 			try {
 				// TODO verify that the method takes 1 or 2 parameters
-				Object ret;
+				SimpleObject simple;
 				if (meth.getParameterTypes().length == 1)
-					ret = meth.invoke(handler, delegate);
+					simple = (SimpleObject) meth.invoke(handler, delegate);
 				else
-					ret = meth.invoke(handler, delegate, representation);
-				return maybeDecorateWithType((SimpleObject) ret, delegate);
+					simple = (SimpleObject) meth.invoke(handler, delegate, representation);
+				
+				maybeDecorateWithType(simple, delegate);
+				decorateWithResourceVersion(simple);
+				
+				return simple;
 			}
 			catch (Exception ex) {
 				throw new ConversionException(null, ex);
@@ -286,20 +309,29 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * If this resource supports subclasses, then we add a type property to the input, and return it
+	 * Sets resourceVersion to {@link #getResourceVersion()}.
 	 * 
-	 * @param simple simplified representation
-	 * @param delegate the object that simple represents
-	 * @return simple, possibly decorated with the user-friendly type name
+	 * @param simple simplified representation which will be decorated with the resource version
 	 */
-	private SimpleObject maybeDecorateWithType(SimpleObject simple, T delegate) {
-		if (hasTypesDefined())
-			simple.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
-		return simple;
+	private void decorateWithResourceVersion(SimpleObject simple) {
+		simple.put(RestConstants.PROPERTY_FOR_RESOURCE_VERSION, getResourceVersion());
 	}
 	
 	/**
-	 * If this resources supports subclasses, this method gets the user-friendly type name for the given subclass
+	 * If this resource supports subclasses, then we add a type property to the input, and return it
+	 * 
+	 * @param simple simplified representation which will be decorated with the user-friendly type
+	 *            name
+	 * @param delegate the object that simple represents
+	 */
+	private void maybeDecorateWithType(SimpleObject simple, T delegate) {
+		if (hasTypesDefined())
+			simple.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
+	}
+	
+	/**
+	 * If this resources supports subclasses, this method gets the user-friendly type name for the
+	 * given subclass
 	 * 
 	 * @param subclass
 	 * @return
@@ -336,7 +368,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * @param type user-friendly type name
-	 * @return a subclass handler if any is suitable for type, or this resource itself if it is suitable
+	 * @return a subclass handler if any is suitable for type, or this resource itself if it is
+	 *         suitable
 	 */
 	protected DelegatingResourceHandler<? extends T> getResourceHandler(String type) {
 		if (type == null || !hasTypesDefined())
@@ -364,7 +397,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * @param clazz
-	 * @return a subclass handler if any is suitable for the given class, or this resource itself if no subclass handler works
+	 * @return a subclass handler if any is suitable for the given class, or this resource itself if
+	 *         no subclass handler works
 	 */
 	protected DelegatingResourceHandler<? extends T> getResourceHandler(Class<? extends T> clazz) {
 		if (!hasTypesDefined())
@@ -543,7 +577,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			DelegatingResourceHandler<? extends T> handler;
 			
 			try {
-				handler = getResourceHandler((T)instance);
+				handler = getResourceHandler((T) instance);
 			}
 			catch (Exception e) {
 				// this try/catch isn't really needed because of java erasure behaviour at run time. 
@@ -611,9 +645,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * Removes any elements from the passed-in collection that aren't of the given type.
-	 * 
-	 * This is a convenience method for subclass-aware resources that want to limit query results to a given type.
+	 * Removes any elements from the passed-in collection that aren't of the given type. This is a
+	 * convenience method for subclass-aware resources that want to limit query results to a given
+	 * type.
 	 * 
 	 * @param collection
 	 * @param type a user-friendly type name
@@ -627,7 +661,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * Convenience method that looks for a specific method on the subclass handler for the given type 
+	 * Convenience method that looks for a specific method on the subclass handler for the given
+	 * type
 	 * 
 	 * @param type user-friendly type name
 	 * @param methodName
@@ -648,7 +683,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * Convenience method that finds a specific method on the subclass handler for the given type, and invokes it
+	 * Convenience method that finds a specific method on the subclass handler for the given type,
+	 * and invokes it
 	 * 
 	 * @param type user-friendly type name
 	 * @param methodName

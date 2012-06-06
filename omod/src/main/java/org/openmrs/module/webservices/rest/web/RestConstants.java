@@ -140,4 +140,15 @@ public class RestConstants {
 	//e.g "webservices.rest.fooBar.label for the 'webservices.rest.fooBar' global property
 	public static final String GLOBAL_PROPERTY_LOGICAL_NAME_MESSAGE_CODE_SUFFIX = ".label";
 	
+	/**
+	 * A required parameter of a resource indicating its version. It is automatically added to all
+	 * representations.
+	 */
+	public static final String PROPERTY_FOR_RESOURCE_VERSION = "resourceVersion";
+	
+	/**
+	 * A default value for the resource version parameter.
+	 */
+	public static final String PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE = "1.8";
+	
 }

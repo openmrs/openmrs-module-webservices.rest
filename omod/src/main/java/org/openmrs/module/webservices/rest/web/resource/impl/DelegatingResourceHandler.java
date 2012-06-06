@@ -19,15 +19,24 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Indicates that this resource or subclass can describe manage a delegate (save/purge) and describe its
- * representations via {@link DelegatingResourceDescription}
+ * Indicates that this resource or subclass can describe manage a delegate (save/purge) and describe
+ * its representations via {@link DelegatingResourceDescription}
+ * 
  * @param <T> the class of the delegate this resource handles
  */
 public interface DelegatingResourceHandler<T> {
 	
 	/**
+	 * Indicates a version of the supported resource.
+	 * 
+	 * @return the resource version
+	 */
+	String getResourceVersion();
+	
+	/**
 	 * Instantiates a new instance of the handled delegate
-	 * @return 
+	 * 
+	 * @return
 	 */
 	T newDelegate();
 	
@@ -48,8 +57,8 @@ public interface DelegatingResourceHandler<T> {
 	void purge(T delegate, RequestContext context) throws ResponseException;
 	
 	/**
-	 * Gets the {@link DelegatingResourceDescription} for the given representation for this resource, if
-	 * it exists
+	 * Gets the {@link DelegatingResourceDescription} for the given representation for this
+	 * resource, if it exists
 	 * 
 	 * @param rep
 	 * @return
