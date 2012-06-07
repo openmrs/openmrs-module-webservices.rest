@@ -88,7 +88,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		assertPropEquals("uuid", getUuidProperty());
 		assertPropEquals("display", getDisplayProperty());
 		assertPropPresent("links");
-		assertPropPresent("resourceVersion");
+		assertPropNotPresent("resourceVersion");
 		
 		@SuppressWarnings("unchecked")
 		List<Hyperlink> links = (List<Hyperlink>) getRepresentation().get("links");
@@ -248,6 +248,17 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 */
 	public void assertPropPresent(String property) {
 		Assert.assertTrue(getRepresentation().containsKey(property));
+	}
+	
+	/**
+	 * Equivalent to:
+	 * <p>
+	 * <code>
+	 * Assert.assertFalse(getRepresentation().containsKey(property));
+	 * </code>
+	 */
+	public void assertPropNotPresent(String property) {
+		Assert.assertFalse(getRepresentation().containsKey(property));
 	}
 	
 	/**

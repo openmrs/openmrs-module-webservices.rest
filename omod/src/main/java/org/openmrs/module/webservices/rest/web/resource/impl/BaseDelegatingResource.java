@@ -100,7 +100,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * This will be automatically called whenever RestService instantiates a new instance of this
 	 * class. It finds all subclass handlers intented for this resource, and registers them.
 	 */
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init() {
 		for (DelegatingSubclassHandler handler : Context.getRegisteredComponents(DelegatingSubclassHandler.class)) {
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
@@ -278,7 +278,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
 			
 			maybeDecorateWithType(simple, delegate);
-			decorateWithResourceVersion(simple);
+			decorateWithResourceVersion(simple, representation);
 			
 			return simple;
 		}
@@ -295,7 +295,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 					simple = (SimpleObject) meth.invoke(handler, delegate, representation);
 				
 				maybeDecorateWithType(simple, delegate);
-				decorateWithResourceVersion(simple);
+				decorateWithResourceVersion(simple, representation);
 				
 				return simple;
 			}
@@ -309,12 +309,15 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * Sets resourceVersion to {@link #getResourceVersion()}.
+	 * Sets resourceVersion to {@link #getResourceVersion()} for representations other than REF.
 	 * 
-	 * @param simple simplified representation which will be decorated with the resource version
+	 * @param simple the simplified representation which will be decorated with the resource version
+	 * @param representation the type of representation
 	 */
-	private void decorateWithResourceVersion(SimpleObject simple) {
-		simple.put(RestConstants.PROPERTY_FOR_RESOURCE_VERSION, getResourceVersion());
+	private void decorateWithResourceVersion(SimpleObject simple, Representation representation) {
+		if (!(representation instanceof RefRepresentation)) {
+			simple.put(RestConstants.PROPERTY_FOR_RESOURCE_VERSION, getResourceVersion());
+		}
 	}
 	
 	/**
@@ -446,7 +449,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	        throws ConversionException {
+	    throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
@@ -470,7 +473,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
-	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
+	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
+	    throws ConversionException {
 		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.
