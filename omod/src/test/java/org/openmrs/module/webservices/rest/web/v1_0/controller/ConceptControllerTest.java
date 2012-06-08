@@ -25,7 +25,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptName;
+import org.openmrs.Drug;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
@@ -276,12 +278,77 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(1, concept.getSetMembers().size());
 	}
 	
-	@Test(expected = Exception.class)
-	public void shouldFailToAddAnswersToConcept() throws Exception {
+	@Test
+	public void shouldAddAnswersToConcept() throws Exception {
 		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		String json = "{ \"answers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\", \"54d2dce5-0357-4253-a91a-85ce519137f5\"] }";
+		String json = "{ \"answers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\", \"54d2dce5-0357-4253-a91a-85ce519137f5\", \"05ec820a-d297-44e3-be6e-698531d9dd3f\"] }";
 		request.setContent(json.getBytes());
 		
 		handle(request);
+		
+		Concept concept = service.getConceptByUuid(getUuid());
+		Concept answer1 = service.getConceptByUuid("0dde1358-7fcf-4341-a330-f119241a46e8");
+		Concept answer2 = service.getConceptByUuid("54d2dce5-0357-4253-a91a-85ce519137f5");
+		Drug drug = Context.getConceptService().getDrugByUuid("05ec820a-d297-44e3-be6e-698531d9dd3f");
+		Assert.assertTrue(hasAnswer(concept, answer1));
+		Assert.assertTrue(hasAnswer(concept, answer2));
+		Assert.assertTrue(hasAnswer(concept, drug));
+	}
+	
+	/**
+	 * Convenience helper method to look for the given answer amongst the answers on the question concept
+	 * @param question the concept on which to call getAnswers()
+	 * @param answer the concept that is hidden in a ConceptAnswer object on the given concept (maybe)
+	 * @return true if the answer is found on the concept
+	 */
+	private boolean hasAnswer(Concept question, Concept answer) {
+		for (ConceptAnswer conceptAnswerObject : question.getAnswers()) {
+			if (conceptAnswerObject.getAnswerConcept().equals(answer))
+				return true;
+		}
+		// answer was not found
+		return false;
+	}
+	
+	/**
+	 * Convenience helper method to look for the given answer amongst the answers on the question concept
+	 * @param question the concept on which to call getAnswers()
+	 * @param druganswer the drug that is hidden in a ConceptAnswer object on the given concept (maybe)
+	 * @return true if the answer is found on the concept
+	 */
+	private boolean hasAnswer(Concept question, Drug druganswer) {
+		for (ConceptAnswer conceptAnswerObject : question.getAnswers()) {
+			if (conceptAnswerObject.getAnswerDrug() != null && conceptAnswerObject.getAnswerDrug().equals(druganswer))
+				return true;
+		}
+		// answer was not found
+		return false;
+	}
+	
+	@Test
+	public void shouldRemoveAnswersFromConcept() throws Exception {
+		String conceptWithAnswersUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65";
+		String existingAnswerUuid = "b055abd8-a420-4a11-8b98-02ee170a7b54";
+		String newAnswerUuid = "32d3611a-6699-4d52-823f-b4b788bac3e3";
+		
+		// sanity check to make sure this concept has the existing answer and not the other
+		Concept concept = Context.getConceptService().getConceptByUuid(conceptWithAnswersUuid);
+		Assert.assertTrue(hasAnswer(concept, service.getConceptByUuid(existingAnswerUuid)));
+		Assert.assertFalse(hasAnswer(concept, service.getConceptByUuid(newAnswerUuid)));
+		Assert.assertEquals(3, concept.getAnswers().size());
+		
+		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + conceptWithAnswersUuid);
+		String json = "{ \"answers\": [\"" + existingAnswerUuid + "\", \"" + newAnswerUuid + "\"] }";
+		request.setContent(json.getBytes());
+		
+		handle(request);
+		
+		// get the object again so we have the new answers (will this bork hibernate because we fetched it earlier?)
+		concept = Context.getConceptService().getConceptByUuid(conceptWithAnswersUuid);
+		Concept answer1 = service.getConceptByUuid(existingAnswerUuid);
+		Concept answer2 = service.getConceptByUuid(newAnswerUuid);
+		Assert.assertTrue(hasAnswer(concept, answer1));
+		Assert.assertTrue(hasAnswer(concept, answer2));
+		Assert.assertEquals(2, concept.getAnswers().size());
 	}
 }

@@ -100,7 +100,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * This will be automatically called whenever RestService instantiates a new instance of this
 	 * class. It finds all subclass handlers intented for this resource, and registers them.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings( { "unchecked", "rawtypes" })
 	public void init() {
 		for (DelegatingSubclassHandler handler : Context.getRegisteredComponents(DelegatingSubclassHandler.class)) {
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
@@ -449,7 +449,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	    throws ConversionException {
+	        throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
@@ -473,8 +473,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
-	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
-	    throws ConversionException {
+	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.

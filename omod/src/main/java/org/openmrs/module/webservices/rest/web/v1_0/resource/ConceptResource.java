@@ -16,7 +16,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -30,6 +32,7 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
+import org.openmrs.Drug;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
@@ -50,6 +53,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -418,12 +422,55 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	
 	/**
 	 * @param instance
-	 * @param answers the list of Concepts or Drugs
+	 * @param answerUuids the list of Concepts or Drugs
 	 * @throws ResourceDoesNotSupportOperationException
 	 */
 	@PropertySetter("answers")
-	public static void setAnswers(Concept instance, List<Object> answers) throws ResourceDoesNotSupportOperationException {
-		throw new ResourceDoesNotSupportOperationException();
+	public static void setAnswers(Concept instance, List<String> answerUuids /*Concept or Drug uuid*/)
+	        throws ResourceDoesNotSupportOperationException {
+		
+		// remove answers that are not in the new list
+		Iterator<ConceptAnswer> iterator = instance.getAnswers(false).iterator();
+		while (iterator.hasNext()) {
+			ConceptAnswer answer = iterator.next();
+			String conceptUuid = answer.getConcept().getUuid();
+			String drugUuid = (answer.getAnswerDrug() != null) ? answer.getAnswerDrug().getUuid() : null;
+			if (answerUuids.contains(conceptUuid)) {
+				answerUuids.remove(conceptUuid); // remove from passed in list
+			} else if (answerUuids.contains(drugUuid)) {
+				answerUuids.remove(drugUuid); // remove from passed in list
+			} else
+				instance.removeAnswer(answer); // remove from concept question object
+		}
+		
+		List<Object> answerObjects = new ArrayList<Object>(answerUuids.size());
+		for (String uuid : answerUuids) {
+			Concept c = Context.getConceptService().getConceptByUuid(uuid);
+			if (c != null) {
+				answerObjects.add(c);
+			} else {
+				// it is a drug
+				Drug drug = Context.getConceptService().getDrugByUuid(uuid);
+				if (drug != null)
+					answerObjects.add(drug);
+				else
+					throw new ResourceDoesNotSupportOperationException("There is no concept or drug with given uuid: "
+					        + uuid);
+			}
+		}
+		
+		// add in new answers
+		for (Object obj : answerObjects) {
+			ConceptAnswer answerToAdd = null;
+			if (obj.getClass().isAssignableFrom(Concept.class))
+				answerToAdd = new ConceptAnswer((Concept) obj);
+			else
+				answerToAdd = new ConceptAnswer(((Drug) obj).getConcept(), (Drug) obj);
+			
+			answerToAdd.setCreator(Context.getAuthenticatedUser());
+			answerToAdd.setDateCreated(new Date());
+			instance.addAnswer(answerToAdd);
+		}
 	}
 	
 	/**
