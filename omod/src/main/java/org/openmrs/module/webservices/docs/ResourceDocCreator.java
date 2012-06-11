@@ -15,29 +15,29 @@ package org.openmrs.module.webservices.docs;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -54,11 +54,12 @@ public class ResourceDocCreator {
 	 * @throws IOException
 	 */
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
-	        InstantiationException, IOException, ConversionException {
+	    InstantiationException, IOException, ConversionException {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
-		List<Class<? extends Resource>> classes = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
+		List<Class<? extends DelegatingResourceHandler>> classes = OpenmrsClassScanner.getInstance().getClasses(
+		    DelegatingResourceHandler.class, true);
 		
 		fillRepresentations(Arrays.asList(classes.toArray(new Class<?>[0])), resouceDocMap);
 		//fillOperations(resouceDocMap);
@@ -75,7 +76,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
-	        IOException, ConversionException {
+	    IOException, ConversionException {
 		
 		List<ResourceDoc> docs = new ArrayList<ResourceDoc>();
 		
@@ -102,10 +103,14 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(List<Class<?>> classes, Map<String, ResourceDoc> resouceDocMap)
-	        throws IllegalAccessException, InstantiationException, ConversionException {
+	    throws IllegalAccessException, InstantiationException, ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {
+			if (!DelegatingResourceHandler.class.isAssignableFrom(cls)) {
+				continue;
+			}
+			
 			Object instance = null;
 			
 			try {
@@ -116,105 +121,74 @@ public class ResourceDocCreator {
 				continue;
 			}
 			
-			try {
-				if (instance instanceof BaseDelegatingResource) {
-					
-					ResourceDoc resourceDoc = new ResourceDoc(cls.getSimpleName().replace("Resource", ""));
-					resouceDocMap.put(resourceDoc.getName(), resourceDoc);
-					
-					Method method = instance.getClass().getDeclaredMethod("newDelegate", null);
-					method.setAccessible(true);
-					Object delegate = method.invoke(instance, null);
-					
-					//Get the ref representation of this resource.
-					Object rep;
-					Set<String> properties;
-					try {
-						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.REF);
-						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET ref", properties));
-					}
-					catch (Exception ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET ref", Arrays.asList(
-						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
-					}
-					
-					//Get the default representation of this resource..
-					try {
-						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.DEFAULT);
-						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET default", properties));
-					}
-					catch (Exception ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET default", Arrays.asList(
-						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
-					}
-					
-					//Get the full representation of this resource.
-					try {
-						rep = ((BaseDelegatingResource<Object>) instance).asRepresentation(delegate, Representation.FULL);
-						properties = new LinkedHashSet<String>(((SimpleObject) rep).keySet());
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET full", properties));
-					}
-					catch (Exception ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("GET full", Arrays.asList(
-						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
-					}
-					
-					//Get the POST create representation of this resource.
-					try {
-						rep = ((BaseDelegatingResource<Object>) instance).getCreatableProperties();
-						properties = new LinkedHashSet<String>();
-						for (Entry<String, Property> property : ((DelegatingResourceDescription) rep).getProperties()
-						        .entrySet()) {
-							if (property.getValue().isRequired()) {
-								properties.add("*" + property.getKey() + "*");
-							} else {
-								properties.add(property.getKey());
-							}
-						}
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST create", properties));
-					}
-					catch (ResourceDoesNotSupportOperationException ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST create", Arrays
-						        .asList("Not supported")));
-					}
-					catch (Exception ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST create", Arrays.asList(
-						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
-					}
-					
-					//Get the POST update representation of this resource.
-					try {
-						rep = ((BaseDelegatingResource<Object>) instance).getUpdatableProperties();
-						properties = new LinkedHashSet<String>();
-						for (Entry<String, Property> property : ((DelegatingResourceDescription) rep).getProperties()
-						        .entrySet()) {
-							if (property.getValue().isRequired()) {
-								properties.add("*" + property.getKey() + "*");
-							} else {
-								properties.add(property.getKey());
-							}
-						}
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST update", properties));
-					}
-					catch (ResourceDoesNotSupportOperationException ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST update", Arrays
-						        .asList("Not supported")));
-					}
-					catch (Exception ex) {
-						resourceDoc.addRepresentation(new ResourceRepresentation("POST update", Arrays.asList(
-						    "Programming Error!", ex.getClass().getName(), ex.getMessage())));
-					}
+			DelegatingResourceHandler<?> resourceHandler = (DelegatingResourceHandler<?>) instance;
+			
+			ResourceDoc resourceDoc = new ResourceDoc(cls.getSimpleName().replace("Resource", ""));
+			resouceDocMap.put(resourceDoc.getName(), resourceDoc);
+			
+			//GET representations
+			Representation[] representations = new Representation[] { Representation.REF, Representation.DEFAULT,
+			        Representation.FULL };
+			
+			Object delegate = resourceHandler.newDelegate();
+			
+			for (Representation representation : representations) {
+				if (instance instanceof DelegatingSubclassHandler) {
+					Class<?> superclass = ((DelegatingSubclassHandler) instance).getSuperclass();
+					instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);
+				}
+				
+				if (instance instanceof Converter) {
+					@SuppressWarnings("unchecked")
+					Converter<Object> converter = (Converter<Object>) instance;
+					SimpleObject simpleObject = converter.asRepresentation(delegate, representation);
+					resourceDoc.addRepresentation(new ResourceRepresentation("GET " + representation.getRepresentation(),
+					        simpleObject.keySet()));
+				} else {
+					resourceDoc.addRepresentation(new ResourceRepresentation("GET " + representation.getRepresentation(),
+					        Arrays.asList("Not supported")));
 				}
 			}
-			catch (NoSuchMethodException ex) {
-				throw new RuntimeException(ex);
+			
+			//POST create representations
+			try {
+				DelegatingResourceDescription description = resourceHandler.getCreatableProperties();
+				List<String> properties = getPOSTProperties(description);
+				resourceDoc.addRepresentation(new ResourceRepresentation("POST create", properties));
 			}
-			catch (InvocationTargetException ex) {
-				throw new RuntimeException(ex);
+			catch (ResourceDoesNotSupportOperationException e) {
+				resourceDoc.addRepresentation(new ResourceRepresentation("POST create", Arrays.asList("Not supported")));
+			}
+			
+			//POST update representations
+			try {
+				DelegatingResourceDescription description = resourceHandler.getUpdatableProperties();
+				List<String> properties = getPOSTProperties(description);
+				resourceDoc.addRepresentation(new ResourceRepresentation("POST update", properties));
+			}
+			catch (ResourceDoesNotSupportOperationException e) {
+				resourceDoc.addRepresentation(new ResourceRepresentation("POST update", Arrays.asList("Not supported")));
+			}
+			
+		}
+	}
+	
+	/**
+	 * Returns a list of POST properties of the given description.
+	 * 
+	 * @param resourceDoc
+	 * @param description
+	 */
+	private static List<String> getPOSTProperties(DelegatingResourceDescription description) {
+		List<String> properties = new ArrayList<String>();
+		for (Entry<String, Property> property : description.getProperties().entrySet()) {
+			if (property.getValue().isRequired()) {
+				properties.add("*" + property.getKey() + "*");
+			} else {
+				properties.add(property.getKey());
 			}
 		}
+		return properties;
 	}
 	
 	/**
