@@ -21,13 +21,19 @@ import java.util.List;
  */
 public class ResourceDoc implements Comparable<ResourceDoc> {
 	
+	private final static String LINE_SEPARATOR = System.getProperty("line.separator");
+	
 	private String name;
 	
 	private String url;
 	
+	private ResourceDoc superResource;
+	
 	private List<ResourceOperation> operations = new ArrayList<ResourceOperation>();
 	
 	private List<ResourceRepresentation> representations = new ArrayList<ResourceRepresentation>();
+	
+	private List<ResourceDoc> subResources = new ArrayList<ResourceDoc>();
 	
 	public ResourceDoc(String name) {
 		setName(name);
@@ -73,58 +79,74 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		operations.add(operation);
 	}
 	
+	/**
+	 * @return the subresources
+	 */
+	public List<ResourceDoc> getSubResources() {
+		return subResources;
+	}
+	
+	public void addSubResource(ResourceDoc resourceDoc) {
+		resourceDoc.superResource = this;
+		subResources.add(resourceDoc);
+	}
+	
 	@Override
 	public String toString() {
-		String text = "h1. " + name;
+		StringBuilder text = new StringBuilder();
 		
-		text += System.getProperty("line.separator");
-		text += "h3. URLs";
+		text.append("h1. " + name);
 		
-		text += System.getProperty("line.separator");
-		text += "|| url || description ||";
-		
-		/*text += System.getProperty("line.separator");
-		text += "| GET " + url + " | ";
-		text += "Fetches a list of..... | ";*/
-
-		for (ResourceOperation operation : operations) {
-			text += System.getProperty("line.separator");
-			text += "| ";
-			text += operation.getName();
-			text += " | ";
-			text += operation.getDescription();
-			text += " | ";
+		if (superResource != null) {
+			text.append(" subclass of " + superResource.getName());
 		}
 		
-		/*if (operations.size() > 0) {
-			text += System.getProperty("line.separator");
-			text += "h2. Available HTTP Verbs";
+		if (!operations.isEmpty()) {
+			
+			text.append(LINE_SEPARATOR);
+			text.append("h3. URLs");
+			
+			text.append(LINE_SEPARATOR);
+			text.append("|| url || description ||");
 			
 			for (ResourceOperation operation : operations) {
-				text += System.getProperty("line.separator");
-				text += "* " + operation.toString();
+				text.append(LINE_SEPARATOR);
+				text.append("| ");
+				text.append(operation.getName());
+				text.append(" | ");
+				text.append(operation.getDescription());
+				text.append(" | ");
 			}
-		}*/
-
-		text += System.getProperty("line.separator");
-		text += "h3. Representations";
-		
-		text += System.getProperty("line.separator");
-		text += "|| ";
-		
-		for (ResourceRepresentation representation : representations) {
-			text += representation.getName();
-			text += " || ";
+			
 		}
 		
-		text += System.getProperty("line.separator");
-		text += "| ";
+		text.append(LINE_SEPARATOR);
+		text.append("h3. Representations");
+		
+		text.append(LINE_SEPARATOR);
+		text.append("|| ");
+		
 		for (ResourceRepresentation representation : representations) {
-			text += representation.toString();
-			text += " | ";
+			text.append(representation.getName());
+			text.append(" || ");
 		}
 		
-		return text;
+		text.append(LINE_SEPARATOR);
+		
+		text.append("| ");
+		for (ResourceRepresentation representation : representations) {
+			text.append(representation.toString());
+			text.append(" | ");
+		}
+		
+		if (!subResources.isEmpty()) {
+			for (ResourceDoc subresource : subResources) {
+				text.append(LINE_SEPARATOR);
+				text.append(subresource.toString());
+			}
+		}
+		
+		return text.toString();
 	}
 	
 	@Override

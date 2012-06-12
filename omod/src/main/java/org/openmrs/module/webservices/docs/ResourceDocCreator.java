@@ -123,21 +123,35 @@ public class ResourceDocCreator {
 			
 			DelegatingResourceHandler<?> resourceHandler = (DelegatingResourceHandler<?>) instance;
 			
-			ResourceDoc resourceDoc = new ResourceDoc(cls.getSimpleName().replace("Resource", ""));
-			resouceDocMap.put(resourceDoc.getName(), resourceDoc);
+			Object delegate = resourceHandler.newDelegate();
+			
+			ResourceDoc resourceDoc = new ResourceDoc(delegate.getClass().getSimpleName());
+			
+			if (instance instanceof DelegatingSubclassHandler) {
+				Class<?> superclass = ((DelegatingSubclassHandler) instance).getSuperclass();
+				instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);				
+				//Add as a subresource
+				ResourceDoc superclassResourceDoc = resouceDocMap.get(superclass.getSimpleName());
+				if (superclassResourceDoc == null) {
+					superclassResourceDoc = new ResourceDoc(superclass.getSimpleName());
+					resouceDocMap.put(superclassResourceDoc.getName(), superclassResourceDoc);
+				}
+				superclassResourceDoc.addSubResource(resourceDoc);
+			} else {
+				//Add as a resource
+				ResourceDoc previous = resouceDocMap.put(resourceDoc.getName(), resourceDoc);
+				if (previous != null) {
+					for (ResourceDoc subResource : previous.getSubResources()) {
+	                    resourceDoc.addSubResource(subResource);
+                    }
+				}
+			}
 			
 			//GET representations
 			Representation[] representations = new Representation[] { Representation.REF, Representation.DEFAULT,
 			        Representation.FULL };
 			
-			Object delegate = resourceHandler.newDelegate();
-			
 			for (Representation representation : representations) {
-				if (instance instanceof DelegatingSubclassHandler) {
-					Class<?> superclass = ((DelegatingSubclassHandler) instance).getSuperclass();
-					instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);
-				}
-				
 				if (instance instanceof Converter) {
 					@SuppressWarnings("unchecked")
 					Converter<Object> converter = (Converter<Object>) instance;
