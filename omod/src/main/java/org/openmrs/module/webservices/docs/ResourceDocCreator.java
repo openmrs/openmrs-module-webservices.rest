@@ -18,13 +18,16 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -61,7 +64,7 @@ public class ResourceDocCreator {
 		List<Class<? extends DelegatingResourceHandler>> classes = OpenmrsClassScanner.getInstance().getClasses(
 		    DelegatingResourceHandler.class, true);
 		
-		fillRepresentations(Arrays.asList(classes.toArray(new Class<?>[0])), resouceDocMap);
+		fillRepresentations(classes.toArray(new Class<?>[0]), resouceDocMap);
 		//fillOperations(resouceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
@@ -80,16 +83,18 @@ public class ResourceDocCreator {
 		
 		List<ResourceDoc> docs = new ArrayList<ResourceDoc>();
 		
-		ResourceDoc[] docArray = createDocMap(baseUrl).values().toArray(new ResourceDoc[0]);
-		Arrays.sort(docArray);
+		docs.addAll(createDocMap(baseUrl).values());
 		
-		//Remove resources without controllers
-		for (int index = 0; index < docArray.length; index++) {
-			ResourceDoc doc = docArray[index];
-			if (doc.getUrl() != null) {
-				docs.add(doc);
-			}
+		//Remove resources without controllers or subresources
+		for (Iterator<ResourceDoc> it = docs.iterator(); it.hasNext();) {
+			ResourceDoc resourceDoc = it.next();
+			if (resourceDoc.getUrl() == null)
+				it.remove();
+			else if (resourceDoc.getSuperResource() != null)
+				it.remove();
 		}
+		
+		Collections.sort(docs);
 		
 		return docs;
 	}
@@ -102,13 +107,17 @@ public class ResourceDocCreator {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	private static void fillRepresentations(List<Class<?>> classes, Map<String, ResourceDoc> resouceDocMap)
+	private static void fillRepresentations(Class<?>[] classes, Map<String, ResourceDoc> resouceDocMap)
 	    throws IllegalAccessException, InstantiationException, ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {
 			if (!DelegatingResourceHandler.class.isAssignableFrom(cls)) {
 				continue;
+			}
+			
+			if (HivDrugOrderSubclassHandler.class.isAssignableFrom(cls)) {
+				continue; //Skip the test class
 			}
 			
 			Object instance = null;
@@ -128,8 +137,8 @@ public class ResourceDocCreator {
 			ResourceDoc resourceDoc = new ResourceDoc(delegate.getClass().getSimpleName());
 			
 			if (instance instanceof DelegatingSubclassHandler) {
-				Class<?> superclass = ((DelegatingSubclassHandler) instance).getSuperclass();
-				instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);				
+				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) instance).getSuperclass();
+				instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);
 				//Add as a subresource
 				ResourceDoc superclassResourceDoc = resouceDocMap.get(superclass.getSimpleName());
 				if (superclassResourceDoc == null) {
@@ -137,13 +146,12 @@ public class ResourceDocCreator {
 					resouceDocMap.put(superclassResourceDoc.getName(), superclassResourceDoc);
 				}
 				superclassResourceDoc.addSubResource(resourceDoc);
-			} else {
-				//Add as a resource
-				ResourceDoc previous = resouceDocMap.put(resourceDoc.getName(), resourceDoc);
-				if (previous != null) {
-					for (ResourceDoc subResource : previous.getSubResources()) {
-	                    resourceDoc.addSubResource(subResource);
-                    }
+			}
+			//Add as a resource
+			ResourceDoc previous = resouceDocMap.put(resourceDoc.getName(), resourceDoc);
+			if (previous != null) {
+				for (ResourceDoc subResource : previous.getSubResources()) {
+					resourceDoc.addSubResource(subResource);
 				}
 			}
 			
@@ -252,17 +260,16 @@ public class ResourceDocCreator {
 		List<Class<? extends BaseRestController>> controllers = OpenmrsClassScanner.getInstance().getClasses(
 		    BaseRestController.class, true);
 		
-		for (Class<?> cls : controllers) {
+		for (Class<? extends BaseRestController> cls : controllers) {
+			if (BaseRestController.class.equals(cls))
+				continue;
+			
 			RequestMapping annotation = (RequestMapping) cls.getAnnotation(RequestMapping.class);
 			if (annotation == null)
 				continue;
 			
-			if (cls.getSimpleName().equals("BaseRestController") || cls.getSimpleName().equals("SettingsFormController")
-			        || cls.getSimpleName().equals("SessionController") || cls.getSimpleName().equals("HelpController")) {
-				continue;
-			}
-			
 			String url = baseUrl + annotation.value()[0];
+			
 			ResourceDoc doc = resouceDocMap.get(cls.getSimpleName().replace("Controller", ""));
 			if (doc == null)
 				continue;

@@ -91,6 +91,13 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		subResources.add(resourceDoc);
 	}
 	
+	/**
+	 * @return the superResource
+	 */
+	public ResourceDoc getSuperResource() {
+		return superResource;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
