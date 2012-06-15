@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -57,7 +56,7 @@ public class ResourceDocCreator {
 	 * @throws IOException
 	 */
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
-	    InstantiationException, IOException, ConversionException {
+	        InstantiationException, IOException, ConversionException {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
@@ -79,13 +78,13 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
-	    IOException, ConversionException {
+	        IOException, ConversionException {
 		
 		List<ResourceDoc> docs = new ArrayList<ResourceDoc>();
 		
 		docs.addAll(createDocMap(baseUrl).values());
 		
-		//Remove resources without controllers or subresources
+		//Remove subresources and resources without controllers
 		for (Iterator<ResourceDoc> it = docs.iterator(); it.hasNext();) {
 			ResourceDoc resourceDoc = it.next();
 			if (resourceDoc.getUrl() == null)
@@ -108,7 +107,7 @@ public class ResourceDocCreator {
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(Class<?>[] classes, Map<String, ResourceDoc> resouceDocMap)
-	    throws IllegalAccessException, InstantiationException, ConversionException {
+	        throws IllegalAccessException, InstantiationException, ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {
@@ -116,7 +115,7 @@ public class ResourceDocCreator {
 				continue;
 			}
 			
-			if (HivDrugOrderSubclassHandler.class.isAssignableFrom(cls)) {
+			if (cls.getName().equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
 				continue; //Skip the test class
 			}
 			
@@ -161,11 +160,17 @@ public class ResourceDocCreator {
 			
 			for (Representation representation : representations) {
 				if (instance instanceof Converter) {
-					@SuppressWarnings("unchecked")
-					Converter<Object> converter = (Converter<Object>) instance;
-					SimpleObject simpleObject = converter.asRepresentation(delegate, representation);
-					resourceDoc.addRepresentation(new ResourceRepresentation("GET " + representation.getRepresentation(),
-					        simpleObject.keySet()));
+					try {
+						@SuppressWarnings("unchecked")
+						Converter<Object> converter = (Converter<Object>) instance;
+						SimpleObject simpleObject = converter.asRepresentation(delegate, representation);
+						resourceDoc.addRepresentation(new ResourceRepresentation(
+						        "GET " + representation.getRepresentation(), simpleObject.keySet()));
+					}
+					catch (Exception e) {
+						resourceDoc.addRepresentation(new ResourceRepresentation(
+						        "GET " + representation.getRepresentation(), Arrays.asList("Not supported")));
+					}
 				} else {
 					resourceDoc.addRepresentation(new ResourceRepresentation("GET " + representation.getRepresentation(),
 					        Arrays.asList("Not supported")));
@@ -313,11 +318,25 @@ public class ResourceDocCreator {
 			
 			//Set the root url.
 			doc.setUrl(url);
+			setUrlInSubResources(url, doc);
 			
 			//Sort the operations
 			ResourceOperation[] operations = doc.getOperations().toArray(new ResourceOperation[0]);
 			Arrays.sort(operations);
 			doc.setOperations(Arrays.asList(operations));
+		}
+	}
+	
+	/**
+	 * Sets URL in subResources.
+	 * 
+	 * @param url
+	 * @param doc
+	 */
+	private static void setUrlInSubResources(String url, ResourceDoc doc) {
+		for (ResourceDoc subResource : doc.getSubResources()) {
+			subResource.setUrl(url);
+			setUrlInSubResources(url, subResource);
 		}
 	}
 	

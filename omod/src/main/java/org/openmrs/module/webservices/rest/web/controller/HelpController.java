@@ -53,9 +53,12 @@ public class HelpController {
 		}
 		
 		baseUrl.append(request.getContextPath());
-		baseUrl.append("/ws");
 		
-		map.put("data", ResourceDocCreator.create(Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString())));
+		String url = Context.getAdministrationService().getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME,
+		    baseUrl.toString());
+		
+		url += "/ws";
+		
+		map.put("data", ResourceDocCreator.create(url));
 	}
 }

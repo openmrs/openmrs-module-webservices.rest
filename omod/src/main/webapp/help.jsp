@@ -33,24 +33,7 @@ Main documentation page for the module is on the wiki:
    <th>Url</th>
    <th>Representations</th>
   </tr>
-  <c:forEach var="resource" items="${data}" varStatus="status">
-      <tr class="<c:choose><c:when test="${status.index % 2 == 0}">d0</c:when><c:otherwise>d1</c:otherwise></c:choose>">
-	    
-        <td>${resource.name}</td>
-        <td>${resource.url}</td>
-        
-        <td>
-	        <table style="width:100%">
-				<c:forEach var="representation" items="${resource.representations}">
-			      <tr>
-			        <td>${representation.name}: ${representation.properties}</td>
-			      </tr>	
-			    </c:forEach>
-			</table>
-		</td>
-		
-      </tr>		
-  </c:forEach>
+  <jsp:include page="resources.jsp" />
 </table>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>
