@@ -558,7 +558,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	protected Object getObjectProperty(Object instance, String propertyName) throws ConversionException {
 		try {
-			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
+			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
 			
 			// first, try to find a @PropertyGetter-annotated method
 			Method annotatedGetter = findGetterMethod(handler, propertyName);
