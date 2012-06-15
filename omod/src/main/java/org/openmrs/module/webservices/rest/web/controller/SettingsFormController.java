@@ -34,7 +34,7 @@ import org.springframework.web.context.request.WebRequest;
 /**
  * Controller behind the webservices module's "settings.jsp" page.
  */
-@Controller
+@Controller("webservices.rest.SettingsFormController")
 @RequestMapping("/module/webservices/rest/settings")
 public class SettingsFormController {
 	

@@ -24,16 +24,14 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Controller behind the "help.jsp" page. Should list off available urls and representations.
  */
-@Controller
-@RequestMapping("/module/webservices/rest/help")
+@Controller("webservices.rest.HelpController")
 public class HelpController {
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping("/module/webservices/rest/help")
 	public void showPage(ModelMap map, HttpServletRequest request) throws IllegalAccessException, InstantiationException,
 	        IOException, ConversionException {
 		
