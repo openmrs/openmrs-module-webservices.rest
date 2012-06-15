@@ -35,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -226,7 +227,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 				instance.setPassword(value != null ? value.toString() : null);
 			} else {
 				// just treat every other property like a we're on the User object
-				super.setProperty(instance.getUser(), propertyName, value);
+				setObjectProperty(instance.getUser(), propertyName, value);
 			}
 		}
 		catch (Exception ex) {

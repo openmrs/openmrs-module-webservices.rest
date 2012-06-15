@@ -545,6 +545,18 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
+		return getObjectProperty(instance, propertyName);
+	}
+	
+	/**
+	 * This method provides a default behavior for {@link #getProperty(T, String)}.
+	 * 
+	 * @param instance
+	 * @param propertyName
+	 * @return the property
+	 * @throws ConversionException
+	 */
+	protected Object getObjectProperty(Object instance, String propertyName) throws ConversionException {
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
 			
@@ -574,8 +586,19 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 *      java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
-		
+	public void setProperty(T instance, String propertyName, Object value) throws ConversionException {
+		setObjectProperty(instance, propertyName, value);
+	}
+	
+	/**
+	 * This method provides a default behavior for {@link #setProperty(T, String, Object)}.
+	 * 
+	 * @param instance
+	 * @param propertyName
+	 * @param value
+	 * @throws ConversionException
+	 */
+	protected void setObjectProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		try {
 			DelegatingResourceHandler<? extends T> handler;
 			
