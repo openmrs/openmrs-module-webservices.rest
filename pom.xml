@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>webservices.rest</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>pom</packaging>
 	<name>Rest Web Services</name>
 	<description>Parent project for the Rest Web Services Module</description>
@@ -12,9 +11,9 @@
 	<url>http://wiki.openmrs.org/display/docs/WebServices</url>
 
 	<scm>
-		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/webservices.rest/trunk/</connection>
-		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/webservices.rest/trunk/</developerConnection>
-		<url>http://svn.openmrs.org/openmrs-modules/webservices.rest/trunk/</url>
+		<connection>scm:svn:http://svn.openmrs.org/openmrs-modules/webservices.rest/tags/1.0</connection>
+		<developerConnection>scm:svn:http://svn.openmrs.org/openmrs-modules/webservices.rest/tags/1.0</developerConnection>
+		<url>http://svn.openmrs.org/openmrs-modules/webservices.rest/tags/1.0</url>
 	</scm>
 
 	<distributionManagement>
