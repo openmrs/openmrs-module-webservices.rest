@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>webservices.rest</artifactId>
-		<version>1.0</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-api</artifactId>
 	<packaging>jar</packaging>
@@ -11,14 +11,14 @@
 	<description>API project for Web Services Rest Module</description>
 
 	<dependencies>
-		<!-- 
+		<!--
 		Add other dependencies from lib:
 		<dependency>
 			<groupId>org.other.library</groupId>
 			<artifactId>library-name</artifactId>
 		</dependency>
 		-->
-		
+
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
@@ -45,7 +45,7 @@
 			<type>pom</type>
 		</dependency>
 	</dependencies>
-    
+
     <build>
         <plugins>
             <plugin>

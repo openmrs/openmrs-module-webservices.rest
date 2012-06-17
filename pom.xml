@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>webservices.rest</artifactId>
-	<version>1.0</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Rest Web Services</name>
 	<description>Parent project for the Rest Web Services Module</description>
@@ -31,9 +31,9 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Libraries from lib to add as dependencies with compile or runtime 
-				scope: Find matching dependencies in maven central repository. <dependency> 
-				<groupId>org.other.library</groupId> <artifactId>library-name</artifactId> 
+			<!-- Libraries from lib to add as dependencies with compile or runtime
+				scope: Find matching dependencies in maven central repository. <dependency>
+				<groupId>org.other.library</groupId> <artifactId>library-name</artifactId>
 				<version>library.version</version> <scope>compile</scope> </dependency> -->
 
 			<dependency>
