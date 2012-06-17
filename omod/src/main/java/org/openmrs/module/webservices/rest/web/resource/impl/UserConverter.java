@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
  */
 @Handler(supports = User.class, order = 0)
 public class UserConverter implements Converter<User> {
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getByUniqueId(java.lang.String)
 	 */
@@ -38,7 +38,7 @@ public class UserConverter implements Converter<User> {
 	public User getByUniqueId(String string) {
 		return Context.getUserService().getUserByUuid(string);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#newInstance(java.lang.String)
 	 */
@@ -46,7 +46,7 @@ public class UserConverter implements Converter<User> {
 	public User newInstance(String type) {
 		return new User();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T, org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -56,7 +56,7 @@ public class UserConverter implements Converter<User> {
 		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
 		return userResource.asRepresentation(userPass, rep);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(T, java.lang.String)
 	 */
@@ -66,7 +66,7 @@ public class UserConverter implements Converter<User> {
 		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
 		return userResource.getProperty(userPass, propertyName);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object, java.lang.String, java.lang.Object)
 	 */

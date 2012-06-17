@@ -61,9 +61,9 @@ import org.springframework.util.ReflectionUtils;
  * @param <T> the class we're delegating to
  */
 public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
-
+	
 	private final Log log = LogFactory.getLog(getClass());
-
+	
 	/**
 	 * Properties that should silently be ignored if you try to get them. Implementations should
 	 * generally configure this property with a list of properties that were added to their
@@ -72,19 +72,19 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * wasn't added to PatientIdentifierType until OpenMRS 1.9. delegate class
 	 */
 	protected Set<String> allowedMissingProperties = new HashSet<String>();
-
+	
 	/**
 	 * Implementations should define mappings for properties that they want to expose with other
 	 * names. (Map from the exposed property name to the actual property name.)
 	 */
 	protected Map<String, String> remappedProperties = new HashMap<String, String>();
-
+	
 	/**
 	 * If this resource represents a class hierarchy (rather than a single class), this will hold
 	 * handlers for each subclass
 	 */
 	protected List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
-
+	
 	/**
 	 * All our resources support letting modules register subclass handlers. If any are registered,
 	 * then the resource represents a class hierarchy, e.g. requiring a "type" parameter when
@@ -95,12 +95,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public boolean hasTypesDefined() {
 		return subclassHandlers != null && subclassHandlers.size() > 0;
 	}
-
+	
 	/**
 	 * This will be automatically called whenever RestService instantiates a new instance of this
 	 * class. It finds all subclass handlers intented for this resource, and registers them.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings( { "unchecked", "rawtypes" })
 	public void init() {
 		for (DelegatingSubclassHandler handler : Context.getRegisteredComponents(DelegatingSubclassHandler.class)) {
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
@@ -113,7 +113,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 		}
 	}
-
+	
 	/**
 	 * Registers the given subclass handler.
 	 *
@@ -130,7 +130,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		subclassHandlers.add(handler);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getResourceVersion()
 	 */
@@ -138,7 +138,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public String getResourceVersion() {
 		return RestConstants.PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE;
 	}
-
+	
 	/**
 	 * @return the value of the {@link org.openmrs.module.webservices.rest.web.annotation.Resource}
 	 *         annotation on the concrete subclass
@@ -153,7 +153,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			        + " must specify a value");
 		return ann.value();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#newInstance(java.lang.String)
 	 */
@@ -169,7 +169,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			return newDelegate();
 		}
 	}
-
+	
 	/**
 	 * Gets the delegate object with the given unique id. Implementations may decide whether
 	 * "unique id" means a uuid, or if they also want to retrieve delegates based on a unique
@@ -180,7 +180,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	@Override
 	public abstract T getByUniqueId(String uniqueId);
-
+	
 	/**
 	 * Void or retire delegate, whichever action is appropriate for the resource type. Subclasses
 	 * need to override this method, which is called internally by
@@ -192,7 +192,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	protected abstract void delete(T delegate, String reason, RequestContext context) throws ResponseException;
-
+	
 	/**
 	 * Purge delegate from persistent storage. Subclasses need to override this method, which is
 	 * called internally by {@link #purge(String, RequestContext)}.
@@ -202,7 +202,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @throws ResponseException
 	 */
 	public abstract void purge(T delegate, RequestContext context) throws ResponseException;
-
+	
 	/**
 	 * Gets a description of resource's properties which can be set on creation.
 	 *
@@ -212,7 +212,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
+	
 	/**
 	 * Gets a description of resource's properties which can be edited.
 	 * <p>
@@ -229,7 +229,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return description;
 	}
-
+	
 	/**
 	 * Implementations should override this method if they support sub-resources
 	 *
@@ -238,7 +238,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Collections.emptyList();
 	}
-
+	
 	/**
 	 * Implementations should override this method if T is not uniquely identified by a "uuid"
 	 * property.
@@ -254,7 +254,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new RuntimeException("Cannot find String uuid property on " + delegate.getClass(), null);
 		}
 	}
-
+	
 	/**
 	 * Creates an object of the given representation, pulling values from fields and methods as
 	 * specified by a subclass
@@ -269,20 +269,20 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public SimpleObject asRepresentation(T delegate, Representation representation) throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
-
+		
 		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
-
+		
 		// first call getRepresentationDescription()
 		DelegatingResourceDescription repDescription = handler.getRepresentationDescription(representation);
 		if (repDescription != null) {
 			SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
-
+			
 			maybeDecorateWithType(simple, delegate);
 			decorateWithResourceVersion(simple, representation);
-
+			
 			return simple;
 		}
-
+		
 		// otherwise look for a method annotated to handle this representation
 		Method meth = findAnnotatedMethodForRepresentation(handler.getClass(), representation);
 		if (meth != null) {
@@ -293,21 +293,21 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 					simple = (SimpleObject) meth.invoke(handler, delegate);
 				else
 					simple = (SimpleObject) meth.invoke(handler, delegate, representation);
-
+				
 				maybeDecorateWithType(simple, delegate);
 				decorateWithResourceVersion(simple, representation);
-
+				
 				return simple;
 			}
 			catch (Exception ex) {
 				throw new ConversionException(null, ex);
 			}
 		}
-
+		
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
 		        + ") as " + representation.getRepresentation(), null);
 	}
-
+	
 	/**
 	 * Sets resourceVersion to {@link #getResourceVersion()} for representations other than REF.
 	 *
@@ -319,7 +319,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			simple.put(RestConstants.PROPERTY_FOR_RESOURCE_VERSION, getResourceVersion());
 		}
 	}
-
+	
 	/**
 	 * If this resource supports subclasses, then we add a type property to the input, and return it
 	 *
@@ -331,7 +331,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		if (hasTypesDefined())
 			simple.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
 	}
-
+	
 	/**
 	 * If this resources supports subclasses, this method gets the user-friendly type name for the
 	 * given subclass
@@ -349,14 +349,14 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @see #getTypeName(Class)
 	 */
 	protected String getTypeName(T delegate) {
 		return getTypeName((Class<? extends T>) delegate.getClass());
 	}
-
+	
 	/**
 	 * @param type user-friendly type name
 	 * @return the actual java class for this type
@@ -368,7 +368,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		// otherwise we need to return our own declared class
 		return ReflectionUtil.getParameterizedTypeFromInterface(getClass(), DelegatingResourceHandler.class, 0);
 	}
-
+	
 	/**
 	 * @param type user-friendly type name
 	 * @return a subclass handler if any is suitable for type, or this resource itself if it is
@@ -385,7 +385,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		throw new IllegalArgumentException("type=" + type + " is not handled by this resource (" + getClass()
 		        + ") or any subclass");
 	}
-
+	
 	/**
 	 * Delegates to @see {@link #getResourceHandler(Class)}
 	 */
@@ -397,7 +397,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			return null;
 		return getResourceHandler((Class<? extends T>) delegate.getClass());
 	}
-
+	
 	/**
 	 * @param clazz
 	 * @return a subclass handler if any is suitable for the given class, or this resource itself if
@@ -411,7 +411,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			return handler;
 		return this;
 	}
-
+	
 	/**
 	 * @param subclass
 	 * @return the handler most appropriate for the given subclass, or null if none is suitable
@@ -425,13 +425,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			if (subclass.equals(subclassHandled))
 				return handler;
 		}
-
+		
 		// TODO should we recurse to subclass's superclass, e.g. so DrugOrderHandler can handle HivDrugOrder if no handler is defined?
-
+		
 		// didn't find anything suitable
 		return null;
 	}
-
+	
 	/**
 	 * @param type the user-friendly name of a registered subclass handler
 	 * @return the handler for the given user-friendly type name
@@ -447,9 +447,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return null;
 	}
-
+	
 	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	    throws ConversionException {
+	        throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
@@ -466,17 +466,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			ret.put("links", links);
 		return ret;
 	}
-
+	
 	/**
 	 * @param delegate
 	 * @param propertiesToCreate
 	 * @throws ResponseException
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
-	                                      DelegatingResourceDescription description, boolean mustIncludeRequiredProperties)
-	    throws ConversionException {
+	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
-
+		
 		//Set properties that are allowed to be changed or fail.
 		Set<String> notAllowedProperties = new HashSet<String>();
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
@@ -490,7 +489,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new ConversionException("Some properties are not allowed to be set: "
 			        + StringUtils.join(notAllowedProperties, ","));
 		}
-
+		
 		if (mustIncludeRequiredProperties) {
 			//Fail, if any required properties are missing.
 			Set<String> missingProperties = new HashSet<String>();
@@ -505,7 +504,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 		}
 	}
-
+	
 	/**
 	 * Finds a method on clazz or a superclass that is annotated with {@link RepHandler} and is
 	 * suitable for rep
@@ -526,7 +525,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @param name the full method name to look for
 	 * @return the java Method object if found. (does not return null)
@@ -539,7 +538,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new RuntimeException("No suitable method \"" + name + "\" in " + getClass());
 		return ret;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(java.lang.Object,
 	 *      java.lang.String)
@@ -548,13 +547,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
-
+			
 			// first, try to find a @PropertyGetter-annotated method
 			Method annotatedGetter = findGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
-
+			
 			// next use standard bean methods
 			// TODO remove remappedProperties, or make them work with subclass handlers
 			String override = remappedProperties.get(propertyName);
@@ -569,7 +568,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object,
 	 *      java.lang.String, java.lang.Object)
@@ -578,7 +577,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		try {
 			DelegatingResourceHandler<? extends T> handler;
-
+			
 			try {
 				handler = getResourceHandler((T) instance);
 			}
@@ -587,7 +586,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				// but I'm putting in here just in case
 				handler = this;
 			}
-
+			
 			// first, try to find a @PropertySetter-annotated method
 			Method annotatedSetter = findSetterMethod(handler, propertyName);
 			if (annotatedSetter != null) {
@@ -596,17 +595,17 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				annotatedSetter.invoke(handler, instance, value);
 				return;
 			}
-
+			
 			// next use standard bean methods
 			// TODO remove remappedProperties, or make them work with subclass handlers
 			String override = remappedProperties.get(propertyName);
 			if (override != null)
 				propertyName = override;
-
+			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
 			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
-
+			
 			if (value instanceof Collection) {
 				//We need to handle collections in a way that Hibernate can track.
 				Collection<?> newCollection = (Collection<?>) value;
@@ -626,7 +625,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
 		}
 	}
-
+	
 	private Method findSetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
 		for (Method candidate : handler.getClass().getMethods()) {
 			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
@@ -636,7 +635,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return null;
 	}
-
+	
 	private Method findGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
 		for (Method candidate : handler.getClass().getMethods()) {
 			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
@@ -646,7 +645,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Removes any elements from the passed-in collection that aren't of the given type. This is a
 	 * convenience method for subclass-aware resources that want to limit query results to a given
@@ -662,7 +661,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				i.remove();
 		}
 	}
-
+	
 	/**
 	 * Convenience method that looks for a specific method on the subclass handler for the given
 	 * type
@@ -684,7 +683,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Convenience method that finds a specific method on the subclass handler for the given type,
 	 * and invokes it
@@ -713,5 +712,5 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new RuntimeException(ex);
 		}
 	}
-
+	
 }

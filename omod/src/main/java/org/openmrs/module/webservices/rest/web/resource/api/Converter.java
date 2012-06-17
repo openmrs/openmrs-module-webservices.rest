@@ -22,19 +22,19 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
  * Can convert from T -> json-friendly version of a given Representation
  */
 public interface Converter<T> {
-
+	
 	/**
 	 * @param type user-friendly type name, if relevant for this converter (@see DelegatingSubclassHandler)
 	 * @return a new instance of the given type
 	 */
 	T newInstance(String type);
-
+	
 	/**
 	 * @param string
 	 * @return the result of converting the String input to a T
 	 */
 	T getByUniqueId(String string);
-
+	
 	/**
 	 * @param instance
 	 * @param rep
@@ -42,7 +42,7 @@ public interface Converter<T> {
 	 * @throws Exception
 	 */
 	SimpleObject asRepresentation(T instance, Representation rep) throws ConversionException;
-
+	
 	/**
 	 * @param instance
 	 * @param propertyName
@@ -50,7 +50,7 @@ public interface Converter<T> {
 	 * @throws ConversionException
 	 */
 	Object getProperty(T instance, String propertyName) throws ConversionException;
-
+	
 	/**
 	 * @param instance
 	 * @param propertyName
@@ -58,5 +58,5 @@ public interface Converter<T> {
 	 * @throws ConversionException
 	 */
 	void setProperty(Object instance, String propertyName, Object value) throws ConversionException;
-
+	
 }

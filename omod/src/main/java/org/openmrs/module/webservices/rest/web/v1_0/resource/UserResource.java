@@ -49,11 +49,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("user")
 @Handler(supports = UserAndPassword.class, order = 0)
 public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword> {
-
+	
 	public UserResource() {
-
+		
 	}
-
+	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(UserAndPassword delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -65,7 +65,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -105,7 +105,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -115,16 +115,16 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		description.addRequiredProperty("username");
 		description.addRequiredProperty("password");
 		description.addRequiredProperty("person");
-
+		
 		description.addProperty("systemId");
 		description.addProperty("userProperties");
 		description.addProperty("roles");
 		description.addProperty("proficientLocales");
 		description.addProperty("secretQuestion");
-
+		
 		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -132,7 +132,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	public UserAndPassword newDelegate() {
 		return new UserAndPassword();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -142,9 +142,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		String password = user.getPassword();
 		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
 		return new UserAndPassword(openmrsUser);
-
+		
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -152,7 +152,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	public UserAndPassword getByUniqueId(String uuid) {
 		return new UserAndPassword(Context.getUserService().getUserByUuid(uuid));
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -165,7 +165,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		Context.getUserService().retireUser(Context.getUserService().getUser(user.getId()), reason);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -178,7 +178,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		Context.getUserService().purgeUser(user.getUser());
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -191,7 +191,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		return new NeedsPaging<UserAndPassword>(users, context);
 	}
-
+	
 	/**
 	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
 	 * UserAndPassword instead of UserAndPassword itself
@@ -216,7 +216,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-
+	
 	/**
 	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User
 	 * property of UserAndPassword instead of UserAndPassword itself
@@ -243,7 +243,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-
+	
 	/**
 	 * @param user
 	 * @return roles for user
@@ -254,7 +254,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			return null;
 		return RestUtil.removeRetiredData(user.getUser().getRoles());
 	}
-
+	
 	/**
 	 * @param user
 	 * @return all roles for user
@@ -265,7 +265,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			return null;
 		return RestUtil.removeRetiredData(user.getUser().getAllRoles()); //Get all active roles, including inherited roles
 	}
-
+	
 	/**
 	 * @param user
 	 * @return username + fullname (for concise display purposes)
@@ -278,7 +278,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			ret.append(" - ").append(u.getPersonName().getFullName());
 		return ret.toString();
 	}
-
+	
 	/**
 	 * Overridden here since the unique id is not on UserAndPassword directly
 	 *
@@ -288,7 +288,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	protected String getUniqueId(UserAndPassword delegate) {
 		return delegate.getUser().getUuid();
 	}
-
+	
 	/**
 	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User
 	 *
@@ -309,7 +309,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(user.getDateChanged(), Representation.DEFAULT));
 		return ret;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
