@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.OpenmrsMetadata;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
@@ -48,11 +49,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource("user")
 @Handler(supports = UserAndPassword.class, order = 0)
 public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword> {
-	
+
 	public UserResource() {
-		
+
 	}
-	
+
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(UserAndPassword delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -64,7 +65,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -104,7 +105,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -114,16 +115,16 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		description.addRequiredProperty("username");
 		description.addRequiredProperty("password");
 		description.addRequiredProperty("person");
-		
+
 		description.addProperty("systemId");
 		description.addProperty("userProperties");
 		description.addProperty("roles");
 		description.addProperty("proficientLocales");
 		description.addProperty("secretQuestion");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -131,7 +132,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	public UserAndPassword newDelegate() {
 		return new UserAndPassword();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -141,9 +142,9 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		String password = user.getPassword();
 		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
 		return new UserAndPassword(openmrsUser);
-		
+
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -151,9 +152,10 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	public UserAndPassword getByUniqueId(String uuid) {
 		return new UserAndPassword(Context.getUserService().getUserByUuid(uuid));
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(UserAndPassword user, String reason, RequestContext context) throws ResponseException {
@@ -163,9 +165,10 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		Context.getUserService().retireUser(Context.getUserService().getUser(user.getId()), reason);
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(UserAndPassword user, RequestContext context) throws ResponseException {
@@ -175,9 +178,10 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		Context.getUserService().purgeUser(user.getUser());
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<UserAndPassword> doSearch(String query, RequestContext context) {
@@ -187,15 +191,17 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		}
 		return new NeedsPaging<UserAndPassword>(users, context);
 	}
-	
+
 	/**
-	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of UserAndPassword
-	 * instead of UserAndPassword itself
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
+	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
+	 * UserAndPassword instead of UserAndPassword itself
+	 *
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
+	 *      java.lang.String, java.lang.Object)
 	 * @param instance
 	 * @param propertyName
 	 * @param value
-	 * @throws ConversionException 
+	 * @throws ConversionException
 	 */
 	@Override
 	public Object getProperty(UserAndPassword instance, String propertyName) throws ConversionException {
@@ -210,31 +216,34 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-	
+
 	/**
-	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User property of UserAndPassword
-	 * instead of UserAndPassword itself
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T, java.lang.String, java.lang.Object)
+	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User
+	 * property of UserAndPassword instead of UserAndPassword itself
+	 *
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
+	 *      java.lang.String, java.lang.Object)
 	 * @param instance
 	 * @param propertyName
 	 * @param value
-	 * @throws ConversionException 
+	 * @throws ConversionException
 	 */
 	@Override
-	public void setProperty(UserAndPassword instance, String propertyName, Object value) throws ConversionException {
+	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		try {
+			UserAndPassword userAndPassword = (UserAndPassword) instance;
 			if (propertyName.equals("password")) {
-				instance.setPassword(value != null ? value.toString() : null);
+				userAndPassword.setPassword(value != null ? value.toString() : null);
 			} else {
 				// just treat every other property like a we're on the User object
-				setObjectProperty(instance.getUser(), propertyName, value);
+				super.setProperty(userAndPassword.getUser(), propertyName, value);
 			}
 		}
 		catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-	
+
 	/**
 	 * @param user
 	 * @return roles for user
@@ -245,7 +254,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			return null;
 		return RestUtil.removeRetiredData(user.getUser().getRoles());
 	}
-	
+
 	/**
 	 * @param user
 	 * @return all roles for user
@@ -256,7 +265,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			return null;
 		return RestUtil.removeRetiredData(user.getUser().getAllRoles()); //Get all active roles, including inherited roles
 	}
-	
+
 	/**
 	 * @param user
 	 * @return username + fullname (for concise display purposes)
@@ -269,18 +278,20 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 			ret.append(" - ").append(u.getPersonName().getFullName());
 		return ret.toString();
 	}
-	
+
 	/**
-	 * Overridden here since the unique id is not on UserAndPassword directly 
+	 * Overridden here since the unique id is not on UserAndPassword directly
+	 *
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUniqueId(java.lang.Object)
 	 */
 	@Override
 	protected String getUniqueId(UserAndPassword delegate) {
 		return delegate.getUser().getUuid();
 	}
-	
+
 	/**
-	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User 
+	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User
+	 *
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getAuditInfo(java.lang.Object)
 	 */
 	@Override
@@ -298,7 +309,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(user.getDateChanged(), Representation.DEFAULT));
 		return ret;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
