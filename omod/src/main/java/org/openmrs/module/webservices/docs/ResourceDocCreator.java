@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.docs;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -133,7 +134,12 @@ public class ResourceDocCreator {
 			
 			Object delegate = resourceHandler.newDelegate();
 			
-			ResourceDoc resourceDoc = new ResourceDoc(delegate.getClass().getSimpleName());
+			String resourceName = delegate.getClass().getSimpleName();
+			if (resourceName.equals("UserAndPassword")) {
+				resourceName = "User"; //Work-around for UserAndPassword to be displayed as User
+			}
+			
+			ResourceDoc resourceDoc = new ResourceDoc(resourceName);
 			
 			if (instance instanceof DelegatingSubclassHandler) {
 				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) instance).getSuperclass();
@@ -276,8 +282,9 @@ public class ResourceDocCreator {
 			String url = baseUrl + annotation.value()[0];
 			
 			ResourceDoc doc = resouceDocMap.get(cls.getSimpleName().replace("Controller", ""));
-			if (doc == null)
+			if (doc == null) {
 				continue;
+			}
 			
 			Method[] methods = cls.getMethods();
 			for (Method method : methods) {
