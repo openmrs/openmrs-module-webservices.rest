@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -367,16 +368,36 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
 		
-		Assert
-		        .assertEquals(
-		            object.toString(),
-		            "{uuid=95312123-e0c2-466d-b6b1-cb6e990d0d65, "
-		                    + "datatype={uuid=8d4a48b6-c2cc-11de-8d13-0010c6dffd0f, name=Coded}, "
-		                    + "conceptClass={uuid=a82ef63c-e4e4-48d6-988a-fdd74d7541a7, display=Question - Question (eg, patient history, SF36 items), "
-		                    + "name=Question, description=Question (eg, patient history, SF36 items), retired=false, "
-		                    + "links=[{uri=NEED-TO-CONFIGURE/ws/rest/v1/conceptclass/a82ef63c-e4e4-48d6-988a-fdd74d7541a7, rel=self}, "
-		                    + "{uri=NEED-TO-CONFIGURE/ws/rest/v1/conceptclass/a82ef63c-e4e4-48d6-988a-fdd74d7541a7?v=full, rel=full}], resourceVersion=1.8}, "
-		                    + "names=[{uuid=325391a8-db12-4e24-863f-5d66f7a4d713, display=FOOD ASSISTANCE FOR ENTIRE FAMILY, "
-		                    + "links=[{uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65/name/325391a8-db12-4e24-863f-5d66f7a4d713, rel=self}]}]}");
+		Assert.assertEquals("95312123-e0c2-466d-b6b1-cb6e990d0d65", object.get("uuid"));
+		Assert.assertEquals(4, object.size());
+		
+		@SuppressWarnings("unchecked")
+        Map<Object, Object> datatype = (Map<Object, Object>) object.get("datatype");
+		Assert.assertEquals(2, datatype.size());
+		Assert.assertEquals("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", datatype.get("uuid"));
+		Assert.assertEquals("Coded", datatype.get("name"));
+		
+		@SuppressWarnings("unchecked")
+        Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
+		Assert.assertEquals(7, conceptClass.size());
+		Assert.assertEquals("a82ef63c-e4e4-48d6-988a-fdd74d7541a7", conceptClass.get("uuid"));
+		Assert.assertEquals("Question - Question (eg, patient history, SF36 items)", conceptClass.get("display"));
+		Assert.assertEquals("Question", conceptClass.get("name"));
+		Assert.assertEquals("Question (eg, patient history, SF36 items)", conceptClass.get("description"));
+		Assert.assertEquals(false, conceptClass.get("retired"));
+		Assert.assertNotNull(conceptClass.get("links"));
+		Assert.assertNotNull(conceptClass.get("resourceVersion"));
+		
+		@SuppressWarnings("unchecked")
+        List<Object> names = (List<Object>) object.get("names");
+		Assert.assertEquals(1, names.size());
+		
+		@SuppressWarnings("unchecked")
+        Map<Object, Object> name = (Map<Object, Object>) names.get(0);
+		Assert.assertEquals(3, name.size());
+		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
+		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
+		Assert.assertNotNull(name.get("links"));
+		
 	}
 }
