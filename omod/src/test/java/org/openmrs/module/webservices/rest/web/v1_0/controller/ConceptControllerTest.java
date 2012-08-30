@@ -296,9 +296,12 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * Convenience helper method to look for the given answer amongst the answers on the question concept
+	 * Convenience helper method to look for the given answer amongst the answers on the question
+	 * concept
+	 * 
 	 * @param question the concept on which to call getAnswers()
-	 * @param answer the concept that is hidden in a ConceptAnswer object on the given concept (maybe)
+	 * @param answer the concept that is hidden in a ConceptAnswer object on the given concept
+	 *            (maybe)
 	 * @return true if the answer is found on the concept
 	 */
 	private boolean hasAnswer(Concept question, Concept answer) {
@@ -311,9 +314,12 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * Convenience helper method to look for the given answer amongst the answers on the question concept
+	 * Convenience helper method to look for the given answer amongst the answers on the question
+	 * concept
+	 * 
 	 * @param question the concept on which to call getAnswers()
-	 * @param druganswer the drug that is hidden in a ConceptAnswer object on the given concept (maybe)
+	 * @param druganswer the drug that is hidden in a ConceptAnswer object on the given concept
+	 *            (maybe)
 	 * @return true if the answer is found on the concept
 	 */
 	private boolean hasAnswer(Concept question, Drug druganswer) {
@@ -350,5 +356,27 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Assert.assertTrue(hasAnswer(concept, answer1));
 		Assert.assertTrue(hasAnswer(concept, answer2));
 		Assert.assertEquals(2, concept.getAnswers().size());
+	}
+	
+	@Test
+	public void shouldReturnCustomRepresentation() throws Exception {
+		String conceptUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65";
+		
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		request.addParameter("v", "custom:(uuid,datatype:(uuid,name),conceptClass,names:ref)");
+		MockHttpServletResponse response = handle(request);
+		SimpleObject object = deserialize(response);
+		
+		Assert
+		        .assertEquals(
+		            object.toString(),
+		            "{uuid=95312123-e0c2-466d-b6b1-cb6e990d0d65, "
+		                    + "datatype={uuid=8d4a48b6-c2cc-11de-8d13-0010c6dffd0f, name=Coded}, "
+		                    + "conceptClass={uuid=a82ef63c-e4e4-48d6-988a-fdd74d7541a7, display=Question - Question (eg, patient history, SF36 items), "
+		                    + "name=Question, description=Question (eg, patient history, SF36 items), retired=false, "
+		                    + "links=[{uri=NEED-TO-CONFIGURE/ws/rest/v1/conceptclass/a82ef63c-e4e4-48d6-988a-fdd74d7541a7, rel=self}, "
+		                    + "{uri=NEED-TO-CONFIGURE/ws/rest/v1/conceptclass/a82ef63c-e4e4-48d6-988a-fdd74d7541a7?v=full, rel=full}], resourceVersion=1.8}, "
+		                    + "names=[{uuid=325391a8-db12-4e24-863f-5d66f7a4d713, display=FOOD ASSISTANCE FOR ENTIRE FAMILY, "
+		                    + "links=[{uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65/name/325391a8-db12-4e24-863f-5d66f7a4d713, rel=self}]}]}");
 	}
 }

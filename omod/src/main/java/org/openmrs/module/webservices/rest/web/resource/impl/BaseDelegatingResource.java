@@ -40,8 +40,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -57,7 +56,7 @@ import org.springframework.util.ReflectionUtils;
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
  * object. Implementations generally should extend either {@link DelegatingCrudResource} or
  * {@link DelegatingSubResource} rather than this class directly.
- *
+ * 
  * @param <T> the class we're delegating to
  */
 public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
@@ -89,7 +88,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * All our resources support letting modules register subclass handlers. If any are registered,
 	 * then the resource represents a class hierarchy, e.g. requiring a "type" parameter when
 	 * creating a new instance.
-	 *
+	 * 
 	 * @return whether there are any subclass handlers registered with this resource
 	 */
 	public boolean hasTypesDefined() {
@@ -116,7 +115,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Registers the given subclass handler.
-	 *
+	 * 
 	 * @param handler
 	 */
 	public void registerSubclassHandler(DelegatingSubclassHandler<T, ? extends T> handler) {
@@ -174,7 +173,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * Gets the delegate object with the given unique id. Implementations may decide whether
 	 * "unique id" means a uuid, or if they also want to retrieve delegates based on a unique
 	 * human-readable property.
-	 *
+	 * 
 	 * @param uniqueId
 	 * @return the delegate for the given uniqueId
 	 */
@@ -185,7 +184,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * Void or retire delegate, whichever action is appropriate for the resource type. Subclasses
 	 * need to override this method, which is called internally by
 	 * {@link #delete(String, String, RequestContext)}.
-	 *
+	 * 
 	 * @param delegate
 	 * @param reason
 	 * @param context
@@ -196,7 +195,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Purge delegate from persistent storage. Subclasses need to override this method, which is
 	 * called internally by {@link #purge(String, RequestContext)}.
-	 *
+	 * 
 	 * @param delegate
 	 * @param context
 	 * @throws ResponseException
@@ -205,7 +204,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Gets a description of resource's properties which can be set on creation.
-	 *
+	 * 
 	 * @return the description
 	 * @throws ResponseException
 	 */
@@ -218,7 +217,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * <p>
 	 * By default delegates to {@link #getCreatableProperties()} and removes sub-resources returned
 	 * by {@link #getPropertiesToExposeAsSubResources()}.
-	 *
+	 * 
 	 * @return the description
 	 * @throws ResponseException
 	 */
@@ -232,7 +231,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Implementations should override this method if they support sub-resources
-	 *
+	 * 
 	 * @return a list of properties available as sub-resources or an empty list
 	 */
 	public List<String> getPropertiesToExposeAsSubResources() {
@@ -242,7 +241,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Implementations should override this method if T is not uniquely identified by a "uuid"
 	 * property.
-	 *
+	 * 
 	 * @param delegate
 	 * @return the uuid property of delegate
 	 */
@@ -258,7 +257,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Creates an object of the given representation, pulling values from fields and methods as
 	 * specified by a subclass
-	 *
+	 * 
 	 * @param representation
 	 * @return
 	 * @should return valid RefRepresentation
@@ -304,13 +303,74 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 		}
 		
+		// finally if it is a custom representation and not supported by any other handler
+		if (representation instanceof CustomRepresentation) {
+			repDescription = getCustomRepresentationDescription((CustomRepresentation) representation);
+			if (repDescription != null) {
+				SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
+				
+				return simple;
+			}
+		}
+		
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
 		        + ") as " + representation.getRepresentation(), null);
 	}
 	
+	private DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
+		DelegatingResourceDescription desc = new DelegatingResourceDescription();
+		
+		String def = representation.getRepresentation();
+		def = def.substring(1, def.length() - 1); //remove '(' and ')'
+		String[] fragments = def.split(",");
+		for (int i = 0; i < fragments.length; i++) {
+			String[] field = fragments[i].split(":"); //split into field and representation
+			if (field.length == 1) {
+				desc.addProperty(field[0]);
+			} else {
+				String property = field[0];
+				String rep = field[1];
+				
+				// if custom representation
+				if (rep.startsWith("(")) {
+					StringBuilder customRep = new StringBuilder();
+					customRep.append(rep);
+					int open = 1;
+					for (i = i + 1; i < fragments.length; i++) {
+						if (fragments[i].contains("(")) {
+							open++;
+						} else if (fragments[i].contains(")")) {
+							open--;
+						}
+						
+						customRep.append(",");
+						customRep.append(fragments[i]);
+						
+						if (open == 0) {
+							break;
+						}
+					}
+					
+					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
+				} else {
+					rep = rep.toUpperCase(); //normalize
+					if (rep.equals("REF")) {
+						desc.addProperty(property, Representation.REF);
+					} else if (rep.equals("FULL")) {
+						desc.addProperty(property, Representation.FULL);
+					} else if (rep.equals("DEFAULT")) {
+						desc.addProperty(property, Representation.DEFAULT);
+					}
+				}
+			}
+		}
+		
+		return desc;
+	}
+	
 	/**
 	 * Sets resourceVersion to {@link #getResourceVersion()} for representations other than REF.
-	 *
+	 * 
 	 * @param simple the simplified representation which will be decorated with the resource version
 	 * @param representation the type of representation
 	 */
@@ -322,7 +382,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * If this resource supports subclasses, then we add a type property to the input, and return it
-	 *
+	 * 
 	 * @param simple simplified representation which will be decorated with the user-friendly type
 	 *            name
 	 * @param delegate the object that simple represents
@@ -335,7 +395,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * If this resources supports subclasses, this method gets the user-friendly type name for the
 	 * given subclass
-	 *
+	 * 
 	 * @param subclass
 	 * @return
 	 */
@@ -508,7 +568,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Finds a method on clazz or a superclass that is annotated with {@link RepHandler} and is
 	 * suitable for rep
-	 *
+	 * 
 	 * @param clazz
 	 * @param rep
 	 * @return
@@ -650,7 +710,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * Removes any elements from the passed-in collection that aren't of the given type. This is a
 	 * convenience method for subclass-aware resources that want to limit query results to a given
 	 * type.
-	 *
+	 * 
 	 * @param collection
 	 * @param type a user-friendly type name
 	 */
@@ -665,7 +725,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Convenience method that looks for a specific method on the subclass handler for the given
 	 * type
-	 *
+	 * 
 	 * @param type user-friendly type name
 	 * @param methodName
 	 * @param argumentTypes
@@ -687,7 +747,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	/**
 	 * Convenience method that finds a specific method on the subclass handler for the given type,
 	 * and invokes it
-	 *
+	 * 
 	 * @param type user-friendly type name
 	 * @param methodName
 	 * @param arguments

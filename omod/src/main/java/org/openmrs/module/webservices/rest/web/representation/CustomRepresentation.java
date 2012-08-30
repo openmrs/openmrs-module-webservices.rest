@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.representation;
 
-import org.openmrs.module.webservices.rest.web.RestConstants;
-
 /**
  * Implementation of {@link Representation} where the user specifies which properties they want
  * included
@@ -30,7 +28,7 @@ public class CustomRepresentation implements Representation {
 	}
 	
 	public String getRepresentation() {
-		return RestConstants.REPRESENTATION_CUSTOM_PREFIX + specification;
+		return specification;
 	}
 	
 }
