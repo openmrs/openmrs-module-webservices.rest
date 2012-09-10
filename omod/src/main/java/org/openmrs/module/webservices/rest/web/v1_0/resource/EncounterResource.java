@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +22,7 @@ import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -34,9 +34,11 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -211,6 +213,16 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	public static void setOrders(Encounter instance, Set<Order> orders) {
 		for (Order o : orders)
 			instance.addOrder(o);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected AlreadyPaged<Encounter> doSearch(String query, RequestContext context) {
+		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(query,
+		    context);
 	}
 	
 }

@@ -1,19 +1,23 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
@@ -23,6 +27,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.test.Verifies;
 import org.openmrs.util.Format;
 import org.openmrs.util.Format.FORMAT_TYPE;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -270,6 +275,20 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 			uuids.add((String) PropertyUtils.getProperty(encounter, "uuid"));
 		}
 		Assert.assertTrue(uuids.contains("6519d653-393b-4118-9c83-a3715b82d4ac"));
+	}
+	
+	/**
+	 * @see {@link EncounterController#searchByPatient(String,HttpServletRequest,HttpServletResponse)}
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	@Verifies(value = "should search for encounters by a search phrase", method = "searchByPatient(String,HttpServletRequest,HttpServletResponse)")
+	public void searchByPatient_shouldSearchForEncountersByASearchPhrase() throws Exception {
+		List<Object> results = (List<Object>) new EncounterController().search("Collet", emptyRequest(), null)
+		        .get("results");
+		Assert.assertNotNull(results);
+		Assert.assertNotNull(results);
+		Assert.assertEquals(3, results.size());
 	}
 	
 	private MockHttpServletRequest emptyRequest() {
