@@ -287,7 +287,6 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 		List<Object> results = (List<Object>) new EncounterController().search("Collet", emptyRequest(), null)
 		        .get("results");
 		Assert.assertNotNull(results);
-		Assert.assertNotNull(results);
 		Assert.assertEquals(3, results.size());
 	}
 	
