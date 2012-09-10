@@ -31,7 +31,6 @@ public class EncounterController extends BaseCrudController<EncounterResource> {
 	 * @param response
 	 * @return encounters for the given patient
 	 * @throws ResponseException
-	 * @should search for encounters by a search phrase
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "patient")
 	@WSDoc("Fetch all non-retired encounters for a patient with the given uuid")

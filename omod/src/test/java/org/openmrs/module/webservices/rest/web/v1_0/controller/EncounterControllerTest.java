@@ -27,7 +27,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.test.Verifies;
 import org.openmrs.util.Format;
 import org.openmrs.util.Format.FORMAT_TYPE;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -282,8 +281,7 @@ public class EncounterControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
-	@Verifies(value = "should search for encounters by a search phrase", method = "searchByPatient(String,HttpServletRequest,HttpServletResponse)")
-	public void searchByPatient_shouldSearchForEncountersByASearchPhrase() throws Exception {
+	public void search_shouldSearchForEncountersByASearchPhrase() throws Exception {
 		List<Object> results = (List<Object>) new EncounterController().search("Collet", emptyRequest(), null)
 		        .get("results");
 		Assert.assertNotNull(results);
