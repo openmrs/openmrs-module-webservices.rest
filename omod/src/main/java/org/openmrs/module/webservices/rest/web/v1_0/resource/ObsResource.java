@@ -85,6 +85,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
@@ -106,6 +107,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("person", Representation.REF);
 			description.addProperty("concept");
 			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
@@ -138,6 +140,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 		description.addProperty("order");
 		description.addProperty("encounter");
 		description.addProperty("value");
+		description.addProperty("valueModifier");
 		description.addProperty("accessionNumber");
 		description.addProperty("groupMembers");
 		description.addProperty("valueCodedName");
