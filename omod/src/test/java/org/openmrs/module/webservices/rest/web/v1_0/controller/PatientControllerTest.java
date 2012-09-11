@@ -41,7 +41,7 @@ public class PatientControllerTest extends BaseCrudControllerTest {
 		        .create(post, new MockHttpServletRequest(), new MockHttpServletResponse());
 		Util.log("Created patient", newPatient);
 		Assert.assertEquals(before + 1, Context.getPatientService().getAllPatients().size());
-		Assert.assertEquals("Super User", Util.getByPath(newPatient, "preferredName/display"));
+		Assert.assertEquals("Super User", Util.getByPath(newPatient, "person/preferredName/display"));
 	}
 	
 	/**

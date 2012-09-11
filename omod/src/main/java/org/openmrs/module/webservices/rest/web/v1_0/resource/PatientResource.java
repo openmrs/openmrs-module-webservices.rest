@@ -46,7 +46,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
 @Resource("patient")
-@Handler(supports = Patient.class, order = 1)
+@Handler(supports = Patient.class, order = 0)
+//order must be less than that for PersonResource(order=1) RESTWS-273
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
 	public PatientResource() {
@@ -54,7 +55,7 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	
 	@PropertyGetter("person")
 	public static Person getPerson(Patient instance) {
-		return instance;
+		return new Person(instance); //Must be a Person instead of Patient to prevent infinite recursion RESTWS-273
 	}
 	
 	/**
