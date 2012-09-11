@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.ConceptClass;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;

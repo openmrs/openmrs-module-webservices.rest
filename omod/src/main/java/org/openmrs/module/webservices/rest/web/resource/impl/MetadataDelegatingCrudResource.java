@@ -128,4 +128,28 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		}
 		return displayString.toString();
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("description");
+		description.addRequiredProperty("retired");
+		
+		description.addProperty("retireReason");
+		
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() {
+		return getCreatableProperties();
+	}
 }
