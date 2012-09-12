@@ -48,6 +48,18 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		//description is set as optional on the superclass, we need to over ride that
+		description.addRequiredProperty("description");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
@@ -56,7 +68,8 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(HL7Source delegate, RequestContext context) throws ResponseException {

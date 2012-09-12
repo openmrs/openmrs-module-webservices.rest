@@ -87,9 +87,6 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("version");
-		//description is set as required on the superclass, we need to change that
-		description.removeProperty("description");		
-		description.addProperty("description");
 		
 		description.addProperty("encounterType");
 		description.addProperty("build");

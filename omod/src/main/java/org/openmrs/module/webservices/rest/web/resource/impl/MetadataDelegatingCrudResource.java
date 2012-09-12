@@ -137,7 +137,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("description");
+		description.addProperty("description");
 		
 		return description;
 	}

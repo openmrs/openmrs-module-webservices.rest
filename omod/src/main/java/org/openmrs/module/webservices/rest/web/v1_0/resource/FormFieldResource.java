@@ -117,14 +117,14 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
-		ret.put("dateCreated",
-		    ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(), Representation.DEFAULT));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
+		    Representation.DEFAULT));
 		if (((Retireable) resource).isRetired()) {
 			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(resource, "retiredBy", Representation.REF));
-			ret.put("dateRetired",
-			    ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(), Representation.DEFAULT));
-			ret.put("retireReason",
-			    ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(), Representation.DEFAULT));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(),
+			    Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(),
+			    Representation.DEFAULT));
 		}
 		return ret;
 	}
