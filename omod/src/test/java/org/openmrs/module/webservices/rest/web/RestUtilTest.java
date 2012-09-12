@@ -16,8 +16,11 @@ package org.openmrs.module.webservices.rest.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Tests for the {@link RestUtil} class.
@@ -105,6 +108,32 @@ public class RestUtilTest {
 		candidateIps.add("10.0.0.0/33");
 		
 		RestUtil.ipMatches("10.0.0.4", candidateIps);
+	}
+	
+	/**
+	 * @see RestUtil#getBooleanParam(HttpServletRequest,String)
+	 * @verifies return true only if request param is 'true'
+	 */
+	@Test
+	public void getBooleanParam_shouldReturnTrueOnlyIfRequestParamIsTrue() throws Exception {
+		
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		String includeAllParam = RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL;
+		
+		Assert.assertNull("getBooleanParam should return true if includeAllParam is not set", RestUtil.getBooleanParam(
+		    request, includeAllParam));
+		
+		request.setParameter(includeAllParam, "true");
+		Assert.assertTrue("getBooleanParam should return true if includeAllParam is equal 'true'", RestUtil.getBooleanParam(
+		    request, includeAllParam));
+		
+		request.setParameter(includeAllParam, "t");
+		Assert.assertFalse("getBooleanParam should return false if includeAllParam is not equal to 'true'", RestUtil
+		        .getBooleanParam(request, includeAllParam));
+		
+		request.setParameter(includeAllParam, (String) null);
+		Assert.assertNull("getBooleanParam should return null if includeAllParam is null", RestUtil.getBooleanParam(request,
+		    includeAllParam));
 	}
 	
 }

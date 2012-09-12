@@ -185,7 +185,7 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	 */
 	@Override
 	protected NeedsPaging<Location> doGetAll(RequestContext context) {
-		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(false), context);
+		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
 	}
 	
 	/**

@@ -8,4 +8,5 @@
   <cohort_member cohort_id="2" patient_id="2" />
   <hl7_source hl7_source_id="0" name="AMRS.ELD" creator="1" description="AMRS.ELD" date_created="2006-09-01 00:00:00" uuid="8d6b8bb6-c2cc-11de-8d13-0010c6dffd0f"/>
   <orders order_id="991" order_type_id="1" concept_id="5497" orderer="1" instructions="Do a CD4 Test" start_date="2008-08-08 00:00:00.0" auto_expire_date="2008-09-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="7" uuid="ff97d3a0-8dbf-11e1-bc86-da3a922f3783"/>
+  <orders order_id="992" order_type_id="1" concept_id="5497" orderer="1" instructions="Do a CD4 Test" start_date="2008-08-08 00:00:00.0" auto_expire_date="2008-09-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="true" patient_id="7" uuid="b7ed4e20-f27a-11e1-aff1-0800200c9a66"/>
 </dataset>

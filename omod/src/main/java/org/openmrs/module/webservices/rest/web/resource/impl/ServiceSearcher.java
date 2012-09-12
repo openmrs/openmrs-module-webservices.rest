@@ -152,7 +152,7 @@ public class ServiceSearcher<T> {
 					args[i] = context.getLimit();
 				}
 			} else if (clazz.equals(boolean.class) || clazz.equals(Boolean.class)) {
-				args[i] = false;
+				args[i] = context.getIncludeAll();
 			} else {
 				throw new RuntimeException("Method has argument types that are not allowed");
 			}
@@ -172,14 +172,13 @@ public class ServiceSearcher<T> {
 	 */
 	private int invokeCountMethod(OpenmrsService service, Method method, String query, RequestContext context)
 	        throws Exception {
-		// TODO determine whether to include voided/retired from context
 		Object[] args = new Object[method.getParameterTypes().length];
 		for (int i = 0; i < method.getParameterTypes().length; ++i) {
 			Class<?> clazz = method.getParameterTypes()[i];
 			if (clazz.equals(String.class)) {
 				args[i] = query;
 			} else if (clazz.equals(boolean.class) || clazz.equals(Boolean.class)) {
-				args[i] = false; // TODO use includeDeleted property from context
+				args[i] = context.getIncludeAll();
 			} else {
 				throw new RuntimeException("Method has argument types that are not allowed");
 			}

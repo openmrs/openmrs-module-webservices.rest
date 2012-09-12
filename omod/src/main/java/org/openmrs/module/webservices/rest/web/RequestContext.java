@@ -36,6 +36,8 @@ public class RequestContext {
 	
 	private Integer limit = RestUtil.getDefaultLimit();
 	
+	private Boolean includeAll = false;
+	
 	// for resources that represent class hierarchies, this allows requests for a specific type
 	private String type;
 	
@@ -83,6 +85,24 @@ public class RequestContext {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	/**
+	 * Should be used to determine whether voided data and/or retired metadata 
+	 * should be returned in <code>getAll()</code> and <code>search</code> requests.
+	 * @return the <code>Boolean</code> specifying whether or not to include 
+	 * voided data / retired metadata
+	 */
+	public Boolean getIncludeAll() {
+		return includeAll;
+	}
+	
+	/**
+	 * @param includeAll whether or not to include voided data / retired metadata
+	 * @see RestUtil#getRequestContext
+	 */
+	public void setIncludeAll(Boolean includeAll) {
+		this.includeAll = includeAll;
 	}
 	
 	/**

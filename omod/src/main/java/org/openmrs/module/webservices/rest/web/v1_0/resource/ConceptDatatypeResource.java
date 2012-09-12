@@ -129,7 +129,8 @@ public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<Conc
 	 */
 	@Override
 	protected NeedsPaging<ConceptDatatype> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptDatatype>(Context.getConceptService().getAllConceptDatatypes(false), context);
+		return new NeedsPaging<ConceptDatatype>(Context.getConceptService().getAllConceptDatatypes(context.getIncludeAll()),
+		        context);
 	}
 	
 }

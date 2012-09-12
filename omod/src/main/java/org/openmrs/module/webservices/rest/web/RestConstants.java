@@ -113,6 +113,15 @@ public class RestConstants {
 	public static final String REQUEST_PROPERTY_FOR_TYPE = "t";
 	
 	/**
+	 * An optional request parameter used by methods that return a list of objects to determine whether
+	 * voided (for data) or retired (for metadata) objects should be included in the list.
+	 * 
+	 * @see RequestContext#getIncludeAll()
+	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
+	 */
+	public static final String REQUEST_PROPERTY_FOR_INCLUDE_ALL = "includeAll";
+	
+	/**
 	 * Used in object representations to indicate which specific type an instance belongs to for a
 	 * resource that represents a full class hierarchy
 	 */

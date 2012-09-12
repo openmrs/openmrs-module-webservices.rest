@@ -119,7 +119,7 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	 */
 	@Override
 	protected NeedsPaging<Form> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Form>(Context.getFormService().getAllForms(false), context);
+		return new NeedsPaging<Form>(Context.getFormService().getAllForms(context.getIncludeAll()), context);
 	}
 	
 	/**

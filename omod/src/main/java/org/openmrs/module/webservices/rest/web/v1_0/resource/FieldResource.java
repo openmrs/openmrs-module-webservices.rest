@@ -119,7 +119,7 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	 */
 	@Override
 	protected NeedsPaging<Field> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Field>(Context.getFormService().getAllFields(), context);
+		return new NeedsPaging<Field>(Context.getFormService().getAllFields(context.getIncludeAll()), context);
 	}
 	
 	/**

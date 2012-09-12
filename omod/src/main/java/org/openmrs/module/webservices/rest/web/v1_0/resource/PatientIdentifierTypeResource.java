@@ -126,7 +126,8 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 */
 	@Override
 	protected NeedsPaging<PatientIdentifierType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<PatientIdentifierType>(service().getAllPatientIdentifierTypes(false), context);
+		return new NeedsPaging<PatientIdentifierType>(service().getAllPatientIdentifierTypes(context.getIncludeAll()),
+		        context);
 	}
 	
 	/**

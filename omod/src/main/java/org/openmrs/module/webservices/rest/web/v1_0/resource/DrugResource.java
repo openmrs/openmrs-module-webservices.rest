@@ -79,6 +79,6 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	 */
 	@Override
 	protected NeedsPaging<Drug> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(false), context);
+		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(context.getIncludeAll()), context);
 	}
 }

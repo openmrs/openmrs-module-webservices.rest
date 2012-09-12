@@ -18,6 +18,7 @@ import java.util.List;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -95,11 +96,15 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @should return all Orders (including retired) if context.includeAll is set
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Order>(Context.getOrderService().getOrders(), context);
+		//ORDER_STATUS.ANY is used to specify that all orders, including voided ones should be retrieved
+		ORDER_STATUS orderStatus = context.getIncludeAll() ? ORDER_STATUS.ANY : null;
+		
+		return new NeedsPaging<Order>(Context.getOrderService().getOrders(Order.class, null, null, orderStatus, null, null,
+		    null), context);
 	}
 	
 	/**

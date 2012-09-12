@@ -85,7 +85,8 @@ public class ConceptClassResource extends MetadataDelegatingCrudResource<Concept
 	 */
 	@Override
 	protected NeedsPaging<ConceptClass> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(false), context);
+		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(context.getIncludeAll()),
+		        context);
 	}
 	
 }

@@ -372,13 +372,13 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(4, object.size());
 		
 		@SuppressWarnings("unchecked")
-        Map<Object, Object> datatype = (Map<Object, Object>) object.get("datatype");
+		Map<Object, Object> datatype = (Map<Object, Object>) object.get("datatype");
 		Assert.assertEquals(2, datatype.size());
 		Assert.assertEquals("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", datatype.get("uuid"));
 		Assert.assertEquals("Coded", datatype.get("name"));
 		
 		@SuppressWarnings("unchecked")
-        Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
+		Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
 		Assert.assertEquals(7, conceptClass.size());
 		Assert.assertEquals("a82ef63c-e4e4-48d6-988a-fdd74d7541a7", conceptClass.get("uuid"));
 		Assert.assertEquals("Question - Question (eg, patient history, SF36 items)", conceptClass.get("display"));
@@ -389,11 +389,11 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(conceptClass.get("resourceVersion"));
 		
 		@SuppressWarnings("unchecked")
-        List<Object> names = (List<Object>) object.get("names");
+		List<Object> names = (List<Object>) object.get("names");
 		Assert.assertEquals(1, names.size());
 		
 		@SuppressWarnings("unchecked")
-        Map<Object, Object> name = (Map<Object, Object>) names.get(0);
+		Map<Object, Object> name = (Map<Object, Object>) names.get(0);
 		Assert.assertEquals(3, name.size());
 		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
 		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));

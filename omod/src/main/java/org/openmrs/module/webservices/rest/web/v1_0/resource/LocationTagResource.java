@@ -49,7 +49,7 @@ public class LocationTagResource extends MetadataDelegatingCrudResource<Location
 	 */
 	@Override
 	protected NeedsPaging<LocationTag> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<LocationTag>(service().getAllLocationTags(false), context);
+		return new NeedsPaging<LocationTag>(service().getAllLocationTags(context.getIncludeAll()), context);
 	}
 	
 	/**

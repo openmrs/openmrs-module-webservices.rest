@@ -48,6 +48,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
@@ -419,6 +421,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_REPRESENTATION
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
+	 * @see RestConstants#REQUEST_PROPERTY_FOR_INCLUDE_ALL
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, Representation defaultView) {
 		if (defaultView == null)
@@ -461,6 +464,10 @@ public class RestUtil implements GlobalPropertyListener {
 			ret.setStartIndex(startIndex);
 		}
 		
+		Boolean includeAll = getBooleanParam(request, RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL);
+		if (includeAll != null) {
+			ret.setIncludeAll(includeAll);
+		}
 		return ret;
 	}
 	
@@ -496,6 +503,24 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Convenience method to get the given param out of the given request as a boolean.
+	 * 
+	 * @param request the WebRequest to look in
+	 * @param param the string name to fetch
+	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> 
+	 * for any empty value, null value, or not equal to 'true', or missing param.
+	 * @should return true only if request param is 'true' 
+	 */
+	public static Boolean getBooleanParam(HttpServletRequest request, String param) {
+		try {
+			return ServletRequestUtils.getBooleanParameter(request, param);
+		}
+		catch (ServletRequestBindingException e) {
+			return false;
+		}
 	}
 	
 	/**

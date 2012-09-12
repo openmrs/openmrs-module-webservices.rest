@@ -101,7 +101,8 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	 */
 	@Override
 	protected NeedsPaging<EncounterType> doGetAll(RequestContext context) {
-		return new NeedsPaging<EncounterType>(Context.getEncounterService().getAllEncounterTypes(false), context);
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().getAllEncounterTypes(context.getIncludeAll()),
+		        context);
 	}
 	
 	/**

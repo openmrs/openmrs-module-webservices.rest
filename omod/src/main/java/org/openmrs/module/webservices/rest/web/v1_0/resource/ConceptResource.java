@@ -312,7 +312,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 */
 	@Override
 	protected NeedsPaging<Concept> doGetAll(RequestContext context) {
-		return new NeedsPaging<Concept>(Context.getConceptService().getAllConcepts(null, true, false), context);
+		return new NeedsPaging<Concept>(Context.getConceptService().getAllConcepts(null, true, context.getIncludeAll()),
+		        context);
 	}
 	
 	/**
@@ -366,7 +367,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		// get the user's locales...and then convert that from a set to a list
 		List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 		
-		searchResults = service.getConcepts(query, locales, false, null, null, null, null, answerTo, startIndex, limit);
+		searchResults = service.getConcepts(query, locales, context.getIncludeAll(), null, null, null, null, answerTo,
+		    startIndex, limit);
 		
 		// convert search results into list of concepts
 		List<Concept> results = new ArrayList<Concept>(searchResults.size());

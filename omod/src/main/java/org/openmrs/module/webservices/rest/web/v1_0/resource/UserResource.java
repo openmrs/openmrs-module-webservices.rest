@@ -19,7 +19,6 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.OpenmrsMetadata;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
@@ -36,7 +35,6 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -186,7 +184,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	@Override
 	protected NeedsPaging<UserAndPassword> doSearch(String query, RequestContext context) {
 		List<UserAndPassword> users = new ArrayList<UserAndPassword>();
-		for (User user : Context.getUserService().getUsers(query, null, false)) {
+		for (User user : Context.getUserService().getUsers(query, null, context.getIncludeAll())) {
 			users.add(new UserAndPassword(user));
 		}
 		return new NeedsPaging<UserAndPassword>(users, context);

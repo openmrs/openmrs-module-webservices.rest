@@ -160,7 +160,7 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	 */
 	@Override
 	protected NeedsPaging<Cohort> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Cohort>(Context.getCohortService().getAllCohorts(), context);
+		return new NeedsPaging<Cohort>(Context.getCohortService().getAllCohorts(context.getIncludeAll()), context);
 	}
 	
 	/**

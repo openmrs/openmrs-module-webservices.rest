@@ -47,6 +47,8 @@ public class ResourceTestConstants {
 	
 	public static final String OBS_UUID = "39fb7f47-e80a-4056-9285-bd798be13c63";
 	
+	public static final String ORDER_UUID = "921de0a3-05c4-444a-be03-e01b4c4b9142";
+	
 	public static final String LOCATION_UUID = "167ce20c-4785-4285-9119-d197268f7f4a";
 	
 	public static final String ENCOUNTER_TYPE_UUID = "61ae96f4-6afe-4351-b6f8-cd4fc383cce1";

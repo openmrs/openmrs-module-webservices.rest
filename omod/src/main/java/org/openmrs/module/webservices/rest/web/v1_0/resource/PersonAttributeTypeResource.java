@@ -119,7 +119,7 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	 */
 	@Override
 	protected NeedsPaging<PersonAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<PersonAttributeType>(service().getAllPersonAttributeTypes(false), context);
+		return new NeedsPaging<PersonAttributeType>(service().getAllPersonAttributeTypes(context.getIncludeAll()), context);
 	}
 	
 	/**
