@@ -81,6 +81,24 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addRequiredProperty("fieldType");
+		description.addProperty("selectMultiple");
+		
+		description.addProperty("concept");
+		description.addProperty("tableName");
+		description.addProperty("attributeName");
+		description.addProperty("defaultValue");
+		description.addProperty("answers");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
@@ -105,7 +123,8 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Field delegate, RequestContext context) throws ResponseException {

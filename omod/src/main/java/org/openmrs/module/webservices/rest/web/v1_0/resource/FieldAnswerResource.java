@@ -81,6 +81,18 @@ public class FieldAnswerResource extends DelegatingSubResource<FieldAnswer, Fiel
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("field");
+		description.addRequiredProperty("concept");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
