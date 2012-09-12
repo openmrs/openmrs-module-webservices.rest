@@ -53,8 +53,6 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("name");
-			description.addProperty("description");
 			description.addProperty("parent", Representation.REF);
 			description.addProperty("form", Representation.REF);
 			description.addProperty("field", Representation.REF);
@@ -73,8 +71,6 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("name");
-			description.addProperty("description");
 			description.addProperty("parent");
 			description.addProperty("form");
 			description.addProperty("field");
@@ -94,20 +90,41 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("form");
+		description.addRequiredProperty("field");
+		description.addRequiredProperty("required");
+		
+		description.addProperty("parent");
+		description.addProperty("fieldNumber");
+		description.addProperty("fieldPart");
+		description.addProperty("pageNumber");
+		description.addProperty("minOccurs");
+		description.addProperty("maxOccurs");
+		description.addProperty("sortWeight");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAuditInfo(org.openmrs.BaseOpenmrsObject)
 	 */
 	@Override
 	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
-		    Representation.DEFAULT));
+		ret.put("dateCreated",
+		    ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(), Representation.DEFAULT));
 		if (((Retireable) resource).isRetired()) {
 			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(resource, "retiredBy", Representation.REF));
-			ret.put("dateRetired", ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(),
-			    Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(),
-			    Representation.DEFAULT));
+			ret.put("dateRetired",
+			    ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason",
+			    ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(), Representation.DEFAULT));
 		}
 		return ret;
 	}
@@ -147,7 +164,8 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(FormField delegate, RequestContext context) throws ResponseException {
@@ -165,7 +183,8 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setParent(FormField instance, Form parent) {
@@ -173,7 +192,8 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public NeedsPaging<FormField> doGetAll(Form parent, RequestContext context) throws ResponseException {
@@ -188,7 +208,8 @@ public class FormFieldResource extends DelegatingSubResource<FormField, Form, Fo
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(FormField delegate, String reason, RequestContext context) throws ResponseException {

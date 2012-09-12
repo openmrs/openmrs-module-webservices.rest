@@ -138,9 +138,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		description.addRequiredProperty("retired");
-		
-		description.addProperty("retireReason");
 		
 		return description;
 	}

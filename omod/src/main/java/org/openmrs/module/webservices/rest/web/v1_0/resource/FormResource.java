@@ -81,6 +81,27 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addRequiredProperty("version");
+		//description is set as required on the superclass, we need to change that
+		description.removeProperty("description");		
+		description.addProperty("description");
+		
+		description.addProperty("encounterType");
+		description.addProperty("build");
+		description.addProperty("published");
+		description.addProperty("formFields");
+		description.addProperty("xslt");
+		description.addProperty("template");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
@@ -105,7 +126,8 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Form delegate, RequestContext context) throws ResponseException {
@@ -123,7 +145,8 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Form> doSearch(String query, RequestContext context) {
