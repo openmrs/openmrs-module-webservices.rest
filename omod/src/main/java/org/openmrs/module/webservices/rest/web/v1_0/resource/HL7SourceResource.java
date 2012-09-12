@@ -71,4 +71,16 @@ public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source>
 		return Context.getHL7Service().saveHL7Source(delegate);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("description");
+		
+		return description;
+	}
 }
