@@ -64,7 +64,7 @@ public class ProblemResource extends DataDelegatingCrudResource<Problem> {
 	public Problem getByUniqueId(String uniqueId) {
 		Problem problem = Context.getPatientService().getProblem(Integer.parseInt(uniqueId));
 		if (problem != null) {
-			problem.setUuid(ResourceTestConstants.PROBLEM_UUID);
+			problem.setUuid("39fb7f47-e80a-4056-9285-bd798be13c62");
 		}
 		return problem;
 	}

@@ -63,7 +63,7 @@ public class AllergyResource extends DataDelegatingCrudResource<Allergy> {
 	public Allergy getByUniqueId(String uniqueId) {
 		Allergy allergy = Context.getPatientService().getAllergy(Integer.parseInt(uniqueId));
 		if (allergy != null) {
-			allergy.setUuid(ResourceTestConstants.ALLERGY_UUID);
+			allergy.setUuid("39fb7f47-e80a-4056-9285-bd798be13c61");
 		}
 		return allergy;
 	}
