@@ -71,4 +71,7 @@ public class ResourceTestConstants {
 	
 	public static final String FIELD_UUID = "db016b7d-39a5-4911-89da-0eefbfef7cb2";
 	
+	public static final String ALLERGY_UUID = "39fb7f47-e80a-4056-9285-bd798be13c61";
+	
+	public static final String PROBLEM_UUID = "39fb7f47-e80a-4056-9285-bd798be13c62";
 }
