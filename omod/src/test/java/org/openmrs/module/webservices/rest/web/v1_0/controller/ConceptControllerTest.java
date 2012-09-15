@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptNameType;
@@ -399,5 +400,38 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
 		Assert.assertNotNull(name.get("links"));
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldIncludeAllUnretiredConceptAnswersForAQuestionConcept() throws Exception {
+		final String conceptUuid = "89ca642a-dab6-4f20-b712-e12ca4fc6d36";
+		Concept questionConcept = service.getConceptByUuid(conceptUuid);
+		//for the test to stay valid, the sort weights should always be the same(null in this case)
+		for (ConceptAnswer ca : questionConcept.getAnswers(false)) {
+			Assert.assertNull(ca.getSortWeight());
+		}
+		
+		int expectedAnswerCount = service.getConceptByUuid(conceptUuid).getAnswers(false).size();
+		Object result = controller.retrieve(conceptUuid, request);
+		Assert.assertNotNull(result);
+		Assert.assertEquals(expectedAnswerCount, ((List<Object>) PropertyUtils.getProperty(result, "answers")).size());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldIncludeAllSetMembersForAConceptSet() throws Exception {
+		final String conceptUuid = "0f97e14e-cdc2-49ac-9255-b5126f8a5147";
+		Concept parentConcept = service.getConceptByUuid(conceptUuid);
+		//for testing purposes set the same weight for the set members
+		for (ConceptSet conceptSet : parentConcept.getConceptSets()) {
+			conceptSet.setSortWeight(2.0);
+		}
+		service.saveConcept(parentConcept);
+		
+		int expectedMemberCount = service.getConceptByUuid(conceptUuid).getConceptSets().size();
+		Object result = controller.retrieve(conceptUuid, request);
+		Assert.assertNotNull(result);
+		Assert.assertEquals(expectedMemberCount, ((List<Object>) PropertyUtils.getProperty(result, "setMembers")).size());
 	}
 }

@@ -21,8 +21,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -407,10 +405,11 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 */
 	@PropertyGetter("answers")
 	public static Object getAnswers(Concept instance) {
-		List<Object> answers = new ArrayList<Object>();
-		Set<ConceptAnswer> conceptAnswers = new TreeSet<ConceptAnswer>();
-		conceptAnswers.addAll(instance.getAnswers());
+		List<ConceptAnswer> conceptAnswers = new ArrayList<ConceptAnswer>();
+		conceptAnswers.addAll(instance.getAnswers(false));
+		Collections.sort(conceptAnswers);
 		
+		List<Object> answers = new ArrayList<Object>();
 		for (ConceptAnswer conceptAnswer : conceptAnswers) {
 			if (conceptAnswer.getAnswerDrug() != null) {
 				answers.add(conceptAnswer.getAnswerDrug());
