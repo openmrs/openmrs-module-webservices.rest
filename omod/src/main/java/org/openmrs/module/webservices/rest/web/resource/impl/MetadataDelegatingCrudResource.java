@@ -81,11 +81,9 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
 		if (delegate.isRetired()) {
 			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
-			ret
-			        .put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(),
-			            Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(),
-			    Representation.DEFAULT));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason",
+			    ConversionUtil.convertToRepresentation(delegate.getRetireReason(), Representation.DEFAULT));
 		}
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
@@ -140,13 +138,5 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		description.addProperty("description");
 		
 		return description;
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-	 */
-	@Override
-	public DelegatingResourceDescription getUpdatableProperties() {
-		return getCreatableProperties();
 	}
 }
