@@ -87,7 +87,7 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("fieldType");
-		description.addProperty("selectMultiple");
+		description.addRequiredProperty("selectMultiple");
 		
 		description.addProperty("concept");
 		description.addProperty("tableName");
