@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 
 public class AllergyResourceTest extends BaseDelegatingResourceTest<AllergyResource, Allergy> {
 	
-	private static final String ACTIVE_LIST_INITIAL_XML = "org/openmrs/api/include/ActiveListTest.xml";
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
 	@Before
 	public void init() throws Exception {
@@ -45,9 +45,10 @@ public class AllergyResourceTest extends BaseDelegatingResourceTest<AllergyResou
 		super.validateDefaultRepresentation();
 		assertPropPresent("person");
 		assertPropPresent("allergen");
+		assertPropEquals("allergyType", getObject().getAllergyType());
 		assertPropPresent("activeListType");
 		assertPropEquals("severity", getObject().getSeverity());
-		assertPropEquals("comment", getObject().getComments());
+		assertPropEquals("comments", getObject().getComments());
 		assertPropEquals("reaction", getObject().getReaction());
 		assertPropPresent("startDate");
 		assertPropPresent("endDate");
@@ -61,9 +62,10 @@ public class AllergyResourceTest extends BaseDelegatingResourceTest<AllergyResou
 		super.validateFullRepresentation();
 		assertPropPresent("person");
 		assertPropPresent("allergen");
+		assertPropEquals("allergyType", getObject().getAllergyType());
 		assertPropPresent("activeListType");
 		assertPropEquals("severity", getObject().getSeverity());
-		assertPropEquals("comment", getObject().getComments());
+		assertPropEquals("comments", getObject().getComments());
 		assertPropEquals("reaction", getObject().getReaction());
 		assertPropPresent("startDate");
 		assertPropPresent("endDate");

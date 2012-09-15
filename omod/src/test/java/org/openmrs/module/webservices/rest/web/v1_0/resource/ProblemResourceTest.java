@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 
 public class ProblemResourceTest extends BaseDelegatingResourceTest<ProblemResource, Problem> {
 	
-	private static final String ACTIVE_LIST_INITIAL_XML = "org/openmrs/api/include/ActiveListTest.xml";
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
 	@Before
 	public void init() throws Exception {
@@ -47,7 +47,7 @@ public class ProblemResourceTest extends BaseDelegatingResourceTest<ProblemResou
 		assertPropPresent("problem");
 		assertPropPresent("activeListType");
 		assertPropEquals("modifier", getObject().getModifier());
-		assertPropEquals("comment", getObject().getComments());
+		assertPropEquals("comments", getObject().getComments());
 		assertPropEquals("sortWeight", getObject().getSortWeight());
 		assertPropPresent("startDate");
 		assertPropPresent("endDate");
@@ -63,7 +63,7 @@ public class ProblemResourceTest extends BaseDelegatingResourceTest<ProblemResou
 		assertPropPresent("problem");
 		assertPropPresent("activeListType");
 		assertPropEquals("modifier", getObject().getModifier());
-		assertPropEquals("comment", getObject().getComments());
+		assertPropEquals("comments", getObject().getComments());
 		assertPropEquals("sortWeight", getObject().getSortWeight());
 		assertPropPresent("startDate");
 		assertPropPresent("endDate");

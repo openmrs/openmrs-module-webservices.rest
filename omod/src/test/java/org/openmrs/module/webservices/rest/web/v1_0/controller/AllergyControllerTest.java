@@ -36,7 +36,7 @@ import org.springframework.web.context.request.WebRequest;
 
 public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String ACTIVE_LIST_INITIAL_XML = "org/openmrs/api/include/ActiveListTest.xml";
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
 	private MockHttpServletRequest emptyRequest() {
 		return new MockHttpServletRequest();
@@ -53,13 +53,14 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getAllergy_shouldGetADefaultRepresentationOfAnAllergy() throws Exception {
-		Object result = new AllergyController().retrieve("1", emptyRequest());
+		Object result = new AllergyController().retrieve(ResourceTestConstants.ALLERGY_UUID, emptyRequest());
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "allergen"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
@@ -70,7 +71,7 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getAllergy_shouldGetAFullRepresentationOfAnAllergy() throws Exception {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new AllergyController().retrieve("1", req);
+		Object result = new AllergyController().retrieve(ResourceTestConstants.ALLERGY_UUID, req);
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
@@ -88,7 +89,8 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void voidAllergy_shouldVoidAnAllergy() throws Exception {
 		Allergy allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertFalse(allergy.isVoided());
-		new AllergyController().delete("1", "unit test", emptyRequest(), new MockHttpServletResponse());
+		new AllergyController().delete(ResourceTestConstants.ALLERGY_UUID, "unit test", emptyRequest(),
+		    new MockHttpServletResponse());
 		allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertTrue(allergy.isVoided());
 		Assert.assertEquals("unit test", allergy.getVoidReason());
@@ -101,7 +103,7 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void purgeAllergy_shouldPurgeASimpleAllergy() throws Exception {
 		Assert.assertNull(Context.getPatientService().getAllergy(1).getEndDate());
-		new AllergyController().purge("1", emptyRequest(), new MockHttpServletResponse());
+		new AllergyController().purge(ResourceTestConstants.ALLERGY_UUID, emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNotNull(Context.getPatientService().getAllergy(1).getEndDate());
 	}
 	
@@ -117,6 +119,6 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 		    emptyRequest(), new MockHttpServletResponse());
 		List<Object> results = (List<Object>) search.get("results");
 		Assert.assertEquals(1, results.size());
-		Assert.assertNull(PropertyUtils.getProperty(results.get(0), "uuid"));
+		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
 }

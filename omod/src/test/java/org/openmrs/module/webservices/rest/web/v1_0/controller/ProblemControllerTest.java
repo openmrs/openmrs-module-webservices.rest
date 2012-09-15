@@ -36,7 +36,7 @@ import org.springframework.web.context.request.WebRequest;
 
 public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String ACTIVE_LIST_INITIAL_XML = "org/openmrs/api/include/ActiveListTest.xml";
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
 	private MockHttpServletRequest emptyRequest() {
 		return new MockHttpServletRequest();
@@ -53,13 +53,14 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getProblem_shouldGetADefaultRepresentationOfAProblem() throws Exception {
-		Object result = new ProblemController().retrieve("2", emptyRequest());
+		Object result = new ProblemController().retrieve(ResourceTestConstants.PROBLEM_UUID, emptyRequest());
 		Assert.assertNotNull(result);
 		Util.log("Problem fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "problem"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
@@ -70,7 +71,7 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void getProblem_shouldGetAFullRepresentationOfAProblem() throws Exception {
 		MockHttpServletRequest req = new MockHttpServletRequest();
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new ProblemController().retrieve("2", req);
+		Object result = new ProblemController().retrieve(ResourceTestConstants.PROBLEM_UUID, req);
 		Assert.assertNotNull(result);
 		Util.log("Problem fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(result, "uuid"));
@@ -88,7 +89,8 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void voidProblem_shouldVoidAProblem() throws Exception {
 		Problem problem = Context.getPatientService().getProblem(2);
 		Assert.assertFalse(problem.isVoided());
-		new ProblemController().delete("2", "unit test", emptyRequest(), new MockHttpServletResponse());
+		new ProblemController().delete(ResourceTestConstants.PROBLEM_UUID, "unit test", emptyRequest(),
+		    new MockHttpServletResponse());
 		problem = Context.getPatientService().getProblem(2);
 		Assert.assertTrue(problem.isVoided());
 		Assert.assertEquals("unit test", problem.getVoidReason());
@@ -101,7 +103,7 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	@Test
 	public void purgeProblem_shouldPurgeASimpleProblem() throws Exception {
 		Assert.assertNull(Context.getPatientService().getProblem(2).getEndDate());
-		new ProblemController().purge("2", emptyRequest(), new MockHttpServletResponse());
+		new ProblemController().purge(ResourceTestConstants.PROBLEM_UUID, emptyRequest(), new MockHttpServletResponse());
 		Assert.assertNotNull(Context.getPatientService().getProblem(2).getEndDate());
 	}
 	
@@ -117,6 +119,6 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 		    emptyRequest(), new MockHttpServletResponse());
 		List<Object> results = (List<Object>) search.get("results");
 		Assert.assertEquals(1, results.size());
-		Assert.assertNull(PropertyUtils.getProperty(results.get(0), "uuid"));
+		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
 }

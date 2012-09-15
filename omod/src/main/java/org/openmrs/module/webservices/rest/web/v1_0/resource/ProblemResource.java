@@ -13,23 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import java.util.List;
-
 import org.openmrs.Patient;
-import org.openmrs.activelist.Allergy;
 import org.openmrs.activelist.Problem;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -40,76 +35,24 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  */
 @Resource("problem")
 @Handler(supports = Problem.class, order = 0)
-public class ProblemResource extends DataDelegatingCrudResource<Problem> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	
-	@Override
-	protected void delete(Problem delegate, String reason, RequestContext context) throws ResponseException {
-		if (delegate.isVoided()) {
-			// DELETE is idempotent, so we return success here
-			return;
-		}
-		Context.getPatientService().voidProblem(delegate, reason);
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
-	 */
-	
-	@Override
-	public Problem getByUniqueId(String uniqueId) {
-		Problem problem = Context.getPatientService().getProblem(Integer.parseInt(uniqueId));
-		if (problem != null) {
-			problem.setUuid("39fb7f47-e80a-4056-9285-bd798be13c62");
-		}
-		return problem;
-	}
+public class ProblemResource extends BaseActiveListItemResource<Problem> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
-	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 			description.addProperty("modifier");
 			description.addProperty("sortWeight");
-			description.addProperty("person");
-			description.addProperty("activeListType");
-			description.addProperty("problem");
-			description.addProperty("startDate");
-			description.addProperty("endDate");
-			description.addProperty("startObs");
-			description.addProperty("stopObs");
-			description.addProperty("comments");
-			description.addProperty("voided");
-			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addProperty("problem", Representation.REF);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
-			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 			description.addProperty("modifier");
 			description.addProperty("sortWeight");
-			description.addProperty("person");
-			description.addProperty("activeListType");
-			description.addProperty("problem");
-			description.addProperty("startDate");
-			description.addProperty("endDate");
-			description.addProperty("startObs");
-			description.addProperty("stopObs");
-			description.addProperty("comments");
-			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
-			description.addSelfLink();
+			description.addProperty("problem", Representation.DEFAULT);
 			return description;
 		}
 		return null;
@@ -118,16 +61,12 @@ public class ProblemResource extends DataDelegatingCrudResource<Problem> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
-	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addRequiredProperty("person");
-		description.addRequiredProperty("activeListType");
+		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("problem");
 		description.addProperty("modifier");
 		description.addProperty("sortWeight");
-		description.addProperty("comments");
 		
 		return description;
 	}
@@ -135,30 +74,9 @@ public class ProblemResource extends DataDelegatingCrudResource<Problem> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
-	
 	@Override
 	public Problem newDelegate() {
 		return new Problem();
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	
-	@Override
-	public void purge(Problem delegate, RequestContext context) throws ResponseException {
-		Context.getPatientService().removeProblem(delegate, "REST web service");
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
-	 */
-	
-	@Override
-	public Problem save(Problem delegate) {
-		Context.getPatientService().saveProblem(delegate);
-		return null;
 	}
 	
 	/**
@@ -201,8 +119,7 @@ public class ProblemResource extends DataDelegatingCrudResource<Problem> {
 		        .getByUniqueId(patientUuid);
 		if (patient == null)
 			throw new ObjectNotFoundException();
-		List<Allergy> allergies = Context.getPatientService().getAllergies(patient);
-		return new NeedsPaging<Allergy>(allergies, context).toSimpleObject();
+		return new NeedsPaging<Problem>(Context.getPatientService().getProblems(patient), context).toSimpleObject();
 	}
 	
 }
