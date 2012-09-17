@@ -93,7 +93,6 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 		description.addProperty("tableName");
 		description.addProperty("attributeName");
 		description.addProperty("defaultValue");
-		description.addProperty("answers");
 		
 		return description;
 	}
