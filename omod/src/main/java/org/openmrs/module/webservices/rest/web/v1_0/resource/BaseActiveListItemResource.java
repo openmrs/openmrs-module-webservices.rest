@@ -121,7 +121,12 @@ public abstract class BaseActiveListItemResource<T extends ActiveListItem> exten
 	 */
 	@Override
 	public void purge(T delegate, RequestContext context) throws ResponseException {
-		delegate.setComments("Stopped from a REST web service call");
-		Context.getActiveListService().removeActiveListItem(delegate, null);
+		// TODO: add a purge method to core (TRUNK-3725), then add this here in restws (RESTWS-295)
+		//Context.getActiveListService().purgeActiveListItem(delegate);
 	}
+	
+	// TODO: add these lines into a "stop" method call.  RESTWS-296
+	//delegate.setComments("Stopped from a REST web service call");
+	//Context.getActiveListService().removeActiveListItem(delegate, null);
+	
 }
