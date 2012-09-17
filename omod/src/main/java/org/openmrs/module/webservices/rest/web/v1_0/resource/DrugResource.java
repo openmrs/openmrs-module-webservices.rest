@@ -75,6 +75,26 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addRequiredProperty("combination");
+		description.addRequiredProperty("concept");	
+
+		description.addProperty("name");
+		description.addProperty("doseStrength");
+		description.addProperty("maximumDailyDose");
+		description.addProperty("minimumDailyDose");
+		description.addProperty("units");
+		description.addProperty("dosageForm");
+		description.addProperty("route");
+		
+		return description;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
