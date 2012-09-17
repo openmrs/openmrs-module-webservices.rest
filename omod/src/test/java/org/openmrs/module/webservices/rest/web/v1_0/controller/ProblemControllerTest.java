@@ -97,17 +97,6 @@ public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * @see ProblemController#purgeProblem(String,WebRequest,HttpServletResponse)
-	 * @verifies purge a simple problem
-	 */
-	@Test
-	public void purgeProblem_shouldPurgeASimpleProblem() throws Exception {
-		Assert.assertNull(Context.getPatientService().getProblem(2).getEndDate());
-		new ProblemController().purge(ResourceTestConstants.PROBLEM_UUID, emptyRequest(), new MockHttpServletResponse());
-		Assert.assertNotNull(Context.getPatientService().getProblem(2).getEndDate());
-	}
-	
-	/**
 	 * @see ProblemResource#getProblemByPatient(String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @throws Exception

@@ -97,17 +97,6 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * @see AllergyController#purgeAllergy(String,WebRequest,HttpServletResponse)
-	 * @verifies purge a simple allergy
-	 */
-	@Test
-	public void purgeAllergy_shouldPurgeASimpleAllergy() throws Exception {
-		Assert.assertNull(Context.getPatientService().getAllergy(1).getEndDate());
-		new AllergyController().purge(ResourceTestConstants.ALLERGY_UUID, emptyRequest(), new MockHttpServletResponse());
-		Assert.assertNotNull(Context.getPatientService().getAllergy(1).getEndDate());
-	}
-	
-	/**
 	 * @see AllergyResource#getAllergyByPatient(String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @throws Exception
