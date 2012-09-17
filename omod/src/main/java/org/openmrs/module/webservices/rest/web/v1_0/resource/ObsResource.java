@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Encounter;
@@ -276,7 +277,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 					//get the actual persistent object rather than the hibernate proxy
 					ConceptNumeric concept = Context.getConceptService().getConceptNumeric(obs.getConcept().getId());
 					String units = concept.getUnits();
-					if (units != null) {
+					if (StringUtils.isNotBlank(units)) {
 						String originalValue = value.toString().trim();
 						if (originalValue.endsWith(units))
 							value = originalValue.substring(0, originalValue.indexOf(units)).trim();
