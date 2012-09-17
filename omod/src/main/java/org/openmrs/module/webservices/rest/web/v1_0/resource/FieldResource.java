@@ -54,7 +54,6 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 			description.addProperty("attributeName");
 			description.addProperty("defaultValue");
 			description.addProperty("selectMultiple");
-			description.addProperty("answers", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -71,7 +70,6 @@ public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 			description.addProperty("attributeName");
 			description.addProperty("defaultValue");
 			description.addProperty("selectMultiple");
-			description.addProperty("answers");
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
