@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -534,7 +535,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
-		Map<String, Property> allowedProperties = new HashMap<String, Property>(description.getProperties());
+		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.
 		Set<String> notAllowedProperties = new HashSet<String>();
