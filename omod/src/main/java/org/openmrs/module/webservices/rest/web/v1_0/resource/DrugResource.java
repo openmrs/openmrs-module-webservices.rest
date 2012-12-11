@@ -81,8 +81,8 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addRequiredProperty("combination");
-		description.addRequiredProperty("concept");	
-
+		description.addRequiredProperty("concept");
+		
 		description.addProperty("name");
 		description.addProperty("doseStrength");
 		description.addProperty("maximumDailyDose");
