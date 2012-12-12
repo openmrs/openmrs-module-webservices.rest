@@ -12,7 +12,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/openmrs/openmrs-module-webservices.rest/</connection>
-		<developerConnection>git:svn:https://github.com/openmrs/openmrs-module-webservices.rest/</developerConnection>
+		<developerConnection>scm:git:https://github.com/openmrs/openmrs-module-webservices.rest/</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-webservices.rest/</url>
 	</scm>
 
