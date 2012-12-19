@@ -190,8 +190,10 @@ public class PersonAddressResource extends DelegatingSubResource<PersonAddress, 
 		
 		if (needToAdd) {
 			newAddress.getPerson().addAddress(newAddress);
-			Context.getPersonService().savePerson(newAddress.getPerson());
 		}
+		
+		Context.getPersonService().savePerson(newAddress.getPerson());
+		
 		return newAddress;
 	}
 	
