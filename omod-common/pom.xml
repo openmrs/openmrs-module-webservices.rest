@@ -5,21 +5,12 @@
 		<artifactId>webservices.rest</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
-	<artifactId>webservices.rest-omod</artifactId>
+	<artifactId>webservices.rest-omod-common</artifactId>
 	<packaging>jar</packaging>
-	<name>Rest Web Services OMOD</name>
+	<name>Rest Web Services Common OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-common</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-	</dependencies>
-	
 	<build>
-        <finalName>${project.parent.artifactId}-${project.parent.version}.${revisionNumber}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -62,38 +53,10 @@
 		</testResources>
 		
 		<plugins>
-			<plugin>
-				<groupId>org.openmrs.maven.plugins</groupId>
-				<artifactId>maven-openmrs-plugin</artifactId>
-			</plugin>
             <plugin>
                 <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
                 <artifactId>maven-java-formatter-plugin</artifactId>
             </plugin>
-            <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>Expand resources</id>
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<includeGroupIds>${project.parent.groupId}</includeGroupIds>
-							<includeArtifactIds>${project.parent.artifactId}-omod-common</includeArtifactIds>
-							<includeScope>compile</includeScope>
-							<includes>**\/*.xml,**\/*.properties</includes>
-							<outputDirectory>${project.build.directory}/classes</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
