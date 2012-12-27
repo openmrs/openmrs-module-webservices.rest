@@ -10,13 +10,7 @@
 	<name>Rest Web Services OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.openmrs.module</groupId>
-			<artifactId>webservices.rest-api</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		
+	<dependencies>		
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
