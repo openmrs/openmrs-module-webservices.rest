@@ -31,7 +31,7 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openMRSVersion>1.8.1</openMRSVersion>
+		<openMRSVersion>1.8.5-SNAPSHOT</openMRSVersion>
 	
 		<MODULE_ID>${project.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.name}</MODULE_NAME>

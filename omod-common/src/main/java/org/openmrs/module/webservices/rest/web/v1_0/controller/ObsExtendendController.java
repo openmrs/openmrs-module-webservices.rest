@@ -11,16 +11,19 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
 import org.springframework.stereotype.Controller;
@@ -33,26 +36,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller for REST web service access to the Obs resource. Supports CRUD on the resource itself.
  */
 @Controller
+@Handler(order = 1)
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/obs")
-public class ObsController extends BaseCrudController<ObsResource> {
+public class ObsExtendendController extends ObsController {
 	
 	/**
-	 * Fetch obs for a given encounter
-	 * 
-	 * @param encounterUniqueId
-	 * @param request
-	 * @param response
-	 * @return obs for the given encounter
-	 * @throws ResponseException
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudController#getResource()
 	 */
-	@RequestMapping(method = RequestMethod.GET, params = "encounter")
-	@WSDoc("Fetch all non-retired obs for an encounter with the given uuid")
-	@ResponseBody
-	public SimpleObject searchByEncounter(@RequestParam("encounter") String encounterUniqueId, HttpServletRequest request,
-	        HttpServletResponse response) throws ResponseException {
-		ObsResource resource = getResource();
-		RequestContext context = RestUtil.getRequestContext(request);
-		return resource.getObsByEncounter(encounterUniqueId, context);
+	@Override
+	protected ObsResource getResource() {
+		return Context.getService(RestService.class).getResource(ObsResource.class);
 	}
 	
+	/**
+	 * Fetch obs for a given patient
+	 * 
+	 * @param patientUuid
+	 * @param request
+	 * @param response
+	 * @return obs for the given patient
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@WSDoc("Fetch all non-voided obs for a patient with the given uuid")
+	@ResponseBody
+	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		return getResource().getObsByPatient(patientUuid, RestUtil.getRequestContext(request));
+	}
 }
