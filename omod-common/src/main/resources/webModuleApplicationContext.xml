@@ -55,7 +55,7 @@
 	</bean>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
-        <property name="order" value="89"/>
+        <property name="order" value="1"/>
         <property name="messageConverters">
 			<list>
 				<ref bean="stringHttpMessageConverter"/>
@@ -68,6 +68,8 @@
     
     <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
     <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
 	<!-- Cannot do this, breaks all property editors from trunk...
 	<mvc:annotation-driven />

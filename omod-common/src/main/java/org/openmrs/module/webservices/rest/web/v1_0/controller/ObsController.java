@@ -11,6 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
+
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +21,9 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ObsResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,6 +54,23 @@ public class ObsController extends BaseCrudController<ObsResource> {
 		ObsResource resource = getResource();
 		RequestContext context = RestUtil.getRequestContext(request);
 		return resource.getObsByEncounter(encounterUniqueId, context);
+	}
+	
+	/**
+	 * Fetch obs for a given patient
+	 * 
+	 * @param patientUuid
+	 * @param request
+	 * @param response
+	 * @return obs for the given patient
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@WSDoc("Fetch all non-voided obs for a patient with the given uuid")
+	@ResponseBody
+	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		return getResource().getObsByPatient(patientUuid, RestUtil.getRequestContext(request));
 	}
 	
 }
