@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -38,8 +37,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for ConceptNames, supporting standard CRUD operations
  */
 
-@SubResource(parent = ConceptResource.class, path = "name")
-@Handler(supports = ConceptName.class, order = 0)
+@SubResource(parent = ConceptResource.class, path = "name", supportedClass = ConceptName.class)
 public class ConceptNameResource extends DelegatingSubResource<ConceptName, Concept, ConceptResource> {
 	
 	@Override

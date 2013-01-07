@@ -13,19 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,17 +38,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * @param <R>
  */
-public abstract class BaseSubResourceController<R extends SubResource> extends BaseRestController {
+@Controller
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/{resource}/{parentUuid}/{subResource}")
+public class MainSubResourceController {
 	
-	/**
-	 * @return a Resource for the actual parameterized type of this superclass
-	 */
-	@SuppressWarnings("unchecked")
-	protected R getResource() {
-		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
-		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
-		return Context.getService(RestService.class).getResource(clazz);
-	}
+	@Autowired
+	RestService restService;
 	
 	/**
 	 * @param parentUuid
@@ -60,11 +54,11 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object retrieve(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
+	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		R resource = getResource();
-		return resource.retrieve(parentUuid, uuid, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		return res.retrieve(parentUuid, uuid, context);
 	}
 	
 	/**
@@ -76,10 +70,11 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject getAll(@PathVariable("parentUuid") String parentUuid, HttpServletRequest request,
+	public SimpleObject getAll(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		return getResource().getAll(parentUuid, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		return res.getAll(parentUuid, context);
 	}
 	
 	/**
@@ -92,10 +87,11 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
-	public Object create(@PathVariable("parentUuid") String parentUuid, @RequestBody SimpleObject post,
+	public Object create(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		Object created = getResource().create(parentUuid, post, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		Object created = res.create(parentUuid, post, context);
 		return RestUtil.created(response, created);
 	}
 	
@@ -110,11 +106,12 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public Object update(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
+	public Object update(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, 
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		getResource().update(parentUuid, uuid, post, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		res.update(parentUuid, uuid, post, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -127,11 +124,12 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
-	public Object delete(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
+	public Object delete(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		getResource().delete(parentUuid, uuid, reason, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		res.delete(parentUuid, uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -144,10 +142,11 @@ public abstract class BaseSubResourceController<R extends SubResource> extends B
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
-	public Object purge(@PathVariable("parentUuid") String parentUuid, @PathVariable("uuid") String uuid,
+	public Object purge(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid, @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		getResource().purge(parentUuid, uuid, context);
+		SubResource res = (SubResource) restService.getResourceByName(resource + "/" + subResource);
+		res.purge(parentUuid, uuid, context);
 		return RestUtil.noContent(response);
 	}
 	

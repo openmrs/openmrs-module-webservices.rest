@@ -24,7 +24,6 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -45,8 +44,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource("person")
-@Handler(supports = Person.class, order = 1)
+@Resource(name = "person", order = 1, supportedClass = Person.class)
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource extends DataDelegatingCrudResource<Person> {
 	

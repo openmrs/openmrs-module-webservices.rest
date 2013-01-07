@@ -27,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.HandlerUtil;
 
 /**
  * Helpful base implementation of {@link DelegatingSubclassHandler}
@@ -93,10 +92,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	 */
 	@SuppressWarnings("unchecked")
 	public DelegatingCrudResource<Superclass> getResource() {
-		Resource resource = HandlerUtil.getPreferredHandler(Resource.class, getSuperclass());
-		
 		// get the service-managed singleton version of the resource
-		resource = Context.getService(RestService.class).getResource(resource.getClass());
+		Resource resource = Context.getService(RestService.class).getResourceBySupportedClass(getSuperclass());
 		
 		return (DelegatingCrudResource<Superclass>) resource;
 	};

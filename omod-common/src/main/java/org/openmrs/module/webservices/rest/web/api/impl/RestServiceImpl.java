@@ -13,25 +13,103 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
+import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.util.OpenmrsConstants;
 
 /**
  * Default implementation of the {@link RestService}
  */
 public class RestServiceImpl implements RestService {
 	
-	private Map<Class<? extends Resource>, Resource> resourceSingletons = new HashMap<Class<? extends Resource>, Resource>();
+	private final Map<String, ResourceDefinition> resourceDefinitionsByNames;
+	
+	private final Map<Class<?>, Resource> resourcesBySupportedClasses;
+	
+	public RestServiceImpl() throws IOException {
+		resourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
+		resourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
+		
+		List<Class<? extends Resource>> resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
+		
+		for (Class<? extends Resource> resource : resources) {
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = resource
+			        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			
+			String name = null;
+			String[] supportedOpenmrsVersions = null;
+			Class<?> supportedClass = null;
+			int order = Integer.MAX_VALUE;
+			
+			if (resourceAnnotation == null) {
+				SubResource subresourceAnnotation = resource.getAnnotation(SubResource.class);
+				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = subresourceAnnotation
+				        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+				
+				name = parentResourceAnnotation.name() + "/" + subresourceAnnotation.path();
+				supportedClass = subresourceAnnotation.supportedClass();
+				supportedOpenmrsVersions = subresourceAnnotation.supportedOpenmrsVersions();
+				order = subresourceAnnotation.order();
+			} else {
+				name = resourceAnnotation.name();
+				supportedClass = resourceAnnotation.supportedClass();
+				supportedOpenmrsVersions = resourceAnnotation.supportedOpenmrsVersions();
+				order = resourceAnnotation.order();
+			}
+			
+			if (supportedOpenmrsVersions.length == 0
+			        || Arrays.asList(supportedOpenmrsVersions).contains(OpenmrsConstants.OPENMRS_VERSION_SHORT)) {
+				ResourceDefinition existingResourceDef = resourceDefinitionsByNames.get(name);
+				
+				boolean addResource = true;
+				
+				if (existingResourceDef != null) {
+					if (existingResourceDef.order == order) {
+						throw new IllegalStateException("Two resources with the same name (" + name
+						        + ") must not have the same order");
+					} else if (existingResourceDef.order < order) {
+						addResource = false;
+					}
+				}
+				
+				if (addResource) {
+					Resource newResource = newResource(resource);
+					
+					resourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
+					resourcesBySupportedClasses.put(supportedClass, newResource);
+				}
+			}
+			
+		}
+	}
+	
+	private class ResourceDefinition {
+		
+		public Resource resource;
+		
+		public int order;
+		
+		public ResourceDefinition(Resource resource, int order) {
+			this.resource = resource;
+			this.order = order;
+		}
+		
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getRepresentation(java.lang.String)
@@ -54,30 +132,44 @@ public class RestServiceImpl implements RestService {
 		return new NamedRepresentation(requested);
 	}
 	
-	/**
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResource(java.lang.Class)
-	 */
 	@Override
-	public <R extends Resource> R getResource(Class<R> resourceClass) {
-		Resource resource = resourceSingletons.get(resourceClass);
-		if (resource == null) {
-			try {
-				resource = resourceClass.newInstance();
-				// if the resource has an init() method, we invoke it
-				try {
-					Method method = resource.getClass().getMethod("init");
-					method.invoke(resource);
-				}
-				catch (Exception ex) {}
-			}
-			catch (Exception ex) {
-				throw new APIException("Failed to instantiate " + resourceClass, ex);
-			}
-			resourceSingletons.put(resourceClass, resource);
+	public Resource getResourceByName(String name) throws APIException {
+		ResourceDefinition resourceDefinition = resourceDefinitionsByNames.get(name);
+		if (resourceDefinition == null) {
+			throw new APIException("Unknown resource: " + name);
+		} else {
+			return resourceDefinition.resource;
 		}
-		return (R) resource;
+	}
+	
+	@Override
+	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
+		Resource resource = resourcesBySupportedClasses.get(resourceClass);
+		if (resource == null) {
+			throw new APIException("Unknown resource: " + resourceClass);
+		} else {
+			return resource;
+		}
+	}
+	
+	/**
+	 * @throws InstantiationException
+	 */
+	private Resource newResource(Class<? extends Resource> resourceClass) {
+		try {
+			Resource resource = resourceClass.newInstance();
+			// if the resource has an init() method, we invoke it
+			try {
+				Method method = resource.getClass().getMethod("init");
+				method.invoke(resource);
+			}
+			catch (Exception ex) {}
+			
+			return resource;
+		}
+		catch (Exception ex) {
+			throw new APIException("Failed to instantiate " + resourceClass, ex);
+		}
 	}
 	
 }

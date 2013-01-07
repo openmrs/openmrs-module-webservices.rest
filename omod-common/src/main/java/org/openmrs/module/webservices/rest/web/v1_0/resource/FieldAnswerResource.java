@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.openmrs.Field;
 import org.openmrs.FieldAnswer;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -40,8 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FieldAnswer}, supporting standard CRUD operations
  */
-@SubResource(parent = FieldResource.class, path = "answer")
-@Handler(supports = FieldAnswer.class, order = 0)
+@SubResource(parent = FieldResource.class, path = "answer", supportedClass = FieldAnswer.class)
 public class FieldAnswerResource extends DelegatingSubResource<FieldAnswer, Field, FieldResource> {
 	
 	@RepHandler(RefRepresentation.class)

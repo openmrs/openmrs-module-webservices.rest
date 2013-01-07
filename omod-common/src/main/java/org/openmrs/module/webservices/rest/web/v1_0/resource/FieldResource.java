@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.Field;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -33,8 +32,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
-@Resource("field")
-@Handler(supports = Field.class, order = 0)
+@Resource(name = "field", supportedClass = Field.class)
 public class FieldResource extends MetadataDelegatingCrudResource<Field> {
 	
 	/**

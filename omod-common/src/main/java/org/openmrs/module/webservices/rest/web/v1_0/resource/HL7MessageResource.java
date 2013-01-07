@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import java.util.Map;
 
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -29,13 +28,11 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.util.IncomingHl7Message;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.HL7MessageController;
 
 /**
  * {@link Resource} for {@link IncomingHl7Message}, supporting standard CRUD operations
  */
-@Resource("hl7")
-@Handler(supports = IncomingHl7Message.class, order = 0)
+@Resource(name = "hl7", supportedClass = IncomingHl7Message.class)
 public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Message> {
 	
 	/**

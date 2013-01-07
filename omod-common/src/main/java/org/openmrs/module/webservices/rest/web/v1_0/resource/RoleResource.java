@@ -18,7 +18,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -37,8 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Role, supporting standard CRUD operations
  */
-@Resource("role")
-@Handler(supports = Role.class, order = 0)
+@Resource(name = "role", supportedClass = Role.class)
 public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	
 	/**

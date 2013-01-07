@@ -73,7 +73,8 @@ public class DrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Orde
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource orderResource = Context.getService(RestService.class).getResource(OrderResource.class);
+			OrderResource orderResource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("dose");
 			d.addProperty("units");
@@ -84,7 +85,8 @@ public class DrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Orde
 			d.addProperty("drug", Representation.REF);
 			return d;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource orderResource = Context.getService(RestService.class).getResource(OrderResource.class);
+			OrderResource orderResource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("dose");
 			d.addProperty("units");
@@ -103,7 +105,8 @@ public class DrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Orde
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource orderResource = Context.getService(RestService.class).getResource(OrderResource.class);
+		OrderResource orderResource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(
+		    Order.class);
 		DelegatingResourceDescription d = orderResource.getCreatableProperties();
 		d.addProperty("dose");
 		d.addProperty("units");

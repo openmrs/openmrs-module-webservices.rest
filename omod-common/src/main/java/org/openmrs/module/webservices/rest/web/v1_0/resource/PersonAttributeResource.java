@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -32,8 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "attribute")
-@Handler(supports = PersonAttribute.class, order = 0)
+@SubResource(parent = PersonResource.class, path = "attribute", supportedClass = PersonAttribute.class)
 public class PersonAttributeResource extends DelegatingSubResource<PersonAttribute, Person, PersonResource> {
 	
 	/**

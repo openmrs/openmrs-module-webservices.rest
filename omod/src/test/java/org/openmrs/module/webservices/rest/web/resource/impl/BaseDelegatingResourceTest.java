@@ -137,8 +137,8 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	public R newResource() {
 		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
 		@SuppressWarnings("unchecked")
-		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
-		return Context.getService(RestService.class).getResource(clazz);
+		Class<T> clazz = (Class<T>) t.getActualTypeArguments()[1];
+		return (R) Context.getService(RestService.class).getResourceBySupportedClass(clazz);
 	}
 	
 	/**

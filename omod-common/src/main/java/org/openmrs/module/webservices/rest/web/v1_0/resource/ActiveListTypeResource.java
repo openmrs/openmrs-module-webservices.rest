@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.activelist.ActiveListType;
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -28,8 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for ActiveListType, supporting standard CRUD operations
  */
-@Resource("activelisttype")
-@Handler(supports = ActiveListType.class, order = 0)
+@Resource(name = "activelisttype", supportedClass = ActiveListType.class)
 public class ActiveListTypeResource extends MetadataDelegatingCrudResource<ActiveListType> {
 	
 	/**

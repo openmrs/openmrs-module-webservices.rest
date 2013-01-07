@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,8 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "address")
-@Handler(supports = PersonAddress.class, order = 0)
+@SubResource(parent = PersonResource.class, path = "address", supportedClass = PersonAddress.class)
 public class PersonAddressResource extends DelegatingSubResource<PersonAddress, Person, PersonResource> {
 	
 	public PersonAddressResource() {

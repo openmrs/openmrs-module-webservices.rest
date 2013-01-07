@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -32,8 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent = PatientResource.class, path = "identifier")
-@Handler(supports = PatientIdentifier.class, order = 0)
+@SubResource(parent = PatientResource.class, path = "identifier", supportedClass = PatientIdentifier.class)
 public class PatientIdentifierResource extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource> {
 	
 	@Override

@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,8 +26,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
  */
-@Resource("hl7source")
-@Handler(supports = HL7Source.class, order = 0)
+@Resource(name = "hl7source", supportedClass = HL7Source.class)
 public class HL7SourceResource extends MetadataDelegatingCrudResource<HL7Source> {
 	
 	/**

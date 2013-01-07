@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -37,8 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Resource for {@link Order} and all of its subclasses
  */
-@Resource("order")
-@Handler(supports = Order.class, order = 0)
+@Resource(name = "order", supportedClass = Order.class)
 public class OrderResource extends DataDelegatingCrudResource<Order> {
 	
 	/**
@@ -198,8 +196,8 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	 * @throws ResponseException
 	 */
 	public PageableResult getOrdersByPatient(String patientUuid, RequestContext context) throws ResponseException {
-		Patient patient = Context.getService(RestService.class).getResource(PatientResource.class)
-		        .getByUniqueId(patientUuid);
+		Patient patient = ((PatientResource) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		

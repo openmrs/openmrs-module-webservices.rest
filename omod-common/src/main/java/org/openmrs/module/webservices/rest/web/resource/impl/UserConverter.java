@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -20,9 +21,9 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.UserAndPassword;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
 
 /**
  * An implementation of Converter to be able to create a representation from a User
@@ -53,7 +54,7 @@ public class UserConverter implements Converter<User> {
 	@Override
 	public SimpleObject asRepresentation(User instance, Representation rep) throws ConversionException {
 		UserAndPassword userPass = new UserAndPassword(instance);
-		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
+		UserResource userResource = (UserResource) Context.getService(RestService.class).getResourceByName("user");
 		return userResource.asRepresentation(userPass, rep);
 	}
 	
@@ -63,7 +64,7 @@ public class UserConverter implements Converter<User> {
 	@Override
 	public Object getProperty(User instance, String propertyName) throws ConversionException {
 		UserAndPassword userPass = new UserAndPassword(instance);
-		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
+		UserResource userResource = (UserResource) Context.getService(RestService.class).getResourceByName("user");
 		return userResource.getProperty(userPass, propertyName);
 	}
 	
@@ -73,7 +74,7 @@ public class UserConverter implements Converter<User> {
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		UserAndPassword userPass = new UserAndPassword((User) instance);
-		UserResource userResource = Context.getService(RestService.class).getResource(UserResource.class);
+		UserResource userResource = (UserResource) Context.getService(RestService.class).getResourceByName("user");
 		userResource.setProperty(userPass, propertyName, value);
 	}
 }

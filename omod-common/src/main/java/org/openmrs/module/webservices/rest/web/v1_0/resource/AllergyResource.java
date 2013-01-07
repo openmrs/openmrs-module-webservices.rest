@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -33,8 +32,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
  */
-@Resource("allergy")
-@Handler(supports = Allergy.class, order = 0)
+@Resource(name = "allergy", supportedClass = Allergy.class)
 public class AllergyResource extends BaseActiveListItemResource<Allergy> {
 	
 	/**
@@ -115,8 +113,8 @@ public class AllergyResource extends BaseActiveListItemResource<Allergy> {
 	 * @throws ResponseException
 	 */
 	public SimpleObject getAllergiesByPatient(String patientUuid, RequestContext context) throws ResponseException {
-		Patient patient = Context.getService(RestService.class).getResource(PatientResource.class)
-		        .getByUniqueId(patientUuid);
+		Patient patient = ((PatientResource) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		return new NeedsPaging<Allergy>(Context.getPatientService().getAllergies(patient), context).toSimpleObject();

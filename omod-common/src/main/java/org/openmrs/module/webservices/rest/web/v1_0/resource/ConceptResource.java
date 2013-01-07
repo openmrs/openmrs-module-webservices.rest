@@ -31,7 +31,6 @@ import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -61,8 +60,7 @@ import org.openmrs.util.LocaleUtility;
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
  */
-@Resource("concept")
-@Handler(supports = Concept.class, order = 0)
+@Resource(name = "concept", supportedClass = Concept.class)
 public class ConceptResource extends DelegatingCrudResource<Concept> {
 	
 	@RepHandler(RefRepresentation.class)

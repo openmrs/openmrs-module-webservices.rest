@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.ConceptClass;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -28,8 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptClass}, supporting standard CRUD operations
  */
-@Resource("conceptclass")
-@Handler(supports = ConceptClass.class, order = 0)
+@Resource(name = "conceptclass", supportedClass = ConceptClass.class)
 public class ConceptClassResource extends MetadataDelegatingCrudResource<ConceptClass> {
 	
 	/**

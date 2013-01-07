@@ -21,7 +21,6 @@ import java.util.Set;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -45,8 +44,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
-@Resource("patient")
-@Handler(supports = Patient.class, order = 0)
+@Resource(name = "patient", supportedClass = Patient.class)
 //order must be less than that for PersonResource(order=1) RESTWS-273
 public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	

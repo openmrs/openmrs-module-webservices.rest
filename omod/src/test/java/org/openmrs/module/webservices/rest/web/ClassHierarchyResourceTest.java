@@ -56,7 +56,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		executeDataSet(datasetFilename);
 		new Activator().contextRefreshed();
 		context = new RequestContext();
-		resource = Context.getService(RestService.class).getResource(OrderResource.class);
+		resource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 	}
 	
 	private SimpleObject buildSuperclass() {

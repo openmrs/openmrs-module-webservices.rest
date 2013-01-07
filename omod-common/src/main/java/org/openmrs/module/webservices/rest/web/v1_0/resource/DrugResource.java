@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.Drug;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -27,8 +26,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
-@Resource("drug")
-@Handler(supports = Drug.class, order = 0)
+@Resource(name = "drug", supportedClass = Drug.class)
 public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	
 	/**

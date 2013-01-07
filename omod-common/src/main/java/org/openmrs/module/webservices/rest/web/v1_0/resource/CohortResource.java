@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource;
 import java.util.List;
 
 import org.openmrs.Cohort;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -32,8 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Cohorts, supporting standard CRUD operations
  */
-@Resource("cohort")
-@Handler(supports = Cohort.class, order = 0)
+@Resource(name = "cohort", supportedClass = Cohort.class)
 public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	
 	/**

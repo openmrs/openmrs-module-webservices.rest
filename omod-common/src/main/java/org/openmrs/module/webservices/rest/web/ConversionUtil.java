@@ -51,12 +51,17 @@ public class ConversionUtil {
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
 		try {
-			Converter<T> converter = HandlerUtil.getPreferredHandler(Converter.class, clazz);
-			if (converter instanceof Resource) {
-				// make sure we use the service-managed singleton resource
-				converter = (Converter<T>) Context.getService(RestService.class).getResource(
-				    ((Resource) converter).getClass());
+			
+			try {
+				Resource resource = Context.getService(RestService.class).getResourceBySupportedClass(clazz);
+				
+				if (resource instanceof Converter) {
+					return (Converter<T>) resource;
+				}
 			}
+			catch (APIException e) {}
+			
+			Converter<T> converter = HandlerUtil.getPreferredHandler(Converter.class, clazz);
 			return converter;
 		}
 		catch (APIException ex) {
@@ -166,8 +171,9 @@ public class ConversionUtil {
 	 * 
 	 * @param map the map (typically a SimpleObject submitted as json) to convert
 	 * @param toClass the class to convert map to
-	 * @return the result of using a converter to instantiate a new class and set map's properties on it
-	 * @throws ConversionException 
+	 * @return the result of using a converter to instantiate a new class and set map's properties
+	 *         on it
+	 * @throws ConversionException
 	 */
 	@SuppressWarnings( { "rawtypes", "unchecked" })
 	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {

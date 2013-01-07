@@ -148,10 +148,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
 		if (ann == null)
 			throw new RuntimeException("There is no " + Resource.class + " annotation on " + getClass());
-		if (StringUtils.isEmpty(ann.value()))
+		if (StringUtils.isEmpty(ann.name()))
 			throw new RuntimeException(Resource.class.getSimpleName() + " annotation on " + getClass()
-			        + " must specify a value");
-		return ann.value();
+			        + " must specify a name");
+		return ann.name();
 	}
 	
 	/**

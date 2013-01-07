@@ -8,8 +8,10 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.EncounterResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/encounter")
-public class EncounterController extends BaseCrudController<EncounterResource> {
+public class EncounterController {
+	
+	@Autowired
+	RestService restService;
 	
 	/**
 	 * Fetch encounters for a given patient
@@ -37,7 +42,7 @@ public class EncounterController extends BaseCrudController<EncounterResource> {
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUniqueId, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		EncounterResource er = getResource();
+		EncounterResource er = (EncounterResource) restService.getResourceByName("encounter");
 		RequestContext context = RestUtil.getRequestContext(request);
 		return er.getEncountersByPatient(patientUniqueId, context);
 	}

@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.ConceptDatatype;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -33,8 +32,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptDatatype}, supporting standard CRUD operations
  */
-@Resource("conceptdatatype")
-@Handler(supports = ConceptDatatype.class, order = 0)
+@Resource(name = "conceptdatatype", supportedClass = ConceptDatatype.class)
 public class ConceptDatatypeResource extends MetadataDelegatingCrudResource<ConceptDatatype> {
 	
 	/**

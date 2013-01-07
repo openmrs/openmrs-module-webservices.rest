@@ -40,8 +40,9 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Base implementation of a sub-resource of a DelegatingCrudResource that delegates to a domain object
- *
+ * Base implementation of a sub-resource of a DelegatingCrudResource that delegates to a domain
+ * object
+ * 
  * @param <T> type of the domain class we delegate to
  * @param <P> type of the parent that T is a sub-resource of
  * @param <PR> type of the resource of the parent
@@ -188,7 +189,8 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	private PR getParentResource() {
 		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
 		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
-		return (PR) Context.getService(RestService.class).getResource(sub.parent());
+		return (PR) Context.getService(RestService.class).getResourceByName(
+		    sub.parent().getAnnotation(javax.annotation.Resource.class).name());
 	}
 	
 	@RepHandler(RefRepresentation.class)

@@ -21,7 +21,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -45,8 +44,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Resource for Encounters, supporting standard CRUD operations 
  */
-@Resource("encounter")
-@Handler(supports = Encounter.class, order = 0)
+@Resource(name = "encounter", supportedClass = Encounter.class)
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	
 	/**
@@ -186,8 +184,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 * @throws ResponseException 
 	 */
 	public SimpleObject getEncountersByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-		Patient patient = Context.getService(RestService.class).getResource(PatientResource.class).getByUniqueId(
-		    patientUniqueId);
+		Patient patient = ((PatientResource) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUniqueId);
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);

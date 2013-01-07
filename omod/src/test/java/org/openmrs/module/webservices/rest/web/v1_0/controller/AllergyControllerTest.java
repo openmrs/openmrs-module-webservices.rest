@@ -29,12 +29,12 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.AllergyResource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.ResourceTestConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
-public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
+public class AllergyControllerTest extends BaseCrudControllerTest {
 	
 	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
@@ -53,7 +53,7 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getAllergy_shouldGetADefaultRepresentationOfAnAllergy() throws Exception {
-		Object result = new AllergyController().retrieve(ResourceTestConstants.ALLERGY_UUID, emptyRequest());
+		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI() + "/" + ResourceTestConstants.ALLERGY_UUID)));
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
@@ -69,9 +69,9 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void getAllergy_shouldGetAFullRepresentationOfAnAllergy() throws Exception {
-		MockHttpServletRequest req = new MockHttpServletRequest();
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + ResourceTestConstants.ALLERGY_UUID);
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = new AllergyController().retrieve(ResourceTestConstants.ALLERGY_UUID, req);
+		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
 		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
@@ -89,8 +89,11 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void voidAllergy_shouldVoidAnAllergy() throws Exception {
 		Allergy allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertFalse(allergy.isVoided());
-		new AllergyController().delete(ResourceTestConstants.ALLERGY_UUID, "unit test", emptyRequest(),
-		    new MockHttpServletResponse());
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + ResourceTestConstants.ALLERGY_UUID);
+		req.addParameter("reason", "unit test");
+		
+		handle(req);
 		allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertTrue(allergy.isVoided());
 		Assert.assertEquals("unit test", allergy.getVoidReason());
@@ -104,10 +107,36 @@ public class AllergyControllerTest extends BaseModuleWebContextSensitiveTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void searchByPatient_shouldGetAllergyForAPatient() throws Exception {
-		SimpleObject search = new AllergyController().searchByPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
-		    emptyRequest(), new MockHttpServletResponse());
-		List<Object> results = (List<Object>) search.get("results");
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/");
+		req.addParameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+
+		SimpleObject result = deserialize(handle(req));
+		List<Object> results = (List<Object>) result.get("results");
 		Assert.assertEquals(1, results.size());
 		Assert.assertEquals(ResourceTestConstants.ALLERGY_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+     */
+    @Override
+    public String getURI() {
+	    return "allergy";
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+     */
+    @Override
+    public String getUuid() {
+	    return ResourceTestConstants.ALLERGY_UUID;
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+     */
+    @Override
+    public long getAllCount() {
+	    return 0;
+    }
 }

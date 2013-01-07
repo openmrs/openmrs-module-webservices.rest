@@ -19,12 +19,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.springframework.stereotype.Component;
 
 /**
  * Indicates that the annotated class is a sub-resource of another Resource
  */
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Component
 public @interface SubResource {
 	
 	/**
@@ -36,5 +38,11 @@ public @interface SubResource {
 	 * @return the relative URI this sub-resource lives at (will be appended to the URI of the parent resource)
 	 */
 	String path();
+	
+	Class<?> supportedClass();
+	
+	String[] supportedOpenmrsVersions() default {};
+	
+	int order() default Integer.MAX_VALUE;
 	
 }

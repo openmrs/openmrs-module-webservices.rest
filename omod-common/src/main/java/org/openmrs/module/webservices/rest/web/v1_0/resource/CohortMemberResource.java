@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.CohortMember;
@@ -40,8 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for cohort members
  */
-@SubResource(parent = CohortResource.class, path = "member")
-@Handler(supports = CohortMember.class, order = 0)
+@SubResource(parent = CohortResource.class, path = "member", supportedClass = CohortMember.class)
 public class CohortMemberResource extends DelegatingSubResource<CohortMember, Cohort, CohortResource> {
 	
 	/**

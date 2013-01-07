@@ -21,8 +21,10 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.AllergyResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +36,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/allergy")
-public class AllergyController extends BaseCrudController<AllergyResource> {
+public class AllergyController {
+	
+	@Autowired
+	RestService restService;
 	
 	/**
 	 * Fetch allergies for a given patient
@@ -50,7 +55,8 @@ public class AllergyController extends BaseCrudController<AllergyResource> {
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		return getResource().getAllergiesByPatient(patientUuid, RestUtil.getRequestContext(request));
+		AllergyResource res = (AllergyResource) restService.getResourceByName("allergy");
+		return res.getAllergiesByPatient(patientUuid, RestUtil.getRequestContext(request));
 	}
 	
 }

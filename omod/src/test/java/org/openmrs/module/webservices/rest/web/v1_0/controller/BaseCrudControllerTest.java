@@ -97,7 +97,8 @@ public abstract class BaseCrudControllerTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void shouldGetDefaultByUuid() throws Exception {
-		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI() + "/" + getUuid())));
+		MockHttpServletResponse response = handle(request(RequestMethod.GET, getURI() + "/" + getUuid()));
+		SimpleObject result = deserialize(response);
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));

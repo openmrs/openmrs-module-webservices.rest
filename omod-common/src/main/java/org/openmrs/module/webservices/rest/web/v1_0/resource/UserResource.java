@@ -21,7 +21,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Role;
 import org.openmrs.User;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -44,8 +43,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource("user")
-@Handler(supports = UserAndPassword.class, order = 0)
+@Resource(name = "user", supportedClass = UserAndPassword.class)
 public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword> {
 	
 	public UserResource() {
@@ -193,7 +191,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	/**
 	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
 	 * UserAndPassword instead of UserAndPassword itself
-	 *
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
 	 *      java.lang.String, java.lang.Object)
 	 * @param instance
@@ -218,7 +216,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	/**
 	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User
 	 * property of UserAndPassword instead of UserAndPassword itself
-	 *
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
 	 *      java.lang.String, java.lang.Object)
 	 * @param instance
@@ -279,7 +277,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	
 	/**
 	 * Overridden here since the unique id is not on UserAndPassword directly
-	 *
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUniqueId(java.lang.Object)
 	 */
 	@Override
@@ -289,7 +287,7 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	
 	/**
 	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User
-	 *
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getAuditInfo(java.lang.Object)
 	 */
 	@Override

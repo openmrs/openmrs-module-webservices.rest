@@ -18,13 +18,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Indicates that the annotated class is a REST-accessible resource, and indicates its base URI
  */
 @Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Component
 public @interface Resource {
 	
-	String value();
+	String name();
+	
+	Class<?> supportedClass();
+	
+	String[] supportedOpenmrsVersions() default {};
+	
+	int order() default Integer.MAX_VALUE;
 	
 }

@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.PatientIdentifierType;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -31,8 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
-@Resource("patientidentifiertype")
-@Handler(supports = PatientIdentifierType.class, order = 0)
+@Resource(name = "patientidentifiertype", supportedClass = PatientIdentifierType.class)
 public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResource<PatientIdentifierType> {
 	
 	public PatientIdentifierTypeResource() {

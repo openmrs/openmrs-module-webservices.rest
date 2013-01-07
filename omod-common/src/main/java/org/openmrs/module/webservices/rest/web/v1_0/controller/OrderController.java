@@ -20,8 +20,10 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.OrderResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +35,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/order")
-public class OrderController extends BaseCrudController<OrderResource> {
+public class OrderController {
+	
+	@Autowired
+	RestService restService;
 	
 	/**
 	 * Fetch orders for a given patient
@@ -49,7 +54,8 @@ public class OrderController extends BaseCrudController<OrderResource> {
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		return getResource().getOrdersByPatient(patientUuid, RestUtil.getRequestContext(request)).toSimpleObject();
+		OrderResource resource = (OrderResource) restService.getResourceByName("order");
+		return resource.getOrdersByPatient(patientUuid, RestUtil.getRequestContext(request)).toSimpleObject();
 	}
 	
 }

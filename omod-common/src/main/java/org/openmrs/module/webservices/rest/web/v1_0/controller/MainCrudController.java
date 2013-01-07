@@ -13,14 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.lang.reflect.ParameterizedType;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -29,6 +27,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,17 +42,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * @param <R>
  */
-public abstract class BaseCrudController<R extends CrudResource> extends BaseRestController {
+@Controller
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/{resource}")
+public class MainCrudController {
 	
-	/**
-	 * @return a Resource for the actual parameterized type of this superclass
-	 */
-	@SuppressWarnings("unchecked")
-	protected R getResource() {
-		ParameterizedType t = (ParameterizedType) getClass().getGenericSuperclass();
-		Class<R> clazz = (Class<R>) t.getActualTypeArguments()[0];
-		return Context.getService(RestService.class).getResource(clazz);
-	}
+	@Autowired
+	RestService restService;
 	
 	/**
 	 * @param uuid
@@ -62,10 +57,10 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object retrieve(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
+	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		R resource = getResource();
-		return resource.retrieve(uuid, context);
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		return res.retrieve(uuid, context);
 	}
 	
 	/**
@@ -77,10 +72,11 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public Object create(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		Object created = getResource().create(post, context);
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
 	}
 	
@@ -94,11 +90,11 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public Object update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post, HttpServletRequest request,
+	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, @RequestBody SimpleObject post, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource resource = getResource();
-		resource.update(uuid, post, context);
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		res.update(uuid, post, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -110,11 +106,12 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
-	public Object delete(@PathVariable("uuid") String uuid,
+	public Object delete(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		getResource().delete(uuid, reason, context);
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -126,10 +123,11 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
-	public Object purge(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response)
+	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
-		getResource().purge(uuid, context);
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		res.purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
 	
@@ -142,14 +140,15 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
-	public SimpleObject search(@RequestParam("q") String query, HttpServletRequest request, HttpServletResponse response)
+	public SimpleObject search(@PathVariable("resource") String resource, @RequestParam("q") String query, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		Searchable searchable;
 		try {
-			searchable = (Searchable) getResource();
+			searchable = (Searchable) res;
 		}
 		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(getResource().getClass().getSimpleName()
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName()
 			        + " is not Searchable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
@@ -164,14 +163,15 @@ public abstract class BaseCrudController<R extends CrudResource> extends BaseRes
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject getAll(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+	public SimpleObject getAll(@PathVariable("resource") String resource, HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		Listable listable;
 		try {
-			listable = (Listable) getResource();
+			listable = (Listable) res;
 		}
 		catch (ClassCastException ex) {
 			throw new ResourceDoesNotSupportOperationException(
-			        getResource().getClass().getSimpleName() + " is not Listable", null);
+			        res.getClass().getSimpleName() + " is not Listable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 		return listable.getAll(context);

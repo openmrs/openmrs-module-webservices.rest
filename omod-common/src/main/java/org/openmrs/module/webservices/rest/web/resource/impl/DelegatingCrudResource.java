@@ -264,10 +264,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			}
 			// TODO: Better if the @Resource annotation had version property in it
 			if (getClass().getName().contains("v2_0")) {
-				return RestConstants.URI_PREFIX + RestConstants.VERSION_2 + "/" + namespacePrefix + res.value() + "/"
+				return RestConstants.URI_PREFIX + RestConstants.VERSION_2 + "/" + namespacePrefix + res.name() + "/"
 				        + getUniqueId((T) delegate);
 			} else if (getClass().getName().contains("v1_0")) {
-				return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.value() + "/"
+				return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.name() + "/"
 				        + getUniqueId((T) delegate);
 			}
 		}

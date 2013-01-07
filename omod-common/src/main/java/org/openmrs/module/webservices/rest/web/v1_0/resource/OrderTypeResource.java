@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource;
 
 import org.openmrs.OrderType;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -27,8 +26,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  *
  */
-@Resource("ordertype")
-@Handler(supports = OrderType.class, order = 0)
+@Resource(name = "ordertype", supportedClass = OrderType.class)
 public class OrderTypeResource extends MetadataDelegatingCrudResource<OrderType> {
 	
 	/**

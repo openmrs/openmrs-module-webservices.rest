@@ -21,7 +21,6 @@ import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.Retireable;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -40,8 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
-@SubResource(parent = FormResource.class, path = "formfield")
-@Handler(supports = FormField.class, order = 0)
+@SubResource(parent = FormResource.class, path = "formfield", supportedClass = FormField.class)
 public class FormFieldResource extends DelegatingSubResource<FormField, Form, FormResource> {
 	
 	/**

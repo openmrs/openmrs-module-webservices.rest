@@ -26,22 +26,30 @@
   		    http://www.springframework.org/schema/mvc
         	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
+	<bean id="restService"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<bean
+				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl"
+				autowire="byType" />
+		</property>
+		<property name="preInterceptors">
+			<ref bean="serviceInterceptors" />
+		</property>
+		<property name="transactionAttributeSource">
+			<bean
+				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
+		</property>
+	</bean>
+
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
 				<value>org.openmrs.module.webservices.rest.web.api.RestService</value> <!-- service interface name -->
-				<bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-					<property name="transactionManager"><ref bean="transactionManager"/></property>
-					<property name="target">
-						<bean class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl" autowire="byType" />
-					</property>
-					<property name="preInterceptors">
-						<ref bean="serviceInterceptors"/>
-					</property>
-					<property name="transactionAttributeSource">
-						<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
-					</property>
-				</bean>
+				<ref bean="restService"/>
 			</list>
 		</property>
 	</bean>
