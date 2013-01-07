@@ -51,23 +51,15 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	private ConceptService service;
 	
-	private ConceptController controller;
-	
-	private MockHttpServletRequest request;
-	
-	private HttpServletResponse response;
-	
 	@Before
 	public void before() {
 		this.service = Context.getConceptService();
-		this.controller = new ConceptController();
-		this.request = new MockHttpServletRequest();
-		this.response = new MockHttpServletResponse();
 	}
 	
 	@Test
 	public void shouldGetAConceptByUuid() throws Exception {
-		Object result = controller.retrieve("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", request);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
@@ -75,13 +67,15 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfYouTryToSpecifyDefaultRepOnGetConceptByUuid() throws Exception {
-		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
-		controller.retrieve("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", request);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
+		deserialize(handle(req));
 	}
 	
 	@Test
 	public void shouldGetAConceptByName() throws Exception {
-		Object result = controller.retrieve("TREATMENT STATUS", request);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/TREATMENT STATUS");
+		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("511e03ab-7cbb-4b9f-abe3-d9256d67f27e", PropertyUtils.getProperty(result, "uuid"));
 		Assert
@@ -92,8 +86,8 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void shouldListAllUnRetiredConcepts() throws Exception {
 		int totalCount = service.getAllConcepts(null, true, true).size();
-		
-		SimpleObject result = controller.getAll(request, response);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
 		Assert.assertEquals(24, Util.getResultsList(result).size()); // there are 25 concepts and one is retired, so should only get 24 here
@@ -101,15 +95,17 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
-		SimpleObject result = controller.getAll(request, response);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
 		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
-		request.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
-		SimpleObject result = controller.getAll(request, response);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
+		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
 		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
@@ -120,8 +116,11 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		String json = "{ \"names\": [{\"name\":\"test concept\", \"locale\":\"en\", \"conceptNameType\":\""
 		        + ConceptNameType.FULLY_SPECIFIED
 		        + "\"}], \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newConcept = controller.create(post, request, response);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/");
+		req.setContent(json.getBytes());
+		
+		Object newConcept = deserialize(handle(req));
 		Assert.assertNotNull(PropertyUtils.getProperty(newConcept, "uuid"));
 		Assert.assertEquals(originalCount + 1, service.getAllConcepts().size());
 	}
@@ -130,8 +129,9 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	public void shouldEditFullySpecifiedNameOfAConcept() throws Exception {
 		final String changedName = "TESTING NAME";
 		String json = "{ \"name\":\"" + changedName + "\" }";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		controller.update("f923524a-b90c-4870-a948-4125638606fd", post, request, response);
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/f923524a-b90c-4870-a948-4125638606fd");
+		req.setContent(json.getBytes());
+		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
 		Assert.assertNotNull(updated);
 		Assert.assertEquals(changedName, updated.getFullySpecifiedName(Context.getLocale()).getName());
@@ -141,8 +141,9 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	public void shouldEditAConcept() throws Exception {
 		final String changedVersion = "1.2.3";
 		String json = "{ \"version\":\"" + changedVersion + "\" }";
-		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		controller.update("f923524a-b90c-4870-a948-4125638606fd", post, request, response);
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/f923524a-b90c-4870-a948-4125638606fd");
+		req.setContent(json.getBytes());
+		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
 		Assert.assertNotNull(updated);
 		Assert.assertEquals(changedVersion, updated.getVersion());
@@ -153,7 +154,12 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		String uuid = "0a9afe04-088b-44ca-9291-0a8c3b5c96fa";
 		Concept concept = service.getConceptByUuid(uuid);
 		Assert.assertFalse(concept.isRetired());
-		controller.delete(uuid, "really ridiculous random reason", request, response);
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
+		req.addParameter("!purge", "");
+		req.addParameter("reason", "really ridiculous random reason");
+		handle(req);
+		
 		concept = service.getConceptByUuid(uuid);
 		Assert.assertTrue(concept.isRetired());
 		Assert.assertEquals("really ridiculous random reason", concept.getRetireReason());
@@ -163,16 +169,20 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	public void shouldPurgeAConcept() throws Exception {
 		int originalCount = service.getAllConcepts().size();
 		String uuid = "11716f9c-1434-4f8d-b9fc-9aa14c4d6129";
-		controller.purge(uuid, request, response);
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
+		req.addParameter("purge", "");
+		handle(req);
+		
 		Assert.assertNull(service.getConceptByUuid(uuid));
 		Assert.assertEquals(originalCount - 1, service.getAllConcepts().size());
 	}
 	
 	@Test
 	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
-		MockHttpServletRequest httpReq = new MockHttpServletRequest();
-		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		Object result = controller.retrieve("0dde1358-7fcf-4341-a330-f119241a46e8", httpReq);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/0dde1358-7fcf-4341-a330-f119241a46e8");
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
@@ -180,7 +190,11 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
-		List<Object> hits = (List<Object>) controller.search("food", request, response).get("results");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("q", "food");
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(2, hits.size());
 		Assert.assertEquals("0dde1358-7fcf-4341-a330-f119241a46e8", PropertyUtils.getProperty(hits.get(0), "uuid"));
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", PropertyUtils.getProperty(hits.get(1), "uuid"));
@@ -189,11 +203,13 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void doSearch_shouldReturnMembersOfConcept() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		String memberOfUuid = "0f97e14e-cdc2-49ac-9255-b5126f8a5147"; // FOOD CONSTRUCT
-		HttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute("memberOf", memberOfUuid);
+		req.addParameter("memberOf", memberOfUuid);
+		req.addParameter("q", "no");
+		SimpleObject result = deserialize(handle(req));
 		
-		List<Object> hits = (List<Object>) controller.search("no", request, response).get("results");
+		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("f4d0b584-6ce5-40e2-9ce5-fa7ec07b32b4", PropertyUtils.getProperty(hits.get(0), "uuid")); // FAVORITE FOOD, NON-CODED
 	}
@@ -201,11 +217,14 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void doSearch_shouldReturnAnswersToConcept() throws Exception {
-		String answerToUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65"; // FOOD ASSISTANCE FOR ENTIRE FAMILY
-		HttpServletRequest request = new MockHttpServletRequest();
-		request.setAttribute("answerTo", answerToUuid);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		
-		List<Object> hits = (List<Object>) controller.search("no", request, response).get("results");
+		String answerToUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65"; // FOOD ASSISTANCE FOR ENTIRE FAMILY
+		req.addParameter("answerTo", answerToUuid);
+		req.addParameter("q", "no");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("b98a6ed4-77e7-4cee-aae2-81957fcd7f48", PropertyUtils.getProperty(hits.get(0), "uuid")); // NO
 	}
@@ -223,7 +242,8 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Concept concept = Context.getConceptService().getConceptByName(name.getName());
 		Assert.assertFalse(concept.isRetired());
 		
-		controller.retrieve(name.getName(), request);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name.getName());
+		handle(req);
 	}
 	
 	/**
@@ -413,7 +433,10 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		}
 		
 		int expectedAnswerCount = service.getConceptByUuid(conceptUuid).getAnswers(false).size();
-		Object result = controller.retrieve(conceptUuid, request);
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		SimpleObject result = deserialize(handle(req));
+		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(expectedAnswerCount, ((List<Object>) PropertyUtils.getProperty(result, "answers")).size());
 	}
@@ -430,7 +453,10 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		service.saveConcept(parentConcept);
 		
 		int expectedMemberCount = service.getConceptByUuid(conceptUuid).getConceptSets().size();
-		Object result = controller.retrieve(conceptUuid, request);
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		SimpleObject result = deserialize(handle(req));
+		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(expectedMemberCount, ((List<Object>) PropertyUtils.getProperty(result, "setMembers")).size());
 	}

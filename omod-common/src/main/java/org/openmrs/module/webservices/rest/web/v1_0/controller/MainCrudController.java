@@ -57,7 +57,8 @@ public class MainCrudController {
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
-	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
+	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
+	        HttpServletRequest request) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		return res.retrieve(uuid, context);
@@ -70,10 +71,10 @@ public class MainCrudController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/", method = RequestMethod.POST)
 	@ResponseBody
-	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		Object created = res.create(post, context);
@@ -90,8 +91,9 @@ public class MainCrudController {
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
-	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, @RequestBody SimpleObject post, HttpServletRequest request,
-	        HttpServletResponse response) throws ResponseException {
+	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
+	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		res.update(uuid, post, context);
@@ -123,8 +125,8 @@ public class MainCrudController {
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
-	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		res.purge(uuid, context);
@@ -140,16 +142,15 @@ public class MainCrudController {
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@ResponseBody
-	public SimpleObject search(@PathVariable("resource") String resource, @RequestParam("q") String query, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+	public SimpleObject search(@PathVariable("resource") String resource, @RequestParam("q") String query,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		Searchable searchable;
 		try {
 			searchable = (Searchable) res;
 		}
 		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName()
-			        + " is not Searchable", null);
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not Searchable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 		return searchable.search(query, context);
@@ -161,17 +162,17 @@ public class MainCrudController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject getAll(@PathVariable("resource") String resource, HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+	public SimpleObject getAll(@PathVariable("resource") String resource, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		Listable listable;
 		try {
 			listable = (Listable) res;
 		}
 		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(
-			        res.getClass().getSimpleName() + " is not Listable", null);
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not Listable", null);
 		}
 		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 		return listable.getAll(context);

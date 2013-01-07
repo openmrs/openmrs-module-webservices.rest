@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;

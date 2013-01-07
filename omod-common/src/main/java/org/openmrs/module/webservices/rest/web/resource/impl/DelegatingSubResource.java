@@ -189,8 +189,10 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	private PR getParentResource() {
 		org.openmrs.module.webservices.rest.web.annotation.SubResource sub = getClass().getAnnotation(
 		    org.openmrs.module.webservices.rest.web.annotation.SubResource.class);
-		return (PR) Context.getService(RestService.class).getResourceByName(
-		    sub.parent().getAnnotation(javax.annotation.Resource.class).name());
+		
+		org.openmrs.module.webservices.rest.web.annotation.Resource resource = sub.parent().getAnnotation(
+		    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+		return (PR) Context.getService(RestService.class).getResourceByName(resource.name());
 	}
 	
 	@RepHandler(RefRepresentation.class)

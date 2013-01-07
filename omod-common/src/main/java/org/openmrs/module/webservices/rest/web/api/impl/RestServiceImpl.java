@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
@@ -146,6 +147,12 @@ public class RestServiceImpl implements RestService {
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
 		if (resource == null) {
+			for (Entry<Class<?>, Resource> resourceBySupportedClass : resourcesBySupportedClasses.entrySet()) {
+				if (resourceBySupportedClass.getKey().isAssignableFrom(resourceClass)) {
+					return resourceBySupportedClass.getValue();
+				}
+			}
+			
 			throw new APIException("Unknown resource: " + resourceClass);
 		} else {
 			return resource;
