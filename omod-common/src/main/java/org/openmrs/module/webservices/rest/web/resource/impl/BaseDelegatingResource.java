@@ -41,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -83,7 +84,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * If this resource represents a class hierarchy (rather than a single class), this will hold
 	 * handlers for each subclass
 	 */
-	protected List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
+	protected volatile List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
 	
 	/**
 	 * All our resources support letting modules register subclass handlers. If any are registered,
@@ -97,21 +98,25 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * This will be automatically called whenever RestService instantiates a new instance of this
-	 * class. It finds all subclass handlers intented for this resource, and registers them.
+	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)} or {@link #getSubclassHandler(String)}.
+	 * It finds all subclass handlers intented for this resource, and registers them.
 	 */
 	@SuppressWarnings( { "unchecked", "rawtypes" })
 	public void init() {
-		for (DelegatingSubclassHandler handler : Context.getRegisteredComponents(DelegatingSubclassHandler.class)) {
+		List<DelegatingSubclassHandler<T, ? extends T>> tmpSubclassHandlers = new ArrayList<DelegatingSubclassHandler<T, ? extends T>>();
+		
+		List<DelegatingSubclassHandler> handlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
+		for (DelegatingSubclassHandler handler : handlers) {
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
 			    DelegatingSubclassHandler.class, 0);
-			Resource resourceForHandler = HandlerUtil.getPreferredHandler(Resource.class, forDelegateClass);
+			Resource resourceForHandler = Context.getService(RestService.class)
+			        .getResourceBySupportedClass(forDelegateClass);
 			if (getClass().equals(resourceForHandler.getClass())) {
-				if (subclassHandlers == null)
-					subclassHandlers = new ArrayList();
-				subclassHandlers.add(handler);
+				tmpSubclassHandlers.add(handler);
 			}
 		}
+		
+		subclassHandlers = tmpSubclassHandlers;
 	}
 	
 	/**
@@ -120,8 +125,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @param handler
 	 */
 	public void registerSubclassHandler(DelegatingSubclassHandler<T, ? extends T> handler) {
-		if (subclassHandlers == null)
-			subclassHandlers = new ArrayList<DelegatingSubclassHandler<T, ? extends T>>();
+		if (subclassHandlers == null) {
+			init();
+		}
 		for (DelegatingSubclassHandler<T, ? extends T> current : subclassHandlers) {
 			if (current.getClass().equals(handler.getClass())) {
 				log.info("Tried to register a subclass handler, but the class is already registered: " + handler.getClass());
@@ -478,7 +484,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @return the handler most appropriate for the given subclass, or null if none is suitable
 	 */
 	protected DelegatingSubclassHandler<T, ? extends T> getSubclassHandler(Class<? extends T> subclass) {
-		if (subclassHandlers == null || !hasTypesDefined())
+		if (subclassHandlers == null) {
+			init();
+		}
+		
+		if (!hasTypesDefined())
 			return null;
 		// look for an exact match
 		for (DelegatingSubclassHandler<T, ? extends T> handler : subclassHandlers) {
@@ -499,8 +509,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	protected DelegatingSubclassHandler<T, ? extends T> getSubclassHandler(String type) {
 		if (hasTypesDefined()) {
-			if (subclassHandlers == null)
-				return null;
+			if (subclassHandlers == null) {
+				init();
+			}
 			for (DelegatingSubclassHandler<T, ? extends T> handler : subclassHandlers) {
 				if (type.equals(handler.getTypeName()))
 					return handler;

@@ -144,6 +144,6 @@ public class AllergyControllerTest extends BaseCrudControllerTest {
 	 */
 	@Override
 	public void shouldGetAll() throws Exception {
-	    //super.shouldGetAll();
+		//super.shouldGetAll();
 	}
 }

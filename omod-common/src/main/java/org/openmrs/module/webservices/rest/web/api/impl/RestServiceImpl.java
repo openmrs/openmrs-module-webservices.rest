@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
@@ -165,12 +167,6 @@ public class RestServiceImpl implements RestService {
 	private Resource newResource(Class<? extends Resource> resourceClass) {
 		try {
 			Resource resource = resourceClass.newInstance();
-			// if the resource has an init() method, we invoke it
-			try {
-				Method method = resource.getClass().getMethod("init");
-				method.invoke(resource);
-			}
-			catch (Exception ex) {}
 			
 			return resource;
 		}
