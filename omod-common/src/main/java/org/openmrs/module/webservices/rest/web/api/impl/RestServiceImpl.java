@@ -14,17 +14,14 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -64,38 +61,67 @@ public class RestServiceImpl implements RestService {
 				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = subresourceAnnotation
 				        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
 				
+				supportedOpenmrsVersions = subresourceAnnotation.supportedOpenmrsVersions();
+				if (supportedOpenmrsVersions.length != 0) {
+					boolean supported = false;
+					
+					for (String supportedVersion : supportedOpenmrsVersions) {
+						try {
+							ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+							supported = true;
+							continue;
+						}
+						catch (Exception e) {}
+					}
+					
+					if (!supported) {
+						continue;
+					}
+				}
 				name = parentResourceAnnotation.name() + "/" + subresourceAnnotation.path();
 				supportedClass = subresourceAnnotation.supportedClass();
-				supportedOpenmrsVersions = subresourceAnnotation.supportedOpenmrsVersions();
 				order = subresourceAnnotation.order();
 			} else {
+				supportedOpenmrsVersions = resourceAnnotation.supportedOpenmrsVersions();
+				if (supportedOpenmrsVersions.length != 0) {
+					boolean supported = false;
+					
+					for (String supportedVersion : supportedOpenmrsVersions) {
+						try {
+							ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+							supported = true;
+							continue;
+						}
+						catch (Exception e) {}
+					}
+					
+					if (!supported) {
+						continue;
+					}
+				}
 				name = resourceAnnotation.name();
 				supportedClass = resourceAnnotation.supportedClass();
-				supportedOpenmrsVersions = resourceAnnotation.supportedOpenmrsVersions();
 				order = resourceAnnotation.order();
 			}
 			
-			if (supportedOpenmrsVersions.length == 0
-			        || Arrays.asList(supportedOpenmrsVersions).contains(OpenmrsConstants.OPENMRS_VERSION_SHORT)) {
-				ResourceDefinition existingResourceDef = resourceDefinitionsByNames.get(name);
-				
-				boolean addResource = true;
-				
-				if (existingResourceDef != null) {
-					if (existingResourceDef.order == order) {
-						throw new IllegalStateException("Two resources with the same name (" + name
-						        + ") must not have the same order");
-					} else if (existingResourceDef.order < order) {
-						addResource = false;
-					}
+			ResourceDefinition existingResourceDef = resourceDefinitionsByNames.get(name);
+			
+			boolean addResource = true;
+			
+			if (existingResourceDef != null) {
+				if (existingResourceDef.order == order) {
+					throw new IllegalStateException("Two resources with the same name (" + name
+					        + ") must not have the same order");
+				} else if (existingResourceDef.order < order) {
+					addResource = false;
 				}
+			}
+			
+			if (addResource) {
+				Resource newResource = newResource(resource);
 				
-				if (addResource) {
-					Resource newResource = newResource(resource);
-					
-					resourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
-					resourcesBySupportedClasses.put(supportedClass, newResource);
-				}
+				resourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
+				resourcesBySupportedClasses.put(supportedClass, newResource);
 			}
 			
 		}
