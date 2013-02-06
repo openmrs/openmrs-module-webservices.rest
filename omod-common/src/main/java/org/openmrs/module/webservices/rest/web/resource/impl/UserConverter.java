@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource;
 
 /**
  * An implementation of Converter to be able to create a representation from a User
