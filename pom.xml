@@ -34,10 +34,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<openMRSVersion>1.8.1</openMRSVersion>
 	
-		<MODULE_ID>${project.artifactId}</MODULE_ID>
-		<MODULE_NAME>${project.name}</MODULE_NAME>
-		<MODULE_VERSION>${project.version}</MODULE_VERSION>
-		<MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
+		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
+		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
+		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
+		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 	</properties>
 
 	<dependencyManagement>
