@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
@@ -26,6 +27,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
+	@Ignore
 	public void createDocumentation() throws Exception {
 		
 		List<ResourceDoc> docs = ResourceDocCreator.create("/ws");

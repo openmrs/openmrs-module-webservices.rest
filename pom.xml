@@ -25,45 +25,57 @@
 	</distributionManagement>
 
 	<modules>
-		<module>api</module>
+		<module>omod-common</module>
+		<module>omod-1.9</module>
 		<module>omod</module>
 	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<openMRSVersion>1.8.1</openMRSVersion>
+	
+		<MODULE_ID>${project.artifactId}</MODULE_ID>
+		<MODULE_NAME>${project.name}</MODULE_NAME>
+		<MODULE_VERSION>${project.version}</MODULE_VERSION>
+		<MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Libraries from lib to add as dependencies with compile or runtime
-				scope: Find matching dependencies in maven central repository. <dependency>
-				<groupId>org.other.library</groupId> <artifactId>library-name</artifactId>
-				<version>library.version</version> <scope>compile</scope> </dependency> -->
+			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>jar</type>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openMRSVersion}</version>
+				<type>jar</type>
+				<scope>provided</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
 				<artifactId>openmrs-api</artifactId>
 				<version>${openMRSVersion}</version>
+				<classifier>tests</classifier>
 				<type>jar</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.openmrs.api</groupId>
-				<artifactId>openmrs-api</artifactId>
-				<version>${openMRSVersion}</version>
-				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
+
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
 				<version>${openMRSVersion}</version>
+				<classifier>tests</classifier>
 				<type>jar</type>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.openmrs.web</groupId>
-				<artifactId>openmrs-web</artifactId>
-				<version>${openMRSVersion}</version>
-				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
+
 			<dependency>
 				<groupId>org.openmrs.test</groupId>
 				<artifactId>openmrs-test</artifactId>
@@ -71,20 +83,100 @@
 				<type>pom</type>
 				<scope>test</scope>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.openmrs.tools</groupId>
 				<artifactId>openmrs-tools</artifactId>
 				<version>${openMRSVersion}</version>
 			</dependency>
+			
+			<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
+			<type>jar</type>
+			<scope>compile</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+		</dependency>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openMRSVersion>1.8.1</openMRSVersion>
-	</properties>
+		<dependency>
+			<groupId>org.openmrs.api</groupId>
+			<artifactId>openmrs-api</artifactId>
+			<classifier>tests</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.openmrs.web</groupId>
+			<artifactId>openmrs-web</artifactId>
+			<classifier>tests</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openmrs.test</groupId>
+			<artifactId>openmrs-test</artifactId>
+			<type>pom</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<filtering>true</filtering>
+				<excludes>
+					<exclude>resources</exclude>
+				</excludes>
+				<targetPath>web/module</targetPath>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>resources</include>
+				</includes>
+				<targetPath>web/module</targetPath>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.txt</include>
+				</includes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.xml</exclude>
+					<exclude>**/*.txt</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+	
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -95,11 +187,23 @@
 						<source>1.6</source>
 					</configuration>
 				</plugin>
+				
 				<plugin>
 					<groupId>org.openmrs.maven.plugins</groupId>
 					<artifactId>maven-openmrs-plugin</artifactId>
 					<version>1.0.1</version>
+					<extensions>true</extensions>
+					<executions>
+						<execution>
+							<id>pack</id>
+							<phase>package</phase>
+							<goals>
+								<goal>package-module</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
@@ -111,6 +215,7 @@
 						</execution>
 					</executions>
 				</plugin>
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
@@ -120,6 +225,7 @@
 						<arguments>-Prelease</arguments>
 					</configuration>
 				</plugin>
+				
 				<plugin>
 					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 					<artifactId>maven-java-formatter-plugin</artifactId>
@@ -130,6 +236,86 @@
 						<configFile>../OpenMRSFormatter.xml</configFile>
 						<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
 						<lineEnding>CRLF</lineEnding>
+					</configuration>
+					<executions>
+	                    <execution>
+	                        <goals>
+	                           <goal>format</goal>
+	                        </goals>
+	                    </execution>
+	                </executions>
+				</plugin>
+				
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>buildnumber-maven-plugin</artifactId>
+					<version>1.1</version>
+					<configuration>
+						<buildNumberPropertyName>revisionNumber</buildNumberPropertyName>
+						<getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+						<revisionOnScmFailure>0</revisionOnScmFailure>
+						<shortRevisionLength>6</shortRevisionLength>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>validate</phase>
+							<goals>
+								<goal>create</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											com.googlecode.maven-java-formatter-plugin
+										</groupId>
+										<artifactId>
+											maven-java-formatter-plugin
+										</artifactId>
+										<versionRange>
+											[0.3.1,)
+										</versionRange>
+										<goals>
+											<goal>format</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.1,)
+										</versionRange>
+										<goals>
+											<goal>
+												unpack-dependencies
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
 			</plugins>
