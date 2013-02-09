@@ -140,42 +140,23 @@ public class MainCrudController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method = RequestMethod.GET, params = "q")
+	@RequestMapping(method = RequestMethod.GET, value = "/rest/" + RestConstants.VERSION_1 + "/{resource}")
 	@ResponseBody
-	public SimpleObject search(@PathVariable("resource") String resource, @RequestParam("q") String query,
-	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		CrudResource res = (CrudResource) restService.getResourceByName(resource);
-		Searchable searchable;
-		try {
-			searchable = (Searchable) res;
-		}
-		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not Searchable", null);
-		}
-		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-		return searchable.search(query, context);
-	}
-	
-	/**
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ResponseException
-	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	@ResponseBody
-	public SimpleObject getAll(@PathVariable("resource") String resource, HttpServletRequest request,
+	public SimpleObject get(@PathVariable("resource") String resource,
+	        @RequestParam(required = false, value = "q") String query, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
-		Listable listable;
 		try {
-			listable = (Listable) res;
+			RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
+			if (query != null) {
+				return ((Searchable) res).search(query, context);
+			}
+			return ((Listable) res).getAll(context);
 		}
 		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not Listable", null);
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not "
+			        + ((query != null) ? "Searchable" : "Listable"), null);
 		}
-		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-		return listable.getAll(context);
 	}
 	
 }

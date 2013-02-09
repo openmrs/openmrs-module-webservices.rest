@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -24,6 +23,7 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -105,19 +105,25 @@ public class AllergyResource extends BaseActiveListItemResource<Allergy> {
 	}
 	
 	/**
-	 * Gets allergies for a given patient (paged according to context if necessary)
+	 * Gets allergies for a given patient (paged according to context if necessary) only if a
+	 * patient parameter exists in the request set on the {@link RequestContext}
 	 * 
-	 * @param patientUuid @see {@link PatientResource#getByUniqueId(String)} for interpretation
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
-	public SimpleObject getAllergiesByPatient(String patientUuid, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
-		if (patient == null)
-			throw new ObjectNotFoundException();
-		return new NeedsPaging<Allergy>(Context.getPatientService().getAllergies(patient), context).toSimpleObject();
+	@Override
+	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+		String patientUuid = context.getRequest().getParameter("patient");
+		if (patientUuid != null) {
+			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Patient.class)).getByUniqueId(patientUuid);
+			if (patient == null)
+				throw new ObjectNotFoundException();
+			
+			return new NeedsPaging<Allergy>(Context.getPatientService().getAllergies(patient), context);
+		}
+		
+		//currently this is not supported since the superclass throws an exception
+		return super.doGetAll(context);
 	}
 	
 }
