@@ -115,7 +115,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void getCohorts_shouldSearchForCohortsByName() throws Exception {
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
 		req.addParameter("q", "B13");
 		SimpleObject result = deserialize(handle(req));
 		
