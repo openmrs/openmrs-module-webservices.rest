@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.OrderResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
@@ -56,7 +56,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		executeDataSet(datasetFilename);
 		new Activator().contextRefreshed();
 		context = new RequestContext();
-		resource = Context.getService(RestService.class).getResource(OrderResource.class);
+		resource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 	}
 	
 	private SimpleObject buildSuperclass() {
