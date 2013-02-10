@@ -25,7 +25,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ResourceTestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -34,107 +35,107 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class CohortMemberControllerTest extends BaseCrudControllerTest {
 	
-		private static final String patientUuid = "a7e04421-525f-442f-8138-05b619d16def";
+	private static final String patientUuid = "a7e04421-525f-442f-8138-05b619d16def";
+	
+	private static final String datasetFilename = "customTestDataset.xml";
+	
+	private CohortService service;
+	
+	private PatientService patientService;
+	
+	@Before
+	public void before() throws Exception {
+		this.service = Context.getCohortService();
+		this.patientService = Context.getPatientService();
+		executeDataSet(datasetFilename);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "cohort";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return 2;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.COHORT_UUID;
+	}
+	
+	@Test
+	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
 		
-		private static final String datasetFilename = "customTestDataset.xml";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/" + patientUuid);
+		SimpleObject result = deserialize(handle(req));
 		
-		private CohortService service;
+		Assert.assertNotNull(result);
+		Util.log("Cohort member fetched (default)", result);
+	}
+	
+	@Test
+	public void getAllCohortMembers_shouldGetARefRepresentationOfAllCohortMembers() throws Exception {
+		int size = service.getCohortByUuid(getUuid()).getMemberIds().size();
 		
-		private PatientService patientService;
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member");
+		SimpleObject result = deserialize(handle(req));
 		
-		@Before
-		public void before() throws Exception {
-			this.service = Context.getCohortService();
-			this.patientService = Context.getPatientService();
-			executeDataSet(datasetFilename);
-		}
+		Util.log("Cohort member fetched (ref)", result);
+		Assert.assertEquals(size, Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void getAllCohortMembers_shouldGetADefaultRepresentationOfAllCohortMembers() throws Exception {
+		int size = service.getCohortByUuid(getUuid()).getMemberIds().size();
 		
-		/**
-		 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
-		 */
-		@Override
-		public String getURI() {
-			return "cohort";
-		}
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member");
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
 		
-		/**
-		 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
-		 */
-		@Override
-		public long getAllCount() {
-			return 2;
-		}
+		Util.log("Cohort member fetched (default)", result);
+		Assert.assertEquals(size, Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void addCohortMember_shouldAddCohortMember() throws Exception {
 		
-		/**
-		 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
-		 */
-		@Override
-		public String getUuid() {
-			return ResourceTestConstants.COHORT_UUID;
-		}
+		String patientId = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		
-		@Test
-		public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
-			
-			MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/" + patientUuid);			
-			SimpleObject result = deserialize(handle(req));
-
-			Assert.assertNotNull(result);
-			Util.log("Cohort member fetched (default)", result);
-		}
+		SimpleObject attributes = new SimpleObject();
+		attributes.add("patient", patientId);
+		String json = new ObjectMapper().writeValueAsString(attributes);
 		
-		@Test
-		public void getAllCohortMembers_shouldGetARefRepresentationOfAllCohortMembers() throws Exception {
-			int size = service.getCohortByUuid(getUuid()).getMemberIds().size();
-			
-			MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/");			
-			SimpleObject result = deserialize(handle(req));
-			
-			Util.log("Cohort member fetched (ref)", result);
-			Assert.assertEquals(size, Util.getResultsSize(result));
-		}
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid() + "/member");
+		req.setContent(json.getBytes());
+		handle(req);
 		
-		@Test
-		public void getAllCohortMembers_shouldGetADefaultRepresentationOfAllCohortMembers() throws Exception {
-			int size = service.getCohortByUuid(getUuid()).getMemberIds().size();
-			
-			MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/");	
-			req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-			SimpleObject result = deserialize(handle(req));
-			
-			Util.log("Cohort member fetched (default)", result);
-			Assert.assertEquals(size, Util.getResultsSize(result));
-		}
+		Cohort cohort = service.getCohortByUuid(getUuid());
+		Patient patient = patientService.getPatientByUuid(patientId);
+		Assert.assertTrue(cohort.contains(patient));
+	}
+	
+	@Test
+	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
 		
-		@Test
-		public void addCohortMember_shouldAddCohortMember() throws Exception {
-			
-			String patientId = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-			
-			SimpleObject attributes = new SimpleObject();
-			attributes.add("patient", patientId);
-			String json = new ObjectMapper().writeValueAsString(attributes);
-
-			MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid() + "/member");	
-			req.setContent(json.getBytes());
-			handle(req);
-			
-			Cohort cohort = service.getCohortByUuid(getUuid());
-			Patient patient = patientService.getPatientByUuid(patientId);
-			Assert.assertTrue(cohort.contains(patient));
-		}
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + patientUuid);
+		req.addParameter("!purge", "");
+		handle(req);
 		
-		@Test
-		public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
-			
-			MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + patientUuid);
-			req.addParameter("purge", "");
-			handle(req);
-			
-			Cohort cohort = service.getCohortByUuid(getUuid());
-			Patient patient = patientService.getPatientByUuid(patientUuid);
-			Assert.assertTrue(!cohort.contains(patient));
-			
-		}
+		Cohort cohort = service.getCohortByUuid(getUuid());
+		Patient patient = patientService.getPatientByUuid(patientUuid);
+		Assert.assertTrue(!cohort.contains(patient));
+		
+	}
 	
 }
