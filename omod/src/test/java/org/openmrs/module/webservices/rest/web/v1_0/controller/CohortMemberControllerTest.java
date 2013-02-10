@@ -128,7 +128,7 @@ public class CohortMemberControllerTest extends BaseCrudControllerTest {
 		public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
 			
 			MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + patientUuid);
-			req.addParameter("purge", "");
+			req.addParameter("!purge", "");
 			handle(req);
 			
 			Cohort cohort = service.getCohortByUuid(getUuid());

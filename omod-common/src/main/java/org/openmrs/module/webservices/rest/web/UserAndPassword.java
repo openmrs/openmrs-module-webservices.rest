@@ -14,8 +14,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.io.Serializable;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.User;
 
@@ -30,8 +29,6 @@ import org.openmrs.User;
 public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable {
 	
 	public static final long serialVersionUID = 1L;
-	
-	private static final Log log = LogFactory.getLog(UserAndPassword.class);
 	
 	//Fields
 	private String password;
@@ -94,4 +91,10 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 	public void setId(Integer integer) {
 		getUser().setId(integer);
 	}
+
+	@Override
+	public String getUuid() {
+		return getUser().getUuid();
+	}	
+	
 }
