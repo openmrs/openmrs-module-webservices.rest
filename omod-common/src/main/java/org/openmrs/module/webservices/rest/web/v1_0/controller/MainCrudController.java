@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @param <R>
  */
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/{resource}")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
 public class MainCrudController {
 	
 	@Autowired
@@ -55,7 +55,7 @@ public class MainCrudController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request) throws ResponseException {
@@ -71,7 +71,7 @@ public class MainCrudController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(value = "/{resource}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
@@ -89,7 +89,7 @@ public class MainCrudController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
@@ -106,7 +106,7 @@ public class MainCrudController {
 	 * @param request
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
+	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
 	public Object delete(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
@@ -123,7 +123,7 @@ public class MainCrudController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
+	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
@@ -140,7 +140,7 @@ public class MainCrudController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/rest/" + RestConstants.VERSION_1 + "/{resource}")
+	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource,
 	        @RequestParam(required = false, value = "q") String query, HttpServletRequest request,

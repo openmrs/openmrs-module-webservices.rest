@@ -16,11 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -87,7 +83,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void shouldListAllUnRetiredConcepts() throws Exception {
 		int totalCount = service.getAllConcepts(null, true, true).size();
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
@@ -96,7 +92,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldGetRefRepresentationForGetAllByDefault() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
 		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
@@ -104,7 +100,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldGetSpecifiedRepresentationForGetAll() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
@@ -118,7 +114,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		        + ConceptNameType.FULLY_SPECIFIED
 		        + "\"}], \"datatype\":\"8d4a4c94-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Diagnosis\" }";
 		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/");
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
 		
 		Object newConcept = deserialize(handle(req));

@@ -1,27 +1,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.Provider;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Rest19ExtTestConstants;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.WebRequest;
 
 public class ProviderControllerTest extends BaseCrudControllerTest {
 	
@@ -151,14 +132,5 @@ public class ProviderControllerTest extends BaseCrudControllerTest {
 	@Override
 	public long getAllCount() {
 		return 2;
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
-	 */
-	@Override
-	@Test
-	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
 	}
 }

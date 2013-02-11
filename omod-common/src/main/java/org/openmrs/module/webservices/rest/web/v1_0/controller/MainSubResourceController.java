@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @param <R>
  */
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/{resource}/{parentUuid}/{subResource}")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
 public class MainSubResourceController {
 	
 	@Autowired
@@ -52,7 +52,7 @@ public class MainSubResourceController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request)
@@ -69,7 +69,7 @@ public class MainSubResourceController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject getAll(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
@@ -87,7 +87,7 @@ public class MainSubResourceController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "", method = RequestMethod.POST)
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object create(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
@@ -107,7 +107,7 @@ public class MainSubResourceController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
@@ -126,7 +126,7 @@ public class MainSubResourceController {
 	 * @param request
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
 	public Object delete(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
@@ -145,7 +145,7 @@ public class MainSubResourceController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,

@@ -27,6 +27,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.AllergyResource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
@@ -37,10 +38,6 @@ import org.springframework.web.context.request.WebRequest;
 public class AllergyControllerTest extends BaseCrudControllerTest {
 	
 	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
-	
-	private MockHttpServletRequest emptyRequest() {
-		return new MockHttpServletRequest();
-	}
 	
 	@Before
 	public void init() throws Exception {
@@ -144,7 +141,8 @@ public class AllergyControllerTest extends BaseCrudControllerTest {
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
 	 */
 	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
-		//super.shouldGetAll();
+		super.shouldGetAll();
 	}
 }
