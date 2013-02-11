@@ -25,7 +25,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.ResourceTestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -33,11 +34,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Tests functionality of {@link CohortController}.
  */
 public class CohortControllerTest extends BaseCrudControllerTest {
-
+	
 	private static final String datasetFilename = "customTestDataset.xml";
-
+	
 	private CohortService service;
-
+	
 	@Before
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
@@ -67,7 +68,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 	public String getUuid() {
 		return ResourceTestConstants.COHORT_UUID;
 	}
-
+	
 	@Test
 	public void createCohort_shouldCreateANewCohort() throws Exception {
 		
@@ -75,26 +76,26 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		cohort.add("name", "New cohort");
 		cohort.add("description", "New cohort description");
 		cohort.add("memberIds", new Integer[] { 2, 6 });
-
+		
 		String json = new ObjectMapper().writeValueAsString(cohort);
-
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/");
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
-
+		
 		SimpleObject newCohort = deserialize(handle(req));
 		Util.log("Created cohort", newCohort);
-
+		
 		// Check existence in database
 		String uuid = (String) newCohort.get("uuid");
 		Assert.assertNotNull(service.getCohortByUuid(uuid));
 	}
-
+	
 	@Test
 	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-
+		
 		Assert.assertNotNull(result);
 		Util.log("Cohort fetched (default)", result);
 		Assert.assertEquals(getUuid(), result.get("uuid"));
@@ -115,7 +116,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void getCohorts_shouldSearchForCohortsByName() throws Exception {
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "B13");
 		SimpleObject result = deserialize(handle(req));
 		
@@ -123,7 +124,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(2, results.size());
 		Util.log("Found " + results.size() + " cohort(s)", results);
 	}
-
+	
 	@Test
 	public void voidCohort_shouldVoidACohort() throws Exception {
 		Cohort cohort = service.getCohort(1);
@@ -137,7 +138,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		Assert.assertTrue(cohort.isVoided());
 		Assert.assertEquals("unit test", cohort.getVoidReason());
 	}
-
+	
 	@Test
 	public void updateCohort_shouldChangeAPropertyOnACohort() throws Exception {
 		
@@ -145,7 +146,7 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		attributes.add("name", "Updated cohort name");
 		
 		String json = new ObjectMapper().writeValueAsString(attributes);
-
+		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
@@ -153,21 +154,21 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		Cohort editedCohort = service.getCohortByUuid(getUuid());
 		Assert.assertEquals("Updated cohort name", editedCohort.getName());
 	}
-
+	
 	@Test(expected = ConversionException.class)
 	public void updateCohort_shouldFailToOverwriteMemberIdsOnACohort() throws Exception {
 		Assert.assertEquals(3, service.getCohortByUuid(getUuid()).getMemberIds().size());
-
+		
 		SimpleObject attributes = new SimpleObject();
-		attributes.add("memberIds", new Integer[]{2,6});
+		attributes.add("memberIds", new Integer[] { 2, 6 });
 		String json = new ObjectMapper().writeValueAsString(attributes);
-
+		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-
+		
 	}
-
+	
 	@Test
 	public void purgeCohort_shouldPurgeCohort() throws Exception {
 		
@@ -177,5 +178,5 @@ public class CohortControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertNull(service.getCohortByUuid(getUuid()));
 	}
-
+	
 }

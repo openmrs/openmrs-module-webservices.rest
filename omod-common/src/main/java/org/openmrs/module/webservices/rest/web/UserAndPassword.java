@@ -46,7 +46,6 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 	 */
 	public UserAndPassword(User user) {
 		this.user = user;
-		this.setUuid(user.getUuid());
 	}
 	
 	/**
@@ -91,5 +90,21 @@ public class UserAndPassword extends BaseOpenmrsMetadata implements Serializable
 	@Override
 	public void setId(Integer integer) {
 		getUser().setId(integer);
+	}
+	
+	/**
+	 * @see org.openmrs.BaseOpenmrsObject#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return getUser().getUuid();
+	}
+	
+	/**
+	 * @see org.openmrs.BaseOpenmrsObject#setUuid(java.lang.String)
+	 */
+	@Override
+	public void setUuid(String uuid) {
+		getUser().setUuid(uuid);
 	}
 }
