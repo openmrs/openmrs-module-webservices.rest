@@ -13,14 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,15 +60,30 @@ public abstract class BaseCrudControllerTest extends BaseModuleWebContextSensiti
 		return request;
 	}
 	
-	public MockHttpServletRequest postRequest(String requestURI, Object content) {
+	public MockHttpServletRequest newGetRequest(String requestURI) {
+		return request(RequestMethod.GET, requestURI);
+	}
+	
+	public MockHttpServletRequest newPostRequest(String requestURI, Object content) {
 		MockHttpServletRequest request = request(RequestMethod.POST, requestURI);
 		try {
-	        String json = new ObjectMapper().writeValueAsString(content);
-	        request.setContent(json.getBytes("UTF-8"));
-        }
-        catch (Exception e) {
-	        throw new RuntimeException(e);
-        }
+			String json = new ObjectMapper().writeValueAsString(content);
+			request.setContent(json.getBytes("UTF-8"));
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return request;
+	}
+	
+	public MockHttpServletRequest newPostRequest(String requestURI, String content) {
+		MockHttpServletRequest request = request(RequestMethod.POST, requestURI);
+		try {
+			request.setContent(content.getBytes("UTF-8"));
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		return request;
 	}
 	

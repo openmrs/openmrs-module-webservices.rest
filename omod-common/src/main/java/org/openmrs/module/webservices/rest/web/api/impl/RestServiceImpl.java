@@ -48,8 +48,15 @@ public class RestServiceImpl implements RestService {
 		List<Class<? extends Resource>> resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
 		
 		for (Class<? extends Resource> resource : resources) {
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = resource
-			        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
+			try {
+				resourceAnnotation = resource
+				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			}
+			catch (Exception e) {
+				//Missing class
+				continue;
+			}
 			
 			String name = null;
 			String[] supportedOpenmrsVersions = null;
@@ -57,9 +64,17 @@ public class RestServiceImpl implements RestService {
 			int order = Integer.MAX_VALUE;
 			
 			if (resourceAnnotation == null) {
-				SubResource subresourceAnnotation = resource.getAnnotation(SubResource.class);
-				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = subresourceAnnotation
-				        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+				SubResource subresourceAnnotation = null;
+				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = null;
+				try {
+					subresourceAnnotation = resource.getAnnotation(SubResource.class);
+					parentResourceAnnotation = subresourceAnnotation.parent().getAnnotation(
+					    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+				}
+				catch (Exception e) {
+					//Missing class
+					continue;
+				}
 				
 				supportedOpenmrsVersions = subresourceAnnotation.supportedOpenmrsVersions();
 				if (supportedOpenmrsVersions.length != 0) {

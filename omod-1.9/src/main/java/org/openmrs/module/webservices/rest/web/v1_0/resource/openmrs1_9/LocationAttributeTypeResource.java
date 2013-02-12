@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.openmrs.LocationAttributeType;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -28,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Allows standard CRUD for the {@link LocationAttributeType} domain object
  */
 @Resource(name = "locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = "1.9.*")
-@Handler(supports = LocationAttributeType.class, order = 0)
 public class LocationAttributeTypeResource extends BaseAttributeTypeCrudResource<LocationAttributeType> {
 	
 	public LocationAttributeTypeResource() {

@@ -81,7 +81,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
 		SimpleObject post = createEncounterWithObs();
 		
-		MockHttpServletResponse response = handle(postRequest(getURI(), post));
+		MockHttpServletResponse response = handle(newPostRequest(getURI(), post));
 		SimpleObject newEncounter = deserialize(response);
 		
 		Assert.assertNotNull(newEncounter);
@@ -163,7 +163,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		        + "\", \"drug\": \"" + triomuneDrugUuid + "\", \"dose\": \"1\", \"units\": \"tablet\" }"));
 		post.add("orders", orders);
 		
-		SimpleObject newEncounter = deserialize(handle(postRequest(getURI(), post)));
+		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
 		
 		Assert.assertNotNull(newEncounter);
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
@@ -189,7 +189,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		
 		
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object newEncounterObject = deserialize(handle(postRequest(getURI(), post)));
+		Object newEncounterObject = deserialize(handle(newPostRequest(getURI(), post)));
 		
 		Assert.assertNotNull(newEncounterObject);
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(
@@ -214,7 +214,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		
 		
-		Object newEncounterObject = handle(postRequest(getURI() + "/" + getUuid(), post));
+		Object newEncounterObject = handle(newPostRequest(getURI() + "/" + getUuid(), post));
 		
 		Assert.assertNotNull(newEncounterObject);
 		Encounter update = es.getEncounterByUuid(getUuid());

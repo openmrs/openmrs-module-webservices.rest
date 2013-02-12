@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.openmrs.VisitAttributeType;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -28,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * Allows standard CRUD for the {@link VisitAttributeType} domain object
  */
 @Resource(name = "visitattributetype", supportedClass = VisitAttributeType.class, supportedOpenmrsVersions = "1.9.*")
-@Handler(supports = VisitAttributeType.class, order = 0)
 public class VisitAttributeTypeResource extends BaseAttributeTypeCrudResource<VisitAttributeType> {
 	
 	private VisitService getService() {

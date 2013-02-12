@@ -17,7 +17,6 @@ import java.util.Set;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -41,7 +40,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
 @Resource(name = "visit", supportedClass = Visit.class, supportedOpenmrsVersions = "1.9.*")
-@Handler(supports = Visit.class, order = 0)
 public class VisitResource extends DataDelegatingCrudResource<Visit> {
 	
 	/**
