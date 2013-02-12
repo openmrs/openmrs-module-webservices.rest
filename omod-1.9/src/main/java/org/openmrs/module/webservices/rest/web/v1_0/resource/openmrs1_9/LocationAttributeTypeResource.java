@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.openmrs.ProviderAttributeType;
-import org.openmrs.api.ProviderService;
+import org.openmrs.LocationAttributeType;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -24,48 +25,49 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Allows standard CRUD for the {@link ProviderAttributeType} domain object
+ * Allows standard CRUD for the {@link LocationAttributeType} domain object
  */
-@Resource(name = "providerattributetype", supportedClass = ProviderAttributeType.class, supportedOpenmrsVersions = { "1.9.*" })
-public class ProviderAttributeTypeResource extends BaseAttributeTypeCrudResource<ProviderAttributeType> {
+@Resource(name = "locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = "1.9.*")
+@Handler(supports = LocationAttributeType.class, order = 0)
+public class LocationAttributeTypeResource extends BaseAttributeTypeCrudResource<LocationAttributeType> {
 	
-	public ProviderAttributeTypeResource() {
+	public LocationAttributeTypeResource() {
 	}
 	
-	private ProviderService service() {
-		return Context.getProviderService();
+	private LocationService service() {
+		return Context.getLocationService();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public ProviderAttributeType getByUniqueId(String uniqueId) {
-		return service().getProviderAttributeTypeByUuid(uniqueId);
+	public LocationAttributeType getByUniqueId(String uniqueId) {
+		return service().getLocationAttributeTypeByUuid(uniqueId);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<ProviderAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<ProviderAttributeType>(service().getAllProviderAttributeTypes(), context);
+	protected NeedsPaging<LocationAttributeType> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<LocationAttributeType>(service().getAllLocationAttributeTypes(), context);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	public ProviderAttributeType newDelegate() {
-		return new ProviderAttributeType();
+	public LocationAttributeType newDelegate() {
+		return new LocationAttributeType();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	public ProviderAttributeType save(ProviderAttributeType delegate) {
-		return service().saveProviderAttributeType(delegate);
+	public LocationAttributeType save(LocationAttributeType delegate) {
+		return service().saveLocationAttributeType(delegate);
 	}
 	
 	/**
@@ -73,8 +75,8 @@ public class ProviderAttributeTypeResource extends BaseAttributeTypeCrudResource
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ProviderAttributeType delegate, RequestContext context) throws ResponseException {
-		service().purgeProviderAttributeType(delegate);
+	public void purge(LocationAttributeType delegate, RequestContext context) throws ResponseException {
+		service().purgeLocationAttributeType(delegate);
 	}
 	
 	/**
@@ -82,15 +84,15 @@ public class ProviderAttributeTypeResource extends BaseAttributeTypeCrudResource
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<ProviderAttributeType> doSearch(String query, RequestContext context) {
-		// TODO: Should be a ProviderAttributeType search method in ProviderService
-		List<ProviderAttributeType> allAttrs = service().getAllProviderAttributeTypes();
-		List<ProviderAttributeType> queryResult = new ArrayList<ProviderAttributeType>();
-		for (ProviderAttributeType pAttr : allAttrs) {
-			if (Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(pAttr.getName()).find()) {
-				queryResult.add(pAttr);
+	protected NeedsPaging<LocationAttributeType> doSearch(String query, RequestContext context) {
+		// TODO: Should be a LocationAttributeType search method in LocationService
+		List<LocationAttributeType> allAttrs = service().getAllLocationAttributeTypes();
+		List<LocationAttributeType> queryResult = new ArrayList<LocationAttributeType>();
+		for (LocationAttributeType locAttr : allAttrs) {
+			if (Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(locAttr.getName()).find()) {
+				queryResult.add(locAttr);
 			}
 		}
-		return new NeedsPaging<ProviderAttributeType>(queryResult, context);
+		return new NeedsPaging<LocationAttributeType>(queryResult, context);
 	}
 }

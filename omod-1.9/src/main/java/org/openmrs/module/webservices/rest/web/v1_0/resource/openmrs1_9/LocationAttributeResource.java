@@ -15,9 +15,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.List;
 
-import org.openmrs.Provider;
-import org.openmrs.ProviderAttribute;
-import org.openmrs.ProviderAttributeType;
+import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
+import org.openmrs.LocationAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -27,19 +27,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for ProviderAttributes, supporting standard CRUD operations
+ * {@link Resource} for LocationAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = ProviderResource.class, path = "attribute", supportedClass = ProviderAttribute.class, supportedOpenmrsVersions = { "1.9.*" })
-public class ProviderAttributeResource extends BaseAttributeCrudResource<ProviderAttribute, Provider, ProviderResource> {
+@SubResource(parent = LocationResource.class, path = "attribute", supportedClass = LocationAttribute.class, supportedOpenmrsVersions = "1.9.*")
+public class LocationAttributeResource extends BaseAttributeCrudResource<LocationAttribute, Location, LocationResource> {
 	
 	/**
-	 * Sets attributes on the given provider.
+	 * Sets attributeType on the given LocationAttribute.
 	 * 
 	 * @param instance
 	 * @param attr
 	 */
 	@PropertySetter("attributeType")
-	public static void setAttributeType(ProviderAttribute instance, ProviderAttributeType attr) {
+	public static void setAttributeType(LocationAttribute instance, LocationAttributeType attr) {
 		instance.setAttributeType(attr);
 	}
 	
@@ -47,16 +47,16 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
 	@Override
-	public Provider getParent(ProviderAttribute instance) {
-		return instance.getProvider();
+	public Location getParent(LocationAttribute instance) {
+		return instance.getLocation();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	public ProviderAttribute newDelegate() {
-		return new ProviderAttribute();
+	public LocationAttribute newDelegate() {
+		return new LocationAttribute();
 	}
 	
 	/**
@@ -64,16 +64,16 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      java.lang.Object)
 	 */
 	@Override
-	public void setParent(ProviderAttribute instance, Provider provider) {
-		instance.setProvider(provider);
+	public void setParent(LocationAttribute instance, Location location) {
+		instance.setLocation(location);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public ProviderAttribute getByUniqueId(String uniqueId) {
-		return Context.getProviderService().getProviderAttributeByUuid(uniqueId);
+	public LocationAttribute getByUniqueId(String uniqueId) {
+		return Context.getLocationService().getLocationAttributeByUuid(uniqueId);
 	}
 	
 	/**
@@ -81,27 +81,27 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<ProviderAttribute> doGetAll(Provider parent, RequestContext context) throws ResponseException {
-		return new NeedsPaging<ProviderAttribute>((List<ProviderAttribute>) parent.getActiveAttributes(), context);
+	public NeedsPaging<LocationAttribute> doGetAll(Location parent, RequestContext context) throws ResponseException {
+		return new NeedsPaging<LocationAttribute>((List<LocationAttribute>) parent.getActiveAttributes(), context);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	public ProviderAttribute save(ProviderAttribute delegate) {
-		// make sure it has not already been added to the provider
+	public LocationAttribute save(LocationAttribute delegate) {
+		// make sure it has not already been added to the location
 		boolean needToAdd = true;
-		for (ProviderAttribute pa : delegate.getProvider().getActiveAttributes()) {
+		for (LocationAttribute pa : delegate.getLocation().getActiveAttributes()) {
 			if (pa.equals(delegate)) {
 				needToAdd = false;
 				break;
 			}
 		}
 		if (needToAdd) {
-			delegate.getProvider().addAttribute(delegate);
+			delegate.getLocation().addAttribute(delegate);
 		}
-		Context.getProviderService().saveProvider(delegate.getProvider());
+		Context.getLocationService().saveLocation(delegate.getLocation());
 		return delegate;
 	}
 	
@@ -110,10 +110,10 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(ProviderAttribute delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(LocationAttribute delegate, String reason, RequestContext context) throws ResponseException {
 		delegate.setVoided(true);
 		delegate.setVoidReason(reason);
-		Context.getProviderService().saveProvider(delegate.getProvider());
+		Context.getLocationService().saveLocation(delegate.getLocation());
 	}
 	
 	/**
@@ -121,7 +121,7 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ProviderAttribute delegate, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("Cannot purge ProviderAttribute");
+	public void purge(LocationAttribute delegate, RequestContext context) throws ResponseException {
+		throw new UnsupportedOperationException("Cannot purge LocationAttribute");
 	}
 }

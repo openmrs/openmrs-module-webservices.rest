@@ -44,7 +44,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Resource for Encounters, supporting standard CRUD operations 
  */
-@Resource(name = "encounter", supportedClass = Encounter.class)
+@Resource(name = "encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.8.*")
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	
 	/**

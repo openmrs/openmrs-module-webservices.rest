@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.Provider;
-import org.openmrs.ProviderAttribute;
-import org.openmrs.ProviderAttributeType;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -27,19 +28,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for ProviderAttributes, supporting standard CRUD operations
+ * {@link Resource} for VisitAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = ProviderResource.class, path = "attribute", supportedClass = ProviderAttribute.class, supportedOpenmrsVersions = { "1.9.*" })
-public class ProviderAttributeResource extends BaseAttributeCrudResource<ProviderAttribute, Provider, ProviderResource> {
+@SubResource(parent = VisitResource.class, path = "attribute", supportedClass = VisitAttribute.class, supportedOpenmrsVersions = "1.9.*")
+public class VisitAttributeResource extends BaseAttributeCrudResource<VisitAttribute, Visit, VisitResource> {
 	
 	/**
-	 * Sets attributes on the given provider.
+	 * Sets attributes on the given visit.
 	 * 
 	 * @param instance
 	 * @param attr
 	 */
 	@PropertySetter("attributeType")
-	public static void setAttributeType(ProviderAttribute instance, ProviderAttributeType attr) {
+	public static void setAttributeType(VisitAttribute instance, VisitAttributeType attr) {
 		instance.setAttributeType(attr);
 	}
 	
@@ -47,16 +48,16 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
 	@Override
-	public Provider getParent(ProviderAttribute instance) {
-		return instance.getProvider();
+	public Visit getParent(VisitAttribute instance) {
+		return instance.getVisit();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
 	@Override
-	public ProviderAttribute newDelegate() {
-		return new ProviderAttribute();
+	public VisitAttribute newDelegate() {
+		return new VisitAttribute();
 	}
 	
 	/**
@@ -64,16 +65,16 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      java.lang.Object)
 	 */
 	@Override
-	public void setParent(ProviderAttribute instance, Provider provider) {
-		instance.setProvider(provider);
+	public void setParent(VisitAttribute instance, Visit visit) {
+		instance.setVisit(visit);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public ProviderAttribute getByUniqueId(String uniqueId) {
-		return Context.getProviderService().getProviderAttributeByUuid(uniqueId);
+	public VisitAttribute getByUniqueId(String uniqueId) {
+		return Context.getVisitService().getVisitAttributeByUuid(uniqueId);
 	}
 	
 	/**
@@ -81,27 +82,34 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<ProviderAttribute> doGetAll(Provider parent, RequestContext context) throws ResponseException {
-		return new NeedsPaging<ProviderAttribute>((List<ProviderAttribute>) parent.getActiveAttributes(), context);
+	public NeedsPaging<VisitAttribute> doGetAll(Visit parent, RequestContext context) throws ResponseException {
+		if (context.getIncludeAll()) {
+			List<VisitAttribute> attrs = new ArrayList<VisitAttribute>();
+			for (VisitAttribute visitAttribute : parent.getAttributes()) {
+				attrs.add(visitAttribute);
+			}
+			return new NeedsPaging<VisitAttribute>(attrs, context);
+		}
+		return new NeedsPaging<VisitAttribute>((List<VisitAttribute>) parent.getActiveAttributes(), context);
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
-	public ProviderAttribute save(ProviderAttribute delegate) {
-		// make sure it has not already been added to the provider
+	public VisitAttribute save(VisitAttribute delegate) {
+		// make sure it has not already been added to the visit
 		boolean needToAdd = true;
-		for (ProviderAttribute pa : delegate.getProvider().getActiveAttributes()) {
+		for (VisitAttribute pa : delegate.getVisit().getActiveAttributes()) {
 			if (pa.equals(delegate)) {
 				needToAdd = false;
 				break;
 			}
 		}
 		if (needToAdd) {
-			delegate.getProvider().addAttribute(delegate);
+			delegate.getVisit().addAttribute(delegate);
 		}
-		Context.getProviderService().saveProvider(delegate.getProvider());
+		Context.getVisitService().saveVisit(delegate.getVisit());
 		return delegate;
 	}
 	
@@ -110,10 +118,10 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(ProviderAttribute delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(VisitAttribute delegate, String reason, RequestContext context) throws ResponseException {
 		delegate.setVoided(true);
 		delegate.setVoidReason(reason);
-		Context.getProviderService().saveProvider(delegate.getProvider());
+		Context.getVisitService().saveVisit(delegate.getVisit());
 	}
 	
 	/**
@@ -121,7 +129,7 @@ public class ProviderAttributeResource extends BaseAttributeCrudResource<Provide
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ProviderAttribute delegate, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("Cannot purge ProviderAttribute");
+	public void purge(VisitAttribute delegate, RequestContext context) throws ResponseException {
+		throw new UnsupportedOperationException("Cannot purge VisitAttribute");
 	}
 }

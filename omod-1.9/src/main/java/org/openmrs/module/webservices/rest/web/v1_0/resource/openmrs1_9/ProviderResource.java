@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = "provider", supportedClass = Provider.class, supportedOpenmrsVersions = { "1.9" })
+@Resource(name = "provider", supportedClass = Provider.class, supportedOpenmrsVersions = { "1.9.*" })
 public class ProviderResource extends MetadataDelegatingCrudResource<Provider> {
 	
 	public ProviderResource() {

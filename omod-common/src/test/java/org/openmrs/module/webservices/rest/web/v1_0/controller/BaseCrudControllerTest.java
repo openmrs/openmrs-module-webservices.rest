@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,6 +60,18 @@ public abstract class BaseCrudControllerTest extends BaseModuleWebContextSensiti
 		MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + RestConstants.VERSION_1
 		        + "/" + requestURI);
 		request.addHeader("content-type", "application/json");
+		return request;
+	}
+	
+	public MockHttpServletRequest postRequest(String requestURI, Object content) {
+		MockHttpServletRequest request = request(RequestMethod.POST, requestURI);
+		try {
+	        String json = new ObjectMapper().writeValueAsString(content);
+	        request.setContent(json.getBytes("UTF-8"));
+        }
+        catch (Exception e) {
+	        throw new RuntimeException(e);
+        }
 		return request;
 	}
 	
