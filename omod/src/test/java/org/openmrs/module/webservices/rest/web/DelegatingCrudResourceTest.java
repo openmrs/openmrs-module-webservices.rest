@@ -30,7 +30,7 @@ import org.openmrs.User;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.UserResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.util.Reflect;
