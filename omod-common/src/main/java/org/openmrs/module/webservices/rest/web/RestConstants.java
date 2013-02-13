@@ -160,4 +160,11 @@ public class RestConstants {
 	 */
 	public static final String PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE = "1.8";
 	
+	/**
+	 * A list of special request parameter names
+	 */
+	public static final Object[] SPECIAL_REQUEST_PARAMETERS = { REQUEST_PROPERTY_FOR_INCLUDE_ALL,
+	        REQUEST_PROPERTY_FOR_LIMIT, REQUEST_PROPERTY_FOR_REPRESENTATION, REQUEST_PROPERTY_FOR_START_INDEX,
+	        REQUEST_PROPERTY_FOR_TYPE };
+	
 }

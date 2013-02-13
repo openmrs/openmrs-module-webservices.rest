@@ -24,9 +24,9 @@ import org.openmrs.module.webservices.rest.Activator;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Integration tests for the framework that lets a resource handle an entire class hierarchy
@@ -183,8 +183,8 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	@Test
 	public void shouldGetAllOrdersForAPatient() throws Exception {
-		PageableResult result = resource.getOrdersByPatient(PATIENT_UUID, context);
-		SimpleObject simple = result.toSimpleObject();
+		((MockHttpServletRequest) context.getRequest()).setParameter("patient", PATIENT_UUID);
+		SimpleObject simple = resource.search(null, context);
 		Util.log("all orders for patient", simple);
 		Assert.assertEquals(2, Util.getResultsSize(simple));
 		Object typeForFirst = Util.getByPath(simple, "results[0]/type");
@@ -194,8 +194,8 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	@Test
 	public void shouldGetAllDrugOrdersForAPatient() throws Exception {
 		context.setType("drugorder");
-		PageableResult result = resource.getOrdersByPatient(PATIENT_UUID, context);
-		SimpleObject simple = result.toSimpleObject();
+		((MockHttpServletRequest) context.getRequest()).setParameter("patient", PATIENT_UUID);
+		SimpleObject simple = resource.search(null, context);
 		Util.log("drug orders for patient", simple);
 		Assert.assertEquals(1, Util.getResultsSize(simple));
 		Assert.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));

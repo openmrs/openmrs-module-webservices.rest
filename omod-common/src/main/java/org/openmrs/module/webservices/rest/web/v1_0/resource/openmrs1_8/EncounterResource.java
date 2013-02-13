@@ -23,7 +23,6 @@ import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -33,16 +32,16 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Resource for Encounters, supporting standard CRUD operations 
+ * Resource for Encounters, supporting standard CRUD operations
  */
 @Resource(name = "encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.8.*")
 public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
@@ -176,23 +175,6 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * Gets encounters for the given patient (paged according to context if necessary)
-	 * 
-	 * @param patientUniqueId @see {@link PatientResource#getByUniqueId(String)} for interpretation
-	 * @param context
-	 * @return
-	 * @throws ResponseException 
-	 */
-	public SimpleObject getEncountersByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUniqueId);
-		if (patient == null)
-			throw new ObjectNotFoundException();
-		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
-		return new NeedsPaging<Encounter>(encs, context).toSimpleObject();
-	}
-	
-	/**
 	 * @param instance
 	 * @return all non-voided top-level obs from the given encounter
 	 */
@@ -214,11 +196,27 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
+	 * Gets encounters for the given patient (paged according to context if necessary) only if a
+	 * patient parameter exists in the request set on the {@link RequestContext} otherwise searches
+	 * for encounters that match the specified query
+	 * 
+	 * @param query
+	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Encounter> doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(String query, RequestContext context) {
+		String patientUuid = context.getRequest().getParameter("patient");
+		if (patientUuid != null) {
+			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Patient.class)).getByUniqueId(patientUuid);
+			if (patient == null)
+				return new EmptySearchResult();
+			List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
+			return new NeedsPaging<Encounter>(encs, context);
+		}
+		
 		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(query,
 		    context);
 	}

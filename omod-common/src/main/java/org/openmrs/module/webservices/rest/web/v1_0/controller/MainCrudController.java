@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.util.Enumeration;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -146,16 +149,25 @@ public class MainCrudController {
 	        @RequestParam(required = false, value = "q") String query, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
+		boolean isSearch = false;
 		try {
 			RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-			if (query != null) {
-				return ((Searchable) res).search(query, context);
+			Enumeration parameters = request.getParameterNames();
+			while (parameters.hasMoreElements()) {
+				if (!ArrayUtils.contains(RestConstants.SPECIAL_REQUEST_PARAMETERS, parameters.nextElement())) {
+					isSearch = true;
+					break;
+				}
+			}
+			
+			if (isSearch) {
+				return ((Searchable) res).search(request.getParameter("q"), context);
 			}
 			return ((Listable) res).getAll(context);
 		}
 		catch (ClassCastException ex) {
 			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not "
-			        + ((query != null) ? "Searchable" : "Listable"), null);
+			        + ((isSearch) ? "Searchable" : "Listable"), null);
 		}
 	}
 	

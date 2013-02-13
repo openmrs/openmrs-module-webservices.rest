@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.ObsController;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;

@@ -25,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController;
 import org.openmrs.util.Format;
 import org.openmrs.util.Format.FORMAT_TYPE;
 import org.springframework.mock.web.MockHttpServletRequest;

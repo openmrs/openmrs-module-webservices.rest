@@ -26,7 +26,6 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -37,11 +36,12 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -175,15 +175,6 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	@Override
-	protected NeedsPaging<Obs> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<Obs>(Context.getObsService().getObservations(query), context);
-	}
-	
-	/**
 	 * Display string for Obs
 	 * 
 	 * @param obs
@@ -298,38 +289,38 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	}
 	
 	/**
-	 * Gets obs for the given encounter (paged according to context if necessary)
+	 * Gets obs by patient or encounter (paged according to context if necessary) only if a patient
+	 * or encounter parameter exists respectively in the request set on the {@link RequestContext}
+	 * otherwise searches for obs that match the specified query
 	 * 
-	 * @param encounterUniqueId @see {@link EncounterResource#getByUniqueId(String)} for
-	 *            interpretation
+	 * @param query
 	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
-	public SimpleObject getObsByEncounter(String encounterUniqueId, RequestContext context) throws ResponseException {
-		Encounter enc = ((EncounterResource) Context.getService(RestService.class).getResourceBySupportedClass(
-		    Encounter.class)).getByUniqueId(encounterUniqueId);
-		if (enc == null)
-			throw new ObjectNotFoundException();
-		List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
-		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
-	}
-	
-	/**
-	 * Gets Obs for a given patient (paged according to context if necessary)
-	 * 
-	 * @param patientUuid @see {@link PatientResource#getByUniqueId(String)} for interpretation
-	 * @param context
-	 * @return
-	 * @throws ResponseException
-	 */
-	public SimpleObject getObsByPatient(String patientUuid, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
-		if (patient == null)
-			throw new ObjectNotFoundException();
-		List<Obs> obs = Context.getObsService().getObservationsByPerson(patient);
-		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
+	@Override
+	protected PageableResult doSearch(String query, RequestContext context) {
+		String patientUuid = context.getRequest().getParameter("patient");
+		if (patientUuid != null) {
+			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Patient.class)).getByUniqueId(patientUuid);
+			if (patient == null)
+				return new EmptySearchResult();
+			List<Obs> obs = Context.getObsService().getObservationsByPerson(patient);
+			return new NeedsPaging<Obs>(obs, context);
+		}
+		
+		String encounterUuid = context.getRequest().getParameter("encounter");
+		if (encounterUuid != null) {
+			Encounter enc = ((EncounterResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Encounter.class)).getByUniqueId(encounterUuid);
+			if (enc == null)
+				return new EmptySearchResult();
+			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
+			return new NeedsPaging<Obs>(obs, context);
+		}
+		
+		return new NeedsPaging<Obs>(Context.getObsService().getObservations(query), context);
 	}
 	
 }

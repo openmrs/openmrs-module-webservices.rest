@@ -25,9 +25,8 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
@@ -108,22 +107,25 @@ public class AllergyResource extends BaseActiveListItemResource<Allergy> {
 	 * Gets allergies for a given patient (paged according to context if necessary) only if a
 	 * patient parameter exists in the request set on the {@link RequestContext}
 	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @param query
+	 * @param context
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+	protected PageableResult doSearch(String query, RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
-				throw new ObjectNotFoundException();
+				return new EmptySearchResult();
 			
 			return new NeedsPaging<Allergy>(Context.getPatientService().getAllergies(patient), context);
 		}
 		
 		//currently this is not supported since the superclass throws an exception
-		return super.doGetAll(context);
+		return super.doSearch(query, context);
 	}
 	
 }

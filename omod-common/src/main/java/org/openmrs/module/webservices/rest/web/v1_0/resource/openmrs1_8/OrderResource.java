@@ -29,8 +29,8 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -72,7 +72,8 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected void delete(Order delegate, String reason, RequestContext context) throws ResponseException {
@@ -85,7 +86,8 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Order delegate, RequestContext context) throws ResponseException {
@@ -190,31 +192,42 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	}
 	
 	/**
-	 * @param patientUuid
+	 * Gets orders by given patient (paged according to context if necessary) only if a patient
+	 * parameter exists in the request set on the {@link RequestContext} otherwise
+	 * 
+	 * @param query
 	 * @param context
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @return all orders for a given patient (possibly filtered by context.type)
-	 * @throws ResponseException
 	 */
-	public PageableResult getOrdersByPatient(String patientUuid, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
-		if (patient == null)
-			throw new ObjectNotFoundException();
-		
-		// if the user indicated a specific type, try to delegate to the appropriate subclass handler
-		if (context.getType() != null) {
-			PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
-			    "getOrdersByPatient", patient, context);
-			if (ret != null)
-				return ret;
+	@Override
+	protected PageableResult doSearch(String query, RequestContext context) {
+		String patientUuid = context.getRequest().getParameter("patient");
+		if (patientUuid != null) {
+			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
+			    Patient.class)).getByUniqueId(patientUuid);
+			if (patient == null)
+				return new EmptySearchResult();
+			
+			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
+			if (context.getType() != null) {
+				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
+				    "getOrdersByPatient", patient, context);
+				if (ret != null)
+					return ret;
+			}
+			
+			List<Order> orders = Context.getOrderService().getOrdersByPatient(patient);
+			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
+			if (context.getType() != null) {
+				filterByType(orders, context.getType());
+			}
+			return new NeedsPaging<Order>(orders, context);
 		}
 		
-		List<Order> orders = Context.getOrderService().getOrdersByPatient(patient);
-		// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
-		if (context.getType() != null) {
-			filterByType(orders, context.getType());
-		}
-		return new NeedsPaging<Order>(orders, context);
+		//currently this is not supported since the superclass throws an exception
+		return super.doSearch(query, context);
 	}
 	
 }
