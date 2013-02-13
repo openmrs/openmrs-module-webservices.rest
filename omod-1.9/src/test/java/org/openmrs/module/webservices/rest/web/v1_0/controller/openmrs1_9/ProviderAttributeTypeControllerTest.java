@@ -91,8 +91,8 @@ public class ProviderAttributeTypeControllerTest extends BaseCrudControllerTest 
 		MockHttpServletRequest request = newGetRequest(getURI());
 		request.addParameter("q", "zzzznotype");
 		
-		List<Object> results = (List<Object>) deserialize(handle(request)).get("results");
-		Assert.assertEquals(0, results.size());
+		SimpleObject result = deserialize(handle(request));
+		Assert.assertEquals(0, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -104,11 +104,12 @@ public class ProviderAttributeTypeControllerTest extends BaseCrudControllerTest 
 		MockHttpServletRequest request = newGetRequest(getURI());
 		request.addParameter("q", "Joining");
 		
-		List<Object> results = (List<Object>) deserialize(handle(request)).get("results");
+		SimpleObject response = deserialize(handle(request));
+		Assert.assertEquals(1, Util.getResultsSize(response));
 		
-		Assert.assertEquals(1, results.size());
-		Util.log("Found " + results.size() + " ProviderAttributeType(s)", results);
-		Object result = results.get(0);
+        List<Object> results = Util.getResultsList(response);
+        Object result = results.get(0);
+		
 		Assert.assertEquals(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));

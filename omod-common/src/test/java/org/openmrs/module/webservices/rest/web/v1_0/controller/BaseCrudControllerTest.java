@@ -60,8 +60,32 @@ public abstract class BaseCrudControllerTest extends BaseModuleWebContextSensiti
 		return request;
 	}
 	
-	public MockHttpServletRequest newGetRequest(String requestURI) {
-		return request(RequestMethod.GET, requestURI);
+	public static class Parameter {
+		
+		public String name;
+		
+		public String value;
+		
+		public Parameter(String name, String value) {
+			this.name = name;
+			this.value = value;
+		}
+	}
+	
+	public MockHttpServletRequest newRequest(RequestMethod method, String requestURI, Parameter... parameters) {
+		MockHttpServletRequest request = request(method, requestURI);
+		for (Parameter parameter : parameters) {
+			request.addParameter(parameter.name, parameter.value);
+		}
+		return request;
+	}
+	
+	public MockHttpServletRequest newDeleteRequest(String requestURI, Parameter... parameters) {
+		return newRequest(RequestMethod.DELETE, requestURI, parameters);
+	}
+	
+	public MockHttpServletRequest newGetRequest(String requestURI, Parameter... parameters) {
+		return newRequest(RequestMethod.GET, requestURI, parameters);
 	}
 	
 	public MockHttpServletRequest newPostRequest(String requestURI, Object content) {

@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
@@ -76,7 +76,6 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterControllerTest#createEncounter_shouldCreateANewEncounterWithObs()
 	 */
     @Test
-    @Ignore
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
 		SimpleObject post = createEncounterWithObs();
@@ -88,10 +87,12 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		
 		Util.log("created encounter with obs", newEncounter);
-		List<SimpleObject> obs = (List<SimpleObject>) newEncounter.get("obs");
+		@SuppressWarnings("unchecked")
+        List<Map<String, String>> obs = (List<Map<String, String>>) newEncounter.get("obs");
+		
 		Assert.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
-		for (SimpleObject o : obs) {
+		for (Map<String, String> o : obs) {
 			obsDisplayValues.add((String) o.get("display"));
 		}
 		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS = MARRIED"));
@@ -146,7 +147,6 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterControllerTest#shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes()
 	 */
 	@Test
-	@Ignore
 	public void shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes() throws Exception {
 		String foodAssistanceUuid = "0dde1358-7fcf-4341-a330-f119241a46e8";
 		String lunchOrderUuid = "e23733ab-787e-4096-8ba2-577a902d2c2b";
@@ -169,17 +169,18 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		Util.log("created encounter with obs and orders", newEncounter);
 		
-		List<SimpleObject> newOrders = (List<SimpleObject>) newEncounter.get("orders");
+		@SuppressWarnings("unchecked")
+        List<Map<String, String>> newOrders = (List<Map<String, String>>) newEncounter.get("orders");
+		
 		Assert.assertEquals(2, newOrders.size());
 		List<String> lookFor = new ArrayList<String>(Arrays.asList("FOOD ASSISTANCE", "Triomune-30: 1.0 tablet"));
-		for (SimpleObject o : newOrders) {
+		for (Map<String, String> o : newOrders) {
 			lookFor.remove(o.get("display"));
 		}
 		Assert.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
 	}
 	
 	@Test
-	@Ignore
 	public void createEncounter_shouldCreateANewEncounterWithAVisitProperty() throws Exception {
 		int before = Context.getEncounterService().getAllEncounters(null).size();
 		final String visitUuid = "1e5d5d48-6b78-11e0-93c3-18a905e044dc";

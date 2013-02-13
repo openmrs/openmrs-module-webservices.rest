@@ -11,115 +11,89 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.Assert;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Rest19ExtTestConstants;
-import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
  * Tests functionality of {@link ProviderAttributeController}.
  */
-public class ProviderAttributeControllerTest extends BaseModuleWebContextSensitiveTest {
+public class ProviderAttributeControllerTest extends BaseCrudControllerTest {
 	
-//	private ProviderService service;
-//	
-//	private ProviderAttributeController controller;
-//	
-//	private MockHttpServletRequest request;
-//	
-//	private HttpServletResponse response;
-//	
-//	@Before
-//	public void before() throws Exception {
-//		executeDataSet(Rest19ExtTestConstants.TEST_DATASET);
-//		this.service = Context.getProviderService();
-//		this.controller = new ProviderAttributeController();
-//		this.request = new MockHttpServletRequest();
-//		this.response = new MockHttpServletResponse();
-//	}
-//	
-//	@Test
-//	public void shouldGetAProviderAttribute() throws Exception {
-//		Object result = controller.retrieve(Rest19ExtTestConstants.PROVIDER_UUID,
-//		    Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID, request);
-//		String rfc822Timezone = new SimpleDateFormat("Z").format(new Date());
-//		Assert.assertNotNull(result);
-//		Assert.assertEquals(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID, PropertyUtils.getProperty(result, "uuid"));
-//		Assert.assertEquals("2011-04-25T00:00:00.000" + rfc822Timezone, PropertyUtils.getProperty(result, "value"));
-//		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-//	}
-//	
-//	@Test
-//	public void shouldListAttributesForProvider() throws Exception {
-//		SimpleObject result = controller.getAll(Rest19ExtTestConstants.PROVIDER_UUID, request, response);
-//		Assert.assertNotNull(result);
-//		Assert.assertEquals(2, Util.getResultsSize(result));
-//	}
-//	
-//	@Test
-//	public void shouldAddAttributeToProvider() throws Exception {
-//		int before = service.getProviderByUuid(Rest19ExtTestConstants.PROVIDER_UUID).getAttributes().size();
-//		String json = "{\"attributeType\":\"" + Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID
-//		        + "\", \"value\":\"2012-05-05\"}";
-//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-//		controller.create(Rest19ExtTestConstants.PROVIDER_UUID, post, request, response);
-//		int after = service.getProviderByUuid(Rest19ExtTestConstants.PROVIDER_UUID).getAttributes().size();
-//		Assert.assertEquals(before + 1, after);
-//	}
-//	
-//	@Test
-//	public void shouldEditProviderAttribute() throws Exception {
-//		String json = "{ \"attributeType\":\"9516cc50-n8ik-bc4f-8dw4-001e378eb67e\" }";
-//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-//		
-//		ProviderAttribute providerAttribute = service
-//		        .getProviderAttributeByUuid(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID);
-//		Assert.assertEquals("Joining Date", providerAttribute.getAttributeType().getName());
-//		
-//		controller.update(Rest19ExtTestConstants.PROVIDER_UUID, Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID, post,
-//		    request, response);
-//		
-//		providerAttribute = service.getProviderAttributeByUuid(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID);
-//		Assert.assertEquals("Leave Date", providerAttribute.getAttributeType().getName());
-//	}
-//	
-//	@Test
-//	public void shouldVoidAttribute() throws Exception {
-//		ProviderAttribute providerAttribute = service
-//		        .getProviderAttributeByUuid(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID);
-//		Assert.assertFalse(providerAttribute.isVoided());
-//		controller.delete(Rest19ExtTestConstants.PROVIDER_UUID, Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID, "unit test",
-//		    request, response);
-//		providerAttribute = service.getProviderAttributeByUuid(Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID);
-//		Assert.assertTrue(providerAttribute.isVoided());
-//		Assert.assertEquals("unit test", providerAttribute.getVoidReason());
-//	}
-//	
-//	@Test
-//	@Ignore
-//	public void shouldPurgeAttribute() throws Exception {
-//		// TODO: TEST IGNORED AS PURGING LOCATIONATTRIBUTE IS NOT POSSIBLE		
-//	}
+	private ProviderService service;
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+     */
+    @Override
+    public String getURI() {
+	    return "provider/" + Rest19ExtTestConstants.PROVIDER_UUID + "/attribute";
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+     */
+    @Override
+    public String getUuid() {
+	    return Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_UUID;
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+     */
+    @Override
+    public long getAllCount() {
+	    return 2;
+    }
+	
+	@Before
+	public void before() throws Exception {
+		executeDataSet(Rest19ExtTestConstants.TEST_DATASET);
+		this.service = Context.getProviderService();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void shouldAddAttributeToProvider() throws Exception {
+		int before = service.getProviderByUuid(Rest19ExtTestConstants.PROVIDER_UUID).getAttributes().size();
+		String json = "{\"attributeType\":\"" + Rest19ExtTestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID
+		        + "\", \"value\":\"2012-05-05\"}";
 		
+		handle(newPostRequest(getURI(), json));
+		int after = service.getProviderByUuid(Rest19ExtTestConstants.PROVIDER_UUID).getAttributes().size();
+		Assert.assertEquals(before + 1, after);
 	}
+	
+	@Test
+	public void shouldEditProviderAttribute() throws Exception {
+		String json = "{ \"attributeType\":\"9516cc50-n8ik-bc4f-8dw4-001e378eb67e\" }";
+		
+		ProviderAttribute providerAttribute = service
+		        .getProviderAttributeByUuid(getUuid());
+		Assert.assertEquals("Joining Date", providerAttribute.getAttributeType().getName());
+		
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		
+		providerAttribute = service.getProviderAttributeByUuid(getUuid());
+		Assert.assertEquals("Leave Date", providerAttribute.getAttributeType().getName());
+	}
+	
+	@Test
+	public void shouldVoidAttribute() throws Exception {
+		ProviderAttribute providerAttribute = service
+		        .getProviderAttributeByUuid(getUuid());
+		Assert.assertFalse(providerAttribute.isVoided());
+		
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
+		
+		providerAttribute = service.getProviderAttributeByUuid(getUuid());
+		Assert.assertTrue(providerAttribute.isVoided());
+		Assert.assertEquals("unit test", providerAttribute.getVoidReason());
+	}
+
 }

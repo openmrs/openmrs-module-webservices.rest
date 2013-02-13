@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller for REST web service access to the Encounter resource. Supports CRUD on the resource
  * itself, and listing and addition of some subresources.
  */
-@Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/encounter")
+//@Controller
 public class EncounterController {
 	
 	@Autowired
@@ -37,7 +36,7 @@ public class EncounterController {
 	 * @return encounters for the given patient
 	 * @throws ResponseException
 	 */
-	@RequestMapping(method = RequestMethod.GET, params = "patient")
+	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/encounter", method = RequestMethod.GET, params = "patient")
 	@WSDoc("Fetch all non-retired encounters for a patient with the given uuid")
 	@ResponseBody
 	public SimpleObject searchByPatient(@RequestParam("patient") String patientUniqueId, HttpServletRequest request,

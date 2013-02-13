@@ -216,4 +216,17 @@ public class VisitResource extends DataDelegatingCrudResource<Visit> {
 		}
 		visit.setAttributes(attributes);
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#search(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public SimpleObject search(String query, RequestContext context) throws ResponseException {
+		String parameter = context.getRequest().getParameter("patient");
+		if (parameter != null) {
+			return getVisitsByPatient(parameter, context);
+		} else {
+			return super.search(query, context);
+		}
+	}
 }

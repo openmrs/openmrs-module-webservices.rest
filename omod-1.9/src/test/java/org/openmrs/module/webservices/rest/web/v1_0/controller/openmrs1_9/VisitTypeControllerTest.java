@@ -13,124 +13,123 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.List;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.VisitType;
+import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Rest19ExtTestConstants;
+import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
  * Contains tests for the {@link VisitTypeController}
  */
-public class VisitTypeControllerTest extends BaseModuleWebContextSensitiveTest {
+public class VisitTypeControllerTest extends BaseCrudControllerTest {
+	
+	private VisitService service;
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+     */
+    @Override
+    public String getURI() {
+	    return "visittype";
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+     */
+    @Override
+    public String getUuid() {
+	    return Rest19ExtTestConstants.VISIT_TYPE_UUID;
+    }
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+     */
+    @Override
+    public long getAllCount() {
+	    return 2;
+    }
+	
+	@Before
+	public void before() {
+		this.service = Context.getVisitService();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void shouldGetAVisitTypeByName() throws Exception {		
+		Object result = deserialize(handle(newGetRequest(getURI() + "/Return TB Clinic Visit")));
+		Assert.assertNotNull(result);
+		Assert.assertEquals(Rest19ExtTestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
+	}
+	
+	
+	@Test
+	public void shouldCreateAVisitType() throws Exception {
+		int originalCount = service.getAllVisitTypes().size();
+		String json = "{ \"name\":\"test visitType\", \"description\":\"description\" }";
+		Object newVisitType = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(PropertyUtils.getProperty(newVisitType, "uuid"));
+		Assert.assertEquals(originalCount + 1, service.getAllVisitTypes().size());
+	}
+	
+	@Test
+	public void shouldEditAVisitType() throws Exception {
+		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		VisitType updated = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
+		Assert.assertNotNull(updated);
+		Assert.assertEquals("new visit type", updated.getName());
+		Assert.assertEquals("new description", updated.getDescription());
+	}
+	
+	@Test
+	public void shouldRetireAVisitType() throws Exception {
+		VisitType visitType = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
+		Assert.assertFalse(visitType.isRetired());
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
+		visitType = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
+		Assert.assertTrue(visitType.isRetired());
+		Assert.assertEquals("test reason", visitType.getRetireReason());
+	}
+	
+	@Test
+	public void shouldPurgeAVisitType() throws Exception {
+		String uuid = "759799ab-c9a5-435e-b671-77773ada74e6";
+		Assert.assertNotNull(service.getVisitTypeByUuid(uuid));
+		int originalCount = service.getAllVisitTypes().size();
+		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "")));
+		Assert.assertNull(service.getVisitTypeByUuid(uuid));
+		Assert.assertEquals(originalCount - 1, service.getAllVisitTypes().size());
+	}
+	
+	@Test
+	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryString() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Ret"))));
+		List<Object> hits = Util.getResultsList(result);
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals(Rest19ExtTestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	
-//	private VisitService service;
-//	
-//	private VisitTypeController controller;
-//	
-//	private MockHttpServletRequest request;
-//	
-//	private HttpServletResponse response;
-//	
-//	@Before
-//	public void before() {
-//		this.service = Context.getVisitService();
-//		this.controller = new VisitTypeController();
-//		this.request = new MockHttpServletRequest();
-//		this.response = new MockHttpServletResponse();
-//	}
-//	
-//	@Test
-//	public void shouldGetAVisitTypeByUuid() throws Exception {
-//		Object result = controller.retrieve(Rest19ExtTestConstants.VISIT_TYPE_UUID, request);
-//		Assert.assertNotNull(result);
-//		Assert.assertEquals(Rest19ExtTestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-//		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
-//	}
-//	
-//	@Test
-//	public void shouldGetAVisitTypeByName() throws Exception {
-//		Object result = controller.retrieve("Return TB Clinic Visit", request);
-//		Assert.assertNotNull(result);
-//		Assert.assertEquals(Rest19ExtTestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-//		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
-//	}
-//	
-//	@Test
-//	public void shouldListAllUnRetiredVisitTypes() throws Exception {
-//		SimpleObject result = controller.getAll(request, response);
-//		Assert.assertNotNull(result);
-//		Assert.assertEquals(2, Util.getResultsSize(result));
-//	}
-//	
-//	@Test
-//	public void shouldCreateAVisitType() throws Exception {
-//		int originalCount = service.getAllVisitTypes().size();
-//		String json = "{ \"name\":\"test visitType\", \"description\":\"description\" }";
-//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-//		Object newVisitType = controller.create(post, request, response);
-//		Assert.assertNotNull(PropertyUtils.getProperty(newVisitType, "uuid"));
-//		Assert.assertEquals(originalCount + 1, service.getAllVisitTypes().size());
-//	}
-//	
-//	@Test
-//	public void shouldEditAVisitType() throws Exception {
-//		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
-//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-//		controller.update(Rest19ExtTestConstants.VISIT_TYPE_UUID, post, request, response);
-//		VisitType updated = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
-//		Assert.assertNotNull(updated);
-//		Assert.assertEquals("new visit type", updated.getName());
-//		Assert.assertEquals("new description", updated.getDescription());
-//	}
-//	
-//	@Test
-//	public void shouldRetireAVisitType() throws Exception {
-//		VisitType visitType = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
-//		Assert.assertFalse(visitType.isRetired());
-//		controller.delete(Rest19ExtTestConstants.VISIT_TYPE_UUID, "test reason", request, response);
-//		visitType = service.getVisitTypeByUuid(Rest19ExtTestConstants.VISIT_TYPE_UUID);
-//		Assert.assertTrue(visitType.isRetired());
-//		Assert.assertEquals("test reason", visitType.getRetireReason());
-//	}
-//	
-//	@Test
-//	public void shouldPurgeAVisitType() throws Exception {
-//		String uuid = "759799ab-c9a5-435e-b671-77773ada74e6";
-//		Assert.assertNotNull(service.getVisitTypeByUuid(uuid));
-//		int originalCount = service.getAllVisitTypes().size();
-//		controller.purge(uuid, request, response);
-//		Assert.assertNull(service.getVisitTypeByUuid(uuid));
-//		Assert.assertEquals(originalCount - 1, service.getAllVisitTypes().size());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryString() throws Exception {
-//		List<Object> hits = (List<Object>) controller.search("Ret", request, response).get("results");
-//		Assert.assertEquals(1, hits.size());
-//		Assert.assertEquals(Rest19ExtTestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
-//		
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryStringExcludingRetiredOnes() throws Exception {
-//		final String searchString = "Hos";
-//		//sanity check
-//		Assert.assertEquals(1, Context.getVisitService().getVisitTypes(searchString).size());
-//		List<Object> hits = (List<Object>) controller.search(searchString, request, response).get("results");
-//		Assert.assertEquals(0, hits.size());
-//		
-//	}
-//	
-//	@Test
-//	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
-//		request.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-//		Object result = controller.retrieve(Rest19ExtTestConstants.VISIT_TYPE_UUID, request);
-//		Assert.assertNotNull(result);
-//		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-//	}
+	@Test
+	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryStringExcludingRetiredOnes() throws Exception {
+		final String searchString = "Hos";
+		//sanity check
+		Assert.assertEquals(1, Context.getVisitService().getVisitTypes(searchString).size());
+		
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", searchString))));
+		List<Object> hits = Util.getResultsList(result);
+		Assert.assertEquals(0, hits.size());
+		
+	}
+
 }
