@@ -183,7 +183,9 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	@Test
 	public void shouldGetAllOrdersForAPatient() throws Exception {
-		((MockHttpServletRequest) context.getRequest()).setParameter("patient", PATIENT_UUID);
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setParameter("patient", PATIENT_UUID);
+		context.setRequest(request);
 		SimpleObject simple = resource.search(null, context);
 		Util.log("all orders for patient", simple);
 		Assert.assertEquals(2, Util.getResultsSize(simple));
@@ -194,7 +196,9 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	@Test
 	public void shouldGetAllDrugOrdersForAPatient() throws Exception {
 		context.setType("drugorder");
-		((MockHttpServletRequest) context.getRequest()).setParameter("patient", PATIENT_UUID);
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.setParameter("patient", PATIENT_UUID);
+		context.setRequest(request);
 		SimpleObject simple = resource.search(null, context);
 		Util.log("drug orders for patient", simple);
 		Assert.assertEquals(1, Util.getResultsSize(simple));
