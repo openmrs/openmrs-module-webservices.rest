@@ -84,8 +84,8 @@ public class ConceptNameControllerTest extends BaseCrudControllerTest {
 		List<Object> resultsList = Util.getResultsList(response);
 		
 		Assert.assertEquals(3, resultsList.size());
-		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "name"),
-		    PropertyUtils.getProperty(resultsList.get(1), "name"), PropertyUtils.getProperty(resultsList.get(2), "name"));
+		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "name"), PropertyUtils.getProperty(
+		    resultsList.get(1), "name"), PropertyUtils.getProperty(resultsList.get(2), "name"));
 		
 		Assert.assertTrue(names.contains("CD4 COUNT"));
 		Assert.assertTrue(names.contains("CD4"));
@@ -117,7 +117,8 @@ public class ConceptNameControllerTest extends BaseCrudControllerTest {
 	public void shouldDeleteAConceptName() throws Exception {
 		int before = service.getConceptByUuid(conceptUuid2).getNames().size();
 		
-		handle(newDeleteRequest("concept/" + conceptUuid2 + "/name/8230adbf-30a9-4e18-b6d7-fc57e0c23cab", new Parameter("reason", "testing")));
+		handle(newDeleteRequest("concept/" + conceptUuid2 + "/name/8230adbf-30a9-4e18-b6d7-fc57e0c23cab", new Parameter(
+		        "reason", "testing")));
 		
 		int after = service.getConceptByUuid(conceptUuid2).getNames().size();
 		Assert.assertEquals(before - 1, after);
@@ -127,14 +128,14 @@ public class ConceptNameControllerTest extends BaseCrudControllerTest {
 	public void shouldPurgeAConceptName() throws Exception {
 		String conceptId = "5497";
 		//using sql to be able to include voided names too
-		Long before = (Long) Context.getAdministrationService()
-		        .executeSQL("select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);
+		Long before = (Long) Context.getAdministrationService().executeSQL(
+		    "select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);
 		
-		handle(newDeleteRequest("concept/" + conceptUuid2 + "/name/8230adbf-30a9-4e18-b6d7-fc57e0c23cab", new Parameter("purge",
-		        "")));
+		handle(newDeleteRequest("concept/" + conceptUuid2 + "/name/8230adbf-30a9-4e18-b6d7-fc57e0c23cab", new Parameter(
+		        "purge", "")));
 		
-		Long after = (Long) Context.getAdministrationService()
-		        .executeSQL("select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);
+		Long after = (Long) Context.getAdministrationService().executeSQL(
+		    "select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);
 		Assert.assertEquals(before.longValue() - 1, after.longValue());
 	}
 }

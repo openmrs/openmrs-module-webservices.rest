@@ -98,7 +98,7 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 		
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		
-		List<Object> resultsList =  Util.getResultsList(response);
+		List<Object> resultsList = Util.getResultsList(response);
 		Assert.assertEquals(2, resultsList.size());
 		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "description"),
 		    PropertyUtils.getProperty(resultsList.get(1), "description"));

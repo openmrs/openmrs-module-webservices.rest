@@ -65,7 +65,7 @@ public class ConceptDatatypeControllerTest extends BaseCrudControllerTest {
 	public String getUuid() {
 		return ResourceTestConstants.CONCEPT_DATATYPE_UUID;
 	}
-		
+	
 	@Test
 	public void shouldGetAConceptDatatypeByUuid() throws Exception {
 		
@@ -87,7 +87,7 @@ public class ConceptDatatypeControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(conceptDataType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals(conceptDataType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
-
+	
 	@Test
 	public void shouldListAllConceptDatatypes() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -96,7 +96,7 @@ public class ConceptDatatypeControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
-		
+	
 	@Test
 	public void shouldCreateAConceptDatatype() throws Exception {
 		long originalCount = getAllCount();
@@ -124,19 +124,19 @@ public class ConceptDatatypeControllerTest extends BaseCrudControllerTest {
 		
 		String json = new ObjectMapper().writeValueAsString(conceptDataType);
 		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI()+ "/" + getUuid());
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
 	}
-			
+	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldNotSupportRetiringAConceptDatatype() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
 		handle(req);
 	}
-		
+	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldNotSupportPurgingAConceptDatatype() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
@@ -152,5 +152,5 @@ public class ConceptDatatypeControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-
+	
 }
