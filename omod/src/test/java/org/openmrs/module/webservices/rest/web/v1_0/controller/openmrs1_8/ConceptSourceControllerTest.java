@@ -145,6 +145,7 @@ public class ConceptSourceControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldPurgeAConceptSource() throws Exception {
+		Assert.assertNotNull(service.getConceptSourceByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("purge", "");
 		handle(req);
