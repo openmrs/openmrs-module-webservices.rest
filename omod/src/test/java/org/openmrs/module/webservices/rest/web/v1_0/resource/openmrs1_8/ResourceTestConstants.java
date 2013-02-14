@@ -51,6 +51,8 @@ public class ResourceTestConstants {
 	
 	public static final String LOCATION_UUID = "167ce20c-4785-4285-9119-d197268f7f4a";
 	
+	public static final String LOCATION_TAG_UUID = "001e503a-47ed-11df-bc8b-001e378eb67e";
+	
 	public static final String ENCOUNTER_TYPE_UUID = "61ae96f4-6afe-4351-b6f8-cd4fc383cce1";
 	
 	public static final String ENCOUNTER_UUID = "6519d653-393b-4118-9c83-a3715b82d4ac";
