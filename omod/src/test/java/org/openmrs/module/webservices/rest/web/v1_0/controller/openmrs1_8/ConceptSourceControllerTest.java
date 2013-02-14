@@ -118,7 +118,7 @@ public class ConceptSourceControllerTest extends BaseCrudControllerTest {
 	}
 	
 	@Test
-	public void shouldNotSupportEditingAConceptSource() throws Exception {
+	public void shouldEditAConceptSource() throws Exception {
 		final String newName = "updated name";
 		SimpleObject conceptSource = new SimpleObject();
 		conceptSource.add("name", newName);
