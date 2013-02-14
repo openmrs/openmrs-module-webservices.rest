@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Constants used by the Rest Web Services
  */
@@ -161,10 +164,17 @@ public class RestConstants {
 	public static final String PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE = "1.8";
 	
 	/**
-	 * A list of special request parameter names
+	 * A set of special request parameter names
 	 */
-	public static final Object[] SPECIAL_REQUEST_PARAMETERS = { REQUEST_PROPERTY_FOR_INCLUDE_ALL,
-	        REQUEST_PROPERTY_FOR_LIMIT, REQUEST_PROPERTY_FOR_REPRESENTATION, REQUEST_PROPERTY_FOR_START_INDEX,
-	        REQUEST_PROPERTY_FOR_TYPE };
+	public static final Set<String> SPECIAL_REQUEST_PARAMETERS;
+	
+	static {
+		SPECIAL_REQUEST_PARAMETERS = new HashSet<String>();
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_INCLUDE_ALL);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_LIMIT);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_REPRESENTATION);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_START_INDEX);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_TYPE);
+	}
 	
 }

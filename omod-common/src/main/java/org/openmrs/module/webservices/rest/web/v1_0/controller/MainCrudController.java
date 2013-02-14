@@ -18,7 +18,6 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -143,10 +142,10 @@ public class MainCrudController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
+	@SuppressWarnings("rawtypes")
+    @RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject get(@PathVariable("resource") String resource,
-	        @RequestParam(required = false, value = "q") String query, HttpServletRequest request,
+	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
 		boolean isSearch = false;
@@ -154,14 +153,10 @@ public class MainCrudController {
 			RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
 			Enumeration parameters = request.getParameterNames();
 			while (parameters.hasMoreElements()) {
-				if (!ArrayUtils.contains(RestConstants.SPECIAL_REQUEST_PARAMETERS, parameters.nextElement())) {
+				if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 					isSearch = true;
-					break;
+					return ((Searchable) res).search(request.getParameter("q"), context);
 				}
-			}
-			
-			if (isSearch) {
-				return ((Searchable) res).search(request.getParameter("q"), context);
 			}
 			return ((Listable) res).getAll(context);
 		}
