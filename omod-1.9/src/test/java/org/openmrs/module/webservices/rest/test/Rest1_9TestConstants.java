@@ -29,4 +29,6 @@ public class Rest1_9TestConstants {
 	public final static String VISIT_ATTRIBUTE_UUID = "4c2tyr18-6faa-11e0-7899-001e378eb66a";
 	
 	public final static String TEST_DATASET = "customTestDataset1_9.xml";
+	
+	public static final String CONCEPT_MAP_TYPE_UUID = "1ccba764-49d6-11e0-8fed-18a905e044dc";
 }
