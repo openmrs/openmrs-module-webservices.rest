@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Tests functionality of {@link LocationController}. 
  */
 public class LocationControllerTest extends BaseCrudControllerTest {
-
+	
 	private LocationService service;
 	
 	@Before
@@ -66,7 +66,6 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 	public String getUuid() {
 		return ResourceTestConstants.LOCATION_UUID;
 	}
-	
 	
 	@Test
 	public void shouldGetALocationByUuid() throws Exception {
@@ -129,7 +128,7 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 		
 		final String editedName = "Xanadu edited";
 		String json = "{ \"name\":\"" + editedName + "\" }";
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/"+getUuid());
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
@@ -147,7 +146,7 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 		service.saveLocation(location);
 		
 		String json = "{ \"childLocations\": [] }";
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/"+getUuid());
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		Location updatedLocation = service.getLocationByUuid(getUuid());
@@ -197,7 +196,7 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));	
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));
 		
 	}
 	
@@ -210,7 +209,7 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 		service.saveLocation(location);
 		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
-		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);	
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
@@ -219,14 +218,14 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
-
+		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-
+		
 	}
 	
 	@Test
@@ -239,7 +238,7 @@ public class LocationControllerTest extends BaseCrudControllerTest {
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
-
+		
 	}
 	
 }

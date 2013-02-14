@@ -143,7 +143,7 @@ public class MainCrudController {
 	 * @throws ResponseException
 	 */
 	@SuppressWarnings("rawtypes")
-    @RequestMapping(value = "/{resource}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
