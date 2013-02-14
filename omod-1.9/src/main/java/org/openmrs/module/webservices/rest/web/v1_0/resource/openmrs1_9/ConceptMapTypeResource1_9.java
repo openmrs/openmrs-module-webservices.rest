@@ -74,7 +74,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
 		description.addRequiredProperty("name");
-		description.addRequiredProperty("description");
+		description.addProperty("description");
 		description.addProperty("isHidden");
 		
 		return description;

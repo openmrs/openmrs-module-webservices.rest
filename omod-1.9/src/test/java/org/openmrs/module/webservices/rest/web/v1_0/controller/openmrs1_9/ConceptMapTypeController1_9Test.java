@@ -97,7 +97,6 @@ public class ConceptMapTypeController1_9Test extends BaseCrudControllerTest {
 		
 		SimpleObject conceptMapTypeType = new SimpleObject();
 		conceptMapTypeType.add("name", "test name");
-		conceptMapTypeType.add("description", "test description");
 		
 		String json = new ObjectMapper().writeValueAsString(conceptMapTypeType);
 		

@@ -30,6 +30,7 @@ public class ConceptMapTypeResource1_9Test extends BaseDelegatingResourceTest<Co
 		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("isHidden", getObject().getIsHidden());
 		assertPropEquals("retired", getObject().isRetired());
 	}
 	
@@ -38,6 +39,7 @@ public class ConceptMapTypeResource1_9Test extends BaseDelegatingResourceTest<Co
 		super.validateFullRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("isHidden", getObject().getIsHidden());
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("auditInfo");
 	}
