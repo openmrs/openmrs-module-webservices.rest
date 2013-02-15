@@ -104,11 +104,11 @@ public class EncounterTypeResource extends MetadataDelegatingCrudResource<Encoun
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<EncounterType> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<EncounterType>(Context.getEncounterService().findEncounterTypes(query), context);
+	protected NeedsPaging<EncounterType> doSearch(RequestContext context) {
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().findEncounterTypes(context.getParameter("q")),
+		        context);
 	}
 }

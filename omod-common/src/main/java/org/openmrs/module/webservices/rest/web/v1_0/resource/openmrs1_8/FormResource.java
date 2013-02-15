@@ -140,12 +140,11 @@ public class FormResource extends MetadataDelegatingCrudResource<Form> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Form> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<Form>(Context.getFormService().getForms(query, false), context);
+	protected NeedsPaging<Form> doSearch(RequestContext context) {
+		return new NeedsPaging<Form>(Context.getFormService().getForms(context.getParameter("q"), false), context);
 	}
 	
 	/**

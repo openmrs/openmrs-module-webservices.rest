@@ -18,8 +18,8 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import org.openmrs.api.APIException;
 
+import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 
@@ -66,8 +66,7 @@ public class RequestContext {
 	}
 	
 	/**
-	 * @param representation
-	 *            the representation to set
+	 * @param representation the representation to set
 	 */
 	public void setRepresentation(Representation representation) {
 		this.representation = representation;
@@ -88,10 +87,11 @@ public class RequestContext {
 	}
 	
 	/**
-	 * Should be used to determine whether voided data and/or retired metadata 
-	 * should be returned in <code>getAll()</code> and <code>search</code> requests.
-	 * @return the <code>Boolean</code> specifying whether or not to include 
-	 * voided data / retired metadata
+	 * Should be used to determine whether voided data and/or retired metadata should be returned in
+	 * <code>getAll()</code> and <code>search</code> requests.
+	 * 
+	 * @return the <code>Boolean</code> specifying whether or not to include voided data / retired
+	 *         metadata
 	 */
 	public Boolean getIncludeAll() {
 		return includeAll;
@@ -106,8 +106,7 @@ public class RequestContext {
 	}
 	
 	/**
-	 * Should be used to limit the number of main results returned by search
-	 * methods
+	 * Should be used to limit the number of main results returned by search methods
 	 * 
 	 * @return the integer limit set in a request parameter
 	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
@@ -132,8 +131,8 @@ public class RequestContext {
 	}
 	
 	/**
-	 * Should be used by search methods to jump results to start with this
-	 * number in the list. Set by users in a request parameter
+	 * Should be used by search methods to jump results to start with this number in the list. Set
+	 * by users in a request parameter
 	 * 
 	 * @return the integer startIndex
 	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
@@ -144,8 +143,7 @@ public class RequestContext {
 	}
 	
 	/**
-	 * @param startIndex
-	 *            the startIndex to set
+	 * @param startIndex the startIndex to set
 	 */
 	public void setStartIndex(Integer startIndex) {
 		this.startIndex = startIndex;
@@ -178,7 +176,8 @@ public class RequestContext {
 	}
 	
 	/**
-	 * @return the query string from this request, with the startIndex query parameter removed if it was present 
+	 * @return the query string from this request, with the startIndex query parameter removed if it
+	 *         was present
 	 */
 	@SuppressWarnings("unchecked")
 	private String getQueryWithoutStartIndex() {
@@ -198,6 +197,17 @@ public class RequestContext {
 			}
 		}
 		return query.toString();
+	}
+	
+	/**
+	 * Convenience method that returns a parameter value as a string if a request parameter with the
+	 * specified name exists in the associated {@link HttpServletRequest} object
+	 * 
+	 * @param name the request parameter name
+	 * @return the value
+	 */
+	public String getParameter(String name) {
+		return getRequest().getParameter(name);
 	}
 	
 }

@@ -125,6 +125,11 @@ public class RestConstants {
 	public static final String REQUEST_PROPERTY_FOR_INCLUDE_ALL = "includeAll";
 	
 	/**
+	 * An optional request parameter for the jsessionid
+	 */
+	public static final String REQUEST_PROPERTY_FOR_JSESSIONID = "jsessionid";
+	
+	/**
 	 * Used in object representations to indicate which specific type an instance belongs to for a
 	 * resource that represents a full class hierarchy
 	 */
@@ -175,6 +180,7 @@ public class RestConstants {
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_REPRESENTATION);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_START_INDEX);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_TYPE);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_JSESSIONID);
 	}
 	
 }

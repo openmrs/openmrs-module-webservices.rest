@@ -195,14 +195,12 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 	 * Gets orders by given patient (paged according to context if necessary) only if a patient
 	 * parameter exists in the request set on the {@link RequestContext} otherwise
 	 * 
-	 * @param query
 	 * @param context
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @return all orders for a given patient (possibly filtered by context.type)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
@@ -227,7 +225,7 @@ public class OrderResource extends DataDelegatingCrudResource<Order> {
 		}
 		
 		//currently this is not supported since the superclass throws an exception
-		return super.doSearch(query, context);
+		return super.doSearch(context);
 	}
 	
 }

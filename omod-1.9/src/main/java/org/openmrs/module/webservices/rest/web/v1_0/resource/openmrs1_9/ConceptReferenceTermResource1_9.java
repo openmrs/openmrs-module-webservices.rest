@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -139,12 +140,14 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		ConceptService cs = Context.getConceptService();
+		String query = context.getParameter("q");
+		if (query == null)
+			return new EmptySearchResult();
 		List<ConceptReferenceTerm> terms = cs.getConceptReferenceTerms(query, null, context.getStartIndex(),
 		    context.getLimit(), context.getIncludeAll());
 		int count = cs.getCountOfConceptReferenceTerms(query, null, context.getIncludeAll());

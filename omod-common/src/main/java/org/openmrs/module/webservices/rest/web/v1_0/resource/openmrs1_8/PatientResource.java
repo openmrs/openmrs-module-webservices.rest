@@ -229,13 +229,12 @@ public class PatientResource extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Patient> doSearch(String query, RequestContext context) {
-		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients")
-		        .search(query, context);
+	protected AlreadyPaged<Patient> doSearch(RequestContext context) {
+		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients").search(context
+		        .getParameter("q"), context);
 	}
 	
 	/**

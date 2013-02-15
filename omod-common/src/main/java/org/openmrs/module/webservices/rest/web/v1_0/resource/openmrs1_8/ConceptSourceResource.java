@@ -141,13 +141,12 @@ public class ConceptSourceResource extends MetadataDelegatingCrudResource<Concep
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		List<ConceptSource> sources = new ArrayList<ConceptSource>();
-		ConceptSource cs = Context.getConceptService().getConceptSourceByName(query);
+		ConceptSource cs = Context.getConceptService().getConceptSourceByName(context.getParameter("q"));
 		if (cs != null)
 			sources.add(cs);
 		return new NeedsPaging<ConceptSource>(sources, context);

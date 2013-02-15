@@ -176,13 +176,12 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<UserAndPassword> doSearch(String query, RequestContext context) {
+	protected NeedsPaging<UserAndPassword> doSearch(RequestContext context) {
 		List<UserAndPassword> users = new ArrayList<UserAndPassword>();
-		for (User user : Context.getUserService().getUsers(query, null, context.getIncludeAll())) {
+		for (User user : Context.getUserService().getUsers(context.getParameter("q"), null, context.getIncludeAll())) {
 			users.add(new UserAndPassword(user));
 		}
 		return new NeedsPaging<UserAndPassword>(users, context);

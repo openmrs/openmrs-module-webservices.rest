@@ -155,7 +155,7 @@ public class MainCrudController {
 			while (parameters.hasMoreElements()) {
 				if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 					isSearch = true;
-					return ((Searchable) res).search(request.getParameter("q"), context);
+					return ((Searchable) res).search(context);
 				}
 			}
 			return ((Listable) res).getAll(context);

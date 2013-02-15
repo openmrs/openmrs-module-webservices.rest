@@ -119,7 +119,7 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * @throws ResourceDoesNotSupportOperationException 
+	 * @throws ResourceDoesNotSupportOperationException
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
@@ -316,12 +316,11 @@ public class PersonResource extends DataDelegatingCrudResource<Person> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Person> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<Person>(Context.getPersonService().getPeople(query, null), context);
+	protected NeedsPaging<Person> doSearch(RequestContext context) {
+		return new NeedsPaging<Person>(Context.getPersonService().getPeople(context.getParameter("q"), null), context);
 	}
 	
 	/**

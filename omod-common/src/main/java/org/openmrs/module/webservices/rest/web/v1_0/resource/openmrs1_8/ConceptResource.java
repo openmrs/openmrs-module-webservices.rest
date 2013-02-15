@@ -321,12 +321,10 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 * uuid</li>
 	 * </ul>
 	 * 
-	 * @throws ResponseException
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		ConceptService service = Context.getConceptService();
 		Integer startIndex = null;
 		Integer limit = null;
@@ -363,8 +361,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		// get the user's locales...and then convert that from a set to a list
 		List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 		
-		searchResults = service.getConcepts(query, locales, context.getIncludeAll(), null, null, null, null, answerTo,
-		    startIndex, limit);
+		searchResults = service.getConcepts(context.getParameter("q"), locales, context.getIncludeAll(), null, null, null,
+		    null, answerTo, startIndex, limit);
 		
 		// convert search results into list of concepts
 		List<Concept> results = new ArrayList<Concept>(searchResults.size());
@@ -376,9 +374,9 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		
 		PageableResult result = null;
 		if (canPage) {
-			Integer count = service.getCountOfConcepts(query, locales, false, Collections.<ConceptClass> emptyList(),
-			    Collections.<ConceptClass> emptyList(), Collections.<ConceptDatatype> emptyList(), Collections
-			            .<ConceptDatatype> emptyList(), answerTo);
+			Integer count = service.getCountOfConcepts(context.getParameter("q"), locales, false, Collections
+			        .<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(), Collections
+			        .<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
 			boolean hasMore = count > startIndex + limit;
 			result = new AlreadyPaged<Concept>(context, results, hasMore);
 		} else {

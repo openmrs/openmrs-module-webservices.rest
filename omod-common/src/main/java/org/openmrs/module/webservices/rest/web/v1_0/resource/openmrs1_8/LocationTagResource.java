@@ -67,7 +67,8 @@ public class LocationTagResource extends MetadataDelegatingCrudResource<Location
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(LocationTag delegate, RequestContext context) throws ResponseException {
@@ -95,11 +96,11 @@ public class LocationTagResource extends MetadataDelegatingCrudResource<Location
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<LocationTag> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<LocationTag>(Context.getLocationService().getLocationTags(query), context);
+	protected NeedsPaging<LocationTag> doSearch(RequestContext context) {
+		return new NeedsPaging<LocationTag>(Context.getLocationService().getLocationTags(context.getParameter("q")), context);
 	}
 	
 	@Override

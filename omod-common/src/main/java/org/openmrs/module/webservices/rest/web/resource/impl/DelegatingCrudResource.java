@@ -155,19 +155,18 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public SimpleObject search(String query, RequestContext context) throws ResponseException {
-		PageableResult result = doSearch(query, context);
+	public SimpleObject search(RequestContext context) throws ResponseException {
+		PageableResult result = doSearch(context);
 		return result.toSimpleObject();
 	}
 	
 	/**
 	 * Implementations should override this method if they are actually searchable.
 	 */
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		return new EmptySearchResult();
 	}
 	

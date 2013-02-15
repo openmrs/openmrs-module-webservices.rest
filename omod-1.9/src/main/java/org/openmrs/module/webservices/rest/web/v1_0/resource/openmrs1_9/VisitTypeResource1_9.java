@@ -118,12 +118,11 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<VisitType> doSearch(String query, RequestContext context) {
-		List<VisitType> visitTypes = Context.getVisitService().getVisitTypes(query);
+	protected NeedsPaging<VisitType> doSearch(RequestContext context) {
+		List<VisitType> visitTypes = Context.getVisitService().getVisitTypes(context.getParameter("q"));
 		List<VisitType> unRetiredVisitTypes = new ArrayList<VisitType>();
 		for (VisitType visitType : visitTypes) {
 			if (!visitType.isRetired())

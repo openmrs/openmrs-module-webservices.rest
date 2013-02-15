@@ -84,18 +84,17 @@ public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<VisitAttributeType> doSearch(String query, RequestContext context) {
+	protected NeedsPaging<VisitAttributeType> doSearch(RequestContext context) {
 		// TODO: Should be a VisitAttributeType search method in VisitService
 		List<VisitAttributeType> vats = getService().getAllVisitAttributeTypes();
 		for (Iterator<VisitAttributeType> iterator = vats.iterator(); iterator.hasNext();) {
 			VisitAttributeType visitAttributeType = iterator.next();
 			//find matches excluding retired ones if necessary
-			if (!Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(visitAttributeType.getName())
-			        .find()
+			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
+			        .matcher(visitAttributeType.getName()).find()
 			        || (!context.getIncludeAll() && visitAttributeType.isRetired())) {
 				iterator.remove();
 			}

@@ -78,16 +78,16 @@ public class ProviderAttributeTypeResource1_9 extends BaseAttributeTypeCrudResou
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<ProviderAttributeType> doSearch(String query, RequestContext context) {
+	protected NeedsPaging<ProviderAttributeType> doSearch(RequestContext context) {
 		// TODO: Should be a ProviderAttributeType search method in ProviderService
 		List<ProviderAttributeType> allAttrs = service().getAllProviderAttributeTypes();
 		List<ProviderAttributeType> queryResult = new ArrayList<ProviderAttributeType>();
 		for (ProviderAttributeType pAttr : allAttrs) {
-			if (Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(pAttr.getName()).find()) {
+			if (Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(pAttr.getName())
+			        .find()) {
 				queryResult.add(pAttr);
 			}
 		}

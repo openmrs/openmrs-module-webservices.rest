@@ -37,8 +37,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
@@ -69,8 +68,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
@@ -83,8 +81,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
@@ -92,8 +89,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
 	public Provider newDelegate() {
@@ -101,8 +97,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
 	public Provider save(Provider provider) {
@@ -110,8 +105,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Provider getByUniqueId(String uuid) {
@@ -119,9 +113,8 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 * java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(Provider provider, String reason, RequestContext context) throws ResponseException {
@@ -133,9 +126,8 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
-	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Provider provider, RequestContext context) throws ResponseException {
@@ -147,22 +139,19 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Provider> doSearch(String query, RequestContext context) {
-		List<Provider> providers = Context.getProviderService().getProviders(query, context.getStartIndex(),
-		    context.getLimit(), null);
+	protected AlreadyPaged<Provider> doSearch(RequestContext context) {
+		List<Provider> providers = Context.getProviderService().getProviders(context.getParameter("q"),
+		    context.getStartIndex(), context.getLimit(), null);
 		return new AlreadyPaged<Provider>(context, providers, false);
 		
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Provider> doGetAll(RequestContext context) throws ResponseException {

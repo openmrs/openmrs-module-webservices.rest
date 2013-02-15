@@ -146,11 +146,11 @@ public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<PersonAttributeType> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<PersonAttributeType>(service().getPersonAttributeTypes(query, null, null, null), context);
+	protected NeedsPaging<PersonAttributeType> doSearch(RequestContext context) {
+		return new NeedsPaging<PersonAttributeType>(service().getPersonAttributeTypes(context.getParameter("q"), null, null,
+		    null), context);
 	}
 }

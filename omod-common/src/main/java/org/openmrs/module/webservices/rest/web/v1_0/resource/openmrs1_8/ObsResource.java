@@ -293,13 +293,11 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	 * or encounter parameter exists respectively in the request set on the {@link RequestContext}
 	 * otherwise searches for obs that match the specified query
 	 * 
-	 * @param query
 	 * @param context
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
@@ -320,7 +318,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			return new NeedsPaging<Obs>(obs, context);
 		}
 		
-		return new NeedsPaging<Obs>(Context.getObsService().getObservations(query), context);
+		return new NeedsPaging<Obs>(Context.getObsService().getObservations(context.getParameter("q")), context);
 	}
 	
 }

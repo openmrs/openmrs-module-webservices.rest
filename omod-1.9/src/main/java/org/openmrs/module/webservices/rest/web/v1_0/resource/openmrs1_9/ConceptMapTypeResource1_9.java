@@ -134,13 +134,12 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<ConceptMapType> doSearch(String query, RequestContext context) {
+	protected NeedsPaging<ConceptMapType> doSearch(RequestContext context) {
 		List<ConceptMapType> types = new ArrayList<ConceptMapType>();
-		ConceptMapType type = Context.getConceptService().getConceptMapTypeByName(query);
+		ConceptMapType type = Context.getConceptService().getConceptMapTypeByName(context.getParameter("q"));
 		if (type != null)
 			types.add(type);
 		return new NeedsPaging<ConceptMapType>(types, context);

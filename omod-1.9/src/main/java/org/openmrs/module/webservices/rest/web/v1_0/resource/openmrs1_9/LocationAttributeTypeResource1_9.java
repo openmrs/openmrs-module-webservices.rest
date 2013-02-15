@@ -78,16 +78,16 @@ public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResou
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<LocationAttributeType> doSearch(String query, RequestContext context) {
+	protected NeedsPaging<LocationAttributeType> doSearch(RequestContext context) {
 		// TODO: Should be a LocationAttributeType search method in LocationService
 		List<LocationAttributeType> allAttrs = service().getAllLocationAttributeTypes();
 		List<LocationAttributeType> queryResult = new ArrayList<LocationAttributeType>();
 		for (LocationAttributeType locAttr : allAttrs) {
-			if (Pattern.compile(Pattern.quote(query), Pattern.CASE_INSENSITIVE).matcher(locAttr.getName()).find()) {
+			if (Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
+			        .matcher(locAttr.getName()).find()) {
 				queryResult.add(locAttr);
 			}
 		}

@@ -106,13 +106,11 @@ public class ProblemResource extends BaseActiveListItemResource<Problem> {
 	 * Gets problems for a given patient (paged according to context if necessary) only if a patient
 	 * parameter exists in the request set on the {@link RequestContext}
 	 * 
-	 * @param query
 	 * @param context
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
@@ -123,7 +121,7 @@ public class ProblemResource extends BaseActiveListItemResource<Problem> {
 		}
 		
 		//currently this is not supported since the superclass throws an exception
-		return super.doSearch(query, context);
+		return super.doSearch(context);
 	}
 	
 }

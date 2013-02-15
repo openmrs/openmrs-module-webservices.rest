@@ -186,7 +186,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("patient", PATIENT_UUID);
 		context.setRequest(request);
-		SimpleObject simple = resource.search(null, context);
+		SimpleObject simple = resource.search(context);
 		Util.log("all orders for patient", simple);
 		Assert.assertEquals(2, Util.getResultsSize(simple));
 		Object typeForFirst = Util.getByPath(simple, "results[0]/type");
@@ -199,7 +199,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setParameter("patient", PATIENT_UUID);
 		context.setRequest(request);
-		SimpleObject simple = resource.search(null, context);
+		SimpleObject simple = resource.search(context);
 		Util.log("drug orders for patient", simple);
 		Assert.assertEquals(1, Util.getResultsSize(simple));
 		Assert.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));

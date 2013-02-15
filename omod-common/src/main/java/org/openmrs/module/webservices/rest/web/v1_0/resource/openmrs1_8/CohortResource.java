@@ -162,12 +162,11 @@ public class CohortResource extends DataDelegatingCrudResource<Cohort> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Cohort> doSearch(String query, RequestContext context) {
-		List<Cohort> cohorts = Context.getCohortService().getCohorts(query);
+	protected NeedsPaging<Cohort> doSearch(RequestContext context) {
+		List<Cohort> cohorts = Context.getCohortService().getCohorts(context.getParameter("q"));
 		return new NeedsPaging<Cohort>(cohorts, context);
 	}
 	

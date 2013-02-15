@@ -136,9 +136,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter, 
-	 * java.lang.String, 
-	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter,
+	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(Encounter enc, String reason, RequestContext context) throws ResponseException {
@@ -151,7 +150,7 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.Encounter,
-	 * org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Encounter enc, RequestContext context) throws ResponseException {
@@ -200,13 +199,11 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 	 * patient parameter exists in the request set on the {@link RequestContext} otherwise searches
 	 * for encounters that match the specified query
 	 * 
-	 * @param query
 	 * @param context
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(String query, RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceBySupportedClass(
@@ -217,8 +214,8 @@ public class EncounterResource extends DataDelegatingCrudResource<Encounter> {
 			return new NeedsPaging<Encounter>(encs, context);
 		}
 		
-		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(query,
-		    context);
+		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(
+		    context.getParameter("q"), context);
 	}
 	
 }

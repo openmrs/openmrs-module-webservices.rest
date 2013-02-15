@@ -187,12 +187,11 @@ public class LocationResource extends MetadataDelegatingCrudResource<Location> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Location> doSearch(String query, RequestContext context) {
-		return new ServiceSearcher<Location>(LocationService.class, "getLocations", "getCountOfLocations").search(query,
-		    context);
+	protected AlreadyPaged<Location> doSearch(RequestContext context) {
+		return new ServiceSearcher<Location>(LocationService.class, "getLocations", "getCountOfLocations").search(context
+		        .getParameter("q"), context);
 	}
 }

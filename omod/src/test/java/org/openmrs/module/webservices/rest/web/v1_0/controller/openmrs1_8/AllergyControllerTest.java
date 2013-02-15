@@ -99,7 +99,8 @@ public class AllergyControllerTest extends BaseCrudControllerTest {
 	 */
 	@Test
 	public void searchByPatient_shouldGetAllergyForAPatient() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI(), new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"));
+		MockHttpServletRequest req = newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"));
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
 		Assert.assertEquals(1, results.size());
