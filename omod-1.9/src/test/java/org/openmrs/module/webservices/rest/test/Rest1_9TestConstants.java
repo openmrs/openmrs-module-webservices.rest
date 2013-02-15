@@ -31,4 +31,6 @@ public class Rest1_9TestConstants {
 	public final static String TEST_DATASET = "customTestDataset1_9.xml";
 	
 	public static final String CONCEPT_MAP_TYPE_UUID = "1ccba764-49d6-11e0-8fed-18a905e044dc";
+
+	public static final String CONCEPT_REFERENCE_TERM_UUID = "SSTRM-127689_3";
 }
