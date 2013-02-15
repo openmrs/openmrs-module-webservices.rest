@@ -144,4 +144,12 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 			types.add(type);
 		return new NeedsPaging<ConceptMapType>(types, context);
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return "1.9";
+	}
 }

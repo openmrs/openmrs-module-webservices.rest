@@ -154,4 +154,12 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
 		return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore);
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return "1.9";
+	}
 }
