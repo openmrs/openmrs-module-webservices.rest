@@ -24,6 +24,7 @@ import org.openmrs.ConceptNumeric;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
@@ -334,4 +335,24 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
 	}
 	
+	/**
+	 * Gets Obs for a given patient and context (paged according to context if necessary)
+	 * 
+	 * @param patientUuid @see {@link PatientResource#getByUniqueId(String)} for interpretation
+	 * @param context
+	 * @return
+	 * @throws ResponseException
+	 */
+	public SimpleObject getObsByPersonAndConcept(String personUuid, String conceptUuid, RequestContext context)
+	        throws ResponseException {
+		Person person = Context.getService(RestService.class).getResource(PersonResource.class).getByUniqueId(personUuid);
+		if (person == null)
+			throw new ObjectNotFoundException();
+		Concept concept = Context.getService(RestService.class).getResource(ConceptResource.class)
+		        .getByUniqueId(conceptUuid);
+		if (concept == null)
+			throw new ObjectNotFoundException();
+		List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(person, concept);
+		return new NeedsPaging<Obs>(obs, context).toSimpleObject();
+	}
 }

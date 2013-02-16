@@ -73,4 +73,23 @@ public class ObsController extends BaseCrudController<ObsResource> {
 		return getResource().getObsByPatient(patientUuid, RestUtil.getRequestContext(request));
 	}
 	
+	/**
+	 * Fetch obs for a given person and a concept
+	 * 
+	 * @param personUuid
+	 * @param conceptUuid
+	 * @param request
+	 * @param response
+	 * @return obs for the given person and concept
+	 * @throws ResponseException
+	 * 
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = { "person", "concept" })
+	@WSDoc("Fetch all non-voided obs for a patient and concept with the given uuid's")
+	@ResponseBody
+	public SimpleObject searchByPersonAndConcept(@RequestParam("person") String personUuid,
+	        @RequestParam("concept") String conceptUuid, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		return getResource().getObsByPersonAndConcept(personUuid, conceptUuid, RestUtil.getRequestContext(request));
+	}
 }
