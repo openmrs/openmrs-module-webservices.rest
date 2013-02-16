@@ -296,4 +296,28 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2008-08-14"), Representation.DEFAULT),
 		    PropertyUtils.getProperty(result, "value"));
 	}
+	
+	/**
+	 * @see ObsController#searchByPersonAndConcept(String, String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @throws Exception
+	 */
+	@Test
+	public void getObs_shouldGetObsForAPersonAndConcept() throws Exception {
+		List<Obs> observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		int before = observationsByPerson.size();
+		String json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"high\"}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		new ObsController().create(post, emptyRequest(), new MockHttpServletResponse());
+		List<Obs> observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		Obs newObs = observationsByPersonAfterSave.get(0);
+		Assert.assertEquals("high", newObs.getValueText());
+		
+		int conceptId = Context.getConceptService().getConceptByUuid("96408258-000b-424e-af1a-403919332938").getConceptId();
+		List<Obs> obsByPersonAndConcept = Context.getObsService().getObservationsByPersonAndConcept(
+		    Context.getPersonService().getPerson(7), Context.getConceptService().getConcept(conceptId));
+		Assert.assertEquals(2, obsByPersonAndConcept.size());
+	}
 }
