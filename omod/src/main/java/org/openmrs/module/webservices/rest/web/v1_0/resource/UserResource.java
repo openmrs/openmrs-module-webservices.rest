@@ -40,6 +40,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.api.UserService;
 
 /**
  * {@link Resource} for User, supporting standard CRUD operations
@@ -147,8 +148,13 @@ public class UserResource extends MetadataDelegatingCrudResource<UserAndPassword
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public UserAndPassword getByUniqueId(String uuid) {
-		return new UserAndPassword(Context.getUserService().getUserByUuid(uuid));
+	public UserAndPassword getByUniqueId(String uuidOrName) {
+		User user = Context.getUserService().getUserByUuid(uuidOrName);
+		if (user == null) {
+			// We assume that the caller is fetching by name if no User is retrievable by uuid
+			user = Context.getUserService().getUserByUsername(uuidOrName);
+		}
+		return new UserAndPassword(user);
 	}
 	
 	/**
