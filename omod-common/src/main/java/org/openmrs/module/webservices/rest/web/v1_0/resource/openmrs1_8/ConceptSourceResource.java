@@ -13,7 +13,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.openmrs.ConceptSource;
 import org.openmrs.api.context.Context;
@@ -23,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -144,11 +145,17 @@ public class ConceptSourceResource extends MetadataDelegatingCrudResource<Concep
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doSearch(RequestContext context) {
-		List<ConceptSource> sources = new ArrayList<ConceptSource>();
-		ConceptSource cs = Context.getConceptService().getConceptSourceByName(context.getParameter("q"));
-		if (cs != null)
-			sources.add(cs);
+	protected NeedsPaging<ConceptSource> doSearch(RequestContext context) {
+		List<ConceptSource> sources = Context.getConceptService().getAllConceptSources();
+		for (Iterator<ConceptSource> iterator = sources.iterator(); iterator.hasNext();) {
+			ConceptSource conceptSource = iterator.next();
+			//find matches excluding retired ones if necessary
+			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(
+			    conceptSource.getName()).find()
+			        || (!context.getIncludeAll() && conceptSource.isRetired())) {
+				iterator.remove();
+			}
+		}
 		return new NeedsPaging<ConceptSource>(sources, context);
 	}
 }

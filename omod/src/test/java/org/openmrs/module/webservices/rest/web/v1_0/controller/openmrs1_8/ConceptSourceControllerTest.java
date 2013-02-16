@@ -164,10 +164,9 @@ public class ConceptSourceControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void shouldSearchAConceptSourceIfItMatchesTheQuery() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("q", "ICD-10");
+		req.addParameter("q", "ome");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertEquals(1, Util.getResultsSize(result));
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+		Assert.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 }

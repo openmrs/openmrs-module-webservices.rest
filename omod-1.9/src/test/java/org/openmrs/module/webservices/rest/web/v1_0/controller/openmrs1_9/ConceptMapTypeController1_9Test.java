@@ -155,9 +155,8 @@ public class ConceptMapTypeController1_9Test extends BaseCrudControllerTest {
 	@Test
 	public void shouldSearchAndReturnAListOfConceptMapTypesMatchingTheQueryString() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("q", "related-to");
+		req.addParameter("q", "is");
 		SimpleObject result = deserialize(handle(req));
-		assertEquals(1, Util.getResultsSize(result));
-		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+		assertEquals(2, Util.getResultsSize(result));
 	}
 }

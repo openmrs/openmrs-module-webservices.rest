@@ -12,8 +12,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.openmrs.ConceptMapType;
 import org.openmrs.api.context.Context;
@@ -138,10 +139,16 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	 */
 	@Override
 	protected NeedsPaging<ConceptMapType> doSearch(RequestContext context) {
-		List<ConceptMapType> types = new ArrayList<ConceptMapType>();
-		ConceptMapType type = Context.getConceptService().getConceptMapTypeByName(context.getParameter("q"));
-		if (type != null)
-			types.add(type);
+		List<ConceptMapType> types = Context.getConceptService().getConceptMapTypes(context.getIncludeAll(),
+		    context.getIncludeAll());
+		for (Iterator<ConceptMapType> iterator = types.iterator(); iterator.hasNext();) {
+			ConceptMapType type = iterator.next();
+			//find matches excluding retired ones if necessary
+			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(type.getName())
+			        .find()) {
+				iterator.remove();
+			}
+		}
 		return new NeedsPaging<ConceptMapType>(types, context);
 	}
 	
