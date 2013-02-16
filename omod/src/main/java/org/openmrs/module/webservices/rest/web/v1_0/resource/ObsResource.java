@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -228,6 +229,20 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 			return obs.getValueNumeric();
 		
 		return null;
+	}
+	
+	/**
+	 * Sets the members of an obs group
+	 *
+	 * @param obsGroup the obs group whose members to set
+	 * @param members the members to set
+	 */
+	@PropertySetter("groupMembers")
+	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
+		for (Obs member : members) {
+			member.setObsGroup(obsGroup);
+		}
+		obsGroup.setGroupMembers(members);
 	}
 	
 	/**
