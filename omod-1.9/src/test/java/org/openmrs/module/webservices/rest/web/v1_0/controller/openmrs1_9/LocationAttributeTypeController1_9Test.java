@@ -52,7 +52,7 @@ public class LocationAttributeTypeController1_9Test extends BaseCrudControllerTe
 	 */
 	@Override
 	public long getAllCount() {
-		return 4;
+		return Context.getLocationService().getAllLocationAttributeTypes().size();
 	}
 	
 	@Before

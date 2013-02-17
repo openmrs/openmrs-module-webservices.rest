@@ -59,7 +59,7 @@ public class EncounterController1_9Test extends BaseCrudControllerTest {
      */
     @Override
     public long getAllCount() {
-	    return 0;
+	    return 0; //not supported
     }
     
     /**

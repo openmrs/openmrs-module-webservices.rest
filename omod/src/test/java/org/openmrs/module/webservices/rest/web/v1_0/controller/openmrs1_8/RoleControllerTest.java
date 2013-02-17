@@ -35,181 +35,182 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 public class RoleControllerTest extends BaseCrudControllerTest {
- 
- private UserService service;
- 
- @Before
- public void init() throws Exception {
-  service = Context.getUserService();
- }
- 
- /**
-  * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
-  */
- @Override
- public String getURI() {
-  return "role";
- }
- 
- /**
-  * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
-  */
- @Override
- public long getAllCount() {
-  return service.getAllRoles().size();
- }
- 
- /**
-  * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
-  */
- @Override
- public String getUuid() {
-  return ResourceTestConstants.ROLE_UUID;
- }
- 
-  /**
-   * @see RoleController#create(SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies create a new Role
-   */
-  @Test
-  public void createRole_shouldCreateANewRole() throws Exception {
-   
-   long originalCount = getAllCount();
-   
-   SimpleObject location = new SimpleObject();
-   location.add("name", "Role name");
-   location.add("description", "Role description");
-   
-   String json = new ObjectMapper().writeValueAsString(location);
-   
-   MockHttpServletRequest req = request(RequestMethod.POST, getURI());
-   req.setContent(json.getBytes());
-   
-   SimpleObject newRole = deserialize(handle(req));
-   
-   Assert.assertNotNull(PropertyUtils.getProperty(newRole, "uuid"));
-   Assert.assertEquals(originalCount + 1, getAllCount());
-   
-  }
-  
-  /**
-   * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
-   * @verifies get a default representation of a Role
-   */
-  @Test
-  public void getRole_shouldGetADefaultRepresentationOfARole() throws Exception {
-
-   MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
-   SimpleObject result = deserialize(handle(httpReq));
-   
-   Assert.assertNotNull(result);
-   Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-   
-  }
-  
-  /**
-   * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
-   * @verifies get a full representation of a Role
-   */
-  @Test
-  public void getRole_shouldGetAFullRepresentationOfARole() throws Exception {
-
-   MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
-   httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-   SimpleObject result = deserialize(handle(httpReq));
-   
-   Assert.assertNotNull(result);
-   Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-   
-  }
-  
-  /**
-   * @see RoleController#update(String, SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies change a property on a Role
-   */
-  @Test
-  public void updateRole_shouldChangeAPropertyOnARole() throws Exception {
-   
-   final String editedDescription = "Role description edited";
-   String json = "{ \"description\":\"" + editedDescription + "\" }";
-   MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/"+getUuid());
-   req.setContent(json.getBytes());
-   handle(req);
-   
-   Role editedRole = service.getRoleByUuid(getUuid());
-   Assert.assertNotNull(editedRole);
-   Assert.assertEquals(editedDescription, editedRole.getDescription());
-   
-  }
-  
-  /**
-   * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies void a Role
-   */
-  @Test
-  public void retireRole_shouldRetireARole() throws Exception {
-
-   Role role = service.getRoleByUuid(getUuid());
-   Assert.assertFalse(role.isRetired());
-   
-   MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + role.getUuid());
-   req.addParameter("!purge", "");
-   req.addParameter("reason", "random reason");
-   handle(req);
-   
-   Role retiredRole = service.getRoleByUuid(getUuid());
-   Assert.assertTrue(retiredRole.isRetired());
-   Assert.assertEquals("random reason", retiredRole.getRetireReason());
-   
-  }
-  
-  /**
-   * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies return no results if there are no matching Roles
-   */
-  @Test
-  public void findRoles_shouldReturnNoResultsIfThereAreNoMatchingRoles() throws Exception {
-
-   MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-   req.addParameter("q", "Missing Name");
-   SimpleObject result = deserialize(handle(req));
-      
-   List<Object> hits = (List<Object>) result.get("results");
-   Assert.assertEquals(0, hits.size());
-   
-  }
-  
-  /**
-   * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies find matching Roles
-   */
-  @Test
-  @Ignore("Roles do not support searching yet.")
-  public void findRoles_shouldFindMatchingRoles() throws Exception {
-
-   MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-   req.addParameter("q", "Provider");
-   SimpleObject result = deserialize(handle(req));
-   
-   List<Object> hits = (List<Object>) result.get("results");
-   Assert.assertEquals(1, hits.size());
-   Assert.assertEquals(service.getRoleByUuid("3480cb6d-c291-46c8-8d3a-96dc33d199fb"), PropertyUtils.getProperty(hits.get(0), "uuid"));
-   
-  }
-  
-  /**
-   * @see RoleController#getAll(javax.servlet.http.HttpServletRequest, HttpServletResponse)
-   * @verifies get all Roles
-   */
-  @Test
-  public void shouldListAllRoles() throws Exception {
-
-   MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-   SimpleObject result = deserialize(handle(req));
-   
-   Assert.assertNotNull(result);
-   Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
-   
-  }
- 
+	
+	private UserService service;
+	
+	@Before
+	public void init() throws Exception {
+		service = Context.getUserService();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "role";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return service.getAllRoles().size();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.ROLE_UUID;
+	}
+	
+	/**
+	 * @see RoleController#create(SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies create a new Role
+	 */
+	@Test
+	public void createRole_shouldCreateANewRole() throws Exception {
+		
+		long originalCount = getAllCount();
+		
+		SimpleObject location = new SimpleObject();
+		location.add("name", "Role name");
+		location.add("description", "Role description");
+		
+		String json = new ObjectMapper().writeValueAsString(location);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newRole = deserialize(handle(req));
+		
+		Assert.assertNotNull(PropertyUtils.getProperty(newRole, "uuid"));
+		Assert.assertEquals(originalCount + 1, getAllCount());
+		
+	}
+	
+	/**
+	 * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
+	 * @verifies get a default representation of a Role
+	 */
+	@Test
+	public void getRole_shouldGetADefaultRepresentationOfARole() throws Exception {
+		
+		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(httpReq));
+		
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		
+	}
+	
+	/**
+	 * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
+	 * @verifies get a full representation of a Role
+	 */
+	@Test
+	public void getRole_shouldGetAFullRepresentationOfARole() throws Exception {
+		
+		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(httpReq));
+		
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		
+	}
+	
+	/**
+	 * @see RoleController#update(String, SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies change a property on a Role
+	 */
+	@Test
+	public void updateRole_shouldChangeAPropertyOnARole() throws Exception {
+		
+		final String editedDescription = "Role description edited";
+		String json = "{ \"description\":\"" + editedDescription + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		
+		Role editedRole = service.getRoleByUuid(getUuid());
+		Assert.assertNotNull(editedRole);
+		Assert.assertEquals(editedDescription, editedRole.getDescription());
+		
+	}
+	
+	/**
+	 * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies void a Role
+	 */
+	@Test
+	public void retireRole_shouldRetireARole() throws Exception {
+		
+		Role role = service.getRoleByUuid(getUuid());
+		Assert.assertFalse(role.isRetired());
+		
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + role.getUuid());
+		req.addParameter("!purge", "");
+		req.addParameter("reason", "random reason");
+		handle(req);
+		
+		Role retiredRole = service.getRoleByUuid(getUuid());
+		Assert.assertTrue(retiredRole.isRetired());
+		Assert.assertEquals("random reason", retiredRole.getRetireReason());
+		
+	}
+	
+	/**
+	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies return no results if there are no matching Roles
+	 */
+	@Test
+	public void findRoles_shouldReturnNoResultsIfThereAreNoMatchingRoles() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("q", "Missing Name");
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(0, hits.size());
+		
+	}
+	
+	/**
+	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies find matching Roles
+	 */
+	@Test
+	@Ignore("Roles do not support searching yet.")
+	public void findRoles_shouldFindMatchingRoles() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("q", "Provider");
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals(service.getRoleByUuid("3480cb6d-c291-46c8-8d3a-96dc33d199fb"), PropertyUtils.getProperty(hits
+		        .get(0), "uuid"));
+		
+	}
+	
+	/**
+	 * @see RoleController#getAll(javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @verifies get all Roles
+	 */
+	@Test
+	public void shouldListAllRoles() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		Assert.assertNotNull(result);
+		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		
+	}
+	
 }

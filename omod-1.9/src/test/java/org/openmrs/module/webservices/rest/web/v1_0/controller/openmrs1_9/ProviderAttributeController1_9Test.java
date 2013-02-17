@@ -27,30 +27,30 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControlle
 public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	
 	private ProviderService service;
-
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
-     */
-    @Override
-    public String getURI() {
-	    return "provider/" + Rest1_9TestConstants.PROVIDER_UUID + "/attribute";
-    }
-
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "provider/" + Rest1_9TestConstants.PROVIDER_UUID + "/attribute";
+	}
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
-     */
-    @Override
-    public String getUuid() {
-	    return Rest1_9TestConstants.PROVIDER_ATTRIBUTE_UUID;
-    }
-
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return Rest1_9TestConstants.PROVIDER_ATTRIBUTE_UUID;
+	}
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
-     */
-    @Override
-    public long getAllCount() {
-	    return 2;
-    }
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return service.getProviderByUuid(Rest1_9TestConstants.PROVIDER_UUID).getActiveAttributes().size();
+	}
 	
 	@Before
 	public void before() throws Exception {
@@ -73,8 +73,7 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	public void shouldEditProviderAttribute() throws Exception {
 		String json = "{ \"attributeType\":\"9516cc50-n8ik-bc4f-8dw4-001e378eb67e\" }";
 		
-		ProviderAttribute providerAttribute = service
-		        .getProviderAttributeByUuid(getUuid());
+		ProviderAttribute providerAttribute = service.getProviderAttributeByUuid(getUuid());
 		Assert.assertEquals("Joining Date", providerAttribute.getAttributeType().getName());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
@@ -85,8 +84,7 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldVoidAttribute() throws Exception {
-		ProviderAttribute providerAttribute = service
-		        .getProviderAttributeByUuid(getUuid());
+		ProviderAttribute providerAttribute = service.getProviderAttributeByUuid(getUuid());
 		Assert.assertFalse(providerAttribute.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
@@ -95,5 +93,5 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 		Assert.assertTrue(providerAttribute.isVoided());
 		Assert.assertEquals("unit test", providerAttribute.getVoidReason());
 	}
-
+	
 }

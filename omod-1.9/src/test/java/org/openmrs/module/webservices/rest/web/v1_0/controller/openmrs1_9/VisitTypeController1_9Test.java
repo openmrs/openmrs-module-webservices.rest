@@ -55,7 +55,14 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
      */
     @Override
     public long getAllCount() {
-	    return 2;
+    	int count = 0;
+    	for (VisitType type : service.getAllVisitTypes()) {
+	        if (!type.isRetired()) {
+	        	count++;
+	        }
+        }
+    	
+	    return count;
     }
 	
 	@Before

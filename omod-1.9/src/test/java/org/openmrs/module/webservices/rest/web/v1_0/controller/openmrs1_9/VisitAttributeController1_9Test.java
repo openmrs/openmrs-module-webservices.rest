@@ -55,7 +55,7 @@ public class VisitAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 1;
+		return service.getVisitByUuid(Rest1_9TestConstants.VISIT_UUID).getActiveAttributes().size();
 	}
 	
 	@Before

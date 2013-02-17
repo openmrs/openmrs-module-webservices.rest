@@ -124,6 +124,6 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 2;
+		return Context.getProviderService().getAllProviders().size();
 	}
 }

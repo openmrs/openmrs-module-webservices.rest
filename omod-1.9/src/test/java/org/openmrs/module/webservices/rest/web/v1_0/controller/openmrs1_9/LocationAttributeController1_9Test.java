@@ -50,7 +50,7 @@ public class LocationAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 2;
+		return service.getLocationByUuid(Rest1_9TestConstants.LOCATION_UUID).getActiveAttributes().size();
 	}
 	
 	@Before
@@ -83,8 +83,7 @@ public class LocationAttributeController1_9Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldVoidAttribute() throws Exception {
-		LocationAttribute locationAttribute = service
-		        .getLocationAttributeByUuid(getUuid());
+		LocationAttribute locationAttribute = service.getLocationAttributeByUuid(getUuid());
 		Assert.assertFalse(locationAttribute.isVoided());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());

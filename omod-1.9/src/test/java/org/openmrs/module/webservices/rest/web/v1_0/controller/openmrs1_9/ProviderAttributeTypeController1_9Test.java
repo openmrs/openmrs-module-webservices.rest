@@ -136,6 +136,6 @@ public class ProviderAttributeTypeController1_9Test extends BaseCrudControllerTe
 	 */
 	@Override
 	public long getAllCount() {
-		return 3;
+		return Context.getProviderService().getAllProviderAttributeTypes().size();
 	}
 }
