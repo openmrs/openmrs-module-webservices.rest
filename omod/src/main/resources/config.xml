@@ -6,7 +6,7 @@
 	<!-- Base Module Properties -->
 	<id>@MODULE_ID@</id>
 	<name>@MODULE_NAME@</name>
-	<version>@MODULE_VERSION@.${buildNumber}</version>
+	<version>@MODULE_VERSION@.${revisionNumber}</version>
 	<package>@MODULE_PACKAGE@</package>
 	<author>OpenMRS</author>
 	<description>
@@ -84,7 +84,6 @@
 	<!-- /Internationalization -->
 	
 	<mappingFiles>
-		${omodHbmConfig}
 	</mappingFiles>
 	
 </module>
