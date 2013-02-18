@@ -37,15 +37,41 @@ import org.openmrs.util.OpenmrsConstants;
  */
 public class RestServiceImpl implements RestService {
 	
-	private final Map<String, ResourceDefinition> resourceDefinitionsByNames;
+	private volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 	
-	private final Map<Class<?>, Resource> resourcesBySupportedClasses;
+	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	public RestServiceImpl() throws IOException {
-		resourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
-		resourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
+	public RestServiceImpl() {
+	}
+	
+	private class ResourceDefinition {
 		
-		List<Class<? extends Resource>> resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
+		public Resource resource;
+		
+		public int order;
+		
+		public ResourceDefinition(Resource resource, int order) {
+			this.resource = resource;
+			this.order = order;
+		}
+		
+	}
+	
+	private void initializeResources() {
+		if (resourceDefinitionsByNames != null) {
+			return;
+		}
+		
+		Map<String, ResourceDefinition> tempResourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
+		Map<Class<?>, Resource> tempResourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
+		
+		List<Class<? extends Resource>> resources;
+		try {
+			resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
+		}
+		catch (IOException e) {
+			throw new APIException("Cannot access REST resources", e);
+		}
 		
 		for (Class<? extends Resource> resource : resources) {
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
@@ -119,7 +145,7 @@ public class RestServiceImpl implements RestService {
 				order = resourceAnnotation.order();
 			}
 			
-			ResourceDefinition existingResourceDef = resourceDefinitionsByNames.get(name);
+			ResourceDefinition existingResourceDef = tempResourceDefinitionsByNames.get(name);
 			
 			boolean addResource = true;
 			
@@ -135,24 +161,14 @@ public class RestServiceImpl implements RestService {
 			if (addResource) {
 				Resource newResource = newResource(resource);
 				
-				resourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
-				resourcesBySupportedClasses.put(supportedClass, newResource);
+				tempResourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
+				tempResourcesBySupportedClasses.put(supportedClass, newResource);
 			}
 			
 		}
-	}
-	
-	private class ResourceDefinition {
 		
-		public Resource resource;
-		
-		public int order;
-		
-		public ResourceDefinition(Resource resource, int order) {
-			this.resource = resource;
-			this.order = order;
-		}
-		
+		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
+		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
 	
 	/**
@@ -178,6 +194,8 @@ public class RestServiceImpl implements RestService {
 	
 	@Override
 	public Resource getResourceByName(String name) throws APIException {
+		initializeResources();
+		
 		ResourceDefinition resourceDefinition = resourceDefinitionsByNames.get(name);
 		if (resourceDefinition == null) {
 			throw new APIException("Unknown resource: " + name);
@@ -188,6 +206,8 @@ public class RestServiceImpl implements RestService {
 	
 	@Override
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
+		initializeResources();
+		
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
 		if (resource == null) {
 			for (Entry<Class<?>, Resource> resourceBySupportedClass : resourcesBySupportedClasses.entrySet()) {
