@@ -56,15 +56,14 @@ public class ConceptClassControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void getConceptClass_shouldGetAConceptClassByUuid() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Util.log("ConceptClass fetched (default)", result);
 		Assert.assertEquals(getUuid(), result.get("uuid"));
-		
 	}
 	
+	@Test
 	public void getConceptClass_shouldGetAConceptClassByName() throws Exception {
 		String conceptClassName = "Drug";
 		
@@ -79,14 +78,14 @@ public class ConceptClassControllerTest extends BaseCrudControllerTest {
 	public void getConceptClass_shouldListAllConceptClasses() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
-		List<Object> results = (List<Object>) result.get("results");
+		List<Object> results = Util.getResultsList(result);
 		Assert.assertEquals(getAllCount(), results.size());
 		Util.log("Found " + results.size() + " conceptClasse(s)", results);
 	}
 	
 	@Test
 	public void shouldRetireAConceptClass() throws Exception {
-		String uuid = "4719138c-8553-4c81-bb92-753f41f8be16";
+		String uuid = "77177ce7-1410-40ee-bbad-ff6905ee3095";
 		
 		Assert.assertEquals(false, service.getConceptClassByUuid(uuid).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
@@ -98,6 +97,7 @@ public class ConceptClassControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(reason, service.getConceptClassByUuid(uuid).getRetireReason());
 	}
 	
+	@Test
 	public void shouldPurgeAConceptClass() throws Exception {
 		String uuid = "77177ce7-1410-40ee-bbad-ff6905ee3095";
 		
@@ -109,18 +109,15 @@ public class ConceptClassControllerTest extends BaseCrudControllerTest {
 	}
 	
 	@Test
-	public void shouldNotIncludeTheAuditInfoForTheDefaultRepresentation() throws Exception {
-		String uuid = "97097dd9-b092-4b68-a2dc-e5e5be961d42";
-		
-		Object result = deserialize(handle(newGetRequest(getURI() + "/" + uuid)));
+	public void shouldNotIncludeTheAuditInfoForTheDefaultRepresentation() throws Exception {		
+		Object result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
 		Assert.assertNotNull(result);
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	@Test
 	public void shouldIncludeTheAuditInfoForTheFullRepresentation() throws Exception {
-		String uuid = "97097dd9-b092-4b68-a2dc-e5e5be961d42";
-		MockHttpServletRequest httpReq = newGetRequest(getURI() + "/" + uuid, new Parameter(
+		MockHttpServletRequest httpReq = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		Object result = deserialize(handle(httpReq));
 		Assert.assertNotNull(result);
