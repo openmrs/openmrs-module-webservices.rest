@@ -253,7 +253,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
 		    Representation.DEFAULT));
-		if (((Voidable) resource).isVoided()) {
+		if (resource instanceof Voidable && ((Voidable) resource).isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(resource, "voidedBy", Representation.REF));
 			ret.put("dateVoided", ConversionUtil.convertToRepresentation(((Voidable) resource).getDateVoided(),
 			    Representation.DEFAULT));

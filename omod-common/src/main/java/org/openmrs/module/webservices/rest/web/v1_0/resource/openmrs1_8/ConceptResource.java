@@ -28,6 +28,7 @@ import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
+import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
@@ -90,6 +91,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		description.addProperty("names", Representation.DEFAULT);
 		description.addProperty("descriptions", Representation.DEFAULT);
 		
+		description.addProperty("mappings", Representation.DEFAULT);
+		
 		description.addProperty("answers", Representation.DEFAULT);
 		description.addProperty("setMembers", Representation.DEFAULT);
 		//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
@@ -127,6 +130,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 			description.addProperty("names", Representation.REF);
 			description.addProperty("descriptions", Representation.REF);
 			
+			description.addProperty("mappings", Representation.REF);
+			
 			description.addProperty("answers", Representation.REF);
 			description.addProperty("setMembers", Representation.REF);
 			//description.addProperty("conceptMappings", Representation.REF);  add as subresource
@@ -151,6 +156,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		description.addProperty("descriptions");
 		description.addProperty("set");
 		description.addProperty("version");
+		description.addProperty("mappings");
 		description.addProperty("answers");
 		description.addProperty("setMembers");
 		return description;
@@ -173,7 +179,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 */
 	@Override
 	public List<String> getPropertiesToExposeAsSubResources() {
-		return Arrays.asList("names", "descriptions");
+		return Arrays.asList("names", "descriptions", "conceptMappings");
 	}
 	
 	/**
@@ -210,6 +216,23 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	@PropertySetter("descriptions")
 	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions) {
 		instance.setDescriptions(new HashSet<ConceptDescription>(descriptions));
+	}
+	
+	/**
+	 * It's needed, because of ConversionException: Don't know how to handle collection class:
+	 * interface java.util.Collection
+	 * 
+	 * @param instance
+	 * @param mappings
+	 */
+	@PropertySetter("mappings")
+	public static void setMappings(Concept instance, List<ConceptMap> mappings) {
+		instance.setConceptMappings(mappings);
+	}
+	
+	@PropertyGetter("mappings")
+	public static List<ConceptMap> getMappings(Concept instance) {
+		return new ArrayList<ConceptMap>(instance.getConceptMappings());
 	}
 	
 	/**
