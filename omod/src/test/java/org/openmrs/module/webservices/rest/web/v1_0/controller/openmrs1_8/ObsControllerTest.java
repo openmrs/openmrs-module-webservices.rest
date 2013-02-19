@@ -23,35 +23,40 @@ import junit.framework.Assert;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest.Parameter;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.ExpectedException;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
-public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
+public class ObsControllerTest extends BaseCrudControllerTest {
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
+	private ConceptService service;
+		
+	@Before
+	public void init() throws Exception {
+		executeDataSet(ACTIVE_LIST_INITIAL_XML);
+		service = Context.getConceptService();
+	}
 	
-	//	private MockHttpServletRequest emptyRequest() {
-	//		return new MockHttpServletRequest();
-	//	}
-	//	
-	//	/**
-	//	 * @see ObsController#getObs(String,WebRequest)
-	//	 * @verifies get a default representation of a obs
-	//	 */
-	//	
 	//	@Test
 	//	public void getObs_shouldGetADefaultRepresentationOfAObs() throws Exception {
 	//		Object result = new ObsController().retrieve("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest());
@@ -62,11 +67,25 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 	//	}
-	//	
-	//	/**
-	//	 * @see ObsController#getObs(String,WebRequest)
-	//	 * @verifies get a full representation of a obs
-	//	 */
+	/**
+	 * @see ObsController#getObs(String,WebRequest)
+	 * @verifies get a default representation of a obs
+	 */
+	@Test
+	public void getObs_shouldGetADefaultRepresentationOfAObs() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + ResourceTestConstants.OBS_UUID)));
+		Assert.assertNotNull(result);
+		Util.log("Obs fetched (default)", result);
+		Assert.assertEquals(ResourceTestConstants.OBS_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
+	}
+	
+	/**
+	 * @see ObsController#getObs(String,WebRequest)
+	 * @verifies get a full representation of a obs
+	 */
 	//	@Test
 	//	public void getObs_shouldGetAFullRepresentationOfAObs() throws Exception {
 	//		MockHttpServletRequest req = new MockHttpServletRequest();
@@ -80,7 +99,25 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	//	}
-	//	
+	//
+	/**
+	 * @see ObsController#getObs(String,WebRequest)
+	 * @verifies get a full representation of a obs
+	 */
+	@Test
+	public void getObs_shouldGetAFullRepresentationOfAObs() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + ResourceTestConstants.OBS_UUID, new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(result);
+		Util.log("Obs fetched (default)", result);
+		Assert.assertEquals(ResourceTestConstants.OBS_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+	
 	//	/**
 	//	 * @see ObsController#getObsByPatientId(String,WebRequest)
 	//	 * @verifies get a default representation of all obs
@@ -96,7 +133,8 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	//	}
-	//	
+	
+	
 	//	@Test
 	//	public void searchByEncounter_shouldGetObsInAnEncounter() throws Exception {
 	//		SimpleObject search = new ObsController().searchByEncounter("6519d653-393b-4118-9c83-a3715b82d4ac", emptyRequest(),
@@ -108,7 +146,20 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertTrue(uuids.contains("39fb7f47-e80a-4056-9285-bd798be13c63"));
 	//		Assert.assertTrue(uuids.contains("be48cdcb-6a76-47e3-9f2e-2635032f3a9a"));
 	//	}
-	//	
+	@Test
+	public void searchByEncounter_shouldGetObsInAnEncounter() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+			new Parameter("encounter", "6519d653-393b-4118-9c83-a3715b82d4ac"));
+		SimpleObject result = deserialize(handle(req));
+		List<Object> results = Util.getResultsList(result);
+		Assert.assertEquals(2, results.size());
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
+            results.get(1), getUuid()));
+		
+		Assert.assertTrue(uuids.contains("39fb7f47-e80a-4056-9285-bd798be13c63"));
+		Assert.assertTrue(uuids.contains("be48cdcb-6a76-47e3-9f2e-2635032f3a9a"));
+	}
+
 	//	/**
 	//	 * @see ObsController#createObs(SimpleObject,WebRequest,HttpServletResponse)
 	//	 * @verifies create a new obs with numeric concept
@@ -163,7 +214,22 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertTrue(obs.isVoided());
 	//		Assert.assertEquals("unit test", obs.getVoidReason());
 	//	}
-	//	
+	//	/**
+	//	 * @see ObsController#voidObs(String,String,WebRequest,HttpServletResponse)
+	//	 * @verifies void a obs
+	//	 */
+	@Test
+	public void voidObs_shouldVoidAObs() throws Exception {
+		Obs obs = Context.getObsService().getObs(9);
+		Assert.assertFalse(obs.isVoided());
+		
+		//handle(newDeleteRequest(getURI() + "/" + ResourceTestConstants.OBS_UUID, new Parameter("reason", "unit test")));
+		handle(newDeleteRequest(getURI() + "/" + Context.getObsService().getObs(9), new Parameter("reason", "unit test")));
+		obs = Context.getObsService().getObs(9);
+		Assert.assertTrue(obs.isVoided());
+		Assert.assertEquals("unit test", obs.getVoidReason());
+	}
+	
 	//	/**
 	//	 * @see ObsController#updatePatient(String,SimpleObject,WebRequest,HttpServletResponse)
 	//	 * @verifies change a property on an obs
@@ -181,9 +247,9 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertFalse(oldObs.getValueNumeric().equals(new Double("35.0")));
 	//		Assert.assertTrue(newObs.getValueNumeric().equals(new Double("35.0")));
 	//	}
-	//	
+	
 	//	/**
-	//	 * @see ObsController#updatePatient(String,SimpleObject,WebRequest,HttpServletResponse)
+	//	* @see ObsController#updatePatient(String,SimpleObject,WebRequest,HttpServletResponse)
 	//	 * @verifies change a complex property on an obs
 	//	 */
 	//	@Test
@@ -223,7 +289,22 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		new ObsController().purge("39fb7f47-e80a-4056-9285-bd798be13c63", emptyRequest(), new MockHttpServletResponse());
 	//		Assert.assertNull(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63"));
 	//	}
-	//	
+	
+	
+	/**
+	 * @see ObsController#purgeObs(String,WebRequest,HttpServletResponse)
+	 * @verifies purge a simple obs
+	 */
+	@Test
+	public void purgeObs_shouldPurgeASimpleObs() throws Exception {
+		Context.getObsService().getObsByUuid(getUuid());
+		Assert.assertNotNull(Context.getObsService().getObsByUuid(getUuid()));
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("purge", "");
+		handle(req);
+		Assert.assertNull(Context.getObsService().getObsByUuid(getUuid()));
+	}
+	
 	//	/**
 	//	 * @see ObsResource#getObsByPatient(String,
 	//	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -243,7 +324,21 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	//		Assert.assertTrue(uuids.contains("b5499df2-b17c-4b39-88a6-44591c165569"));
 	//		Assert.assertTrue(uuids.contains("0ee1248e-08aa-4a2c-9f38-fb3875f605e3"));
 	//	}
-	//	
+	@Test
+	public void searchByPatient_shouldGetObsForAPatient() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"));
+		SimpleObject result = deserialize(handle(req));
+		List<Object> results = Util.getResultsList(result);
+		Assert.assertEquals(3, results.size());
+
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
+		results.get(1), "uuid"), PropertyUtils.getProperty(results.get(2), "uuid"));
+		Assert.assertTrue(uuids.contains("be3a4d7a-f9ab-47bb-aaad-bc0b452fcda4"));
+		Assert.assertTrue(uuids.contains("b5499df2-b17c-4b39-88a6-44591c165569"));
+		Assert.assertTrue(uuids.contains("0ee1248e-08aa-4a2c-9f38-fb3875f605e3"));
+	}
+	
 	//	/**
 	//	 * @see ObsResource#create(SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
 	//	 * @throws Exception
@@ -300,4 +395,31 @@ public class ObsControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void fakeTest() {
 		
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "obs";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.OBS_UUID;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	
+	@Override
+	public long getAllCount() {
+		return(0);
+	}
+	
+	
 }
