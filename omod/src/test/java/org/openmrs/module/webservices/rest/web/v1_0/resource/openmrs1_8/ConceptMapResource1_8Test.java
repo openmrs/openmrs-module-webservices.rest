@@ -11,25 +11,25 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 /**
  *
  */
-public class ConceptMapResource1_9Test extends BaseDelegatingResourceTest<ConceptMapResource1_9, ConceptMap> {
+public class ConceptMapResource1_8Test extends BaseDelegatingResourceTest<ConceptMapResource1_8, ConceptMap> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#newObject()
 	 */
 	@Override
 	public ConceptMap newObject() {
-		return Context.getService(RestHelperService.class).getObjectByUuid(ConceptMap.class, getUuidProperty());
+		//The UUID property is not specified in standardTestDataset.xml
+		return Context.getService(RestHelperService.class).getObjectById(ConceptMap.class, 1);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class ConceptMapResource1_9Test extends BaseDelegatingResourceTest<Concep
 	 */
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.CONCEPT_MAP_UUID;
+		return newObject().getUuid();
 	}
 	
 }

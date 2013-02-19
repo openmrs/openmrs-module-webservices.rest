@@ -13,39 +13,27 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.openmrs.ConceptMap;
+import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-/**
- *
- */
-public class ConceptMapResource1_9Test extends BaseDelegatingResourceTest<ConceptMapResource1_9, ConceptMap> {
+public class ConceptReferenceTermMapResource1_9Test extends BaseDelegatingResourceTest<ConceptReferenceTermMapResource1_9, ConceptReferenceTermMap> {
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#newObject()
-	 */
 	@Override
-	public ConceptMap newObject() {
-		return Context.getService(RestHelperService.class).getObjectByUuid(ConceptMap.class, getUuidProperty());
+	public ConceptReferenceTermMap newObject() {
+		return Context.getService(RestHelperService.class).getObjectByUuid(ConceptReferenceTermMap.class, getUuidProperty());
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#getDisplayProperty()
-	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Some Standardized Terminology:WGT234";
+		return "Some Standardized Terminology:WGT234 - Some Standardized Terminology:CD41003";
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#getUuidProperty()
-	 */
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.CONCEPT_MAP_UUID;
+		return Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_MAP_UUID;
 	}
 	
 }

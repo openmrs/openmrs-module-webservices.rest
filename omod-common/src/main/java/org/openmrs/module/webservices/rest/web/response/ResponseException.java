@@ -17,7 +17,7 @@ package org.openmrs.module.webservices.rest.web.response;
  * This is a marker class for all response exceptions. Controllers should throw these if an error
  * has occurred or a status needs to be shown to a user
  */
-public abstract class ResponseException extends Exception {
+public abstract class ResponseException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 	

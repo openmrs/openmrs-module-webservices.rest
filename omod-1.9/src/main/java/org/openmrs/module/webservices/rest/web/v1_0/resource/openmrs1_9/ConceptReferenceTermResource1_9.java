@@ -53,8 +53,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 			description.addProperty("code");
 			description.addProperty("version");
 			description.addProperty("retired");
-			//TODO Uncomment to add term mappings see https://tickets.openmrs.org/browse/RESTWS-355
-			//description.addProperty("conceptReferenceTermMaps", Representation.REF);
+			description.addProperty("conceptReferenceTermMaps", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -68,8 +67,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 			description.addProperty("code");
 			description.addProperty("version");
 			description.addProperty("retired");
-			//TODO Uncomment to add term mappings see https://tickets.openmrs.org/browse/RESTWS-355
-			//description.addProperty("conceptReferenceTermMaps");
+			description.addProperty("conceptReferenceTermMaps");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

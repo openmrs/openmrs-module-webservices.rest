@@ -19,6 +19,8 @@ public class ResourceTestConstants {
 	
 	public static final String CONCEPT_UUID = "b055abd8-a420-4a11-8b98-02ee170a7b54";
 	
+	public static final String CONCEPT2_UUID = "7d104a6f-8337-4afa-b936-41083a5d9d88";
+	
 	public static final String CONCEPT_NUMERIC_UUID = "a09ab2c5-878e-4905-b25d-5784167d0216";
 	
 	public static final String CONCEPT_NAME_UUID = "ef7ac747-7980-443c-b11f-4617aa587703";

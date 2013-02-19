@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.api.impl.RestHelperServiceImpl;
+import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -73,6 +74,17 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		description.addRequiredProperty("source");
 		description.addRequiredProperty("sourceCode");
 		return description;
+	}
+	
+	/**
+	 * Gets the display string for a concept map.
+	 * 
+	 * @param conceptMap the concept map object.
+	 * @return the display string.
+	 */
+	public String getDisplayString(ConceptMap conceptMap) {
+		return conceptMap.getSource().getName() + ":"
+		        + conceptMap.getSourceCode();
 	}
 	
 	/**
@@ -125,7 +137,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	 */
 	@Override
 	public ConceptMap getByUniqueId(String uniqueId) {
-		return Context.getService(RestHelperServiceImpl.class).getConceptMapByUuid(uniqueId);
+		return Context.getService(RestHelperService.class).getObjectByUuid(ConceptMap.class, uniqueId);
 	}
 	
 	/**
@@ -134,7 +146,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	 */
 	@Override
 	protected void delete(ConceptMap delegate, String reason, RequestContext context) throws ResponseException {
-		delegate.getConcept().removeConceptMapping(delegate);
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

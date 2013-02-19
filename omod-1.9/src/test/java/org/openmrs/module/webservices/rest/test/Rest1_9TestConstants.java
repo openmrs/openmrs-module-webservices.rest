@@ -33,4 +33,12 @@ public class Rest1_9TestConstants {
 	public static final String CONCEPT_MAP_TYPE_UUID = "1ccba764-49d6-11e0-8fed-18a905e044dc";
 
 	public static final String CONCEPT_REFERENCE_TERM_UUID = "SSTRM-127689_3";
+	
+	public static final String CONCEPT_REFERENCE_TERM2_UUID = "SNOMED CT-2332523";
+
+	public static final String CONCEPT_REFERENCE_TERM_MAP_UUID = "dff198e4-562d-11e0-b169-18a905e044dc";
+	
+	public static final String CONCEPT_MAP_UUID = "23b6e712-49d8-11e0-8fed-18a905e044dc";
+
+	public static final String CONCEPT_UUID = "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
 }

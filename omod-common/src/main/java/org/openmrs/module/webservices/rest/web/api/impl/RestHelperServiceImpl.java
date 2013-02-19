@@ -13,9 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import java.io.Serializable;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.ConceptMap;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +36,17 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getConceptMapByUuid(java.lang.String)
 	 */
 	@Override
-    @Transactional(readOnly = true)
-	public ConceptMap getConceptMapByUuid(String uuid) {
-		return (ConceptMap) sessionFactory.getCurrentSession().createCriteria(ConceptMap.class).add(
-		    Restrictions.eq("uuid", uuid)).uniqueResult();
+	@Transactional(readOnly = true)
+	public <T> T getObjectByUuid(Class<? extends T> type, String uuid) {
+		return type.cast(sessionFactory.getCurrentSession().createCriteria(type).add(Restrictions.eq("uuid", uuid))
+		        .uniqueResult());
 	}
+
+	/**
+     * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class, java.io.Serializable)
+     */
+    @Override
+    public <T> T getObjectById(Class<? extends T> type, Serializable id) {
+	    return type.cast(sessionFactory.getCurrentSession().get(type, id));
+    }
 }

@@ -353,6 +353,16 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		Integer limit = null;
 		boolean canPage = true;
 		
+		String sourceName = context.getParameter("sourceName");
+		String code = context.getParameter("code");
+		if (sourceName != null && code != null) {
+			List<Concept> conceptsByMapping = Context.getConceptService().getConceptsByMapping(code, sourceName);
+			return new NeedsPaging<Concept>(conceptsByMapping, context);
+		} else if (sourceName != null || code != null) {
+			throw new ResourceDoesNotSupportOperationException("You must specify both sourceName and code parameters");
+		}
+		
+		
 		// Collect information for answerTo and memberOf query parameters
 		String answerToUuid = context.getRequest().getParameter("answerTo");
 		String memberOfUuid = context.getRequest().getParameter("memberOf");

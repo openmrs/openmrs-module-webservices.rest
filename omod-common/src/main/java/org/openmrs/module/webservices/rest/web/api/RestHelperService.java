@@ -13,13 +13,17 @@
  */
 package org.openmrs.module.webservices.rest.web.api;
 
+import java.io.Serializable;
+
 import org.openmrs.ConceptMap;
 
 /**
- *
+ * It is provided as a workaround for missing API methods to fetch {@link ConceptMap}, etc.
  */
 public interface RestHelperService {
-
-	ConceptMap getConceptMapByUuid(String uuid);
+	
+	<T> T getObjectByUuid(Class<? extends T> type, String uuid);
+	
+	<T> T getObjectById(Class<? extends T> type, Serializable id);
 	
 }

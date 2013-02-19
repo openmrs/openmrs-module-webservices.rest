@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 import java.util.Map;
 
@@ -456,5 +459,15 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(expectedMemberCount, ((List<Object>) PropertyUtils.getProperty(result, "setMembers")).size());
+	}
+	
+	@Test
+	public void shouldFindConceptsBySourceNameAndCode() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("sourceName", "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		assertThat(results.size(), is(1));
+		Object next = results.iterator().next();
+		assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
 }
