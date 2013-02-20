@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.api;
 
+import java.util.Set;
+
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 
 /**
  * Database related methods for the Rest Web Services
@@ -43,4 +46,14 @@ public interface RestService {
 	 * @throws APIException
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
+	
+	/**
+	 * Returns a search handler, which supports the given resource and the set of parameters.
+	 * 
+	 * @param resourceName
+	 * @param searchParameters
+	 * @return searchHandler or <code>null</code> if no match
+	 * @throws APIException
+	 */
+	SearchHandler getSearchHandler(String resourceName, Set<String> searchParameters) throws APIException;
 }

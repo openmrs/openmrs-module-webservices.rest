@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Integration tests for the Order resource
  */
 public class OrderControllerTest extends BaseCrudControllerTest {
-		
+	
 	private final static String DRUG_ORDER_UUID = "921de0a3-05c4-444a-be03-e01b4c4b9142";
 	
 	private final static String PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
@@ -46,7 +46,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 	private OrderService service;
 	
 	private PatientService patientService;
-			
+	
 	@Before
 	public void before() throws Exception {
 		executeDataSet("customTestDataset.xml");
@@ -61,7 +61,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 	public String getURI() {
 		return "order";
 	}
-		
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
 	 */
@@ -77,12 +77,12 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 	public String getUuid() {
 		return ResourceTestConstants.ORDER_UUID;
 	}
-		
+	
 	@Test
 	public void shouldGetOrderAsRef() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
-		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, Representation.REF.getRepresentation());	
+		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, Representation.REF.getRepresentation());
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
@@ -90,7 +90,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		Assert.assertNull(PropertyUtils.getProperty(result, "concept"));
 		Util.log("order as ref", result);
 	}
-		
+	
 	@Test
 	public void shouldGetOrderAsDefault() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
@@ -102,7 +102,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 		Util.log("drug order as default", result);
 	}
-		
+	
 	@Test
 	public void shouldGetDrugOrderAsRef() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + DRUG_ORDER_UUID);
@@ -113,7 +113,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "concept"));
 	}
-		
+	
 	@Test
 	public void shouldGetDrugOrderAsDefault() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + DRUG_ORDER_UUID);
@@ -124,7 +124,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "patient"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 	}
-		
+	
 	@Test
 	public void shouldGetAllOrders() throws Exception {
 		
@@ -132,7 +132,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		int count = service.getOrders(Order.class, null, null, null, null, null, null).size();
-
+		
 		Assert.assertEquals(count, Util.getResultsSize(result));
 		
 	}
@@ -147,28 +147,28 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		int count = service.getOrders(DrugOrder.class, null, null, null, null, null, null).size();
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
-
+		
 	}
 	
 	@Test
 	public void shouldGetAllOrdersByPatient() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("patient", PATIENT_UUID);		
+		req.setParameter("patient", PATIENT_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		List<Order> orders = service.getOrdersByPatient(patient);
 		Assert.assertEquals(orders.size(), Util.getResultsSize(result));
-
-	}
 		
+	}
+	
 	@Test
 	public void shouldGetAllDrugOrdersByPatient() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder");
-		req.setParameter("patient", PATIENT_UUID);		
+		req.setParameter("patient", PATIENT_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
@@ -176,7 +176,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
 	}
-		
+	
 	@Test
 	public void shouldCreateOrder() throws Exception {
 		
@@ -188,12 +188,12 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
-
+		
 		Assert.assertEquals(order.get("type"), PropertyUtils.getProperty(newOrder, "type"));
 		Assert.assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		Assert.assertEquals(order.get("orderType"), Util.getByPath(newOrder, "orderType/uuid"));
 		Assert.assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
-	}	
+	}
 	
 	@Test
 	public void shouldCreateDrugOrder() throws Exception {
@@ -215,43 +215,43 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(order.get("units"), PropertyUtils.getProperty(result, "units"));
 		Assert.assertEquals(order.get("drug"), Util.getByPath(result, "drug/uuid"));
 	}
-		
+	
 	@Test
 	public void shouldUpdateOrder() throws Exception {
 		
 		SimpleObject content = new SimpleObject();
 		content.add("instructions", "Updated instructions");
-
+		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), content);
 		handle(req);
 		
 		Assert.assertEquals(content.get("instructions"), service.getOrderByUuid(getUuid()).getInstructions());
 	}
-		
+	
 	@Test
 	public void shouldUpdateDrugOrder() throws Exception {
 		
 		SimpleObject content = new SimpleObject();
 		content.add("dose", "500");
-
+		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + DRUG_ORDER_UUID, content);
 		handle(req);
 		
-		DrugOrder order = (DrugOrder)service.getOrderByUuid(DRUG_ORDER_UUID);
+		DrugOrder order = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
 		Assert.assertEquals(Double.valueOf("500"), order.getDose());
 	}
-		
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailToChangeOrderType() throws Exception {
 		
 		SimpleObject content = new SimpleObject();
 		content.add("type", "order");
-
+		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), content);
 		handle(req);
-
-	}
 		
+	}
+	
 	@Test
 	public void shouldVoidOrder() throws Exception {
 		Order order = service.getOrderByUuid(getUuid());
@@ -262,7 +262,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		order = service.getOrderByUuid(getUuid());
 		Assert.assertTrue(order.isVoided());
 	}
-		
+	
 	@Test
 	public void shouldVoidDrugOrder() throws Exception {
 		Order order = service.getOrderByUuid(DRUG_ORDER_UUID);
@@ -276,7 +276,7 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldPurgeOrder() throws Exception {
-		Assert.assertNotNull(service.getOrderByUuid(getUuid()));		
+		Assert.assertNotNull(service.getOrderByUuid(getUuid()));
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		Assert.assertNull(service.getOrderByUuid(getUuid()));
 	}
@@ -287,5 +287,5 @@ public class OrderControllerTest extends BaseCrudControllerTest {
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		Assert.assertNull(service.getOrderByUuid(DRUG_ORDER_UUID));
 	}
-
+	
 }

@@ -41,12 +41,12 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		return type.cast(sessionFactory.getCurrentSession().createCriteria(type).add(Restrictions.eq("uuid", uuid))
 		        .uniqueResult());
 	}
-
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class, java.io.Serializable)
-     */
-    @Override
-    public <T> T getObjectById(Class<? extends T> type, Serializable id) {
-	    return type.cast(sessionFactory.getCurrentSession().get(type, id));
-    }
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class, java.io.Serializable)
+	 */
+	@Override
+	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
+		return type.cast(sessionFactory.getCurrentSession().get(type, id));
+	}
 }

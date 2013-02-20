@@ -72,8 +72,7 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldCreateConceptMap() throws Exception {
-		String json = "{\"source\": \"" + ResourceTestConstants.CONCEPT_SOURCE_UUID
-		        + "\", \"sourceCode\": \"test\"}";
+		String json = "{\"source\": \"" + ResourceTestConstants.CONCEPT_SOURCE_UUID + "\", \"sourceCode\": \"test\"}";
 		
 		SimpleObject newConceptMap = deserialize(handle(newPostRequest(getURI(), json)));
 		

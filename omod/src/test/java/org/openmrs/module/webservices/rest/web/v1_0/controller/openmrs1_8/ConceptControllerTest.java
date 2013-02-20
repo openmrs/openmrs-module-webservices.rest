@@ -463,7 +463,8 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldFindConceptsBySourceNameAndCode() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("sourceName", "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("sourceName",
+		        "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
 		List<Object> results = Util.getResultsList(response);
 		
 		assertThat(results.size(), is(1));

@@ -18,9 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleException;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.representation.CustomRepresentati
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.util.OpenmrsConstants;
 
 /**
@@ -41,10 +45,12 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
+	private volatile Map<SearchHandlerKey, SearchHandler> searchHandlers;
+	
 	public RestServiceImpl() {
 	}
 	
-	private class ResourceDefinition {
+	private static class ResourceDefinition {
 		
 		public Resource resource;
 		
@@ -53,6 +59,55 @@ public class RestServiceImpl implements RestService {
 		public ResourceDefinition(Resource resource, int order) {
 			this.resource = resource;
 			this.order = order;
+		}
+		
+	}
+	
+	private static class SearchHandlerKey {
+		
+		public String supportedResource;
+		
+		public Set<String> searchParameters;
+		
+		public SearchHandlerKey(String supportedResource, Set<String> searchParameters) {
+			this.supportedResource = supportedResource;
+			this.searchParameters = searchParameters;
+		}
+		
+		public SearchHandlerKey(SearchHandler searchHandler) {
+			this.supportedResource = searchHandler.getSupportedResource();
+			this.searchParameters = searchHandler.getSearchParameters();
+		}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((searchParameters == null) ? 0 : searchParameters.hashCode());
+			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
+			return result;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SearchHandlerKey other = (SearchHandlerKey) obj;
+			if (searchParameters == null) {
+				if (other.searchParameters != null)
+					return false;
+			} else if (!searchParameters.equals(other.searchParameters))
+				return false;
+			if (supportedResource == null) {
+				if (other.supportedResource != null)
+					return false;
+			} else if (!supportedResource.equals(other.supportedResource))
+				return false;
+			return true;
 		}
 		
 	}
@@ -167,6 +222,34 @@ public class RestServiceImpl implements RestService {
 			
 		}
 		
+		Map<SearchHandlerKey, SearchHandler> tempSearchHandlers = new HashMap<SearchHandlerKey, SearchHandler>();
+		
+		List<SearchHandler> allSearchHandlers = Context.getRegisteredComponents(SearchHandler.class);
+		for (SearchHandler searchHandler : allSearchHandlers) {
+			for (String supportedVersion : searchHandler.getSupportedOpenmrsVersions()) {
+				try {
+					ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+					//if supported then
+					SearchHandlerKey searchHandlerKey = new SearchHandlerKey(searchHandler);
+					SearchHandler previousSearchHandler = tempSearchHandlers.put(searchHandlerKey, searchHandler);
+					if (previousSearchHandler != null) {
+						if (previousSearchHandler.getOrder() < searchHandler.getOrder()) {
+							tempSearchHandlers.put(searchHandlerKey, previousSearchHandler);
+						} else if (previousSearchHandler.getOrder() == searchHandler.getOrder()) {
+							throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
+							        + previousSearchHandler.getClass() + ") for the same resource ("
+							        + searchHandler.getSupportedResource() + ") and the same search parameters ("
+							        + searchHandler.getSearchParameters() + ") must not have the same order (" + searchHandler.getOrder() + ")");
+						}
+					}
+				}
+				catch (ModuleException e) {
+					//Not supported OpenMRS version
+				}
+			}
+		}
+		
+		searchHandlers = tempSearchHandlers;
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
@@ -234,6 +317,14 @@ public class RestServiceImpl implements RestService {
 		catch (Exception ex) {
 			throw new APIException("Failed to instantiate " + resourceClass, ex);
 		}
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandler(java.lang.String, java.util.Set)
+	 */
+	@Override
+	public SearchHandler getSearchHandler(String resourceName, Set<String> searchParameters) throws APIException {
+		return searchHandlers.get(new SearchHandlerKey(resourceName, searchParameters));
 	}
 	
 }

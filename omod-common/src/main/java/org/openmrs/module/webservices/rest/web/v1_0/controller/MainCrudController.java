@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -151,6 +154,16 @@ public class MainCrudController {
 		boolean isSearch = false;
 		try {
 			RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
+			
+			@SuppressWarnings("unchecked")
+			Set<String> searchParameters = new HashSet<String>(request.getParameterMap().keySet());
+			searchParameters.removeAll(RestConstants.SPECIAL_REQUEST_PARAMETERS);
+			
+			SearchHandler searchHandler = restService.getSearchHandler(resource, searchParameters);
+			if (searchHandler != null) {
+				return searchHandler.search(context).toSimpleObject();
+			}
+			
 			Enumeration parameters = request.getParameterNames();
 			while (parameters.hasMoreElements()) {
 				if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {

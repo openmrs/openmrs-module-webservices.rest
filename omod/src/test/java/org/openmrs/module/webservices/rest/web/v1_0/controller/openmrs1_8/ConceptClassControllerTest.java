@@ -109,7 +109,7 @@ public class ConceptClassControllerTest extends BaseCrudControllerTest {
 	}
 	
 	@Test
-	public void shouldNotIncludeTheAuditInfoForTheDefaultRepresentation() throws Exception {		
+	public void shouldNotIncludeTheAuditInfoForTheDefaultRepresentation() throws Exception {
 		Object result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
 		Assert.assertNotNull(result);
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
