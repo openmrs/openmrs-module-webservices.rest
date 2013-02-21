@@ -144,7 +144,9 @@ public class PatientIdentifierResource extends DelegatingSubResource<PatientIden
 	
 	@Override
 	public void purge(PatientIdentifier delegate, RequestContext context) throws ResponseException {
-		service().purgePatientIdentifier(delegate);
+		Patient patient = delegate.getPatient();
+		patient.removeIdentifier(delegate);
+		service().savePatient(patient);
 	}
 	
 	/**

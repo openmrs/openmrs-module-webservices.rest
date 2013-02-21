@@ -1,115 +1,137 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import javax.servlet.http.HttpServletResponse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests functionality of {@link PatientIdentifierController}. This does not use @should annotations because
- * the controller inherits those methods from a subclass
+ * Tests CRUD operations for {@link PatientIdentifier}s via web service calls
  */
-public class PatientIdentifierControllerTest extends BaseModuleWebContextSensitiveTest {
+public class PatientIdentifierControllerTest extends BaseCrudControllerTest {
 	
-	//	String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-	//	
-	//	private PatientService service;
-	//	
-	//	private PatientIdentifierController controller;
-	//	
-	//	private MockHttpServletRequest request;
-	//	
-	//	private HttpServletResponse response;
-	//	
-	//	@Before
-	//	public void before() {
-	//		this.service = Context.getPatientService();
-	//		this.controller = new PatientIdentifierController();
-	//		this.request = new MockHttpServletRequest();
-	//		this.response = new MockHttpServletResponse();
-	//	}
-	//	
-	//	@Test
-	//	public void shouldGetAnIdentifier() throws Exception {
-	//		Object result = controller.retrieve(patientUuid, "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", request);
-	//		Assert.assertNotNull(result);
-	//		Util.log("Patient Identifier fetched (default)", result);
-	//		Assert.assertEquals("8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", PropertyUtils.getProperty(result, "uuid"));
-	//		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-	//	}
-	//	
-	//	@Test
-	//	public void shouldListIdentifiersForPatient() throws Exception {
-	//		SimpleObject result = controller.getAll(patientUuid, request, response);
-	//		Util.log("All identifiers for a patient", result);
-	//		Assert.assertNotNull(result);
-	//		Assert.assertEquals(2, Util.getResultsSize(result));
-	//	}
-	//	
-	//	@Test
-	//	public void shouldAddIdentifierToPatient() throws Exception {
-	//		int before = service.getPatientByUuid(patientUuid).getActiveIdentifiers().size();
-	//		String json = "{ \"identifier\":\"abc123ez\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
-	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-	//		Object created = controller.create(patientUuid, post, request, response);
-	//		Util.log("Created", created);
-	//		int after = service.getPatientByUuid(patientUuid).getActiveIdentifiers().size();
-	//		Assert.assertEquals(before + 1, after);
-	//	}
-	//	
-	//	@Test
-	//	public void shouldEditIdentifier() throws Exception {
-	//		String json = "{ \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }";
-	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-	//		controller.update(patientUuid, "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614", post, request, response);
-	//		PatientIdentifier updated = service.getPatientIdentifierByUuid("8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614");
-	//		Util.log("Updated", updated);
-	//		Assert.assertNotNull(updated);
-	//		Assert.assertEquals("101-6", updated.getIdentifier());
-	//		Assert.assertEquals("Xanadu", updated.getLocation().getName());
-	//	}
-	//	
-	//	@Test
-	//	public void shouldVoidIdentifier() throws Exception {
-	//		String piUuid = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
-	//		PatientIdentifier pid = service.getPatientIdentifierByUuid(piUuid);
-	//		Assert.assertFalse(pid.isVoided());
-	//		controller.delete(patientUuid, piUuid, "unit test", request, response);
-	//		pid = service.getPatientIdentifierByUuid(piUuid);
-	//		Assert.assertTrue(pid.isVoided());
-	//		Assert.assertEquals("unit test", pid.getVoidReason());
-	//	}
-	//	
-	//	@Test
-	//	public void shouldPurgeIdentifier() throws Exception {
-	//		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
-	//		// complains that the identifier will be re-created since the patient is in the session.
-	//		String piUuid = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
-	//		Number before = (Number) Context.getAdministrationService().executeSQL(
-	//		    "select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
-	//		
-	//		controller.purge(patientUuid, piUuid, request, response);
-	//		Context.flushSession();
-	//		Number after = (Number) Context.getAdministrationService().executeSQL(
-	//		    "select count(*) from patient_identifier where patient_id = 2", true).get(0).get(0);
-	//		Assert.assertEquals(before.intValue() - 1, after.intValue());
-	//		Assert.assertNull(service.getPatientIdentifierByUuid(piUuid));
-	//	}
+	private PatientService service;
+	
+	@Override
+	public String getURI() {
+		return "patient/" + ResourceTestConstants.PATIENT_UUID + "/identifier";
+	}
+	
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.PATIENT_IDENTIFIER_UUID;
+	}
+	
+	@Override
+	public long getAllCount() {
+		return service.getPatientByUuid(ResourceTestConstants.PATIENT_UUID).getActiveIdentifiers().size();
+	}
+	
+	@Before
+	public void before() {
+		this.service = Context.getPatientService();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void shouldGetAPatientIdentifierByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
 		
+		PatientIdentifier patientIdentifier = service.getPatientIdentifierByUuid(getUuid());
+		assertEquals(patientIdentifier.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(patientIdentifier.getIdentifier(), PropertyUtils.getProperty(result, "identifier"));
+		assertNotNull(PropertyUtils.getProperty(result, "identifierType"));
+	}
+	
+	@Test
+	public void shouldListAllPatientIdentifiersForAPatient() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		assertNotNull(result);
+		assertEquals(getAllCount(), Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void shouldAddANewIdentifierToAPatient() throws Exception {
+		long originalCount = getAllCount();
+		
+		SimpleObject patientIdentifier = new SimpleObject();
+		patientIdentifier.add("identifier", "abc123ez");
+		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
+		patientIdentifier.add("location", ResourceTestConstants.LOCATION_UUID);
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newPatientIdentifier = deserialize(handle(req));
+		
+		assertNotNull(PropertyUtils.getProperty(newPatientIdentifier, "uuid"));
+		assertEquals(originalCount + 1, getAllCount());
+	}
+	
+	@Test
+	public void shouldEditAPatientIdentifier() throws Exception {
+		final String newLocationUuid = ResourceTestConstants.LOCATION_UUID;
+		PatientIdentifier patientIdentifierType = service.getPatientIdentifierByUuid(getUuid());
+		assertFalse(newLocationUuid.equals(patientIdentifierType.getLocation().getUuid()));
+		SimpleObject patientIdentifier = new SimpleObject();
+		patientIdentifier.add("location", newLocationUuid);
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		assertEquals(newLocationUuid, patientIdentifierType.getLocation().getUuid());
+	}
+	
+	@Test
+	public void shouldVoidAPatientIdentifier() throws Exception {
+		assertEquals(false, service.getPatientIdentifierByUuid(getUuid()).isVoided());
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("!purge", "");
+		final String reason = "none";
+		req.addParameter("reason", reason);
+		handle(req);
+		assertEquals(true, service.getPatientIdentifierByUuid(getUuid()).isVoided());
+		assertEquals(reason, service.getPatientIdentifierByUuid(getUuid()).getVoidReason());
+	}
+	
+	@Test
+	public void shouldPurgeAPatientIdentifier() throws Exception {
+		long initialIdCount = getAllCount();
+		assertNotNull(service.getPatientIdentifierByUuid(getUuid()));
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("purge", "");
+		handle(req);
+		assertNull(service.getPatientIdentifierByUuid(getUuid()));
+		assertEquals(--initialIdCount, getAllCount());
+	}
+	
+	@Test
+	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
+		
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 }
