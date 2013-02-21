@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class PersonAddressControllerTest extends BaseCrudControllerTest {
 	
 	private PersonService service;
-			
+	
 	@Before
 	public void before() throws Exception {
 		executeDataSet("personAddress-Test.xml");
@@ -47,7 +47,7 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getURI() {
-		return "person" + "/" + ResourceTestConstants.PERSON_UUID + "/address" ;
+		return "person" + "/" + ResourceTestConstants.PERSON_UUID + "/address";
 	}
 	
 	/**
@@ -110,7 +110,6 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertEquals(1, Util.getResultsSize(result));
 	}
-
 	
 	@Test
 	public void shouldExcludeVoidedAddressesForAPerson() throws Exception {
@@ -126,7 +125,7 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 		
 		Assert.assertEquals(0, Util.getResultsSize(result));
 	}
-		
+	
 	@Test
 	public void shouldAddAnAddressToAPerson() throws Exception {
 		int before = service.getPersonByUuid(ResourceTestConstants.PERSON_UUID).getAddresses().size();
@@ -138,7 +137,7 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), address);
 		handle(req);
-				
+		
 		int after = service.getPersonByUuid(ResourceTestConstants.PERSON_UUID).getAddresses().size();
 		Assert.assertEquals(before + 1, after);
 	}
@@ -164,7 +163,8 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
 		Assert.assertFalse(address.isVoided());
 		
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", ""), new Parameter("reason", "random reason")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", ""), new Parameter("reason",
+		        "random reason")));
 		
 		address = service.getPersonAddressByUuid(getUuid());
 		Assert.assertTrue(address.isVoided());
@@ -173,10 +173,10 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldPurgeAPersonAddress() throws Exception {
-
+		
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
 		Assert.assertNotNull(address);
-
+		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		
 		address = service.getPersonAddressByUuid(getUuid());

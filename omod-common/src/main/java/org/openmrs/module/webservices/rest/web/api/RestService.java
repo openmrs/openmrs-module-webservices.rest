@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.api;
 
-import java.util.Set;
+import java.util.Map;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -48,12 +48,12 @@ public interface RestService {
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
-	 * Returns a search handler, which supports the given resource and the set of parameters.
+	 * Returns a search handler, which supports the given resource and the map of parameters and values.
 	 * 
 	 * @param resourceName
-	 * @param searchParameters
+	 * @param parameters
 	 * @return searchHandler or <code>null</code> if no match
 	 * @throws APIException
 	 */
-	SearchHandler getSearchHandler(String resourceName, Set<String> searchParameters) throws APIException;
+	SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException;
 }

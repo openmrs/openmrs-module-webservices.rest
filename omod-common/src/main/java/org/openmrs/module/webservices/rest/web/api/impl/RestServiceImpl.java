@@ -14,7 +14,10 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,6 +37,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.util.OpenmrsConstants;
 
 /**
@@ -45,12 +49,14 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	private volatile Map<SearchHandlerKey, SearchHandler> searchHandlers;
+	private volatile Map<String, Set<SearchHandler>> searchHandlersByParameter;
+	
+	private volatile Map<SearchHandlerKey, SearchHandler> searchHandlersByIds;
 	
 	public RestServiceImpl() {
 	}
 	
-	private static class ResourceDefinition {
+	static class ResourceDefinition {
 		
 		public Resource resource;
 		
@@ -63,27 +69,27 @@ public class RestServiceImpl implements RestService {
 		
 	}
 	
-	private static class SearchHandlerKey {
+	static class SearchHandlerKey {
 		
 		public String supportedResource;
 		
-		public Set<String> searchParameters;
+		public String id;
 		
-		public SearchHandlerKey(String supportedResource, Set<String> searchParameters) {
+		public SearchHandlerKey(String supportedResource, String id) {
 			this.supportedResource = supportedResource;
-			this.searchParameters = searchParameters;
+			this.id = id;
 		}
 		
 		public SearchHandlerKey(SearchHandler searchHandler) {
 			this.supportedResource = searchHandler.getSupportedResource();
-			this.searchParameters = searchHandler.getSearchParameters();
+			this.id = searchHandler.getId();
 		}
 		
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((searchParameters == null) ? 0 : searchParameters.hashCode());
+			result = prime * result + ((id == null) ? 0 : id.hashCode());
 			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
 			return result;
 		}
@@ -97,10 +103,10 @@ public class RestServiceImpl implements RestService {
 			if (getClass() != obj.getClass())
 				return false;
 			SearchHandlerKey other = (SearchHandlerKey) obj;
-			if (searchParameters == null) {
-				if (other.searchParameters != null)
+			if (id == null) {
+				if (other.id != null)
 					return false;
-			} else if (!searchParameters.equals(other.searchParameters))
+			} else if (!id.equals(other.id))
 				return false;
 			if (supportedResource == null) {
 				if (other.supportedResource != null)
@@ -110,6 +116,22 @@ public class RestServiceImpl implements RestService {
 			return true;
 		}
 		
+	}
+	
+	/**
+	 * It should be used in TESTS ONLY.
+	 * 
+	 * @param searchHandler
+	 */
+	void addSupportedSearchHandler(SearchHandler searchHandler) {
+		if (searchHandlersByIds == null) {
+			searchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerKey, SearchHandler>();
+		}
+		if (searchHandlersByParameter == null) {
+			searchHandlersByParameter = new HashMap<String, Set<SearchHandler>>();
+		}
+		
+		addSupportedSearchHandler(searchHandlersByIds, searchHandlersByParameter, searchHandler);
 	}
 	
 	private void initializeResources() {
@@ -221,38 +243,67 @@ public class RestServiceImpl implements RestService {
 			}
 			
 		}
+		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
+		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
+	}
+	
+	private void initializeSearchHanlders() {
+		if (searchHandlersByIds != null) {
+			return;
+		}
 		
-		Map<SearchHandlerKey, SearchHandler> tempSearchHandlers = new HashMap<SearchHandlerKey, SearchHandler>();
+		Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerKey, SearchHandler>();
+		Map<String, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<String, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = Context.getRegisteredComponents(SearchHandler.class);
 		for (SearchHandler searchHandler : allSearchHandlers) {
-			for (String supportedVersion : searchHandler.getSupportedOpenmrsVersions()) {
-				try {
-					ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
-					//if supported then
-					SearchHandlerKey searchHandlerKey = new SearchHandlerKey(searchHandler);
-					SearchHandler previousSearchHandler = tempSearchHandlers.put(searchHandlerKey, searchHandler);
-					if (previousSearchHandler != null) {
-						if (previousSearchHandler.getOrder() < searchHandler.getOrder()) {
-							tempSearchHandlers.put(searchHandlerKey, previousSearchHandler);
-						} else if (previousSearchHandler.getOrder() == searchHandler.getOrder()) {
-							throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
-							        + previousSearchHandler.getClass() + ") for the same resource ("
-							        + searchHandler.getSupportedResource() + ") and the same search parameters ("
-							        + searchHandler.getSearchParameters() + ") must not have the same order ("
-							        + searchHandler.getOrder() + ")");
-						}
-					}
-				}
-				catch (ModuleException e) {
-					//Not supported OpenMRS version
-				}
-			}
+			addSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, searchHandler);
 		}
 		
-		searchHandlers = tempSearchHandlers;
-		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
-		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
+		searchHandlersByParameter = tempSearchHandlersByParameters;
+		searchHandlersByIds = tempSearchHandlersByIds;
+	}
+	
+	private void addSearchHandler(Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<String, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+		for (String supportedVersion : searchHandler.getSupportedOpenmrsVersions()) {
+			try {
+				ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+				//If the OpenMRS version is supported then
+				addSupportedSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, searchHandler);
+			}
+			catch (ModuleException e) {
+				//Not supported OpenMRS version
+			}
+		}
+	}
+	
+	private void addSupportedSearchHandler(Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<String, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+		SearchHandlerKey searchHanlderIdKey = new SearchHandlerKey(searchHandler);
+		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
+		if (previousSearchHandler != null) {
+			throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
+			        + previousSearchHandler.getClass() + ") for the same resource (" + searchHandler.getSupportedResource()
+			        + ") must not have the same ID (" + searchHandler.getId() + ")");
+		}
+		
+		addSearchHandlerToParametersMap(tempSearchHandlersByParameters, searchHandler);
+	}
+	
+	private void addSearchHandlerToParametersMap(Map<String, Set<SearchHandler>> tempSearchHandlersByParameters,
+	        SearchHandler searchHandler) {
+		Set<String> parameters = new HashSet<String>(searchHandler.getRequiredParameters());
+		parameters.addAll(searchHandler.getOptionalParameters());
+		
+		for (String parameter : parameters) {
+			Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameter);
+			if (list == null) {
+				list = new HashSet<SearchHandler>();
+				tempSearchHandlersByParameters.put(parameter, list);
+			}
+			list.add(searchHandler);
+		}
 	}
 	
 	/**
@@ -321,11 +372,83 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandler(java.lang.String, java.util.Set)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandler(java.lang.String,
+	 *      java.util.Map)
+	 * @should throw exception if no handler with id
+	 * @should return handler by id if exists
+	 * @should throw ambiguous exception if case 1
+	 * @should return handler if case 2
 	 */
 	@Override
-	public SearchHandler getSearchHandler(String resourceName, Set<String> searchParameters) throws APIException {
-		return searchHandlers.get(new SearchHandlerKey(resourceName, searchParameters));
+	public SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException {
+		initializeSearchHanlders();
+		
+		String searchId = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
+		if (searchId != null) {
+			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerKey(resourceName, searchId));
+			if (searchHandler == null) {
+				throw new ResourceDoesNotSupportOperationException("Search with id '" + searchId + "' for '" + resourceName
+				        + "' resource is not recognized");
+			} else {
+				return searchHandler;
+			}
+		}
+		
+		Set<String> searchParameters = new HashSet<String>(parameters.keySet());
+		searchParameters.removeAll(RestConstants.SPECIAL_REQUEST_PARAMETERS);
+		
+		Set<SearchHandler> candidateSearchHandlers = null;
+		for (String searchParameter : searchParameters) {
+			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(searchParameter);
+			if (searchHandlers == null) {
+				return null; //Missing parameter so there's no handler.
+			} else if (candidateSearchHandlers == null) {
+				candidateSearchHandlers = new HashSet<SearchHandler>();
+				candidateSearchHandlers.addAll(searchHandlers);
+			} else {
+				//Eliminate candidate search handlers that do not include all parameters
+				candidateSearchHandlers.retainAll(searchHandlers);
+			}
+		}
+		
+		if (candidateSearchHandlers == null) {
+			return null;
+		} else {
+			eliminateCandidateSearchHandlersWithMissingRequiredParameters(candidateSearchHandlers, searchParameters);
+			
+			if (candidateSearchHandlers.isEmpty()) {
+				return null;
+			} else if (candidateSearchHandlers.size() == 1) {
+				return candidateSearchHandlers.iterator().next();
+			} else {
+				List<String> candidateSearchHandlerIds = new ArrayList<String>();
+				for (SearchHandler candidateSearchHandler : candidateSearchHandlers) {
+					candidateSearchHandlerIds.add(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID + "="
+					        + candidateSearchHandler.getId());
+				}
+				throw new ResourceDoesNotSupportOperationException("The seach is ambiguous. Please specify "
+				        + StringUtils.join(candidateSearchHandlerIds, " or "));
+			}
+		}
+	}
+	
+	/**
+	 * Eliminate search handlers with missing required parameters.
+	 * 
+	 * @param candidateSearchHandlers
+	 * @param searchParameters
+	 */
+	private void eliminateCandidateSearchHandlersWithMissingRequiredParameters(Set<SearchHandler> candidateSearchHandlers,
+	        Set<String> searchParameters) {
+		Iterator<SearchHandler> it = candidateSearchHandlers.iterator();
+		while (it.hasNext()) {
+			SearchHandler candidateSearchHandler = it.next();
+			Set<String> requiredParameters = new HashSet<String>(candidateSearchHandler.getRequiredParameters());
+			requiredParameters.removeAll(searchParameters);
+			if (!requiredParameters.isEmpty()) {
+				it.remove();
+			}
+		}
 	}
 	
 }

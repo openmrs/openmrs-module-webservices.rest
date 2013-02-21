@@ -151,31 +151,30 @@ public class MainCrudController {
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(resource);
-		boolean isSearch = false;
-		try {
-			RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
-			
-			@SuppressWarnings("unchecked")
-			Set<String> searchParameters = new HashSet<String>(request.getParameterMap().keySet());
-			searchParameters.removeAll(RestConstants.SPECIAL_REQUEST_PARAMETERS);
-			
-			SearchHandler searchHandler = restService.getSearchHandler(resource, searchParameters);
-			if (searchHandler != null) {
-				return searchHandler.search(context).toSimpleObject();
-			}
-			
-			Enumeration parameters = request.getParameterNames();
-			while (parameters.hasMoreElements()) {
-				if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
-					isSearch = true;
+		
+		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
+		
+		@SuppressWarnings("unchecked")
+		SearchHandler searchHandler = restService.getSearchHandler(resource, request.getParameterMap());
+		if (searchHandler != null) {
+			return searchHandler.search(context).toSimpleObject();
+		}
+		
+		Enumeration parameters = request.getParameterNames();
+		while (parameters.hasMoreElements()) {
+			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
+				if (res instanceof Searchable) {
 					return ((Searchable) res).search(context);
+				} else {
+					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
 				}
 			}
-			return ((Listable) res).getAll(context);
 		}
-		catch (ClassCastException ex) {
-			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not "
-			        + ((isSearch) ? "Searchable" : "Listable"), null);
+		
+		if (res instanceof Listable) {
+			return ((Listable) res).getAll(context);
+		} else {
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not listable");
 		}
 	}
 	

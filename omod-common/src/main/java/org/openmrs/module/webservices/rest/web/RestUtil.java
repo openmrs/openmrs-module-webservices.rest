@@ -60,6 +60,8 @@ public class RestUtil implements GlobalPropertyListener {
 	
 	private static Log log = LogFactory.getLog(RestUtil.class);
 	
+	private static boolean contextEnabled = true;
+	
 	/**
 	 * Looks up the admin defined global property for the system limit
 	 * 
@@ -578,8 +580,10 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @return the webapp's Url prefix
 	 */
 	public static void setUriPrefix() {
-		RestConstants.URI_PREFIX = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+		if (contextEnabled) {
+			RestConstants.URI_PREFIX = Context.getAdministrationService().getGlobalProperty(
+			    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+		}
 		
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
 			// reset just in case it is a white space character or empty
@@ -593,6 +597,13 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		
 		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "ws/rest/";
+	}
+	
+	/**
+	 * It allows to disable calls to Context. It should be used in TESTS ONLY.
+	 */
+	public static void disableContext() {
+		contextEnabled = false;
 	}
 	
 	/**

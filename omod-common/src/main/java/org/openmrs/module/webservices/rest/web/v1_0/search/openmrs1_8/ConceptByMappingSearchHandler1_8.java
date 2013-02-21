@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,16 +34,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConceptByMappingSearchHandler1_8 implements SearchHandler {
 	
-	private Set<String> supportedOpenmrsVersion = new HashSet<String>(Arrays.asList("1.8.*", "1.9.*"));
+	private Set<String> supportedOpenmrsVersions = new HashSet<String>(Arrays.asList("1.8.*", "1.9.*"));
 	
-	private Set<String> searchParameters = new HashSet<String>(Arrays.asList("sourceName", "code"));
+	private Set<String> requiredSearchParameters = new HashSet<String>(Arrays.asList("sourceName", "code"));
+	
+	private Set<String> optionalSearchParameters = Collections.emptySet();
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getOrder()
 	 */
 	@Override
-	public int getOrder() {
-		return Integer.MAX_VALUE;
+	public String getId() {
+		return "conceptsByMapping";
 	}
 	
 	/**
@@ -58,15 +61,31 @@ public class ConceptByMappingSearchHandler1_8 implements SearchHandler {
 	 */
 	@Override
 	public Set<String> getSupportedOpenmrsVersions() {
-		return supportedOpenmrsVersion;
+		return supportedOpenmrsVersions;
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchParameters()
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchDescription()
 	 */
 	@Override
-	public Set<String> getSearchParameters() {
-		return searchParameters;
+	public String getSearchDescription() {
+		return "Allows to find concepts by sourceName and code";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getRequiredParameters()
+	 */
+	@Override
+	public Set<String> getRequiredParameters() {
+		return requiredSearchParameters;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getOptionalParameters()
+	 */
+	@Override
+	public Set<String> getOptionalParameters() {
+		return optionalSearchParameters;
 	}
 	
 	/**

@@ -130,6 +130,11 @@ public class RestConstants {
 	public static final String REQUEST_PROPERTY_FOR_JSESSIONID = "jsessionid";
 	
 	/**
+	 * An optional request parameter for a search id if the given search is ambiguous.
+	 */
+	public static final String REQUEST_PROPERTY_FOR_SEARCH_ID = "s";
+	
+	/**
 	 * Used in object representations to indicate which specific type an instance belongs to for a
 	 * resource that represents a full class hierarchy
 	 */
@@ -181,6 +186,7 @@ public class RestConstants {
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_START_INDEX);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_TYPE);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_JSESSIONID);
+		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_SEARCH_ID);
 	}
 	
 }
