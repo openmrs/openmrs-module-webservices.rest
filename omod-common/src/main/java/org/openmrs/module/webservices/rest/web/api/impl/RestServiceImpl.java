@@ -239,7 +239,8 @@ public class RestServiceImpl implements RestService {
 							throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
 							        + previousSearchHandler.getClass() + ") for the same resource ("
 							        + searchHandler.getSupportedResource() + ") and the same search parameters ("
-							        + searchHandler.getSearchParameters() + ") must not have the same order (" + searchHandler.getOrder() + ")");
+							        + searchHandler.getSearchParameters() + ") must not have the same order ("
+							        + searchHandler.getOrder() + ")");
 						}
 					}
 				}
