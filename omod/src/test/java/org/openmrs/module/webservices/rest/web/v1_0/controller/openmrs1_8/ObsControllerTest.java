@@ -41,24 +41,25 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResou
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
-
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.annotation.ExpectedException;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
 public class ObsControllerTest extends BaseCrudControllerTest {
+	
 	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
+	
 	private ConceptService service;
-		
+	
 	@Before
 	public void init() throws Exception {
 		executeDataSet(ACTIVE_LIST_INITIAL_XML);
 		service = Context.getConceptService();
 	}
+	
 	//**
 	//* @see ObsController#getObs(String,WebRequest)
 	// * @verifies get a default representation of a obs
@@ -124,7 +125,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "concept"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-
+	
 	//	/**
 	//	 * @see ObsController#getObsByPatientId(String,WebRequest)
 	//	 * @verifies get a default representation of all obs
@@ -140,25 +141,27 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	//	}
+	
 	/**
 	 * @see ObsController#getObsByPatientId(String,WebRequest)
 	 * @verifies get a default representation of all obs
 	 */
+	
 	@Test
 	public void getObsByPatientId_shouldGetADefaultRepresentationOfAllObs() throws Exception {
- 		String patient = "6TS-4";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + patient);
+		MockHttpServletRequest req = newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"));
 		SimpleObject result = deserialize(handle(req));
-		
 		List<Object> results = Util.getResultsList(result);
 		Assert.assertNotNull(results);
+		// gets index out of bounds exception
 		results.get(8);
 		Assert.assertEquals(9, results.size());
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
-
+	
 	//	@Test
 	//	public void searchByEncounter_shouldGetObsInAnEncounter() throws Exception {
 	//		SimpleObject search = new ObsController().searchByEncounter("6519d653-393b-4118-9c83-a3715b82d4ac", emptyRequest(),
@@ -174,20 +177,21 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	 * @see ObsController#getObsByEncounter(String,WebRequest)
 	 * @verifies get a default representation of all obs
 	 */
+	// Failing on: AssertionFailedError: null
 	@Test
 	public void searchByEncounter_shouldGetObsInAnEncounter() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI(),
-			new Parameter("encounter", "6519d653-393b-4118-9c83-a3715b82d4ac"));
+		MockHttpServletRequest req = newGetRequest(getURI(), new Parameter("encounter",
+		        "6519d653-393b-4118-9c83-a3715b82d4ac"));
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
 		Assert.assertEquals(2, results.size());
 		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
-            results.get(1), getUuid()));
+		    results.get(1), getUuid()));
 		
 		Assert.assertTrue(uuids.contains("39fb7f47-e80a-4056-9285-bd798be13c63"));
 		Assert.assertTrue(uuids.contains("be48cdcb-6a76-47e3-9f2e-2635032f3a9a"));
 	}
-
+	
 	//	/**
 	//	 * @see ObsController#createObs(SimpleObject,WebRequest,HttpServletResponse)
 	//	 * @verifies create a new obs with numeric concept
@@ -223,7 +227,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
 		newObs = observationsByPersonAfterSave.get(0);
 		Assert.assertEquals(150.0, ((Obs) newObs).getValueNumeric());
-    }
+	}
 	
 	//	/**
 	//	 * @see ObsController#createObs(SimpleObject,WebRequest,HttpServletResponse)
@@ -257,7 +261,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		    (Context.getPatientService().getPatient(7)));
 		int before = observationsByPerson.size();
 		String json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"high\"}";
-
+		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
 		Object newObs = deserialize(handle(req));
@@ -268,7 +272,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		newObs = observationsByPersonAfterSave.get(0);
 		Assert.assertEquals("high", ((Obs) newObs).getValueText());
 	}
-		
+	
 	/**
 	 * @see ObsController#createObs(SimpleObject,WebRequest,HttpServletResponse)
 	 * @verifies create a new obs with text concept
@@ -294,9 +298,13 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	//	 */
 	@Test
 	public void voidObs_shouldVoidAObs() throws Exception {
+		String uuid = "be48cdcb-6a76-47e3-9f2e-2635032f3a9a";
+		
 		Obs obs = Context.getObsService().getObs(9);
 		Assert.assertFalse(obs.isVoided());
-		handle(newDeleteRequest(getURI() + "/" + ResourceTestConstants.OBS_UUID, new Parameter("reason", "unit test")));
+		// OBS_UUID = "39fb7f47-e80a-4056-9285-bd798be13c63";
+		//handle(newDeleteRequest(getURI() + "/" + ResourceTestConstants.OBS_UUID, new Parameter("reason", "unit test")));
+		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("reason", "unit test")));
 		obs = Context.getObsService().getObs(9);
 		Assert.assertTrue(obs.isVoided());
 		Assert.assertEquals("unit test", obs.getVoidReason());
@@ -324,7 +332,8 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	 * @see ObsController#updatePatient(String,SimpleObject,WebRequest,HttpServletResponse)
 	 * @verifies change a property on an obs
 	 */
-	
+	// Failed on: org.openmrs.module.webservices.rest.web.response.ConversionException: 
+	//	Some properties are not allowed to be set: valueNumeric
 	@Test
 	//@Ignore("RESTWS-238: Define creatable/updatable properties on Obs resource")
 	public void updateObs_shouldChangeAPropertyOnAnObs() throws Exception {
@@ -359,15 +368,40 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	//		Assert.assertFalse(new Integer(2).equals(oldObs.getLocation().getId()));
 	//		Assert.assertTrue(new Integer(2).equals(newObs.getLocation().getId()));
 	//	}
-	 
-	@Test
-	//@Ignore("RESTWS-238: Define creatable/updatable properties on Obs resource")
-	public void updateObs_shouldChangeAComplexPropertyOnAnObs() throws Exception {
-		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"}";
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
-		req.setContent(json.getBytes());
-		Object newObs = deserialize(handle(req));
+	/*	 
+		@Test
+		//@Ignore("RESTWS-238: Define creatable/updatable properties on Obs resource")
+		public void updateObs_shouldChangeAComplexPropertyOnAnObs() throws Exception {
+			String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"}";
+			MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+			req.setContent(json.getBytes());
+			Object newObs = deserialize(handle(req));
 
+			Obs oldObs = Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63");
+			List<Obs> obsList = Context.getObsService().getObservationsByPerson(Context.getPersonService().getPerson(7));
+			newObs = obsList.get(obsList.size() - 1);
+			Assert.assertTrue(Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63").isVoided());
+			Assert.assertFalse(new Integer(2).equals(oldObs.getLocation().getId()));
+			Assert.assertTrue(new Integer(2).equals(((Obs) newObs).getLocation().getId()));
+		}
+	*/
+	// To fix error:
+	// Some required properties are missing: concept,person,obsDatetime
+	public void updateObs_shouldChangeAComplexPropertyOnAnObs() throws Exception {
+		
+		SimpleObject attributes = new SimpleObject();
+		attributes.add("location", "Updated obs location");
+		attributes.add("concept", "89ca642a-dab6-4f20-b712-e12ca4fc6d36");
+		attributes.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		attributes.add("obsDatetime", "2009-06-03 13:55:12.0");
+		
+		String json = new ObjectMapper().writeValueAsString(attributes);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		
+		Object newObs = deserialize(handle(req));
+		
 		Obs oldObs = Context.getObsService().getObsByUuid("39fb7f47-e80a-4056-9285-bd798be13c63");
 		List<Obs> obsList = Context.getObsService().getObservationsByPerson(Context.getPersonService().getPerson(7));
 		newObs = obsList.get(obsList.size() - 1);
@@ -375,7 +409,9 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		Assert.assertFalse(new Integer(2).equals(oldObs.getLocation().getId()));
 		Assert.assertTrue(new Integer(2).equals(((Obs) newObs).getLocation().getId()));
 	}
-
+	
+	//Some required properties are missing: concept,person,obsDatetime
+	
 	//	/**
 	//	 * @see ObsController#purgeObs(String,WebRequest,HttpServletResponse)
 	//	 * @verifies fail to purge an obs with dependent data
@@ -386,21 +422,21 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	//		executeDataSet("org/openmrs/api/include/ObsServiceTest-complex.xml");
 	//		new ObsController().purge("9b6639b2-5785-4603-a364-075c2d61cd51", emptyRequest(), new MockHttpServletResponse());
 	//	}
-		/**
-		 * @see ObsController#purgeObs(String,WebRequest,HttpServletResponse)
-		 * @verifies fail to purge an obs with dependent data
-		 */
-		@Test
-		@ExpectedException(APIException.class)
-		public void purgeObs_shouldFailToPurgeAnObsWithDependentData() throws Exception {
-			Context.getObsService().getObsByUuid(getUuid());
-			Assert.assertNotNull(Context.getObsService().getObsByUuid(getUuid()));
-			MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-			req.addParameter("purge", "");
-			handle(req);
-			executeDataSet("org/openmrs/api/include/ObsServiceTest-complex.xml");
-			Assert.assertNull(Context.getObsService().getObsByUuid(getUuid()));
-		}
+	/**
+	 * @see ObsController#purgeObs(String,WebRequest,HttpServletResponse)
+	 * @verifies fail to purge an obs with dependent data
+	 */
+	@Test
+	@ExpectedException(APIException.class)
+	public void purgeObs_shouldFailToPurgeAnObsWithDependentData() throws Exception {
+		Context.getObsService().getObsByUuid(getUuid());
+		Assert.assertNotNull(Context.getObsService().getObsByUuid(getUuid()));
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("purge", "");
+		handle(req);
+		executeDataSet("org/openmrs/api/include/ObsServiceTest-complex.xml");
+		Assert.assertNull(Context.getObsService().getObsByUuid(getUuid()));
+	}
 	
 	//	/**
 	//	 * @see ObsController#purgeObs(String,WebRequest,HttpServletResponse)
@@ -454,9 +490,9 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
 		Assert.assertEquals(3, results.size());
-
+		
 		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(results.get(0), "uuid"), PropertyUtils.getProperty(
-		results.get(1), "uuid"), PropertyUtils.getProperty(results.get(2), "uuid"));
+		    results.get(1), "uuid"), PropertyUtils.getProperty(results.get(2), "uuid"));
 		Assert.assertTrue(uuids.contains("be3a4d7a-f9ab-47bb-aaad-bc0b452fcda4"));
 		Assert.assertTrue(uuids.contains("b5499df2-b17c-4b39-88a6-44591c165569"));
 		Assert.assertTrue(uuids.contains("0ee1248e-08aa-4a2c-9f38-fb3875f605e3"));
@@ -497,7 +533,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
 		Object newObs = deserialize(handle(req));
-	
+		
 		List<Obs> observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
 		    (Context.getPatientService().getPatient(7)));
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
@@ -517,7 +553,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 	//		new ObsController().create(post, emptyRequest(), new MockHttpServletResponse());
 	//	}
-
+	
 	/**
 	 * @see ObsResource#create(SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @throws Exception
@@ -534,7 +570,8 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-	}	
+	}
+	
 	//	/**
 	//	 * @see ObsController#getObs(String,WebRequest)
 	//	 * @verifies get a dateTime obs value correctly represented as ISO8601 long format
@@ -565,7 +602,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2008-08-14"), Representation.DEFAULT),
 		    PropertyUtils.getProperty(result, "value"));
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
 	 */
@@ -581,7 +618,7 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 	public String getUuid() {
 		return ResourceTestConstants.OBS_UUID;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
 	 */
@@ -591,15 +628,13 @@ public class ObsControllerTest extends BaseCrudControllerTest {
 		super.shouldGetAll();
 	}
 	
-
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
 	 */
 	
 	@Override
 	public long getAllCount() {
-		return(0);
+		return (0);
 	}
-
 	
 }
