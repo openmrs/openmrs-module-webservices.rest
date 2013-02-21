@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.docs;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,9 +26,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
@@ -39,7 +41,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainCrudController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +59,7 @@ public class ResourceDocCreator {
 	 * @return a map of ResourceData objects keyed by their resource names.
 	 * @throws IOException
 	 */
+	@SuppressWarnings("rawtypes")
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
 	        InstantiationException, IOException, ConversionException {
 		
@@ -85,12 +89,10 @@ public class ResourceDocCreator {
 		
 		docs.addAll(createDocMap(baseUrl).values());
 		
-		//Remove subresources and resources without controllers
+		//Remove resources for subclasses
 		for (Iterator<ResourceDoc> it = docs.iterator(); it.hasNext();) {
 			ResourceDoc resourceDoc = it.next();
-			if (resourceDoc.getUrl() == null)
-				it.remove();
-			else if (resourceDoc.getSuperResource() != null)
+			if (resourceDoc.getSuperResource() != null)
 				it.remove();
 		}
 		
@@ -134,16 +136,32 @@ public class ResourceDocCreator {
 			
 			Object delegate = resourceHandler.newDelegate();
 			
-			String resourceName = delegate.getClass().getSimpleName();
-			if (resourceName.equals("UserAndPassword")) {
-				resourceName = "User"; //Work-around for UserAndPassword to be displayed as User
+			String resourceClassname = delegate.getClass().getSimpleName();
+			if (resourceClassname.equals("UserAndPassword")) {
+				resourceClassname = "User"; //Work-around for UserAndPassword to be displayed as User
 			}
 			
-			ResourceDoc resourceDoc = new ResourceDoc(resourceName);
+			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) cls
+			        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
+			if (resourceAnnotation != null) {
+				resourceDoc.setResourceName(resourceAnnotation.name());
+			} else {
+				//this is a subResource, use the name of the collection
+				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) cls
+				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class));
+				if (subResourceAnnotation != null) {
+					org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) subResourceAnnotation
+					        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
+					
+					resourceDoc.setResourceName(parentResourceAnnotation.name());
+					resourceDoc.setSubResourceName(subResourceAnnotation.path());
+				}
+			}
 			
 			if (instance instanceof DelegatingSubclassHandler) {
 				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) instance).getSuperclass();
-				instance = HandlerUtil.getPreferredHandler(Resource.class, superclass);
+				instance = Context.getService(RestService.class).getResourceBySupportedClass(superclass);
 				//Add as a subresource
 				ResourceDoc superclassResourceDoc = resouceDocMap.get(superclass.getSimpleName());
 				if (superclassResourceDoc == null) {
@@ -268,69 +286,54 @@ public class ResourceDocCreator {
 	 */
 	private static void fillUrls(String baseUrl, Map<String, ResourceDoc> resouceDocMap) throws IOException {
 		
-		List<Class<? extends BaseRestController>> controllers = OpenmrsClassScanner.getInstance().getClasses(
-		    BaseRestController.class, true);
+		RequestMapping annotation = (RequestMapping) MainSubResourceController.class.getAnnotation(RequestMapping.class);
+		if (annotation == null)
+			throw new APIException("MainCrudController missing @RequestMapping annotation");
 		
-		for (Class<? extends BaseRestController> cls : controllers) {
-			if (BaseRestController.class.equals(cls))
+		RequestMapping subResAnnotation = (RequestMapping) MainCrudController.class.getAnnotation(RequestMapping.class);
+		if (subResAnnotation == null)
+			throw new APIException("MainSubResourceController missing @RequestMapping annotation");
+		
+		List<ResourceOperation> resourceOperations = null;
+		List<ResourceOperation> subResourceOperations = null;
+		String resourceUrl = null;
+		
+		for (ResourceDoc doc : resouceDocMap.values()) {
+			//skip subclass handlers e.g DrugOrderSubclassHandler
+			if (doc.getSuperResource() != null)
 				continue;
 			
-			RequestMapping annotation = (RequestMapping) cls.getAnnotation(RequestMapping.class);
-			if (annotation == null)
-				continue;
+			if (resourceUrl == null)
+				resourceUrl = baseUrl + annotation.value()[0];
 			
-			String url = baseUrl + annotation.value()[0];
-			
-			ResourceDoc doc = resouceDocMap.get(cls.getSimpleName().replace("Controller", ""));
-			if (doc == null) {
-				continue;
+			if (doc.getSubResourceName() == null) {
+				if (resourceOperations == null)
+					resourceOperations = getResourceOperations(resourceUrl, MainCrudController.class, true);
+				
+				for (ResourceOperation ro : resourceOperations) {
+					//Add the actual urls after replacing the {resource} string with the resource name
+					doc.addOperation(new ResourceOperation(StringUtils.replace(ro.getName(), "{resource}", doc
+					        .getResourceName()), ro.getDescription()));
+				}
+				
+				//Set the root url.
+				doc.setUrl(resourceUrl + "/" + doc.getResourceName());
+				setUrlInSubResources(resourceUrl, doc);
+			} else {
+				//This is a sub resource that has a parent
+				if (subResourceOperations == null)
+					subResourceOperations = getResourceOperations(resourceUrl, MainSubResourceController.class, false);
+				
+				for (ResourceOperation sro : subResourceOperations) {
+					//generate the actual url to match the parent resource and subresource
+					String operationUrl = StringUtils.replaceEach(sro.getName(), new String[] { "{resource}",
+					        "{subResource}" }, new String[] { doc.getResourceName(), doc.getSubResourceName() });
+					doc.addOperation(new ResourceOperation(operationUrl, sro.getDescription()));
+				}
+				
+				doc.setUrl(resourceUrl + "/" + doc.getResourceName() + "/{parentUuid}/" + doc.getSubResourceName());
+				setUrlInSubResources(resourceUrl, doc);
 			}
-			
-			Method[] methods = cls.getMethods();
-			for (Method method : methods) {
-				if (method.getName().equals("getResourceCatalog")) {
-					continue;
-				}
-				
-				RequestMapping antn = (RequestMapping) method.getAnnotation(RequestMapping.class);
-				if (antn == null)
-					continue;
-				
-				String requestMethod = antn.method()[0].name();
-				
-				if (requestMethod.equals("TRACE")) {
-					//Skip TRACE, which is used to disable a method in HL7MessageController.
-					continue;
-				}
-				
-				String operationUrl = requestMethod + " " + url;
-				
-				if (antn.value().length > 0)
-					operationUrl += antn.value()[0];
-				
-				String paramString = null;
-				for (String param : antn.params()) {
-					if (paramString == null)
-						paramString = param;
-					else
-						paramString += ("&" + param);
-				}
-				
-				if (paramString != null)
-					operationUrl += "?" + paramString;
-				
-				doc.addOperation(new ResourceOperation(operationUrl, getMethodDescription(antn, antn.method()[0].name(),
-				    method)));
-			}
-			
-			//Set the root url.
-			doc.setUrl(url);
-			setUrlInSubResources(url, doc);
-			
-			//Sort the operations
-			ResourceOperation[] operations = doc.getOperations().toArray(new ResourceOperation[0]);
-			Arrays.sort(operations);
-			doc.setOperations(Arrays.asList(operations));
 		}
 	}
 	
@@ -353,9 +356,11 @@ public class ResourceDocCreator {
 	 * @param requestMapping the request mapping annotation.
 	 * @param operation the HTTP operation method.
 	 * @param method the method.
+	 * @param supportsSearching specified if the controller the method belongs supports searching
 	 * @return the method description string.
 	 */
-	private static String getMethodDescription(RequestMapping requestMapping, String operation, Method method) {
+	private static String getMethodDescription(RequestMapping requestMapping, String operation, Method method,
+	        boolean supportsSearching) {
 		
 		//If the documentation annotation exists, then no need for auto generating the description.
 		WSDoc docAnnotation = (WSDoc) method.getAnnotation(WSDoc.class);
@@ -369,10 +374,9 @@ public class ResourceDocCreator {
 		if (operation.equals("GET")) {
 			if (value != null && value.contains("uuid"))
 				return "Fetch by unique uuid";
-			else if (value == null && requestMapping.params().length == 0)
+			if (!supportsSearching)
 				return "Fetch all non-retired";
-			else if (value == null && requestMapping.params().length > 0)
-				return "Fetch all non-retired that match this parameter";
+			return "Fetch all non-retired that match any specified parameters otherwise fetch all non-retired";
 			
 		} else if (operation.equals("POST")) {
 			if (value != null && value.contains("uuid"))
@@ -381,12 +385,60 @@ public class ResourceDocCreator {
 				return "Create with properties in request";
 			
 		} else if (operation.equals("DELETE")) {
-			if (requestMapping.params().length > 0)
+			if (!requestMapping.params()[0].startsWith("!"))
 				return "Delete this object from the database";
 			else
-				return "Retire this object";
+				return "Retire/Void this object";
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Generates {@link ResourceOperation}s corresponding to the supported http methods
+	 * 
+	 * @param url
+	 * @param clazz
+	 * @param supportsSearching specified if the controller the method belongs supports searching
+	 * @return
+	 */
+	private static List<ResourceOperation> getResourceOperations(String url, Class<?> clazz, boolean supportsSearching) {
+		List<ResourceOperation> resourceOperations = new ArrayList<ResourceOperation>();
+		Method[] methods = clazz.getMethods();
+		for (Method method : methods) {
+			RequestMapping antn = (RequestMapping) method.getAnnotation(RequestMapping.class);
+			if (antn == null)
+				continue;
+			
+			String requestMethod = antn.method()[0].name();
+			
+			if (requestMethod.equals("TRACE")) {
+				//Skip TRACE, which is used to disable a method in HL7MessageController.
+				continue;
+			}
+			
+			String operationUrl = requestMethod + " " + url;
+			
+			if (antn.value().length > 0)
+				operationUrl += antn.value()[0];
+			
+			String paramString = null;
+			for (String param : antn.params()) {
+				if (paramString == null)
+					paramString = param;
+				else
+					paramString += ("&" + param);
+			}
+			
+			if (paramString != null)
+				operationUrl += "?" + paramString;
+			
+			resourceOperations.add(new ResourceOperation(operationUrl, getMethodDescription(antn, requestMethod, method,
+			    supportsSearching)));
+		}
+		
+		Collections.sort(resourceOperations);
+		
+		return resourceOperations;
 	}
 }

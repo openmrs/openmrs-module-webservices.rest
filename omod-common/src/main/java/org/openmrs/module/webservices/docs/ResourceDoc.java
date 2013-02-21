@@ -25,6 +25,12 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	
 	private String name;
 	
+	//this is the value of the name attribute on the Resource annotation
+	private String resourceName;
+	
+	////this is the value of the path attribute on the SubResource annotation
+	private String subResourceName;
+	
 	private String url;
 	
 	private ResourceDoc superResource;
@@ -45,6 +51,34 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * @return the resourceName
+	 */
+	public String getResourceName() {
+		return resourceName;
+	}
+	
+	/**
+	 * @param resourceName the resourceName to set
+	 */
+	public void setResourceName(String resourceName) {
+		this.resourceName = resourceName;
+	}
+	
+	/**
+	 * @return the subResourceName
+	 */
+	public String getSubResourceName() {
+		return subResourceName;
+	}
+	
+	/**
+	 * @param subResourceName the subResourceName to set
+	 */
+	public void setSubResourceName(String subResourceName) {
+		this.subResourceName = subResourceName;
 	}
 	
 	public String getUrl() {
