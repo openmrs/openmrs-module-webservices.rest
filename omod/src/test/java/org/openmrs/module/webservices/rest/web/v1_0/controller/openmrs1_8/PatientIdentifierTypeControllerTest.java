@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import javax.servlet.http.HttpServletResponse;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PatientIdentifierType;
@@ -25,132 +26,130 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.patient.impl.VerhoeffIdentifierValidator;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests functionality of {@link PatientIdentifierTypeController}. This does not use @should
- * annotations because the controller inherits those methods from a subclass
+ * Tests CRUD operations for {@link PatientIdentifierType}s via web service calls
  */
-public class PatientIdentifierTypeControllerTest extends BaseModuleWebContextSensitiveTest {
+public class PatientIdentifierTypeControllerTest extends BaseCrudControllerTest {
 	
-	//	String idTypeUuid = "1a339fe9-38bc-4ab3-b180-320988c0b968";
-	//	
-	//	private PatientService service;
-	//	
-	//	private PatientIdentifierTypeController controller;
-	//	
-	//	private MockHttpServletRequest request;
-	//	
-	//	private HttpServletResponse response;
-	//	
-	//	@Before
-	//	public void before() {
-	//		this.service = Context.getPatientService();
-	//		this.controller = new PatientIdentifierTypeController();
-	//		this.request = new MockHttpServletRequest();
-	//		this.response = new MockHttpServletResponse();
-	//	}
-	//	
-	//	@Test
-	//	public void shouldGetOne() throws Exception {
-	//		Object result = controller.retrieve(idTypeUuid, request);
-	//		Assert.assertNotNull(result);
-	//		Util.log("Patient Identifier Type fetched (default)", result);
-	//		Assert.assertEquals(idTypeUuid, PropertyUtils.getProperty(result, "uuid"));
-	//		Assert.assertEquals("OpenMRS Identification Number", PropertyUtils.getProperty(result, "name"));
-	//		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-	//	}
-	//	
-	//	@Test
-	//	public void shouldListAll() throws Exception {
-	//		SimpleObject result = controller.getAll(request, response);
-	//		Util.log("All non-retired identifier types", result);
-	//		Assert.assertNotNull(result);
-	//		Assert.assertEquals(2, Util.getResultsSize(result));
-	//	}
-	//	
-	//	@Test
-	//	public void shouldCreate() throws Exception {
-	//		int before = service.getAllPatientIdentifierTypes().size();
-	//		String json = "{ \"name\":\"My Type\", \"description\":\"My Way\", \"required\":true, \"checkDigit\":true, \"validator\":\""
-	//		        + VerhoeffIdentifierValidator.class.getName() + "\" }";
-	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-	//		Object created = controller.create(post, request, response);
-	//		Util.log("Created", created);
-	//		int after = service.getAllPatientIdentifierTypes().size();
-	//		Assert.assertEquals(before + 1, after);
-	//	}
-	//	
-	//	@Test
-	//	public void shouldUpdate() throws Exception {
-	//		String json = "{ \"description\":\"something new\" }";
-	//		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-	//		controller.update(idTypeUuid, post, request, response);
-	//		PatientIdentifierType updated = service.getPatientIdentifierTypeByUuid(idTypeUuid);
-	//		Util.log("Updated", updated);
-	//		Assert.assertNotNull(updated);
-	//		Assert.assertEquals("OpenMRS Identification Number", updated.getName());
-	//		Assert.assertEquals("something new", updated.getDescription());
-	//	}
-	//	
-	//	@Test
-	//	public void shouldDelete() throws Exception {
-	//		PatientIdentifierType idType = service.getPatientIdentifierTypeByUuid(idTypeUuid);
-	//		Assert.assertFalse(idType.isRetired());
-	//		controller.delete(idTypeUuid, "unit test", request, response);
-	//		idType = service.getPatientIdentifierTypeByUuid(idTypeUuid);
-	//		Assert.assertTrue(idType.isRetired());
-	//		Assert.assertEquals("unit test", idType.getRetireReason());
-	//	}
-	//	
-	//	@Test(expected = Exception.class)
-	//	// should fail to purge an item referenced by other data
-	//	public void shouldFailToPurge() throws Exception {
-	//		Number before = (Number) Context.getAdministrationService().executeSQL(
-	//		    "select count(*) from patient_identifier_type", true).get(0).get(0);
-	//		controller.purge(idTypeUuid, request, response);
-	//		Context.flushSession();
-	//		Number after = (Number) Context.getAdministrationService().executeSQL(
-	//		    "select count(*) from patient_identifier_type", true).get(0).get(0);
-	//		Assert.assertEquals(before.intValue() - 1, after.intValue());
-	//	}
-	//	
-	//	/**
-	//	 * @see PatientIdentifierTypeController#create(SimpleObject, HttpServletRequest, HttpServletResponse) 
-	//	 * @verifies create a new patient identifier type
-	//	 */
-	//	@Test
-	//	public void createPatientIdentifierType_shouldCreateANewPatientIdentifierType() throws Exception {
-	//		int before = service.getAllPatientIdentifierTypes().size();
-	//		String json = "{ \"name\":\"Old Identification Number\", \"description\":\"Unique number used in OpenMRS\", \"checkDigit\":true, \"required\":true, \"format\":\"\", \"formatDescription\":\"NULL\",\"validator\":\""
-	//		        + VerhoeffIdentifierValidator.class.getName() + "\" }";
-	//		SimpleObject post = SimpleObject.parseJson(json);
-	//		Object created = controller.create(post, request, new MockHttpServletResponse());
-	//		Util.log("Created patient identifier type", created);
-	//		int after = service.getAllPatientIdentifierTypes().size();
-	//		Assert.assertEquals(before + 1, after);
-	//	}
-	//	
-	//	/**
-	//	 * @see PatientIdentifierTypeController#update(String, SimpleObject, HttpServletRequest, HttpServletResponse)
-	//	 * @verifies overwrite name on a patient identifier type
-	//	 */
-	//	@Test
-	//	public void updatePatientIdentifierType_shouldOverwriteNameOnAPatientIdentifierType() throws Exception {
-	//		String json = "{ \"name\":\"OpenMRS Identification Number\" }";
-	//		SimpleObject post = SimpleObject.parseJson(json);
-	//		controller.update(idTypeUuid, post, request, response);
-	//		PatientIdentifierType updated = service.getPatientIdentifierTypeByUuid(idTypeUuid);
-	//		Util.log("Updated", updated);
-	//		Assert.assertNotNull(updated);
-	//		Assert.assertEquals("OpenMRS Identification Number", updated.getName());
-	//	}
+	private PatientService service;
+	
+	@Override
+	public String getURI() {
+		return "patientidentifiertype";
+	}
+	
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.PATIENT_IDENTIFIER_TYPE_UUID;
+	}
+	
+	@Override
+	public long getAllCount() {
+		return service.getAllPatientIdentifierTypes(false).size();
+	}
+	
+	@Before
+	public void before() {
+		this.service = Context.getPatientService();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void shouldGetAPatientIdentifierTypeByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
 		
+		PatientIdentifierType patientIdentifierType = service.getPatientIdentifierTypeByUuid(getUuid());
+		assertEquals(patientIdentifierType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(patientIdentifierType.getName(), PropertyUtils.getProperty(result, "name"));
+	}
+	
+	@Test
+	public void shouldGetAPatientIdentifierTypeByName() throws Exception {
+		final String name = "OpenMRS Identification Number";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		SimpleObject result = deserialize(handle(req));
+		
+		PatientIdentifierType patientIdentifierType = service.getPatientIdentifierTypeByName(name);
+		assertEquals(patientIdentifierType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(patientIdentifierType.getName(), PropertyUtils.getProperty(result, "name"));
+	}
+	
+	@Test
+	public void shouldListAllPatientIdentifierTypes() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		assertNotNull(result);
+		assertEquals(getAllCount(), Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void shouldCreateAPatientIdentifierType() throws Exception {
+		long originalCount = getAllCount();
+		
+		SimpleObject patientIdentifierType = new SimpleObject();
+		patientIdentifierType.add("name", "test name");
+		patientIdentifierType.add("description", "test description");
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifierType);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newPatientIdentifierType = deserialize(handle(req));
+		
+		assertNotNull(PropertyUtils.getProperty(newPatientIdentifierType, "uuid"));
+		assertEquals(originalCount + 1, getAllCount());
+	}
+	
+	@Test
+	public void shouldEditingAPatientIdentifierType() throws Exception {
+		final String newName = "updated name";
+		SimpleObject patientIdentifierType = new SimpleObject();
+		patientIdentifierType.add("name", newName);
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifierType);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		assertEquals(newName, service.getPatientIdentifierTypeByUuid(getUuid()).getName());
+	}
+	
+	@Test
+	public void shouldRetireAPatientIdentifierType() throws Exception {
+		assertEquals(false, service.getPatientIdentifierTypeByUuid(getUuid()).isRetired());
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		req.addParameter("!purge", "");
+		final String reason = "none";
+		req.addParameter("reason", reason);
+		handle(req);
+		assertEquals(true, service.getPatientIdentifierTypeByUuid(getUuid()).isRetired());
+		assertEquals(reason, service.getPatientIdentifierTypeByUuid(getUuid()).getRetireReason());
+	}
+	
+	@Test
+	public void shouldPurgeAPatientIdentifierType() throws Exception {
+		final String uuid = "158d6b17-a8ab-435b-8fe3-952a04bda757";
+		assertNotNull(service.getPatientIdentifierTypeByUuid(uuid));
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
+		req.addParameter("purge", "");
+		handle(req);
+		assertNull(service.getPatientIdentifierTypeByUuid(uuid));
+	}
+	
+	@Test
+	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
+		
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 }

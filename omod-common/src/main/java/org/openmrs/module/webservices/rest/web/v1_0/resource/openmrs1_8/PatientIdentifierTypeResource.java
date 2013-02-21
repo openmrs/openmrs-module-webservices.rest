@@ -116,7 +116,10 @@ public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResourc
 	 */
 	@Override
 	public PatientIdentifierType getByUniqueId(String uniqueId) {
-		return service().getPatientIdentifierTypeByUuid(uniqueId);
+		PatientIdentifierType type = service().getPatientIdentifierTypeByUuid(uniqueId);
+		if (type == null)
+			type = service().getPatientIdentifierTypeByName(uniqueId);
+		return type;
 	}
 	
 	/**
