@@ -13,106 +13,169 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.List;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 import junit.framework.Assert;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.activelist.Problem;
+import org.openmrs.activelist.ProblemModifier;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProblemResource;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
-public class ProblemControllerTest extends BaseModuleWebContextSensitiveTest {
+/**
+ * Tests CRUD operations for {@link Problem}s via web service calls
+ */
+public class ProblemControllerTest extends BaseCrudControllerTest {
 	
-	//	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
-	//	
-	//	private MockHttpServletRequest emptyRequest() {
-	//		return new MockHttpServletRequest();
-	//	}
-	//	
-	//	@Before
-	//	public void init() throws Exception {
-	//		executeDataSet(ACTIVE_LIST_INITIAL_XML);
-	//	}
-	//	
-	//	/**
-	//	 * @see ProblemController#getProblem(String,WebRequest)
-	//	 * @verifies get a default representation of a problem
-	//	 */
-	//	@Test
-	//	public void getProblem_shouldGetADefaultRepresentationOfAProblem() throws Exception {
-	//		Object result = new ProblemController().retrieve(ResourceTestConstants.PROBLEM_UUID, emptyRequest());
-	//		Assert.assertNotNull(result);
-	//		Util.log("Problem fetched (default)", result);
-	//		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(result, "uuid"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "problem"));
-	//		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-	//	}
-	//	
-	//	/**
-	//	 * @see ProblemController#getProblem(String,WebRequest)
-	//	 * @verifies get a full representation of a problem
-	//	 */
-	//	@Test
-	//	public void getProblem_shouldGetAFullRepresentationOfAProblem() throws Exception {
-	//		MockHttpServletRequest req = new MockHttpServletRequest();
-	//		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-	//		Object result = new ProblemController().retrieve(ResourceTestConstants.PROBLEM_UUID, req);
-	//		Assert.assertNotNull(result);
-	//		Util.log("Problem fetched (default)", result);
-	//		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(result, "uuid"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "problem"));
-	//		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-	//	}
-	//	
-	//	/**
-	//	 * @see ProblemController#voidProblem(String,String,WebRequest,HttpServletResponse)
-	//	 * @verifies void a problem
-	//	 */
-	//	@Test
-	//	public void voidProblem_shouldVoidAProblem() throws Exception {
-	//		Problem problem = Context.getPatientService().getProblem(2);
-	//		Assert.assertFalse(problem.isVoided());
-	//		new ProblemController().delete(ResourceTestConstants.PROBLEM_UUID, "unit test", emptyRequest(),
-	//		    new MockHttpServletResponse());
-	//		problem = Context.getPatientService().getProblem(2);
-	//		Assert.assertTrue(problem.isVoided());
-	//		Assert.assertEquals("unit test", problem.getVoidReason());
-	//	}
-	//	
-	//	/**
-	//	 * @see ProblemResource#getProblemByPatient(String,
-	//	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	//	 * @throws Exception
-	//	 */
-	//	@SuppressWarnings("unchecked")
-	//	@Test
-	//	public void searchByPatient_shouldGetProblemForAPatient() throws Exception {
-	//		SimpleObject search = new ProblemController().searchByPatient("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
-	//		    emptyRequest(), new MockHttpServletResponse());
-	//		List<Object> results = (List<Object>) search.get("results");
-	//		Assert.assertEquals(1, results.size());
-	//		Assert.assertEquals(ResourceTestConstants.PROBLEM_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
-	//	}
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
+	
+	private PatientService patientService;
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "problem";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return ResourceTestConstants.PROBLEM_UUID;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return patientService.getProblems(patientService.getPatient(2)).size();
+	}
+	
+	private String getPatientUuid() {
+		return ResourceTestConstants.PATIENT_UUID;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+	 */
+	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldGetAll() throws Exception {
+		super.shouldGetAll();
+	}
+	
+	@Before
+	public void init() throws Exception {
+		executeDataSet(ACTIVE_LIST_INITIAL_XML);
+		patientService = Context.getPatientService();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void getProblem_shouldGetADefaultRepresentationOfAProblem() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
+		Assert.assertNotNull(result);
+		Util.log("Problem fetched (default)", result);
+		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "problem"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "sortWeight"));
+		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+	
+	@Test
+	public void getProblem_shouldGetAFullRepresentationOfAProblem() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(result);
+		Util.log("Problem fetched (default)", result);
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertNotNull(PropertyUtils.getProperty(result, "links"));
+		assertNotNull(PropertyUtils.getProperty(result, "person"));
+		assertNotNull(PropertyUtils.getProperty(result, "problem"));
+		assertNotNull(PropertyUtils.getProperty(result, "sortWeight"));
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+	
+	@Test
+	public void shouldAddANewProblemToAPatient() throws Exception {
 		
+		long originalCount = getAllCount();
+		SimpleObject problem = new SimpleObject();
+		problem.add("problem", ResourceTestConstants.CONCEPT_UUID);
+		problem.add("person", getPatientUuid());
+		problem.add("startDate", "2013-01-01");
+		String json = new ObjectMapper().writeValueAsString(problem);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newPatientIdentifierType = deserialize(handle(req));
+		
+		assertNotNull(PropertyUtils.getProperty(newPatientIdentifierType, "uuid"));
+		assertEquals(originalCount + 1, getAllCount());
+		
+	}
+	
+	@Test
+	public void shouldEditAProblem() throws Exception {
+		final int id = 2;
+		final ProblemModifier newModifier = ProblemModifier.HISTORY_OF;
+		Problem problem = patientService.getProblem(id);
+		assertEquals(false, newModifier.equals(problem.getModifier()));
+		SimpleObject p = new SimpleObject();
+		p.add("modifier", newModifier);
+		String json = new ObjectMapper().writeValueAsString(p);
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + problem.getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		
+		problem = patientService.getProblem(id);
+		assertEquals(newModifier, problem.getModifier());
+	}
+	
+	@Test
+	public void voidProblem_shouldVoidAProblem() throws Exception {
+		final int id = 2;
+		Problem problem = patientService.getProblem(id);
+		assertEquals(false, problem.isVoided());
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + problem.getUuid());
+		req.addParameter("!purge", "");
+		final String reason = "none";
+		req.addParameter("reason", reason);
+		handle(req);
+		
+		problem = patientService.getProblem(id);
+		assertEquals(true, problem.isVoided());
+		assertEquals(reason, problem.getVoidReason());
+	}
+	
+	@Test
+	public void searchByPatient_shouldGetProblemsForAPatient() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(), new Parameter("patient", getPatientUuid()));
+		SimpleObject result = deserialize(handle(req));
+		List<Object> results = Util.getResultsList(result);
+		assertEquals(1, results.size());
+		assertEquals(getUuid(), PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
 }
