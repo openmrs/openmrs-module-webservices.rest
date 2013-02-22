@@ -37,7 +37,10 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	 */
 	@Override
 	public Privilege getByUniqueId(String uniqueId) {
-		return Context.getUserService().getPrivilegeByUuid(uniqueId);
+		Privilege privilege = Context.getUserService().getPrivilegeByUuid(uniqueId);
+		if (privilege == null)
+			privilege = Context.getUserService().getPrivilege(uniqueId);
+		return privilege;
 	}
 	
 	/**
@@ -57,7 +60,8 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Privilege delegate, RequestContext context) throws ResponseException {
@@ -110,7 +114,7 @@ public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege>
 		return delegate.getPrivilege();
 	}
 	
-	/** 
+	/**
 	 * @param delegate
 	 * @param name
 	 */

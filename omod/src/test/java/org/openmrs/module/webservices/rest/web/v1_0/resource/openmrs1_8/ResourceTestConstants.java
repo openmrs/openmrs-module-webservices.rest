@@ -80,4 +80,6 @@ public class ResourceTestConstants {
 	public static final String PROBLEM_UUID = "50fb7f47-e80a-7890-9285-bd798be13c61";
 	
 	public static final String CONCEPT_SOURCE_UUID = "75f5b378-5065-11de-80cb-001e378eb67e";
+	
+	public static final String PRIVILEGE_UUID = "d979d066-15e6-467c-9d4b-cb575ef97f0f";
 }
