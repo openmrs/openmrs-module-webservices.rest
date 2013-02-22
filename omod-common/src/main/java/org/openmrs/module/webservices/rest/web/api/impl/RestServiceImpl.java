@@ -49,9 +49,9 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	private volatile Map<String, Set<SearchHandler>> searchHandlersByParameter;
+	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
 	
-	private volatile Map<SearchHandlerKey, SearchHandler> searchHandlersByIds;
+	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
 	
 	public RestServiceImpl() {
 	}
@@ -69,18 +69,62 @@ public class RestServiceImpl implements RestService {
 		
 	}
 	
-	static class SearchHandlerKey {
+	private static class SearchHandlerParameterKey {
+		
+		public String supportedResource;
+		
+		public String parameter;
+		
+		public SearchHandlerParameterKey(String supportedResource, String parameter) {
+			this.supportedResource = supportedResource;
+			this.parameter = parameter;
+		}
+		
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
+			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
+			return result;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SearchHandlerParameterKey other = (SearchHandlerParameterKey) obj;
+			if (parameter == null) {
+				if (other.parameter != null)
+					return false;
+			} else if (!parameter.equals(other.parameter))
+				return false;
+			if (supportedResource == null) {
+				if (other.supportedResource != null)
+					return false;
+			} else if (!supportedResource.equals(other.supportedResource))
+				return false;
+			return true;
+		}
+		
+	}
+	
+	private static class SearchHandlerIdKey {
 		
 		public String supportedResource;
 		
 		public String id;
 		
-		public SearchHandlerKey(String supportedResource, String id) {
+		public SearchHandlerIdKey(String supportedResource, String id) {
 			this.supportedResource = supportedResource;
 			this.id = id;
 		}
 		
-		public SearchHandlerKey(SearchHandler searchHandler) {
+		public SearchHandlerIdKey(SearchHandler searchHandler) {
 			this.supportedResource = searchHandler.getSupportedResource();
 			this.id = searchHandler.getId();
 		}
@@ -102,7 +146,7 @@ public class RestServiceImpl implements RestService {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			SearchHandlerKey other = (SearchHandlerKey) obj;
+			SearchHandlerIdKey other = (SearchHandlerIdKey) obj;
 			if (id == null) {
 				if (other.id != null)
 					return false;
@@ -125,10 +169,10 @@ public class RestServiceImpl implements RestService {
 	 */
 	void addSupportedSearchHandler(SearchHandler searchHandler) {
 		if (searchHandlersByIds == null) {
-			searchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerKey, SearchHandler>();
+			searchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
 		}
 		if (searchHandlersByParameter == null) {
-			searchHandlersByParameter = new HashMap<String, Set<SearchHandler>>();
+			searchHandlersByParameter = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
 		}
 		
 		addSupportedSearchHandler(searchHandlersByIds, searchHandlersByParameter, searchHandler);
@@ -252,8 +296,8 @@ public class RestServiceImpl implements RestService {
 			return;
 		}
 		
-		Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerKey, SearchHandler>();
-		Map<String, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<String, Set<SearchHandler>>();
+		Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
+		Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = Context.getRegisteredComponents(SearchHandler.class);
 		for (SearchHandler searchHandler : allSearchHandlers) {
@@ -264,8 +308,8 @@ public class RestServiceImpl implements RestService {
 		searchHandlersByIds = tempSearchHandlersByIds;
 	}
 	
-	private void addSearchHandler(Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<String, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+	private void addSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSupportedOpenmrsVersions()) {
 			try {
 				ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
@@ -278,9 +322,9 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 	
-	private void addSupportedSearchHandler(Map<SearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<String, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		SearchHandlerKey searchHanlderIdKey = new SearchHandlerKey(searchHandler);
+	private void addSupportedSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+		SearchHandlerIdKey searchHanlderIdKey = new SearchHandlerIdKey(searchHandler);
 		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
 		if (previousSearchHandler != null) {
 			throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
@@ -291,16 +335,18 @@ public class RestServiceImpl implements RestService {
 		addSearchHandlerToParametersMap(tempSearchHandlersByParameters, searchHandler);
 	}
 	
-	private void addSearchHandlerToParametersMap(Map<String, Set<SearchHandler>> tempSearchHandlersByParameters,
-	        SearchHandler searchHandler) {
+	private void addSearchHandlerToParametersMap(
+	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
 		Set<String> parameters = new HashSet<String>(searchHandler.getRequiredParameters());
 		parameters.addAll(searchHandler.getOptionalParameters());
 		
 		for (String parameter : parameters) {
-			Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameter);
+			SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSupportedResource(),
+			        parameter);
+			Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
 			if (list == null) {
 				list = new HashSet<SearchHandler>();
-				tempSearchHandlersByParameters.put(parameter, list);
+				tempSearchHandlersByParameters.put(parameterKey, list);
 			}
 			list.add(searchHandler);
 		}
@@ -385,7 +431,7 @@ public class RestServiceImpl implements RestService {
 		
 		String searchId = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
 		if (searchId != null) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerKey(resourceName, searchId));
+			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchId));
 			if (searchHandler == null) {
 				throw new ResourceDoesNotSupportOperationException("Search with id '" + searchId + "' for '" + resourceName
 				        + "' resource is not recognized");
@@ -399,7 +445,8 @@ public class RestServiceImpl implements RestService {
 		
 		Set<SearchHandler> candidateSearchHandlers = null;
 		for (String searchParameter : searchParameters) {
-			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(searchParameter);
+			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new SearchHandlerParameterKey(resourceName,
+			        searchParameter));
 			if (searchHandlers == null) {
 				return null; //Missing parameter so there's no handler.
 			} else if (candidateSearchHandlers == null) {

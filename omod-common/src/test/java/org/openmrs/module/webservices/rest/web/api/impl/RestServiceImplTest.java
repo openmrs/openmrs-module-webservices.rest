@@ -187,4 +187,27 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler3 = service.getSearchHandler("concept", parameters);
 		assertThat(searchHandler3, nullValue());
 	}
+	
+	/**
+	 * @see RestServiceImpl#getSearchHandler(String,Map)
+	 * @verifies return null if resource does not match
+	 */
+	@Test
+	public void getSearchHandler_shouldReturnNullIfResourceDoesNotMatch() throws Exception {
+		RestServiceImpl service = new RestServiceImpl();
+		
+		SearchHandler searchHandler = mock(SearchHandler.class);
+		when(searchHandler.getId()).thenReturn("conceptByMapping");
+		when(searchHandler.getSupportedResource()).thenReturn("concept");
+		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
+		service.addSupportedSearchHandler(searchHandler);
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("sourceName", "some name");
+		
+		SearchHandler searchHandler2 = service.getSearchHandler("nonexistingresource", parameters);
+		assertThat(searchHandler2, nullValue());
+	}
 }
