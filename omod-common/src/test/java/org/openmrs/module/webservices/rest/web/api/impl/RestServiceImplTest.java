@@ -57,7 +57,8 @@ public class RestServiceImplTest {
 		
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("s", "conceptByMapping");
-		service.getSearchHandler("concept", parameters);
+		SearchHandler searchHandler2 = service.getSearchHandler("concept", parameters);
+		assertThat(searchHandler2, is(searchHandler));
 	}
 	
 	/**
