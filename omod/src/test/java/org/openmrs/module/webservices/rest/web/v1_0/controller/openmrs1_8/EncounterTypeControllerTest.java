@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.EncounterType;
@@ -68,6 +69,9 @@ public class EncounterTypeControllerTest extends BaseCrudControllerTest {
 		assertEquals(encounterType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(encounterType.getName(), PropertyUtils.getProperty(result, "name"));
 		assertEquals(encounterType.getDescription(), PropertyUtils.getProperty(result, "description"));
+		
+		String display = (String)PropertyUtils.getProperty(result, "display");
+		Assert.assertTrue(display.contains(":"));
 	}
 	
 	@Test
