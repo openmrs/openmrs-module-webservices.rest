@@ -64,6 +64,17 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
 	}
+
+	@Test
+	public void shouldGetAConceptByUuidInXML() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		req.addHeader("Accept", "application/xml");
+		MockHttpServletResponse result = handle(req);
+		
+		String xml = result.getContentAsString();
+		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", evaluateXPath(xml, "//uuid"));
+		Assert.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
+	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfYouTryToSpecifyDefaultRepOnGetConceptByUuid() throws Exception {

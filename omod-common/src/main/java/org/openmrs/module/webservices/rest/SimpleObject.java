@@ -20,10 +20,13 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * This is the Map returned for all objects. The properties are just key/value pairs. If an object
  * has subobjects those are just lists of SimpleObjects
  */
+@XStreamAlias("result")
 public class SimpleObject extends LinkedHashMap<String, Object> {
 	
 	private static final long serialVersionUID = 1L;
