@@ -14,9 +14,17 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -224,4 +232,22 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		XPath xpath = XPathFactory.newInstance().newXPath();
 		return xpath.evaluate(xPath, source);
 	}
+	
+	/**
+	 * Prints an XML string indented
+	 * @param xml
+	 * @throws TransformerException
+	 */
+	protected void printXML(String xml) throws TransformerException {
+		
+		Source xmlInput = new StreamSource(new StringReader(xml));
+		StringWriter stringWriter = new StringWriter();
+		
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, new StreamResult(stringWriter));
+		
+		System.out.println(stringWriter.toString());
+	}
+	
 }

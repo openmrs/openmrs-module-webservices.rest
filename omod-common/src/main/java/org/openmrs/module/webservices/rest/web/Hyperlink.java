@@ -13,9 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * A link to another resource
  */
+@XStreamAlias("link")
 public class Hyperlink {
 	
 	private String rel;

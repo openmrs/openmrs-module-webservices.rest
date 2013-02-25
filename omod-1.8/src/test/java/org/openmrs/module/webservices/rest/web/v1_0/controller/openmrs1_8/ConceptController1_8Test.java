@@ -72,6 +72,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletResponse result = handle(req);
 		
 		String xml = result.getContentAsString();
+		printXML(xml);
+		
 		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", evaluateXPath(xml, "//uuid"));
 		Assert.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
 	}
