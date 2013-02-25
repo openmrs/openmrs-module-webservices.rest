@@ -16,7 +16,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -54,7 +57,8 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Drug delegate, RequestContext context) throws ResponseException {
@@ -68,6 +72,43 @@ public class DrugResource extends MetadataDelegatingCrudResource<Drug> {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("description");
+			description.addProperty("retired");
+			description.addProperty("dosageForm", Representation.REF);
+			description.addProperty("doseStrength");
+			description.addProperty("maximumDailyDose");
+			description.addProperty("minimumDailyDose");
+			description.addProperty("units");
+			description.addProperty("concept", Representation.REF);
+			description.addProperty("combination");
+			description.addProperty("route", Representation.REF);
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("description");
+			description.addProperty("retired");
+			description.addProperty("dosageForm", Representation.REF);
+			description.addProperty("doseStrength");
+			description.addProperty("maximumDailyDose");
+			description.addProperty("minimumDailyDose");
+			description.addProperty("units");
+			description.addProperty("concept", Representation.REF);
+			description.addProperty("combination");
+			description.addProperty("route", Representation.REF);
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addSelfLink();
+			return description;
+		}
 		//Let the superclass handle this
 		return null;
 	}

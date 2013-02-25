@@ -16,7 +16,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource;
 
 public class DrugResourceTest extends BaseDelegatingResourceTest<DrugResource, Drug> {
 	
@@ -31,6 +30,14 @@ public class DrugResourceTest extends BaseDelegatingResourceTest<DrugResource, D
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
+		assertPropEquals("doseStrength", getObject().getDoseStrength());
+		assertPropEquals("maximumDailyDose", getObject().getMaximumDailyDose());
+		assertPropEquals("minimumDailyDose", getObject().getMinimumDailyDose());
+		assertPropEquals("units", getObject().getUnits());
+		assertPropEquals("combination", getObject().getCombination());
+		assertPropPresent("concept");
+		assertPropPresent("route");
+		assertPropPresent("dosageForm");
 	}
 	
 	@Override
@@ -39,6 +46,14 @@ public class DrugResourceTest extends BaseDelegatingResourceTest<DrugResource, D
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
+		assertPropEquals("doseStrength", getObject().getDoseStrength());
+		assertPropEquals("maximumDailyDose", getObject().getMaximumDailyDose());
+		assertPropEquals("minimumDailyDose", getObject().getMinimumDailyDose());
+		assertPropEquals("units", getObject().getUnits());
+		assertPropEquals("combination", getObject().getCombination());
+		assertPropPresent("concept");
+		assertPropPresent("route");
+		assertPropPresent("dosageForm");
 		assertPropPresent("auditInfo");
 	}
 	
