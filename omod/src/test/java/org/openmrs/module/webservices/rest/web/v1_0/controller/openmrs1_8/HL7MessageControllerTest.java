@@ -13,14 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
@@ -28,81 +24,117 @@ import org.openmrs.hl7.HL7Service;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * Tests functionality of {@link HL7MessageController}.
  */
-public class HL7MessageControllerTest extends BaseModuleWebContextSensitiveTest {
+public class HL7MessageControllerTest extends BaseCrudControllerTest {
 	
-	//	private static final String hl7Data = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
-	//	
-	//	private static final String hl7InvalidSourceData = "MSH|^~\\&|NES|nonexistingsource|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
-	//	
-	//	private HL7Service service;
-	//	
-	//	private HL7MessageController controller;
-	//	
-	//	private MockHttpServletRequest request;
-	//	
-	//	private HttpServletResponse response;
-	//	
-	//	private static final String datasetFilename = "customTestDataset.xml";
-	//	
-	//	@Before
-	//	public void before() throws Exception {
-	//		this.service = Context.getHL7Service();
-	//		this.controller = new HL7MessageController();
-	//		this.request = new MockHttpServletRequest();
-	//		this.response = new MockHttpServletResponse();
-	//		executeDataSet(datasetFilename);
-	//	}
-	//	
-	//	@Test
-	//	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
-	//		int before = service.getAllHL7InQueues().size();
-	//		
-	//		SimpleObject newHl7Message = (SimpleObject) controller.create(hl7Data, request, response);
-	//		Util.log("Enqued hl7 message", newHl7Message);
-	//		
-	//		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
-	//		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
-	//			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-	//				Assert.assertEquals("AMRS.ELD", hl7InQueue.getHL7Source().getName());
-	//				Assert.assertEquals("REl7wt78q9Pzlqe9ecJB", hl7InQueue.getHL7SourceKey());
-	//			}
-	//		}
-	//	}
-	//	
-	//	@Test
-	//	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
-	//		int before = service.getAllHL7InQueues().size();
-	//		
-	//		Map<String, String> map = new HashMap<String, String>();
-	//		map.put("hl7", hl7Data);
-	//		String jsonHl7Data = new ObjectMapper().writeValueAsString(map);
-	//		
-	//		SimpleObject newHl7Message = (SimpleObject) controller.create(jsonHl7Data, request, response);
-	//		Util.log("Enqued hl7 message", newHl7Message);
-	//		
-	//		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
-	//		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
-	//			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-	//				Assert.assertEquals("AMRS.ELD", hl7InQueue.getHL7Source().getName());
-	//				Assert.assertEquals("REl7wt78q9Pzlqe9ecJB", hl7InQueue.getHL7SourceKey());
-	//			}
-	//		}
-	//	}
-	//	
-	//	@Test(expected = ConversionException.class)
-	//	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
-	//		controller.create(hl7InvalidSourceData, request, response);
-	//	}
+	private static final String hl7Data = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
+	
+	private static final String hl7InvalidSourceData = "MSH|^~\\&|NES|nonexistingsource|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
+	
+	private HL7Service service;
+	
+	private static final String datasetFilename = "customTestDataset.xml";
+	
+	@Before
+	public void before() throws Exception {
+		this.service = Context.getHL7Service();
+		executeDataSet(datasetFilename);
+	}
+	
+	@Override
+	public String getURI() {
+		return "hl7";
+	}
+
+	@Override
+	public String getUuid() {
+		return null;
+	}
+
+	@Override
+	public long getAllCount() {
+		return service.getAllHL7InQueues().size();
+	}
 	
 	@Test
-	public void fakeTest() {
+	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
+		int before = service.getAllHL7InQueues().size();
+					
+		SimpleObject hl7Message = new SimpleObject();
+		hl7Message.add("data", hl7Data);
 		
+		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
+		SimpleObject newHl7Message = deserialize(handle(req));
+		
+		Util.log("Enqued hl7 message", newHl7Message);
+		
+		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
+			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
+				Assert.assertEquals(hl7InQueue.getHL7Data(), hl7Data);
+			}
+		}
 	}
+			
+	@Test
+	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
+		int before = service.getAllHL7InQueues().size();
+		
+		SimpleObject hl7Message = new SimpleObject();
+		hl7Message.add("data", hl7Data);
+		String jsonHl7Data = new ObjectMapper().writeValueAsString(hl7Message);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), jsonHl7Data);
+		SimpleObject newHl7Message = deserialize(handle(req));
+		Util.log("Enqued hl7 message", newHl7Message);
+		
+		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
+			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
+				Assert.assertEquals(hl7InQueue.getHL7Data(), hl7Data);
+			}
+		}
+	}
+	
+	@Test(expected = ConversionException.class)
+	@Ignore
+	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
+		
+		SimpleObject hl7Message = new SimpleObject();
+		hl7Message.add("data", hl7InvalidSourceData);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
+		deserialize(handle(req));
+
+	}
+	
+	@Test
+	@Ignore
+	@Override
+	public void shouldGetDefaultByUuid() throws Exception {
+	}
+	
+	@Test
+	@Ignore
+	@Override
+	public void shouldGetRefByUuid() throws Exception {
+	}
+	
+	@Test
+	@Ignore
+	@Override
+	public void shouldGetFullByUuid() throws Exception {
+	}
+	
+	@Test
+	@Ignore
+	@Override
+	public void shouldGetAll() throws Exception {
+	}
+	
 }
