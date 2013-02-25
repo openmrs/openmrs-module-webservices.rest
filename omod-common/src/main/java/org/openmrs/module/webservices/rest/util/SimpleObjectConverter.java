@@ -7,19 +7,24 @@ import java.util.Map.Entry;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 
-import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
  * Custom XStream converter to serialize XML in REST services
  *
  */
-public class SimpleObjectConverter implements Converter {
+public class SimpleObjectConverter extends AbstractCollectionConverter {
 
-    public boolean canConvert(Class clazz) {
+    public SimpleObjectConverter(Mapper mapper) {
+		super(mapper);
+	}
+
+	public boolean canConvert(Class clazz) {
         return SimpleObject.class.isAssignableFrom(clazz);
     }
 
@@ -39,15 +44,7 @@ public class SimpleObjectConverter implements Converter {
 				marshal(obj, writer, context);
 			}
 		} else if (value instanceof Hyperlink) {
-			Hyperlink hl = (Hyperlink)value;
-			writer.startNode("link");
-			writer.startNode("rel");
-			writer.setValue(hl.getRel());
-			writer.endNode();
-			writer.startNode("uri");
-			writer.setValue(hl.getUri());
-			writer.endNode();
-			writer.endNode();
+			writeItem(value, context, writer);
 		} else {
 			writer.setValue(value.toString());
 		}

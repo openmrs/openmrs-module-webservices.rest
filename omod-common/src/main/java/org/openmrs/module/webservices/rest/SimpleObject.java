@@ -19,14 +19,15 @@ import java.util.LinkedHashMap;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.openmrs.module.webservices.rest.util.SimpleObjectConverter;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 /**
  * This is the Map returned for all objects. The properties are just key/value pairs. If an object
  * has subobjects those are just lists of SimpleObjects
  */
-@XStreamAlias("result")
+@XStreamConverter(SimpleObjectConverter.class)
 public class SimpleObject extends LinkedHashMap<String, Object> {
 	
 	private static final long serialVersionUID = 1L;

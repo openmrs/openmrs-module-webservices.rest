@@ -110,11 +110,6 @@
     
     <bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
 		<property name="autodetectAnnotations" value="true" />
-	    <property name="converters">
-	        <list>
-	            <bean class="org.openmrs.module.webservices.rest.util.SimpleObjectConverter"/>
-	        </list>
-	    </property>
 	</bean>
     
     <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
