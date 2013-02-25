@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.util.OpenmrsConstants;
 
 /**
@@ -291,7 +291,7 @@ public class RestServiceImpl implements RestService {
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
 	
-	private void initializeSearchHanlders() {
+	private void initializeSearchHandlers() {
 		if (searchHandlersByIds != null) {
 			return;
 		}
@@ -427,13 +427,13 @@ public class RestServiceImpl implements RestService {
 	 */
 	@Override
 	public SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException {
-		initializeSearchHanlders();
+		initializeSearchHandlers();
 		
 		String searchId = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
 		if (searchId != null) {
 			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchId));
 			if (searchHandler == null) {
-				throw new ResourceDoesNotSupportOperationException("Search with id '" + searchId + "' for '" + resourceName
+				throw new InvalidSearchException("The search with id '" + searchId + "' for '" + resourceName
 				        + "' resource is not recognized");
 			} else {
 				return searchHandler;
@@ -473,7 +473,7 @@ public class RestServiceImpl implements RestService {
 					candidateSearchHandlerIds.add(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID + "="
 					        + candidateSearchHandler.getId());
 				}
-				throw new ResourceDoesNotSupportOperationException("The seach is ambiguous. Please specify "
+				throw new InvalidSearchException("The search is ambiguous. Please specify "
 				        + StringUtils.join(candidateSearchHandlerIds, " or "));
 			}
 		}

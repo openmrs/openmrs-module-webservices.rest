@@ -15,7 +15,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 
 public class RestServiceImplTest {
 	
@@ -39,7 +39,7 @@ public class RestServiceImplTest {
 			service.getSearchHandler("concept", parameters);
 			fail();
 		}
-		catch (ResourceDoesNotSupportOperationException e) {}
+		catch (InvalidSearchException e) {}
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class RestServiceImplTest {
 			service.getSearchHandler("concept", parameters);
 			fail();
 		}
-		catch (ResourceDoesNotSupportOperationException e) {}
+		catch (InvalidSearchException e) {}
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public class RestServiceImplTest {
 			service.getSearchHandler("concept", parameters);
 			fail();
 		}
-		catch (ResourceDoesNotSupportOperationException e) {}
+		catch (InvalidSearchException e) {}
 	}
 	
 	/**

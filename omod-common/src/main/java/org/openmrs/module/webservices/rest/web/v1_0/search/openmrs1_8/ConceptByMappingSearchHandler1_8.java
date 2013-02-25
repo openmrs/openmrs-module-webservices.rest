@@ -69,7 +69,7 @@ public class ConceptByMappingSearchHandler1_8 implements SearchHandler {
 	 */
 	@Override
 	public String getSearchDescription() {
-		return "Allows to find concepts by sourceName and code";
+		return "Allows you to find concepts by sourceName and code";
 	}
 	
 	/**
