@@ -49,9 +49,9 @@ public class HL7MessageResource extends DataDelegatingCrudResource<IncomingHl7Me
 	 */
 	@Override
 	public IncomingHl7Message getByUniqueId(String uniqueId) {
-		// currently it's returning null because we don't have methods within HL7 service, which are returning hl7 message
+		// Currently it's not supported because we don't have methods within HL7 service, which are returning hl7 message
 		// by its uuid. It will be fixed when such methods will be implemented 
-		return null;
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

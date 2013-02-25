@@ -14,8 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

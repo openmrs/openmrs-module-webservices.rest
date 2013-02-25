@@ -13,10 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
@@ -24,7 +22,9 @@ import org.openmrs.hl7.HL7Service;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.HL7MessageController;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -50,12 +50,12 @@ public class HL7MessageControllerTest extends BaseCrudControllerTest {
 	public String getURI() {
 		return "hl7";
 	}
-
+	
 	@Override
 	public String getUuid() {
-		return null;
+		return "notsupported";
 	}
-
+	
 	@Override
 	public long getAllCount() {
 		return service.getAllHL7InQueues().size();
@@ -64,11 +64,8 @@ public class HL7MessageControllerTest extends BaseCrudControllerTest {
 	@Test
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
-					
-		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("data", hl7Data);
 		
-		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
+		MockHttpServletRequest req = newPostRequest(getURI(), hl7Data);
 		SimpleObject newHl7Message = deserialize(handle(req));
 		
 		Util.log("Enqued hl7 message", newHl7Message);
@@ -80,18 +77,16 @@ public class HL7MessageControllerTest extends BaseCrudControllerTest {
 			}
 		}
 	}
-			
+	
 	@Test
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInJSONFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
 		
 		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("data", hl7Data);
-		String jsonHl7Data = new ObjectMapper().writeValueAsString(hl7Message);
+		hl7Message.add("hl7", hl7Data);
 		
-		MockHttpServletRequest req = newPostRequest(getURI(), jsonHl7Data);
+		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
 		SimpleObject newHl7Message = deserialize(handle(req));
-		Util.log("Enqued hl7 message", newHl7Message);
 		
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
@@ -102,39 +97,48 @@ public class HL7MessageControllerTest extends BaseCrudControllerTest {
 	}
 	
 	@Test(expected = ConversionException.class)
-	@Ignore
 	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
-		
 		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("data", hl7InvalidSourceData);
+		hl7Message.add("hl7", hl7InvalidSourceData);
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
 		deserialize(handle(req));
-
 	}
 	
-	@Test
-	@Ignore
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetDefaultByUuid()
+	 */
 	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetDefaultByUuid() throws Exception {
+		super.shouldGetDefaultByUuid();
 	}
 	
-	@Test
-	@Ignore
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetFullByUuid()
+	 */
 	@Override
-	public void shouldGetRefByUuid() throws Exception {
-	}
-	
-	@Test
-	@Ignore
-	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetFullByUuid() throws Exception {
+		super.shouldGetFullByUuid();
 	}
 	
-	@Test
-	@Ignore
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetRefByUuid()
+	 */
 	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	public void shouldGetRefByUuid() throws Exception {
+		super.shouldGetRefByUuid();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+	 */
+	@Override
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
+		super.shouldGetAll();
 	}
 	
 }
