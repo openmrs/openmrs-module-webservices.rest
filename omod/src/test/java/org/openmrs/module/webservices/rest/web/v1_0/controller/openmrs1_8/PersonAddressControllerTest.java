@@ -38,7 +38,7 @@ public class PersonAddressControllerTest extends BaseCrudControllerTest {
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet("personAddress-Test.xml");
+		executeDataSet("PersonControllerTest-otherPersonData.xml");
 		this.service = Context.getPersonService();
 	}
 	
