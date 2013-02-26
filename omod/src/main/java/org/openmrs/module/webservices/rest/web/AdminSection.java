@@ -44,6 +44,11 @@ public class AdminSection extends AdministrationSectionExt {
 		return RestConstants.MODULE_ID + ".title";
 	}
 	
+	@Override
+	public String getRequiredPrivilege() {
+		return "View REST WS Menu";
+	}
+	
 	/**
 	 * @see org.openmrs.module.web.extension.AdministrationSectionExt#getLinks()
 	 */

@@ -1,1 +1,7 @@
 target/
+.project
+.settings
+api/.classpath
+api/.project
+omod/.classpath
+omod/.project
