@@ -178,6 +178,11 @@ public class RestConstants {
 	 */
 	public static final Set<String> SPECIAL_REQUEST_PARAMETERS;
 	
+	/**
+	 * Delimiter to compose metadata display attribute
+	 */
+	public static final String METADATA_DISPLAY_DELIMITER = " : ";
+	
 	static {
 		SPECIAL_REQUEST_PARAMETERS = new HashSet<String>();
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_INCLUDE_ALL);
