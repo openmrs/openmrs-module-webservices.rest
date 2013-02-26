@@ -259,8 +259,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		if (concept.isRetired()) {
 			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(concept, "retiredBy", Representation.REF));
 			ret.put("dateRetired", ConversionUtil.convertToRepresentation(concept.getDateRetired(), Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil
-			        .convertToRepresentation(concept.getRetireReason(), Representation.DEFAULT));
+			ret.put("retireReason",
+			    ConversionUtil.convertToRepresentation(concept.getRetireReason(), Representation.DEFAULT));
 		}
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(concept, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(concept.getDateChanged(), Representation.DEFAULT));
@@ -331,8 +331,8 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 */
 	@Override
 	protected NeedsPaging<Concept> doGetAll(RequestContext context) {
-		return new NeedsPaging<Concept>(Context.getConceptService().getAllConcepts(null, true, context.getIncludeAll()),
-		        context);
+		List<Concept> allConcepts = Context.getConceptService().getAllConcepts(null, true, context.getIncludeAll());
+		return new NeedsPaging<Concept>(allConcepts, context);
 	}
 	
 	/**
@@ -397,9 +397,9 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 		
 		PageableResult result = null;
 		if (canPage) {
-			Integer count = service.getCountOfConcepts(context.getParameter("q"), locales, false, Collections
-			        .<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(), Collections
-			        .<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
+			Integer count = service.getCountOfConcepts(context.getParameter("q"), locales, false,
+			    Collections.<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(),
+			    Collections.<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
 			boolean hasMore = count > startIndex + limit;
 			result = new AlreadyPaged<Concept>(context, results, hasMore);
 		} else {
@@ -447,7 +447,7 @@ public class ConceptResource extends DelegatingCrudResource<Concept> {
 	 */
 	@PropertySetter("answers")
 	public static void setAnswers(Concept instance, List<String> answerUuids /*Concept or Drug uuid*/)
-	        throws ResourceDoesNotSupportOperationException {
+	    throws ResourceDoesNotSupportOperationException {
 		
 		// remove answers that are not in the new list
 		Iterator<ConceptAnswer> iterator = instance.getAnswers(false).iterator();

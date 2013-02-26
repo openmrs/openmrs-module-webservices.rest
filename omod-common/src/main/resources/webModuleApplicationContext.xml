@@ -111,14 +111,7 @@
 	<mvc:annotation-driven />
 	-->
 	
-	<!-- so spring finds the Handlers for the v1.0 resources -->
-	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.v1_0.resource"/>
-	
-	<!-- so spring finds our v1.0 controllers -->
-	<context:component-scan base-package="org.openmrs.module.webservices.rest.web.v1_0.controller" />
-    
-    <!-- so spring finds our controllers -->
-    <context:component-scan base-package="org.openmrs.module.webservices.rest.web.controller" />
+	<context:component-scan base-package="org.openmrs.module.webservices.rest.web"/>
     
     <!-- Must be placed after DefaultAnnotationHandlerMapping to handle unknown resource requests which result in 404.  -->
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

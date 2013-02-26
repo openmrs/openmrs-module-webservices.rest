@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
-public class MainSubResourceController {
+public class MainSubResourceController extends BaseRestController {
 	
 	@Autowired
 	RestService restService;

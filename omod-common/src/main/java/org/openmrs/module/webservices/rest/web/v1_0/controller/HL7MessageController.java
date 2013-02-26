@@ -50,7 +50,7 @@ import ca.uhn.hl7v2.util.Terser;
  * json.
  */
 @Controller
-public class HL7MessageController {
+public class HL7MessageController extends BaseRestController {
 	
 	@Autowired
 	MainCrudController mainCrudController;
