@@ -20,12 +20,14 @@ import static org.junit.Assert.assertThat;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.OpenmrsProfileRule;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
@@ -41,6 +43,9 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 	private RestHelperService restHelperService;
 	
 	private String conceptMapUuid;
+	
+	@Rule
+	public OpenmrsProfileRule openmrsProfileRule = new OpenmrsProfileRule("1.8.*");
 	
 	@Override
 	public String getURI() {
