@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptNameResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptNameResource1_8;
 import org.openmrs.ConceptName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class ConceptNameResourceTest extends BaseDelegatingResourceTest<ConceptNameResource, ConceptName> {
+public class ConceptNameResourceTest extends BaseDelegatingResourceTest<ConceptNameResource1_8, ConceptName> {
 	
 	@Override
 	public ConceptName newObject() {

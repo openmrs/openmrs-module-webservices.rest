@@ -38,9 +38,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptDescription}, supporting standard CRUD operations
  */
-
-@SubResource(parent = ConceptResource1_8.class, path = "description", supportedClass = ConceptDescription.class)
-public class ConceptDescriptionResource extends DelegatingSubResource<ConceptDescription, Concept, ConceptResource1_8> {
+@SubResource(parent = ConceptResource1_8.class, path = "description", supportedClass = ConceptDescription.class, supportedOpenmrsVersions = "1.8.*")
+public class ConceptDescriptionResource1_8 extends DelegatingSubResource<ConceptDescription, Concept, ConceptResource1_8> {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {

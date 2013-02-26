@@ -28,7 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource1_8;
 
 public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	
@@ -68,7 +68,7 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource#create(String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_8#create(String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -83,7 +83,7 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource#doGetAll(Concept, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_8#doGetAll(Concept, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -108,7 +108,7 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource#update(String, String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_8#update(String, String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -125,10 +125,10 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	
 	/**
 	 * This tests that delete always delegates to
-	 * {@link ConceptDescriptionResource#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * {@link ConceptDescriptionResource1_8#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * since descriptions are not retirable/voidable
 	 * 
-	 * @see {@link ConceptDescriptionResource#delete(ConceptDescription, String, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @see {@link ConceptDescriptionResource1_8#delete(ConceptDescription, String, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -142,7 +142,7 @@ public class ConceptDescriptionControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_8#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test

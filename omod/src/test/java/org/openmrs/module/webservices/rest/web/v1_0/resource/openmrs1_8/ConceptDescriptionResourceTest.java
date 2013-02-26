@@ -16,9 +16,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource1_8;
 
-public class ConceptDescriptionResourceTest extends BaseDelegatingResourceTest<ConceptDescriptionResource, ConceptDescription> {
+public class ConceptDescriptionResourceTest extends BaseDelegatingResourceTest<ConceptDescriptionResource1_8, ConceptDescription> {
 	
 	@Override
 	public ConceptDescription newObject() {
