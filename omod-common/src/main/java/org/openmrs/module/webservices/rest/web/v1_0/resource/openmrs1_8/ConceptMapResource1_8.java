@@ -37,8 +37,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for ConceptMaps, supporting standard CRUD operations
  */
-@SubResource(path = "mapping", parent = ConceptResource.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.8.*")
-public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Concept, ConceptResource> {
+@SubResource(path = "mapping", parent = ConceptResource1_8.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.8.*")
+public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Concept, ConceptResource1_8> {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {

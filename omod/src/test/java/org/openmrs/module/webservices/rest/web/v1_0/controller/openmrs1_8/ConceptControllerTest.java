@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -230,7 +230,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * {@link ConceptResource#getByUniqueId(String)}
+	 * {@link ConceptResource1_8#getByUniqueId(String)}
 	 * 
 	 * @throws Exception
 	 */

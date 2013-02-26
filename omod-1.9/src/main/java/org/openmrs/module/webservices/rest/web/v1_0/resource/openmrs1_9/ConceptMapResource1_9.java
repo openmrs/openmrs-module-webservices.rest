@@ -22,12 +22,12 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptMapResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 
 /**
  * {@link Resource} for {@link ConceptMap}, supporting standard CRUD operations
  */
-@SubResource(path = "mapping", parent = ConceptResource.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.9.*")
+@SubResource(path = "mapping", parent = ConceptResource1_8.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.9.*")
 public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	
 	@Override
