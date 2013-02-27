@@ -110,7 +110,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		
 		Util.log("created encounter with obs", newEncounter);
-		List<SimpleObject> obs = (List<SimpleObject>) newEncounter.get("obs");
+		List<Map> obs = (List<Map>) newEncounter.get("obs");
 		Assert.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
 		for (Map o : obs) {
@@ -150,7 +150,7 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		Util.log("created encounter with obs and orders", newEncounter);
 		
-		List<SimpleObject> newOrders = (List<SimpleObject>) newEncounter.get("orders");
+		List<Map> newOrders = (List<Map>) newEncounter.get("orders");
 		Assert.assertEquals(2, newOrders.size());
 		List<String> lookFor = new ArrayList<String>(Arrays.asList("FOOD ASSISTANCE", "Triomune-30: 1.0 tablet"));
 		for (Map o : newOrders) {
