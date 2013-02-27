@@ -28,7 +28,7 @@ public class ConceptReferenceTermMapResource1_9Test extends BaseDelegatingResour
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Some Standardized Terminology:WGT234 - Some Standardized Terminology:CD41003";
+		return "Some Standardized Terminology: WGT234 - Some Standardized Terminology: CD41003";
 	}
 	
 	@Override

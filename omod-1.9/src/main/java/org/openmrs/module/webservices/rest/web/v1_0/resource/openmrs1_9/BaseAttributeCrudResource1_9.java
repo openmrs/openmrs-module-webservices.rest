@@ -98,7 +98,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	public String getDisplayString(T attr) {
 		if (attr.getAttributeType() == null)
 			return "";
-		return attr.getAttributeType().getName() + " - " + attr.getValue();
+		return attr.getAttributeType().getName() + " = " + attr.getValue();
 	}
 	
 	/**

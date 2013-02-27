@@ -37,7 +37,7 @@ public class ConceptMapResource1_9Test extends BaseDelegatingResourceTest<Concep
 	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Some Standardized Terminology:WGT234";
+		return "Some Standardized Terminology: WGT234";
 	}
 	
 	/**

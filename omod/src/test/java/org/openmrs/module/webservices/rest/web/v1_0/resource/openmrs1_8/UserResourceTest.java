@@ -56,7 +56,7 @@ public class UserResourceTest extends BaseDelegatingResourceTest<UserResource, U
 	
 	@Override
 	public String getDisplayProperty() {
-		return "butch - Hippocrates of Cos";
+		return "butch";
 	}
 	
 	@Override

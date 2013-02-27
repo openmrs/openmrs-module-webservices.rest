@@ -76,7 +76,7 @@ public class LocationTagResource extends MetadataDelegatingCrudResource<Location
 	}
 	
 	public String getDisplayString(LocationTag delegate) {
-		return delegate.getName() + ": " + delegate.getDescription();
+		return delegate.getName();
 	}
 	
 	/**

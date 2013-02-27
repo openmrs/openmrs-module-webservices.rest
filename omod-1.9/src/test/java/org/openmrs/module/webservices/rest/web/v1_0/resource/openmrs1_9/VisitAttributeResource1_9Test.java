@@ -57,7 +57,7 @@ public class VisitAttributeResource1_9Test extends BaseDelegatingResourceTest<Vi
 	@Override
 	public String getDisplayProperty() {
 		try {
-			return "Audit Date - " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
+			return "Audit Date = " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
 		}
 		catch (ParseException ex) {
 			Assert.fail(ex.getMessage());

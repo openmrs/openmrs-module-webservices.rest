@@ -94,9 +94,9 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 	 * @return the display string.
 	 */
 	public String getDisplayString(ConceptReferenceTermMap conceptReferenceTermMap) {
-		return conceptReferenceTermMap.getTermA().getConceptSource().getName() + ":"
+		return conceptReferenceTermMap.getTermA().getConceptSource().getName() + ": "
 		        + conceptReferenceTermMap.getTermA().getCode() + " - "
-		        + conceptReferenceTermMap.getTermB().getConceptSource().getName() + ":"
+		        + conceptReferenceTermMap.getTermB().getConceptSource().getName() + ": "
 		        + conceptReferenceTermMap.getTermB().getCode();
 	}
 	
