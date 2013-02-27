@@ -41,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -51,7 +52,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.HandlerUtil;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -534,14 +534,21 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		List<Hyperlink> links = new ArrayList<Hyperlink>();
 		for (Hyperlink link : rep.getLinks()) {
-			if (link.getUri().startsWith("."))
+			if (link.getUri().startsWith(".")) {
 				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
+			}
+			// If subresource add path to link
+			SubResource sub = getClass().getAnnotation(SubResource.class);
+			if (sub != null) {
+				link.setResourcePath(sub.path());
+			}
 			links.add(link);
 		}
 		if (links.size() > 0)
 			ret.put("links", links);
 		return ret;
 	}
+
 	
 	/**
 	 * @param delegate
@@ -785,4 +792,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 	}
 	
+//	public String getPath() {
+//		org.openmrs.module.webservices.rest.web.annotation.Resource annot = getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+//		return annot.name();
+//	}
+
 }

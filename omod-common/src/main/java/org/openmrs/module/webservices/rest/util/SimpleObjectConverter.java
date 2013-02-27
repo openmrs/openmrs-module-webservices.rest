@@ -41,7 +41,16 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		} else if (value instanceof List) {
 			List<?> list = (List<?>) value;
 			for (Object obj : list) {
+				// Collection of subresources
+				if (obj instanceof SimpleObject) {
+					// Get resource path from self link
+					Hyperlink self = getSelfLink((SimpleObject) obj);
+					writer.startNode(self.getResourcePath());
+				}
 				marshal(obj, writer, context);
+				if (obj instanceof SimpleObject) {
+					writer.endNode();
+				}
 			}
 		} else if (value instanceof Hyperlink) {
 			writeItem(value, context, writer);
@@ -50,6 +59,21 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		}
 
     }
+    
+    /**
+     * Get the self link from a simple object
+     * @param object
+     * @return
+     */
+	private Hyperlink getSelfLink(SimpleObject object) {
+		List<Hyperlink> links = (List<Hyperlink>) object.get("links");
+		for (Hyperlink link : links) {
+			if (link.getRel().equals("self")) {
+				return link;
+			}
+		}
+		return null;
+	}
 
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         return null;

@@ -60,6 +60,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	public void shouldGetAConceptByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		SimpleObject result = deserialize(handle(req));
+		Util.log("Concept fetched", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
@@ -409,8 +410,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> name = (Map<Object, Object>) names.get(0);
-		Assert.assertEquals(1, name.size());
-		name = (Map<Object, Object>)name.get("object");
+		Assert.assertEquals(3, name.size());
 		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
 		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
 		Assert.assertNotNull(name.get("links"));
