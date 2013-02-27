@@ -19,11 +19,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -215,5 +219,111 @@ public class PersonControllerTest extends BaseCrudControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		assertEquals(1, Util.getResultsSize(result));
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+	}
+	
+	@Test(expected = ConversionException.class)
+	public void shouldFailIfThePreferreNameBeingSetIsNew() throws Exception {
+		String json = "{\"preferredName\":{ \"givenName\":\"Joe\", \"familyName\":\"Smith\" }}";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+	}
+	
+	@Test(expected = ConversionException.class)
+	public void shouldFailIfThePreferreAddressBeingSetIsNew() throws Exception {
+		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldNotShowVoidedNamesInFullRepresentation() throws Exception {
+		executeDataSet("PersonControllerTest-otherPersonData.xml");
+		Person person = service.getPersonByUuid(getUuid());
+		assertEquals(2, person.getNames().size());
+		PersonName nameToVoid = person.getNames().iterator().next();
+		String nameToVoidUuid = nameToVoid.getUuid();
+		if (!nameToVoid.isVoided()) {
+			//void the Name
+			handle(newDeleteRequest("person/" + getUuid() + "/name/" + nameToVoidUuid, new Parameter("!purge", ""),
+			    new Parameter("reason", "none")));
+		}
+		assertTrue(nameToVoid.isVoided());
+		
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		
+		SimpleObject result = deserialize(handle(req));
+		
+		List<SimpleObject> names = (List<SimpleObject>) PropertyUtils.getProperty(result, "names");
+		assertEquals(1, names.size());
+		assertFalse(nameToVoidUuid.equals(PropertyUtils.getProperty(names.get(0), "uuid")));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldNotShowVoidedAddressesInFullRepresentation() throws Exception {
+		executeDataSet("PersonControllerTest-otherPersonData.xml");
+		Person person = service.getPersonByUuid(getUuid());
+		assertEquals(2, person.getAddresses().size());
+		PersonAddress voidedAddress = service.getPersonAddressByUuid("8a806d8c-822d-11e0-872f-18a905e044dc");
+		String voidedAddressUuid = voidedAddress.getUuid();
+		assertTrue(voidedAddress.isVoided());
+		
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		
+		SimpleObject result = deserialize(handle(req));
+		
+		List<SimpleObject> addresses = (List<SimpleObject>) PropertyUtils.getProperty(result, "addresses");
+		assertEquals(1, addresses.size());
+		assertFalse(voidedAddressUuid.equals(PropertyUtils.getProperty(addresses.get(0), "uuid")));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void shouldNotShowVoidedAttributesInFullRepresentation() throws Exception {
+		Person person = service.getPersonByUuid(getUuid());
+		PersonAttribute attributeToVoid = person.getActiveAttributes().get(0);
+		String attributeToVoidUuid = attributeToVoid.getUuid();
+		assertEquals(3, person.getActiveAttributes().size());
+		if (!attributeToVoid.isVoided()) {
+			//void the attribute
+			handle(newDeleteRequest("person/" + getUuid() + "/attribute/" + attributeToVoidUuid,
+			    new Parameter("!purge", ""), new Parameter("reason", "none")));
+		}
+		assertTrue(attributeToVoid.isVoided());
+		
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		
+		SimpleObject result = deserialize(handle(req));
+		
+		List<SimpleObject> attributes = (List<SimpleObject>) PropertyUtils.getProperty(result, "attributes");
+		assertEquals(2, attributes.size());
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(attributes.get(0), "uuid"), PropertyUtils.getProperty(
+		    attributes.get(1), "uuid"));
+		assertFalse(uuids.contains(attributeToVoidUuid));
+	}
+	
+	@Test
+	public void shouldRespectStartIndexAndLimit() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI());
+		req.setParameter("q", "Test");
+		SimpleObject results = deserialize(handle(req));
+		int fullCount = Util.getResultsSize(results);
+		assertTrue("This test assumes > 2 matching patients", fullCount > 2);
+		
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
+		results = deserialize(handle(req));
+		int firstCount = Util.getResultsSize(results);
+		assertEquals(2, firstCount);
+		
+		req.removeParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX, "2");
+		results = deserialize(handle(req));
+		int restCount = Util.getResultsSize(results);
+		assertEquals(fullCount, firstCount + restCount);
 	}
 }
