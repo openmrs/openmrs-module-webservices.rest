@@ -20,7 +20,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -219,16 +218,8 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 				Object propVal = converter.getProperty(delegate, delegateProperty);
 				if (propVal instanceof Collection) {
 					List<Object> ret = new ArrayList<Object>();
-					for (Object element : (Collection<?>) propVal) {
-						// Convention: collection attributes usually end with s to indicate plural
-						String key = "object";
-						if(delegateProperty.endsWith("s")) {
-							key = delegateProperty.substring(0, delegateProperty.length() - 1);
-						}
-						SimpleObject item = new SimpleObject();
-						item.add(key, ConversionUtil.convertToRepresentation(element, rep));
-						ret.add(item);
-					}
+					for (Object element : (Collection<?>) propVal)
+						ret.add(ConversionUtil.convertToRepresentation(element, rep));
 					return ret;
 				} else {
 					return ConversionUtil.convertToRepresentation(propVal, rep);
