@@ -41,6 +41,8 @@ public class ResourceTestConstants {
 	
 	public static final String PERSON_ATTRIBUTE_TYPE_UUID = "b3b6d540-a32e-44c7-91b3-292d97667518";
 	
+	public static final String PERSON_ATTRIBUTE_UUID = "15d694af-43d6-443a-971c-ec210e3ec5c5";
+	
 	public static final String PATIENT_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 	
 	public static final String PATIENT_IDENTIFIER_UUID = "8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614";
