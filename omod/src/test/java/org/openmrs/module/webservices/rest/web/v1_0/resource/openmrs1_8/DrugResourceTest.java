@@ -59,7 +59,7 @@ public class DrugResourceTest extends BaseDelegatingResourceTest<DrugResource, D
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Aspirin - ";
+		return "Aspirin";
 	}
 	
 	@Override

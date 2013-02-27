@@ -59,7 +59,7 @@ public class ProviderAttributeTypeResource1_9Test extends BaseDelegatingResource
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Joining Date - ";
+		return "Joining Date";
 	}
 	
 	@Override

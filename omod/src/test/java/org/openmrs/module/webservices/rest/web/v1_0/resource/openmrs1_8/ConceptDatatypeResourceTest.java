@@ -46,7 +46,7 @@ public class ConceptDatatypeResourceTest extends BaseDelegatingResourceTest<Conc
 	
 	@Override
 	public String getDisplayProperty() {
-		return "N/A - Not associated with a datatype (e.g., term answers, sets)";
+		return "N/A";
 	}
 	
 	@Override

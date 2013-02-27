@@ -57,7 +57,7 @@ public class PatientIdentifierTypeResourceTest extends BaseDelegatingResourceTes
 	
 	@Override
 	public String getDisplayProperty() {
-		return "OpenMRS Identification Number - Unique number used in OpenMRS";
+		return "OpenMRS Identification Number";
 	}
 	
 	@Override

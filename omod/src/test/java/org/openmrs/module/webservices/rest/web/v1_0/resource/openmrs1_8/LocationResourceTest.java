@@ -82,7 +82,7 @@ public class LocationResourceTest extends BaseDelegatingResourceTest<LocationRes
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Never Never Land - This is never be found";
+		return "Never Never Land";
 	}
 	
 	@Override

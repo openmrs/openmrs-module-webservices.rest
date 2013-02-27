@@ -89,7 +89,7 @@ public class LocationResource1_9Test extends BaseDelegatingResourceTest<Location
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Mumbai - test description";
+		return "Mumbai";
 	}
 	
 	@Override
