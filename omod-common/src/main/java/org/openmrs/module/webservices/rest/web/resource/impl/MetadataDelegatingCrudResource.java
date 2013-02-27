@@ -122,10 +122,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		} else {
 			displayString = new StringBuilder();
 		}
-		displayString.append(" - ");
-		if (StringUtils.isNotBlank(delegate.getDescription())) {
-			displayString.append(delegate.getDescription());
-		}
 		return displayString.toString();
 	}
 	
