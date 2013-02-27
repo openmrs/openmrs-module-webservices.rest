@@ -46,7 +46,7 @@ public class ConceptSourceResourceTest extends BaseDelegatingResourceTest<Concep
 	
 	@Override
 	public String getDisplayProperty() {
-		return "ICD-10 - International Classification of Disease, version 10";
+		return "ICD-10";
 	}
 	
 	@Override
