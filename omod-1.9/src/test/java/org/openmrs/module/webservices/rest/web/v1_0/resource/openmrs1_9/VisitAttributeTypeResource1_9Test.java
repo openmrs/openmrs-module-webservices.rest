@@ -55,7 +55,7 @@ public class VisitAttributeTypeResource1_9Test extends BaseDelegatingResourceTes
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Audit Date - ";
+		return "Audit Date";
 	}
 	
 	@Override

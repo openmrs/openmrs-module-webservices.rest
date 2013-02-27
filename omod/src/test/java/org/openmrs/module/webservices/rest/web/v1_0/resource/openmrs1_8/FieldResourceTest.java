@@ -33,7 +33,7 @@ public class FieldResourceTest extends BaseDelegatingResourceTest<FieldResource,
 	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Some concept - This is a test field";
+		return "Some concept";
 	}
 	
 	/**

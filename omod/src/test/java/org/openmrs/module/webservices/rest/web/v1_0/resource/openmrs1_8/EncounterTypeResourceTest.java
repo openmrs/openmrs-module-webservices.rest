@@ -44,7 +44,7 @@ public class EncounterTypeResourceTest extends BaseDelegatingResourceTest<Encoun
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Scheduled - Scheduled Visit";
+		return "Scheduled";
 	}
 	
 	@Override

@@ -33,7 +33,7 @@ public class FormResourceTest extends BaseDelegatingResourceTest<FormResource, F
 	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Basic Form - Test form";
+		return "Basic Form";
 	}
 	
 	/**

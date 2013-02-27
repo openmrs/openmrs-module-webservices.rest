@@ -402,7 +402,7 @@ public class ConceptControllerTest extends BaseCrudControllerTest {
 		Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
 		Assert.assertEquals(7, conceptClass.size());
 		Assert.assertEquals("a82ef63c-e4e4-48d6-988a-fdd74d7541a7", conceptClass.get("uuid"));
-		Assert.assertEquals("Question - Question (eg, patient history, SF36 items)", conceptClass.get("display"));
+		Assert.assertEquals("Question", conceptClass.get("display"));
 		Assert.assertEquals("Question", conceptClass.get("name"));
 		Assert.assertEquals("Question (eg, patient history, SF36 items)", conceptClass.get("description"));
 		Assert.assertEquals(false, conceptClass.get("retired"));
