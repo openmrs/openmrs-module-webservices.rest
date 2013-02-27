@@ -56,7 +56,7 @@ public class LocationAttributeTypeResource1_9Test extends BaseDelegatingResource
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Audit Date - ";
+		return "Audit Date";
 	}
 	
 	@Override

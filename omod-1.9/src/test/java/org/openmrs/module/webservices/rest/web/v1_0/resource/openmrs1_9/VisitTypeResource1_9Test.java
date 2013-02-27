@@ -46,7 +46,7 @@ public class VisitTypeResource1_9Test extends BaseDelegatingResourceTest<VisitTy
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Return TB Clinic Visit - Return TB Clinic Visit Description";
+		return "Return TB Clinic Visit";
 	}
 	
 	@Override

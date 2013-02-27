@@ -46,7 +46,7 @@ public class ConceptMapTypeResource1_9Test extends BaseDelegatingResourceTest<Co
 	
 	@Override
 	public String getDisplayProperty() {
-		return "related-to - ";
+		return "related-to";
 	}
 	
 	@Override
