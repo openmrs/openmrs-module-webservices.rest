@@ -63,4 +63,9 @@ public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 			System.out.println(text);
 		}
 	}
+	
+	@Test
+	public void fakeTest() {
+		
+	}
 }

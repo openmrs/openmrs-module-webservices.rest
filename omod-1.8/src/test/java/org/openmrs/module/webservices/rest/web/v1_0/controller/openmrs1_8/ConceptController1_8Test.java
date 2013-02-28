@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Tests functionality of {@link ConceptController}. This does not use @should annotations because
  * the controller inherits those methods from a subclass
  */
-public class ConceptController1_8Test extends BaseCrudControllerTest {
+public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
@@ -247,7 +247,7 @@ public class ConceptController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
 	@Override
 	public String getURI() {
@@ -255,7 +255,7 @@ public class ConceptController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
 	 */
 	@Override
 	public String getUuid() {
@@ -263,7 +263,7 @@ public class ConceptController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
 	 */
 	@Override
 	public long getAllCount() {

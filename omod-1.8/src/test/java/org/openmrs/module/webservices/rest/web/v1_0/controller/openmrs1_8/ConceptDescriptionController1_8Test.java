@@ -27,10 +27,10 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource1_8;
 
-public class ConceptDescriptionController1_8Test extends BaseCrudControllerTest {
+public class ConceptDescriptionController1_8Test extends MainResourceControllerTest {
 	
 	String conceptUuid = "b055abd8-a420-4a11-8b98-02ee170a7b54";
 	
@@ -39,7 +39,7 @@ public class ConceptDescriptionController1_8Test extends BaseCrudControllerTest 
 	private ConceptService service;
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
 	@Override
 	public String getURI() {
@@ -47,7 +47,7 @@ public class ConceptDescriptionController1_8Test extends BaseCrudControllerTest 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
 	 */
 	@Override
 	public String getUuid() {
@@ -55,7 +55,7 @@ public class ConceptDescriptionController1_8Test extends BaseCrudControllerTest 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
 	 */
 	@Override
 	public long getAllCount() {

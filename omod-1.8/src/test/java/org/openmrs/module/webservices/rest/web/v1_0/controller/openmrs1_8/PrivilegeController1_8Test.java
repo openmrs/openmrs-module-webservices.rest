@@ -28,11 +28,11 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-public class PrivilegeController1_8Test extends BaseCrudControllerTest {
+public class PrivilegeController1_8Test extends MainResourceControllerTest {
 	
 	private static final String XML_FILENAME = "org/openmrs/api/include/UserServiceTest.xml";
 	

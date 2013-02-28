@@ -30,14 +30,14 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Integration tests for the Order resource
  */
-public class OrderController1_8Test extends BaseCrudControllerTest {
+public class OrderController1_8Test extends MainResourceControllerTest {
 	
 	private final static String DRUG_ORDER_UUID = "921de0a3-05c4-444a-be03-e01b4c4b9142";
 	
@@ -55,7 +55,7 @@ public class OrderController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
 	@Override
 	public String getURI() {
@@ -63,7 +63,7 @@ public class OrderController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
 	 */
 	@Override
 	public long getAllCount() {
@@ -71,7 +71,7 @@ public class OrderController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
 	 */
 	@Override
 	public String getUuid() {

@@ -24,14 +24,14 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Tests functionality of {@link PersonNameController}.
  */
-public class PersonNameController1_8Test extends BaseCrudControllerTest {
+public class PersonNameController1_8Test extends MainResourceControllerTest {
 	
 	private PersonService service;
 	

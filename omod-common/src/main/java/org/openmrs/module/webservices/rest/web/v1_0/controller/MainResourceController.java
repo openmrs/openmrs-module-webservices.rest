@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
-public class MainCrudController extends BaseRestController {
+public class MainResourceController extends BaseRestController {
 	
 	@Autowired
 	RestService restService;

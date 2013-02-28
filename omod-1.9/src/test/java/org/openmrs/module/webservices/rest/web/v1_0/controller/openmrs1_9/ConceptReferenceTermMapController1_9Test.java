@@ -26,12 +26,12 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 /**
  * Tests CRUD operations for {@link ConceptReferenceTerm}s via web service calls
  */
-public class ConceptReferenceTermMapController1_9Test extends BaseCrudControllerTest {
+public class ConceptReferenceTermMapController1_9Test extends MainResourceControllerTest {
 	
 	private RestHelperService service;
 	
@@ -56,7 +56,7 @@ public class ConceptReferenceTermMapController1_9Test extends BaseCrudController
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)

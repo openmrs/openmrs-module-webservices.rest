@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainCrudController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -277,7 +277,7 @@ public class ResourceDocCreator {
 		if (annotation == null)
 			throw new APIException("MainCrudController missing @RequestMapping annotation");
 		
-		RequestMapping subResAnnotation = (RequestMapping) MainCrudController.class.getAnnotation(RequestMapping.class);
+		RequestMapping subResAnnotation = (RequestMapping) MainResourceController.class.getAnnotation(RequestMapping.class);
 		if (subResAnnotation == null)
 			throw new APIException("MainSubResourceController missing @RequestMapping annotation");
 		
@@ -295,7 +295,7 @@ public class ResourceDocCreator {
 			
 			if (doc.getSubResourceName() == null) {
 				if (resourceOperations == null)
-					resourceOperations = getResourceOperations(resourceUrl, MainCrudController.class, true);
+					resourceOperations = getResourceOperations(resourceUrl, MainResourceController.class, true);
 				
 				for (ResourceOperation ro : resourceOperations) {
 					//Add the actual urls after replacing the {resource} string with the resource name

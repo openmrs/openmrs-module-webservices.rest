@@ -36,7 +36,7 @@ import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMa
 /**
  * Facilitates testing controllers.
  */
-public abstract class BaseCrudControllerTest extends BaseModuleWebContextSensitiveTest {
+public abstract class MainResourceControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Autowired
 	private AnnotationMethodHandlerAdapter handlerAdapter;

@@ -23,13 +23,13 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Tests functionality of {@link HL7MessageController1_8}.
  */
-public class HL7MessageController1_8Test extends BaseCrudControllerTest {
+public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	
 	private static final String hl7Data = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
 	
@@ -105,7 +105,7 @@ public class HL7MessageController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetDefaultByUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetDefaultByUuid()
 	 */
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
@@ -114,7 +114,7 @@ public class HL7MessageController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetFullByUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetFullByUuid()
 	 */
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
@@ -123,7 +123,7 @@ public class HL7MessageController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetRefByUuid()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetRefByUuid()
 	 */
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
@@ -132,7 +132,7 @@ public class HL7MessageController1_8Test extends BaseCrudControllerTest {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)

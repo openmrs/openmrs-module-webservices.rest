@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainCrudController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.HL7MessageResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,7 +55,7 @@ import ca.uhn.hl7v2.util.Terser;
 public class HL7MessageController1_8 extends BaseRestController {
 	
 	@Autowired
-	MainCrudController mainCrudController;
+	MainResourceController mainCrudController;
 	
 	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/hl7", method = RequestMethod.POST)
 	@ResponseBody
@@ -102,7 +102,7 @@ public class HL7MessageController1_8 extends BaseRestController {
 	/**
 	 * Apparently if we provide a specific request mapping for POST, we also need to provide it for
 	 * GET, because otherwise Spring cannot find a more general match from
-	 * {@link MainCrudController}.
+	 * {@link MainResourceController}.
 	 */
 	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/hl7", method = RequestMethod.GET)
 	@ResponseBody

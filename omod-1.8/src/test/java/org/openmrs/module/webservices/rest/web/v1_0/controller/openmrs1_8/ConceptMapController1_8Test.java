@@ -31,12 +31,12 @@ import org.openmrs.module.webservices.rest.test.OpenmrsProfileRule;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 /**
  * Tests CRUD operations for {@link ConceptMapType}s via web service calls
  */
-public class ConceptMapController1_8Test extends BaseCrudControllerTest {
+public class ConceptMapController1_8Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	

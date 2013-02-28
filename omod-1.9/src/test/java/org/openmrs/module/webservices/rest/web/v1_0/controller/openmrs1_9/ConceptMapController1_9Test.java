@@ -29,14 +29,14 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Tests CRUD operations for {@link ConceptMapType}s via web service calls
  */
-public class ConceptMapController1_9Test extends BaseCrudControllerTest {
+public class ConceptMapController1_9Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	

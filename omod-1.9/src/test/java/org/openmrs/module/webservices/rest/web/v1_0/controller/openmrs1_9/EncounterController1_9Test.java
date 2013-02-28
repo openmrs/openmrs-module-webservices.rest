@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.Format;
 import org.openmrs.util.Format.FORMAT_TYPE;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -36,10 +36,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * the EncounterControllerTest in the rest web services modules in order to make them pass and adds
  * tests specific to the visit property
  */
-public class EncounterController1_9Test extends BaseCrudControllerTest {
+public class EncounterController1_9Test extends MainResourceControllerTest {
 
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getURI()
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
      */
     @Override
     public String getURI() {
@@ -47,7 +47,7 @@ public class EncounterController1_9Test extends BaseCrudControllerTest {
     }
 
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getUuid()
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
      */
     @Override
     public String getUuid() {
@@ -55,7 +55,7 @@ public class EncounterController1_9Test extends BaseCrudControllerTest {
     }
 
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#getAllCount()
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
      */
     @Override
     public long getAllCount() {
@@ -63,7 +63,7 @@ public class EncounterController1_9Test extends BaseCrudControllerTest {
     }
     
     /**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest#shouldGetAll()
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
      */
     @Override
     @Test(expected = Exception.class)
