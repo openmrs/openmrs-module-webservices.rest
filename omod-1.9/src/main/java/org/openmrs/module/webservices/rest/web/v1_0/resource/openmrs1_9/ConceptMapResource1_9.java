@@ -81,6 +81,10 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	 * @return the display string.
 	 */
 	public String getDisplayString(ConceptMap conceptMap) {
+		if (conceptMap.getConceptReferenceTerm() == null || conceptMap.getConceptReferenceTerm().getConceptSource() == null) {
+			return "";
+		}
+		
 		String display = conceptMap.getConceptReferenceTerm().getConceptSource().getName() + ": "
 		        + conceptMap.getConceptReferenceTerm().getCode();
 		if (!StringUtils.isBlank(conceptMap.getConceptReferenceTerm().getName())) {

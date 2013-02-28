@@ -60,11 +60,10 @@ public interface RestService {
 	SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException;
 	
 	/**
-	 * Returns all {@link DelegatingResourceHandler} classes
+	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
-	 * @return a List of {@link DelegatingResourceHandler} classes
+	 * @return list of {@link DelegatingResourceHandler}s
 	 * @throws APIException
 	 */
-	@SuppressWarnings("rawtypes")
-	public List<Class<? extends DelegatingResourceHandler>> getResourcesHandlerClasses() throws APIException;
+	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
 }

@@ -56,16 +56,14 @@ public class ResourceDocCreator {
 	 * @return a map of ResourceData objects keyed by their resource names.
 	 * @throws IOException
 	 */
-	@SuppressWarnings("rawtypes")
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
 	        InstantiationException, IOException, ConversionException {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
-		List<Class<? extends DelegatingResourceHandler>> classes = Context.getService(RestService.class)
-		        .getResourcesHandlerClasses();
+		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		
-		fillRepresentations(classes, resouceDocMap);
+		fillRepresentations(resourceHandlers, resouceDocMap);
 		//fillOperations(resouceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
@@ -106,32 +104,16 @@ public class ResourceDocCreator {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	@SuppressWarnings("rawtypes")
-	private static void fillRepresentations(List<Class<? extends DelegatingResourceHandler>> classes,
+	private static void fillRepresentations(List<DelegatingResourceHandler<?>> resourceHandlers,
 	        Map<String, ResourceDoc> resouceDocMap) throws IllegalAccessException, InstantiationException,
 	        ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
-		for (Class<?> cls : classes) {
-			if (!DelegatingResourceHandler.class.isAssignableFrom(cls)) {
-				continue;
-			}
-			
-			if (cls.getName().equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
+		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
+			if (resourceHandler.getClass().getName().equals(
+			    "org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
 				continue; //Skip the test class
 			}
-			
-			Object instance = null;
-			
-			try {
-				instance = cls.newInstance();
-			}
-			catch (Exception ex) {
-				//May be an abstract class which is not instantiable.
-				continue;
-			}
-			
-			DelegatingResourceHandler<?> resourceHandler = (DelegatingResourceHandler<?>) instance;
 			
 			Object delegate = resourceHandler.newDelegate();
 			
@@ -141,14 +123,14 @@ public class ResourceDocCreator {
 			}
 			
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) cls
-			        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) resourceHandler
+			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 			if (resourceAnnotation != null) {
 				resourceDoc.setResourceName(resourceAnnotation.name());
 			} else {
 				//this is a subResource, use the name of the collection
-				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) cls
-				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class));
+				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) resourceHandler
+				        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class));
 				if (subResourceAnnotation != null) {
 					org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) subResourceAnnotation
 					        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
@@ -158,8 +140,10 @@ public class ResourceDocCreator {
 				}
 			}
 			
-			if (instance instanceof DelegatingSubclassHandler) {
-				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) instance).getSuperclass();
+			Object instance = resourceHandler;
+			
+			if (resourceHandler instanceof DelegatingSubclassHandler) {
+				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) resourceHandler).getSuperclass();
 				instance = Context.getService(RestService.class).getResourceBySupportedClass(superclass);
 				//Add as a subresource
 				ResourceDoc superclassResourceDoc = resouceDocMap.get(superclass.getSimpleName());

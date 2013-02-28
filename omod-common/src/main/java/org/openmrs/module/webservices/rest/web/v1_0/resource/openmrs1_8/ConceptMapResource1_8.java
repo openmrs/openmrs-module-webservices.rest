@@ -83,6 +83,9 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	 * @return the display string.
 	 */
 	public String getDisplayString(ConceptMap conceptMap) {
+		if (conceptMap.getSource() == null) {
+			return "";
+		}
 		return conceptMap.getSource().getName() + ":" + conceptMap.getSourceCode();
 	}
 	
