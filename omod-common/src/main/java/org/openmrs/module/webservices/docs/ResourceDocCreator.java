@@ -29,12 +29,10 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -43,7 +41,6 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainCrudController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
-import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -65,10 +62,10 @@ public class ResourceDocCreator {
 		
 		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
-		List<Class<? extends DelegatingResourceHandler>> classes = OpenmrsClassScanner.getInstance().getClasses(
-		    DelegatingResourceHandler.class, true);
+		List<Class<? extends DelegatingResourceHandler>> classes = Context.getService(RestService.class)
+		        .getResourcesHandlerClasses();
 		
-		fillRepresentations(classes.toArray(new Class<?>[0]), resouceDocMap);
+		fillRepresentations(classes, resouceDocMap);
 		//fillOperations(resouceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
@@ -109,8 +106,10 @@ public class ResourceDocCreator {
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
-	private static void fillRepresentations(Class<?>[] classes, Map<String, ResourceDoc> resouceDocMap)
-	        throws IllegalAccessException, InstantiationException, ConversionException {
+	@SuppressWarnings("rawtypes")
+	private static void fillRepresentations(List<Class<? extends DelegatingResourceHandler>> classes,
+	        Map<String, ResourceDoc> resouceDocMap) throws IllegalAccessException, InstantiationException,
+	        ConversionException {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (Class<?> cls : classes) {

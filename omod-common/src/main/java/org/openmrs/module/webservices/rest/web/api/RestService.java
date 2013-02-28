@@ -13,12 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.api;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 
 /**
  * Database related methods for the Rest Web Services
@@ -56,4 +58,13 @@ public interface RestService {
 	 * @throws APIException
 	 */
 	SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException;
+	
+	/**
+	 * Returns all {@link DelegatingResourceHandler} classes
+	 * 
+	 * @return a List of {@link DelegatingResourceHandler} classes
+	 * @throws APIException
+	 */
+	@SuppressWarnings("rawtypes")
+	public List<Class<? extends DelegatingResourceHandler>> getResourcesHandlerClasses() throws APIException;
 }

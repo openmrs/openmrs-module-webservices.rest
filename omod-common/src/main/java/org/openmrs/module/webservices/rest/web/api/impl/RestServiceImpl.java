@@ -37,6 +37,8 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.util.OpenmrsConstants;
 
@@ -52,6 +54,9 @@ public class RestServiceImpl implements RestService {
 	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
 	
 	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
+	
+	@SuppressWarnings("rawtypes")
+	private volatile List<Class<? extends DelegatingResourceHandler>> resourceHandlerClasses;
 	
 	public RestServiceImpl() {
 	}
@@ -178,6 +183,7 @@ public class RestServiceImpl implements RestService {
 		addSupportedSearchHandler(searchHandlersByIds, searchHandlersByParameter, searchHandler);
 	}
 	
+	@SuppressWarnings( { "unchecked", "rawtypes" })
 	private void initializeResources() {
 		if (resourceDefinitionsByNames != null) {
 			return;
@@ -195,6 +201,12 @@ public class RestServiceImpl implements RestService {
 		}
 		
 		for (Class<? extends Resource> resource : resources) {
+			if (resourceHandlerClasses == null)
+				resourceHandlerClasses = new ArrayList<Class<? extends DelegatingResourceHandler>>();
+			if (DelegatingResourceHandler.class.isAssignableFrom(resource)) {
+				resourceHandlerClasses.add((Class<? extends DelegatingResourceHandler>) resource);
+			}
+			
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
 			try {
 				resourceAnnotation = resource
@@ -496,6 +508,36 @@ public class RestServiceImpl implements RestService {
 				it.remove();
 			}
 		}
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourcesHandlerClasses()
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List<Class<? extends DelegatingResourceHandler>> getResourcesHandlerClasses() throws APIException {
+		if (resourceHandlerClasses == null) {
+			initializeResources();
+			
+			//Add all handlers for subclasses
+			List<Class<? extends DelegatingSubclassHandler>> subclassHandlers;
+			try {
+				subclassHandlers = OpenmrsClassScanner.getInstance().getClasses(DelegatingSubclassHandler.class, true);
+			}
+			catch (IOException e) {
+				throw new APIException("Cannot access REST resources", e);
+			}
+			
+			for (Class<? extends DelegatingSubclassHandler> cls : subclassHandlers) {
+				if (cls.getName().equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
+					continue; //Skip the test class
+				}
+				
+				resourceHandlerClasses.add(cls);
+			}
+		}
+		
+		return resourceHandlerClasses;
 	}
 	
 }
