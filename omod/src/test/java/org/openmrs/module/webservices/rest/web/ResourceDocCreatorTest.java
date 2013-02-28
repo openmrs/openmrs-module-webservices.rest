@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
+package org.openmrs.module.webservices.rest.web;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 /**
  * Unit test for generating as much documentation as can be got from the source code.
  */
-public class ResourceDocCreator1_8Test extends BaseModuleWebContextSensitiveTest {
+public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	@Ignore
@@ -32,7 +32,7 @@ public class ResourceDocCreator1_8Test extends BaseModuleWebContextSensitiveTest
 		
 		List<ResourceDoc> docs = ResourceDocCreator.create("/ws");
 		
-		String header = "This page describes the urls/resources published by the [docs:Webservices.rest Module].";
+		String header = "This page is generated automatically and must not be edited manually. It describes the urls/resources published by the [docs:Webservices.rest Module].";
 		header += System.getProperty("line.separator");
 		header += System.getProperty("line.separator");
 		header += "For more information on conventions, authentication, and setup, see the main [docs:REST Web Services API] page.";

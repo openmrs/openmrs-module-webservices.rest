@@ -118,8 +118,12 @@ public class ResourceDocCreator {
 			Object delegate = resourceHandler.newDelegate();
 			
 			String resourceClassname = delegate.getClass().getSimpleName();
-			if (resourceClassname.equals("UserAndPassword")) {
+			if (resourceClassname.equals("UserAndPassword1_8")) {
 				resourceClassname = "User"; //Work-around for UserAndPassword to be displayed as User
+			} else if (resourceClassname.equals("CohortMember1_8")) {
+				resourceClassname = "CohortMember";
+			} else if (resourceClassname.equals("IncomingHl7Message1_8")) {
+				resourceClassname = "HL7";
 			}
 			
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
