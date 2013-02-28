@@ -75,17 +75,8 @@ public class PersonAttributeControllerTest extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldPurgeAttribute() throws Exception {
-		// I'm using sql queries and a flush-session because if I try to test this the natural way, hibernate
-		// complains that the attribute will be re-created since the person is in the session.
-		Number before = (Number) Context.getAdministrationService().executeSQL(
-		    "select count(*) from person_attribute where person_id = 2", true).get(0).get(0);
-		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
-		Context.flushSession();
 		
-		Number after = (Number) Context.getAdministrationService().executeSQL(
-		    "select count(*) from person_attribute where person_id = 2", true).get(0).get(0);
-		assertThat(after.intValue(), is(before.intValue() - 1));
 		assertThat(service.getPersonAttributeByUuid(getUuid()), nullValue());
 	}
 	
@@ -110,6 +101,6 @@ public class PersonAttributeControllerTest extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 3;
+		return service.getPersonByUuid(ResourceTestConstants.PERSON_UUID).getAttributes().size();
 	}
 }
