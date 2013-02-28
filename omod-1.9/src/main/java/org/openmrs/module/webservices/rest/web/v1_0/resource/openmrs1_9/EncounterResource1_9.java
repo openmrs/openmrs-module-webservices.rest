@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
  * {@link Resource} for {@link EncounterResource1_9}, supporting standard CRUD operations
  */
 @Resource(name = "encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.9.*")
-public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource {
+public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8 {
 	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)

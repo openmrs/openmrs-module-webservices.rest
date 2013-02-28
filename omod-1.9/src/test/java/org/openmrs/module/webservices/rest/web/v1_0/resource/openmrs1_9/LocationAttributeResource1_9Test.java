@@ -17,14 +17,14 @@ import java.text.SimpleDateFormat;
 import org.junit.Before;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class LocationAttributeResource1_9Test extends BaseDelegatingResourceTest<LocationAttributeResource1_9, LocationAttribute> {
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	@Override
@@ -62,6 +62,6 @@ public class LocationAttributeResource1_9Test extends BaseDelegatingResourceTest
 	
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.LOCATION_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.LOCATION_ATTRIBUTE_UUID;
 	}
 }

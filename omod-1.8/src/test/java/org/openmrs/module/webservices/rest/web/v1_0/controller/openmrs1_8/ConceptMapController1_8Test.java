@@ -28,10 +28,10 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.OpenmrsProfileRule;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ResourceTestConstants;
 
 /**
  * Tests CRUD operations for {@link ConceptMapType}s via web service calls
@@ -49,7 +49,7 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 	
 	@Override
 	public String getURI() {
-		return "concept/" + ResourceTestConstants.CONCEPT2_UUID + "/mapping";
+		return "concept/" + RestTestConstants1_8.CONCEPT2_UUID + "/mapping";
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 	
 	@Override
 	public long getAllCount() {
-		return service.getConceptByUuid(ResourceTestConstants.CONCEPT2_UUID).getConceptMappings().size();
+		return service.getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID).getConceptMappings().size();
 	}
 	
 	@Before
@@ -67,7 +67,7 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 		service = Context.getConceptService();
 		restHelperService = Context.getService(RestHelperService.class);
 		
-		Concept concept = service.getConceptByUuid(ResourceTestConstants.CONCEPT2_UUID);
+		Concept concept = service.getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID);
 		ConceptMap next = concept.getConceptMappings().iterator().next();
 		//The UUID property is not set in standardTestDataset.xml.
 		next.setUuid(UUID.randomUUID().toString());
@@ -77,15 +77,15 @@ public class ConceptMapController1_8Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldCreateConceptMap() throws Exception {
-		String json = "{\"source\": \"" + ResourceTestConstants.CONCEPT_SOURCE_UUID + "\", \"sourceCode\": \"test\"}";
+		String json = "{\"source\": \"" + RestTestConstants1_8.CONCEPT_SOURCE_UUID + "\", \"sourceCode\": \"test\"}";
 		
 		SimpleObject newConceptMap = deserialize(handle(newPostRequest(getURI(), json)));
 		
 		String uuid = (String) newConceptMap.get("uuid");
 		
 		ConceptMap conceptMap = restHelperService.getObjectByUuid(ConceptMap.class, uuid);
-		assertThat(conceptMap.getConcept().getUuid(), is(ResourceTestConstants.CONCEPT2_UUID));
-		assertThat(conceptMap.getSource().getUuid(), is(ResourceTestConstants.CONCEPT_SOURCE_UUID));
+		assertThat(conceptMap.getConcept().getUuid(), is(RestTestConstants1_8.CONCEPT2_UUID));
+		assertThat(conceptMap.getSource().getUuid(), is(RestTestConstants1_8.CONCEPT_SOURCE_UUID));
 		assertThat(conceptMap.getSourceCode(), is("test"));
 	}
 	

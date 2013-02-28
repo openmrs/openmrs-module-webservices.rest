@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +34,7 @@ public class LocationAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getURI() {
-		return "location/" + Rest1_9TestConstants.LOCATION_UUID + "/attribute";
+		return "location/" + RestTestConstants1_9.LOCATION_UUID + "/attribute";
 	}
 	
 	/**
@@ -42,7 +42,7 @@ public class LocationAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.LOCATION_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.LOCATION_ATTRIBUTE_UUID;
 	}
 	
 	/**
@@ -50,21 +50,21 @@ public class LocationAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getLocationByUuid(Rest1_9TestConstants.LOCATION_UUID).getActiveAttributes().size();
+		return service.getLocationByUuid(RestTestConstants1_9.LOCATION_UUID).getActiveAttributes().size();
 	}
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getLocationService();
 	}
 	
 	@Test
 	public void shouldAddAttributeToLocation() throws Exception {
-		int before = service.getLocationByUuid(Rest1_9TestConstants.LOCATION_UUID).getAttributes().size();
+		int before = service.getLocationByUuid(RestTestConstants1_9.LOCATION_UUID).getAttributes().size();
 		String json = "{\"attributeType\":\"9516cc50-6f9f-132r-5433-001e378eb67f\", \"value\":\"2012-05-05\"}";
 		handle(newPostRequest(getURI(), json));
-		int after = service.getLocationByUuid(Rest1_9TestConstants.LOCATION_UUID).getAttributes().size();
+		int after = service.getLocationByUuid(RestTestConstants1_9.LOCATION_UUID).getAttributes().size();
 		Assert.assertEquals(before + 1, after);
 	}
 	

@@ -14,7 +14,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import org.junit.Before;
 import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ProviderAttributeTypeResource1_9;
 
@@ -22,7 +22,7 @@ public class ProviderAttributeTypeResource1_9Test extends BaseDelegatingResource
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	@Override
@@ -64,6 +64,6 @@ public class ProviderAttributeTypeResource1_9Test extends BaseDelegatingResource
 	
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID;
+		return RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID;
 	}
 }

@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
@@ -181,13 +181,13 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	/**
 	 * Gets un voided visits for the given patient including inactive ones
 	 * 
-	 * @param patientUniqueId @see {@link PatientResource#getByUniqueId(String)} for interpretation
+	 * @param patientUniqueId @see {@link PatientResource1_8#getByUniqueId(String)} for interpretation
 	 * @param context
 	 * @return
 	 * @throws ResponseException
 	 */
 	public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource) Context.getService(RestService.class).getResourceByName("patient"))
+		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName("patient"))
 		        .getByUniqueId(patientUniqueId);
 		if (patient == null)
 			throw new ObjectNotFoundException();

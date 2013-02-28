@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
@@ -33,7 +33,7 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getURI() {
-		return "provider/" + Rest1_9TestConstants.PROVIDER_UUID + "/attribute";
+		return "provider/" + RestTestConstants1_9.PROVIDER_UUID + "/attribute";
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.PROVIDER_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.PROVIDER_ATTRIBUTE_UUID;
 	}
 	
 	/**
@@ -49,23 +49,23 @@ public class ProviderAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getProviderByUuid(Rest1_9TestConstants.PROVIDER_UUID).getActiveAttributes().size();
+		return service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getActiveAttributes().size();
 	}
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getProviderService();
 	}
 	
 	@Test
 	public void shouldAddAttributeToProvider() throws Exception {
-		int before = service.getProviderByUuid(Rest1_9TestConstants.PROVIDER_UUID).getAttributes().size();
-		String json = "{\"attributeType\":\"" + Rest1_9TestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID
+		int before = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
+		String json = "{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID
 		        + "\", \"value\":\"2012-05-05\"}";
 		
 		handle(newPostRequest(getURI(), json));
-		int after = service.getProviderByUuid(Rest1_9TestConstants.PROVIDER_UUID).getAttributes().size();
+		int after = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
 		Assert.assertEquals(before + 1, after);
 	}
 	

@@ -19,10 +19,10 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.openmrs.util.Format;
@@ -206,7 +206,7 @@ public class EncounterController1_9Test extends BaseCrudControllerTest {
 		EncounterService es = Context.getEncounterService();
 		VisitService vs = Context.getVisitService();
 		Encounter encounter = es.getEncounterByUuid(getUuid());
-		Visit newVisit = new Visit(encounter.getPatient(), vs.getVisitTypeByUuid(Rest1_9TestConstants.VISIT_TYPE_UUID),
+		Visit newVisit = new Visit(encounter.getPatient(), vs.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID),
 		        new SimpleDateFormat("yyyy-MM-dd").parse("2008-08-01"));
 		vs.saveVisit(newVisit);
 		

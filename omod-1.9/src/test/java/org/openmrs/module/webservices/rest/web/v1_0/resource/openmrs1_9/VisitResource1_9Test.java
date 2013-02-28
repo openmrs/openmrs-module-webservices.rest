@@ -14,7 +14,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 /**
@@ -78,6 +78,6 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 	 */
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.VISIT_UUID;
+		return RestTestConstants1_9.VISIT_UUID;
 	}
 }

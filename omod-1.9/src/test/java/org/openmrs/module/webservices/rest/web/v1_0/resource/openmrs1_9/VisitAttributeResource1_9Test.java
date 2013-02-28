@@ -19,7 +19,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 /**
@@ -29,7 +29,7 @@ public class VisitAttributeResource1_9Test extends BaseDelegatingResourceTest<Vi
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	@Override
@@ -67,6 +67,6 @@ public class VisitAttributeResource1_9Test extends BaseDelegatingResourceTest<Vi
 	
 	@Override
 	public String getUuidProperty() {
-		return Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.VISIT_ATTRIBUTE_UUID;
 	}
 }

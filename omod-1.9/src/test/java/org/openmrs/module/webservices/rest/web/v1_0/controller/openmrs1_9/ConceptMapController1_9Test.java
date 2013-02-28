@@ -25,8 +25,8 @@ import org.openmrs.ConceptMapType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
@@ -44,17 +44,17 @@ public class ConceptMapController1_9Test extends BaseCrudControllerTest {
 	
 	@Override
 	public String getURI() {
-		return "concept/" + Rest1_9TestConstants.CONCEPT_UUID + "/mapping";
+		return "concept/" + RestTestConstants1_9.CONCEPT_UUID + "/mapping";
 	}
 	
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.CONCEPT_MAP_UUID;
+		return RestTestConstants1_9.CONCEPT_MAP_UUID;
 	}
 	
 	@Override
 	public long getAllCount() {
-		return service.getConceptByUuid(Rest1_9TestConstants.CONCEPT_UUID).getConceptMappings().size();
+		return service.getConceptByUuid(RestTestConstants1_9.CONCEPT_UUID).getConceptMappings().size();
 	}
 	
 	@Before
@@ -65,27 +65,27 @@ public class ConceptMapController1_9Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldCreateConceptMap() throws Exception {
-		String json = "{\"conceptReferenceTerm\": \"" + Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_UUID
-		        + "\", \"conceptMapType\": \"" + Rest1_9TestConstants.CONCEPT_MAP_TYPE_UUID + "\"}";
+		String json = "{\"conceptReferenceTerm\": \"" + RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID
+		        + "\", \"conceptMapType\": \"" + RestTestConstants1_9.CONCEPT_MAP_TYPE_UUID + "\"}";
 		
 		SimpleObject newConceptMap = deserialize(handle(newPostRequest(getURI(), json)));
 		
 		String uuid = (String) newConceptMap.get("uuid");
 		
 		ConceptMap conceptMap = restHelperService.getObjectByUuid(ConceptMap.class, uuid);
-		assertThat(conceptMap.getConcept().getUuid(), is(Rest1_9TestConstants.CONCEPT_UUID));
-		assertThat(conceptMap.getConceptMapType().getUuid(), is(Rest1_9TestConstants.CONCEPT_MAP_TYPE_UUID));
-		assertThat(conceptMap.getConceptReferenceTerm().getUuid(), is(Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_UUID));
+		assertThat(conceptMap.getConcept().getUuid(), is(RestTestConstants1_9.CONCEPT_UUID));
+		assertThat(conceptMap.getConceptMapType().getUuid(), is(RestTestConstants1_9.CONCEPT_MAP_TYPE_UUID));
+		assertThat(conceptMap.getConceptReferenceTerm().getUuid(), is(RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID));
 	}
 	
 	@Test
 	public void shouldEditConceptMap() throws Exception {
-		String json = "{\"conceptReferenceTerm\": \"" + Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_UUID + "\"}";
+		String json = "{\"conceptReferenceTerm\": \"" + RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID + "\"}";
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		ConceptMap conceptMap = restHelperService.getObjectByUuid(ConceptMap.class, getUuid());
-		assertThat(conceptMap.getConceptReferenceTerm().getUuid(), is(Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_UUID));
+		assertThat(conceptMap.getConceptReferenceTerm().getUuid(), is(RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID));
 	}
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)

@@ -30,7 +30,7 @@ import org.openmrs.User;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.util.Reflect;
@@ -70,7 +70,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 				Class openmrsClass = (Class) parameterizedType.getActualTypeArguments()[0];
 				//User Resource is special in that the Actual parameterized Type isn't a standard domain object, so we also
 				//need to look up fields and methods from the org.openmrs.User class 
-				boolean isUserResource = resourceClass.equals(UserResource.class);
+				boolean isUserResource = resourceClass.equals(UserResource1_8.class);
 				List<Object> refDescriptions = new ArrayList<Object>();
 				
 				if (method.getName().equals("getRepresentationDescription")

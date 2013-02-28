@@ -22,8 +22,8 @@ import org.junit.Test;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +44,7 @@ public class LocationAttributeTypeController1_9Test extends BaseCrudControllerTe
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.LOCATION_ATTRIBUTE_TYPE_UUID;
+		return RestTestConstants1_9.LOCATION_ATTRIBUTE_TYPE_UUID;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class LocationAttributeTypeController1_9Test extends BaseCrudControllerTe
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public class LocationAttributeTypeController1_9Test extends BaseCrudControllerTe
 		Assert.assertEquals(1, results.size());
 		Util.log("Found " + results.size() + " LocationAttributeType(s)", results);
 		Object result = results.get(0);
-		Assert.assertEquals(Rest1_9TestConstants.LOCATION_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.LOCATION_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}

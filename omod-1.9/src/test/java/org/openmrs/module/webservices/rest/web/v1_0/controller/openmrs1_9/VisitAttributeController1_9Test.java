@@ -20,9 +20,9 @@ import org.openmrs.VisitAttribute;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
@@ -39,7 +39,7 @@ public class VisitAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getURI() {
-		return "visit/" + Rest1_9TestConstants.VISIT_UUID + "/attribute";
+		return "visit/" + RestTestConstants1_9.VISIT_UUID + "/attribute";
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class VisitAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.VISIT_ATTRIBUTE_UUID;
 	}
 	
 	/**
@@ -55,12 +55,12 @@ public class VisitAttributeController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getVisitByUuid(Rest1_9TestConstants.VISIT_UUID).getActiveAttributes().size();
+		return service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID).getActiveAttributes().size();
 	}
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getVisitService();
 	}
 	
@@ -75,39 +75,39 @@ public class VisitAttributeController1_9Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldAddAnAttributeToAVisit() throws Exception {
-		int before = service.getVisitByUuid(Rest1_9TestConstants.VISIT_UUID).getAttributes().size();
+		int before = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID).getAttributes().size();
 		String json = "{\"attributeType\":\"6770f6d6-7673-11e0-8f03-001e378eb67g\", \"value\":\"2012-08-25\"}";
 		
 		handle(newPostRequest(getURI(), json));
 		
-		int after = service.getVisitByUuid(Rest1_9TestConstants.VISIT_UUID).getAttributes().size();
+		int after = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID).getAttributes().size();
 		Assert.assertEquals(before + 1, after);
 	}
 	
 	@Test
 	public void shouldEditAVisitAttribute() throws Exception {
 		final String newValue = "2012-05-05";
-		VisitAttribute va = service.getVisitAttributeByUuid(Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID);
+		VisitAttribute va = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertFalse(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(va.getValue()));
 		String json = "{ \"value\":\"2012-05-05\" }";
 		
-		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID);
+		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertEquals("Audit Date", visitAttribute.getAttributeType().getName());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
-		VisitAttribute updated = service.getVisitAttributeByUuid(Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID);
+		VisitAttribute updated = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertTrue(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(updated.getValue()));
 	}
 	
 	@Test
 	public void shouldVoidAVisitAttribute() throws Exception {
-		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID);
+		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertFalse(visitAttribute.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
 		
-		visitAttribute = service.getVisitAttributeByUuid(Rest1_9TestConstants.VISIT_ATTRIBUTE_UUID);
+		visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertTrue(visitAttribute.isVoided());
 		Assert.assertEquals("unit test", visitAttribute.getVoidReason());
 	}

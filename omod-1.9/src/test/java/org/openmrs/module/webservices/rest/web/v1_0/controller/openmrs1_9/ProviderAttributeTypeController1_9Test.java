@@ -23,8 +23,8 @@ import org.junit.Test;
 import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +34,7 @@ public class ProviderAttributeTypeController1_9Test extends BaseCrudControllerTe
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class ProviderAttributeTypeController1_9Test extends BaseCrudControllerTe
 	@Test
 	public void updateProviderAttributeType_shouldChangeAPropertyOnAProviderAttributeType() throws Exception {
 		String json = "{\"description\":\"Updated description\"}";
-		handle(newPostRequest(getURI() + "/" + Rest1_9TestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID, json));
+		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, json));
 		
 		Assert.assertEquals("Updated description", Context.getProviderService().getProviderAttributeType(1).getDescription());
 	}
@@ -110,7 +110,7 @@ public class ProviderAttributeTypeController1_9Test extends BaseCrudControllerTe
         List<Object> results = Util.getResultsList(response);
         Object result = results.get(0);
 		
-		Assert.assertEquals(Rest1_9TestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
@@ -128,7 +128,7 @@ public class ProviderAttributeTypeController1_9Test extends BaseCrudControllerTe
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.PROVIDER_ATTRIBUTE_TYPE_UUID;
+		return RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID;
 	}
 	
 	/**

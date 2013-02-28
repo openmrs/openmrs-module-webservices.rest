@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -26,7 +26,7 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 	
 	@Before
 	public void before() throws Exception {
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	/**
@@ -52,7 +52,7 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String json = "{\"birthdate\":\"" + df.format(now) + "\"}";
 		
-		handle(newPostRequest(getURI() + "/" + Rest1_9TestConstants.PROVIDER_UUID, json));
+		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID, json));
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 		Provider pat = Context.getProviderService().getProvider(2);
 		Assert.assertFalse(pat.isRetired());
 		
-		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + Rest1_9TestConstants.PROVIDER_UUID);
+		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID);
 		request.addParameter("reason", "unit test");
 		handle(request);
 		
@@ -98,7 +98,7 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
 		Assert.assertEquals(1, results.size());
 		Object result = results.get(0);
-		Assert.assertEquals(Rest1_9TestConstants.PROVIDER_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.PROVIDER_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
@@ -116,7 +116,7 @@ public class ProviderController1_9Test extends BaseCrudControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.PROVIDER_UUID;
+		return RestTestConstants1_9.PROVIDER_UUID;
 	}
 	
 	/**

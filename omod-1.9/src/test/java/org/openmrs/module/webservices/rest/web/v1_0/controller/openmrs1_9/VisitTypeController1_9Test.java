@@ -23,8 +23,8 @@ import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
@@ -47,7 +47,7 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
      */
     @Override
     public String getUuid() {
-	    return Rest1_9TestConstants.VISIT_TYPE_UUID;
+	    return RestTestConstants1_9.VISIT_TYPE_UUID;
     }
 
 	/**
@@ -74,7 +74,7 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
 	public void shouldGetAVisitTypeByName() throws Exception {		
 		Object result = deserialize(handle(newGetRequest(getURI() + "/Return TB Clinic Visit")));
 		Assert.assertNotNull(result);
-		Assert.assertEquals(Rest1_9TestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
 	}
 	
@@ -92,7 +92,7 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
 	public void shouldEditAVisitType() throws Exception {
 		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
-		VisitType updated = service.getVisitTypeByUuid(Rest1_9TestConstants.VISIT_TYPE_UUID);
+		VisitType updated = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
 		Assert.assertNotNull(updated);
 		Assert.assertEquals("new visit type", updated.getName());
 		Assert.assertEquals("new description", updated.getDescription());
@@ -100,10 +100,10 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
 	
 	@Test
 	public void shouldRetireAVisitType() throws Exception {
-		VisitType visitType = service.getVisitTypeByUuid(Rest1_9TestConstants.VISIT_TYPE_UUID);
+		VisitType visitType = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
 		Assert.assertFalse(visitType.isRetired());
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
-		visitType = service.getVisitTypeByUuid(Rest1_9TestConstants.VISIT_TYPE_UUID);
+		visitType = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
 		Assert.assertTrue(visitType.isRetired());
 		Assert.assertEquals("test reason", visitType.getRetireReason());
 	}
@@ -123,7 +123,7 @@ public class VisitTypeController1_9Test extends BaseCrudControllerTest {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Ret"))));
 		List<Object> hits = Util.getResultsList(result);
 		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(Rest1_9TestConstants.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	

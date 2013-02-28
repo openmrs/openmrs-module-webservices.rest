@@ -25,9 +25,9 @@ import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,7 +46,7 @@ public class ConceptReferenceTermController1_9Test extends BaseCrudControllerTes
 	
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.CONCEPT_REFERENCE_TERM_UUID;
+		return RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID;
 	}
 	
 	@Override

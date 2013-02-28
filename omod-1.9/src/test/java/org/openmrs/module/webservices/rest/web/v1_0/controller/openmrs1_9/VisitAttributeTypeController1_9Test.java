@@ -20,9 +20,9 @@ import org.openmrs.VisitAttributeType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Rest1_9TestConstants;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudControllerTest;
 
 /**
@@ -45,7 +45,7 @@ public class VisitAttributeTypeController1_9Test extends BaseCrudControllerTest 
 	 */
 	@Override
 	public String getUuid() {
-		return Rest1_9TestConstants.VISIT_ATTRIBUTE_TYPE_UUID;
+		return RestTestConstants1_9.VISIT_ATTRIBUTE_TYPE_UUID;
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class VisitAttributeTypeController1_9Test extends BaseCrudControllerTest 
 	@Before
 	public void before() throws Exception {
 		service = Context.getVisitService();
-		executeDataSet(Rest1_9TestConstants.TEST_DATASET);
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
 	
 	/**

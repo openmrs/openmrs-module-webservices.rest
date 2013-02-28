@@ -23,7 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -48,13 +48,13 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	RequestContext context;
 	
-	OrderResource resource;
+	OrderResource1_8 resource;
 	
 	@Before
 	public void beforeEachTests() throws Exception {
 		executeDataSet(datasetFilename);
 		context = new RequestContext();
-		resource = (OrderResource) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		resource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 	}
 	
 	private SimpleObject buildSuperclass() {
