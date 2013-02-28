@@ -5,13 +5,13 @@
 		<artifactId>webservices.rest</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
-	<artifactId>webservices.rest-omod-1.9</artifactId>
+	<artifactId>webservices.rest-omod-1.8</artifactId>
 	<packaging>jar</packaging>
-	<name>Rest Web Services 1.9 OMOD</name>
+	<name>Rest Web Services 1.8 OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
 	<properties>
-		<openmrs.version>1.9.2</openmrs.version>
+		<openmrs.version>1.8.1</openmrs.version>
 	</properties>
 
 	<dependencies>
@@ -24,19 +24,6 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>${project.parent.artifactId}-omod-common</artifactId>
-			<version>${project.parent.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.8</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>${project.parent.artifactId}-omod-1.8</artifactId>
 			<version>${project.parent.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
