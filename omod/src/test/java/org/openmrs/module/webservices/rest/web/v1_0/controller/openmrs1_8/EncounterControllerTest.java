@@ -116,15 +116,15 @@ public class EncounterControllerTest extends BaseCrudControllerTest {
 		for (Map o : obs) {
 			obsDisplayValues.add((String) o.get("display"));
 		}
-		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS = MARRIED"));
-		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED = fried chicken"));
-		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG) = 70.0"));
+		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
+		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED: fried chicken"));
+		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
 		
 		// obs.getValueAsString() uses application Locale and hence have to do this
 		Calendar cal = Calendar.getInstance();
 		cal.set(2011, Calendar.JUNE, 21, 0, 0, 0);
 		String format = Format.format(cal.getTime(), Context.getLocale(), FORMAT_TYPE.TIMESTAMP);
-		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE = " + format));
+		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE: " + format));
 	}
 	
 	@Test

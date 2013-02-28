@@ -184,7 +184,7 @@ public class ObsResource extends DataDelegatingCrudResource<Obs> {
 		if (obs.getConcept() == null)
 			return "";
 		
-		return obs.getConcept().getName() + " = " + obs.getValueAsString(Context.getLocale());
+		return obs.getConcept().getName() + ": " + obs.getValueAsString(Context.getLocale());
 	}
 	
 	/**

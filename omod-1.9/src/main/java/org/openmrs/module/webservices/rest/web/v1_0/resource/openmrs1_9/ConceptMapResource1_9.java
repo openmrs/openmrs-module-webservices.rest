@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -80,7 +81,11 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	 * @return the display string.
 	 */
 	public String getDisplayString(ConceptMap conceptMap) {
-		return conceptMap.getConceptReferenceTerm().getConceptSource().getName() + ": "
+		String display = conceptMap.getConceptReferenceTerm().getConceptSource().getName() + ": "
 		        + conceptMap.getConceptReferenceTerm().getCode();
+		if (!StringUtils.isBlank(conceptMap.getConceptReferenceTerm().getName())) {
+			display += " (" + conceptMap.getConceptReferenceTerm().getName() + ")";
+		}
+		return display;
 	}
 }

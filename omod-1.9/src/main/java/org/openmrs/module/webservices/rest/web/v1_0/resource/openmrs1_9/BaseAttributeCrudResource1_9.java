@@ -93,12 +93,12 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	 * Gets the display string for an attribute.
 	 * 
 	 * @param attr the attribute.
-	 * @return attribute type + value (for concise display purposes)
+	 * @return attribute type: value (for concise display purposes)
 	 */
 	public String getDisplayString(T attr) {
 		if (attr.getAttributeType() == null)
 			return "";
-		return attr.getAttributeType().getName() + " = " + attr.getValue();
+		return attr.getAttributeType().getName() + ": " + attr.getValue();
 	}
 	
 	/**

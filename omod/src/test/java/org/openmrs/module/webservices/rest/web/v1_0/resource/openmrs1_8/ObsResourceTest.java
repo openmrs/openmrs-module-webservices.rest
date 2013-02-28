@@ -76,7 +76,7 @@ public class ObsResourceTest extends BaseDelegatingResourceTest<ObsResource, Obs
 	
 	@Override
 	public String getDisplayProperty() {
-		return "WEIGHT (KG) = 50.0";
+		return "WEIGHT (KG): 50.0";
 	}
 	
 	@Override

@@ -52,7 +52,7 @@ public class LocationAttributeResource1_9Test extends BaseDelegatingResourceTest
 	@Override
 	public String getDisplayProperty() {
 		try {
-			return "Audit Date = " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
+			return "Audit Date: " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
 		}
 		catch (ParseException ex) {
 			ex.printStackTrace();
