@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FieldAnswer}, supporting standard CRUD operations
  */
-@SubResource(parent = FieldResource.class, path = "answer", supportedClass = FieldAnswer.class)
+@SubResource(parent = FieldResource.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class FieldAnswerResource extends DelegatingSubResource<FieldAnswer, Field, FieldResource> {
 	
 	@RepHandler(RefRepresentation.class)

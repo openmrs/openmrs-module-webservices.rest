@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
-@SubResource(parent = FormResource.class, path = "formfield", supportedClass = FormField.class)
+@SubResource(parent = FormResource.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class FormFieldResource extends DelegatingSubResource<FormField, Form, FormResource> {
 	
 	/**

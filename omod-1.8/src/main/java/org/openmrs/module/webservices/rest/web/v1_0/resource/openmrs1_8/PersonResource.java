@@ -44,7 +44,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = "person", order = 1, supportedClass = Person.class)
+@Resource(name = "person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource extends DataDelegatingCrudResource<Person> {
 	

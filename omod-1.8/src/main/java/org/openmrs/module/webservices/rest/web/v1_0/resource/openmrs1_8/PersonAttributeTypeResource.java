@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
  */
-@Resource(name = "personattributetype", supportedClass = PersonAttributeType.class)
+@Resource(name = "personattributetype", supportedClass = PersonAttributeType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class PersonAttributeTypeResource extends MetadataDelegatingCrudResource<PersonAttributeType> {
 	
 	public PersonAttributeTypeResource() {

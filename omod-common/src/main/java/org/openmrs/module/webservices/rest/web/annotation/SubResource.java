@@ -39,7 +39,7 @@ public @interface SubResource {
 	
 	Class<?> supportedClass();
 	
-	String[] supportedOpenmrsVersions() default {};
+	String[] supportedOpenmrsVersions();
 	
 	int order() default Integer.MAX_VALUE;
 	

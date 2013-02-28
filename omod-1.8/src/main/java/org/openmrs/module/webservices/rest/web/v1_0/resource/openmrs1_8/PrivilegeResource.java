@@ -29,7 +29,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Privilege, supporting standard CRUD operations
  */
-@Resource(name = "privilege", supportedClass = Privilege.class)
+@Resource(name = "privilege", supportedClass = Privilege.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class PrivilegeResource extends MetadataDelegatingCrudResource<Privilege> {
 	
 	/**

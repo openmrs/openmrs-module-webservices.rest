@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
-@Resource(name = "conceptsource", supportedClass = ConceptSource.class)
+@Resource(name = "conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class ConceptSourceResource extends MetadataDelegatingCrudResource<ConceptSource> {
 	
 	/**

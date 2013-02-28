@@ -27,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link LocationTag} domain object
  */
-@Resource(name = "locationtag", supportedClass = LocationTag.class)
+@Resource(name = "locationtag", supportedClass = LocationTag.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class LocationTagResource extends MetadataDelegatingCrudResource<LocationTag> {
 	
 	private LocationService service() {

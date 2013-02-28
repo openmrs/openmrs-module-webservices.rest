@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Role, supporting standard CRUD operations
  */
-@Resource(name = "role", supportedClass = Role.class)
+@Resource(name = "role", supportedClass = Role.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class RoleResource extends MetadataDelegatingCrudResource<Role> {
 	
 	/**

@@ -31,7 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource.class, path = "attribute", supportedClass = PersonAttribute.class)
+@SubResource(parent = PersonResource.class, path = "attribute", supportedClass = PersonAttribute.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class PersonAttributeResource extends DelegatingSubResource<PersonAttribute, Person, PersonResource> {
 	
 	/**

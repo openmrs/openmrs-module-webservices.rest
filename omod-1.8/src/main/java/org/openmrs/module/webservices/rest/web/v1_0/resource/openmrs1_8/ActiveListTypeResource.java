@@ -27,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for ActiveListType, supporting standard CRUD operations
  */
-@Resource(name = "activelisttype", supportedClass = ActiveListType.class)
+@Resource(name = "activelisttype", supportedClass = ActiveListType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class ActiveListTypeResource extends MetadataDelegatingCrudResource<ActiveListType> {
 	
 	/**

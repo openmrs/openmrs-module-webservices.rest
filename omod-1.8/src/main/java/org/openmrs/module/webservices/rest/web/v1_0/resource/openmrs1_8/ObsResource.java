@@ -47,7 +47,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = "obs", supportedClass = Obs.class)
+@Resource(name = "obs", supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class ObsResource extends DataDelegatingCrudResource<Obs> {
 	
 	/**

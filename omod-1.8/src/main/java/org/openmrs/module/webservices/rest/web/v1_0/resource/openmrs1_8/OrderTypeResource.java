@@ -26,7 +26,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  *
  */
-@Resource(name = "ordertype", supportedClass = OrderType.class)
+@Resource(name = "ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class OrderTypeResource extends MetadataDelegatingCrudResource<OrderType> {
 	
 	/**

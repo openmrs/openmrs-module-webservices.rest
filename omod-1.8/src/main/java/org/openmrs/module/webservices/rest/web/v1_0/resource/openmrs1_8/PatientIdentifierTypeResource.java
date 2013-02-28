@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
-@Resource(name = "patientidentifiertype", supportedClass = PatientIdentifierType.class)
+@Resource(name = "patientidentifiertype", supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class PatientIdentifierTypeResource extends MetadataDelegatingCrudResource<PatientIdentifierType> {
 	
 	public PatientIdentifierTypeResource() {
