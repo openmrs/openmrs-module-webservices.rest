@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Exposes a catalog of all available resources.
@@ -35,21 +39,30 @@ public class CatalogController extends BaseRestController {
 	
 	/**
 	 * Gets a catalog of all available resources.
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Object getResourceCatalog(HttpServletRequest request) throws Exception {
+	public Object getResourceCatalog(@RequestParam(value = "q", required = false) final String resourceName,
+	        HttpServletRequest request) throws Exception {
+		List<ResourceDoc> resourceDocList = new ArrayList<ResourceDoc>();
 		SimpleObject resourceCatalog = new SimpleObject();
 		String prefix = RestConstants.URI_PREFIX;
 		//strip the ending string '/rest/' because it will be added by ResourceDocCreator.create
 		if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/rest/"))
 			prefix = prefix.substring(0, prefix.lastIndexOf("/rest/"));
-		
-		resourceCatalog.put("catalog", ResourceDocCreator.create(prefix));
-		
+		if (resourceName == null) {
+			resourceDocList = ResourceDocCreator.create(prefix);
+		} else {
+			for (ResourceDoc resourceDoc : ResourceDocCreator.create(prefix)) {
+				if (resourceDoc.getName().toLowerCase().contains(resourceName.toLowerCase())) {
+					resourceDocList.add(resourceDoc);
+				}
+			}
+		}
+		resourceCatalog.put("catalog", resourceDocList);
 		return new LinkedHashMap<String, Object>(resourceCatalog);
 	}
 }
