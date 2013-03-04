@@ -55,7 +55,7 @@ public class CatalogController extends BaseRestController {
 		} else {
 			boolean resourceAvailable = false;
 			for (ResourceDoc resourceDoc : ResourceDocCreator.create(prefix)) {
-				if (resourceDoc.getResourceName().equalsIgnoreCase(resourceName)) {
+				if (resourceDoc.getName().equalsIgnoreCase(resourceName)) {
 					resourceCatalog.put("catalog", resourceDoc);
 					resourceAvailable = true;
 					break;
