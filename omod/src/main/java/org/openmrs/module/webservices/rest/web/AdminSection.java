@@ -28,6 +28,8 @@ import org.openmrs.util.OpenmrsConstants;
  */
 public class AdminSection extends AdministrationSectionExt {
 	
+	private static final String VIEW_REST_WS_MENU = "View REST WS Menu";
+	
 	/**
 	 * @see org.openmrs.module.web.extension.AdministrationSectionExt#getMediaType()
 	 */
@@ -44,6 +46,11 @@ public class AdminSection extends AdministrationSectionExt {
 		return RestConstants.MODULE_ID + ".title";
 	}
 	
+	@Override
+	public String getRequiredPrivilege() {
+		return VIEW_REST_WS_MENU;
+	}
+	
 	/**
 	 * @see org.openmrs.module.web.extension.AdministrationSectionExt#getLinks()
 	 */
@@ -53,7 +60,7 @@ public class AdminSection extends AdministrationSectionExt {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		
 		// using deprecated call here so that the module can be used on OpenMRS 1.6
-		if (Context.hasPrivilege(OpenmrsConstants.PRIV_MANAGE_GLOBAL_PROPERTIES))
+		if (Context.hasPrivilege(OpenmrsConstants.PRIV_MANAGE_GLOBAL_PROPERTIES) || Context.hasPrivilege(VIEW_REST_WS_MENU))
 			map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.settings");
 		
 		map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");

@@ -28,7 +28,12 @@
 	<!-- AOP -->
 	
 	<!-- Required Privileges -->
-
+	<privilege>
+		<name>View REST WS Menu</name>
+		<description>
+			View REST WS Menu in administration
+		</description>
+	</privilege>
 	<!-- Required Global Properties -->
     <globalProperty>
         <property>@MODULE_ID@.maxResultsDefault</property>
