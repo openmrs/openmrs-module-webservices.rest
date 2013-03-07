@@ -463,7 +463,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldFindConceptsBySourceNameAndCode() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("sourceName",
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
 		        "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
 		List<Object> results = Util.getResultsList(response);
 		

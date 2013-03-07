@@ -37,6 +37,7 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
@@ -339,18 +340,20 @@ public class RestServiceImpl implements RestService {
 	
 	private void addSearchHandlerToParametersMap(
 	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		Set<String> parameters = new HashSet<String>(searchHandler.getRequiredParameters());
-		parameters.addAll(searchHandler.getOptionalParameters());
-		
-		for (String parameter : parameters) {
-			SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSupportedResource(),
-			        parameter);
-			Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
-			if (list == null) {
-				list = new HashSet<SearchHandler>();
-				tempSearchHandlersByParameters.put(parameterKey, list);
+		for (SearchQuery searchParameters : searchHandler.getSearchQueries()) {
+			Set<String> parameters = new HashSet<String>(searchParameters.getRequiredParameters());
+			parameters.addAll(searchParameters.getOptionalParameters());
+			
+			for (String parameter : parameters) {
+				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSupportedResource(),
+				        parameter);
+				Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
+				if (list == null) {
+					list = new HashSet<SearchHandler>();
+					tempSearchHandlersByParameters.put(parameterKey, list);
+				}
+				list.add(searchHandler);
 			}
-			list.add(searchHandler);
 		}
 	}
 	
@@ -492,9 +495,18 @@ public class RestServiceImpl implements RestService {
 		Iterator<SearchHandler> it = candidateSearchHandlers.iterator();
 		while (it.hasNext()) {
 			SearchHandler candidateSearchHandler = it.next();
-			Set<String> requiredParameters = new HashSet<String>(candidateSearchHandler.getRequiredParameters());
-			requiredParameters.removeAll(searchParameters);
-			if (!requiredParameters.isEmpty()) {
+			boolean remove = true;
+			
+			for (SearchQuery candidateSearchParameters : candidateSearchHandler.getSearchQueries()) {
+				Set<String> requiredParameters = new HashSet<String>(candidateSearchParameters.getRequiredParameters());
+				requiredParameters.removeAll(searchParameters);
+				if (requiredParameters.isEmpty()) {
+					remove = false;
+					break;
+				}
+			}
+			
+			if (remove) {
 				it.remove();
 			}
 		}

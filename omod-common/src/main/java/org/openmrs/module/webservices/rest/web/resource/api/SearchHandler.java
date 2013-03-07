@@ -36,26 +36,14 @@ public interface SearchHandler {
 	String getSupportedResource();
 	
 	/**
-	 * Should return a description of supported searches.
-	 * 
-	 * @return the search description
-	 */
-	String getSearchDescription();
-	
-	/**
 	 * @return the list of supported OpenMRS version e.g. "1.8.*","1.9.*"
 	 */
 	Set<String> getSupportedOpenmrsVersions();
 	
 	/**
-	 * @return the required request parameters
+	 * @return the set of search queries
 	 */
-	Set<String> getRequiredParameters();
-	
-	/**
-	 * @return the optional request parameters
-	 */
-	Set<String> getOptionalParameters();
+	Set<SearchQuery> getSearchQueries();
 	
 	/**
 	 * The search.

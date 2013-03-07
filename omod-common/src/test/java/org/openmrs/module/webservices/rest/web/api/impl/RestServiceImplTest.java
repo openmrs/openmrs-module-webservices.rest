@@ -11,10 +11,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 
 public class RestServiceImplTest {
@@ -72,14 +74,15 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler = mock(SearchHandler.class);
 		when(searchHandler.getId()).thenReturn("conceptByMapping");
 		when(searchHandler.getSupportedResource()).thenReturn("concept");
-		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName", "code")));
+		when(searchHandler.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName", "code"), null, "description")));
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
 		when(searchHandler2.getId()).thenReturn("conceptByMapping2");
 		when(searchHandler2.getSupportedResource()).thenReturn("concept");
-		when(searchHandler2.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
-		when(searchHandler2.getOptionalParameters()).thenReturn(new HashSet<String>(Arrays.asList("code")));
+		when(searchHandler2.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), Arrays.asList("code"), "description")));
 		service.addSupportedSearchHandler(searchHandler2);
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -95,6 +98,10 @@ public class RestServiceImplTest {
 		catch (InvalidSearchException e) {}
 	}
 	
+	public Set<SearchQuery> newParameters(SearchQuery... parameters) {
+		return new HashSet<SearchQuery>(Arrays.asList(parameters));
+	}
+	
 	/**
 	 * @see RestServiceImpl#getSearchHandler(String,Map)
 	 * @verifies return handler if case 2
@@ -106,14 +113,15 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler = mock(SearchHandler.class);
 		when(searchHandler.getId()).thenReturn("conceptByMapping");
 		when(searchHandler.getSupportedResource()).thenReturn("concept");
-		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
-		when(searchHandler.getOptionalParameters()).thenReturn(new HashSet<String>(Arrays.asList("code")));
+		when(searchHandler.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), Arrays.asList("code"), "description")));
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
 		when(searchHandler2.getId()).thenReturn("conceptByMapping2");
 		when(searchHandler2.getSupportedResource()).thenReturn("concept");
-		when(searchHandler2.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
+		when(searchHandler2.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), null, "description")));
 		service.addSupportedSearchHandler(searchHandler2);
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -137,14 +145,15 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler = mock(SearchHandler.class);
 		when(searchHandler.getId()).thenReturn("conceptByMapping");
 		when(searchHandler.getSupportedResource()).thenReturn("concept");
-		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
-		when(searchHandler.getOptionalParameters()).thenReturn(new HashSet<String>(Arrays.asList("code")));
+		when(searchHandler.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), Arrays.asList("code"), "description")));
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
 		when(searchHandler2.getId()).thenReturn("conceptByMapping2");
 		when(searchHandler2.getSupportedResource()).thenReturn("concept");
-		when(searchHandler2.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
+		when(searchHandler2.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), null, "description")));
 		service.addSupportedSearchHandler(searchHandler2);
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -170,14 +179,15 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler = mock(SearchHandler.class);
 		when(searchHandler.getId()).thenReturn("conceptByMapping");
 		when(searchHandler.getSupportedResource()).thenReturn("concept");
-		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
-		when(searchHandler.getOptionalParameters()).thenReturn(new HashSet<String>(Arrays.asList("code")));
+		when(searchHandler.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), Arrays.asList("code"), "description")));
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
 		when(searchHandler2.getId()).thenReturn("conceptByMapping2");
 		when(searchHandler2.getSupportedResource()).thenReturn("concept");
-		when(searchHandler2.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
+		when(searchHandler2.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), null, "description")));
 		service.addSupportedSearchHandler(searchHandler2);
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -200,7 +210,8 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler = mock(SearchHandler.class);
 		when(searchHandler.getId()).thenReturn("conceptByMapping");
 		when(searchHandler.getSupportedResource()).thenReturn("concept");
-		when(searchHandler.getRequiredParameters()).thenReturn(new HashSet<String>(Arrays.asList("sourceName")));
+		when(searchHandler.getSearchQueries()).thenReturn(
+		    newParameters(new SearchQuery(Arrays.asList("sourceName"), null, "description")));
 		service.addSupportedSearchHandler(searchHandler);
 		
 		RestUtil.disableContext(); //to avoid a Context call

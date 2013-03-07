@@ -14,7 +14,9 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.Serializable;
+import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -43,10 +45,27 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class, java.io.Serializable)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class,
+	 *      java.io.Serializable)
 	 */
 	@Override
 	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
 		return type.cast(sessionFactory.getCurrentSession().get(type, id));
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByField(java.lang.Class,
+	 *      java.lang.String, java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+		for (Field field : fields) {
+			if (field != null) {
+				criteria.add(Restrictions.eq(field.getName(), field.getValue()));
+			}
+		}
+		return criteria.list();
 	}
 }
