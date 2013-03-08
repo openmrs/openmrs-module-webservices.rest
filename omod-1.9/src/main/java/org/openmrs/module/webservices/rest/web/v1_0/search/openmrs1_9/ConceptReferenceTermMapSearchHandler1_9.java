@@ -54,15 +54,15 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 		                .setId("default")
 		                .setSupportedResource("conceptreferencetermmap")
 		                .setSupportedOpenmrsVersions("1.9.*")
-		                .setSearchQuery(
+		                .setSearchQueries(
 		                    new SearchQuery(Arrays.asList("termA"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference termA (uuid) and maptype (uuid or name)"),
+		                            "Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)"),
 		                    new SearchQuery(Arrays.asList("termB"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference termB (uuid) and maptype (uuid or name)"),
-		                    new SearchQuery(Arrays.asList("maps"), Arrays.asList("to"),
-		                            "Allows you to find term maps by reference maps (termA or termB uuid) or maps (termA uuid) and to (termB uuid)"),
+		                            "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)"),
+		                    new SearchQuery(Arrays.asList("maps", "to"), null,
+		                            "Allows you to find term maps by reference 'maps' (termA uuid) and 'to' (termB uuid)"),
 		                    new SearchQuery(Arrays.asList("maps"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference maps (termA or termB uuid) and maptype (uuid or name)"))
+		                            "Allows you to find term maps by reference 'maps' (termA or termB uuid) and 'maptype' (uuid or name)"))
 		                .build());
 	}
 	
@@ -87,7 +87,7 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 			if (conceptMapType == null) {
 				return new EmptySearchResult();
 			} else {
-				conceptMapTypeField = new RestHelperService.Field("conceptMapType", conceptMapType);
+				conceptMapTypeField = new Field("conceptMapType", conceptMapType);
 			}
 		}
 		
@@ -97,7 +97,7 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 			if (toTerm == null) {
 				return new EmptySearchResult();
 			} else {
-				toConceptReferenceTermField = new RestHelperService.Field("termB", toTerm);
+				toConceptReferenceTermField = new Field("termB", toTerm);
 			}
 		}
 		
@@ -117,19 +117,19 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 		
 		List<ConceptReferenceTermMap> termMaps = new ArrayList<ConceptReferenceTermMap>();
 		if (termA != null) {
-			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new RestHelperService.Field(
-			        "termA", term), conceptMapTypeField));
+			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new Field("termA", term),
+			    conceptMapTypeField));
 		} else if (termB != null) {
-			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new RestHelperService.Field(
-			        "termB", term), conceptMapTypeField));
+			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new Field("termB", term),
+			    conceptMapTypeField));
 		} else if (to != null) {
-			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new RestHelperService.Field(
-			        "termA", term), toConceptReferenceTermField));
+			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new Field("termA", term),
+			    toConceptReferenceTermField));
 		} else {
-			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new RestHelperService.Field(
-			        "termA", term), conceptMapTypeField));
-			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new RestHelperService.Field(
-			        "termB", term), conceptMapTypeField));
+			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new Field("termA", term),
+			    conceptMapTypeField));
+			termMaps.addAll(restHelperService.getObjectsByFields(ConceptReferenceTermMap.class, new Field("termB", term),
+			    conceptMapTypeField));
 		}
 		
 		return new NeedsPaging<ConceptReferenceTermMap>(termMaps, context);

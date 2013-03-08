@@ -56,8 +56,8 @@ public abstract class BaseSearchHandler implements SearchHandler {
 			return this;
 		}
 		
-		public ConfigBuilder setSearchQuery(SearchQuery... searchQuery) {
-			config.searchQueries = new HashSet<SearchQuery>(Arrays.asList(searchQuery));
+		public ConfigBuilder setSearchQueries(SearchQuery... searchQueries) {
+			config.searchQueries = new HashSet<SearchQuery>(Arrays.asList(searchQueries));
 			return this;
 		}
 		
@@ -65,7 +65,7 @@ public abstract class BaseSearchHandler implements SearchHandler {
 			Validate.notEmpty(config.id, "id must not be empty");
 			Validate.notEmpty(config.supportedResource, "supportedResource must not be empty");
 			Validate.notEmpty(config.supportedOpenmrsVersions, "supportedOpenmrsVersion must not be empty");
-			Validate.notEmpty(config.searchQueries, "searchQuery must not be empty");
+			Validate.notEmpty(config.searchQueries, "searchQueries must not be empty");
 			return config;
 		}
 	}

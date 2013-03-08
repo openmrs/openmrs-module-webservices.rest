@@ -45,7 +45,7 @@ public class ConceptReferenceTermSearchHandler1_9 extends BaseSearchHandler {
 		        .setId("default")
 		        .setSupportedResource("conceptreferenceterm")
 		        .setSupportedOpenmrsVersions("1.9.*")
-		        .setSearchQuery(
+		        .setSearchQueries(
 		            new SearchQuery(Arrays.asList("source"), Arrays.asList("code", "name"),
 		                    "Allows you to find terms by source, code and name")).build());
 	}

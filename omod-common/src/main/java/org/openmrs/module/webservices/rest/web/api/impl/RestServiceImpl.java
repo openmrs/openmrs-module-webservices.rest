@@ -340,9 +340,9 @@ public class RestServiceImpl implements RestService {
 	
 	private void addSearchHandlerToParametersMap(
 	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		for (SearchQuery searchParameters : searchHandler.getSearchQueries()) {
-			Set<String> parameters = new HashSet<String>(searchParameters.getRequiredParameters());
-			parameters.addAll(searchParameters.getOptionalParameters());
+		for (SearchQuery searchQueries : searchHandler.getSearchQueries()) {
+			Set<String> parameters = new HashSet<String>(searchQueries.getRequiredParameters());
+			parameters.addAll(searchQueries.getOptionalParameters());
 			
 			for (String parameter : parameters) {
 				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSupportedResource(),
@@ -497,8 +497,8 @@ public class RestServiceImpl implements RestService {
 			SearchHandler candidateSearchHandler = it.next();
 			boolean remove = true;
 			
-			for (SearchQuery candidateSearchParameters : candidateSearchHandler.getSearchQueries()) {
-				Set<String> requiredParameters = new HashSet<String>(candidateSearchParameters.getRequiredParameters());
+			for (SearchQuery candidateSearchQueries : candidateSearchHandler.getSearchQueries()) {
+				Set<String> requiredParameters = new HashSet<String>(candidateSearchQueries.getRequiredParameters());
 				requiredParameters.removeAll(searchParameters);
 				if (requiredParameters.isEmpty()) {
 					remove = false;

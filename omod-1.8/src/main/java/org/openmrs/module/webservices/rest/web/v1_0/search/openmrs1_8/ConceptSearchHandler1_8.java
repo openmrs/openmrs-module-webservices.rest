@@ -47,7 +47,7 @@ public class ConceptSearchHandler1_8 extends BaseSearchHandler {
 		        .setId("default")
 		        .setSupportedResource("concept")
 		        .setSupportedOpenmrsVersions("1.8.*", "1.9.*")
-		        .setSearchQuery(
+		        .setSearchQueries(
 		            new SearchQuery(Arrays.asList("source"), Arrays.asList("code"),
 		                    "Allows you to find concepts by source and code")).build());
 	}
