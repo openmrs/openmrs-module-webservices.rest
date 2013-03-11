@@ -13,10 +13,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -148,5 +153,39 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		req.addParameter("q", "cd4");
 		SimpleObject result = deserialize(handle(req));
 		assertEquals(3, Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void shouldFindBySourceName() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"))));
+		Integer resultsSize = Util.getResultsSize(result);
+		assertThat(resultsSize, is(8));
+	}
+	
+	@Test
+	public void shouldFindBySourceUuid() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "00001827-639f-4cb4-961f-1e025bf80000"))));
+		Integer resultsSize = Util.getResultsSize(result);
+		assertThat(resultsSize, is(8));
+	}
+	
+	@Test
+	public void shouldFindBySourceAndCode() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
+		assertThat(Util.getResultsSize(result), is(1));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
+	}
+	
+	@Test
+	public void shouldFindBySourceAndName() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("name", "weight term"))));
+		assertThat(Util.getResultsSize(result), is(1));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
 	}
 }

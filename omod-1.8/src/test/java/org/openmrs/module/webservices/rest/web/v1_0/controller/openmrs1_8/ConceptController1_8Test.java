@@ -26,8 +26,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSet;
+import org.openmrs.ConceptSource;
 import org.openmrs.Drug;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptNameType;
@@ -462,7 +464,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldFindConceptsBySourceNameAndCode() throws Exception {
+	public void shouldFindConceptsBySourceAndCode() throws Exception {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
 		        "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
 		List<Object> results = Util.getResultsList(response);
@@ -470,5 +472,23 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		assertThat(results.size(), is(1));
 		Object next = results.iterator().next();
 		assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+	}
+	
+	@Test
+	public void shouldFindConceptsBySource() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"))));
+		List<Object> results = Util.getResultsList(response);
+
+		assertThat(results.size(), is(6));
+	}
+	
+	@Test
+	public void shouldFindConceptsBySourceUuid() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "00001827-639f-4cb4-961f-1e025bf80000"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		assertThat(results.size(), is(6));
 	}
 }

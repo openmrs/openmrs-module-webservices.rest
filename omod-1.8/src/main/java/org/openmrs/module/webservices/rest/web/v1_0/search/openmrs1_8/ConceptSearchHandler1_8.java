@@ -75,7 +75,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			List<ConceptMap> conceptMaps = conceptService.getConceptsByConceptSource(conceptSource);
 			List<Concept> concepts = new ArrayList<Concept>();
 			for (ConceptMap conceptMap : conceptMaps) {
-				if (!conceptMap.getConcept().isRetired()) {
+				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
 					concepts.add(conceptMap.getConcept());
 				}
 			}

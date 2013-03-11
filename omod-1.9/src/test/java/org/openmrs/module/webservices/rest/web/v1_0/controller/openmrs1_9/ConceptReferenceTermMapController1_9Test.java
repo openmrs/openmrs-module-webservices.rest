@@ -13,16 +13,23 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 
+import java.util.List;
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -103,5 +110,79 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldNotSearch() throws Exception {
 		handle(newGetRequest(getURI(), new Parameter("q", "search query")));
+	}
+	
+	@Test
+	public void shouldFindByTermA() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("termA", "SSTRM-WGT234"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(2));
+	}
+	
+	@Test
+	public void shouldFindByTermAndMaptype() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("termA", "SSTRM-WGT234"),
+		    new Parameter("maptype", "is-parent-to"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("dff198e4-562d-11e0-b169-18a905e044dc"));
+	}
+	
+	@Test
+	public void shouldNotFindByTermAndDifferentMaptype() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("termA", "SSTRM-WGT234"),
+		    new Parameter("maptype", "is-a"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, empty());
+	}
+	
+	@Test
+	public void shouldFindByTermB() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("termB", "SSTRM-CD41003"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("dff198e4-562d-11e0-b169-18a905e044dc"));
+	}
+	
+	@Test
+	public void shouldFindByTermBAndMaptype() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("termB", "SSTRM-CD41003"),
+		    new Parameter("maptype", "is-parent-to"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("dff198e4-562d-11e0-b169-18a905e044dc"));
+	}
+	
+	@Test
+	public void shouldFindByMapsAndTo() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("maps", "SSTRM-WGT234"),
+		    new Parameter("to", "SSTRM-CD41003"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("dff198e4-562d-11e0-b169-18a905e044dc"));
+	}
+	
+	@Test
+	public void shouldNotFindByMapsAndDifferentTo() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("maps", "SSTRM-WGT234"),
+		    new Parameter("to", "SNOMED CT-7345693"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+	}
+	
+	@Test
+	public void shouldFindByMaps() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("maps", "SSTRM-WGT234"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(2));
+	}
+	
+	@Test
+	public void shouldFindByMapsAndMaptype() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("maps", "SSTRM-CD41003"),
+		    new Parameter("maptype", "is-parent-to"))));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(results, hasSize(1));
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("dff198e4-562d-11e0-b169-18a905e044dc"));
 	}
 }

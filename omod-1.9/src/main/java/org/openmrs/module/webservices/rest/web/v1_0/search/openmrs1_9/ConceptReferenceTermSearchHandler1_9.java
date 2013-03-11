@@ -84,7 +84,7 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 				term = conceptService.getConceptReferenceTermByName(name, conceptSource);
 			}
 			
-			if (term == null) {
+			if (term == null || (term.isRetired() && !context.getIncludeAll())) {
 				return new EmptySearchResult();
 			} else {
 				return new AlreadyPaged<ConceptReferenceTerm>(context, Arrays.asList(term), false);
