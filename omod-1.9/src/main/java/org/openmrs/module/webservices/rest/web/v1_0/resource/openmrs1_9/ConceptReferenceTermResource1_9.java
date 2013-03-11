@@ -14,6 +14,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -86,6 +87,23 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		description.addProperty("version");
 		
 		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
+	 */
+	@Override
+	public String getDisplayString(ConceptReferenceTerm delegate) {
+		if (delegate.getConceptSource() == null) {
+			return "";
+		}
+		String display =  delegate.getConceptSource().getName() + ": " + delegate.getCode();
+		
+		if (!StringUtils.isBlank(delegate.getName())) {
+			display += " (" + delegate.getName() + ")";
+		}
+		
+		return display;
 	}
 	
 	/**
