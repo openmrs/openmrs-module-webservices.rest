@@ -21,9 +21,10 @@ import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseSearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +35,23 @@ import org.springframework.stereotype.Component;
  * Allows you to find terms by source and code.
  */
 @Component
-public class ConceptReferenceTermSearchHandler1_9 extends BaseSearchHandler {
+public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	
 	@Autowired
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	public ConceptReferenceTermSearchHandler1_9() {
-		super(new ConfigBuilder()
-		        .setId("default")
-		        .setSupportedResource("conceptreferenceterm")
-		        .setSupportedOpenmrsVersions("1.9.*")
-		        .setSearchQueries(
-		            new SearchQuery(Arrays.asList("source"), Arrays.asList("code", "name"),
-		                    "Allows you to find terms by source, code and name")).build());
+	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "conceptreferenceterm", "1.9.*")
+	        .withSearchQueries(
+	            new SearchQuery.Builder("Allows you to find terms by source, code and name")
+	                    .withRequiredParameters("source").withOptionalParameters("code", "name").build()).build();
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.sresource.api.SearchHandler#getSearchConfig()
+	 */
+	@Override
+	public SearchConfig getSearchConfig() {
+		return searchConfig;
 	}
 	
 	/**

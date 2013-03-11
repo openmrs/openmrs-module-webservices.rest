@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -23,8 +22,9 @@ import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseSearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -36,20 +36,23 @@ import org.springframework.stereotype.Component;
  * Allows for finding concepts by mapping.
  */
 @Component
-public class ConceptSearchHandler1_8 extends BaseSearchHandler {
+public class ConceptSearchHandler1_8 implements SearchHandler {
 	
 	@Autowired
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	public ConceptSearchHandler1_8() {
-		super(new ConfigBuilder()
-		        .setId("default")
-		        .setSupportedResource("concept")
-		        .setSupportedOpenmrsVersions("1.8.*", "1.9.*")
-		        .setSearchQueries(
-		            new SearchQuery(Arrays.asList("source"), Arrays.asList("code"),
-		                    "Allows you to find concepts by source and code")).build());
+	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "concept", "1.8.*", "1.9.*")
+	        .withSearchQueries(
+	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
+	                    .withOptionalParameters("code").build()).build();
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
+	 */
+	@Override
+	public SearchConfig getSearchConfig() {
+		return searchConfig;
 	}
 	
 	/**

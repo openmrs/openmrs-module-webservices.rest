@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,35 +21,52 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 /**
- * Search query used by {@link SearchHandler}.
+ * Used by {@link SearchConfig}.
  */
 public class SearchQuery {
 	
-	private final Set<String> requiredParameters;
+	private Set<String> requiredParameters;
 	
-	private final Set<String> optionalParameters;
+	private Set<String> optionalParameters;
 	
-	private final String description;
+	private String description;
 	
-	public SearchQuery(Collection<String> requiredParameters, Collection<String> optionalParameters, String description) {
-		Validate.notEmpty(description, "Description must not be empty");
+	private SearchQuery() {
+	}
+	
+	public static class Builder {
 		
-		if (requiredParameters != null) {
-			this.requiredParameters = Collections.unmodifiableSet(new HashSet<String>(requiredParameters));
-		} else {
-			this.requiredParameters = Collections.emptySet();
+		private SearchQuery searchQuery = new SearchQuery();
+		
+		public Builder(String description) {
+			searchQuery.description = description;
 		}
 		
-		if (optionalParameters != null) {
-			this.optionalParameters = Collections.unmodifiableSet(new HashSet<String>(optionalParameters));
-		} else {
-			this.optionalParameters = Collections.emptySet();
+		public Builder withRequiredParameters(String... requiredParameters) {
+			searchQuery.requiredParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
+			        .asList(requiredParameters)));
+			return this;
 		}
 		
-		Validate.isTrue(!this.requiredParameters.isEmpty() || !this.optionalParameters.isEmpty(),
-		    "Either required or optional parameters must not be empty");
+		public Builder withOptionalParameters(String... optionalParameters) {
+			searchQuery.optionalParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
+			        .asList(optionalParameters)));
+			return this;
+		}
 		
-		this.description = description;
+		public SearchQuery build() {
+			if (searchQuery.requiredParameters == null) {
+				searchQuery.requiredParameters = Collections.emptySet();
+			}
+			if (searchQuery.optionalParameters == null) {
+				searchQuery.optionalParameters = Collections.emptySet();
+			}
+			
+			Validate.notEmpty(searchQuery.description, "Description must not be empty");
+			Validate.isTrue(!searchQuery.requiredParameters.isEmpty() || !searchQuery.optionalParameters.isEmpty(),
+			    "Either required or optional parameters must not be empty");
+			return searchQuery;
+		}
 	}
 	
 	public Set<String> getRequiredParameters() {

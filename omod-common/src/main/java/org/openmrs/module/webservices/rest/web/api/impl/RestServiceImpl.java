@@ -36,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.representation.CustomRepresentati
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -128,8 +129,8 @@ public class RestServiceImpl implements RestService {
 		}
 		
 		public SearchHandlerIdKey(SearchHandler searchHandler) {
-			this.supportedResource = searchHandler.getSupportedResource();
-			this.id = searchHandler.getId();
+			this.supportedResource = searchHandler.getSearchConfig().getSupportedResource();
+			this.id = searchHandler.getSearchConfig().getId();
 		}
 		
 		@Override
@@ -313,7 +314,7 @@ public class RestServiceImpl implements RestService {
 	
 	private void addSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
 	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		for (String supportedVersion : searchHandler.getSupportedOpenmrsVersions()) {
+		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
 			try {
 				ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
 				//If the OpenMRS version is supported then
@@ -330,9 +331,10 @@ public class RestServiceImpl implements RestService {
 		SearchHandlerIdKey searchHanlderIdKey = new SearchHandlerIdKey(searchHandler);
 		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
 		if (previousSearchHandler != null) {
+			SearchConfig config = searchHandler.getSearchConfig();
 			throw new IllegalStateException("Two search handlers (" + searchHandler.getClass() + ", "
-			        + previousSearchHandler.getClass() + ") for the same resource (" + searchHandler.getSupportedResource()
-			        + ") must not have the same ID (" + searchHandler.getId() + ")");
+			        + previousSearchHandler.getClass() + ") for the same resource (" + config.getSupportedResource()
+			        + ") must not have the same ID (" + config.getId() + ")");
 		}
 		
 		addSearchHandlerToParametersMap(tempSearchHandlersByParameters, searchHandler);
@@ -340,13 +342,13 @@ public class RestServiceImpl implements RestService {
 	
 	private void addSearchHandlerToParametersMap(
 	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		for (SearchQuery searchQueries : searchHandler.getSearchQueries()) {
+		for (SearchQuery searchQueries : searchHandler.getSearchConfig().getSearchQueries()) {
 			Set<String> parameters = new HashSet<String>(searchQueries.getRequiredParameters());
 			parameters.addAll(searchQueries.getOptionalParameters());
 			
 			for (String parameter : parameters) {
-				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSupportedResource(),
-				        parameter);
+				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSearchConfig()
+				        .getSupportedResource(), parameter);
 				Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
 				if (list == null) {
 					list = new HashSet<SearchHandler>();
@@ -476,7 +478,7 @@ public class RestServiceImpl implements RestService {
 				List<String> candidateSearchHandlerIds = new ArrayList<String>();
 				for (SearchHandler candidateSearchHandler : candidateSearchHandlers) {
 					candidateSearchHandlerIds.add(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID + "="
-					        + candidateSearchHandler.getId());
+					        + candidateSearchHandler.getSearchConfig().getId());
 				}
 				throw new InvalidSearchException("The search is ambiguous. Please specify "
 				        + StringUtils.join(candidateSearchHandlerIds, " or "));
@@ -497,7 +499,7 @@ public class RestServiceImpl implements RestService {
 			SearchHandler candidateSearchHandler = it.next();
 			boolean remove = true;
 			
-			for (SearchQuery candidateSearchQueries : candidateSearchHandler.getSearchQueries()) {
+			for (SearchQuery candidateSearchQueries : candidateSearchHandler.getSearchConfig().getSearchQueries()) {
 				Set<String> requiredParameters = new HashSet<String>(candidateSearchQueries.getRequiredParameters());
 				requiredParameters.removeAll(searchParameters);
 				if (requiredParameters.isEmpty()) {

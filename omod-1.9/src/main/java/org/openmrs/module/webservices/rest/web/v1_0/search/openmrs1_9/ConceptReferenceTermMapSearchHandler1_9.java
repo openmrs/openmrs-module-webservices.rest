@@ -14,7 +14,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.ConceptMapType;
@@ -25,8 +24,9 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService.Field;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseSearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
  * Allows for searching {@link ConceptReferenceTermMap}s.
  */
 @Component
-public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
+public class ConceptReferenceTermMapSearchHandler1_9 implements SearchHandler {
 	
 	@Autowired
 	@Qualifier("conceptService")
@@ -48,22 +48,27 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 	@Qualifier("restHelperService")
 	RestHelperService restHelperService;
 	
-	public ConceptReferenceTermMapSearchHandler1_9() {
-		super(
-		        new ConfigBuilder()
-		                .setId("default")
-		                .setSupportedResource("conceptreferencetermmap")
-		                .setSupportedOpenmrsVersions("1.9.*")
-		                .setSearchQueries(
-		                    new SearchQuery(Arrays.asList("termA"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)"),
-		                    new SearchQuery(Arrays.asList("termB"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)"),
-		                    new SearchQuery(Arrays.asList("maps", "to"), null,
-		                            "Allows you to find term maps by reference 'maps' (termA uuid) and 'to' (termB uuid)"),
-		                    new SearchQuery(Arrays.asList("maps"), Arrays.asList("maptype"),
-		                            "Allows you to find term maps by reference 'maps' (termA or termB uuid) and 'maptype' (uuid or name)"))
-		                .build());
+	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "conceptreferencetermmap", "1.9.*")
+	        .withSearchQueries(
+	            new SearchQuery.Builder(
+	                    "Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)")
+	                    .withRequiredParameters("termA").withOptionalParameters("maptype").build(),
+	            new SearchQuery.Builder(
+	                    "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)")
+	                    .withRequiredParameters("termB").withOptionalParameters("maptype").build(),
+	            new SearchQuery.Builder(
+	                    "Allows you to find term maps by reference 'maps' (termA uuid) and 'to' (termB uuid)")
+	                    .withRequiredParameters("maps", "to").build(),
+	            new SearchQuery.Builder(
+	                    "Allows you to find term maps by reference 'maps' (termA or termB uuid) and 'maptype' (uuid or name)")
+	                    .withRequiredParameters("maps").withOptionalParameters("maptype").build()).build();
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
+	 */
+	@Override
+	public SearchConfig getSearchConfig() {
+		return searchConfig;
 	}
 	
 	/**
@@ -134,4 +139,5 @@ public class ConceptReferenceTermMapSearchHandler1_9 extends BaseSearchHandler {
 		
 		return new NeedsPaging<ConceptReferenceTermMap>(termMaps, context);
 	}
+	
 }

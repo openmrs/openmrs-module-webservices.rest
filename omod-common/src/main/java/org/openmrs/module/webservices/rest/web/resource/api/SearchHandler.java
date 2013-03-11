@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import java.util.Set;
-
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -24,26 +22,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public interface SearchHandler {
 	
 	/**
-	 * The id is used to resolve ambiguous search requests by specifying ?s=$id
-	 * 
-	 * @return the unique id
+	 * @return the search configuration
 	 */
-	String getId();
-	
-	/**
-	 * @return the name of supported resource
-	 */
-	String getSupportedResource();
-	
-	/**
-	 * @return the list of supported OpenMRS version e.g. "1.8.*","1.9.*"
-	 */
-	Set<String> getSupportedOpenmrsVersions();
-	
-	/**
-	 * @return the set of search queries
-	 */
-	Set<SearchQuery> getSearchQueries();
+	SearchConfig getSearchConfig();
 	
 	/**
 	 * The search.
