@@ -41,10 +41,9 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "conceptreferenceterm", "1.9.*")
-	        .withSearchQueries(
-	            new SearchQuery.Builder("Allows you to find terms by source, code and name")
-	                    .withRequiredParameters("source").withOptionalParameters("code", "name").build()).build();
+	private final SearchConfig searchConfig = new SearchConfig("default", "conceptreferenceterm", "1.9.*",
+	        new SearchQuery.Builder("Allows you to find terms by source, code and name").withRequiredParameters("source")
+	                .withOptionalParameters("code", "name").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.sresource.api.SearchHandler#getSearchConfig()

@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.Concept;
@@ -42,10 +43,9 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "concept", "1.8.*", "1.9.*")
-	        .withSearchQueries(
-	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
-	                    .withOptionalParameters("code").build()).build();
+	private final SearchConfig searchConfig = new SearchConfig("default", "concept", Arrays.asList("1.8.*", "1.9.*"),
+	        new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
+	                .withOptionalParameters("code").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

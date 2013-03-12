@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.ConceptMapType;
@@ -48,20 +49,15 @@ public class ConceptReferenceTermMapSearchHandler1_9 implements SearchHandler {
 	@Qualifier("restHelperService")
 	RestHelperService restHelperService;
 	
-	private final SearchConfig searchConfig = new SearchConfig.Builder("default", "conceptreferencetermmap", "1.9.*")
-	        .withSearchQueries(
-	            new SearchQuery.Builder(
-	                    "Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)")
-	                    .withRequiredParameters("termA").withOptionalParameters("maptype").build(),
-	            new SearchQuery.Builder(
-	                    "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)")
-	                    .withRequiredParameters("termB").withOptionalParameters("maptype").build(),
-	            new SearchQuery.Builder(
-	                    "Allows you to find term maps by reference 'maps' (termA uuid) and 'to' (termB uuid)")
-	                    .withRequiredParameters("maps", "to").build(),
-	            new SearchQuery.Builder(
-	                    "Allows you to find term maps by reference 'maps' (termA or termB uuid) and 'maptype' (uuid or name)")
-	                    .withRequiredParameters("maps").withOptionalParameters("maptype").build()).build();
+	private final SearchConfig searchConfig = new SearchConfig("default", "conceptreferencetermmap", "1.9.*", Arrays.asList(
+	    new SearchQuery.Builder("Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)")
+	            .withRequiredParameters("termA").withOptionalParameters("maptype").build(), new SearchQuery.Builder(
+	            "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)")
+	            .withRequiredParameters("termB").withOptionalParameters("maptype").build(), new SearchQuery.Builder(
+	            "Allows you to find term maps by reference 'maps' (termA uuid) and 'to' (termB uuid)")
+	            .withRequiredParameters("maps", "to").build(), new SearchQuery.Builder(
+	            "Allows you to find term maps by reference 'maps' (termA or termB uuid) and 'maptype' (uuid or name)")
+	            .withRequiredParameters("maps").withOptionalParameters("maptype").build()));
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

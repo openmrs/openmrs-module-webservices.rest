@@ -1,5 +1,5 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
+ * The contents of this file are subject to the OpenMRS Public LicenseV
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.resource.api;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,42 +26,39 @@ import org.apache.commons.lang.Validate;
  */
 public class SearchConfig {
 	
-	private String id;
+	private final String id;
 	
-	private String supportedResource;
+	private final String supportedResource;
 	
-	private Set<String> supportedOpenmrsVersions;
+	private final Set<String> supportedOpenmrsVersions;
 	
-	private Set<SearchQuery> searchQueries;
+	private final Set<SearchQuery> searchQueries;
 	
-	private SearchConfig() {
+	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
+	    Collection<SearchQuery> searchQueries) {
+		this.id = id;
+		this.supportedResource = supportedResource;
+		this.supportedOpenmrsVersions = Collections.unmodifiableSet(new HashSet<String>(supportedOpenmrsVersions));
+		this.searchQueries = Collections.unmodifiableSet(new HashSet<SearchQuery>(searchQueries));
+		
+		Validate.notEmpty(this.id, "id must not be empty");
+		Validate.notEmpty(this.supportedResource, "supportedResource must not be empty");
+		Validate.notEmpty(this.supportedOpenmrsVersions, "supportedOpenmrsVersions must not be empty");
+		Validate.notEmpty(this.searchQueries, "searchQueries must not be empty");
 	}
 	
-	public static class Builder {
-		
-		private final SearchConfig config = new SearchConfig();
-		
-		public Builder(String id, String supportedResource, String supportedOpenmrsVersion,
-		    String... supportedOpenmrsVersions) {
-			config.id = id;
-			config.supportedResource = supportedResource;
-			config.supportedOpenmrsVersions = new HashSet<String>(Arrays.asList(supportedOpenmrsVersions));
-			config.supportedOpenmrsVersions.add(supportedOpenmrsVersion);
-			config.supportedOpenmrsVersions = Collections.unmodifiableSet(config.supportedOpenmrsVersions);
-		}
-		
-		public Builder withSearchQueries(SearchQuery... searchQueries) {
-			config.searchQueries = Collections.unmodifiableSet(new HashSet<SearchQuery>(Arrays.asList(searchQueries)));
-			return this;
-		}
-		
-		public SearchConfig build() {
-			Validate.notEmpty(config.id, "id must not be empty");
-			Validate.notEmpty(config.supportedResource, "supportedResource must not be empty");
-			Validate.notEmpty(config.supportedOpenmrsVersions, "supportedOpenmrsVersions must not be empty");
-			Validate.notEmpty(config.searchQueries, "searchQueries must not be empty");
-			return config;
-		}
+	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion, SearchQuery searchQuery) {
+		this(id, supportedResource, Arrays.asList(supportedOpenmrsVersion), Arrays.asList(searchQuery));
+	}
+	
+	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
+	    SearchQuery searchQuery) {
+		this(id, supportedResource, supportedOpenmrsVersions, Arrays.asList(searchQuery));
+	}
+	
+	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion,
+	    Collection<SearchQuery> searchQueries) {
+		this(id, supportedResource, Arrays.asList(supportedOpenmrsVersion), searchQueries);
 	}
 	
 	public String getId() {

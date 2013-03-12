@@ -31,8 +31,8 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("none", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("Fuzzy search").withRequiredParameters("q").build()).build();
+		SearchConfig searchConfig = new SearchConfig("none", "concept", "1.8.*", new SearchQuery.Builder("Fuzzy search")
+		        .withRequiredParameters("q").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
@@ -55,8 +55,8 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("Fuzzy search").withRequiredParameters("q").build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "Fuzzy search").withRequiredParameters("q").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
@@ -75,14 +75,14 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName", "code").build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName", "code").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig.Builder("conceptByMapping2", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName", "code").build()).build();
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping2", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName", "code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		service.addSupportedSearchHandler(searchHandler2);
 		
@@ -112,15 +112,14 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").withOptionalParameters("code")
-		            .build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").withOptionalParameters("code").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig.Builder("conceptByMapping2", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").build()).build();
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping2", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		service.addSupportedSearchHandler(searchHandler2);
 		
@@ -143,15 +142,14 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").withOptionalParameters("code")
-		            .build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").withOptionalParameters("code").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig.Builder("conceptByMapping2", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").build()).build();
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping2", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		service.addSupportedSearchHandler(searchHandler2);
 		
@@ -176,15 +174,14 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").withOptionalParameters("code")
-		            .build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").withOptionalParameters("code").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig.Builder("conceptByMapping2", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").build()).build();
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping2", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		service.addSupportedSearchHandler(searchHandler2);
 		
@@ -206,8 +203,8 @@ public class RestServiceImplTest {
 		RestServiceImpl service = new RestServiceImpl();
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig.Builder("conceptByMapping", "concept", "1.8.*").withSearchQueries(
-		    new SearchQuery.Builder("description").withRequiredParameters("sourceName").build()).build();
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("sourceName").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
