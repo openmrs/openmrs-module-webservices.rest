@@ -12,11 +12,14 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.List;
+import java.util.Set;
 
 import org.openmrs.Provider;
+import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -78,6 +81,20 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		description.addProperty("attributes");
 		description.addProperty("retired");
 		return description;
+	}
+	
+	/**
+	 * Sets the attributes of a Provider
+	 *
+	 * @param provider whose attributes to be set
+	 * @param attributes the attributes to be set
+	 */
+	@PropertySetter("attributes")
+	public static void setAttributes(Provider provider, Set<ProviderAttribute> attributes) {
+		for (ProviderAttribute attribute : attributes) {
+			attribute.setOwner(provider);
+		}
+		provider.setAttributes(attributes);
 	}
 	
 	/**

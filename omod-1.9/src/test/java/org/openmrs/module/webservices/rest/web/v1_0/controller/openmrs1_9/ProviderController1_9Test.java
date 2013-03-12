@@ -43,6 +43,21 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 	}
 	
 	/**
+	 * @verifies create a new Provider with Attributes
+	 */
+	@Test
+	public void createProvider_shouldCreateANewProviderWithAttributes() throws Exception {
+		int before = Context.getProviderService().getAllProviders().size();
+		String json = "{ \"person\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\"," + "\"identifier\":\"abc123ez\","
+		        + "\"attributes\":[{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID
+		        + "\",\"value\":\"2005-01-01\"}]}";
+		handle(newPostRequest(getURI(), json));
+		Assert.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
+		Provider provider = (Provider) Context.getProviderService().getAllProviders().get(1);
+		Assert.assertEquals(1, provider.getAttributes().size());
+	}
+	
+	/**
 	 * @see ProviderController#updateProvider(Provider,SimpleObject,WebRequest)
 	 * @verifies should fail when changing a person property on a Provider
 	 */
