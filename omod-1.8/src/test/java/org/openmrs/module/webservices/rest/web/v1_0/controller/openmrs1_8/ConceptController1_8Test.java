@@ -16,10 +16,16 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -39,6 +45,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -80,9 +87,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("511e03ab-7cbb-4b9f-abe3-d9256d67f27e", PropertyUtils.getProperty(result, "uuid"));
-		Assert
-		        .assertEquals("TREATMENT STATUS", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"),
-		            "name"));
+		Assert.assertEquals("TREATMENT STATUS", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
 	}
 	
 	@Test
@@ -479,7 +484,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
 		        "Some Standardized Terminology"))));
 		List<Object> results = Util.getResultsList(response);
-
+		
 		assertThat(results.size(), is(6));
 	}
 	
@@ -490,5 +495,18 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		List<Object> results = Util.getResultsList(response);
 		
 		assertThat(results.size(), is(6));
+	}
+	
+	@Test
+	public void shouldReturnJSON() throws Exception {
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION,
+		        RestConstants.REPRESENTATION_FULL)));
+		
+		String json = response.getContentAsString();
+		json = json.replaceAll("\\s", "");
+		String expected = IOUtils.toString(getClass().getResourceAsStream("/conceptInJson.xml"));
+		expected = expected.replaceAll("\\s", "");
+		
+		assertThat(json, is(expected));
 	}
 }
