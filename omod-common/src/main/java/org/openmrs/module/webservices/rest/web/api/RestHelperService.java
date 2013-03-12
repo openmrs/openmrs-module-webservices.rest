@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.api;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.openmrs.ConceptMap;
 
@@ -25,5 +26,27 @@ public interface RestHelperService {
 	<T> T getObjectByUuid(Class<? extends T> type, String uuid);
 	
 	<T> T getObjectById(Class<? extends T> type, Serializable id);
+	
+	<T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields);
+	
+	public static class Field {
+		
+		private final String name;
+		
+		private final Object value;
+		
+		public Field(String name, Object value) {
+			this.name = name;
+			this.value = value;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public Object getValue() {
+			return value;
+		}
+	}
 	
 }

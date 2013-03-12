@@ -50,7 +50,7 @@ public class ConceptReferenceTermResource1_9Test extends BaseDelegatingResourceT
 	
 	@Override
 	public String getDisplayProperty() {
-		return "cd4died term2";
+		return "Some Standardized Terminology: 127cd4689 (cd4died term2)";
 	}
 	
 	@Override

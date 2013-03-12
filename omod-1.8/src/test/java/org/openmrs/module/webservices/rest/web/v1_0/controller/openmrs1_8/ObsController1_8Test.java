@@ -22,9 +22,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.Assert;
-
 import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Obs;
@@ -134,7 +133,7 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 		    (Context.getPatientService().getPatient(7)));
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
 		newObs = observationsByPersonAfterSave.get(0);
-		Assert.assertEquals(150.0, ((Obs) newObs).getValueNumeric());
+		Assert.assertEquals((Double) 150.0, ((Obs) newObs).getValueNumeric());
 	}
 	
 	/**
@@ -259,7 +258,7 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 		    (Context.getPatientService().getPatient(7)));
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
 		newObs = observationsByPersonAfterSave.get(0);
-		Assert.assertEquals(90.0, ((Obs) newObs).getValueNumeric());
+		Assert.assertEquals((Double) 90.0, ((Obs) newObs).getValueNumeric());
 	}
 	
 	/**
