@@ -17,6 +17,7 @@ import org.openmrs.Patient;
 import org.openmrs.activelist.Problem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -31,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Problem, supporting standard CRUD operations
  */
-@Resource(name = "problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	
 	/**

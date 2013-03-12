@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD operations
  */
-@Resource(name = "conceptreferenceterm", supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/conceptreferenceterm", supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = "1.9.*")
 public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResource<ConceptReferenceTerm> {
 	
 	/**

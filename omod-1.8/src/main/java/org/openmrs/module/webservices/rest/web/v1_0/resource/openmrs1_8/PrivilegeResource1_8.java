@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -29,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Privilege, supporting standard CRUD operations
  */
-@Resource(name = "privilege", supportedClass = Privilege.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/privilege", supportedClass = Privilege.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privilege> {
 	
 	/**

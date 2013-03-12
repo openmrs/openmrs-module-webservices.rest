@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.Encounter;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -24,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 /**
  * {@link Resource} for {@link EncounterResource1_9}, supporting standard CRUD operations
  */
-@Resource(name = "encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.9.*")
 public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8 {
 	
 	/**

@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptMapType}, supporting standard CRUD operations
  */
-@Resource(name = "conceptmaptype", supportedClass = ConceptMapType.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/conceptmaptype", supportedClass = ConceptMapType.class, supportedOpenmrsVersions = "1.9.*")
 public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<ConceptMapType> {
 	
 	/**

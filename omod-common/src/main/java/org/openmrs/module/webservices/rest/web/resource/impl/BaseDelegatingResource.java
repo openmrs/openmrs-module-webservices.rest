@@ -411,8 +411,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			DelegatingSubclassHandler<T, ? extends T> handler = getSubclassHandler(subclass);
 			if (handler != null)
 				return handler.getTypeName();
-			if (newDelegate().getClass().equals(subclass))
-				return getResourceName();
+			if (newDelegate().getClass().equals(subclass)) {
+				String resourceName = getResourceName();
+				int lastSlash = resourceName.lastIndexOf("/");
+				resourceName = resourceName.substring(lastSlash + 1);
+				return resourceName;
+			}
 		}
 		return null;
 	}
@@ -447,7 +451,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		DelegatingSubclassHandler<T, ? extends T> handler = getSubclassHandler(type);
 		if (handler != null)
 			return handler;
-		if (type.equals(getResourceName()))
+		if (getResourceName().endsWith(type))
 			return this;
 		throw new IllegalArgumentException("type=" + type + " is not handled by this resource (" + getClass()
 		        + ") or any subclass");

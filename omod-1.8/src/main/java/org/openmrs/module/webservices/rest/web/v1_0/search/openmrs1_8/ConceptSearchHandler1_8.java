@@ -22,6 +22,7 @@ import org.openmrs.ConceptMap;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
@@ -43,7 +44,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", "concept", Arrays.asList("1.8.*", "1.9.*"),
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*"),
 	        new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                .withOptionalParameters("code").build());
 	

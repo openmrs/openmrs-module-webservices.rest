@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
-@Resource(name = "field", supportedClass = Field.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	
 	/**

@@ -33,6 +33,8 @@ import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -62,6 +64,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	
 	/**
 	 * Default implementation that returns REF, DEFAULT, and FULL
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#getAvailableRepresentations()
 	 */
 	@Override
@@ -196,10 +199,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	
 	/**
 	 * Implementations should override this method to return a list of all instances represented by
-	 * the specified rest resource in the database.
-	 * 
-	 * (If the resource supports subclasses, this method should return all of its documents regardless of their
-	 * type/subclass.)
+	 * the specified rest resource in the database. (If the resource supports subclasses, this
+	 * method should return all of its documents regardless of their type/subclass.)
 	 * 
 	 * @throws ResponseException
 	 */
@@ -228,18 +229,16 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * Resources provided by this module itself are published without any particular namespace (e.g. /ws/rest/v1/concept)
-	 * but when modules publish resources, they should be namespaced (e.g. /ws/rest/v1/moduleId/moduleresource).
+	 * Resources provided by this module itself are published without any particular namespace (e.g.
+	 * /ws/rest/v1/concept) but when modules publish resources, they should be namespaced (e.g.
+	 * /ws/rest/v1/moduleId/moduleresource).
 	 * 
-	 * We recommend that module resources override this method and return their module id as a namespace. (Note that you
-	 * also need to include that same namespace in your resource's controller.)
-	 * 
-	 * The default implementation just returns null.
-	 * 
-	 * @return a namespace that you want appended to the standard URI prefix before your resource's name
+	 * @deprecated Since 2.x the namespace must be declared in {@link Resource}'s name, {@link MainResourceController}
+	 * and {@link MainSubResourceController}.
 	 */
-	protected String getNamespacePrefix() {
-		return null;
+	@Deprecated
+	protected final String getNamespacePrefix() {
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -254,21 +253,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		Resource res = getClass().getAnnotation(Resource.class);
 		if (res != null) {
-			//TODO Deciding the version number from here is bad, it should be passed in to this method
-			
-			// if this resource defines a namespace, we need to append that
-			String namespacePrefix = "";
-			if (StringUtils.isNotBlank(getNamespacePrefix())) {
-				namespacePrefix = getNamespacePrefix().concat("/");
-			}
-			// TODO: Better if the @Resource annotation had version property in it
-			if (getClass().getName().contains("v2_0")) {
-				return RestConstants.URI_PREFIX + RestConstants.VERSION_2 + "/" + namespacePrefix + res.name() + "/"
-				        + getUniqueId((T) delegate);
-			} else if (getClass().getName().contains("v1_0")) {
-				return RestConstants.URI_PREFIX + RestConstants.VERSION_1 + "/" + namespacePrefix + res.name() + "/"
-				        + getUniqueId((T) delegate);
-			}
+			return RestConstants.URI_PREFIX + res.name() + "/" + getUniqueId((T) delegate);
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 	}

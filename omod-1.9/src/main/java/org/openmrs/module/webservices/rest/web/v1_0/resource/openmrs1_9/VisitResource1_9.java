@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
-@Resource(name = "visit", supportedClass = Visit.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = "1.9.*")
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	/**

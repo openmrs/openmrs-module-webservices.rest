@@ -90,7 +90,6 @@ public class ResourceDocCreator {
 			if (resourceDoc.getSuperResource() != null)
 				it.remove();
 		}
-		
 		Collections.sort(docs);
 		
 		return docs;
