@@ -20,6 +20,7 @@ import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
@@ -41,9 +42,9 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", "conceptreferenceterm", "1.9.*",
-	        new SearchQuery.Builder("Allows you to find terms by source, code and name").withRequiredParameters("source")
-	                .withOptionalParameters("code", "name").build());
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/conceptreferenceterm",
+	        "1.9.*", new SearchQuery.Builder("Allows you to find terms by source, code and name")
+	                .withRequiredParameters("source").withOptionalParameters("code", "name").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.sresource.api.SearchHandler#getSearchConfig()

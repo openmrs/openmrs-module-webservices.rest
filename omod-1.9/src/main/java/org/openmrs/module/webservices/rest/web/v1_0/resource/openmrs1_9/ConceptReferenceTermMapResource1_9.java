@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptReferenceTermMap}, supporting standard CRUD operations
  */
-@Resource(name = "conceptreferencetermmap", supportedClass = ConceptReferenceTermMap.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/conceptreferencetermmap", supportedClass = ConceptReferenceTermMap.class, supportedOpenmrsVersions = "1.9.*")
 public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<ConceptReferenceTermMap> {
 	
 	/**

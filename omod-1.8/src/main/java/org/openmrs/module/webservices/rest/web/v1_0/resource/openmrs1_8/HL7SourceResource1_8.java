@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -26,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
  */
-@Resource(name = "hl7source", supportedClass = HL7Source.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/hl7source", supportedClass = HL7Source.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Source> {
 	
 	/**

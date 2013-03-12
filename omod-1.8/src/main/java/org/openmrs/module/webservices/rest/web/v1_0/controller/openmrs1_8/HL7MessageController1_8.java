@@ -94,7 +94,7 @@ public class HL7MessageController1_8 extends BaseRestController {
 			throw new ConversionException(e.getMessage(), e);
 		}
 		
-		Object created = ((HL7MessageResource1_8) Context.getService(RestService.class).getResourceByName("hl7")).create(post,
+		Object created = ((HL7MessageResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/hl7")).create(post,
 		    context);
 		return RestUtil.created(response, created);
 	}

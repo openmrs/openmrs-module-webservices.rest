@@ -17,6 +17,7 @@ import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -53,7 +54,7 @@ public class UserConverter1_8 implements Converter<User> {
 	@Override
 	public SimpleObject asRepresentation(User instance, Representation rep) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8(instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName("user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
 		return userResource.asRepresentation(userPass, rep);
 	}
 	
@@ -63,7 +64,7 @@ public class UserConverter1_8 implements Converter<User> {
 	@Override
 	public Object getProperty(User instance, String propertyName) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8(instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName("user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
 		return userResource.getProperty(userPass, propertyName);
 	}
 	
@@ -73,7 +74,7 @@ public class UserConverter1_8 implements Converter<User> {
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8((User) instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName("user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
 		userResource.setProperty(userPass, propertyName, value);
 	}
 }

@@ -22,6 +22,7 @@ import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService.Field;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -49,7 +50,8 @@ public class ConceptReferenceTermMapSearchHandler1_9 implements SearchHandler {
 	@Qualifier("restHelperService")
 	RestHelperService restHelperService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", "conceptreferencetermmap", "1.9.*", Arrays.asList(
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
+	        + "/conceptreferencetermmap", "1.9.*", Arrays.asList(
 	    new SearchQuery.Builder("Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)")
 	            .withRequiredParameters("termA").withOptionalParameters("maptype").build(), new SearchQuery.Builder(
 	            "Allows you to find term maps by reference 'termB' (uuid) and 'maptype' (uuid or name)")

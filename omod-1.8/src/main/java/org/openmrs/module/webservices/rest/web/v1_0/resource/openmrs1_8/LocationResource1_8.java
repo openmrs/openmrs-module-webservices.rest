@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
  */
-@Resource(name = "location", supportedClass = Location.class, supportedOpenmrsVersions = "1.8.*")
+@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = "1.8.*")
 public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location> {
 	
 	/**

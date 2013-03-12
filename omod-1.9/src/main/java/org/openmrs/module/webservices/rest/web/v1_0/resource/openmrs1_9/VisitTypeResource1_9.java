@@ -18,6 +18,7 @@ import java.util.List;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -29,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link VisitType}, supporting standard CRUD operations
  */
-@Resource(name = "visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = "1.9.*")
 public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitType> {
 	
 	/**
