@@ -54,7 +54,7 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 			}
 		} else if (value instanceof Hyperlink) {
 			writeItem(value, context, writer);
-		} else {
+		} else if (value != null) {
 			writer.setValue(value.toString());
 		}
 

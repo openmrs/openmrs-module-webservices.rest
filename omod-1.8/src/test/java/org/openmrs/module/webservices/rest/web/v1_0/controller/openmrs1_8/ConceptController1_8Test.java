@@ -79,6 +79,18 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
 	}
 	
+	@Test
+	public void shouldReturnFullRepXML() throws Exception {
+		MockHttpServletRequest request = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		request.addHeader("Accept", "application/xml");
+		
+		MockHttpServletResponse result = handle(request);
+		
+		String xml = result.getContentAsString();
+		printXML(xml);
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfYouTryToSpecifyDefaultRepOnGetConceptByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
