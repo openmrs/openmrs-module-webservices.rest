@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.HL7MessageResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +56,8 @@ import ca.uhn.hl7v2.util.Terser;
 public class HL7MessageController1_8 extends BaseRestController {
 	
 	@Autowired
-	MainResourceController mainCrudController;
+	@Qualifier("mainResourceController")
+	MainResourceController mainResourceController;
 	
 	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/hl7", method = RequestMethod.POST)
 	@ResponseBody
@@ -107,6 +109,6 @@ public class HL7MessageController1_8 extends BaseRestController {
 	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/hl7", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject get(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		return mainCrudController.get("hl7", request, response);
+		return mainResourceController.get("hl7", request, response);
 	}
 }
