@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -26,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link EncounterType}, supporting standard CRUD operations
  */
-@Resource(name = "encountertype", supportedClass = EncounterType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/encountertype", supportedClass = EncounterType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<EncounterType> {
 	
 	/**
