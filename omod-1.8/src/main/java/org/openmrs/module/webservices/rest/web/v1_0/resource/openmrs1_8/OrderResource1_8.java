@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Resource for {@link Order} and all of its subclasses
  */
-@Resource(name = "order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	
 	/**

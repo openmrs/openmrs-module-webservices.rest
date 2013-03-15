@@ -17,6 +17,7 @@ import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -27,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link LocationTag} domain object
  */
-@Resource(name = "locationtag", supportedClass = LocationTag.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/locationtag", supportedClass = LocationTag.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<LocationTag> {
 	
 	private LocationService service() {

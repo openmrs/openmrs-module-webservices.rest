@@ -61,7 +61,7 @@ import org.openmrs.util.LocaleUtility;
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
  */
-@Resource(name = "concept", supportedClass = Concept.class, supportedOpenmrsVersions = "1.8.*")
+@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = "1.8.*")
 public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
 	@RepHandler(RefRepresentation.class)

@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.Concept;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 
@@ -21,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptR
 /**
  * Implemented to increase the resource version since the mapping subresource changed.
  */
-@Resource(name = "concept", supportedClass = Concept.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = "1.9.*")
 public class ConceptResource1_9 extends ConceptResource1_8 {
 	
 	/**
