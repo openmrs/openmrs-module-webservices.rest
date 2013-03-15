@@ -13,7 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,37 +36,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/rest/" + RestConstants.VERSION_1 + "/catalog")
 public class CatalogController extends BaseRestController {
-	
-	/**
-	 * Gets a catalog of all available resources.
-	 *
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	public Object getResourceCatalog(@RequestParam(value = "q", required = false) final String resourceName,
-	        HttpServletRequest request) throws Exception {
-		SimpleObject resourceCatalog = new SimpleObject();
-		String prefix = RestConstants.URI_PREFIX;
-		//strip the ending string '/rest/' because it will be added by ResourceDocCreator.create
-		if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/rest/"))
-			prefix = prefix.substring(0, prefix.lastIndexOf("/rest/"));
-		if (resourceName == null) {
-			resourceCatalog.put("catalog", ResourceDocCreator.create(prefix));
-		} else {
-			boolean resourceAvailable = false;
-			for (ResourceDoc resourceDoc : ResourceDocCreator.create(prefix)) {
-				if (resourceDoc.getName().equalsIgnoreCase(resourceName)) {
-					resourceCatalog.put("catalog", resourceDoc);
-					resourceAvailable = true;
-					break;
-				}
-			}
-			if (!resourceAvailable) {
-				resourceCatalog.put("catalog", "Cannot find the resource details assoicate with requested resource");
-			}
-		}
-		return new LinkedHashMap<String, Object>(resourceCatalog);
-	}
+
+    /**
+     * Gets a catalog of all available resources.
+     *
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public Object getResourceCatalog(@RequestParam(value = "q", required = false) final String resourceName,
+                                     HttpServletRequest request) throws Exception {
+        List<ResourceDoc> resourceDocList = new ArrayList<ResourceDoc>();
+        SimpleObject resourceCatalog = new SimpleObject();
+        String prefix = RestConstants.URI_PREFIX;
+        //strip the ending string '/rest/' because it will be added by ResourceDocCreator.create
+        if (StringUtils.isNotBlank(prefix) && prefix.endsWith("/rest/"))
+            prefix = prefix.substring(0, prefix.lastIndexOf("/rest/"));
+        if (resourceName == null) {
+            resourceDocList = ResourceDocCreator.create(prefix);
+        } else {
+            for (ResourceDoc resourceDoc : ResourceDocCreator.create(prefix)) {
+                if (resourceDoc.getName().toLowerCase().contains(resourceName.toLowerCase())) {
+                    resourceDocList.add(resourceDoc);
+                }
+            }
+        }
+        resourceCatalog.put("catalog", resourceDocList);
+        return new LinkedHashMap<String, Object>(resourceCatalog);
+    }
 }
