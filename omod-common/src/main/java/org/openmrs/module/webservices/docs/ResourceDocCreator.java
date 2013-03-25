@@ -271,26 +271,14 @@ public class ResourceDocCreator {
 	 * @param resouceDocMap a map of each resource name and its corresponding documentation object.
 	 */
 	private static void fillUrls(String baseUrl, Map<String, ResourceDoc> resouceDocMap) throws IOException {
-		
-		RequestMapping annotation = (RequestMapping) MainSubResourceController.class.getAnnotation(RequestMapping.class);
-		if (annotation == null)
-			throw new APIException("MainCrudController missing @RequestMapping annotation");
-		
-		RequestMapping subResAnnotation = (RequestMapping) MainResourceController.class.getAnnotation(RequestMapping.class);
-		if (subResAnnotation == null)
-			throw new APIException("MainSubResourceController missing @RequestMapping annotation");
-		
 		List<ResourceOperation> resourceOperations = null;
 		List<ResourceOperation> subResourceOperations = null;
-		String resourceUrl = null;
+		String resourceUrl = baseUrl + "/rest";
 		
 		for (ResourceDoc doc : resouceDocMap.values()) {
 			//skip subclass handlers e.g DrugOrderSubclassHandler
 			if (doc.getSuperResource() != null)
 				continue;
-			
-			if (resourceUrl == null)
-				resourceUrl = baseUrl + annotation.value()[0];
 			
 			if (doc.getSubResourceName() == null) {
 				if (resourceOperations == null)

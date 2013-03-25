@@ -54,10 +54,19 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	 * @return
 	 */
 	public MockHttpServletRequest request(RequestMethod method, String requestURI) {
-		MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + RestConstants.VERSION_1
-		        + "/" + requestURI);
+		MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + getNamespace() + "/"
+		        + requestURI);
 		request.addHeader("content-type", "application/json");
 		return request;
+	}
+	
+	/**
+	 * Override this method to test a different namespace than v1.
+	 * 
+	 * @return the namespace
+	 */
+	public String getNamespace() {
+		return RestConstants.VERSION_1;
 	}
 	
 	public static class Parameter {

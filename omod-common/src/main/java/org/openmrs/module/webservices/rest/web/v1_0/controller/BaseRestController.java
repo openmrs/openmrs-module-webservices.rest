@@ -83,7 +83,7 @@ public class BaseRestController {
 	 * @return the namespace
 	 */
 	public String getNamespace() {
-		return "v1";
+		return RestConstants.VERSION_1;
 	}
 	
 	public String buildResourceName(String resource) {
