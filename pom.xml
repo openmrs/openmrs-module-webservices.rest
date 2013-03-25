@@ -290,6 +290,7 @@
 					<version>2.3.2</version>
 					<configuration>
 						<useReleaseProfile>false</useReleaseProfile>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<arguments>-Prelease</arguments>
 					</configuration>
 				</plugin>
