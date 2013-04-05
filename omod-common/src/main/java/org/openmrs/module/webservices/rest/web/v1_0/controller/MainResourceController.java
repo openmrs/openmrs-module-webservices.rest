@@ -99,8 +99,8 @@ public class MainResourceController extends BaseRestController {
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
-		res.update(uuid, post, context);
-		return RestUtil.noContent(response);
+		Object updated = res.update(uuid, post, context);
+		return RestUtil.updated(response, updated);
 	}
 	
 	/**

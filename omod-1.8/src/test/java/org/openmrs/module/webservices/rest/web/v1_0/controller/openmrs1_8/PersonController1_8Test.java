@@ -133,7 +133,11 @@ public class PersonController1_8Test extends MainResourceControllerTest {
 		assertFalse(person.isDead());
 		assertNull(person.getCauseOfDeath());
 		String json = "{\"gender\":\"F\",\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}";
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+        SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+        assertNotNull(response);
+        Object responsePersonContents=PropertyUtils.getProperty(response,"person");
+        assertNotNull(responsePersonContents);
+        assertTrue("F".equals(PropertyUtils.getProperty(responsePersonContents,"gender").toString()));
 		assertEquals("F", person.getGender());
 		assertTrue(person.isDead());
 		assertNotNull(person.getCauseOfDeath());

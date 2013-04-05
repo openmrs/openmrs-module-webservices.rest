@@ -115,8 +115,8 @@ public class MainSubResourceController extends BaseRestController {
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
-		res.update(parentUuid, uuid, post, context);
-		return RestUtil.noContent(response);
+		Object updated = res.update(parentUuid, uuid, post, context);
+		return RestUtil.updated(response, updated);
 	}
 	
 	/**

@@ -140,7 +140,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		testParent(delegate, parentUniqueId);
 		setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), false);
 		delegate = save(delegate);
-		return delegate;
+		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
 	
 	/**

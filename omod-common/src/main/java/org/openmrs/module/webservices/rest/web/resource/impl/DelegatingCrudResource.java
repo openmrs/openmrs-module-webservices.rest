@@ -130,7 +130,15 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		setConvertedProperties(delegate, propertiesToUpdate, handler.getUpdatableProperties(), false);
 		delegate = save(delegate);
-		return delegate;
+		
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+		
+		// add the 'type' discriminator if we support subclasses
+		if (hasTypesDefined()) {
+			ret.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
+		}
+		
+		return ret;
 	}
 	
 	/**
