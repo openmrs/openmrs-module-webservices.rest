@@ -123,7 +123,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	/**
 	 * Passes the given request to a proper controller.
 	 * 
-	 * @param req   uest
+	 * @param request
 	 * @return
 	 * @throws Exception
 	 */
