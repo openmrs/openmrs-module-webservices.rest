@@ -17,12 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,8 +115,7 @@ public class MainSubResourceController extends BaseRestController {
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
-		SimpleObject updated = (SimpleObject) ConversionUtil.convertToRepresentation(res.update(parentUuid, uuid, post,
-		    context), Representation.DEFAULT);
+		Object updated = res.update(parentUuid, uuid, post,context);
 		return RestUtil.updated(response, updated);
 	}
 	

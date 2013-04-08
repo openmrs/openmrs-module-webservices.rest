@@ -574,7 +574,7 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status for UPDATED
+	 * Sets the HTTP status for UPDATED and (if 'updated' has a uri) the Location header attribute
 	 *
 	 * @param response
 	 * @param updated
@@ -582,6 +582,11 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	public static Object updated(HttpServletResponse response, Object updated) {
 		response.setStatus(HttpServletResponse.SC_OK);
+        try {
+            String uri = (String) PropertyUtils.getProperty(updated, "uri");
+            response.addHeader("Location", uri);
+        }
+        catch (Exception ex) {}
 		return updated;
 	}
 	

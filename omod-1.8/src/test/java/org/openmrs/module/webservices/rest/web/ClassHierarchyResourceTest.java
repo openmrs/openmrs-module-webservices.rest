@@ -102,7 +102,6 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		String newValue = "Do a CD4 Test STAT!";
 		Object updated = resource.update(SUPERCLASS_UUID, new SimpleObject().add("instructions", newValue), context);
 		Util.log("Updated subclass", updated);
-		Assert.assertEquals(Order.class, updated.getClass());
 		Assert.assertEquals(newValue, PropertyUtils.getProperty(updated, "instructions"));
 	}
 	
@@ -110,7 +109,6 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	public void shouldUpdateASubclass() throws Exception {
 		Object updated = resource.update(SUBCLASS_UUID, new SimpleObject().add("dose", "500"), context);
 		Util.log("Updated subclass", updated);
-		Assert.assertEquals(DrugOrder.class, updated.getClass());
 		Assert.assertEquals(500d, PropertyUtils.getProperty(updated, "dose"));
 	}
 	
