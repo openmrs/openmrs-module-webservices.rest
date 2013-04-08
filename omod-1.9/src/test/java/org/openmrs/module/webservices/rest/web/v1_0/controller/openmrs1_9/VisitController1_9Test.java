@@ -213,7 +213,6 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	 * @see {@link VisitController#searchByPatient(String,HttpServletRequest,HttpServletResponse)}
 	 */
 	@Test
-	@Ignore("Depends on RESTWS-320")
 	public void searchByPatient_shouldGetUnretiredVisitsForThePatient() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
 		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
