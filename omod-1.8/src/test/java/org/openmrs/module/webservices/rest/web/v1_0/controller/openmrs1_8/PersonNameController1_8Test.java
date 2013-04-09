@@ -103,9 +103,10 @@ public class PersonNameController1_8Test extends MainResourceControllerTest {
 		PersonName personName = service.getPersonNameByUuid(getUuid());
 		Assert.assertEquals("Chebaskwony", personName.getFamilyName());
 		String json = "{ \"familyName\":\"newName\" }";
-		
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
-		
+
+        SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+        Assert.assertNotNull(response);
+        Assert.assertEquals(PropertyUtils.getProperty(response,"familyName").toString(),"newName");
 		PersonName editedPersonName = service.getPersonNameByUuid(getUuid());
 		Assert.assertEquals(editedPersonName.getFamilyName(), "newName");
 		
