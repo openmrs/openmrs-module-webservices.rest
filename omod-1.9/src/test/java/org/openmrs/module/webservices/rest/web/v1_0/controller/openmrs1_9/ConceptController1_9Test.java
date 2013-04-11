@@ -84,7 +84,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 
 	@Test
 		public void shouldFindConceptsBySourceUuid() throws Exception {
-			SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("uuid",
+			SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("term",
 								"SSTRM-WGT234"))));
 			List<Object> results = Util.getResultsList(response);
 
