@@ -34,6 +34,7 @@ import java.util.TreeSet;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Hibernate;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -221,7 +222,7 @@ public class ConversionUtil {
 	public static <S> Object convertToRepresentation(S o, Representation rep) throws ConversionException {
 		if (o == null)
 			return null;
-		Converter<S> converter = (Converter<S>) getConverter(o.getClass());
+		Converter<S> converter = (Converter<S>) getConverter(Hibernate.getClass(o));
 		if (converter == null) {
 			// try a few known datatypes
 			if (o instanceof Date) {
