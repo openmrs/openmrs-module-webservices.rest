@@ -52,8 +52,8 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 	@Qualifier("restHelperService")
 	RestHelperService restHelperService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("byTerm", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*"),
-	        new SearchQuery.Builder("Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters("uuid").build());
+	private final SearchConfig searchConfig = new SearchConfig("byTerm", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.9.*"),
+	        new SearchQuery.Builder("Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters("term").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -68,7 +68,7 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 	 */
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
-		String uuid = context.getParameter("uuid");
+		String uuid = context.getParameter("term");
 		
 		ConceptReferenceTerm conceptReferenceTerm = conceptService.getConceptReferenceTermByUuid(uuid);
 		if (conceptReferenceTerm == null) {
@@ -83,8 +83,6 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
 					concepts.add(conceptMap.getConcept());
 					
-					//the print statement was just used for the purpose of testing
-					//System.out.println(conceptMap.getConcept().getUuid());
 				}
 			}
 			return new NeedsPaging<Concept>(concepts, context);
