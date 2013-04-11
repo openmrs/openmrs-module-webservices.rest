@@ -185,6 +185,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 * @param context
 	 * @return
 	 * @throws ResponseException
+	 * @should get a patient's visits
 	 */
 	public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
 		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient"))
