@@ -11,11 +11,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -85,7 +88,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	
 	/**
 	 * Sets the attributes of a Provider
-	 *
+	 * 
 	 * @param provider whose attributes to be set
 	 * @param attributes the attributes to be set
 	 */
@@ -160,8 +163,18 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	 */
 	@Override
 	protected AlreadyPaged<Provider> doSearch(RequestContext context) {
-		List<Provider> providers = Context.getProviderService().getProviders(context.getParameter("q"),
-		    context.getStartIndex(), context.getLimit(), null);
+		String name = context.getParameter("q");
+		String userId = context.getParameter("user");
+		List<Provider> providers = Collections.emptyList();
+		if (name != null) {
+			providers = Context.getProviderService().getProviders(name, context.getStartIndex(), context.getLimit(), null);
+		} else if (userId != null) {
+			User user = Context.getUserService().getUserByUuid(userId);
+			if (user != null) {
+				Person person = user.getPerson();
+				providers = (List<Provider>) Context.getProviderService().getProvidersByPerson(person);
+			}
+		}
 		return new AlreadyPaged<Provider>(context, providers, false);
 		
 	}
