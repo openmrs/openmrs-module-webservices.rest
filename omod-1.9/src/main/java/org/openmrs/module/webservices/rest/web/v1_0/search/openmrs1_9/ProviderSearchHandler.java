@@ -26,8 +26,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ProviderSearchHandler implements SearchHandler {
-		
+	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/provider",
 	        Arrays.asList("1.9.*"), new SearchQuery.Builder("Allows you to find providers by user uuid")
 	                .withRequiredParameters("user").build());
@@ -54,16 +54,16 @@ public class ProviderSearchHandler implements SearchHandler {
 	 */
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
-		String userId = context.getParameter("user");		
-
-		User user = Context.getUserService().getUserByUuid(userId);		
+		String userId = context.getParameter("user");
+		
+		User user = Context.getUserService().getUserByUuid(userId);
 		if (user == null) {
 			return new EmptySearchResult();
 		}
 		
 		Person person = user.getPerson();
 		List<Provider> providers = (List<Provider>) Context.getProviderService().getProvidersByPerson(person);
-		return new AlreadyPaged<Provider>(context, providers, false);		
+		return new NeedsPaging<Provider>(providers, context);
 	}
 	
 }
