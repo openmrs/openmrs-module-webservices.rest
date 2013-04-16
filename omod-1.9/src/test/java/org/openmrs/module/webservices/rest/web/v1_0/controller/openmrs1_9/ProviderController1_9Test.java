@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -116,6 +117,19 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(RestTestConstants1_9.PROVIDER_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+	}
+	
+	@Test
+	public void shouldFindProviderByUserUuid() throws Exception {
+		MockHttpServletRequest request = newGetRequest(getURI());
+		request.addParameter("user", "c98a1558-e131-11de-babe-001e378eb67e");
+		
+		List<?> results = (List<?>) deserialize(handle(request)).get("results");
+		
+		Assert.assertNotSame(0, results.size());
+		Object next = results.iterator().next();
+		
+		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
 	}
 
 	/**
