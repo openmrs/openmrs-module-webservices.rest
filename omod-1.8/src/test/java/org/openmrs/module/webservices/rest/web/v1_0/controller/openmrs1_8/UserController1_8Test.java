@@ -232,7 +232,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void findUsers_shouldFindUserByUsername() throws Exception {
+	public void shouldFindUserByUsername() throws Exception {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username",
 		        "butch"))));
 		List<Object> results = Util.getResultsList(response);
