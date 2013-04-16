@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.openmrs.User;
-import org.openmrs.api.context.Context;
+import org.openmrs.api.UserService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -28,6 +28,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,6 +37,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserSearchHandler1_8 implements SearchHandler {
+	
+	@Autowired
+	@Qualifier("userService")
+	UserService userService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user",
 	        Arrays.asList("1.8.*", "1.9.*"), new SearchQuery.Builder("Allows you to find users by username")
@@ -55,7 +61,7 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	public PageableResult search(RequestContext context) throws ResponseException {
 		String username = context.getParameter("username");
 		
-		User user = Context.getUserService().getUserByUsername(username);
+		User user = userService.getUserByUsername(username);
 		if (user == null){
 			return new EmptySearchResult();
 		}
