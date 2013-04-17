@@ -124,11 +124,10 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest request = newGetRequest(getURI());
 		request.addParameter("user", "c98a1558-e131-11de-babe-001e378eb67e");
 		
-		List<?> results = (List<?>) deserialize(handle(request)).get("results");
-		
+		List<?> results = (List<?>) deserialize(handle(request)).get("results");		
 		Assert.assertNotSame(0, results.size());
-		Object next = results.iterator().next();
 		
+		Object next = results.iterator().next();		
 		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
 	}
 
