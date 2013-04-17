@@ -52,7 +52,7 @@ public class ProviderResource1_9Test extends BaseDelegatingResourceTest<Provider
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Test2 - Mr. Horatio Test Hornblower Esq.";
+		return "Test2 - Hippocrates of Cos";
 	}
 	
 	@Override
