@@ -42,9 +42,9 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	@Qualifier("userService")
 	UserService userService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user",
-	        Arrays.asList("1.8.*", "1.9.*"), new SearchQuery.Builder("Allows you to find users by username")
-	                .withRequiredParameters("username").build());
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user", Arrays.asList(
+	    "1.8.*", "1.9.*"), new SearchQuery.Builder("Allows you to find users by username")
+	        .withRequiredParameters("username").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -62,7 +62,7 @@ public class UserSearchHandler1_8 implements SearchHandler {
 		String username = context.getParameter("username");
 		
 		User user = userService.getUserByUsername(username);
-		if (user == null){
+		if (user == null) {
 			return new EmptySearchResult();
 		}
 		

@@ -233,8 +233,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldFindUserByUsername() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username",
-		        "butch"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "butch"))));
 		List<Object> results = Util.getResultsList(response);
 		
 		Assert.assertEquals(1, results.size());
