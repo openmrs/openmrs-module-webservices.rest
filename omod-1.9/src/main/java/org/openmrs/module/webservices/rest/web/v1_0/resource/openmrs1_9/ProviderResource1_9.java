@@ -85,7 +85,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	
 	/**
 	 * Sets the attributes of a Provider
-	 *
+	 * 
 	 * @param provider whose attributes to be set
 	 * @param attributes the attributes to be set
 	 */

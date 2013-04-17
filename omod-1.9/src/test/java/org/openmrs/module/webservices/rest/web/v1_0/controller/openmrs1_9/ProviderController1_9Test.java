@@ -117,6 +117,18 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
+	
+	@Test
+	public void shouldFindProviderByUserUuid() throws Exception {
+		MockHttpServletRequest request = newGetRequest(getURI());
+		request.addParameter("user", "c98a1558-e131-11de-babe-001e378eb67e");
+		
+		List<?> results = (List<?>) deserialize(handle(request)).get("results");		
+		Assert.assertNotSame(0, results.size());
+		
+		Object next = results.iterator().next();		
+		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
