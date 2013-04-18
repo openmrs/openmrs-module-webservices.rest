@@ -232,6 +232,18 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldFindUserByUsername() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "butch"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Assert.assertEquals(1, results.size());
+		Object next = results.iterator().next();
+		
+		Util.log("Found " + results.size() + " user(s) by username", response);
+		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+	}
+	
+	@Test
 	public void getUser_shouldListAllUsers() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
