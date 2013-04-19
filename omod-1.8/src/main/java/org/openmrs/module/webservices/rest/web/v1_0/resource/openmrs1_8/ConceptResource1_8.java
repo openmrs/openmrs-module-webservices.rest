@@ -284,33 +284,13 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
-	 * Fetches a concept by uuid, if no match is found, it tries to look up one with a matching name
-	 * with the assumption that the passed parameter is a concept name
+	 * Fetches a concept by uuid
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
-	public Concept getByUniqueId(String uuidOrName) {
-		Concept concept = Context.getConceptService().getConceptByUuid(uuidOrName);
-		
-		if (concept == null) {
-			//We assume the caller was fetching by name if no concept was after looking up by uuid
-			// NOT using getConcept here because that also searches on conceptId
-			concept = Context.getConceptService().getConceptByName(uuidOrName);
-			if (concept != null) {
-				boolean isPreferredOrFullySpecified = false;
-				for (ConceptName name : concept.getNames()) {
-					if (name.getName().equalsIgnoreCase(uuidOrName) && (name.isPreferred() || name.isFullySpecifiedName())) {
-						isPreferredOrFullySpecified = true;
-						break;
-					}
-				}
-				if (!isPreferredOrFullySpecified)
-					throw new APIException("The concept name should be either a fully specified or locale preferred name");
-			}
-		}
-		
-		return concept;
+	public Concept getByUniqueId(String uuid) {
+		return Context.getConceptService().getConceptByUuid(uuid);
 	}
 	
 	/**

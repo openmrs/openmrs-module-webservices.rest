@@ -17,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.openmrs.api.APIException;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,7 +37,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Allows for finding concepts by mapping.
+ * Allows for finding concepts by mapping or by name
  */
 @Component
 public class ConceptSearchHandler1_8 implements SearchHandler {
@@ -45,8 +47,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	ConceptService conceptService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*"),
-	        new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
-	                .withOptionalParameters("code").build());
+	        Arrays.asList(new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source").withOptionalParameters("code").build(),new SearchQuery.Builder("Allows you to find concepts by name").withRequiredParameters("name").build()));
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -63,6 +64,33 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	public PageableResult search(RequestContext context) throws ResponseException {
 		String source = context.getParameter("source");
 		String code = context.getParameter("code");
+		String name = context.getParameter("name");
+
+		List<Concept> concepts = new ArrayList<Concept>();
+		
+		if(name!=null)
+		{
+			Concept concept = conceptService.getConceptByName(name);
+			concepts.add(concept);
+			if (concept != null)
+			{
+				boolean isPreferredOrFullySpecified = false;
+				for (ConceptName conceptname : concept.getNames()) {
+					if (conceptname.getName().equalsIgnoreCase(name) && (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
+						isPreferredOrFullySpecified = true;
+						break;
+					}
+				}
+				if (!isPreferredOrFullySpecified)
+					throw new APIException("The concept name should be either a fully specified or locale preferred name");
+				
+				return new NeedsPaging<Concept>(concepts, context);
+			}
+			else
+			{
+				return new EmptySearchResult();
+			}
+		}
 		
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
 		if (conceptSource == null) {
@@ -74,7 +102,6 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		
 		if (code == null) {
 			List<ConceptMap> conceptMaps = conceptService.getConceptsByConceptSource(conceptSource);
-			List<Concept> concepts = new ArrayList<Concept>();
 			for (ConceptMap conceptMap : conceptMaps) {
 				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
 					concepts.add(conceptMap.getConcept());
