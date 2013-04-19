@@ -73,15 +73,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetAConceptByName() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/TREATMENT STATUS");
-		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
-		Assert.assertEquals("511e03ab-7cbb-4b9f-abe3-d9256d67f27e", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("TREATMENT STATUS", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
-	}
-	
-	@Test
 	public void shouldListAllUnRetiredConcepts() throws Exception {
 		int totalCount = service.getAllConcepts(null, true, true).size();
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -232,18 +223,10 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	 * 
 	 * @throws Exception
 	 */
-	@Test(expected = APIException.class)
-	public void shouldFailToFetchAConceptByNameIfTheNameIsNeitherPreferredNorFullySpecified() throws Exception {
-		///sanity test to ensure that actually a none retired concept exists with this name
-		ConceptName name = Context.getConceptService().getConceptNameByUuid("8230adbf-30a9-4e18-b6d7-fc57e0c23cab");
-		Assert.assertNotNull(name);
-		Concept concept = Context.getConceptService().getConceptByName(name.getName());
-		Assert.assertFalse(concept.isRetired());
-		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name.getName());
-		handle(req);
-	}
+
 	
+	
+		
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
@@ -487,4 +470,22 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		assertThat(results.size(), is(6));
 	}
+	@Test
+	public void shouldFindConceptsByName() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name",
+							"WEIGHT (KG)"))));
+		List<Object> results = Util.getResultsList(response);
+		Assert.assertEquals(results.size(), 1);
+		Object next = results.iterator().next();
+		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+	}
+	
+	@Test(expected = APIException.class)
+	public void shouldFailToFetchAConceptByNameIfTheNameIsNeitherPreferredNorFullySpecified() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name",
+							"WT"))));
+		List<Object> results = Util.getResultsList(response);
+		Assert.assertEquals(results.size(), 0);
+	}
+
 }
