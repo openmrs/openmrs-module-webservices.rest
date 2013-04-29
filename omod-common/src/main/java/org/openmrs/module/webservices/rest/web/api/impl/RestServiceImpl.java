@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleException;
@@ -396,6 +397,8 @@ public class RestServiceImpl implements RestService {
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
 		initializeResources();
 		
+		if (HibernateProxy.class.isAssignableFrom(resourceClass))
+			resourceClass = resourceClass.getSuperclass();
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
 		if (resource == null) {
 			for (Entry<Class<?>, Resource> resourceBySupportedClass : resourcesBySupportedClasses.entrySet()) {
