@@ -603,15 +603,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * @param name the full method name to look for
-	 * @return the java Method object if found. (does not return null)
-	 * @throws RuntimeException if not method found by the given name in the current class
+	 * @see org.openmrs.module.webservices.rest.util.ReflectionUtil#findMethod(Class, String)
 	 */
 	protected Method findMethod(String name) {
 		// TODO replace this with something that looks specifically for a method that takes a single T argument
-		Method ret = ReflectionUtils.findMethod(getClass(), name, (Class<?>[]) null);
-		if (ret == null)
-			throw new RuntimeException("No suitable method \"" + name + "\" in " + getClass());
+		Method ret = ReflectionUtil.findMethod(getClass(), name);
 		return ret;
 	}
 	
