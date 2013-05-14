@@ -89,6 +89,11 @@
 	        </list>
 	    </property>
 	</bean>
+	
+	<!-- This bean is defined in the core 'openmrs-servlet.xml' file and redefined here to support annotations -->
+	<bean id="xStreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<property name="autodetectAnnotations" value="true" />
+	</bean>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
         <property name="order" value="1"/>
@@ -101,16 +106,6 @@
 			</list>
 		</property>
     </bean>
-    
-   	<bean id="xmlMarshallingHttpMessageConverter"
-          class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
-        <property name="marshaller" ref="xstreamMarshaller"/>
-        <property name="unmarshaller" ref="xstreamMarshaller"/>
-    </bean>
-    
-    <bean id="xstreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
-		<property name="autodetectAnnotations" value="true" />
-	</bean>
     
     <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
     <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />

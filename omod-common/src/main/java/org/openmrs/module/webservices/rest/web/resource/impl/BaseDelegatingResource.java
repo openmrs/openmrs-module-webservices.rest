@@ -548,7 +548,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			ret.put("links", links);
 		return ret;
 	}
-
 	
 	/**
 	 * @param delegate
@@ -792,9 +791,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 	}
 	
-//	public String getPath() {
-//		org.openmrs.module.webservices.rest.web.annotation.Resource annot = getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-//		return annot.name();
-//	}
-
+	//	public String getPath() {
+	//		org.openmrs.module.webservices.rest.web.annotation.Resource annot = getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+	//		return annot.name();
+	//	}
+	
 }

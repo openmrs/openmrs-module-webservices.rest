@@ -28,7 +28,7 @@ public class Hyperlink {
 	private String uri;
 	
 	private transient String resourcePath;
-
+	
 	public Hyperlink(String rel, String uri) {
 		this.rel = rel;
 		this.uri = uri;
@@ -61,15 +61,15 @@ public class Hyperlink {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
-
+	
 	@JsonIgnore
 	public String getResourcePath() {
 		return resourcePath;
 	}
-
+	
 	@JsonIgnore
 	public void setResourcePath(String resourcePath) {
 		this.resourcePath = resourcePath;
 	}
-
+	
 }

@@ -19,17 +19,16 @@ import com.thoughtworks.xstream.mapper.Mapper;
  *
  */
 public class SimpleObjectConverter extends AbstractCollectionConverter {
-
-    public SimpleObjectConverter(Mapper mapper) {
+	
+	public SimpleObjectConverter(Mapper mapper) {
 		super(mapper);
 	}
-
+	
 	public boolean canConvert(Class clazz) {
-        return SimpleObject.class.isAssignableFrom(clazz);
-    }
-
-    public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-
+		return SimpleObject.class.isAssignableFrom(clazz);
+	}
+	
+	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 		if (value instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) value;
 			for (Object obj : map.entrySet()) {
@@ -57,14 +56,13 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		} else if (value != null) {
 			writer.setValue(value.toString());
 		}
-
-    }
-    
-    /**
-     * Get the self link from a simple object
-     * @param object
-     * @return
-     */
+	}
+	
+	/**
+	 * Get the self link from a simple object
+	 * @param object
+	 * @return
+	 */
 	private Hyperlink getSelfLink(SimpleObject object) {
 		List<Hyperlink> links = (List<Hyperlink>) object.get("links");
 		for (Hyperlink link : links) {
@@ -74,9 +72,9 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		}
 		return null;
 	}
-
-    public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        return null;
-    }
-
+	
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return null;
+	}
+	
 }
