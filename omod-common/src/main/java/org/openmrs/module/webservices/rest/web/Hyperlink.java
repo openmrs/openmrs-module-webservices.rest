@@ -27,7 +27,7 @@ public class Hyperlink {
 	
 	private String uri;
 	
-	private transient String resourcePath;
+	private transient String resourceAlias;
 	
 	public Hyperlink(String rel, String uri) {
 		this.rel = rel;
@@ -63,13 +63,13 @@ public class Hyperlink {
 	}
 	
 	@JsonIgnore
-	public String getResourcePath() {
-		return resourcePath;
+	public String getResourceAlias() {
+		return resourceAlias;
 	}
 	
 	@JsonIgnore
-	public void setResourcePath(String resourcePath) {
-		this.resourcePath = resourcePath;
+	public void setResourceAlias(String resourceAlias) {
+		this.resourceAlias = resourceAlias;
 	}
 	
 }

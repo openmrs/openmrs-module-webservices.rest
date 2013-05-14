@@ -89,11 +89,6 @@
 	        </list>
 	    </property>
 	</bean>
-	
-	<!-- This bean is defined in the core 'openmrs-servlet.xml' file and redefined here to support annotations -->
-	<bean id="xStreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
-		<property name="autodetectAnnotations" value="true" />
-	</bean>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
         <property name="order" value="1"/>

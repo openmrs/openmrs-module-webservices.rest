@@ -31,6 +31,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.azeckoski.reflectutils.ClassFields.GetClassMethodException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
@@ -538,10 +539,19 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
 			}
 			
-			// If subresource add path to link
-			SubResource sub = getClass().getAnnotation(SubResource.class);
-			if (sub != null) {
-				link.setResourcePath(sub.path());
+			org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
+			    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			if (res != null) {
+				String name = res.name();
+				if (name.contains("/")) {
+					name = name.substring(name.lastIndexOf("/") + 1);
+				}
+				link.setResourceAlias(name);
+			} else {
+				SubResource sub = getClass().getAnnotation(SubResource.class);
+				if (sub != null) {
+					link.setResourceAlias(sub.path());
+				}
 			}
 			links.add(link);
 		}

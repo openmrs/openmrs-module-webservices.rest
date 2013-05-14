@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
+import org.openmrs.module.webservices.rest.web.RestInit;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
@@ -17,6 +18,8 @@ import com.thoughtworks.xstream.mapper.Mapper;
 /**
  * Custom XStream converter to serialize XML. It is only used for XML, which has
  * autodetectAnnotations enabled in the xStreamMarshaller bean.
+ * 
+ * @see RestInit
  */
 public class SimpleObjectConverter extends AbstractCollectionConverter {
 	
@@ -44,7 +47,11 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 				if (obj instanceof SimpleObject) {
 					//Use custom representation for any subresource
 					Hyperlink self = getSelfLink((SimpleObject) obj);
-					writer.startNode(self.getResourcePath());
+					if (self.getResourceAlias() == null) {
+						writer.startNode("object");
+					} else {
+						writer.startNode(self.getResourceAlias());
+					}
 					//Marshal recursively to process lists or maps with other simple objects
 					marshal(obj, writer, context);
 					writer.endNode();
