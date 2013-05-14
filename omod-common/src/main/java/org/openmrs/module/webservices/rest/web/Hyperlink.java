@@ -13,14 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * A link to another resource
  */
+@XStreamAlias("link")
 public class Hyperlink {
 	
 	private String rel;
 	
 	private String uri;
+	
+	private transient String resourcePath;
 	
 	public Hyperlink(String rel, String uri) {
 		this.rel = rel;
@@ -53,6 +60,16 @@ public class Hyperlink {
 	 */
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+	
+	@JsonIgnore
+	public String getResourcePath() {
+		return resourcePath;
+	}
+	
+	@JsonIgnore
+	public void setResourcePath(String resourcePath) {
+		this.resourcePath = resourcePath;
 	}
 	
 }

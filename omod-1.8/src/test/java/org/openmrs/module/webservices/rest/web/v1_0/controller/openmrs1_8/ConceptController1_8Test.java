@@ -60,9 +60,35 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	public void shouldGetAConceptByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		SimpleObject result = deserialize(handle(req));
+		Util.log("Concept fetched", result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
+	}
+
+	@Test
+	public void shouldGetAConceptByUuidInXML() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		req.addHeader("Accept", "application/xml");
+		MockHttpServletResponse result = handle(req);
+		
+		String xml = result.getContentAsString();
+		printXML(xml);
+		
+		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", evaluateXPath(xml, "//uuid"));
+		Assert.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
+	}
+	
+	@Test
+	public void shouldReturnFullRepXML() throws Exception {
+		MockHttpServletRequest request = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
+		request.addHeader("Accept", "application/xml");
+		
+		MockHttpServletResponse result = handle(request);
+		
+		String xml = result.getContentAsString();
+		printXML(xml);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

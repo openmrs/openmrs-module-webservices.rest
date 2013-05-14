@@ -28,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -99,6 +100,18 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		Util.log("Cohort fetched (default)", result);
 		Assert.assertEquals(getUuid(), result.get("uuid"));
+	}
+	
+	@Test
+	public void getCohort_shouldGetADefaultRepresentationInXML() throws Exception {
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());		
+		req.addHeader("Accept", "application/xml");
+		MockHttpServletResponse result = handle(req);
+		
+		String xml = result.getContentAsString();
+		
+		Assert.assertEquals(getUuid(), evaluateXPath(xml, "//uuid"));
 	}
 	
 	@Test
