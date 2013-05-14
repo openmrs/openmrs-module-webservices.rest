@@ -15,8 +15,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
 
 /**
- * Custom XStream converter to serialize XML in REST services
- *
+ * Custom XStream converter to serialize XML. It is only used for XML, which has
+ * autodetectAnnotations enabled in the xStreamMarshaller bean.
  */
 public class SimpleObjectConverter extends AbstractCollectionConverter {
 	
@@ -34,32 +34,33 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 			for (Object obj : map.entrySet()) {
 				Entry<?, ?> entry = (Entry<?, ?>) obj;
 				writer.startNode(entry.getKey().toString());
+				//Marshal recursively to process lists or maps with other simple objects
 				marshal(entry.getValue(), writer, context);
 				writer.endNode();
 			}
 		} else if (value instanceof List) {
 			List<?> list = (List<?>) value;
 			for (Object obj : list) {
-				// Collection of subresources
 				if (obj instanceof SimpleObject) {
-					// Get resource path from self link
+					//Use custom representation for any subresource
 					Hyperlink self = getSelfLink((SimpleObject) obj);
 					writer.startNode(self.getResourcePath());
-				}
-				marshal(obj, writer, context);
-				if (obj instanceof SimpleObject) {
+					//Marshal recursively to process lists or maps with other simple objects
+					marshal(obj, writer, context);
 					writer.endNode();
+				} else {
+					//Use default representation for any other object
+					writeItem(obj, context, writer);
 				}
 			}
-		} else if (value instanceof Hyperlink) {
-			writeItem(value, context, writer);
 		} else if (value != null) {
-			writer.setValue(value.toString());
+			context.convertAnother(value);
 		}
 	}
 	
 	/**
 	 * Get the self link from a simple object
+	 * 
 	 * @param object
 	 * @return
 	 */

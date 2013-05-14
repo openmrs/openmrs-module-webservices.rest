@@ -537,6 +537,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			if (link.getUri().startsWith(".")) {
 				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
 			}
+			
 			// If subresource add path to link
 			SubResource sub = getClass().getAnnotation(SubResource.class);
 			if (sub != null) {
@@ -790,10 +791,4 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new RuntimeException(ex);
 		}
 	}
-	
-	//	public String getPath() {
-	//		org.openmrs.module.webservices.rest.web.annotation.Resource annot = getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-	//		return annot.name();
-	//	}
-	
 }
