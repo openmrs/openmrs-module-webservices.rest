@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.util;
 
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -35,4 +38,17 @@ public class ReflectionUtil {
 		return null;
 	}
 	
+	/**
+	 *
+	 * @param name the full method name to look for
+	 * @return the java Method object if found. (does not return null)
+	 * @throws RuntimeException if not method found by the given name in the current class
+	 * @return
+	 */
+	public static Method findMethod(Class<?> clazz, String name) {
+		Method ret = ReflectionUtils.findMethod(clazz, name, (Class<?>[]) null);
+		if (ret == null)
+			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
+		return ret;
+	}
 }
