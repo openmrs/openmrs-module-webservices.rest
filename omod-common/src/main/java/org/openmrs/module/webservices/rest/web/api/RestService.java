@@ -46,6 +46,7 @@ public interface RestService {
 	 * @param supportedClass
 	 * @return
 	 * @throws APIException
+	 * @should handle proxy classes
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
