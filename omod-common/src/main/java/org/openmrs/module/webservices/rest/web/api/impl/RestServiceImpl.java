@@ -13,17 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleException;
@@ -44,14 +35,24 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassH
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.util.OpenmrsConstants;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 /**
  * Default implementation of the {@link RestService}
  */
 public class RestServiceImpl implements RestService {
 	
-	private volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
+	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 	
-	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
+	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
 	
@@ -291,6 +292,7 @@ public class RestServiceImpl implements RestService {
 			}
 			
 		}
+		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
@@ -396,14 +398,29 @@ public class RestServiceImpl implements RestService {
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
 		initializeResources();
 		
+		if (HibernateProxy.class.isAssignableFrom(resourceClass)) {
+			resourceClass = resourceClass.getSuperclass();
+		}
+		
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
+		
 		if (resource == null) {
-			for (Entry<Class<?>, Resource> resourceBySupportedClass : resourcesBySupportedClasses.entrySet()) {
-				if (resourceBySupportedClass.getKey().isAssignableFrom(resourceClass)) {
-					return resourceBySupportedClass.getValue();
+			Entry<Class<?>, Resource> bestResourceEntry = null;
+			
+			for (Entry<Class<?>, Resource> resourceEntry : resourcesBySupportedClasses.entrySet()) {
+				if (resourceEntry.getKey().isAssignableFrom(resourceClass)) {
+					if (bestResourceEntry == null || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey())) {
+						bestResourceEntry = resourceEntry;
+					}
 				}
 			}
 			
+			if (bestResourceEntry != null) {
+				resource = bestResourceEntry.getValue();
+			}
+		}
+		
+		if (resource == null) {
 			throw new APIException("Unknown resource: " + resourceClass);
 		} else {
 			return resource;

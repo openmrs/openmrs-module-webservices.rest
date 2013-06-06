@@ -1,24 +1,28 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
 import static junit.framework.Assert.fail;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Test;
-import org.openmrs.module.webservices.rest.web.RestUtil;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 
 public class RestServiceImplTest {
 	
@@ -216,4 +220,28 @@ public class RestServiceImplTest {
 		SearchHandler searchHandler2 = service.getSearchHandler("nonexistingresource", parameters);
 		assertThat(searchHandler2, nullValue());
 	}
+	
+	@Test
+	public void getResourceBySupportedClass_shouldReturnTheMostExactMatch() throws Exception {
+		//Given
+		RestServiceImpl service = new RestServiceImpl();
+		
+		Resource personResource = mock(Resource.class);
+		Resource patientResource = mock(Resource.class);
+		
+		//Mocked for deterministic order
+		service.resourceDefinitionsByNames = new LinkedHashMap<String, RestServiceImpl.ResourceDefinition>();
+		service.resourcesBySupportedClasses = new LinkedHashMap<Class<?>, Resource>();
+		
+		service.resourcesBySupportedClasses.put(Person.class, personResource);
+		service.resourcesBySupportedClasses.put(Patient.class, patientResource);
+		
+		//When
+		Resource resource = service.getResourceBySupportedClass(ChildPatient.class);
+		
+		//Then
+		assertThat(resource, is(patientResource));
+	}
+	
+	public static class ChildPatient extends Patient {};
 }
