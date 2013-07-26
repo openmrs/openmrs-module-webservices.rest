@@ -450,14 +450,14 @@ public class RestServiceImpl implements RestService {
 	 * @should return handler if case 2
 	 */
 	@Override
-	public SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException {
+	public SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException {
 		initializeSearchHandlers();
 		
-		String searchId = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
-		if (searchId != null) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchId));
+		String[] searchIds = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
+		if (searchIds != null && searchIds.length > 0) {
+			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchIds[0]));
 			if (searchHandler == null) {
-				throw new InvalidSearchException("The search with id '" + searchId + "' for '" + resourceName
+				throw new InvalidSearchException("The search with id '" + searchIds[0] + "' for '" + resourceName
 				        + "' resource is not recognized");
 			} else {
 				return searchHandler;
