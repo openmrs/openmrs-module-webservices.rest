@@ -40,8 +40,8 @@ public class RestServiceImplTest {
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("s", "conceptByMapping");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("s", new String[] { "conceptByMapping" });
 		
 		try {
 			service.getSearchHandler("concept", parameters);
@@ -64,8 +64,8 @@ public class RestServiceImplTest {
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		service.addSupportedSearchHandler(searchHandler);
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("s", "conceptByMapping");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("s", new String[] { "conceptByMapping" });
 		SearchHandler searchHandler2 = service.getSearchHandler("concept", parameters);
 		assertThat(searchHandler2, is(searchHandler));
 	}
@@ -92,9 +92,9 @@ public class RestServiceImplTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("sourceName", "some name");
-		parameters.put("code", "some code");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("sourceName", new String[] { "some name" });
+		parameters.put("code", new String[] { "some code" });
 		
 		try {
 			service.getSearchHandler("concept", parameters);
@@ -129,9 +129,9 @@ public class RestServiceImplTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("sourceName", "some name");
-		parameters.put("code", "some code");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("sourceName", new String[] { "some name" });
+		parameters.put("code", new String[] { "some code" });
 		SearchHandler searchHandler3 = service.getSearchHandler("concept", parameters);
 		
 		assertThat(searchHandler3, is(searchHandler));
@@ -159,8 +159,8 @@ public class RestServiceImplTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("sourceName", "some name");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("sourceName", new String[] { "some name" });
 		
 		try {
 			service.getSearchHandler("concept", parameters);
@@ -191,8 +191,8 @@ public class RestServiceImplTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("code", "some name");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("code", new String[] { "some name" });
 		
 		SearchHandler searchHandler3 = service.getSearchHandler("concept", parameters);
 		assertThat(searchHandler3, nullValue());
@@ -214,8 +214,8 @@ public class RestServiceImplTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("sourceName", "some name");
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("sourceName", new String[] { "some name" });
 		
 		SearchHandler searchHandler2 = service.getSearchHandler("nonexistingresource", parameters);
 		assertThat(searchHandler2, nullValue());

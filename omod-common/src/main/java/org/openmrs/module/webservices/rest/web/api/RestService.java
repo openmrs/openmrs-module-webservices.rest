@@ -57,7 +57,7 @@ public interface RestService {
 	 * @return searchHandler or <code>null</code> if no match
 	 * @throws APIException
 	 */
-	SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException;
+	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
 	 * Returns all {@link DelegatingResourceHandler}s
