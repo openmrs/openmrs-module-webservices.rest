@@ -55,9 +55,9 @@ public class MainSubResourceController extends BaseRestController {
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
-	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request)
-	        throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,
+            HttpServletResponse response) throws ResponseException {
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.retrieve(parentUuid, uuid, context);
 	}
@@ -74,7 +74,7 @@ public class MainSubResourceController extends BaseRestController {
 	public SimpleObject getAll(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.getAll(parentUuid, context);
 	}
@@ -92,7 +92,7 @@ public class MainSubResourceController extends BaseRestController {
 	public Object create(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object created = res.create(parentUuid, post, context);
 		return RestUtil.created(response, created);
@@ -113,7 +113,7 @@ public class MainSubResourceController extends BaseRestController {
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object updated = res.update(parentUuid, uuid, post, context);
 		return RestUtil.updated(response, updated);
@@ -132,7 +132,7 @@ public class MainSubResourceController extends BaseRestController {
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.delete(parentUuid, uuid, reason, context);
 		return RestUtil.noContent(response);
@@ -150,7 +150,7 @@ public class MainSubResourceController extends BaseRestController {
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.purge(parentUuid, uuid, context);
 		return RestUtil.noContent(response);

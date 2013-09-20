@@ -61,8 +61,8 @@ public class MainResourceController extends BaseRestController {
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
-	        HttpServletRequest request) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		return res.retrieve(uuid, context);
 	}
@@ -78,7 +78,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
@@ -97,7 +97,7 @@ public class MainResourceController extends BaseRestController {
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		Object updated = res.update(uuid, post, context);
 		return RestUtil.updated(response, updated);
@@ -114,7 +114,7 @@ public class MainResourceController extends BaseRestController {
 	public Object delete(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
@@ -130,7 +130,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		res.purge(uuid, context);
 		return RestUtil.noContent(response);
@@ -150,7 +150,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
 		
-		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
+		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
 		
 		@SuppressWarnings("unchecked")
 		SearchHandler searchHandler = restService.getSearchHandler(buildResourceName(resource), request.getParameterMap());
