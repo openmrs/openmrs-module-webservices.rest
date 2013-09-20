@@ -418,6 +418,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Determines how far into a list to start with given the startIndex param. <br/>
 	 * 
 	 * @param request the current http web request
+	 * @param response the current http web response
 	 * @param defaultView the representation to use if none specified
 	 * @return a {@link RequestContext} object filled with all the necessary values
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
@@ -425,13 +426,14 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_INCLUDE_ALL
 	 */
-	public static RequestContext getRequestContext(HttpServletRequest request, Representation defaultView) {
+	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response, Representation defaultView) {
 		if (defaultView == null)
 			defaultView = Representation.DEFAULT;
 		
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
-		
+		ret.setResponse(response);
+
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if ("".equals(temp)) {
@@ -476,12 +478,13 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Determines the request representation with Representation.DEFAULT as the default view.
 	 * 
-	 * @param request the current http web request
-	 * @return a {@link RequestContext} object filled with all the necessary values
+     * @param request the current http web request
+     * @param response the current http web response
+     * @return a {@link RequestContext} object filled with all the necessary values
 	 * @see getRequestContext(javax.servlet.http.HttpServletRequest, org.openmrs.module.webservices.rest.web.representation.Representation) 
 	 */
-	public static RequestContext getRequestContext(HttpServletRequest request) {
-		return getRequestContext(request, Representation.DEFAULT);
+	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
+		return getRequestContext(request, response, Representation.DEFAULT);
 	}
 	
 	/**

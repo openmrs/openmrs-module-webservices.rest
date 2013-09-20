@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -29,7 +30,9 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 public class RequestContext {
 	
 	private HttpServletRequest request;
-	
+
+	private HttpServletResponse response;
+
 	private Representation representation = new DefaultRepresentation();
 	
 	private Integer startIndex = 0;
@@ -57,7 +60,21 @@ public class RequestContext {
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-	
+
+    /**
+	 * @return the response
+	 */
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+
+	/**
+	 * @param response the response to set
+	 */
+	public void setResponse(HttpServletResponse response) {
+		this.response = response;
+	}
+
 	/**
 	 * @return the representation
 	 */
