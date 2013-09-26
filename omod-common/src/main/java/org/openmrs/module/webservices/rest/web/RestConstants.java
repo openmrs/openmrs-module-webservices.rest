@@ -20,7 +20,11 @@ import java.util.Set;
  * Constants used by the Rest Web Services
  */
 public class RestConstants {
-	
+
+	public static final String PRIV_MANAGE_RESTWS = "Manage RESTWS";
+
+	public static final String PRIV_VIEW_RESTWS = "View RESTWS";
+
 	/**
 	 * The number of results to limit lists of objects to, if an admin has not defined a global
 	 * property

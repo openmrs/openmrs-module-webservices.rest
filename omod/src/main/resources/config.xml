@@ -85,5 +85,15 @@
 	
 	<mappingFiles>
 	</mappingFiles>
+
+	<privilege>
+		<name>Manage RESTWS</name>
+		<description>Allows to configure RESTWS module</description>
+	</privilege>
+
+	<privilege>
+		<name>View RESTWS</name>
+		<description>Gives access to RESTWS in administration</description>
+	</privilege>
 	
 </module>
