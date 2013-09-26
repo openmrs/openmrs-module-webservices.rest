@@ -27,6 +27,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
@@ -43,7 +45,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
+			description.addProperty("value",findMethod("getValue"),Representation.REF);
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
@@ -53,7 +55,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
+			description.addProperty("value",findMethod("getValue"));
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
@@ -173,4 +175,20 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		
 		return pa.getAttributeType().getName() + " = " + pa.getValue();
 	}
+
+	/**
+	 * Gets the hydrated object of person attribute.
+	 * 
+	 * @param pa the person attribute.
+	 * @return a {@link SimpleObject} containing the hydrated object.
+	 */
+	public Object getValue(PersonAttribute pa) {
+		if (pa.getHydratedObject() == null)
+			return null;
+
+		SimpleObject simpleObject = new SimpleObject();
+		simpleObject.put("value", ConversionUtil.convertToRepresentation(pa.getHydratedObject(),Representation.REF));
+		return simpleObject;
+	}
+
 }

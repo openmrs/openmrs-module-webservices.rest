@@ -17,6 +17,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import junit.framework.Assert;
+
+import org.apache.commons.beanutils.PropertyUtils;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PersonAttribute;
@@ -24,6 +28,9 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Tests functionality of {@link PersonAttributeController}.
@@ -59,6 +66,15 @@ public class PersonAttributeController1_8Test extends MainResourceControllerTest
 		
 		personAttribute = service.getPersonAttributeByUuid(getUuid());
 		assertThat(personAttribute.getAttributeType().getName(), is("Birthplace"));
+	}
+	
+	@Test
+	public void shouldGetAttributeByUuidWithReferenceToAttributeResource() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + "0c28eb28-efdf-4553-8db4-ae7c88ead7f8")));
+		Object resultValue = PropertyUtils.getProperty(PropertyUtils.getProperty(result,"value"),"value");
+		Assert.assertNotNull(resultValue);
+		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", PropertyUtils.getProperty(resultValue, "uuid"));
+		Assert.assertEquals("MARRIED", PropertyUtils.getProperty(resultValue, "display"));
 	}
 	
 	@Test
