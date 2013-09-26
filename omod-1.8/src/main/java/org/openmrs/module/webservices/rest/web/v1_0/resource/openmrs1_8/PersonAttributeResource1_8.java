@@ -45,7 +45,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value",findMethod("getValue"));
+			description.addProperty("value", findMethod("getValue"));
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
@@ -55,7 +55,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value",findMethod("getValue"));
+			description.addProperty("value", findMethod("getValue"));
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
@@ -180,15 +180,15 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * Gets the hydrated object of person attribute.
 	 * 
 	 * @param pa the person attribute.
-	 * @return a {@link SimpleObject} containing the hydrated object.
+	 * @return an object containing the hydrated object.
 	 */
-	public SimpleObject getValue(PersonAttribute pa) {
-		if (pa.getHydratedObject() == null)
+	public Object getValue(PersonAttribute pa) {
+		Object value = pa.getHydratedObject();
+		if (value == null) {
 			return null;
+		}
 
-		SimpleObject simpleObject = new SimpleObject();
-		simpleObject.put("value", ConversionUtil.convertToRepresentation(pa.getHydratedObject(),Representation.REF));
-		return simpleObject;
+		return ConversionUtil.convertToRepresentation(value, Representation.REF);
 	}
 
 }
