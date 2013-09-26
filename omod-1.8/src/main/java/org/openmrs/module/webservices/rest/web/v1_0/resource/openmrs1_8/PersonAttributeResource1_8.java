@@ -45,7 +45,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value",findMethod("getValue"));
+			description.addProperty("value",findMethod("getValue"),Representation.REF);
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
@@ -182,7 +182,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * @param pa the person attribute.
 	 * @return a {@link SimpleObject} containing the hydrated object.
 	 */
-	public SimpleObject getValue(PersonAttribute pa) {
+	public Object getValue(PersonAttribute pa) {
 		if (pa.getHydratedObject() == null)
 			return null;
 
