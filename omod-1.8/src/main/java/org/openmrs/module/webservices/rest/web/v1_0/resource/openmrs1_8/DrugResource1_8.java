@@ -156,7 +156,16 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
      */
     @Override
     protected PageableResult doSearch(RequestContext ctx) {
-        List<Drug> drugs = Context.getConceptService().getDrugs(ctx.getParameter("q"), null, true, false, false, ctx.getStartIndex(), ctx.getLimit());
-        return new AlreadyPaged<Drug>(ctx, drugs, false);
+        boolean searchOnPhrase = true;
+        boolean searchDrugConceptNames = false;
+        boolean includeRetired = false;
+        Integer startIndex = ctx.getStartIndex();
+        Integer limit = ctx.getLimit();
+        String drugName = ctx.getParameter("q");
+
+        Integer countOfDrugs = Context.getConceptService().getCountOfDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired);
+        List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired, startIndex, limit);
+        boolean hasMore = countOfDrugs > startIndex + limit;
+        return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
     }
 }
