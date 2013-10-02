@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
@@ -172,7 +173,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public String getDisplayString(PersonAttribute pa) {
 		if (pa.getAttributeType() == null)
 			return "";
-		
+	if (Concept.class.getName().equals(pa.getAttributeType().getFormat()) && pa.getValue() != null) {
+		Concept concept = Context.getConceptService().getConcept(pa.getValue());
+		return concept == null ? null : concept.getDisplayString();
+	}
 		return pa.getAttributeType().getName() + " = " + pa.getValue();
 	}
 
