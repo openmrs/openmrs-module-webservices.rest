@@ -12,6 +12,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
 import org.openmrs.Patient;
@@ -187,15 +190,19 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 * @throws ResponseException
 	 */
 	public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient"))
-		        .getByUniqueId(patientUniqueId);
-		if (patient == null)
-			throw new ObjectNotFoundException();
+		Patient patient = getPatient(patientUniqueId);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisitsByPatient(patient, true, false), context)
 		        .toSimpleObject();
 	}
-	
-	/**
+
+	private Patient getPatient(String patientUniqueId) {
+		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
+		if (patient == null)
+			throw new ObjectNotFoundException();
+		return patient;
+	}
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
@@ -222,11 +229,19 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
-		String parameter = context.getRequest().getParameter("patient");
-		if (parameter != null) {
-			return getVisitsByPatient(parameter, context);
-		} else {
-			return super.search(context);
+		String patientParameter = context.getRequest().getParameter("patient");
+		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
+		if(patientParameter != null || includeInactiveParameter != null) {
+		    return getVisits(context, patientParameter, includeInactiveParameter);
 		}
+		else {
+		    return super.search(context);
+		}
+	}
+
+	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter) {
+		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
+		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null, null, null, includeInactive, false), context).toSimpleObject();
 	}
 }
