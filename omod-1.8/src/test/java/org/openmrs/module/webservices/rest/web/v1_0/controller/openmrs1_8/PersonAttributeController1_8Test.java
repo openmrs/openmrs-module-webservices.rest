@@ -13,12 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PersonAttribute;
@@ -27,9 +27,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.not;
 
 /**
  * Tests functionality of {@link PersonAttributeController}.
@@ -55,6 +58,45 @@ public class PersonAttributeController1_8Test extends MainResourceControllerTest
 	}
 	
 	@Test
+	public void shouldAddConceptAttributeToPerson() throws Exception {
+        executeDataSet("personAttributeTypeWithConcept.xml");
+        
+		int before = service.getPersonByUuid(personUuid).getAttributes().size();
+		
+        String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
+		handle(newPostRequest(getURI(), json));
+        
+        Set<PersonAttribute> attributes = service.getPersonByUuid(personUuid).getAttributes();
+        int after = attributes.size();
+		assertThat(after, is(before + 1));
+
+        assertThat(getLastPersonAttribute(attributes).getValue(), is("102"));
+	}
+	
+	@Test
+	public void shouldRenderHydratedAttributable() throws Exception {
+        executeDataSet("personAttributeTypeWithConcept.xml");
+
+        String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
+        String postResponse = handle(newPostRequest(getURI(), json)).getContentAsString();
+        SimpleObject postResponseObject = new ObjectMapper().readValue(postResponse, SimpleObject.class);
+
+        String getResponse = handle(newGetRequest(getURI() + "/" + postResponseObject.get("uuid"), new Parameter("v", "full"))).getContentAsString();
+        SimpleObject getResponseObject = new ObjectMapper().readValue(getResponse, SimpleObject.class);
+
+        assertThat(getResponseObject.get("hydratedObject"), not(is(nullValue())));
+	}
+
+    private PersonAttribute getLastPersonAttribute(Set<PersonAttribute> attributes) {
+        PersonAttribute personAttribute = null;
+        Iterator<PersonAttribute> iterator = attributes.iterator();
+        while (iterator.hasNext()) {
+            personAttribute = iterator.next();
+        }
+        return personAttribute;
+    }
+
+    @Test
 	public void shouldEditAttribute() throws Exception {
 		String json = "{ \"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }";
 		
