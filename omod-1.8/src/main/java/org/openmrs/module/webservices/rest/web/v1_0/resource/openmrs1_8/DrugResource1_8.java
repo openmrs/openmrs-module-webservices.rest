@@ -158,7 +158,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
     protected PageableResult doSearch(RequestContext ctx) {
         boolean searchOnPhrase = true;
         boolean searchDrugConceptNames = false;
-        boolean includeRetired = false;
+        boolean includeRetired = ctx.getIncludeAll();
         Integer startIndex = ctx.getStartIndex();
         Integer limit = ctx.getLimit();
         String drugName = ctx.getParameter("q");
