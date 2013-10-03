@@ -14,14 +14,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.Concept;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 
 
@@ -38,13 +32,4 @@ public class ConceptResource1_9 extends ConceptResource1_8 {
 	public String getResourceVersion() {
 	    return RestConstants1_9.RESOURCE_VERSION;
 	}
-
-    @RepHandler(FullRepresentation.class)
-    public SimpleObject asFull(Concept delegate) throws ConversionException {
-        DelegatingResourceDescription description = super.fullRepresentationDescription(delegate);
-        description.removeProperty("setMembers");
-        description.addProperty("setMembers", Representation.FULL);
-
-        return convertDelegateToRepresentation(delegate, description);
-    }
 }

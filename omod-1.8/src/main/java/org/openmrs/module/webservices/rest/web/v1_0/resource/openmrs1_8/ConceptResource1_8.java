@@ -45,6 +45,7 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -81,6 +82,16 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
         DelegatingResourceDescription description = fullRepresentationDescription(delegate);
 		return convertDelegateToRepresentation(delegate, description);
 	}
+
+    @RepHandler(value = NamedRepresentation.class, name = "fullchildren")
+    public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
+        DelegatingResourceDescription description = fullRepresentationDescription(delegate);
+        description.removeProperty("setMembers");
+        description.addProperty("setMembers", Representation.FULL);
+        description.removeProperty("answers");
+        description.addProperty("answers", Representation.FULL);
+        return convertDelegateToRepresentation(delegate, description);
+    }
 
     protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
