@@ -78,40 +78,45 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
 	@RepHandler(FullRepresentation.class)
 	public SimpleObject asFull(Concept delegate) throws ConversionException {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("uuid");
-		description.addProperty("display", findMethod("getDisplayName"));
-		description.addProperty("name", Representation.DEFAULT);
-		description.addProperty("datatype", Representation.DEFAULT);
-		description.addProperty("conceptClass", Representation.DEFAULT);
-		description.addProperty("set");
-		description.addProperty("version");
-		description.addProperty("retired");
-		
-		description.addProperty("names", Representation.DEFAULT);
-		description.addProperty("descriptions", Representation.DEFAULT);
-		
-		description.addProperty("mappings", Representation.DEFAULT);
-		
-		description.addProperty("answers", Representation.DEFAULT);
-		description.addProperty("setMembers", Representation.DEFAULT);
-		//description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
-		description.addProperty("auditInfo", findMethod("getAuditInfo"));
-		description.addSelfLink();
-		if (delegate.isNumeric()) {
-			description.addProperty("hiNormal");
-			description.addProperty("hiAbsolute");
-			description.addProperty("hiCritical");
-			description.addProperty("lowNormal");
-			description.addProperty("lowAbsolute");
-			description.addProperty("lowCritical");
-			description.addProperty("units");
-			description.addProperty("precise");
-		}
+        DelegatingResourceDescription description = fullRepresentationDescription(delegate);
 		return convertDelegateToRepresentation(delegate, description);
 	}
-	
-	/**
+
+    protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
+        DelegatingResourceDescription description = new DelegatingResourceDescription();
+        description.addProperty("uuid");
+        description.addProperty("display", findMethod("getDisplayName"));
+        description.addProperty("name", Representation.DEFAULT);
+        description.addProperty("datatype", Representation.DEFAULT);
+        description.addProperty("conceptClass", Representation.DEFAULT);
+        description.addProperty("set");
+        description.addProperty("version");
+        description.addProperty("retired");
+
+        description.addProperty("names", Representation.DEFAULT);
+        description.addProperty("descriptions", Representation.DEFAULT);
+
+        description.addProperty("mappings", Representation.DEFAULT);
+
+        description.addProperty("answers", Representation.DEFAULT);
+        description.addProperty("setMembers", Representation.DEFAULT);
+        //description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
+        description.addProperty("auditInfo", findMethod("getAuditInfo"));
+        description.addSelfLink();
+        if (delegate.isNumeric()) {
+            description.addProperty("hiNormal");
+            description.addProperty("hiAbsolute");
+            description.addProperty("hiCritical");
+            description.addProperty("lowNormal");
+            description.addProperty("lowAbsolute");
+            description.addProperty("lowCritical");
+            description.addProperty("units");
+            description.addProperty("precise");
+        }
+        return description;
+    }
+
+    /**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
