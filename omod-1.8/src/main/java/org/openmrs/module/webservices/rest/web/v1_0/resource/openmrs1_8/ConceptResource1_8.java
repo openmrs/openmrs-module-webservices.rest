@@ -93,6 +93,13 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
         return convertDelegateToRepresentation(delegate, description);
     }
 
+    @Override
+    public List<Representation> getAvailableRepresentations() {
+        List<Representation> availableRepresentations = super.getAvailableRepresentations();
+        availableRepresentations.add(new NamedRepresentation("fullchildren"));
+        return availableRepresentations;
+    }
+
     protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("uuid");
