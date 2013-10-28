@@ -44,7 +44,7 @@ public class CreatePatientResource1_8Test extends BaseModuleWebContextSensitiveT
 	@Test
 	public void shouldCreatePatient() throws Exception {
 		SimpleObject created = (SimpleObject) resource.create(patientSimpleObject, new RequestContext());
-		Assert.assertEquals("GAN33730 - Ram Kabir", created.get("display"));
+		Assert.assertEquals("id-B - Ram Kabir", created.get("display"));
 	}
 
 }

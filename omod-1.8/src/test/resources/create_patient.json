@@ -1,17 +1,14 @@
 {
     "identifiers": [
         {
-            "uuid": "a1602e09-0f1b-45f5-8d7a-6454e7e13b38",
-            "identifier": "GAN33730",
+            "identifier": "id-B",
             "identifierType": {
-                "id" : "1",
-                "uuid" : "1a339fe9-38bc-4ab3-b180-320988c0b968"
+                "uuid": "1a339fe9-38bc-4ab3-b180-320988c0b968"
             },
-            "location" : {
-
+            "location": {
+                "uuid": "dc5c1fcc-0459-4201-bf70-0b90535ba362"
             },
-            "preferred": true,
-            "voided": false
+            "preferred": true
         }
     ],
     "person": {
