@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Patient;
@@ -162,15 +163,19 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
-		Object object = propertiesToCreate.get("person");
-		if (object == null) {
-			throw new ConversionException("The person property is missing");
-		}
-		Person person = Context.getPersonService().getPersonByUuid((String) object);
-		
-		Patient delegate = new Patient(person);
-		
-		Context.evictFromSession(person);
+        Object personProperty = propertiesToCreate.get("person");
+        Person person = null;
+        if (personProperty == null) {
+            throw new ConversionException("The person property is missing");
+        } else if (personProperty instanceof String) {
+            person = Context.getPersonService().getPersonByUuid((String) personProperty);
+            Context.evictFromSession(person);
+        } else if (personProperty instanceof Map) {
+            person = (Person) ConversionUtil.convert(personProperty, Person.class);
+            propertiesToCreate.put("person", "");
+        }
+
+        Patient delegate = new Patient(person);
 		
 		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
 		delegate = save(delegate);
