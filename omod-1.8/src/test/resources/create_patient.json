@@ -51,9 +51,9 @@
         ],
         "attributes": [
             {
-                "value": "Muslim",
+                "value": "Bangalore",
                 "attributeType": {
-                    "id": 1
+                    "uuid": "54fc8400-1683-4d71-a1ac-98d40836ff7c"
                 }
             }
         ]

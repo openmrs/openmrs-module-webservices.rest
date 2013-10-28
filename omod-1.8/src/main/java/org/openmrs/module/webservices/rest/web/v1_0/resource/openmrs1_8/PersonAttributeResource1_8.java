@@ -17,6 +17,7 @@ import org.openmrs.Attributable;
 import org.openmrs.Concept;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -142,6 +143,18 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public void setParent(PersonAttribute instance, Person person) {
 		instance.setPerson(person);
 	}
+
+    /**
+     * Sets the attribute type for a person attribute.
+     *
+     * @param instance
+     * @param attributeType
+     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+     */
+    @PropertySetter("attributeType")
+    public void setAttributeType(PersonAttribute instance, PersonAttributeType attributeType) {
+        instance.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(attributeType.getUuid()));
+    }
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
