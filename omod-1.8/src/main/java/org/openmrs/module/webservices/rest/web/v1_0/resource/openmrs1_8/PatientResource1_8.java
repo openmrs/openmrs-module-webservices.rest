@@ -163,6 +163,12 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
+        Patient delegate = getPatient(propertiesToCreate);
+		delegate = save(delegate);
+		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+	}
+
+    public Patient getPatient(SimpleObject propertiesToCreate) {
         Object personProperty = propertiesToCreate.get("person");
         Person person = null;
         if (personProperty == null) {
@@ -176,13 +182,11 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
         }
 
         Patient delegate = new Patient(person);
-		
-		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
-		delegate = save(delegate);
-		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
-	}
-	
-	/**
+        setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
+        return delegate;
+    }
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
