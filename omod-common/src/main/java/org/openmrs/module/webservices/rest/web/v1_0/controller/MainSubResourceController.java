@@ -56,7 +56,7 @@ public class MainSubResourceController extends BaseRestController {
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,
-            HttpServletResponse response) throws ResponseException {
+	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.retrieve(parentUuid, uuid, context);

@@ -222,6 +222,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	
 	/**
 	 * Evaluates an XPath expression on a XML string
+	 * 
 	 * @param xml
 	 * @param xPath
 	 * @return
@@ -235,6 +236,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	
 	/**
 	 * Prints an XML string indented
+	 * 
 	 * @param xml
 	 * @throws TransformerException
 	 */

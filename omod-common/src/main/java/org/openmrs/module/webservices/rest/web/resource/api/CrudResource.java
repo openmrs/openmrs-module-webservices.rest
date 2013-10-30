@@ -18,5 +18,5 @@ package org.openmrs.module.webservices.rest.web.resource.api;
  * update, delete (void/retire), purge
  */
 public interface CrudResource extends Resource, Creatable, Retrievable, Updatable, Deletable, Purgeable {
-
+	
 }

@@ -25,8 +25,8 @@ import java.lang.reflect.Type;
 public class ReflectionUtil {
 	
 	/**
-	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type with
-	 * the given index from that interface
+	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type
+	 * with the given index from that interface
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Class getParameterizedTypeFromInterface(Class<?> clazz, Class<?> genericInterface, int index) {
@@ -39,7 +39,6 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 *
 	 * @param name the full method name to look for
 	 * @return the java Method object if found. (does not return null)
 	 * @throws RuntimeException if not method found by the given name in the current class

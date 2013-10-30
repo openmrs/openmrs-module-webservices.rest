@@ -19,7 +19,7 @@ import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
 
 /**
- * {@link ModuleActivator} for the webservices.rest module 
+ * {@link ModuleActivator} for the webservices.rest module
  */
 public class Activator extends BaseModuleActivator {
 	

@@ -51,11 +51,11 @@ public class AdminSection extends AdministrationSectionExt {
 	public Map<String, String> getLinks() {
 		
 		Map<String, String> map = new LinkedHashMap<String, String>();
-
+		
 		if (Context.hasPrivilege(RestConstants.PRIV_MANAGE_RESTWS)) {
 			map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.settings");
 		}
-
+		
 		if (Context.hasPrivilege(RestConstants.PRIV_VIEW_RESTWS) || Context.hasPrivilege(RestConstants.PRIV_MANAGE_RESTWS)) {
 			map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
 			map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");

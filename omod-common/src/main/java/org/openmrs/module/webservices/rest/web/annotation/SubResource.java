@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 /**
  * Indicates that the annotated class is a sub-resource of another Resource
  */
-@Target( { ElementType.TYPE })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubResource {
 	
@@ -33,7 +33,8 @@ public @interface SubResource {
 	Class<? extends Resource> parent();
 	
 	/**
-	 * @return the relative URI this sub-resource lives at (will be appended to the URI of the parent resource)
+	 * @return the relative URI this sub-resource lives at (will be appended to the URI of the
+	 *         parent resource)
 	 */
 	String path();
 	

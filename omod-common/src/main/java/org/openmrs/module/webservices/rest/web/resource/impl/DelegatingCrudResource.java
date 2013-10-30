@@ -241,8 +241,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * /ws/rest/v1/concept) but when modules publish resources, they should be namespaced (e.g.
 	 * /ws/rest/v1/moduleId/moduleresource).
 	 * 
-	 * @deprecated Since 2.x the namespace must be declared in {@link Resource}'s name, {@link MainResourceController}
-	 * and {@link MainSubResourceController}.
+	 * @deprecated Since 2.x the namespace must be declared in {@link Resource}'s name,
+	 *             {@link MainResourceController} and {@link MainSubResourceController}.
 	 */
 	@Deprecated
 	protected final String getNamespacePrefix() {

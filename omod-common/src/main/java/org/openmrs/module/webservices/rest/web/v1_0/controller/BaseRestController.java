@@ -39,13 +39,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class BaseRestController {
 	
 	private int errorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-    private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
-
+	
+	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
+	
 	private String errorDetail;
 	
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody
-	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
+	        HttpServletResponse response) throws Exception {
 		if (Context.isAuthenticated()) {
 			// user is logged in but doesn't have the relevant privilege -> 403 FORBIDDEN
 			errorCode = HttpServletResponse.SC_FORBIDDEN;
@@ -54,24 +56,25 @@ public class BaseRestController {
 			// user is not logged in -> 401 UNAUTHORIZED
 			errorCode = HttpServletResponse.SC_UNAUTHORIZED;
 			errorDetail = "User is not logged in";
-            if (shouldAddWWWAuthHeader(request)) {
-                response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
-            }
+			if (shouldAddWWWAuthHeader(request)) {
+				response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
+			}
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
-
-    @ExceptionHandler(Exception.class)
+	
+	@ExceptionHandler(Exception.class)
 	@ResponseBody
-	private SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
+	        throws Exception {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			errorCode = ann.value().value();
 			if (StringUtils.isNotEmpty(ann.reason())) {
 				errorDetail = ann.reason();
 			}
-
+			
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
 			return apiAuthenticationExceptionHandler(ex, request, response);
 		} else if (ex.getClass() == HttpRequestMethodNotSupportedException.class) {
@@ -80,11 +83,12 @@ public class BaseRestController {
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
-
-    private boolean shouldAddWWWAuthHeader(HttpServletRequest request) {
-        return request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null || !request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME).equals("true");
-    }
-
+	
+	private boolean shouldAddWWWAuthHeader(HttpServletRequest request) {
+		return request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null
+		        || !request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME).equals("true");
+	}
+	
 	/**
 	 * It should be overridden if you want to expose resources under a different URL than /rest/v1.
 	 * 

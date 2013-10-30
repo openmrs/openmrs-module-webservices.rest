@@ -99,10 +99,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)} or {@link #getSubclassHandler(String)}.
-	 * It finds all subclass handlers intented for this resource, and registers them.
+	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)}
+	 * or {@link #getSubclassHandler(String)}. It finds all subclass handlers intented for this
+	 * resource, and registers them.
 	 */
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init() {
 		List<DelegatingSubclassHandler<T, ? extends T>> tmpSubclassHandlers = new ArrayList<DelegatingSubclassHandler<T, ? extends T>>();
 		

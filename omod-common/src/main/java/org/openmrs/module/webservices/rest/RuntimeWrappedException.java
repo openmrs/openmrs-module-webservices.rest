@@ -14,9 +14,8 @@
 package org.openmrs.module.webservices.rest;
 
 /**
- * Used as a workaround for a few places where Spring will not let you throw a
- * checked exception (for example if you want to throw ObjectNotFoundException
- * in a property editor.
+ * Used as a workaround for a few places where Spring will not let you throw a checked exception
+ * (for example if you want to throw ObjectNotFoundException in a property editor.
  */
 public class RuntimeWrappedException extends RuntimeException {
 	

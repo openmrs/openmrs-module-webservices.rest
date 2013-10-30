@@ -251,14 +251,14 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
 		SimpleObject ret = new SimpleObject();
 		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
-		    Representation.DEFAULT));
+		ret.put("dateCreated",
+		    ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(), Representation.DEFAULT));
 		if (resource instanceof Voidable && ((Voidable) resource).isVoided()) {
 			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(resource, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(((Voidable) resource).getDateVoided(),
-			    Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(((Voidable) resource).getVoidReason(),
-			    Representation.DEFAULT));
+			ret.put("dateVoided",
+			    ConversionUtil.convertToRepresentation(((Voidable) resource).getDateVoided(), Representation.DEFAULT));
+			ret.put("voidReason",
+			    ConversionUtil.convertToRepresentation(((Voidable) resource).getVoidReason(), Representation.DEFAULT));
 		}
 		return ret;
 	}

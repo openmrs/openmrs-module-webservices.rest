@@ -21,10 +21,11 @@ import java.lang.annotation.Target;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 
 /**
- * Use this annotation to mark a method in a {@link DelegatingCrudResource} implementation that describes how
- * to set a property on a delegate. (You would use this, for example, if you want to expose a "preferredName"
- * property in the resource, which doesn't have a direct setter on the delegate.)
- * The "setter" method should have the form "void setXyz(T delegate, Object value)" and may be static. 
+ * Use this annotation to mark a method in a {@link DelegatingCrudResource} implementation that
+ * describes how to set a property on a delegate. (You would use this, for example, if you want to
+ * expose a "preferredName" property in the resource, which doesn't have a direct setter on the
+ * delegate.) The "setter" method should have the form "void setXyz(T delegate, Object value)" and
+ * may be static.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

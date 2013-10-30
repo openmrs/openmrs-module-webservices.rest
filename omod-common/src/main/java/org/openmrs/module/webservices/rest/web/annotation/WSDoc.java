@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 /**
  * Used for documenting a web service request handling method which is annotated with @RequestMapping
  */
-@Target( { ElementType.METHOD })
+@Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WSDoc {
 	
