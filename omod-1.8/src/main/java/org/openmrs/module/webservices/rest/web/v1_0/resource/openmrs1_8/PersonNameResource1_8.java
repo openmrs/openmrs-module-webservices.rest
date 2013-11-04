@@ -88,7 +88,8 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		description.addProperty("familyNamePrefix");
 		description.addProperty("familyNameSuffix");
 		description.addProperty("degree");
-		return description;
+        description.addProperty("preferred");
+        return description;
 	}
 	
 	/**
