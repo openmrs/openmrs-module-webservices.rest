@@ -89,7 +89,13 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
      */
     @PropertySetter("identifierType")
     public void setIdentifierType(PatientIdentifier instance, PatientIdentifierType identifierType) {
-        instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByUuid(identifierType.getUuid()));
+        String uuid = identifierType.getUuid();
+        String name = identifierType.getName();
+        if (name != null && !name.isEmpty()) {
+            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByName(name));
+        } else if (uuid != null && !uuid.isEmpty()) {
+            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByUuid(uuid));
+        }
     }
 
     /**
