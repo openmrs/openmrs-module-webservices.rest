@@ -12,10 +12,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import junit.framework.Assert;
+import org.junit.Test;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+
+import java.util.Date;
 
 /**
  * Contains tests for the {@link VisitResource1_9}
@@ -80,4 +87,16 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 	public String getUuidProperty() {
 		return RestTestConstants1_9.VISIT_UUID;
 	}
+
+    @Test
+    public void create_shouldCreateVisitWithPatientUuidAndVisitTypeUuid() {
+        SimpleObject visitProperties = new SimpleObject();
+        visitProperties.add("patient", new SimpleObject().add("uuid", RestTestConstants1_8.PATIENT_UUID));
+        visitProperties.add("visitType", new SimpleObject().add("uuid", RestTestConstants1_9.VISIT_TYPE_UUID));
+        visitProperties.add("startDatetime", new Date());
+
+        SimpleObject savedVisit = (SimpleObject)getResource().create(visitProperties, new RequestContext());
+
+        Assert.assertNotNull(Context.getVisitService().getVisitByUuid(String.valueOf(savedVisit.get("uuid"))));
+    }
 }
