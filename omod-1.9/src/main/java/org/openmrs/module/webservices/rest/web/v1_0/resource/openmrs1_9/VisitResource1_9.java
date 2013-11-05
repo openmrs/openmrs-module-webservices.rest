@@ -20,6 +20,7 @@ import java.util.Set;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
+import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -203,6 +204,28 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		visit.setAttributes(attributes);
 	}
 	
+	/**
+	 * Sets the patient on visit
+	 *
+	 * @param visit
+	 * @param patient
+	 */
+	@PropertySetter("patient")
+	public static void setPatient(Visit visit, Patient patient) {
+	    visit.setPatient(Context.getPatientService().getPatientByUuid(patient.getUuid()));
+    }
+
+	/**
+	 * Sets the visitType on visit
+	 *
+	 * @param visit
+	 * @param visitType
+	 */
+	@PropertySetter("visitType")
+	public static void setVisitType(Visit visit, VisitType visitType) {
+	    visit.setVisitType(Context.getVisitService().getVisitTypeByUuid(visitType.getUuid()));
+    }
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
