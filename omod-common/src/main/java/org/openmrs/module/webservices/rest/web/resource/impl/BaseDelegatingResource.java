@@ -566,7 +566,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @param propertiesToCreate
 	 * @throws ResponseException
 	 */
-	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
+	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
