@@ -122,20 +122,20 @@ public class RestUtilTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		String includeAllParam = RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL;
 		
-		Assert.assertNull("getBooleanParam should return true if includeAllParam is not set", RestUtil.getBooleanParam(
-		    request, includeAllParam));
+		Assert.assertNull("getBooleanParam should return true if includeAllParam is not set",
+		    RestUtil.getBooleanParam(request, includeAllParam));
 		
 		request.setParameter(includeAllParam, "true");
-		Assert.assertTrue("getBooleanParam should return true if includeAllParam is equal 'true'", RestUtil.getBooleanParam(
-		    request, includeAllParam));
+		Assert.assertTrue("getBooleanParam should return true if includeAllParam is equal 'true'",
+		    RestUtil.getBooleanParam(request, includeAllParam));
 		
 		request.setParameter(includeAllParam, "t");
-		Assert.assertFalse("getBooleanParam should return false if includeAllParam is not equal to 'true'", RestUtil
-		        .getBooleanParam(request, includeAllParam));
+		Assert.assertFalse("getBooleanParam should return false if includeAllParam is not equal to 'true'",
+		    RestUtil.getBooleanParam(request, includeAllParam));
 		
 		request.setParameter(includeAllParam, (String) null);
-		Assert.assertNull("getBooleanParam should return null if includeAllParam is null", RestUtil.getBooleanParam(request,
-		    includeAllParam));
+		Assert.assertNull("getBooleanParam should return null if includeAllParam is null",
+		    RestUtil.getBooleanParam(request, includeAllParam));
 	}
 	
 }

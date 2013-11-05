@@ -22,10 +22,9 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 
 /**
- * Method-level annotation, which marks a method as being the "get" handler for
- * a particular representation. Methods marked with this annotation are only
- * called if there is not a getRepresentationDescription method, or it returns null
- * for the given rep
+ * Method-level annotation, which marks a method as being the "get" handler for a particular
+ * representation. Methods marked with this annotation are only called if there is not a
+ * getRepresentationDescription method, or it returns null for the given rep
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

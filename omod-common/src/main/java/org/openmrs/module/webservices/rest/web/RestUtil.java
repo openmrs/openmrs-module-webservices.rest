@@ -382,7 +382,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * 
 	 * return simpleObject; }
 	 */
-
+	
 	/*
 	 * Used by code commented out above. Ready for possible deletion.
 	 * 
@@ -411,7 +411,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * return null; // throw new NoSuchMethodException("No method on class " + c
 	 * + // " with name " + name + " with param " + param); }
 	 */
-
+	
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
 	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
@@ -426,14 +426,15 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_INCLUDE_ALL
 	 */
-	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response, Representation defaultView) {
+	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response,
+	        Representation defaultView) {
 		if (defaultView == null)
 			defaultView = Representation.DEFAULT;
 		
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
 		ret.setResponse(response);
-
+		
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if ("".equals(temp)) {
@@ -478,10 +479,11 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Determines the request representation with Representation.DEFAULT as the default view.
 	 * 
-     * @param request the current http web request
-     * @param response the current http web response
-     * @return a {@link RequestContext} object filled with all the necessary values
-	 * @see getRequestContext(javax.servlet.http.HttpServletRequest, org.openmrs.module.webservices.rest.web.representation.Representation) 
+	 * @param request the current http web request
+	 * @param response the current http web response
+	 * @return a {@link RequestContext} object filled with all the necessary values
+	 * @see getRequestContext(javax.servlet.http.HttpServletRequest,
+	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
 		return getRequestContext(request, response, Representation.DEFAULT);
@@ -515,9 +517,9 @@ public class RestUtil implements GlobalPropertyListener {
 	 * 
 	 * @param request the WebRequest to look in
 	 * @param param the string name to fetch
-	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> 
-	 * for any empty value, null value, or not equal to 'true', or missing param.
-	 * @should return true only if request param is 'true' 
+	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> for any empty
+	 *         value, null value, or not equal to 'true', or missing param.
+	 * @should return true only if request param is 'true'
 	 */
 	public static Boolean getBooleanParam(HttpServletRequest request, String param) {
 		try {
@@ -578,7 +580,7 @@ public class RestUtil implements GlobalPropertyListener {
 	
 	/**
 	 * Sets the HTTP status for UPDATED and (if 'updated' has a uri) the Location header attribute
-	 *
+	 * 
 	 * @param response
 	 * @param updated
 	 * @return the object passed in

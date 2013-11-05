@@ -18,13 +18,14 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
- * Can convert from String -> T.
- * Can convert from T -> json-friendly version of a given Representation
+ * Can convert from String -> T. Can convert from T -> json-friendly version of a given
+ * Representation
  */
 public interface Converter<T> {
 	
 	/**
-	 * @param type user-friendly type name, if relevant for this converter (@see DelegatingSubclassHandler)
+	 * @param type user-friendly type name, if relevant for this converter (@see
+	 *            DelegatingSubclassHandler)
 	 * @return a new instance of the given type
 	 */
 	T newInstance(String type);

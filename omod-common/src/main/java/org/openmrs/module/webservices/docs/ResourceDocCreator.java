@@ -109,8 +109,8 @@ public class ResourceDocCreator {
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
-			if (resourceHandler.getClass().getName().equals(
-			    "org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
+			if (resourceHandler.getClass().getName()
+			        .equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
 				continue; //Skip the test class
 			}
 			
@@ -286,8 +286,8 @@ public class ResourceDocCreator {
 				
 				for (ResourceOperation ro : resourceOperations) {
 					//Add the actual urls after replacing the {resource} string with the resource name
-					doc.addOperation(new ResourceOperation(StringUtils.replace(ro.getName(), "{resource}", doc
-					        .getResourceName()), ro.getDescription()));
+					doc.addOperation(new ResourceOperation(StringUtils.replace(ro.getName(), "{resource}",
+					    doc.getResourceName()), ro.getDescription()));
 				}
 				
 				//Set the root url.

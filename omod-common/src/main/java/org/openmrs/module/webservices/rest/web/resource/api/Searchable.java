@@ -18,8 +18,9 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Interface implemented by resources that have the standard-pattern Search operation. Implementations of this interface must
- * respect the values of startIndex and limit specified in the RequestContext 
+ * Interface implemented by resources that have the standard-pattern Search operation.
+ * Implementations of this interface must respect the values of startIndex and limit specified in
+ * the RequestContext
  */
 public interface Searchable extends Resource {
 	

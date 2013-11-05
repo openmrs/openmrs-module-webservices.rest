@@ -29,6 +29,7 @@ public interface RestService {
 	
 	/**
 	 * Parses a representation requested by the client via the http request
+	 * 
 	 * @param requested
 	 * @return
 	 * @should get ref representation when specified
@@ -50,7 +51,8 @@ public interface RestService {
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
-	 * Returns a search handler, which supports the given resource and the map of parameters and values.
+	 * Returns a search handler, which supports the given resource and the map of parameters and
+	 * values.
 	 * 
 	 * @param resourceName
 	 * @param parameters

@@ -24,7 +24,9 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * Base implementation that converts the result list to the requested representation, and adds next/prev links if necessary 
+ * Base implementation that converts the result list to the requested representation, and adds
+ * next/prev links if necessary
+ * 
  * @param <T> the generic type of the list of results
  */
 public abstract class BasePageableResult<T> implements PageableResult {

@@ -18,9 +18,10 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * A resource that belongs completely to another resource. You only interact with this resource through its
- * parent resource (e.g. adding children to a parent, listing all children of a parent) but not directly (e.g.
- * you cannot search for all sub-resources of any parent with a given characteristic.
+ * A resource that belongs completely to another resource. You only interact with this resource
+ * through its parent resource (e.g. adding children to a parent, listing all children of a parent)
+ * but not directly (e.g. you cannot search for all sub-resources of any parent with a given
+ * characteristic.
  */
 public interface SubResource extends Resource {
 	

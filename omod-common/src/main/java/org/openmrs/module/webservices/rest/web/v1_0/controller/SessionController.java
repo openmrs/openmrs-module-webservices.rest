@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 /**
- * Controller that lets a client check the status of their session, and log out. (Authenticating is handled through a filter, and may happen through this or
- * any other resource.
+ * Controller that lets a client check the status of their session, and log out. (Authenticating is
+ * handled through a filter, and may happen through this or any other resource.
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
@@ -48,6 +48,7 @@ public class SessionController extends BaseRestController {
 	
 	/**
 	 * Logs the client out
+	 * 
 	 * @should log the client out
 	 */
 	@RequestMapping(method = RequestMethod.DELETE)

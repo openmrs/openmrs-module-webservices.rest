@@ -22,8 +22,9 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 
 /**
- * Helper for {@link Searchable} implementations, which delegates to named service methods that do paged searching (by String, Integer, Integer)
- * and the matching count of that search.
+ * Helper for {@link Searchable} implementations, which delegates to named service methods that do
+ * paged searching (by String, Integer, Integer) and the matching count of that search.
+ * 
  * @param <T> the generic type of the {@link List} that will be returned by the search method
  */
 public class ServiceSearcher<T> {
@@ -41,7 +42,8 @@ public class ServiceSearcher<T> {
 	}
 	
 	/**
-	 * Makes service calls to get the count and search results for the given query, and packages those up as an AlreadyPaged search result
+	 * Makes service calls to get the count and search results for the given query, and packages
+	 * those up as an AlreadyPaged search result
 	 * 
 	 * @param query
 	 * @param context
@@ -58,8 +60,8 @@ public class ServiceSearcher<T> {
 	}
 	
 	/**
-	 * Finds and invokes a search method whose name is given by searchMethod and whose signature includes one String, two Integers, and any
-	 * number of boolean or Booleans
+	 * Finds and invokes a search method whose name is given by searchMethod and whose signature
+	 * includes one String, two Integers, and any number of boolean or Booleans
 	 * 
 	 * @param service
 	 * @param query
@@ -80,8 +82,8 @@ public class ServiceSearcher<T> {
 	}
 	
 	/**
-	 * Finds and invokes a count method whose name is given by countMethod and whose signature includes one String, and any number of
-	 * boolean or Booleans
+	 * Finds and invokes a count method whose name is given by countMethod and whose signature
+	 * includes one String, and any number of boolean or Booleans
 	 * 
 	 * @param service
 	 * @param query
@@ -125,8 +127,8 @@ public class ServiceSearcher<T> {
 	}
 	
 	/**
-	 * Invokes a paged search method, using query as its String argument, and the context's startIndex and limit to the first two
-	 * Integer arguments
+	 * Invokes a paged search method, using query as its String argument, and the context's
+	 * startIndex and limit to the first two Integer arguments
 	 * 
 	 * @param service
 	 * @param method

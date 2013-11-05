@@ -79,7 +79,7 @@ public class ConversionUtil {
 	 * @should convert strings to locales
 	 * @should convert strings to enum values
 	 */
-	@SuppressWarnings( { "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
 		if (object == null)
 			return object;
@@ -175,7 +175,7 @@ public class ConversionUtil {
 	 *         on it
 	 * @throws ConversionException
 	 */
-	@SuppressWarnings( { "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {
 		// TODO handle refs by fetching the object at their URI
 		Converter converter = getConverter(toClass);

@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
  * Subclass of {@link DelegatingCrudResource} with helper methods specific to {@link OpenmrsData}
+ * 
  * @param <T>
  */
 public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends DelegatingCrudResource<T> {

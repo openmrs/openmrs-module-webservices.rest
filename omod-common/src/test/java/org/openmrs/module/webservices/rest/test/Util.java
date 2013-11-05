@@ -64,8 +64,8 @@ public class Util {
 				Integer index;
 				if (pathElements[i].indexOf("[") > 0) {
 					property = pathElements[i].substring(0, pathElements[i].indexOf("["));
-					index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1, pathElements[i]
-					        .indexOf("]")));
+					index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1,
+					    pathElements[i].indexOf("]")));
 				} else {
 					property = pathElements[i];
 					index = null;
@@ -88,20 +88,18 @@ public class Util {
 	}
 	
 	/**
-	 * 
 	 * @param result the SimpleObject that contains results
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static List<Object> getResultsList(SimpleObject result) throws Exception {
 		return (List<Object>) PropertyUtils.getProperty(result, "results");
 	}
 	
 	/**
-	 * 
 	 * @param result
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public static int getResultsSize(SimpleObject result) throws Exception {
 		return getResultsList(result).size();

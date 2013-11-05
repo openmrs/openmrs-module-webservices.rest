@@ -39,7 +39,7 @@ public class CatalogController extends BaseRestController {
 	
 	/**
 	 * Gets a catalog of all available resources.
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */

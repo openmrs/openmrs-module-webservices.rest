@@ -26,6 +26,7 @@ public interface Retrievable extends Resource {
 	
 	/**
 	 * Gets the object with the given uuid, in the given representation
+	 * 
 	 * @param uuid
 	 * @param context
 	 * @return
