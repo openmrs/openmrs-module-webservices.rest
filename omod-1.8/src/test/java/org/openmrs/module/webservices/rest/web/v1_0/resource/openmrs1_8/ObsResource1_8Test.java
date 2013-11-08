@@ -29,6 +29,8 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 
+import static org.junit.Assert.assertEquals;
+
 public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_8, Obs> {
 	
 	private enum ObsType {
@@ -127,7 +129,15 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("numeric", number, rep.get("value"));
 	}
-	
+
+    @Test
+    public void getGroupMembers_shouldReturnAllGroupMembers() throws Exception {
+        executeDataSet("ObsWithGroupMembers.xml");
+
+        assertEquals(1, getResource().getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423").getGroupMembers().size());
+        assertEquals(2, getResource().getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433").getGroupMembers().size());
+
+    }
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
 		obs.setValueCoded(type.equals(ObsType.CODED) ? (Concept) value : null);
 		obs.setValueComplex(type.equals(ObsType.COMPLEX) ? (String) value : null);

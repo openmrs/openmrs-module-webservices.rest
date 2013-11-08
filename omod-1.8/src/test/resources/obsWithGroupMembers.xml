@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <encounter encounter_id="5000" encounter_type="2" patient_id="7" provider_id="502" location_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="62967e68-96bb-11e0-8d6b-9b9415a91434" />
+
+    <!-- obs group -->
+    <obs obs_id="5000" person_id="7" encounter_id="5000" concept_id="23" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="47f18998-96cc-11e0-8d6b-9b9415a91423" />
+    <!-- containing one obs -->
+    <obs obs_id="5001" person_id="7" encounter_id="5000" obs_group_id="5000" concept_id="19" value_text="Some text" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="5117f5d4-96cc-11e0-8d6b-9b9415a91433" />
+
+    <!-- containing two obs -->
+    <obs obs_id="5002" person_id="7" encounter_id="5000" obs_group_id="5001" concept_id="19" value_text="Some text" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="5117f5d4-96cc-11e0-8d6b-9b9415a91436" /><!-- containing one obs -->
+    <obs obs_id="5003" person_id="7" encounter_id="5000" obs_group_id="5001" concept_id="19" value_text="Some text" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="5117f5d4-96cc-11e0-8d6b-9b9415a91439" />
+</dataset>
