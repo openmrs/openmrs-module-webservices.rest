@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.Date;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -134,8 +135,13 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
     public void getGroupMembers_shouldReturnAllGroupMembers() throws Exception {
         executeDataSet("ObsWithGroupMembers.xml");
 
-        assertEquals(1, getResource().getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423").getGroupMembers().size());
-        assertEquals(2, getResource().getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433").getGroupMembers().size());
+        ObsResource1_8 resource = getResource();
+
+        Set<Obs> groupMembers1 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423"));
+        assertEquals(1, groupMembers1.size());
+
+        Set<Obs> groupMembers2 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+        assertEquals(2, groupMembers2.size());
 
     }
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
