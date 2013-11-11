@@ -133,7 +133,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 
     @Test
     public void getGroupMembers_shouldReturnAllGroupMembers() throws Exception {
-        executeDataSet("ObsWithGroupMembers.xml");
+        executeDataSet("obsWithGroupMembers.xml");
 
         ObsResource1_8 resource = getResource();
 
