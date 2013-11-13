@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -85,15 +86,42 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 
     @RepHandler(value = NamedRepresentation.class, name = "fullchildren")
     public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
-        DelegatingResourceDescription description = fullRepresentationDescription(delegate);
-        description.removeProperty("setMembers");
-        description.addProperty("setMembers", Representation.FULL);
-        description.removeProperty("answers");
-        description.addProperty("answers", Representation.FULL);
-        return convertDelegateToRepresentation(delegate, description);
+		Set<String> path = new HashSet<String>();
+		path.add(delegate.getUuid());
+		assertNoCycles(delegate, path);
+
+        return asFullChildrenInternal(delegate);
     }
 
-    @Override
+	protected void assertNoCycles(Concept delegate, Set<String> path) throws ConversionException {
+		for (Concept member: delegate.getSetMembers()) {
+			if (path.add(member.getUuid())) {
+				assertNoCycles(member, path);
+			} else {
+				throw new ConversionException("Cycles in children are not supported. Concept with uuid " + delegate.getUuid() + " repeats in a set.");
+			}
+			path.remove(member.getUuid());
+		}
+	}
+
+	/**
+	 * It is used internally for the fullchildren representation. Contrary to the fullchildren handler it does not check for cycles.
+	 *
+	 * @param delegate
+	 * @return
+	 * @throws ConversionException
+	 */
+	@RepHandler(value = NamedRepresentation.class, name = "fullchildreninternal")
+	public SimpleObject asFullChildrenInternal(Concept delegate) throws ConversionException {
+		DelegatingResourceDescription description = fullRepresentationDescription(delegate);
+		description.removeProperty("setMembers");
+		description.addProperty("setMembers", new NamedRepresentation("fullchildreninternal"));
+		description.removeProperty("answers");
+		description.addProperty("answers", Representation.FULL);
+		return convertDelegateToRepresentation(delegate, description);
+	}
+
+	@Override
     public List<Representation> getAvailableRepresentations() {
         List<Representation> availableRepresentations = super.getAvailableRepresentations();
         availableRepresentations.add(new NamedRepresentation("fullchildren"));

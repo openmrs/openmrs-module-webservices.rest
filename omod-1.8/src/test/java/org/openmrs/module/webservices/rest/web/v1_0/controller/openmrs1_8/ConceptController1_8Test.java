@@ -14,10 +14,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
@@ -37,6 +40,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -512,6 +517,91 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 							"WT"))));
 		List<Object> results = Util.getResultsList(response);
 		Assert.assertEquals(results.size(), 0);
+	}
+
+	@Test
+	public void shouldReturnFullSetMembersOnAllLevelsForFullChildren() throws Exception {
+		Concept conceptLevel1 = newConcept("level1");
+		Concept conceptLevel2 = newConcept("level2");
+		Concept conceptLevel3 = newConcept("level3");
+		Concept conceptLevel4 = newConcept("level4");
+		Concept conceptLevel5 = newConcept("level5");
+
+		conceptLevel1.addSetMember(conceptLevel2);
+		conceptLevel2.addSetMember(conceptLevel3);
+		conceptLevel3.addSetMember(conceptLevel4);
+		conceptLevel4.addSetMember(conceptLevel5);
+
+		service.saveConcept(conceptLevel5);
+		service.saveConcept(conceptLevel4);
+		service.saveConcept(conceptLevel3);
+		service.saveConcept(conceptLevel2);
+		service.saveConcept(conceptLevel1);
+
+		//should include levels when accessing directly
+		SimpleObject level1 = deserialize(handle(newGetRequest(getURI() + "/" + conceptLevel1.getUuid(), new Parameter("v", "fullchildren"))));
+
+		assertThatLevelsIncluded(level1, conceptLevel2, conceptLevel3, conceptLevel4, conceptLevel5);
+
+		//should include levels when searching
+		level1 = deserialize(handle(newGetRequest(getURI(), new Parameter("v", "fullchildren"), new Parameter("name", "level1"))));
+
+		List<Object> results = Util.getResultsList(level1);
+		assertThatLevelsIncluded((Map<String, Object>) results.get(0), conceptLevel2, conceptLevel3, conceptLevel4, conceptLevel5);
+	}
+
+	@Test(expected = ConversionException.class)
+	public void shouldFailForFullChildrenWhenCyclesDetected() throws Exception {
+		Concept conceptLevel1 = newConcept("level1");
+		Concept conceptLevel2 = newConcept("level2");
+		Concept conceptLevel3 = newConcept("level3");
+		Concept conceptLevel4 = newConcept("level4");
+		Concept conceptLevel5 = newConcept("level5");
+
+		conceptLevel1.addSetMember(conceptLevel2);
+		conceptLevel2.addSetMember(conceptLevel3);
+		conceptLevel3.addSetMember(conceptLevel4);
+		conceptLevel4.addSetMember(conceptLevel5);
+
+		service.saveConcept(conceptLevel5);
+		service.saveConcept(conceptLevel4);
+		service.saveConcept(conceptLevel3);
+		service.saveConcept(conceptLevel2);
+		service.saveConcept(conceptLevel1);
+
+		//Create cycle
+		conceptLevel5.addSetMember(conceptLevel1);
+		service.saveConcept(conceptLevel5);
+
+		deserialize(handle(newGetRequest(getURI() + "/" + conceptLevel1.getUuid(), new Parameter("v", "fullchildren"))));
+	}
+
+	private void assertThatLevelsIncluded(Map<String, Object> level1, Concept conceptLevel2, Concept conceptLevel3, Concept conceptLevel4, Concept conceptLevel5) {
+		Map<String, Object> level2 = getFirst(level1.get("setMembers"));
+		assertThat((String) level2.get("uuid"), is(conceptLevel2.getUuid()));
+		assertThat(level2.get("auditInfo"), is(notNullValue()));
+
+		Map<String, Object> level3 = getFirst(level2.get("setMembers"));
+		assertThat((String) level3.get("uuid"), is(conceptLevel3.getUuid()));
+		assertThat(level3.get("auditInfo"), is(notNullValue()));
+
+		Map<String, Object> level4 = getFirst(level3.get("setMembers"));
+		assertThat((String) level4.get("uuid"), is(conceptLevel4.getUuid()));
+		assertThat(level4.get("auditInfo"), is(notNullValue()));
+
+		Map<String, Object> level5 = getFirst(level4.get("setMembers"));
+		assertThat((String) level5.get("uuid"), is(conceptLevel5.getUuid()));
+		assertThat(level5.get("auditInfo"), is(notNullValue()));
+	}
+
+	private Map<String, Object> getFirst(Object object) {
+		return ((List<Map<String, Object>>) object).get(0);
+	}
+
+	private Concept newConcept(String name) {
+		Concept concept = new Concept();
+		concept.addName(new ConceptName(name, Locale.ENGLISH));
+		return concept;
 	}
 
 }
