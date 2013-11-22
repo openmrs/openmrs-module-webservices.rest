@@ -13,54 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 
 public class HibernateLazyLoader {
 	
 	public <T> T load(T entity) {
-		try {
-			hibernateInit(entity);
-			
-			if (isHibernateProxy(entity)) {
-				return (T) concreteClassOf(entity);
-			}
+		if (entity == null) {
+			return null;
 		}
-		catch (ClassNotFoundException e) {
-			return entity;
-		}
-		catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
-		}
-		catch (InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-		catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
+		if (entity instanceof HibernateProxy) {
+			Hibernate.initialize(entity);
+			entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
 		}
 		return entity;
 	}
 	
-	private <T> Object concreteClassOf(T entity) throws NoSuchMethodException, InvocationTargetException,
-	        IllegalAccessException {
-		return invoke("getImplementation", invoke("getHibernateLazyInitializer", entity));
-	}
-	
-	private <T> void hibernateInit(T entity) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-	        InvocationTargetException {
-		Class<?> hibernate = Class.forName("org.hibernate.Hibernate");
-		Method initialize = hibernate.getMethod("initialize", Object.class);
-		initialize.invoke(null, entity);
-	}
-	
-	private <T> boolean isHibernateProxy(T entity) throws ClassNotFoundException {
-		Class<?> proxyClass = Class.forName("org.hibernate.proxy.HibernateProxy");
-		return proxyClass.isAssignableFrom(entity.getClass());
-	}
-	
-	private Object invoke(String methodName, Object entity) throws NoSuchMethodException, InvocationTargetException,
-	        IllegalAccessException {
-		Method method = entity.getClass().getMethod(methodName);
-		return method.invoke(entity);
-	}
 }
