@@ -221,6 +221,7 @@ public class ConversionUtil {
 	public static <S> Object convertToRepresentation(S o, Representation rep) throws ConversionException {
 		if (o == null)
 			return null;
+		o = new HibernateLazyLoader().load(o);
 		Converter<S> converter = (Converter<S>) getConverter(o.getClass());
 		if (converter == null) {
 			// try a few known datatypes
