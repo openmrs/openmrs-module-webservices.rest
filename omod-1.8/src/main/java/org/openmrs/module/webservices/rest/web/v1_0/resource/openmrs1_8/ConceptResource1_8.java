@@ -13,15 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -32,7 +23,6 @@ import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
-import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -57,7 +47,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.util.openmrs1_8.ConceptTreeLoader;
+import org.openmrs.module.webservices.rest.web.v1_0.util.openmrs1_8.HibernateLazyLoader;
 import org.openmrs.util.LocaleUtility;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Vector;
 
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
@@ -87,7 +89,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
     public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
         DelegatingResourceDescription description = fullRepresentationDescription(delegate);
         description.removeProperty("setMembers");
-        description.addProperty("setMembers", Representation.FULL);
+        description.addProperty("setMembers", new NamedRepresentation("fullchildren"));
         description.removeProperty("answers");
         description.addProperty("answers", Representation.FULL);
         return convertDelegateToRepresentation(delegate, description);
@@ -313,10 +315,22 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 */
 	@Override
 	public Concept getByUniqueId(String uuid) {
-		return Context.getConceptService().getConceptByUuid(uuid);
+        return loadConceptWithFullTree(Context.getConceptService().getConceptByUuid(uuid));
 	}
-	
-	/**
+
+    private Concept loadConceptWithFullTree(Concept concept) {
+        List search = new ArrayList();
+        search.add(concept);
+        search.add("");
+        search.add(new Double(0));
+        search.add(concept.getName());
+
+        List<ConceptSearchResult> conceptSearchResults = new Vector<ConceptSearchResult>();
+        new ConceptTreeLoader(new HibernateLazyLoader()).loadTree(conceptSearchResults, Arrays.asList(search));
+        return conceptSearchResults.isEmpty()? null : conceptSearchResults.get(0).getConcept();
+    }
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -335,6 +349,13 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	@Override
 	protected NeedsPaging<Concept> doGetAll(RequestContext context) {
 		List<Concept> allConcepts = Context.getConceptService().getAllConcepts(null, true, context.getIncludeAll());
+        if (context.getRepresentation().getRepresentation().equals("fullchildren")) {
+            List<Concept> allConceptsWithFullTree = new ArrayList<Concept>();
+            for (Concept concept : allConcepts) {
+                allConceptsWithFullTree.add(loadConceptWithFullTree(concept));
+            }
+            allConcepts = allConceptsWithFullTree;
+        }        
 		return new NeedsPaging<Concept>(allConcepts, context);
 	}
 	
