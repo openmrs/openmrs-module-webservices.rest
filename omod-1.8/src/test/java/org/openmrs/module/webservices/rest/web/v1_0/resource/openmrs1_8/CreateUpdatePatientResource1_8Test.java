@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -31,22 +31,22 @@ import java.util.Map;
 /**
  * Integration tests for the framework that lets a resource handle an entire class hierarchy
  */
-public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSensitiveTest {
+public class CreateUpdatePatientResource1_8Test extends BaseModuleWebContextSensitiveTest {
 
-    private PatientResource1_9 resource;
+    private PatientResource1_8 resource;
 
     @Before
-	public void beforeEachTests() throws Exception {
-		resource = (PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(Patient.class);
-	}
+    public void beforeEachTests() throws Exception {
+        resource = (PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Patient.class);
+    }
 
-	@Test
-	public void shouldCreatePatient() throws Exception {
+    @Test
+    public void shouldCreatePatient() throws Exception {
         SimpleObject patientSimpleObject = new SimpleObject();
         patientSimpleObject.putAll(new ObjectMapper().readValue(getClass().getClassLoader().getResourceAsStream("create_patient.json"), HashMap.class));
-		SimpleObject created = (SimpleObject) resource.create(patientSimpleObject, new RequestContext());
-		Assert.assertEquals("id-B - Ram Kabir", created.get("display"));
-	}
+        SimpleObject created = (SimpleObject) resource.create(patientSimpleObject, new RequestContext());
+        Assert.assertEquals("id-B - Ram Kabir", created.get("display"));
+    }
 
     @Test
     public void shouldUpdatePatient() throws Exception {
