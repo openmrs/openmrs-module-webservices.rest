@@ -20,10 +20,13 @@ import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,11 +57,13 @@ public class CreateUpdatePatientResource1_8Test extends BaseModuleWebContextSens
         patientSimpleObject.putAll(new ObjectMapper().readValue(getClass().getClassLoader().getResourceAsStream("update_patient.json"), HashMap.class));
         SimpleObject created = (SimpleObject) resource.update("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", patientSimpleObject, new RequestContext());
 
+		Date birthdate = (Date) ConversionUtil.convert("1979-12-08T00:00:00.000+0530", Date.class);
+
         Assert.assertEquals("101-6 - Rama Kabira", created.get("display"));
         Map<String, Object> person = (Map<String, Object>) created.get("person");
         Assert.assertEquals("F", person.get("gender"));
         Assert.assertEquals(33, person.get("age"));
-        Assert.assertEquals("1979-12-08T00:00:00.000+0530", person.get("birthdate"));
+        Assert.assertEquals(ConversionUtil.convertToRepresentation(birthdate, Representation.DEFAULT), person.get("birthdate"));
         Assert.assertEquals(false, person.get("birthdateEstimated"));
         Map preferredName = (Map) person.get("preferredName");
         Assert.assertEquals("Rama Kabira", preferredName.get("display"));
