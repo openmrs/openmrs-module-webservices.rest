@@ -87,7 +87,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
     public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
         DelegatingResourceDescription description = fullRepresentationDescription(delegate);
         description.removeProperty("setMembers");
-        description.addProperty("setMembers", Representation.FULL);
+        description.addProperty("setMembers", new NamedRepresentation("fullchildren"));
         description.removeProperty("answers");
         description.addProperty("answers", Representation.FULL);
         return convertDelegateToRepresentation(delegate, description);
