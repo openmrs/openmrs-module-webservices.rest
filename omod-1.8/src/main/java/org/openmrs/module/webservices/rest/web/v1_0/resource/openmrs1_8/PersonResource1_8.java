@@ -25,6 +25,8 @@ import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -355,4 +357,26 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		
 		return person.getPersonName().getFullName();
 	}
+
+
+    /**
+     * overrides the base getAuditInfo(delegate) since the dateCreated for person should get personDateCreated attribute
+     * @param person the delegate person
+     * @return audit information
+     * @throws Exception
+     */
+    @Override
+    public SimpleObject getAuditInfo(Person person) throws Exception {
+        SimpleObject ret = new SimpleObject();
+        ret.put("creator", ConversionUtil.getPropertyWithRepresentation(person, "creator", Representation.REF));
+        ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
+        ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(person, "changedBy", Representation.REF));
+        ret.put("dateChanged", ConversionUtil.convertToRepresentation(person.getDateChanged(), Representation.DEFAULT));
+        if (person.isVoided()) {
+            ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(person, "voidedBy", Representation.REF));
+            ret.put("dateVoided", ConversionUtil.convertToRepresentation(person.getDateVoided(), Representation.DEFAULT));
+            ret.put("voidReason", ConversionUtil.convertToRepresentation(person.getVoidReason(), Representation.DEFAULT));
+        }
+        return ret;
+    }
 }
