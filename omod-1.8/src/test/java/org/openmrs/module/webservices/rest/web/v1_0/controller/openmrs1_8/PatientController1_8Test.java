@@ -104,20 +104,6 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		assertEquals(originalCount + 1, service.getAllPatients().size());
 	}
 	
-	@Test(expected = ConversionException.class)
-	public void shouldNotSupportEditingAPatient() throws Exception {
-		final String newPersonUuid = "a7e04421-525f-442f-8138-05b619d16def";
-		assertFalse(newPersonUuid.equals(getUuid()));
-		SimpleObject patient = new SimpleObject();
-		patient.add("person", newPersonUuid);
-		
-		String json = new ObjectMapper().writeValueAsString(patient);
-		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		req.setContent(json.getBytes());
-		handle(req);
-	}
-	
 	@Test
 	public void shouldVoidAPatient() throws Exception {
 		Patient patient = service.getPatientByUuid(getUuid());
