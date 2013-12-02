@@ -20,7 +20,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
@@ -33,8 +36,10 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -77,12 +82,27 @@ public class PersonController1_8Test extends MainResourceControllerTest {
 	public void shouldGetAPersonByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-		
+
 		Person person = service.getPersonByUuid(getUuid());
 		assertEquals(person.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertNotNull(PropertyUtils.getProperty(result, "preferredName"));
 		assertEquals(person.getGender(), PropertyUtils.getProperty(result, "gender"));
 		assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+
+	@Test
+	public void shouldGetPersonDateCreated() throws Exception {
+		Person person = service.getPersonByUuid(getUuid());
+		Date personDateCreated = new Date();
+		person.setPersonDateCreated(personDateCreated);
+		service.savePerson(person);
+
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", RestConstants.REPRESENTATION_FULL));
+		SimpleObject result = deserialize(handle(req));
+
+		Map<String, String> auditInfo = (Map<String, String>) PropertyUtils.getProperty(result, "auditInfo");
+
+		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL), auditInfo.get("dateCreated"));
 	}
 	
 	@Test
