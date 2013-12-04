@@ -13,10 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.springframework.util.Assert;
 
 public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource1_8, Drug> {
 	
@@ -67,5 +75,20 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 	public String getUuidProperty() {
 		return RestTestConstants1_8.DRUG_UUID;
 	}
+	
+	/**
+	 * Tests {@link BaseDelegatingResource#setConvertedProperties(Object, java.util.Map, DelegatingResourceDescription, boolean)}
+	 */
+	@Test
+	public void setConvertedProperties_shouldAllowSettingANullValue() {
+		DrugResource1_8 resource = new DrugResource1_8();
+		Drug drug = new Drug();
+		drug.setRoute(new Concept());
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
+		propertyMap.put("route", null);
+		resource.setConvertedProperties(drug, propertyMap, resource.getUpdatableProperties(), false);
+		Assert.isNull(drug.getRoute());
+	}
+
 	
 }

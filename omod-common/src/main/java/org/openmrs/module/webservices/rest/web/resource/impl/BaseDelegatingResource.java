@@ -565,6 +565,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @param delegate
 	 * @param propertiesToCreate
 	 * @throws ResponseException
+	 * @should allow setting a null value
 	 */
 	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
