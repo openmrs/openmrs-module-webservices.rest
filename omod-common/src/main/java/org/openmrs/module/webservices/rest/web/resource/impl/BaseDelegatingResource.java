@@ -565,6 +565,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * @param delegate
 	 * @param propertiesToCreate
 	 * @throws ResponseException
+	 * @should allow setting a null value
 	 */
 	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
@@ -573,7 +574,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		//Set properties that are allowed to be changed or fail.
 		Set<String> notAllowedProperties = new HashSet<String>();
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
-			if (allowedProperties.remove(prop.getKey()) != null && prop.getValue() != null) {
+			if (allowedProperties.remove(prop.getKey()) != null) {
 				setProperty(delegate, prop.getKey(), prop.getValue());
 			} else {
 				notAllowedProperties.add(prop.getKey());
