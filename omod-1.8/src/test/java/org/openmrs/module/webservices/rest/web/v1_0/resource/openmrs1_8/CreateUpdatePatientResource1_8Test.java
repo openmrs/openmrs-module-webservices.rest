@@ -62,7 +62,7 @@ public class CreateUpdatePatientResource1_8Test extends BaseModuleWebContextSens
         Assert.assertEquals("101-6 - Rama Kabira", created.get("display"));
         Map<String, Object> person = (Map<String, Object>) created.get("person");
         Assert.assertEquals("F", person.get("gender"));
-        Assert.assertEquals(33, person.get("age"));
+        Assert.assertNotNull(person.get("age"));
         Assert.assertEquals(ConversionUtil.convertToRepresentation(birthdate, Representation.DEFAULT), person.get("birthdate"));
         Assert.assertEquals(false, person.get("birthdateEstimated"));
         Map preferredName = (Map) person.get("preferredName");
