@@ -65,6 +65,10 @@
 		<filter-name>REST Web Service Authorization</filter-name>
 		<filter-class>org.openmrs.module.webservices.rest.web.filter.AuthorizationFilter</filter-class>
 	</filter>
+    <filter>
+        <filter-name>compressionFilter</filter-name>
+        <filter-class>org.openmrs.web.filter.GZIPFilter</filter-class>
+    </filter>
     
     <filter-mapping>
 		<filter-name>shallowEtagHeaderFilter</filter-name>
@@ -74,6 +78,10 @@
 		<filter-name>REST Web Service Authorization</filter-name>
 		<url-pattern>/ws/rest/*</url-pattern>
 	</filter-mapping>
+    <filter-mapping>
+        <filter-name>compressionFilter</filter-name>
+        <url-pattern>/ws/rest/*</url-pattern>
+    </filter-mapping>
 	
 	<!-- Internationalization -->
 	<!-- All message codes should start with moduleId.* -->
