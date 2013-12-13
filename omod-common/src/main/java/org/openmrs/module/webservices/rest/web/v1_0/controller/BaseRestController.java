@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
@@ -29,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Resource controllers should extend this base class to have standard exception handling done
  * automatically. (This is necessary to send error messages as HTTP statuses rather than just as
@@ -38,16 +38,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/rest/**")
 public class BaseRestController {
 	
-	private int errorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+	private final int DEFAULT_ERROR_CODE = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	
 	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
 	
-	private String errorDetail;
+	private final String DEFAULT_ERROR_DETAIL = "";
 	
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody
 	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
 	        HttpServletResponse response) throws Exception {
+		int errorCode;
+		String errorDetail;
 		if (Context.isAuthenticated()) {
 			// user is logged in but doesn't have the relevant privilege -> 403 FORBIDDEN
 			errorCode = HttpServletResponse.SC_FORBIDDEN;
@@ -68,6 +70,8 @@ public class BaseRestController {
 	@ResponseBody
 	private SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
+		int errorCode = DEFAULT_ERROR_CODE;
+		String errorDetail = DEFAULT_ERROR_DETAIL;
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			errorCode = ann.value().value();
