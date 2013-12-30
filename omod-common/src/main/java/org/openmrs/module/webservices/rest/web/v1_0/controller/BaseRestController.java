@@ -44,9 +44,13 @@ public class BaseRestController {
 	
 	private final String DEFAULT_ERROR_DETAIL = "";
 	
+	/**
+	 * @should return unauthorized if not logged in
+	 * @should return forbidden if logged in
+	 */
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody
-	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
+	public SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
 	        HttpServletResponse response) throws Exception {
 		int errorCode;
 		String errorDetail;
@@ -68,7 +72,7 @@ public class BaseRestController {
 	
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
-	private SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
+	public SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
 		int errorCode = DEFAULT_ERROR_CODE;
 		String errorDetail = DEFAULT_ERROR_DETAIL;
