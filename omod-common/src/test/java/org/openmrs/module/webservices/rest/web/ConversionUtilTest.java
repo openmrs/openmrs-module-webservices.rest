@@ -14,13 +14,12 @@
 
 package org.openmrs.module.webservices.rest.web;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.api.ConceptNameType;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,8 +28,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.openmrs.api.ConceptNameType;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -129,4 +132,177 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	public void convert_shouldConvertDoubleToInt() throws Exception {
 		assertThat((Integer) ConversionUtil.convert(5d, Integer.class), is(5));
 	}
+	
+	/*
+	 * @verifies return the actual type if defined on the parent class
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test
+	public void getTypeVariableClass_shouldReturnTheActualTypeIfDefinedOnTheParentClass() throws Exception {
+		ChildGenericType_Int i = new ChildGenericType_Int();
+		ChildGenericType_String s = new ChildGenericType_String();
+		ChildGenericType_Temp t = new ChildGenericType_Temp();
+		
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
+		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Integer.class, type);
+		
+		setter = PropertyUtils.getPropertyDescriptor(s, "value").getWriteMethod();
+		type = ConversionUtil.getTypeVariableClass(s, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(String.class, type);
+		
+		setter = PropertyUtils.getPropertyDescriptor(t, "value").getWriteMethod();
+		type = ConversionUtil.getTypeVariableClass(t, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Temp.class, type);
+	}
+	
+	/**
+	 * @verifies return the actual type if defined on the grand-parent class
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test
+	public void getTypeVariableClass_shouldReturnTheActualTypeIfDefinedOnTheGrandparentClass() throws Exception {
+		GrandchildGenericType_Int i = new GrandchildGenericType_Int();
+		GreatGrandchildGenericType_Int i2 = new GreatGrandchildGenericType_Int();
+		
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
+		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Integer.class, type);
+		
+		setter = PropertyUtils.getPropertyDescriptor(i2, "value").getWriteMethod();
+		type = ConversionUtil.getTypeVariableClass(i2, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Integer.class, type);
+	}
+	
+	/**
+	 * @verifies return null when actual type cannot be found
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test
+	public void getTypeVariableClass_shouldReturnNullWhenActualTypeCannotBeFound() throws Exception {
+		GrandchildGenericType_Int i = new GrandchildGenericType_Int();
+		
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
+		Type type = ConversionUtil.getTypeVariableClass(new Temp(), (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNull(type);
+	}
+	
+	/**
+	 * @verifies return the correct actual type if there are multiple generic types
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test
+	public void getTypeVariableClass_shouldReturnTheCorrectActualTypeIfThereAreMultipleGenericTypes() throws Exception {
+		ChildMultiGenericType i = new ChildMultiGenericType();
+		
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "first").getWriteMethod();
+		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Integer.class, type);
+		
+		setter = PropertyUtils.getPropertyDescriptor(i, "second").getWriteMethod();
+		type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(String.class, type);
+		
+		setter = PropertyUtils.getPropertyDescriptor(i, "third").getWriteMethod();
+		type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		
+		Assert.assertNotNull(type);
+		Assert.assertEquals(Temp.class, type);
+	}
+	
+	/**
+	 * @verifies throw IllegalArgumentException when instance is null
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void getTypeVariableClass_shouldThrowIllegalArgumentExceptionWhenInstanceIsNull() throws Exception {
+		GrandchildGenericType_Int i = new GrandchildGenericType_Int();
+		
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
+		Type type = ConversionUtil.getTypeVariableClass(null, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+	}
+	
+	/**
+	 * @verifies throw IllegalArgumentException when typeVariable is null
+	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void getTypeVariableClass_shouldThrowIllegalArgumentExceptionWhenTypeVariableIsNull() throws Exception {
+		ConversionUtil.getTypeVariableClass(new Temp(), null);
+	}
+	
+	public abstract class BaseGenericType<T> {
+		
+		private T value;
+		
+		public T getValue() {
+			return value;
+		}
+		
+		public void setValue(T value) {
+			this.value = value;
+		}
+	}
+	
+	public abstract class BaseMultiGenericType<F, S, T> {
+		
+		private F first;
+		
+		private S second;
+		
+		private T third;
+		
+		public F getFirst() {
+			return first;
+		}
+		
+		public void setFirst(F first) {
+			this.first = first;
+		}
+		
+		public S getSecond() {
+			return second;
+		}
+		
+		public void setSecond(S second) {
+			this.second = second;
+		}
+		
+		public T getThird() {
+			return third;
+		}
+		
+		public void setThird(T third) {
+			this.third = third;
+		}
+	}
+	
+	public class Temp {}
+	
+	public class ChildGenericType_Int extends BaseGenericType<Integer> {}
+	
+	public class ChildGenericType_String extends BaseGenericType<String> {}
+	
+	public class ChildGenericType_Temp extends BaseGenericType<Temp> {}
+	
+	public class GrandchildGenericType_Int extends ChildGenericType_Int {}
+	
+	public class GreatGrandchildGenericType_Int extends GrandchildGenericType_Int {}
+	
+	public class ChildMultiGenericType extends BaseMultiGenericType<Integer, String, Temp> {}
 }
