@@ -133,9 +133,24 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		assertThat((Integer) ConversionUtil.convert(5d, Integer.class), is(5));
 	}
 	
-	/*
+	/**
+	 * @verifies resolve TypeVariables to actual type
+	 * @see ConversionUtil#convert(Object, java.lang.reflect.Type)
+	 */
+	@Test
+	public void convert_shouldResolveTypeVariablesToActualType() throws Exception {
+		ChildGenericType_Int i = new ChildGenericType_Int();
+		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
+		
+		Object result = ConversionUtil.convert("25", setter.getGenericParameterTypes()[0], i);
+		
+		Assert.assertNotNull(result);
+		Assert.assertEquals(25, result);
+	}
+	
+	/**
 	 * @verifies return the actual type if defined on the parent class
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test
 	public void getTypeVariableClass_shouldReturnTheActualTypeIfDefinedOnTheParentClass() throws Exception {
@@ -144,19 +159,22 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		ChildGenericType_Temp t = new ChildGenericType_Temp();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(ChildGenericType_Int.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(s, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(s, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildGenericType_String.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(String.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(t, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(t, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildGenericType_Temp.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Temp.class, type);
@@ -164,7 +182,7 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @verifies return the actual type if defined on the grand-parent class
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test
 	public void getTypeVariableClass_shouldReturnTheActualTypeIfDefinedOnTheGrandparentClass() throws Exception {
@@ -172,13 +190,15 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		GreatGrandchildGenericType_Int i2 = new GreatGrandchildGenericType_Int();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(GrandchildGenericType_Int.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i2, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(i2, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(GreatGrandchildGenericType_Int.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
@@ -186,51 +206,54 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @verifies return null when actual type cannot be found
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test
 	public void getTypeVariableClass_shouldReturnNullWhenActualTypeCannotBeFound() throws Exception {
 		GrandchildGenericType_Int i = new GrandchildGenericType_Int();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(new Temp(), (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(Temp.class, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNull(type);
 	}
 	
 	/**
 	 * @verifies return the correct actual type if there are multiple generic types
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test
 	public void getTypeVariableClass_shouldReturnTheCorrectActualTypeIfThereAreMultipleGenericTypes() throws Exception {
 		ChildMultiGenericType i = new ChildMultiGenericType();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "first").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i, "second").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(String.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i, "third").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(i, (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
+		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Temp.class, type);
 	}
 	
 	/**
-	 * @verifies throw IllegalArgumentException when instance is null
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @verifies throw IllegalArgumentException when instance class is null
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test(expected = IllegalArgumentException.class)
-	public void getTypeVariableClass_shouldThrowIllegalArgumentExceptionWhenInstanceIsNull() throws Exception {
+	public void getTypeVariableClass_shouldThrowIllegalArgumentExceptionWhenInstanceClassIsNull() throws Exception {
 		GrandchildGenericType_Int i = new GrandchildGenericType_Int();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
@@ -239,11 +262,11 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @verifies throw IllegalArgumentException when typeVariable is null
-	 * @see ConversionUtil#getTypeVariableClass(Object, java.lang.reflect.TypeVariable)
+	 * @see ConversionUtil#getTypeVariableClass(Class, java.lang.reflect.TypeVariable)
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void getTypeVariableClass_shouldThrowIllegalArgumentExceptionWhenTypeVariableIsNull() throws Exception {
-		ConversionUtil.getTypeVariableClass(new Temp(), null);
+		ConversionUtil.getTypeVariableClass(Temp.class, null);
 	}
 	
 	public abstract class BaseGenericType<T> {

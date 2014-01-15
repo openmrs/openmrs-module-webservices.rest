@@ -772,13 +772,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
-			Type setterType = setter.getGenericParameterTypes()[0];
-			if (setterType instanceof TypeVariable<?>) {
-				setterType = ConversionUtil.getTypeVariableClass(instance, (TypeVariable<?>) setterType);
-			}
 			
 			// Convert the value to the specified type
-			value = ConversionUtil.convert(value, setterType);
+			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0], instance);
 			
 			if (value instanceof Collection) {
 				//We need to handle collections in a way that Hibernate can track.

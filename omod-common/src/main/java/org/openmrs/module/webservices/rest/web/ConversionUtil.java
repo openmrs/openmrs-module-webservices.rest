@@ -46,13 +46,19 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
 
+import java.lang.reflect.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ConversionUtil {
 	
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
-	private static Map<String, Type> typeVariableMap = new HashMap<String, Type>();
+	private static Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
 	
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
@@ -73,6 +79,24 @@ public class ConversionUtil {
 		catch (APIException ex) {
 			return null;
 		}
+	}
+	
+	/**
+	 * Converts the given object to the given type
+	 * 
+	 * @param object The value to convert
+	 * @param toType The type to convert the value to
+	 * @param instance The source object instance
+	 * @return The specified object converted to the specified type
+	 * @should resolve TypeVariables to actual type
+	 */
+	public static Object convert(Object object, Type toType, Object instance) throws ConversionException {
+		if (instance != null && toType instanceof TypeVariable<?>) {
+			TypeVariable<?> temp = ((TypeVariable<?>) toType);
+			toType = getTypeVariableClass(instance.getClass(), temp);
+		}
+		
+		return convert(object, toType);
 	}
 	
 	/**
@@ -297,32 +321,32 @@ public class ConversionUtil {
 	/**
 	 * Gets the type for the specified generic type variable.
 	 * 
-	 * @param instance An instance of the class with the specified generic type variable.
+	 * @param instanceClass An instance of the class with the specified generic type variable.
 	 * @param typeVariable The generic type variable.
 	 * @return The actual type of the generic type variable or {@code null} if not found.
 	 * @should return the actual type if defined on the parent class
 	 * @should return the actual type if defined on the grand-parent class
 	 * @should return null when actual type cannot be found
 	 * @should return the correct actual type if there are multiple generic types
-	 * @should throw IllegalArgumentException when instance is null
+	 * @should throw IllegalArgumentException when instance class is null
 	 * @should throw IllegalArgumentException when typeVariable is null
 	 */
-	public static Type getTypeVariableClass(Object instance, TypeVariable<?> typeVariable) {
-		if (instance == null) {
-			throw new IllegalArgumentException("The instance is required.");
+	public static Type getTypeVariableClass(Class<?> instanceClass, TypeVariable<?> typeVariable) {
+		if (instanceClass == null) {
+			throw new IllegalArgumentException("The instance class is required.");
 		}
 		if (typeVariable == null) {
 			throw new IllegalArgumentException("The type variable is required.");
 		}
 		
 		String genericTypeName = typeVariable.getName();
-		Type type = instance.getClass();
+		Type type = instanceClass;
 		
 		// Check to see if type variable has already been cached
-		Type result = typeVariableMap.get(instance.getClass().getName().concat(genericTypeName));
+		Type result = typeVariableMap.get(instanceClass.getName().concat(genericTypeName));
 		
 		// Walk the inheritance chain up and try to find the generic type with the specified name
-		while (result == null && type != null && !type.getClass().equals(Object.class)) {
+		while (result == null && type != null && !type.equals(Object.class)) {
 			if (type instanceof Class) {
 				type = ((Class) type).getGenericSuperclass();
 			} else {
@@ -336,7 +360,7 @@ public class ConversionUtil {
 					Type actualType = actualTypeArguments[i];
 					
 					// Cache each generic type's actual type
-					typeVariableMap.put(instance.getClass().getName().concat(name), actualType);
+					typeVariableMap.put(instanceClass.getName().concat(name), actualType);
 					
 					if (name.equals(genericTypeName)) {
 						// Found it
