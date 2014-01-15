@@ -13,25 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.azeckoski.reflectutils.ClassFields.GetClassMethodException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
@@ -53,7 +38,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -695,7 +685,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
-			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
+			Type setterType = setter.getGenericParameterTypes()[0];
+			if (setterType instanceof TypeVariable<?>) {
+				setterType = ConversionUtil.getTypeVariableClass(instance, (TypeVariable<?>) setterType);
+			}
+			
+			// Convert the value to the specified type
+			value = ConversionUtil.convert(value, setterType);
 			
 			if (value instanceof Collection) {
 				//We need to handle collections in a way that Hibernate can track.
