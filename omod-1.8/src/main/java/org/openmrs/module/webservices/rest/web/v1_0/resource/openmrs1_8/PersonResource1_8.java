@@ -50,10 +50,6 @@ import org.openmrs.util.OpenmrsUtil;
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	
-	public PersonResource1_8() {
-		remappedProperties.put("attributes", "activeAttributes");
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -184,6 +180,16 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
                 instance.addName(name);
             }
         }
+    }
+
+    /**
+     * Returns non-voided attributes of a person
+     *
+     * @param instance
+     */
+    @PropertyGetter("attributes")
+    public static List<PersonAttribute> getAttributes(Person instance) {
+        return instance.getActiveAttributes();
     }
 	
     /**

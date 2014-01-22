@@ -13,7 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Vector;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
@@ -70,5 +76,16 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 	public String getUuidProperty() {
 		return RestTestConstants1_8.PERSON_UUID;
 	}
-	
+
+    @Test
+    public void getAttributes_shouldReturnAllAttributes() throws Exception {
+        PersonResource1_8 resource = getResource();
+
+        Vector<PersonAttribute> attributes1 = (Vector<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("df8ae447-6745-45be-b859-403241d9913c"));
+        Assert.assertEquals(2, attributes1.size());
+
+        Vector<PersonAttribute> attributes2 = (Vector<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("341b4e41-790c-484f-b6ed-71dc8da222de"));
+        Assert.assertEquals(3, attributes2.size());
+    }
+
 }
