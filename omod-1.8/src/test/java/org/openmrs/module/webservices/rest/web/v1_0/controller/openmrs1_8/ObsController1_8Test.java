@@ -14,7 +14,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -321,6 +323,34 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 	@Override
 	public long getAllCount() {
 		return 0; //Not supported
+	}
+
+	/**
+	 * @verifies setting observation group members
+	 */
+	@Test
+	public void setGroupMembers_shouldSetObservationGroupMembers () throws Exception {
+		executeDataSet("obsWithGroupMembers.xml");
+		String obsWannaBeParentUuid = "5117f5d4-96cc-11e0-8d6b-9b9415a91439";
+
+		// check if obs is a group parent
+		assertTrue(Context.getObsService().getObsByUuid(obsWannaBeParentUuid).
+				getGroupMembers().isEmpty());
+
+		String json = "{\"groupMembers\" : [\"5117f5d4-96cc-11e0-8d6b-9b9415a91433\", " +
+				"\"5117f5d4-96cc-11e0-8d6b-9b9415a91436\"]}";
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() +
+				"/" + obsWannaBeParentUuid);
+		req.setContent(json.getBytes());
+
+		Object response = deserialize(handle(req));
+		// get uuid for observation's new instance
+		String newObsUuid = PropertyUtils.getProperty(response, "uuid").toString();
+
+		assertFalse(Context.getObsService().getObsByUuid(newObsUuid).
+				getGroupMembers().isEmpty());
+
 	}
 	
 }

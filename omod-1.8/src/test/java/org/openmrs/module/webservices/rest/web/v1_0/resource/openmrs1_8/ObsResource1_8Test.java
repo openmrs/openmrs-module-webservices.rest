@@ -28,9 +28,9 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_8, Obs> {
 	
@@ -129,6 +129,20 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		clearAndSetValue(obs, ObsType.NUMERIC, number);
 		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("numeric", number, rep.get("value"));
+	}
+
+	@Test
+	public void setGroupMembers_shouldSetGroupMembers () throws Exception {
+		executeDataSet("obsWithGroupMembers.xml");
+		ObsResource1_8 resource = getResource();
+		Obs groupMemberParent = resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423");
+
+		Set<Obs> groupMembersBefore = groupMemberParent.getGroupMembers();
+		Set<Obs> groupMembersAfter = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+
+		ObsResource1_8.setGroupMembers(groupMemberParent, groupMembersAfter);
+		assertNotEquals(groupMembersBefore, groupMemberParent.getGroupMembers());
+		assertEquals(groupMembersAfter, groupMemberParent.getGroupMembers());
 	}
 
     @Test

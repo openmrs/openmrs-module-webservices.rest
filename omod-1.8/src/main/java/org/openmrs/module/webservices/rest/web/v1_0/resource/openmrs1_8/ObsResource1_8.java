@@ -15,8 +15,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
@@ -218,7 +220,22 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Sets the members of an obs group
+	 *
+	 * @param obsGroup the obs group whose members to set
+	 * @param members the members to set
+	 */
+	@PropertySetter("groupMembers")
+	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
+		for (Obs member : members) {
+			member.setObsGroup(obsGroup);
+			member.setGroupMembers(Collections.<Obs>emptySet());
+		}
+		obsGroup.setGroupMembers(members);
+	}
+
 	/**
 	 * Checks if there are more than one obs in GroupMembers and converts into a DEFAULT
 	 * representation
@@ -320,5 +337,5 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		
 		return new NeedsPaging<Obs>(Context.getObsService().getObservations(context.getParameter("q")), context);
 	}
-	
+
 }
