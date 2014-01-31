@@ -50,7 +50,52 @@
         <description>A comma-separate list of IP addresses that are allowed to access the web services. An empty string allows everyone to access all ws. 
         IPs can be declared with bit masks e.g. 10.0.0.0/30 matches 10.0.0.0 - 10.0.0.3 and 10.0.0.0/24 matches 10.0.0.0 - 10.0.0.255.</description>
     </globalProperty>
-    
+	<globalProperty>
+		<property>@MODULE_ID@.cors.allowGenericHttpRequests</property>
+		<defaultValue>true</defaultValue>
+		<description>If true generic HTTP requests will be allowed to pass through the filter, else only valid and accepted CORS requests will be allowed (strict CORS filtering).</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.allowOrigin</property>
+		<defaultValue>*</defaultValue>
+		<description>Whitespace-separated list of origins that the CORS filter must allow. Requests from origins not included here will be refused with an HTTP 403 "Forbidden" response. If set to * (asterisk) any origin will be allowed.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.allowSubdomains</property>
+		<defaultValue>false</defaultValue>
+		<description>If true the CORS filter will allow requests from any origin which is a subdomain origin of the allowed origins. A subdomain is matched by comparing its scheme and suffix (host name / IP address and optional port number).</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.supportedMethods</property>
+		<defaultValue>GET, POST, HEAD, OPTIONS</defaultValue>
+		<description>List of the supported HTTP methods. These are advertised through the Access-Control-Allow-Methods header and must also be implemented by the actual CORS web service. Requests for methods not included here will be refused by the CORS filter with an HTTP 405 "Method not allowed" response.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.supportedHeaders</property>
+		<defaultValue>*</defaultValue>
+		<description>The names of the supported author request headers. These are advertised through the Access-Control-Allow-Headers header.
+			If the configuration property value is set to * (asterisk) any author request header will be allowed. The CORS Filter implements this by simply echoing the requested value back to the browser.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.exposedHeaders</property>
+		<defaultValue></defaultValue>
+		<description>List of the response headers other than simple response headers that the browser should expose to the author of the cross-domain request through the XMLHttpRequest.getResponseHeader() method. The CORS filter supplies this information through the Access-Control-Expose-Headers header.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.supportsCredentials</property>
+		<defaultValue>true</defaultValue>
+		<description>Indicates whether user credentials, such as cookies, HTTP authentication or client-side certificates, are supported. The CORS filter uses this value in constructing the Access-Control-Allow-Credentials header.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.maxAge</property>
+		<defaultValue>-1</defaultValue>
+		<description>Indicates how long the results of a preflight request can be cached by the web browser, in seconds. If -1 unspecified. This information is passed to the browser via the Access-Control-Max-Age header.</description>
+	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.cors.tagRequests</property>
+		<defaultValue>false</defaultValue>
+		<description>Enables HTTP servlet request tagging to provide CORS information to downstream handlers (filters and/or servlets).</description>
+	</globalProperty>
 
 	<!-- DWR -->
 	
@@ -69,6 +114,10 @@
         <filter-name>compressionFilter</filter-name>
         <filter-class>org.openmrs.web.filter.GZIPFilter</filter-class>
     </filter>
+	<filter>
+		<filter-name>corsFilter</filter-name>
+		<filter-class>org.openmrs.module.webservices.rest.web.cors.CORSFilter</filter-class>
+	</filter>
     
     <filter-mapping>
 		<filter-name>shallowEtagHeaderFilter</filter-name>
@@ -82,6 +131,10 @@
         <filter-name>compressionFilter</filter-name>
         <url-pattern>/ws/rest/*</url-pattern>
     </filter-mapping>
+	<filter-mapping>
+		<filter-name>corsFilter</filter-name>
+		<url-pattern>/ws/rest/*</url-pattern>
+	</filter-mapping>
 	
 	<!-- Internationalization -->
 	<!-- All message codes should start with moduleId.* -->

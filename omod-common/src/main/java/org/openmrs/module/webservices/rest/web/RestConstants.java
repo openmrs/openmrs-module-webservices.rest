@@ -44,6 +44,9 @@ public class RestConstants {
 	//module id or name
 	public static final String MODULE_ID = "webservices.rest";
 	
+	//cors property name prefix
+	public static final String CORS_PREFIX = "cors";
+	
 	/**
 	 * The key of the global property that an admin can set if they want to restrict lists to larger
 	 * or smaller numbers than the default
@@ -66,6 +69,79 @@ public class RestConstants {
 	 * wildcard match.
 	 */
 	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".allowedips";
+	
+	/**
+	 * The key of the global property that an admin can set to allow generic HTTP requests. If true
+	 * generic HTTP requests will be allowed to pass through the filter, else only valid and
+	 * accepted CORS requests will be allowed (strict CORS filtering).
+	 */
+	public static String CORS_ALLOW_GENERIC_HTTP_REQUESTS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX
+	        + ".allowGenericHttpRequests";
+	
+	/**
+	 * The key of the global property that an admin can set to modify Access-Control-Allow-Origin.
+	 * Whitespace-separated list of origins that the CORS filter must allow. Requests from origins
+	 * not included here will be refused with an HTTP 403 "Forbidden" response. If set to *
+	 * (asterisk) any origin will be allowed.
+	 */
+	public static String CORS_ALLOW_ORIGIN_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".allowOrigin";
+	
+	/**
+	 * The key of the global property that an admin can set to allow subdomains in the CORS filter.
+	 * If true the CORS filter will allow requests from any origin which is a subdomain origin of
+	 * the allowed origins. A subdomain is matched by comparing its scheme and suffix (host name /
+	 * IP address and optional port number).
+	 */
+	public static String CORS_ALLOW_SUBDOMAINS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".allowSubdomains";
+	
+	/**
+	 * The key of the global property that an admin can set to modify Access-Control-Allow-Methods.
+	 * The names of the supported author request headers. These are advertised through the
+	 * Access-Control-Allow-Headers header. If the configuration property value is set to *
+	 * (asterisk) any author request header will be allowed. The CORS Filter implements this by
+	 * simply echoing the requested value back to the browser.
+	 */
+	public static String CORS_SUPPORTED_METHODS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".supportedMethods";
+	
+	/**
+	 * The key of the global property that an admin can set to modify Access-Control-Allow-Headers.
+	 * List of the response headers other than simple response headers that the browser should
+	 * expose to the author of the cross-domain request through the
+	 * XMLHttpRequest.getResponseHeader() method. The CORS filter supplies this information through
+	 * the Access-Control-Expose-Headers header.
+	 */
+	public static String CORS_SUPPORTED_HEADERS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".supportedHeaders";
+	
+	/**
+	 * The key of the global property that an admin can set to modify Access-Control-Expose-Headers.
+	 * List of the response headers other than simple response headers that the browser should
+	 * expose to the author of the cross-domain request through the
+	 * XMLHttpRequest.getResponseHeader() method. The CORS filter supplies this information through
+	 * the Access-Control-Expose-Headers header.
+	 */
+	public static String CORS_EXPOSED_HEADERS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".exposedHeaders";
+	
+	/**
+	 * The key of the global property that an admin can set to modify
+	 * Access-Control-Allow-Credentials. Indicates whether user credentials, such as cookies, HTTP
+	 * authentication or client-side certificates, are supported. The CORS filter uses this value in
+	 * constructing the Access-Control-Allow-Credentials header.
+	 */
+	public static String CORS_SUPPORTS_CREDENTIALS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".supportsCredentials";
+	
+	/**
+	 * The key of the global property that an admin can set to modify Access-Control-Max-Age.
+	 * Indicates how long the results of a preflight request can be cached by the web browser, in
+	 * seconds. If -1 unspecified. This information is passed to the browser via the
+	 * Access-Control-Max-Age header.
+	 */
+	public static String CORS_MAX_AGE_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".maxAge";
+	
+	/**
+	 * The key of the global property that an admin can set to enable HTTP servlet request tagging,
+	 * in order to provide CORS information to downstream handlers (filters and/or servlets).
+	 */
+	public static String CORS_TAG_REQUESTS_PROPERTY_NAME = MODULE_ID + "." + CORS_PREFIX + ".tagRequests";
 	
 	/**
 	 * The version number for the first rest web services representations
