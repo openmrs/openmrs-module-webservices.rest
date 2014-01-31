@@ -46,9 +46,29 @@
 					<spring:bind path="propertyValue">
 						<c:set var="inputSize" value="50" scope="page" />
 						<c:if test="${prop.property == 'webservices.rest.maxResultsDefault' || prop.property == 'webservices.rest.maxResultsAbsolute' }">
-                             <c:set var="inputSize" value="3" />
-                        </c:if>
-						<input type="text" name="${status.expression}" value="${status.value}" size="${inputSize}">
+							 <c:set var="inputSize" value="3" />
+						</c:if>
+						<c:choose>
+							<c:when test="${prop.property == 'webservices.rest.cors.allowGenericHttpRequests' || prop.property == 'webservices.rest.cors.supportsCredentials' || prop.property == 'webservices.rest.cors.tagRequests' }">
+								<c:set var="enabled_checked" value="" />
+								<c:set var="disabled_checked" value="" />
+								<c:if test="${status.value == 'true'}">
+									<c:set var="enabled_checked" value="checked" />
+									<c:set var="disabled_checked" value="" />
+								</c:if>
+								<c:if test="${status.value == 'false'}">
+									<c:set var="enabled_checked" value="" />
+									<c:set var="disabled_checked" value="checked" />
+								</c:if>
+								<input id="id_${varStatus.index}_enabled" type="radio" name="${status.expression}" value="true" size="${inputSize}" ${enabled_checked}>
+								<label for="id_${varStatus.index}_enabled"><spring:message code="webservices.rest.radioEnabled" /></label>
+								<input id="id_${varStatus.index}_disabled" type="radio" name="${status.expression}" value="false" size="${inputSize}" ${disabled_checked}>
+								<label for="id_${varStatus.index}_disabled"><spring:message code="webservices.rest.radioDisabled" /></label>
+							</c:when>
+							<c:otherwise>
+								<input id="id_${varStatus.index}" type="text" name="${status.expression}" value="${status.value}" size="${inputSize}">
+							</c:otherwise>
+						</c:choose>
 						<form:errors cssClass="error"/>
 					</spring:bind>
 				</span>
