@@ -16,13 +16,16 @@ package org.openmrs.module.webservices.rest.web.controller;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.cors.service.CorsConfigurationService;
 import org.openmrs.web.WebConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -38,6 +41,9 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping("/module/webservices/rest/settings")
 public class SettingsFormController {
 	
+	@Autowired
+	private CorsConfigurationService corsConfigurationService;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public void showForm() {
 	}
@@ -49,10 +55,19 @@ public class SettingsFormController {
 		if (errors.hasErrors())
 			return null; // show the form again
 			
+		Properties corsProperties = new Properties();
 		AdministrationService administrationService = Context.getAdministrationService();
+		String prefix = String.format("%s.%s", RestConstants.MODULE_ID, RestConstants.CORS_PREFIX);
+		
 		for (GlobalProperty p : globalPropertiesModel.getProperties()) {
 			administrationService.saveGlobalProperty(p);
+			
+			if (p.getProperty().startsWith(prefix)) {
+				corsProperties.put(p.getProperty(), p.getPropertyValue());
+			}
 		}
+		
+		corsConfigurationService.updateConfiguration(corsProperties);
 		
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, Context.getMessageSourceService().getMessage("general.saved"),
 		    WebRequest.SCOPE_SESSION);
@@ -71,6 +86,15 @@ public class SettingsFormController {
 		props.add(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME);
 		props.add(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
 		props.add(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+		props.add(RestConstants.CORS_ALLOW_GENERIC_HTTP_REQUESTS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_ALLOW_ORIGIN_PROPERTY_NAME);
+		props.add(RestConstants.CORS_ALLOW_SUBDOMAINS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_MAX_AGE_PROPERTY_NAME);
+		props.add(RestConstants.CORS_SUPPORTED_HEADERS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_SUPPORTED_METHODS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_EXPOSED_HEADERS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_SUPPORTS_CREDENTIALS_PROPERTY_NAME);
+		props.add(RestConstants.CORS_TAG_REQUESTS_PROPERTY_NAME);
 		
 		//remove the properties we dont want to edit
 		for (GlobalProperty gp : Context.getAdministrationService().getGlobalPropertiesByPrefix(RestConstants.MODULE_ID)) {
