@@ -110,7 +110,9 @@ public class ResourceDocCreator {
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
 			if (resourceHandler.getClass().getName()
-			        .equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")) {
+			        .equals("org.openmrs.module.webservices.rest.web.HivDrugOrderSubclassHandler")
+			        || resourceHandler.getClass().getName()
+			                .equals("org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource")) {
 				continue; //Skip the test class
 			}
 			
