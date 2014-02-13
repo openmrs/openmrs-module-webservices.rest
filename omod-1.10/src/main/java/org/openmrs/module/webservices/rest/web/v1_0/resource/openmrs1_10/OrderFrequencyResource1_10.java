@@ -114,7 +114,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
      */
     @Override
     protected NeedsPaging<OrderFrequency> doGetAll(RequestContext context) {
-        return new NeedsPaging<OrderFrequency>(Context.getOrderService().getOrderFrequencies(), context);
+        return new NeedsPaging<OrderFrequency>(Context.getOrderService().getOrderFrequencies(context.getIncludeAll()), context);
     }
 
     /**
