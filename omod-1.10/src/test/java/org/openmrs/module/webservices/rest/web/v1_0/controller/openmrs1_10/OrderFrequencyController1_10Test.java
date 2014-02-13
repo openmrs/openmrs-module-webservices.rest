@@ -25,16 +25,13 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests functionality of {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10}. This does not use @should annotations because
  * the controller inherits those methods from a subclass
  */
-public class OrderController1_10Test extends MainResourceControllerTest {
+public class OrderFrequencyController1_10Test extends MainResourceControllerTest {
 
     private OrderService service;
 
@@ -48,7 +45,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
      */
     @Override
     public String getURI() {
-        return "order";
+        return "orderfrequency";
     }
 
     /**
@@ -56,7 +53,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
      */
     @Override
     public String getUuid() {
-        return RestTestConstants1_8.ORDER_UUID;
+        return "28090760-7c38-11e3-baa7-0800200c9a66";
     }
 
     /**
@@ -64,32 +61,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
      */
     @Override
     public long getAllCount() {
-        return service.getOrders(Order.class, null, null, null, null).size();
+        return service.getOrderFrequencies(false).size();
     }
 
-    @Test
-    public void shouldCreateDiscontinueOrder() throws Exception {
-        SimpleObject order = new SimpleObject();
-        order.add("action", "DISCONTINUE");
-        order.add("previousOrder", RestTestConstants1_8.ORDER_UUID);
-        order.add("patient", "5946f880-b197-400b-9caa-a3c661d23041");
-        order.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-        
-        String conceptUuidForPreviousOrder = "15f83cd6-64e9-4e06-a5f9-364d3b14a43d";
-        order.add("concept", conceptUuidForPreviousOrder);
-
-        SimpleObject response = deserialize(handle(newPostRequest(getURI(), order)));
-
-        assertEquals(order.get("action"), PropertyUtils.getProperty(response, "action"));
-        assertEquals(order.get("concept"), Util.getByPath(response, "concept/uuid"));
-        assertEquals(order.get("patient"), Util.getByPath(response, "patient/uuid"));
-        assertEquals(order.get("previousOrder"), Util.getByPath(response, "previousOrder/uuid"));
-    }
-
-    @Override
-    @Test(expected = ResourceDoesNotSupportOperationException.class)
-    public void shouldGetAll() throws Exception {
-        super.shouldGetAll();
-    }
-    
 }

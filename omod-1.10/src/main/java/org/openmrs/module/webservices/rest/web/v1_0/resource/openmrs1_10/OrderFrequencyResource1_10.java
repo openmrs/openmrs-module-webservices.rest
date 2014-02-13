@@ -44,6 +44,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
             description.addProperty("name");
             description.addProperty("frequencyPerDay");
             description.addProperty("retired");
+            description.addProperty("concept", Representation.REF);
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -52,29 +53,15 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
             description.addProperty("uuid");
             description.addProperty("name");
             description.addProperty("frequencyPerDay");
-            description.addProperty("retired");
             description.addProperty("concept", Representation.DEFAULT);
+            description.addProperty("retired");
             description.addSelfLink();
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             return description;
         }
         return null;
     }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-     */
-    @Override
-    public DelegatingResourceDescription getCreatableProperties() {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-
-        description.addRequiredProperty("name");
-        description.addProperty("description");
-        description.addProperty("isHidden");
-
-        return description;
-    }
-
+    
     /**
      * @see DelegatingCrudResource#newDelegate()
      */
