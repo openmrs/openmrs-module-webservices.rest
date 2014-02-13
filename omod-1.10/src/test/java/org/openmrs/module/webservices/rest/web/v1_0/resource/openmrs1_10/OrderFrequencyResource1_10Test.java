@@ -13,7 +13,7 @@ public class OrderFrequencyResource1_10Test extends BaseDelegatingResourceTest<O
 
     @Override
     public String getDisplayProperty() {
-        return "";
+        return "1/day x 7 days/week";
     }
 
     @Override
