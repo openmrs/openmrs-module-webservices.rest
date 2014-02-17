@@ -31,6 +31,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.collections.CollectionUtils;
 import org.azeckoski.reflectutils.ClassFields.GetClassMethodException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -572,14 +573,14 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
 		//Set properties that are allowed to be changed or fail.
-		Set<String> notAllowedProperties = new HashSet<String>();
-		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
-			if (allowedProperties.remove(prop.getKey()) != null) {
-				setProperty(delegate, prop.getKey(), prop.getValue());
-			} else {
-				notAllowedProperties.add(prop.getKey());
+		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertyMap.keySet(), allowedProperties.keySet());
+		for (Map.Entry<String, Property> prop : allowedProperties.entrySet()) {
+			String key = prop.getKey();
+			if (propertyMap.containsKey(key)) {
+				setProperty(delegate, key, propertyMap.get(key));
 			}
 		}
+		
 		if (!notAllowedProperties.isEmpty()) {
 			throw new ConversionException("Some properties are not allowed to be set: "
 			        + StringUtils.join(notAllowedProperties, ","));
@@ -589,7 +590,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			//Fail, if any required properties are missing.
 			Set<String> missingProperties = new HashSet<String>();
 			for (Entry<String, Property> prop : allowedProperties.entrySet()) {
-				if (prop.getValue().isRequired()) {
+				if (prop.getValue().isRequired() && !propertyMap.containsKey(prop.getKey())) {
 					missingProperties.add(prop.getKey());
 				}
 			}
