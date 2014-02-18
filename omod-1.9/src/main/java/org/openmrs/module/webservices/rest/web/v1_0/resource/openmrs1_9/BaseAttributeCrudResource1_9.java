@@ -61,8 +61,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("value");
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -71,8 +71,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("value");
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -84,8 +84,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addRequiredProperty("value");
 		description.addRequiredProperty("attributeType");
+		description.addRequiredProperty("value");
 		return description;
 	}
 	

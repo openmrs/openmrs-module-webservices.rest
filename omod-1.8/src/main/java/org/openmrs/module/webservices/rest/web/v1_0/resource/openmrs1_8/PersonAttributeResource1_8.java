@@ -62,10 +62,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
 			description.addProperty("value", findMethod("getValue"));
-            description.addProperty("hydratedObject");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("hydratedObject");
 			description.addSelfLink();
 			return description;
 		}
@@ -75,8 +75,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("value");
-        description.addProperty("hydratedObject");
 		description.addRequiredProperty("attributeType");
+		description.addProperty("hydratedObject");
 		return description;
 	}
 

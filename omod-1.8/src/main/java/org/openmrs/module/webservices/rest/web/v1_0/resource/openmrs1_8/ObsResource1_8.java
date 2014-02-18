@@ -83,10 +83,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("person", Representation.REF);
 			description.addProperty("concept", Representation.REF);
-			description.addProperty("value");
-			description.addProperty("valueModifier");
+			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
@@ -97,6 +95,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("order", Representation.REF);
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("voided");
+			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -105,10 +105,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("person", Representation.REF);
 			description.addProperty("concept");
-			description.addProperty("value");
-			description.addProperty("valueModifier");
+			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
@@ -120,6 +118,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("encounter");
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addSelfLink();
 			return description;
 		}
@@ -140,12 +140,12 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		description.addProperty("location");
 		description.addProperty("order");
 		description.addProperty("encounter");
-		description.addProperty("value");
-		description.addProperty("valueModifier");
 		description.addProperty("accessionNumber");
 		description.addProperty("groupMembers");
 		description.addProperty("valueCodedName");
 		description.addProperty("comment");
+		description.addProperty("value");
+		description.addProperty("valueModifier");
 		
 		return description;
 	}

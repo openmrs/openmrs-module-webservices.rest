@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -165,5 +167,20 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		obs.setValueDrug(type.equals(ObsType.DRUG) ? (Drug) value : null);
 		obs.setValueNumeric(type.equals(ObsType.NUMERIC) ? (Double) value : null);
 		obs.setValueText(type.equals(ObsType.TEXT) ? (String) value : null);
+	}
+
+	@Test
+	public void setConvertedProperties_shouldAllowAnyPropertyOrder() throws Exception {
+		ObsResource1_8 resource = getResource();
+		Obs obs = getObject();
+
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
+		propertyMap.put("value", 10.0);
+		propertyMap.put("person", RestTestConstants1_8.PERSON_UUID);
+		propertyMap.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		propertyMap.put("obsDatetime", "2013-12-09T00:00:00.000+0100");
+
+		resource.setConvertedProperties(obs, propertyMap, resource.getUpdatableProperties(), false);
+		org.springframework.util.Assert.isTrue(((Double)ObsResource1_8.getValue(obs)) == 10.0);
 	}
 }
