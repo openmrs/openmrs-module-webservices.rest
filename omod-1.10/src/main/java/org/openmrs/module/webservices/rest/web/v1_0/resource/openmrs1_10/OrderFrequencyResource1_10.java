@@ -32,92 +32,93 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  */
 @Resource(name = RestConstants.VERSION_1 + "/orderfrequency", supportedClass = OrderFrequency.class, supportedOpenmrsVersions = "1.10.*")
 public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<OrderFrequency> {
-
-    /**
-     * @see DelegatingCrudResource#getRepresentationDescription(Representation)
-     */
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        if (rep instanceof DefaultRepresentation) {
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("name");
-            description.addProperty("frequencyPerDay");
-            description.addProperty("retired");
-            description.addProperty("concept", Representation.REF);
-            description.addSelfLink();
-            description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-            return description;
-        } else if (rep instanceof FullRepresentation) {
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("name");
-            description.addProperty("frequencyPerDay");
-            description.addProperty("concept", Representation.DEFAULT);
-            description.addProperty("retired");
-            description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
-            return description;
-        }
-        return null;
-    }
-    
-    /**
-     * @see DelegatingCrudResource#newDelegate()
-     */
-    @Override
-    public OrderFrequency newDelegate() {
-        return new OrderFrequency();
-    }
-
-    /**
-     * @see DelegatingCrudResource#save(java.lang.Object)
-     */
-    @Override
-    public OrderFrequency save(OrderFrequency orderFrequency) {
-        throw new ResourceDoesNotSupportOperationException();
-    }
-
-    /**
-     * Fetches a orderFrequency by uuid
-     *
-     * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
-     */
-    @Override
-    public OrderFrequency getByUniqueId(String uuid) {
-        return Context.getOrderService().getOrderFrequencyByUuid(uuid);
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
-     *      org.openmrs.module.webservices.rest.web.RequestContext)
-     */
-    @Override
-    public void purge(OrderFrequency orderFrequency, RequestContext context) throws ResponseException {
-        throw new ResourceDoesNotSupportOperationException();
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
-     */
-    @Override
-    protected NeedsPaging<OrderFrequency> doGetAll(RequestContext context) {
-        return new NeedsPaging<OrderFrequency>(Context.getOrderService().getOrderFrequencies(context.getIncludeAll()), context);
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-     */
-    @Override
-    protected NeedsPaging<OrderFrequency> doSearch(RequestContext context) {
-        throw new ResourceDoesNotSupportOperationException();
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
-     */
-    @Override
-    public String getResourceVersion() {
-        return "1.10";
-    }
+	
+	/**
+	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
+	 */
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("frequencyPerDay");
+			description.addProperty("retired");
+			description.addProperty("concept", Representation.REF);
+			description.addSelfLink();
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("frequencyPerDay");
+			description.addProperty("concept", Representation.DEFAULT);
+			description.addProperty("retired");
+			description.addSelfLink();
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			return description;
+		}
+		return null;
+	}
+	
+	/**
+	 * @see DelegatingCrudResource#newDelegate()
+	 */
+	@Override
+	public OrderFrequency newDelegate() {
+		return new OrderFrequency();
+	}
+	
+	/**
+	 * @see DelegatingCrudResource#save(java.lang.Object)
+	 */
+	@Override
+	public OrderFrequency save(OrderFrequency orderFrequency) {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * Fetches a orderFrequency by uuid
+	 * 
+	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
+	 */
+	@Override
+	public OrderFrequency getByUniqueId(String uuid) {
+		return Context.getOrderService().getOrderFrequencyByUuid(uuid);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public void purge(OrderFrequency orderFrequency, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected NeedsPaging<OrderFrequency> doGetAll(RequestContext context) {
+		return new NeedsPaging<OrderFrequency>(Context.getOrderService().getOrderFrequencies(context.getIncludeAll()),
+		        context);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected NeedsPaging<OrderFrequency> doSearch(RequestContext context) {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return "1.10";
+	}
 }

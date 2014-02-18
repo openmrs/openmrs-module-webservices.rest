@@ -5,20 +5,20 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class OrderFrequencyResource1_10Test extends BaseDelegatingResourceTest<OrderFrequencyResource1_10, OrderFrequency> {
-    
-    @Override
-    public OrderFrequency newObject() {
-        return Context.getOrderService().getOrderFrequencyByUuid(getUuidProperty());
-    }
-
-    @Override
-    public String getDisplayProperty() {
-        return "";
-    }
-
-    @Override
-    public String getUuidProperty() {
-        return "28090760-7c38-11e3-baa7-0800200c9a66";
-    }
-    
+	
+	@Override
+	public OrderFrequency newObject() {
+		return Context.getOrderService().getOrderFrequencyByUuid(getUuidProperty());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return "28090760-7c38-11e3-baa7-0800200c9a66";
+	}
+	
 }
