@@ -43,6 +43,7 @@ import org.springframework.util.ReflectionUtils;
 /**
  * Contains tests for Representation Descriptions of all resources
  */
+@Ignore
 public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
