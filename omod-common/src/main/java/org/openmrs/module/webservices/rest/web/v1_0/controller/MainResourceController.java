@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -38,6 +33,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
@@ -148,7 +147,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Searchable res = (Searchable) restService.getResourceByName(buildResourceName(resource));
 		
 		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
 		
