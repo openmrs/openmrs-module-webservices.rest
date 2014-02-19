@@ -111,7 +111,8 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 	 */
 	@Override
 	protected NeedsPaging<OrderFrequency> doSearch(RequestContext context) {
-		throw new ResourceDoesNotSupportOperationException();
+		return new NeedsPaging<OrderFrequency>(Context.getOrderService().getOrderFrequencies(context.getParameter("q"),
+		    null, false, context.getIncludeAll()), context);
 	}
 	
 	/**
