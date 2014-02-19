@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Vector;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -23,7 +23,6 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
 
 public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonResource1_8, Person> {
 	
@@ -81,10 +80,10 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
     public void getAttributes_shouldReturnAllAttributes() throws Exception {
         PersonResource1_8 resource = getResource();
 
-        Vector<PersonAttribute> attributes1 = (Vector<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("df8ae447-6745-45be-b859-403241d9913c"));
+        List<PersonAttribute> attributes1 = (List<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("df8ae447-6745-45be-b859-403241d9913c"));
         Assert.assertEquals(2, attributes1.size());
 
-        Vector<PersonAttribute> attributes2 = (Vector<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("341b4e41-790c-484f-b6ed-71dc8da222de"));
+        List<PersonAttribute> attributes2 = (List<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("341b4e41-790c-484f-b6ed-71dc8da222de"));
         Assert.assertEquals(3, attributes2.size());
     }
 
