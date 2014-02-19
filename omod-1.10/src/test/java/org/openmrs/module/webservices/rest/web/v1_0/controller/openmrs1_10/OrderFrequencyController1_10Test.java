@@ -13,19 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.Order;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests functionality of {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10}. This does not use @should annotations because
