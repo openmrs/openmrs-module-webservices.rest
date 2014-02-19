@@ -77,12 +77,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	protected Set<String> allowedMissingProperties = new HashSet<String>();
 	
 	/**
-	 * Implementations should define mappings for properties that they want to expose with other
-	 * names. (Map from the exposed property name to the actual property name.)
-	 */
-	protected Map<String, String> remappedProperties = new HashMap<String, String>();
-	
-	/**
 	 * If this resource represents a class hierarchy (rather than a single class), this will hold
 	 * handlers for each subclass
 	 */
@@ -640,17 +634,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
 			
-			// first, try to find a @PropertyGetter-annotated method
+			// try to find a @PropertyGetter-annotated method
 			Method annotatedGetter = findGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
 			
-			// next use standard bean methods
-			// TODO remove remappedProperties, or make them work with subclass handlers
-			String override = remappedProperties.get(propertyName);
-			if (override != null)
-				propertyName = override;
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
@@ -679,7 +668,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				handler = this;
 			}
 			
-			// first, try to find a @PropertySetter-annotated method
+			// try to find a @PropertySetter-annotated method
 			Method annotatedSetter = findSetterMethod(handler, propertyName);
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
@@ -687,12 +676,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				annotatedSetter.invoke(handler, instance, value);
 				return;
 			}
-			
-			// next use standard bean methods
-			// TODO remove remappedProperties, or make them work with subclass handlers
-			String override = remappedProperties.get(propertyName);
-			if (override != null)
-				propertyName = override;
 			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
