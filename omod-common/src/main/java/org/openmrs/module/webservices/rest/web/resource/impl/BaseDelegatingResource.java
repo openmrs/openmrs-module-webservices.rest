@@ -330,7 +330,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		for (int i = 0; i < fragments.length; i++) {
 			String[] field = fragments[i].split(":"); //split into field and representation
 			if (field.length == 1) {
-				desc.addProperty(field[0]);
+				if (!field[0].equals("links"))
+					desc.addProperty(field[0]);
+				if (field[0].equals("links")) {
+					desc.addSelfLink();
+					desc.addLink("default", ".?v=" + RestConstants.REPRESENTATION_DEFAULT);
+				}
 			} else {
 				String property = field[0];
 				String rep = field[1];
@@ -354,7 +359,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 							break;
 						}
 					}
-					
 					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
 				} else {
 					rep = rep.toUpperCase(); //normalize
