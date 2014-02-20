@@ -45,7 +45,7 @@ import org.springframework.util.ReflectionUtils;
  */
 @Ignore
 public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTest {
-	
+
 	/**
 	 * This test looks at all subclasses of DelegatingCrudResource, and test all {@link RepHandler}
 	 * methods to make sure they are all capable of running without exceptions. It also checks that
