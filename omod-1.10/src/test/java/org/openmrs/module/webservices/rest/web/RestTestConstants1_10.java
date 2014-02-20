@@ -17,4 +17,6 @@ public class RestTestConstants1_10 {
 	public final static String CARE_SETTING_UUID = "2ed1e57d-9f18-41d3-b067-2eeaf4b30fb1";
 	
 	public final static String ORDER_FREQUENCY_UUID = "28090760-7c38-11e3-baa7-0800200c9a66";
+	
+	public final static String ORDER_UUID = "2c96f25c-4949-4f72-9931-d808fbc226df";
 }

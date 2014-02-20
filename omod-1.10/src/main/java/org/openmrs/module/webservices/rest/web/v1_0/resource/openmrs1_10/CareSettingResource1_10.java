@@ -137,6 +137,6 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	 */
 	@Override
 	public String getResourceVersion() {
-		return "1.10";
+		return RestConstants1_10.RESOURCE_VERSION;
 	}
 }

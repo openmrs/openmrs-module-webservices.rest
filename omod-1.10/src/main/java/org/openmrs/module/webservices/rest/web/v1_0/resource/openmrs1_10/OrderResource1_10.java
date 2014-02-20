@@ -13,6 +13,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import org.openmrs.Order;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -117,6 +118,23 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		return d;
 	}
 	
+	/**
+	 * Fetches an order by uuid or order number
+	 * 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(String)
+	 */
+	@Override
+	public Order getByUniqueId(String uniqueId) {
+		Order order = super.getByUniqueId(uniqueId);
+		if (order == null) {
+			order = Context.getOrderService().getOrderByOrderNumber(uniqueId);
+		}
+		return order;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
