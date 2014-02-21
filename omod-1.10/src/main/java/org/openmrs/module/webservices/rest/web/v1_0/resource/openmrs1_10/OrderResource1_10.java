@@ -33,11 +33,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderRes
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = "1.10.*")
 public class OrderResource1_10 extends OrderResource1_8 {
 	
-	@Override
-	public boolean hasTypesDefined() {
-		return true;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
