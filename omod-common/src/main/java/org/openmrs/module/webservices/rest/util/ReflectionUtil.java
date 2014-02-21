@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.util;
 
-import org.springframework.util.ReflectionUtils;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Utility methods for reflection and introspection
@@ -26,14 +27,26 @@ public class ReflectionUtil {
 	
 	/**
 	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type
-	 * with the given index from that interface
+	 * with the given index from that interface. This method will recursively look at superclasses
+	 * until it finds one implementing the requested interface
+	 * 
+	 * @should find genericInterface on a superclass if clazz does not directly implement it
+	 * @should ignore type variables on the declaring interface
+	 * @should not inspect superclasses of the specified genericInterface
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Class getParameterizedTypeFromInterface(Class<?> clazz, Class<?> genericInterface, int index) {
 		for (Type t : clazz.getGenericInterfaces()) {
 			if (t instanceof ParameterizedType && ((Class) ((ParameterizedType) t).getRawType()).equals(genericInterface)) {
-				return (Class) ((ParameterizedType) t).getActualTypeArguments()[index];
+				//if we have reached the base interface that declares the type variable T, ignore it
+				Type pType = ((ParameterizedType) t).getActualTypeArguments()[index];
+				if (!(pType instanceof TypeVariable)) {
+					return (Class) pType;
+				}
 			}
+		}
+		if (clazz.getSuperclass() != null && genericInterface.isAssignableFrom(clazz.getSuperclass())) {
+			return getParameterizedTypeFromInterface(clazz.getSuperclass(), genericInterface, index);
 		}
 		return null;
 	}
