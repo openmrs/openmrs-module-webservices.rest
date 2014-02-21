@@ -41,8 +41,6 @@ import java.util.Enumeration;
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
  * operations based on a {@link CrudResource}.
- * 
- * @param <R>
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
@@ -136,7 +134,6 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * @param query
 	 * @param request
 	 * @param response
 	 * @return
