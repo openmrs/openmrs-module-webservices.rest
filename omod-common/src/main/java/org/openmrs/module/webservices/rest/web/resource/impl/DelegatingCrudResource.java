@@ -113,7 +113,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		
 		if (hasTypesDefined()) {
-			// if they specify a type discriminator it must match the expected one--type can't me modified
+			// if they specify a type discriminator it must match the expected one--type can't be modified
 			if (propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
 				String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
 				if (!delegate.getClass().equals(getActualSubclass(type))) {
