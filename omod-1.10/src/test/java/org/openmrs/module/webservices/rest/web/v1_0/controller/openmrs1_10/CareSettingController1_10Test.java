@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.controller.openmrs1_10;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
