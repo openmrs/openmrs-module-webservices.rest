@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,6 +55,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -66,6 +68,8 @@ import org.springframework.util.ReflectionUtils;
 public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
 	
 	private final Log log = LogFactory.getLog(getClass());
+	
+	protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
 	
 	/**
 	 * Properties that should silently be ignored if you try to get them. Implementations should
@@ -81,6 +85,16 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 * handlers for each subclass
 	 */
 	protected volatile List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
+	
+	/**
+	 * Default constructor will set propertiesIgnoredWhenUpdating to include "display", "links", and
+	 * "resourceVersion"
+	 */
+	protected BaseDelegatingResource() {
+		propertiesIgnoredWhenUpdating.add("display");
+		propertiesIgnoredWhenUpdating.add("links");
+		propertiesIgnoredWhenUpdating.add(RestConstants.PROPERTY_FOR_RESOURCE_VERSION);
+	}
 	
 	/**
 	 * All our resources support letting modules register subclass handlers. If any are registered,
@@ -562,7 +576,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * @param delegate
-	 * @param propertiesToCreate
+	 * @param propertyMap
+	 * @param description
+	 * @param mustIncludeRequiredProperties
 	 * @throws ResponseException
 	 * @should allow setting a null value
 	 */
@@ -572,6 +588,17 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		
 		//Set properties that are allowed to be changed or fail.
 		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertyMap.keySet(), allowedProperties.keySet());
+		notAllowedProperties = CollectionUtils.subtract(notAllowedProperties, propertiesIgnoredWhenUpdating);
+		
+		// if they post back an unchanged value for a non-updatable property, that's okay
+		for (Iterator<String> iterator = notAllowedProperties.iterator(); iterator.hasNext();) {
+			String property = iterator.next();
+			Object oldValue = getProperty(delegate, property);
+			if (unchangedValue(oldValue, propertyMap.get(property))) {
+				iterator.remove();
+			}
+		}
+		
 		for (Map.Entry<String, Property> prop : allowedProperties.entrySet()) {
 			String key = prop.getKey();
 			if (propertyMap.containsKey(key)) {
@@ -597,6 +624,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				        + StringUtils.join(missingProperties, ","));
 			}
 		}
+	}
+	
+	private boolean unchangedValue(Object oldValue, Object newValue) {
+		return OpenmrsUtil.nullSafeEquals(oldValue, newValue);
 	}
 	
 	/**

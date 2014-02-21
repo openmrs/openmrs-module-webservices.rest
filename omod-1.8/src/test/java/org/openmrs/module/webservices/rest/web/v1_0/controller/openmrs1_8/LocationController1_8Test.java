@@ -31,6 +31,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Tests functionality of {@link LocationController}. 
  */
@@ -137,7 +140,23 @@ public class LocationController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(editedName, editedLocation.getName());
 		
 	}
-	
+
+    /**
+     * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't been updated
+     */
+    @Test
+    public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
+        MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + getUuid());
+        SimpleObject location = deserialize(handle(get));
+        location.put("name", "New York");
+
+        MockHttpServletRequest post = newPostRequest(getURI() + "/" + getUuid(), location);
+        handle(post);
+
+        Location updatedLocation = service.getLocationByUuid(getUuid());
+        assertThat(updatedLocation.getName(), is("New York"));
+    }
+
 	@Test
 	public void shouldOverwriteAListOfChildLocations() throws Exception {
 		
