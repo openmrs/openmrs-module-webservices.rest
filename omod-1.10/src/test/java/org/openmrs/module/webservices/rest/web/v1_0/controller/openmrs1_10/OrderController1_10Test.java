@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.openmrs.CareSetting;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.TestOrder;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -183,5 +185,50 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("duration"), Util.getByPath(newOrder, "duration").toString());
 		assertEquals(order.get("durationUnits"), Util.getByPath(newOrder, "durationUnits/uuid"));
 		assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
+	}
+	
+	@Test
+	public void shouldPlaceANewTestOrder() throws Exception {
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
+		int originalActiveTestOrderCount = orderService.getActiveOrders(patient, TestOrder.class, outPatient, null).size();
+		
+		SimpleObject order = new SimpleObject();
+		order.add("type", "testorder");
+		order.add("patient", PATIENT_UUID);
+		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
+		order.add("concept", cd4CountUuid);
+		order.add("action", "NEW");
+		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
+		order.add("startDate", "2008-08-19");
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		order.add("clinicalHistory", "Patient had a negative reaction to the test in the past");
+		String onceUuid = "38090760-7c38-11e4-baa7-0800200c9a67";
+		order.add("frequency", onceUuid);
+		String bloodUuid = "857eba27-2b38-43e8-91a9-4dfe3956a32e";
+		order.add("specimenSource", bloodUuid);
+		order.add("numberOfRepeats", "3");
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), order);
+		SimpleObject newOrder = deserialize(handle(req));
+		
+		List<TestOrder> activeTestOrders = orderService.getActiveOrders(patient, TestOrder.class, outPatient, null);
+		assertEquals(++originalActiveTestOrderCount, activeTestOrders.size());
+		
+		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
+		assertEquals(order.get("action"), Util.getByPath(newOrder, "action"));
+		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
+		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
+		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
+		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
+		assertEquals(order.get("specimenSource"), Util.getByPath(newOrder, "specimenSource/uuid"));
+		assertNull(Util.getByPath(newOrder, "laterality"));
+		assertEquals(order.get("clinicalHistory"), Util.getByPath(newOrder, "clinicalHistory"));
+		assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
+		assertEquals(order.get("numberOfRepeats"), Util.getByPath(newOrder, "numberOfRepeats").toString());
 	}
 }

@@ -134,8 +134,13 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
-	/**
+
+    @Override
+    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+        throw new ResourceDoesNotSupportOperationException();
+    }
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
