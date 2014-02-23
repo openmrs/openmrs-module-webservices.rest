@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -26,9 +28,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.CareSetting;
 import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.TestOrder;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -265,6 +269,50 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(dcOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
 		assertEquals(dcOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
 		assertEquals(dcOrder.get("orderReasonNonCoded"), Util.getByPath(saveDCOrder, "orderReasonNonCoded"));
+	}
+	
+	@Test
+	public void shouldReviseAnActiveOrder() throws Exception {
+		Order orderToRevise = orderService.getOrder(7);
+		Patient patient = orderToRevise.getPatient();
+		List<Order> originalActiveOrders = orderService.getActiveOrders(patient, null, null, null);
+		assertTrue(originalActiveOrders.contains(orderToRevise));
+		
+		EncounterService es = Context.getEncounterService();
+		Date date = new Date();
+		Encounter encounter = new Encounter();
+		encounter.setEncounterType(es.getEncounterType(1));
+		encounter.setPatient(patient);
+		encounter.setEncounterDatetime(date);
+		es.saveEncounter(encounter);
+		
+		SimpleObject revisedOrder = new SimpleObject();
+		revisedOrder.add("type", "order");
+		revisedOrder.add("action", "REVISE");
+		revisedOrder.add("previousOrder", orderToRevise.getUuid());
+		revisedOrder.add("concept", orderToRevise.getConcept().getUuid());
+		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date));
+		revisedOrder.add("encounter", encounter.getUuid());
+		revisedOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		revisedOrder.add("instructions", "To be taken after a meal");
+		revisedOrder.add("orderReasonNonCoded", "Changed instructions");
+		
+		SimpleObject saveDCOrder = deserialize(handle(newPostRequest(getURI(), revisedOrder)));
+		
+		List<Order> newActiveOrders = orderService.getActiveOrders(patient, null, null, null);
+		assertEquals(originalActiveOrders.size(), newActiveOrders.size());
+		assertFalse(newActiveOrders.contains(orderToRevise));
+		assertNotNull(PropertyUtils.getProperty(saveDCOrder, "orderNumber"));
+		assertEquals(revisedOrder.get("action"), Util.getByPath(saveDCOrder, "action"));
+		assertEquals(patient.getUuid(), Util.getByPath(saveDCOrder, "patient/uuid"));
+		assertEquals(orderToRevise.getCareSetting().getUuid(), Util.getByPath(saveDCOrder, "careSetting/uuid"));
+		assertEquals(revisedOrder.get("previousOrder"), Util.getByPath(saveDCOrder, "previousOrder/uuid"));
+		assertEquals(revisedOrder.get("startDate"), Util.getByPath(saveDCOrder, "startDate"));
+		assertEquals(revisedOrder.get("concept"), Util.getByPath(saveDCOrder, "concept/uuid"));
+		assertEquals(revisedOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
+		assertEquals(revisedOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
+		assertEquals(revisedOrder.get("instructions"), Util.getByPath(saveDCOrder, "instructions"));
+		assertEquals(revisedOrder.get("orderReasonNonCoded"), Util.getByPath(saveDCOrder, "orderReasonNonCoded"));
 	}
 	
 }

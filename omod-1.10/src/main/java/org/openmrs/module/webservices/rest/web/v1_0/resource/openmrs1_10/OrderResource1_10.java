@@ -133,13 +133,15 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	 */
 	@Override
 	public Order save(Order delegate) {
-		if (Order.Action.DISCONTINUE == delegate.getAction()) {
+		if (Order.Action.DISCONTINUE == delegate.getAction() || Order.Action.REVISE == delegate.getAction()) {
 			Order previousOrder = delegate.getPreviousOrder();
 			delegate.setCareSetting(previousOrder.getCareSetting());
-			delegate.setConcept(previousOrder.getConcept());
 			delegate.setPatient(previousOrder.getPatient());
-			if (DrugOrder.class.isAssignableFrom(delegate.getClass())) {
-				((DrugOrder) delegate).setDrug(((DrugOrder) previousOrder).getDrug());
+			if (Order.Action.DISCONTINUE == delegate.getAction()) {
+				delegate.setConcept(previousOrder.getConcept());
+				if (DrugOrder.class.isAssignableFrom(delegate.getClass())) {
+					((DrugOrder) delegate).setDrug(((DrugOrder) previousOrder).getDrug());
+				}
 			}
 		}
 		return super.save(delegate);
