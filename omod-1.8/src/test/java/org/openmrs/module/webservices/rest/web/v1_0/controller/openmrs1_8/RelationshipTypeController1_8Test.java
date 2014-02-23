@@ -78,8 +78,8 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
     public void shouldCreateARelationshipType() throws Exception {
         int originalCount = service.getAllRelationshipTypes().size();
         String json = "{ \"aIsToB\":\"Teacher\",\"bIsToA\":\"Student\",\"weight\":\"0\",\"description\":\"test relation\"}";
-        Object newVisitType = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisitType, "uuid"));
+        Object newRelationshipType = deserialize(handle(newPostRequest(getURI(), json)));
+        Assert.assertNotNull(PropertyUtils.getProperty(newRelationshipType, "uuid"));
         Assert.assertEquals(originalCount + 1, service.getAllRelationshipTypes().size());
     }
 
@@ -117,7 +117,7 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 
 
     @Test
-    public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryString() throws Exception {
+    public void shouldSearchAndReturnAListOfRelationshipTypesMatchingTheQueryString() throws Exception {
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Doc"))));
         List<Object> hits = Util.getResultsList(result);
         Assert.assertEquals(1, hits.size());
