@@ -12,6 +12,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -95,12 +96,12 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("patient");
-		d.addRequiredProperty("concept");
 		d.addRequiredProperty("action");
 		d.addRequiredProperty("startDate");
-		d.addRequiredProperty("careSetting");
 		d.addRequiredProperty("encounter");
+		d.addProperty("patient");
+		d.addProperty("concept");
+		d.addProperty("careSetting");
 		d.addProperty("dateStopped");
 		d.addProperty("autoExpireDate");
 		d.addProperty("orderer");
@@ -128,19 +129,36 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
+	 */
+	@Override
+	public Order save(Order delegate) {
+		if (Order.Action.DISCONTINUE == delegate.getAction()) {
+			Order previousOrder = delegate.getPreviousOrder();
+			delegate.setCareSetting(previousOrder.getCareSetting());
+			delegate.setConcept(previousOrder.getConcept());
+			delegate.setPatient(previousOrder.getPatient());
+			if (DrugOrder.class.isAssignableFrom(delegate.getClass())) {
+				((DrugOrder) delegate).setDrug(((DrugOrder) previousOrder).getDrug());
+			}
+		}
+		return super.save(delegate);
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-        throw new ResourceDoesNotSupportOperationException();
-    }
-
-    /**
+	
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override

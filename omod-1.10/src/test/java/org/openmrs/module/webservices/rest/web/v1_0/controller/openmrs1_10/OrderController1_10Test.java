@@ -13,9 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -231,4 +233,38 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
 		assertEquals(order.get("numberOfRepeats"), Util.getByPath(newOrder, "numberOfRepeats").toString());
 	}
+	
+	@Test
+	public void shouldDiscontinueAnActiveOrder() throws Exception {
+		Order orderToDiscontinue = orderService.getOrder(111);
+		Patient patient = orderToDiscontinue.getPatient();
+		List<Order> originalActiveOrders = orderService.getActiveOrders(patient, null, null, null);
+		assertTrue(originalActiveOrders.contains(orderToDiscontinue));
+		
+		SimpleObject dcOrder = new SimpleObject();
+		dcOrder.add("type", "order");
+		dcOrder.add("action", "DISCONTINUE");
+		dcOrder.add("previousOrder", orderToDiscontinue.getUuid());
+		dcOrder.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		dcOrder.add("startDate", "2009-08-19T00:00:00.000-0400");
+		dcOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		dcOrder.add("orderReasonNonCoded", "Patient is allergic");
+		
+		SimpleObject saveDCOrder = deserialize(handle(newPostRequest(getURI(), dcOrder)));
+		
+		List<Order> newActiveOrders = orderService.getActiveOrders(patient, null, null, null);
+		assertEquals(originalActiveOrders.size() - 1, newActiveOrders.size());
+		assertFalse(newActiveOrders.contains(orderToDiscontinue));
+		assertNotNull(PropertyUtils.getProperty(saveDCOrder, "orderNumber"));
+		assertEquals(dcOrder.get("action"), Util.getByPath(saveDCOrder, "action"));
+		assertEquals(orderToDiscontinue.getPatient().getUuid(), Util.getByPath(saveDCOrder, "patient/uuid"));
+		assertEquals(orderToDiscontinue.getCareSetting().getUuid(), Util.getByPath(saveDCOrder, "careSetting/uuid"));
+		assertEquals(dcOrder.get("previousOrder"), Util.getByPath(saveDCOrder, "previousOrder/uuid"));
+		assertEquals(dcOrder.get("startDate"), Util.getByPath(saveDCOrder, "startDate"));
+		assertEquals(orderToDiscontinue.getConcept().getUuid(), Util.getByPath(saveDCOrder, "concept/uuid"));
+		assertEquals(dcOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
+		assertEquals(dcOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
+		assertEquals(dcOrder.get("orderReasonNonCoded"), Util.getByPath(saveDCOrder, "orderReasonNonCoded"));
+	}
+	
 }
