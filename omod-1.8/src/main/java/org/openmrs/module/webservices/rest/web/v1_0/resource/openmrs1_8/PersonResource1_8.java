@@ -270,6 +270,11 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		name.setPreferred(true);
 		instance.addName(name);
 	}
+
+    @PropertyGetter("preferredName")
+    public static PersonName getPreferredName(Person instance) {
+        return instance.getPersonName();
+    }
 	
 	@PropertySetter("age")
 	public static void setAge(Person person, Integer age) throws ResourceDoesNotSupportOperationException {
@@ -284,14 +289,14 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 * preferred.
 	 * 
 	 * @param instance
-	 * @param name
+	 * @param address
 	 * @throws ResourceDoesNotSupportOperationException
 	 */
 	@PropertySetter("preferredAddress")
-	public static void setPreferredAddress(Patient instance, PersonAddress address)
+	public static void setPreferredAddress(Person instance, PersonAddress address)
 	        throws ResourceDoesNotSupportOperationException {
 		if (address.getPersonAddressId() == null) {
-			throw new ResourceDoesNotSupportOperationException("Only an exsiting address can be markes as preferred!");
+			throw new ResourceDoesNotSupportOperationException("Only an existing address can be marked as preferred!");
 		}
 		
 		//un mark the current preferred address as preferred if any
@@ -302,7 +307,12 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		address.setPreferred(true);
 		
 	}
-	
+
+    @PropertyGetter("preferredAddress")
+    public static PersonAddress getPreferredAddress(Person instance) {
+        return instance.getPersonAddress();
+    }
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */

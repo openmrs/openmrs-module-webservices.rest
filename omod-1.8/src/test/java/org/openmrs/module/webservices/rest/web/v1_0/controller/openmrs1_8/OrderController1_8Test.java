@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
+import org.openmrs.Location;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
@@ -33,6 +34,9 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * Integration tests for the Order resource
@@ -240,6 +244,23 @@ public class OrderController1_8Test extends MainResourceControllerTest {
 		DrugOrder order = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
 		Assert.assertEquals(Double.valueOf("500"), order.getDose());
 	}
+
+    /**
+     * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't been updated
+     */
+    @Test
+    public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
+        MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + DRUG_ORDER_UUID);
+        SimpleObject drugOrder = deserialize(handle(get));
+        // doing this will no longer be allowed in OpenMRS 1.10, but it's fine as a test case against 1.8 code
+        drugOrder.put("dose", "500");
+
+        MockHttpServletRequest post = newPostRequest(getURI() + "/" + DRUG_ORDER_UUID, drugOrder);
+        handle(post);
+
+        DrugOrder updatedOrder = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
+        assertThat(updatedOrder.getDose(), is(500d));
+    }
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailToChangeOrderType() throws Exception {

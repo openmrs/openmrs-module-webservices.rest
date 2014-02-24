@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -32,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.proxy.HibernateProxy;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
@@ -583,33 +585,49 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
-		//Set properties that are allowed to be changed or fail.
-		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertyMap.keySet(), allowedProperties.keySet());
-		notAllowedProperties = CollectionUtils.subtract(notAllowedProperties, propertiesIgnoredWhenUpdating);
+		Map<String, Object> propertiesToSet = new HashMap<String, Object>(propertyMap);
+		propertiesToSet.keySet().removeAll(propertiesIgnoredWhenUpdating);
 		
-		// if they post back an unchanged value for a non-updatable property, that's okay
+		// Apply properties in the order specified in the resource description (necessary e.g. so the obs resource
+		// can apply "concept" before "value"); we have already excluded unchanged and ignored properties.
+		// Because some resources (e.g. any AttributeResource) require some properties to be set before others can
+		// be fetched, we apply each property in its iteration, rather than testing everything first and applying later.
+		for (String property : allowedProperties.keySet()) {
+			if (!propertiesToSet.containsKey(property)) {
+				continue;
+			}
+			if (propertiesToSet.containsKey(property)) {
+				// Ignore any properties that were not actually changed, also covering the case where you post back an
+				// incomplete rep of a complex property
+				Object oldValue = getProperty(delegate, property);
+				Object newValue = propertiesToSet.get(property);
+				if (unchangedValue(oldValue, newValue)) {
+					propertiesToSet.remove(property);
+					continue;
+				}
+				
+				setProperty(delegate, property, propertiesToSet.get(property));
+			}
+		}
+		
+		// If any non-settable properties remain after the above logic, fail
+		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertiesToSet.keySet(),
+		    allowedProperties.keySet());
+		// Do allow posting back an unchanged value to an unchangeable property
 		for (Iterator<String> iterator = notAllowedProperties.iterator(); iterator.hasNext();) {
 			String property = iterator.next();
 			Object oldValue = getProperty(delegate, property);
-			if (unchangedValue(oldValue, propertyMap.get(property))) {
+			Object newValue = propertiesToSet.get(property);
+			if (unchangedValue(oldValue, newValue)) {
 				iterator.remove();
 			}
 		}
-		
-		for (Map.Entry<String, Property> prop : allowedProperties.entrySet()) {
-			String key = prop.getKey();
-			if (propertyMap.containsKey(key)) {
-				setProperty(delegate, key, propertyMap.get(key));
-			}
-		}
-		
 		if (!notAllowedProperties.isEmpty()) {
 			throw new ConversionException("Some properties are not allowed to be set: "
-			        + StringUtils.join(notAllowedProperties, ","));
+			        + StringUtils.join(notAllowedProperties, ", "));
 		}
 		
 		if (mustIncludeRequiredProperties) {
-			//Fail, if any required properties are missing.
 			Set<String> missingProperties = new HashSet<String>();
 			for (Entry<String, Property> prop : allowedProperties.entrySet()) {
 				if (prop.getValue().isRequired() && !propertyMap.containsKey(prop.getKey())) {
@@ -618,12 +636,18 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 			if (!missingProperties.isEmpty()) {
 				throw new ConversionException("Some required properties are missing: "
-				        + StringUtils.join(missingProperties, ","));
+				        + StringUtils.join(missingProperties, ", "));
 			}
 		}
 	}
 	
 	private boolean unchangedValue(Object oldValue, Object newValue) {
+		if (newValue instanceof Map && oldValue != null) {
+			newValue = ConversionUtil.convert(newValue, oldValue.getClass());
+			if (oldValue instanceof OpenmrsObject) {
+				return ((OpenmrsObject) oldValue).getUuid().equals(((OpenmrsObject) newValue).getUuid());
+			}
+		}
 		return OpenmrsUtil.nullSafeEquals(oldValue, newValue);
 	}
 	
@@ -688,6 +712,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+		if (propertiesIgnoredWhenUpdating.contains(propertyName)) {
+			return;
+		}
 		try {
 			DelegatingResourceHandler<? extends T> handler;
 			
