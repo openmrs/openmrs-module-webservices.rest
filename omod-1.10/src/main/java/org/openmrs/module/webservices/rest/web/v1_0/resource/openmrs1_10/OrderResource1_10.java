@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
-import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -137,25 +136,6 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			order = Context.getOrderService().getOrderByOrderNumber(uniqueId);
 		}
 		return order;
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
-	 */
-	@Override
-	public Order save(Order delegate) {
-		if (Order.Action.DISCONTINUE == delegate.getAction() || Order.Action.REVISE == delegate.getAction()) {
-			Order previousOrder = delegate.getPreviousOrder();
-			delegate.setCareSetting(previousOrder.getCareSetting());
-			delegate.setPatient(previousOrder.getPatient());
-			if (Order.Action.DISCONTINUE == delegate.getAction()) {
-				delegate.setConcept(previousOrder.getConcept());
-				if (DrugOrder.class.isAssignableFrom(delegate.getClass())) {
-					((DrugOrder) delegate).setDrug(((DrugOrder) previousOrder).getDrug());
-				}
-			}
-		}
-		return super.save(delegate);
 	}
 	
 	/**

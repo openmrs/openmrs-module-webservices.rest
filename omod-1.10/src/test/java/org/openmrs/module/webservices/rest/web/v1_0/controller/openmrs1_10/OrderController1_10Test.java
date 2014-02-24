@@ -255,6 +255,9 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		SimpleObject dcOrder = new SimpleObject();
 		dcOrder.add("type", "order");
 		dcOrder.add("action", "DISCONTINUE");
+		dcOrder.add("patient", patient.getUuid());
+		dcOrder.add("concept", orderToDiscontinue.getConcept().getUuid());
+		dcOrder.add("careSetting", orderToDiscontinue.getCareSetting().getUuid());
 		dcOrder.add("previousOrder", orderToDiscontinue.getUuid());
 		dcOrder.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		dcOrder.add("startDate", "2009-08-19T00:00:00.000-0400");
@@ -297,6 +300,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		revisedOrder.add("type", "order");
 		revisedOrder.add("action", "REVISE");
 		revisedOrder.add("previousOrder", orderToRevise.getUuid());
+		revisedOrder.add("patient", patient.getUuid());
+		revisedOrder.add("careSetting", orderToRevise.getCareSetting().getUuid());
 		revisedOrder.add("concept", orderToRevise.getConcept().getUuid());
 		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date));
 		revisedOrder.add("encounter", encounter.getUuid());
