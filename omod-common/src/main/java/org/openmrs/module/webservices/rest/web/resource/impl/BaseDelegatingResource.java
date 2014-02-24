@@ -16,10 +16,8 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -29,11 +27,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.collections.CollectionUtils;
-import org.azeckoski.reflectutils.ClassFields.GetClassMethodException;
+import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
@@ -56,7 +54,6 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -806,7 +803,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	protected Object findAndInvokeSubclassHandlerMethod(String type, String methodName, Object... arguments) {
 		Class<?>[] argumentTypes = new Class<?>[arguments.length];
 		for (int i = 0; i < arguments.length; ++i) {
-			argumentTypes[i] = arguments[i].getClass();
+			Class<?> t = arguments[i].getClass();
+			if (arguments[i] instanceof HibernateProxy) {
+				t = ((HibernateProxy) arguments[i]).getHibernateLazyInitializer().getPersistentClass();
+			}
+			argumentTypes[i] = t;
 		}
 		Method method = findSubclassHandlerMethod(type, methodName, argumentTypes);
 		if (method == null)

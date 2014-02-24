@@ -33,7 +33,7 @@ public class ReflectionUtilTest {
 	 */
 	@Test
 	public void getParameterizedTypeFromInterface_shouldFindGenericInterfaceOnASuperclassIfClazzDoesNotDirectlyImplementIt()
-	    throws Exception {
+	        throws Exception {
 		Class<?> expectedClass = ReflectionUtil.getParameterizedTypeFromInterface(DrugOrderSubclassHandler1_10.class,
 		    DelegatingSubclassHandler.class, 0);
 		assertEquals(Order.class, expectedClass);
@@ -62,7 +62,7 @@ public class ReflectionUtilTest {
 	 */
 	@Test
 	public void getParameterizedTypeFromInterface_shouldNotInspectSuperclassesOfTheSpecifiedGenericInterface()
-	    throws Exception {
+	        throws Exception {
 		Class<?> clazz = ReflectionUtil.getParameterizedTypeFromInterface(BaseDelegatingSubclassHandler.class,
 		    DrugOrderSubclassHandler1_10.class, 1);
 		assertNull(clazz);
