@@ -68,4 +68,9 @@ public interface RestService {
 	 * @throws APIException
 	 */
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
+	
+	/**
+	 * Initializes all Resources and Search handlers for use; called after module startup
+	 */
+	public void initialize();
 }

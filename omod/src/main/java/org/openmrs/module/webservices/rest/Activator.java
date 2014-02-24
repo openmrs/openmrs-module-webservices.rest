@@ -15,8 +15,10 @@ package org.openmrs.module.webservices.rest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 
 /**
  * {@link ModuleActivator} for the webservices.rest module
@@ -25,12 +27,20 @@ public class Activator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	@Override
 	public void started() {
 		log.info("Started the REST Web Service module");
 	}
 	
+	@Override
 	public void stopped() {
 		log.info("Stopped the REST Web Service module");
+	}
+	
+	@Override
+	public void contextRefreshed() {
+		// initialize all resources and search handlers
+		Context.getService(RestService.class).initialize();
 	}
 	
 }
