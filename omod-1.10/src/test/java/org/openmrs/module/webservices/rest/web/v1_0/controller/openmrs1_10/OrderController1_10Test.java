@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.webservices.rest.test.SameDatetimeMatcher.sameDatetime;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -260,7 +261,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		dcOrder.add("careSetting", orderToDiscontinue.getCareSetting().getUuid());
 		dcOrder.add("previousOrder", orderToDiscontinue.getUuid());
 		dcOrder.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
-		dcOrder.add("startDate", "2009-08-19T00:00:00.000-0400");
+		dcOrder.add("startDate", "2009-08-19");
 		dcOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		dcOrder.add("orderReasonNonCoded", "Patient is allergic");
 		
@@ -274,7 +275,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(orderToDiscontinue.getPatient().getUuid(), Util.getByPath(saveDCOrder, "patient/uuid"));
 		assertEquals(orderToDiscontinue.getCareSetting().getUuid(), Util.getByPath(saveDCOrder, "careSetting/uuid"));
 		assertEquals(dcOrder.get("previousOrder"), Util.getByPath(saveDCOrder, "previousOrder/uuid"));
-		assertEquals(dcOrder.get("startDate"), Util.getByPath(saveDCOrder, "startDate"));
+		assertThat(Util.getByPath(saveDCOrder, "startDate").toString(), sameDatetime(dcOrder.get("startDate").toString()));
 		assertEquals(orderToDiscontinue.getConcept().getUuid(), Util.getByPath(saveDCOrder, "concept/uuid"));
 		assertEquals(dcOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
 		assertEquals(dcOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
@@ -303,28 +304,29 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		revisedOrder.add("patient", patient.getUuid());
 		revisedOrder.add("careSetting", orderToRevise.getCareSetting().getUuid());
 		revisedOrder.add("concept", orderToRevise.getConcept().getUuid());
-		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date));
+		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(date));
 		revisedOrder.add("encounter", encounter.getUuid());
 		revisedOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		revisedOrder.add("instructions", "To be taken after a meal");
 		revisedOrder.add("orderReasonNonCoded", "Changed instructions");
 		
-		SimpleObject saveDCOrder = deserialize(handle(newPostRequest(getURI(), revisedOrder)));
+		SimpleObject savedOrder = deserialize(handle(newPostRequest(getURI(), revisedOrder)));
 		
 		List<Order> newActiveOrders = orderService.getActiveOrders(patient, null, null, null);
 		assertEquals(originalActiveOrders.size(), newActiveOrders.size());
 		assertFalse(newActiveOrders.contains(orderToRevise));
-		assertNotNull(PropertyUtils.getProperty(saveDCOrder, "orderNumber"));
-		assertEquals(revisedOrder.get("action"), Util.getByPath(saveDCOrder, "action"));
-		assertEquals(patient.getUuid(), Util.getByPath(saveDCOrder, "patient/uuid"));
-		assertEquals(orderToRevise.getCareSetting().getUuid(), Util.getByPath(saveDCOrder, "careSetting/uuid"));
-		assertEquals(revisedOrder.get("previousOrder"), Util.getByPath(saveDCOrder, "previousOrder/uuid"));
-		assertEquals(revisedOrder.get("startDate"), Util.getByPath(saveDCOrder, "startDate"));
-		assertEquals(revisedOrder.get("concept"), Util.getByPath(saveDCOrder, "concept/uuid"));
-		assertEquals(revisedOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
-		assertEquals(revisedOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
-		assertEquals(revisedOrder.get("instructions"), Util.getByPath(saveDCOrder, "instructions"));
-		assertEquals(revisedOrder.get("orderReasonNonCoded"), Util.getByPath(saveDCOrder, "orderReasonNonCoded"));
+		assertNotNull(PropertyUtils.getProperty(savedOrder, "orderNumber"));
+		assertEquals(revisedOrder.get("action"), Util.getByPath(savedOrder, "action"));
+		assertEquals(patient.getUuid(), Util.getByPath(savedOrder, "patient/uuid"));
+		assertEquals(orderToRevise.getCareSetting().getUuid(), Util.getByPath(savedOrder, "careSetting/uuid"));
+		assertEquals(revisedOrder.get("previousOrder"), Util.getByPath(savedOrder, "previousOrder/uuid"));
+		assertThat(Util.getByPath(savedOrder, "startDate").toString(),
+		    sameDatetime(revisedOrder.get("startDate").toString()));
+		assertEquals(revisedOrder.get("concept"), Util.getByPath(savedOrder, "concept/uuid"));
+		assertEquals(revisedOrder.get("encounter"), Util.getByPath(savedOrder, "encounter/uuid"));
+		assertEquals(revisedOrder.get("orderer"), Util.getByPath(savedOrder, "orderer/uuid"));
+		assertEquals(revisedOrder.get("instructions"), Util.getByPath(savedOrder, "instructions"));
+		assertEquals(revisedOrder.get("orderReasonNonCoded"), Util.getByPath(savedOrder, "orderReasonNonCoded"));
 	}
 	
 	@Test
