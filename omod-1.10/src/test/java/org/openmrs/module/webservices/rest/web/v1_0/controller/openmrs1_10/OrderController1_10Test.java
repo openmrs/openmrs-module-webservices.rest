@@ -146,6 +146,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
+		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
 		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
@@ -187,7 +188,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
@@ -236,7 +237,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("specimenSource"), Util.getByPath(newOrder, "specimenSource/uuid"));
