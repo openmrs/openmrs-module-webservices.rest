@@ -13,7 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Location;
+import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -22,12 +26,11 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -188,10 +191,37 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
+     *
+     * A query string and/or a tag uuid can be passed in; if both are passed in, returns an intersection of the results; excludes retired locations
 	 */
 	@Override
-	protected AlreadyPaged<Location> doSearch(RequestContext context) {
-		return new ServiceSearcher<Location>(LocationService.class, "getLocations", "getCountOfLocations").search(context
-		        .getParameter("q"), context);
+	protected PageableResult doSearch(RequestContext context) {
+
+        LocationService locationService = Context.getLocationService();
+
+        String tagUuid = context.getParameter("tag");
+        String query = context.getParameter("q");
+
+        List<Location> locationsByTag = null;
+        List<Location> locationsByQuery = null;
+
+        if (tagUuid != null) {
+            LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
+            locationsByTag = locationService.getLocationsByTag(locationTag);
+        }
+
+        if (query != null) {
+            locationsByQuery = locationService.getLocations(query);
+        }
+
+        if (locationsByTag == null) {
+            return new NeedsPaging<Location> (locationsByQuery, context);
+        }
+        else if (locationsByQuery == null) {
+            return new NeedsPaging<Location>(locationsByTag, context);
+        }
+        else {
+            return new NeedsPaging<Location>((List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
+        }
 	}
 }
