@@ -28,7 +28,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -40,7 +39,7 @@ import org.springframework.stereotype.Component;
  * Allows for finding concepts by mapping or by name
  */
 @Component
-public class DrugSearchByMappingHandler1_10 implements SearchHandler {
+public class DrugsSearchByMappingHandler1_10 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_CODE = "code";
 	
@@ -53,13 +52,13 @@ public class DrugSearchByMappingHandler1_10 implements SearchHandler {
 	ConceptService conceptService;
 	
 	SearchQuery searchQuery = new SearchQuery.Builder(
-	        "Allows you to find a drug by source, code and preferred map types(comma delimited). "
+	        "Allows you to find drugs by source, code and preferred map types(comma delimited). "
 	                + "Gets the best matching drug, i.e. matching the earliest ConceptMapType passed if there are "
 	                + "multiple matches for the highest-priority ConceptMapType")
 	        .withRequiredParameters(REQUEST_PARAM_SOURCE)
 	        .withOptionalParameters(REQUEST_PARAM_CODE, REQUEST_PARAM_MAP_TYPES).build();
 	
-	private final SearchConfig searchConfig = new SearchConfig("getDrugByMapping", RestConstants.VERSION_1 + "/drug",
+	private final SearchConfig searchConfig = new SearchConfig("getDrugsByMapping", RestConstants.VERSION_1 + "/drug",
 	        Arrays.asList("1.10.*"), searchQuery);
 	
 	/**
@@ -101,13 +100,8 @@ public class DrugSearchByMappingHandler1_10 implements SearchHandler {
 			}
 		}
 		
-		Drug drug = conceptService.getDrugByMapping(code, source, mapTypesInOrderOfPreference);
-		if (drug == null) {
-			return new EmptySearchResult();
-		}
-		
-		List<Drug> drugs = new ArrayList<Drug>();
-		drugs.add(drug);
+		List<Drug> drugs = conceptService.getDrugsByMapping(code, source, mapTypesInOrderOfPreference,
+		    context.getIncludeAll());
 		return new NeedsPaging<Drug>(drugs, context);
 	}
 }
