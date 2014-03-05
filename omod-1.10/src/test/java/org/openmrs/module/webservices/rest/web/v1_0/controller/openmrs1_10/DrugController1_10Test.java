@@ -72,7 +72,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		            mapTypeUuids))));
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 		
-		//Lets switch the order is the map types in the list to make sure that
+		//Lets switch the order of the map types in the list to make sure that
 		//if there is no match on the first map type, the logic matches on the second
 		//sanity check that actually there will be no match on the first map type in the list
 		mapTypeUuids = conceptService.getConceptMapType(2).getUuid();

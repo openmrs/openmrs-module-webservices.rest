@@ -36,7 +36,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Allows for finding concepts by mapping or by name
+ * Allows finding drugs by mapping
  */
 @Component
 public class DrugsSearchByMappingHandler1_10 implements SearchHandler {

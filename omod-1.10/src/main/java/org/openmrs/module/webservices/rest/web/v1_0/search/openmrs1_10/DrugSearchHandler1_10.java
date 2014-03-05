@@ -35,9 +35,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Finds un retired drugs that match the specified search phrase. The logic matches on drug names,
- * concept names of the associated concepts or the concept reference term codes of the drug
- * reference term mappings.
+ * Find drugs that match the specified search phrase. The logic matches on drug names, concept names
+ * of the associated concepts or the concept reference term codes of the drug reference term
+ * mappings.
  */
 @Component
 public class DrugSearchHandler1_10 implements SearchHandler {
