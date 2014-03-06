@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.LocationAttributeType;
@@ -26,10 +24,12 @@ import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.List;
+
 /**
  * {@link Resource} for LocationAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = LocationResource1_9.class, path = "attribute", supportedClass = LocationAttribute.class, supportedOpenmrsVersions = "1.9.*")
+@SubResource(parent = LocationResource1_9.class, path = "attribute", supportedClass = LocationAttribute.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*"})
 public class LocationAttributeResource1_9 extends BaseAttributeCrudResource1_9<LocationAttribute, Location, LocationResource1_9> {
 	
 	/**

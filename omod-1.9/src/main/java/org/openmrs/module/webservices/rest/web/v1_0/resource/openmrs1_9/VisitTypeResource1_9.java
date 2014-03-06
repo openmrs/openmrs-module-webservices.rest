@@ -12,9 +12,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,10 +24,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * {@link Resource} for {@link VisitType}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*"})
 public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitType> {
 	
 	/**

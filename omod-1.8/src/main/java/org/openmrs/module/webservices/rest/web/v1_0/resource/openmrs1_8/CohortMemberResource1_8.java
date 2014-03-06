@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -36,10 +33,13 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.CohortMember1_8;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Sub-resource for cohort members
  */
-@SubResource(parent = CohortResource1_8.class, path = "member", supportedClass = CohortMember1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@SubResource(parent = CohortResource1_8.class, path = "member", supportedClass = CohortMember1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1_8, Cohort, CohortResource1_8> {
 	
 	/**

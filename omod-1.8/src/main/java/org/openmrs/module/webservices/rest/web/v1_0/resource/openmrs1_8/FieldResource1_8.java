@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.Field;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,10 +26,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	
 	/**
