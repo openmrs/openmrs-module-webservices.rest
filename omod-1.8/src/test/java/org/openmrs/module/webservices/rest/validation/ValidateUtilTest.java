@@ -19,7 +19,7 @@ public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 	public void validate_shouldNotThrowValidationExceptionButShouldNotFail() throws Exception {
 
         // we are not supporting this validation against 1.8, so when running against 1.8 when passing in an
-        // invalid object, so exception should be thrown
+        // invalid object, no exception should be thrown
 
 		Location loc = new Location();
 		ValidateUtil.validate(loc);

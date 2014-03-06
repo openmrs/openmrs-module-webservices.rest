@@ -40,6 +40,7 @@ public class ValidateUtil {
 		AdministrationService administrationService = Context.getAdministrationService();
 		
 		try {
+            // using refection here for compatibility with OpenMRS 1.8,x, which does not have this method
 			Method validate = AdministrationService.class.getMethod("validate", Object.class, Errors.class);
 			validate.invoke(administrationService, obj, errors);
 		}
