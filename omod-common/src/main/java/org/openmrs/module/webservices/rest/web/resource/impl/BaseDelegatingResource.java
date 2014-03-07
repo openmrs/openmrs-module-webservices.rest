@@ -13,6 +13,35 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.proxy.HibernateProxy;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleUtil;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.util.ReflectionUtil;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
+import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.*;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.util.OpenmrsUtil;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,36 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.proxy.HibernateProxy;
-import org.openmrs.OpenmrsObject;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.util.ReflectionUtil;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.Hyperlink;
-import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
-import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
-import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
-import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.OpenmrsUtil;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -108,7 +107,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)}
-	 * or {@link #getSubclassHandler(String)}. It finds all subclass handlers intented for this
+	 * or {@link #getSubclassHandler(String)}. It finds all subclass handlers intended for this
 	 * resource, and registers them.
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -117,16 +116,42 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		
 		List<DelegatingSubclassHandler> handlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
 		for (DelegatingSubclassHandler handler : handlers) {
-			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
+			
+			Class<? extends DelegatingSubclassHandler> handlerCLass = handler.getClass();
+			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerCLass,
 			    DelegatingSubclassHandler.class, 0);
 			Resource resourceForHandler = Context.getService(RestService.class)
 			        .getResourceBySupportedClass(forDelegateClass);
 			if (getClass().equals(resourceForHandler.getClass())) {
-				tmpSubclassHandlers.add(handler);
+				SubClassHandler annotation = handlerCLass.getAnnotation(SubClassHandler.class);
+				if (annotation == null) {
+					log.warn("SubclassHandler "
+					        + handlerCLass.getName()
+					        + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass. ");
+					tmpSubclassHandlers.add(handler);
+					continue;
+				}
+				String[] supportedOpenmrsVersions = annotation.supportedOpenmrsVersions();
+				for (String version : supportedOpenmrsVersions) {
+					if (versionMatches(version)) {
+						tmpSubclassHandlers.add(handler);
+						break;
+					}
+				}
 			}
 		}
 		
 		subclassHandlers = tmpSubclassHandlers;
+	}
+	
+	private boolean versionMatches(String supportedVersion) {
+		try {
+			ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+		}
+		catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -231,7 +256,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Gets a description of resource's properties which can be edited.
-	 * <p>
+	 * <p/>
 	 * By default delegates to {@link #getCreatableProperties()} and removes sub-resources returned
 	 * by {@link #getPropertiesToExposeAsSubResources()}.
 	 * 

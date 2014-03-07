@@ -13,18 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.TestOrder;
-import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -36,11 +34,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassH
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
+import java.util.List;
+
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8}
  */
-@Handler(supports = TestOrder.class)
+@SubClassHandler(supportedClass = TestOrder.class, supportedOpenmrsVersions = "1.10.*")
 public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<Order, TestOrder> implements DelegatingSubclassHandler<Order, TestOrder> {
 	
 	/**
