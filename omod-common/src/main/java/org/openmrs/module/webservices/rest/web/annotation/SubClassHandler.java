@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.annotation;
 
+import org.springframework.stereotype.Component;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,6 +23,7 @@ import java.lang.annotation.Target;
 /**
  * Holds metadata that represents a subclass handler.
  */
+@Component
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubClassHandler {

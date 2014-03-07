@@ -13,6 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +42,11 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.*;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
+import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -41,20 +59,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -116,27 +120,26 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		
 		List<DelegatingSubclassHandler> handlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
 		for (DelegatingSubclassHandler handler : handlers) {
-			
-			Class<? extends DelegatingSubclassHandler> handlerCLass = handler.getClass();
-			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerCLass,
+
+			Class<? extends DelegatingSubclassHandler> handlerClass = handler.getClass();
+			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerClass,
 			    DelegatingSubclassHandler.class, 0);
 			Resource resourceForHandler = Context.getService(RestService.class)
 			        .getResourceBySupportedClass(forDelegateClass);
 			if (getClass().equals(resourceForHandler.getClass())) {
-				SubClassHandler annotation = handlerCLass.getAnnotation(SubClassHandler.class);
-				if (annotation == null) {
-					log.warn("SubclassHandler "
-					        + handlerCLass.getName()
-					        + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass. ");
-					tmpSubclassHandlers.add(handler);
-					continue;
-				}
-				String[] supportedOpenmrsVersions = annotation.supportedOpenmrsVersions();
-				for (String version : supportedOpenmrsVersions) {
-					if (versionMatches(version)) {
-						tmpSubclassHandlers.add(handler);
-						break;
+				SubClassHandler annotation = handlerClass.getAnnotation(SubClassHandler.class);
+				if (annotation != null) {
+					String[] supportedOpenmrsVersions = annotation.supportedOpenmrsVersions();
+					for (String version : supportedOpenmrsVersions) {
+						if (versionMatches(version)) {
+							tmpSubclassHandlers.add(handler);
+							break;
+						}
 					}
+				} else {
+					log.warn("SubclassHandler "
+					        + handlerClass.getName()
+					        + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass.");
 				}
 			}
 		}
