@@ -832,9 +832,10 @@ public class RestUtil implements GlobalPropertyListener {
 		errors.add("message", messageSourceService.getMessage("webservices.rest.error.invalid.submission"));
 		errors.add("code", "webservices.rest.error.invalid.submission");
 		
+		List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
+		SimpleObject fieldErrors = new SimpleObject();
+		
 		if (ex.getErrors().hasGlobalErrors()) {
-			
-			List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
 			
 			for (Object errObj : ex.getErrors().getGlobalErrors()) {
 				
@@ -847,12 +848,9 @@ public class RestUtil implements GlobalPropertyListener {
 				globalErrors.add(globalError);
 			}
 			
-			errors.put("globalErrors", globalErrors);
 		}
 		
 		if (ex.getErrors().hasFieldErrors()) {
-			
-			SimpleObject fieldErrors = new SimpleObject();
 			
 			for (Object errObj : ex.getErrors().getFieldErrors()) {
 				FieldError err = (FieldError) errObj;
@@ -868,8 +866,11 @@ public class RestUtil implements GlobalPropertyListener {
 				
 				((List<SimpleObject>) fieldErrors.get(err.getField())).add(fieldError);
 			}
-			errors.put("fieldErrors", fieldErrors);
+			
 		}
+		
+		errors.put("globalErrors", globalErrors);
+		errors.put("fieldErrors", fieldErrors);
 		
 		return new SimpleObject().add("error", errors);
 	}

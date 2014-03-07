@@ -36,4 +36,19 @@ public class RestUtilComponentTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertEquals("field.error.message", birthdateFieldErrors.get(0).get("code"));
 		
 	}
+	
+	@Test
+	public void wrapValidationErrorResponse_shouldIncludeGlobalAndFieldErrorObjectsEvenIfEmpty() {
+		
+		Errors ex = new BindException(new Person(), "");
+		
+		SimpleObject result = RestUtil.wrapValidationErrorResponse(new ValidationException("some message", ex));
+		SimpleObject errors = (SimpleObject) result.get("error");
+		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("message"));
+		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
+		
+		Assert.assertEquals(0, ((List<SimpleObject>) errors.get("globalErrors")).size());
+		Assert.assertNotNull(errors.get("fieldErrors"));
+		
+	}
 }
