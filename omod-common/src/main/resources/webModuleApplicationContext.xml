@@ -111,7 +111,9 @@
 	<mvc:annotation-driven />
 	-->
 	
-	<context:component-scan base-package="org.openmrs.module.webservices.rest.web"/>
+	<context:component-scan base-package="org.openmrs.module.webservices.rest.web">
+        <context:include-filter type="annotation" expression="org.openmrs.module.webservices.rest.web.annotation.SubClassHandler"/>
+    </context:component-scan>
     
     <!-- Must be placed after DefaultAnnotationHandlerMapping to handle unknown resource requests which result in 404.  -->
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
