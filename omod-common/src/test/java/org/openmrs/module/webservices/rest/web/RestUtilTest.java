@@ -13,15 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**

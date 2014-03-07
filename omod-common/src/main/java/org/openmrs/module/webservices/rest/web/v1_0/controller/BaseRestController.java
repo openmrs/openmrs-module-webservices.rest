@@ -13,21 +13,22 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Resource controllers should extend this base class to have standard exception handling done
@@ -68,6 +69,14 @@ public class BaseRestController {
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
+	}
+	
+	@ExceptionHandler(ValidationException.class)
+	@ResponseBody
+	public SimpleObject validationExceptionHandler(ValidationException validationException, HttpServletRequest request,
+	        HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return RestUtil.wrapValidationErrorResponse(validationException);
 	}
 	
 	@ExceptionHandler(Exception.class)

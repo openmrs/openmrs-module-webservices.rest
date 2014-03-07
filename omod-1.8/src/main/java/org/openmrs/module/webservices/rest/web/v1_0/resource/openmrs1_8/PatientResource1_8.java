@@ -42,6 +42,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
@@ -166,6 +167,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
         Patient delegate = getPatient(propertiesToCreate);
+        ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
@@ -272,6 +274,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
             return super.update(uuid, propertiesToUpdate, context);
         }
         Patient patient = getPatientForUpdate(uuid, propertiesToUpdate);
+        ValidateUtil.validate(patient);
         patient = save(patient);
         return ConversionUtil.convertToRepresentation(patient, Representation.DEFAULT);
     }

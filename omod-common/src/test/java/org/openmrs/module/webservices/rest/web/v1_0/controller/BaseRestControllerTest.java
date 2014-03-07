@@ -13,15 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Person;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -65,5 +71,18 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		controller.apiAuthenticationExceptionHandler(new APIAuthenticationException(), request, response);
 		
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_FORBIDDEN));
+	}
+	
+	@Test
+	public void validationException_shouldReturnBadRequestResponse() throws Exception {
+		Errors ex = new BindException(new Person(), "");
+		ex.reject("error.message");
+		
+		SimpleObject responseSimpleObject = controller.validationExceptionHandler(new ValidationException(ex), request,
+		    response);
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
+		
+		SimpleObject errors = (SimpleObject) responseSimpleObject.get("error");
+		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("message"));
 	}
 }

@@ -35,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
+import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -91,6 +92,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		T delegate = handler.newDelegate();
 		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
+		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 		
@@ -129,6 +131,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
 		
 		setConvertedProperties(delegate, propertiesToUpdate, handler.getUpdatableProperties(), false);
+		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
