@@ -183,7 +183,7 @@
 	<role_privilege role="All Rights" privilege="Add Orders"/>
 	<role_privilege role="All Rights" privilege="Add Patient Identifiers"/>
 	<role_privilege role="All Rights" privilege="Add Patient Programs"/>
-	<role_privilege role="All Rights" privilege="Add Patients"/>
+<!-- 	<role_privilege role="All Rights" privilege="Add Patients"/> -->
 	<role_privilege role="All Rights" privilege="Add People"/>
 	<role_privilege role="All Rights" privilege="Add Problems"/>
 	<role_privilege role="All Rights" privilege="Add Relationships"/>

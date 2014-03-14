@@ -120,22 +120,14 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 	public void shouldNotCreatePatient() throws Exception {
 		// Fetch authenticated user
 		Context.authenticate ("Test_user", "Test1234");
-		User user = Context.getAuthenticatedUser ();
-		// By default, the user has System Developer role
-		Role role = user.getAllRoles ().iterator ().next ();
-		// Remove Add Patients privilege
-		role.removePrivilege (Context.getUserService ().getPrivilege ("Add Patients"));
 		long originalCount = service.getAllPatients().size();
 		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", "
 				+ "\"identifiers\": [{ \"identifier\":\"abcd1234\", "
 				+ "\"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", "
 				+ "\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", " + "\"preferred\": true }] }";
 		SimpleObject newPatient = deserialize(handle(newPostRequest(getURI(), json)));
-		
 		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
 		assertEquals("Should not create patient without Add Patients privilege", originalCount, service.getAllPatients().size());
-		// Restore the privilege
-		role.addPrivilege (Context.getUserService ().getPrivilege ("Add Patients"));
 	}
 
 	@Test(expected = ConversionException.class)
