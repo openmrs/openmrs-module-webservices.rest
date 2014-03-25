@@ -157,9 +157,9 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-		List<DrugOrder> drugOrders = Context.getOrderService().getActiveOrders(patient, DrugOrder.class, careSetting,
-		    asOfDate);
-		return new NeedsPaging<DrugOrder>(drugOrders, context);
+        List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient, Context.getOrderService().getOrderTypeByName("Drug order"),
+                careSetting, asOfDate);
+		return new NeedsPaging<Order>(drugOrders, context);
 	}
 	
 	/**
