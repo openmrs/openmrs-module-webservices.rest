@@ -136,9 +136,9 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-		List<TestOrder> drugOrders = Context.getOrderService().getActiveOrders(patient, TestOrder.class, careSetting,
-		    asOfDate);
-		return new NeedsPaging<TestOrder>(drugOrders, context);
+		List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient, Context.getOrderService().getOrderTypeByName("Test order"),
+                careSetting, asOfDate);
+		return new NeedsPaging<Order>(drugOrders, context);
 	}
 	
 	/**

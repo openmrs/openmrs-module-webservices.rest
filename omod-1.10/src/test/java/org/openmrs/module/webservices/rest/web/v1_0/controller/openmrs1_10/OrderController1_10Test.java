@@ -32,13 +32,11 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.CareSetting;
-import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.TestOrder;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -70,6 +68,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	public void before() throws Exception {
 		this.orderService = Context.getOrderService();
 		this.patientService = Context.getPatientService();
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
 	}
 	
 	/**
@@ -157,7 +156,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
 		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-		int originalActiveDrugOrderCount = orderService.getActiveOrders(patient, DrugOrder.class, outPatient, null).size();
+		int originalActiveDrugOrderCount = orderService.getActiveOrders(patient,
+		    orderService.getOrderTypeByName("Drug order"), outPatient, null).size();
 		SimpleObject order = new SimpleObject();
 		order.add("type", "drugorder");
 		order.add("patient", PATIENT_UUID);
@@ -180,7 +180,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
-		List<DrugOrder> activeDrugOrders = orderService.getActiveOrders(patient, DrugOrder.class, outPatient, null);
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+		    outPatient, null);
 		assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
@@ -207,7 +208,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
 		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-		int originalActiveTestOrderCount = orderService.getActiveOrders(patient, TestOrder.class, outPatient, null).size();
+		int originalActiveTestOrderCount = orderService.getActiveOrders(patient,
+		    orderService.getOrderTypeByName("Test order"), outPatient, null).size();
 		
 		SimpleObject order = new SimpleObject();
 		order.add("type", "testorder");
@@ -229,7 +231,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
-		List<TestOrder> activeTestOrders = orderService.getActiveOrders(patient, TestOrder.class, outPatient, null);
+		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"),
+		    outPatient, null);
 		assertEquals(++originalActiveTestOrderCount, activeTestOrders.size());
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
@@ -360,9 +363,12 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldGetTheActiveOrdersForAPatientAsOfTheSpecifiedDate() throws Exception {
 		String expectedOrderUuid = orderService.getOrder(2).getUuid();
+		Patient patient = patientService.getPatientByUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2007-12-10");
+		List<Order> orders = orderService.getActiveOrders(patient, null, null, date);
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
 		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("asOfDate", "2007-12-10"))));
-		assertEquals(1, Util.getResultsSize(results));
+		assertEquals(orders.size(), Util.getResultsSize(results));
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
@@ -371,14 +377,17 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		Method m = DrugOrderSubclassHandler1_10.class.getMethod("getActiveOrders", new Class[] { Patient.class,
 		        RequestContext.class });
 		assertNotNull(m);
-		String[] expectedOrderUuids = { orderService.getOrder(3).getUuid(), orderService.getOrder(5).getUuid() };
+		String[] expectedOrderUuids = { orderService.getOrder(3).getUuid(), orderService.getOrder(5).getUuid(),
+		        orderService.getOrder(222).getUuid(), orderService.getOrder(444).getUuid() };
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder"), new Parameter("patient",
 		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
 		assertEquals(expectedOrderUuids.length, Util.getResultsSize(results));
 		List<Object> resultList = Util.getResultsList(results);
 		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
-		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString() });
+		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString(),
+		        PropertyUtils.getProperty(resultList.get(2), "uuid").toString(),
+		        PropertyUtils.getProperty(resultList.get(3), "uuid").toString(), });
 		assertThat(uuids, hasItems(expectedOrderUuids));
 	}
 	
