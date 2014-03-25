@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import org.junit.Before;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
@@ -20,7 +21,14 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10;
 
 public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResource1_10, Order> {
-	
+
+    protected static final String ORDER_ENTRY_DATASET_XML = "org/openmrs/api/include/OrderEntryIntegrationTest-other.xml";
+
+    @Before
+    public void before() throws Exception {
+        executeDataSet(ORDER_ENTRY_DATASET_XML);
+    }
+
 	@Override
 	public Order newObject() {
 		return Context.getOrderService().getOrderByUuid(getUuidProperty());
