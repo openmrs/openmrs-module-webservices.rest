@@ -138,6 +138,7 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPurgeAnOrderType() throws Exception {
 		String uuid = "00e17510-aa09-11e3-a5e2-0800200c9a66";
+		assertNotNull(service.getOrderTypeByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
 		req.addParameter("purge", "");
 		handle(req);
@@ -145,7 +146,7 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldPlaceANewOrderType() throws Exception {
+	public void shouldCreateANewOrderType() throws Exception {
 		OrderService orderService = Context.getOrderService();
 		int orderTypeCount = orderService.getOrderTypes(true).size();
 		SimpleObject orderType = new SimpleObject();

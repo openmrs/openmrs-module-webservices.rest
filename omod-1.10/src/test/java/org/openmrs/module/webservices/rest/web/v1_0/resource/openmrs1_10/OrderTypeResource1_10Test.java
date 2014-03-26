@@ -13,15 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.hibernate.collection.PersistentSet;
-import org.junit.Assert;
-import org.openmrs.ConceptClass;
 import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -43,35 +36,15 @@ public class OrderTypeResource1_10Test extends BaseDelegatingResourceTest<OrderT
 	}
 	
 	@Override
-	public void assertPropEquals(String property, Object value) {
-		if (value instanceof PersistentSet) {
-			ArrayList<SimpleObject> conceptClassesFromRep = (ArrayList) getRepresentation().get(property);
-			ArrayList<ConceptClass> conceptClasses = new ArrayList<ConceptClass>();
-			conceptClasses.addAll((PersistentSet) value);
-			String[] uuids = new String[conceptClassesFromRep.size()];
-			Assert.assertEquals(conceptClasses.size(), conceptClassesFromRep.size());
-			
-			for (int i = 0; i < conceptClassesFromRep.size(); i++) {
-				uuids[i] = conceptClassesFromRep.get(i).get("uuid").toString();
-			}
-			
-			for (ConceptClass cc : conceptClasses) {
-				Assert.assertTrue(Arrays.asList(uuids).contains(cc.getUuid()));
-			}
-		} else {
-			super.assertPropEquals(property, value);
-		}
-	}
-	
-	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("javaClassName", getObject().getJavaClassName());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("conceptClasses", getObject().getConceptClasses());
 		assertPropEquals("parent", getObject().getParent());
+		assertPropPresent("conceptClasses");
+		assertPropNotPresent("auditInfo");
 	}
 	
 	@Override
@@ -81,8 +54,9 @@ public class OrderTypeResource1_10Test extends BaseDelegatingResourceTest<OrderT
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("javaClassName", getObject().getJavaClassName());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("conceptClasses", getObject().getConceptClasses());
 		assertPropEquals("parent", getObject().getParent());
+		assertPropPresent("conceptClasses");
+		assertPropPresent("auditInfo");
 		
 	}
 	

@@ -48,12 +48,14 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 			description.addProperty("javaClassName");
 			description.addProperty("retired");
 			description.addProperty("description");
-			description.addProperty("conceptClasses");
-			description.addProperty("parent");
 			description.addSelfLink();
 			if (rep instanceof DefaultRepresentation) {
+				description.addProperty("conceptClasses", Representation.REF);
+				description.addProperty("parent", Representation.REF);
 				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			} else {
+				description.addProperty("conceptClasses");
+				description.addProperty("parent");
 				description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			}
 			return description;
@@ -139,12 +141,9 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("name");
+		DelegatingResourceDescription d = super.getCreatableProperties();
 		d.addRequiredProperty("javaClassName");
-		d.addProperty("description");
 		d.addProperty("parent");
-		d.addProperty("retired");
 		d.addProperty("conceptClasses");
 		return d;
 	}
