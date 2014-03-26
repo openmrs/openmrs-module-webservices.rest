@@ -180,6 +180,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("duration", "20.0");
 		order.add("durationUnits", "7e02d1a0-7869-11e4-981f-0800200c9a75");
 		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
+		order.add("numRefills", "2");
+		order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
