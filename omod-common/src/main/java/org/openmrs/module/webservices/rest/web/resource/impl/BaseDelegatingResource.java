@@ -120,7 +120,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		
 		List<DelegatingSubclassHandler> handlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
 		for (DelegatingSubclassHandler handler : handlers) {
-
+			
 			Class<? extends DelegatingSubclassHandler> handlerClass = handler.getClass();
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerClass,
 			    DelegatingSubclassHandler.class, 0);
