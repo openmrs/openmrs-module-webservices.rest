@@ -42,7 +42,7 @@ public class OrderTypeResource1_10Test extends BaseDelegatingResourceTest<OrderT
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("javaClassName", getObject().getJavaClassName());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("parent", getObject().getParent());
+		assertPropPresent("parent");
 		assertPropPresent("conceptClasses");
 		assertPropNotPresent("auditInfo");
 	}
@@ -54,7 +54,7 @@ public class OrderTypeResource1_10Test extends BaseDelegatingResourceTest<OrderT
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("javaClassName", getObject().getJavaClassName());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("parent", getObject().getParent());
+		assertPropPresent("parent");
 		assertPropPresent("conceptClasses");
 		assertPropPresent("auditInfo");
 		

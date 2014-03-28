@@ -314,7 +314,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		revisedOrder.add("patient", patient.getUuid());
 		revisedOrder.add("careSetting", orderToRevise.getCareSetting().getUuid());
 		revisedOrder.add("concept", orderToRevise.getConcept().getUuid());
-		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(date));
+		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(date));
 		revisedOrder.add("encounter", encounter.getUuid());
 		revisedOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		revisedOrder.add("instructions", "To be taken after a meal");
