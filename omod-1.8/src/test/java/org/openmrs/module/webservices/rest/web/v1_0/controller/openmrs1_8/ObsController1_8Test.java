@@ -17,10 +17,12 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -352,5 +354,26 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 				getGroupMembers().isEmpty());
 
 	}
-	
+
+
+    @Test
+    public void shouldGetObsByPatientAndConceptSet() throws Exception {
+        executeDataSet("obsWithGroupMembers.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("concept", "3f596de5-5caa-11e3-a4c0-0800271c1b75"))));
+        Util.log("Obs fetched (default)", result);
+
+        assertEquals(2,((ArrayList)result.get("results")).size());
+    }
+
+    @Test
+    public void shouldGetObsByPatient() throws Exception {
+        executeDataSet("obsWithGroupMembers.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(),new Parameter("patient","86526ed5-3c11-11de-a0ba-001e378eb67a"))));
+
+        assertEquals(8,((ArrayList)result.get("results")).size());
+    }
+
+
 }
