@@ -20,9 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openmrs.module.webservices.rest.test.SameDatetimeMatcher.sameDatetime;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -129,7 +127,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("concept", "a09ab2c5-878e-4905-b25d-5784167d0216");
 		order.add("action", "NEW");
 		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
-		order.add("startDate", "2008-08-19");
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		
@@ -144,7 +141,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
 		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
@@ -168,7 +164,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("concept", "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		order.add("action", "NEW");
 		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
-		order.add("startDate", "2008-08-19");
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("drug", "05ec820a-d297-44e3-be6e-698531d9dd3f");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
@@ -195,7 +190,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
@@ -224,7 +219,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("concept", cd4CountUuid);
 		order.add("action", "NEW");
 		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
-		order.add("startDate", "2008-08-19");
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		order.add("clinicalHistory", "Patient had a negative reaction to the test in the past");
@@ -246,7 +240,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertThat(Util.getByPath(newOrder, "startDate").toString(), sameDatetime(order.get("startDate").toString()));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("specimenSource"), Util.getByPath(newOrder, "specimenSource/uuid"));
@@ -264,32 +258,31 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertTrue(originalActiveOrders.contains(orderToDiscontinue));
 		
 		SimpleObject dcOrder = new SimpleObject();
-		dcOrder.add("type", "order");
+		dcOrder.add("type", "testorder");
 		dcOrder.add("action", "DISCONTINUE");
 		dcOrder.add("patient", patient.getUuid());
 		dcOrder.add("concept", orderToDiscontinue.getConcept().getUuid());
 		dcOrder.add("careSetting", orderToDiscontinue.getCareSetting().getUuid());
 		dcOrder.add("previousOrder", orderToDiscontinue.getUuid());
 		dcOrder.add("encounter", Context.getEncounterService().getEncounter(6).getUuid());
-		dcOrder.add("startDate", "2009-08-19");
 		dcOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		dcOrder.add("orderReasonNonCoded", "Patient is allergic");
 		
-		SimpleObject saveDCOrder = deserialize(handle(newPostRequest(getURI(), dcOrder)));
+		SimpleObject savedDCOrder = deserialize(handle(newPostRequest(getURI(), dcOrder)));
 		
 		List<Order> newActiveOrders = orderService.getActiveOrders(patient, null, null, null);
 		assertEquals(originalActiveOrders.size() - 1, newActiveOrders.size());
 		assertFalse(newActiveOrders.contains(orderToDiscontinue));
-		assertNotNull(PropertyUtils.getProperty(saveDCOrder, "orderNumber"));
-		assertEquals(dcOrder.get("action"), Util.getByPath(saveDCOrder, "action"));
-		assertEquals(orderToDiscontinue.getPatient().getUuid(), Util.getByPath(saveDCOrder, "patient/uuid"));
-		assertEquals(orderToDiscontinue.getCareSetting().getUuid(), Util.getByPath(saveDCOrder, "careSetting/uuid"));
-		assertEquals(dcOrder.get("previousOrder"), Util.getByPath(saveDCOrder, "previousOrder/uuid"));
-		assertThat(Util.getByPath(saveDCOrder, "startDate").toString(), sameDatetime(dcOrder.get("startDate").toString()));
-		assertEquals(orderToDiscontinue.getConcept().getUuid(), Util.getByPath(saveDCOrder, "concept/uuid"));
-		assertEquals(dcOrder.get("encounter"), Util.getByPath(saveDCOrder, "encounter/uuid"));
-		assertEquals(dcOrder.get("orderer"), Util.getByPath(saveDCOrder, "orderer/uuid"));
-		assertEquals(dcOrder.get("orderReasonNonCoded"), Util.getByPath(saveDCOrder, "orderReasonNonCoded"));
+		assertNotNull(PropertyUtils.getProperty(savedDCOrder, "orderNumber"));
+		assertEquals(dcOrder.get("action"), Util.getByPath(savedDCOrder, "action"));
+		assertEquals(orderToDiscontinue.getPatient().getUuid(), Util.getByPath(savedDCOrder, "patient/uuid"));
+		assertEquals(orderToDiscontinue.getCareSetting().getUuid(), Util.getByPath(savedDCOrder, "careSetting/uuid"));
+		assertEquals(dcOrder.get("previousOrder"), Util.getByPath(savedDCOrder, "previousOrder/uuid"));
+		assertNotNull(PropertyUtils.getProperty(savedDCOrder, "startDate"));
+		assertEquals(orderToDiscontinue.getConcept().getUuid(), Util.getByPath(savedDCOrder, "concept/uuid"));
+		assertEquals(dcOrder.get("encounter"), Util.getByPath(savedDCOrder, "encounter/uuid"));
+		assertEquals(dcOrder.get("orderer"), Util.getByPath(savedDCOrder, "orderer/uuid"));
+		assertEquals(dcOrder.get("orderReasonNonCoded"), Util.getByPath(savedDCOrder, "orderReasonNonCoded"));
 	}
 	
 	@Test
@@ -308,13 +301,12 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		es.saveEncounter(encounter);
 		
 		SimpleObject revisedOrder = new SimpleObject();
-		revisedOrder.add("type", "order");
+		revisedOrder.add("type", "testorder");
 		revisedOrder.add("action", "REVISE");
 		revisedOrder.add("previousOrder", orderToRevise.getUuid());
 		revisedOrder.add("patient", patient.getUuid());
 		revisedOrder.add("careSetting", orderToRevise.getCareSetting().getUuid());
 		revisedOrder.add("concept", orderToRevise.getConcept().getUuid());
-		revisedOrder.add("startDate", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(date));
 		revisedOrder.add("encounter", encounter.getUuid());
 		revisedOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		revisedOrder.add("instructions", "To be taken after a meal");
@@ -330,8 +322,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(patient.getUuid(), Util.getByPath(savedOrder, "patient/uuid"));
 		assertEquals(orderToRevise.getCareSetting().getUuid(), Util.getByPath(savedOrder, "careSetting/uuid"));
 		assertEquals(revisedOrder.get("previousOrder"), Util.getByPath(savedOrder, "previousOrder/uuid"));
-		assertThat(Util.getByPath(savedOrder, "startDate").toString(),
-		    sameDatetime(revisedOrder.get("startDate").toString()));
 		assertEquals(revisedOrder.get("concept"), Util.getByPath(savedOrder, "concept/uuid"));
 		assertEquals(revisedOrder.get("encounter"), Util.getByPath(savedOrder, "encounter/uuid"));
 		assertEquals(revisedOrder.get("orderer"), Util.getByPath(savedOrder, "orderer/uuid"));

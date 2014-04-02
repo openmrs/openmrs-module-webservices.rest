@@ -108,8 +108,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("action");
-		d.addRequiredProperty("startDate");
 		d.addRequiredProperty("encounter");
+        d.addProperty("startDate");
 		d.addProperty("patient");
 		d.addProperty("concept");
 		d.addProperty("careSetting");
