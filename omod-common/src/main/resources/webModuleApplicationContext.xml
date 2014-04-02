@@ -26,6 +26,12 @@
   		    http://www.springframework.org/schema/mvc
         	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
+	<bean id="springApplicationContext" class="org.openmrs.module.webservices.rest.web.context.SpringContextAware"/>
+
+	<bean id="corsConfigurationService" class="org.openmrs.module.webservices.rest.web.cors.service.impl.CorsConfigurationServiceImpl" />
+
+	<bean id="corsFilter" class="org.openmrs.module.webservices.rest.web.cors.CORSFilter" />
+
 	<bean id="restService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager">
