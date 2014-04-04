@@ -78,7 +78,6 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			d.addProperty("quantity");
 			d.addProperty("quantityUnits", Representation.REF);
 			d.addProperty("numRefills");
-			d.addProperty("administrationInstructions");
 			d.addProperty("dosingInstructions");
 			d.addProperty("duration");
 			d.addProperty("durationUnits", Representation.REF);
@@ -98,7 +97,6 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			d.addProperty("quantity");
 			d.addProperty("quantityUnits", Representation.DEFAULT);
 			d.addProperty("numRefills");
-			d.addProperty("administrationInstructions");
 			d.addProperty("dosingInstructions");
 			d.addProperty("duration");
 			d.addProperty("durationUnits", Representation.DEFAULT);
