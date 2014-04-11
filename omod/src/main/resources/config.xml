@@ -50,9 +50,14 @@
         <description>A comma-separate list of IP addresses that are allowed to access the web services. An empty string allows everyone to access all ws. 
         IPs can be declared with bit masks e.g. 10.0.0.0/30 matches 10.0.0.0 - 10.0.0.3 and 10.0.0.0/24 matches 10.0.0.0 - 10.0.0.255.</description>
     </globalProperty>
-    
+    <globalProperty>
+        <property>@MODULE_ID@.disableWwwAuthHeader</property>
+        <defaultValue>false</defaultValue>
+        <description>Disables returning a WWW Authentication Header if an unauthenticated user tries to make a request</description>
+    </globalProperty>
 
-	<!-- DWR -->
+
+    <!-- DWR -->
 	
 	<!-- Servlets -->
 	

@@ -102,8 +102,13 @@ public class BaseRestController {
 	}
 	
 	private boolean shouldAddWWWAuthHeader(HttpServletRequest request) {
-		return request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null
-		        || !request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME).equals("true");
+		
+		String disableWwwAuthHeader = Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.DISABLE_WWW_AUTH_HEADER);
+		
+		return (disableWwwAuthHeader == null || !disableWwwAuthHeader.equalsIgnoreCase("true"))
+		        && (request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null || !request.getHeader(
+		            DISABLE_WWW_AUTH_HEADER_NAME).equalsIgnoreCase("true"));
 	}
 	
 	/**
