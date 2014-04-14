@@ -269,6 +269,19 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(results);
 		Assert.assertEquals(3, results.size());
 	}
+
+    @Test
+    public void shouldGetEncountersByEncounterTypeAndPatient() throws Exception {
+        executeDataSet("EncountersForDifferentTypesWithObservations.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType", "ff7397ea-c090-11e3-be87-005056821db0"))));
+
+
+        ArrayList encounters = (ArrayList) result.get("results");
+        Assert.assertEquals(1, encounters.size());
+        String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
+        Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
+    }
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
