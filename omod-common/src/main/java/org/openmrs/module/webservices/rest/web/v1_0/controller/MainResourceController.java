@@ -19,10 +19,15 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Creatable;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.web.resource.api.Deletable;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
+import org.openmrs.module.webservices.rest.web.resource.api.Purgeable;
+import org.openmrs.module.webservices.rest.web.resource.api.Retrievable;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
+import org.openmrs.module.webservices.rest.web.resource.api.Updatable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +65,7 @@ public class MainResourceController extends BaseRestController {
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Retrievable res = (Retrievable) restService.getResourceByName(buildResourceName(resource));
 		return res.retrieve(uuid, context);
 	}
 	
@@ -76,7 +81,7 @@ public class MainResourceController extends BaseRestController {
 	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
 	}
@@ -95,7 +100,7 @@ public class MainResourceController extends BaseRestController {
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
 		Object updated = res.update(uuid, post, context);
 		return RestUtil.updated(response, updated);
 	}
@@ -112,7 +117,7 @@ public class MainResourceController extends BaseRestController {
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
@@ -128,7 +133,7 @@ public class MainResourceController extends BaseRestController {
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Purgeable res = (Purgeable) restService.getResourceByName(buildResourceName(resource));
 		res.purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
