@@ -16,21 +16,29 @@ package org.openmrs.module.webservices.rest.web;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
-	 * @see ConversionUtil#convert(Object,Class<?>)
+	 * @see ConversionUtil#convert(Object,Type)
 	 * @verifies String to Date conversion for multiple formatted date/dateTime strings
 	 */
 	@Test
@@ -48,7 +56,7 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * @see ConversionUtil#convert(Object,Class<?>)
+	 * @see ConversionUtil#convert(Object,Type)
 	 * @verifies String to Date conversion by assert false for date mismatches
 	 */
 	@Test
@@ -62,7 +70,7 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	/**
-	 * @see ConversionUtil#convert(Object,Class<?>)
+	 * @see ConversionUtil#convert(Object,Type)
 	 * @verifies String format and its representation are equal
 	 */
 	@Test
@@ -92,4 +100,18 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		Assert.assertNotNull(locale);
 		Assert.assertTrue(locale.getClass().isAssignableFrom(Locale.class));
 	}
+	
+	/**
+	 * @see {@link ConversionUtil#convert(Object,Type)}
+	 * @verifies convert to an array
+	 */
+	@Test
+	public void convert_shouldConvertToAnArray() throws Exception {
+		List<String> input = Arrays.asList("en", "fr");
+		Locale[] converted = (Locale[]) ConversionUtil.convert(input, Locale[].class);
+		assertThat(converted.length, is(2));
+		assertThat(converted[0], is(Locale.ENGLISH));
+		assertThat(converted[1], is(Locale.FRENCH));
+	}
+	
 }

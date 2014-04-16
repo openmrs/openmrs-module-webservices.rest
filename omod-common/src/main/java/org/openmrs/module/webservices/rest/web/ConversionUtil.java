@@ -14,6 +14,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -78,6 +79,7 @@ public class ConversionUtil {
 	 * @throws ConversionException
 	 * @should convert strings to locales
 	 * @should convert strings to enum values
+	 * @should convert to an array
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
@@ -88,20 +90,34 @@ public class ConversionUtil {
 		        .getRawType());
 		
 		// if we're trying to convert _to_ a collection, handle it as a special case
-		if (Collection.class.isAssignableFrom(toClass)) {
+		if (Collection.class.isAssignableFrom(toClass) || toClass.isArray()) {
 			if (!(object instanceof Collection))
-				throw new ConversionException("Can only convert a Collection to a Collection. Not " + object.getClass()
-				        + " to " + toType, null);
+				throw new ConversionException("Can only convert a Collection to a Collection/Array. Not "
+				        + object.getClass() + " to " + toType, null);
+			
+			if (toClass.isArray()) {
+				Class<?> targetElementType = toClass.getComponentType();
+				Collection input = (Collection) object;
+				Object ret = Array.newInstance(targetElementType, input.size());
+				
+				int i = 0;
+				for (Object element : (Collection) object) {
+					Array.set(ret, i, convert(element, targetElementType));
+					++i;
+				}
+				return ret;
+			}
 			
 			Collection ret = null;
-			if (SortedSet.class.isAssignableFrom(toClass))
+			if (SortedSet.class.isAssignableFrom(toClass)) {
 				ret = new TreeSet();
-			else if (Set.class.isAssignableFrom(toClass))
+			} else if (Set.class.isAssignableFrom(toClass)) {
 				ret = new HashSet();
-			else if (List.class.isAssignableFrom(toClass))
+			} else if (List.class.isAssignableFrom(toClass)) {
 				ret = new ArrayList();
-			else
+			} else {
 				throw new ConversionException("Don't know how to handle collection class: " + toClass, null);
+			}
 			
 			if (toType instanceof ParameterizedType) {
 				// if we have generic type information for the target collection, we can use it to do conversion
@@ -222,20 +238,30 @@ public class ConversionUtil {
 		if (o == null)
 			return null;
 		o = new HibernateLazyLoader().load(o);
-		Converter<S> converter = (Converter<S>) getConverter(o.getClass());
-		if (converter == null) {
-			// try a few known datatypes
-			if (o instanceof Date) {
-				return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) o);
+		
+		if (o instanceof Collection) {
+			List ret = new ArrayList();
+			for (Object item : ((Collection) o)) {
+				ret.add(convertToRepresentation(item, rep));
 			}
-			// otherwise we have no choice but to return the plain object
-			return o;
-		}
-		try {
-			return converter.asRepresentation(o, rep);
-		}
-		catch (Exception ex) {
-			throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
+			return ret;
+			
+		} else {
+			Converter<S> converter = (Converter<S>) getConverter(o.getClass());
+			if (converter == null) {
+				// try a few known datatypes
+				if (o instanceof Date) {
+					return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) o);
+				}
+				// otherwise we have no choice but to return the plain object
+				return o;
+			}
+			try {
+				return converter.asRepresentation(o, rep);
+			}
+			catch (Exception ex) {
+				throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
+			}
 		}
 	}
 	
