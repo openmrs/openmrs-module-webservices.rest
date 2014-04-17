@@ -55,8 +55,6 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	private final static String PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
 	
-	private final static String OUTPATIENT_CARE_SETTING_UUID = "2ed1e57d-9f18-41d3-b067-2eeaf4b30fb1";
-	
 	private OrderService orderService;
 	
 	private PatientService patientService;
@@ -117,7 +115,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldPlaceANewOrder() throws Exception {
-		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		int originalActiveOrderCount = orderService.getActiveOrders(patient, null, outPatient, null).size();
 		
@@ -126,7 +124,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("patient", PATIENT_UUID);
 		order.add("concept", "a09ab2c5-878e-4905-b25d-5784167d0216");
 		order.add("action", "NEW");
-		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		
@@ -149,7 +147,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPlaceANewDrugOrder() throws Exception {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
-		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
 		if (drugOrderType.getConceptClasses().isEmpty()) {
@@ -163,7 +161,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("patient", PATIENT_UUID);
 		order.add("concept", "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		order.add("action", "NEW");
-		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("drug", "05ec820a-d297-44e3-be6e-698531d9dd3f");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
@@ -207,7 +205,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPlaceANewTestOrder() throws Exception {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
-		CareSetting outPatient = orderService.getCareSettingByUuid(OUTPATIENT_CARE_SETTING_UUID);
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		int originalActiveTestOrderCount = orderService.getActiveOrders(patient,
 		    orderService.getOrderTypeByName("Test order"), outPatient, null).size();
@@ -218,7 +216,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
 		order.add("concept", cd4CountUuid);
 		order.add("action", "NEW");
-		order.add("careSetting", OUTPATIENT_CARE_SETTING_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		order.add("clinicalHistory", "Patient had a negative reaction to the test in the past");
@@ -351,7 +349,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		String expectedOrderUuid = orderService.getOrder(222).getUuid();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
 		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
-		    new Parameter("careSetting", "2ed1e57d-9f18-41d3-b067-2eeaf4b30fb2"))));
+		    new Parameter("careSetting", "c365e560-c3ec-11e3-9c1a-0800200c9a66"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}

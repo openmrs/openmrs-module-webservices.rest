@@ -126,7 +126,7 @@ public class CareSettingController1_10Test extends MainResourceControllerTest {
 		List<String> uuids = Arrays.asList(new String[] {
 		        PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(Util.getResultsList(result).get(1), "uuid").toString() });
-		assertThat(uuids, hasItems(getUuid(), "2ed1e57d-9f18-41d3-b067-2eeaf4b30fb2"));
+		assertThat(uuids, hasItems(getUuid(), "c365e560-c3ec-11e3-9c1a-0800200c9a66"));
 		
 	}
 }
