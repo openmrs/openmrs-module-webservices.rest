@@ -53,12 +53,12 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	 *      javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Test
-	public void apiAuthenticationExceptionHandler_shouldReturnUnauthorizedIfNotLoggedIn() throws Exception {
+	public void apiAuthenticationExceptionHandler_shouldReturnNotFoundIfNotLoggedIn() throws Exception {
 		Context.logout();
 		
 		controller.apiAuthenticationExceptionHandler(new APIAuthenticationException(), request, response);
 		
-		assertThat(response.getStatus(), is(HttpServletResponse.SC_UNAUTHORIZED));
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_NOT_FOUND));
 	}
 	
 	/**

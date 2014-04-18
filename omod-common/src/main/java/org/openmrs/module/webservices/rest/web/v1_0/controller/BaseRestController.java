@@ -41,8 +41,6 @@ public class BaseRestController {
 	
 	private final int DEFAULT_ERROR_CODE = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	
-	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
-	
 	private final String DEFAULT_ERROR_DETAIL = "";
 	
 	/**
@@ -60,12 +58,9 @@ public class BaseRestController {
 			errorCode = HttpServletResponse.SC_FORBIDDEN;
 			errorDetail = "User is logged in but doesn't have the relevant privilege";
 		} else {
-			// user is not logged in -> 401 UNAUTHORIZED
-			errorCode = HttpServletResponse.SC_UNAUTHORIZED;
+			// user is not logged in -> 404 NOT FOUND
+			errorCode = HttpServletResponse.SC_NOT_FOUND;
 			errorDetail = "User is not logged in";
-			if (shouldAddWWWAuthHeader(request)) {
-				response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
-			}
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
@@ -99,16 +94,6 @@ public class BaseRestController {
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
-	}
-	
-	private boolean shouldAddWWWAuthHeader(HttpServletRequest request) {
-		
-		String disableWwwAuthHeader = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.DISABLE_WWW_AUTH_HEADER);
-		
-		return (disableWwwAuthHeader == null || !disableWwwAuthHeader.equalsIgnoreCase("true"))
-		        && (request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null || !request.getHeader(
-		            DISABLE_WWW_AUTH_HEADER_NAME).equalsIgnoreCase("true"));
 	}
 	
 	/**
