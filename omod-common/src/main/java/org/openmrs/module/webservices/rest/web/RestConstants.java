@@ -66,13 +66,7 @@ public class RestConstants {
 	 * wildcard match.
 	 */
 	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".allowedips";
-	
-	/**
-	 * Disables returning a WWW Authentication Header if an unauthenticated user tries to make a
-	 * request<
-	 */
-	public static String DISABLE_WWW_AUTH_HEADER = MODULE_ID + ".disableWwwAuthHeader";
-	
+
 	/**
 	 * The version number for the first rest web services representations
 	 */
