@@ -66,7 +66,7 @@ public class RestConstants {
 	 * wildcard match.
 	 */
 	public static String ALLOWED_IPS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".allowedips";
-
+	
 	/**
 	 * The version number for the first rest web services representations
 	 */
