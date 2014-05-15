@@ -223,8 +223,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("clinicalHistory", "Patient had a negative reaction to the test in the past");
 		String onceUuid = "38090760-7c38-11e4-baa7-0800200c9a67";
 		order.add("frequency", onceUuid);
-		String bloodUuid = "857eba27-2b38-43e8-91a9-4dfe3956a32e";
-		order.add("specimenSource", bloodUuid);
+		order.add("specimenSource", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
 		order.add("numberOfRepeats", "3");
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
