@@ -159,11 +159,10 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		SimpleObject order = new SimpleObject();
 		order.add("type", "drugorder");
 		order.add("patient", PATIENT_UUID);
-		order.add("concept", "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		order.add("action", "NEW");
 		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
-		order.add("drug", "05ec820a-d297-44e3-be6e-698531d9dd3f");
+		order.add("drug", "3cfcf118-931c-46f7-8ff6-7b876f0d4202");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		order.add("dosingType", "SIMPLE");
 		order.add("dose", "300.0");
@@ -186,7 +185,9 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
 		assertEquals(order.get("action"), Util.getByPath(newOrder, "action"));
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
-		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
+		final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString())
+		        .getConcept().getUuid();
+		assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
 		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
