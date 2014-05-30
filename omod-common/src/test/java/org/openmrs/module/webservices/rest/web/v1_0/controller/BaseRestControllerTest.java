@@ -83,6 +83,6 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 		
 		SimpleObject errors = (SimpleObject) responseSimpleObject.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("message"));
+		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 	}
 }

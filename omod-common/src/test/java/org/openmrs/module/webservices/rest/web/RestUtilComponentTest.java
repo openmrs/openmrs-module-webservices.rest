@@ -22,17 +22,14 @@ public class RestUtilComponentTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject result = RestUtil.wrapValidationErrorResponse(new ValidationException("some message", ex));
 		SimpleObject errors = (SimpleObject) result.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("message"));
 		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 		
 		List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
 		Assert.assertEquals(1, globalErrors.size());
-		Assert.assertEquals("global.error.message", globalErrors.get(0).get("message"));
 		Assert.assertEquals("global.error.message", globalErrors.get(0).get("code"));
 		
 		SimpleObject fieldErrors = (SimpleObject) errors.get("fieldErrors");
 		List<SimpleObject> birthdateFieldErrors = (List<SimpleObject>) fieldErrors.get("birthdate");
-		Assert.assertEquals("field.error.message", birthdateFieldErrors.get(0).get("message"));
 		Assert.assertEquals("field.error.message", birthdateFieldErrors.get(0).get("code"));
 		
 	}
@@ -44,7 +41,6 @@ public class RestUtilComponentTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject result = RestUtil.wrapValidationErrorResponse(new ValidationException("some message", ex));
 		SimpleObject errors = (SimpleObject) result.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("message"));
 		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 		
 		Assert.assertEquals(0, ((List<SimpleObject>) errors.get("globalErrors")).size());
