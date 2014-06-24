@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -32,6 +28,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Allows for finding users by mapping
  */
@@ -43,7 +43,7 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	UserService userService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user", Arrays.asList(
-	    "1.8.*", "1.9.*"), new SearchQuery.Builder("Allows you to find users by username")
+	    "1.8.*", "1.9.*", "1.10.*"), new SearchQuery.Builder("Allows you to find users by username")
 	        .withRequiredParameters("username").build());
 	
 	/**
