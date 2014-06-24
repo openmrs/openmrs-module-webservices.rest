@@ -13,15 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.openmrs.api.APIException;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSource;
+import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,6 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Allows for finding concepts by mapping or by name
  */
@@ -46,7 +46,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*"),
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*", "1.10.*"),
 	        Arrays.asList(new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source").withOptionalParameters("code").build(),new SearchQuery.Builder("Allows you to find concepts by name").withRequiredParameters("name").build()));
 	
 	/**
