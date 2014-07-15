@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.DrugOrder;
@@ -33,13 +35,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugOrderSubclassHandler1_8;
 
-import java.util.List;
-
 /**
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.10.*"})
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.10.*" })
 public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	
 	/**
@@ -82,6 +82,8 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			d.addProperty("duration");
 			d.addProperty("durationUnits", Representation.REF);
 			d.addProperty("route", Representation.REF);
+			d.addProperty("brandName");
+			d.addProperty("dispenseAsWritten");
 			return d;
 		} else if (rep instanceof FullRepresentation) {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
@@ -101,6 +103,8 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			d.addProperty("duration");
 			d.addProperty("durationUnits", Representation.DEFAULT);
 			d.addProperty("route", Representation.REF);
+			d.addProperty("brandName");
+			d.addProperty("dispenseAsWritten");
 			return d;
 		}
 		return null;
@@ -129,6 +133,8 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		d.addProperty("duration");
 		d.addProperty("durationUnits");
 		d.addProperty("route");
+		d.addProperty("brandName");
+		d.addProperty("dispenseAsWritten");
 		return d;
 	}
 	
@@ -155,8 +161,8 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-        List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient, Context.getOrderService().getOrderTypeByName("Drug order"),
-                careSetting, asOfDate);
+		List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient,
+		    Context.getOrderService().getOrderTypeByName("Drug order"), careSetting, asOfDate);
 		return new NeedsPaging<Order>(drugOrders, context);
 	}
 	

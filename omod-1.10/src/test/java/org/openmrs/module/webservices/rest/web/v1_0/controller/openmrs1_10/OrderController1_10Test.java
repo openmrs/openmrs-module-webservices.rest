@@ -115,6 +115,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldPlaceANewOrder() throws Exception {
+		executeDataSet("OrderController1_10Test-orderTypeAndConceptClassMap.xml");
 		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		int originalActiveOrderCount = orderService.getActiveOrders(patient, null, outPatient, null).size();
@@ -122,7 +123,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		SimpleObject order = new SimpleObject();
 		order.add("type", "order");
 		order.add("patient", PATIENT_UUID);
-		order.add("concept", "a09ab2c5-878e-4905-b25d-5784167d0216");
+		order.add("concept", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa");
 		order.add("action", "NEW");
 		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
@@ -174,6 +175,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
 		order.add("numRefills", "2");
 		order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
+		order.add("brandName", "Some brand name");
+		order.add("dispenseAsWritten", true);
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
@@ -201,6 +204,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("duration"), Util.getByPath(newOrder, "duration").toString());
 		assertEquals(order.get("durationUnits"), Util.getByPath(newOrder, "durationUnits/uuid"));
 		assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
+		assertEquals(order.get("brandName"), Util.getByPath(newOrder, "brandName"));
+		assertEquals(order.get("dispenseAsWritten"), Util.getByPath(newOrder, "dispenseAsWritten"));
 	}
 	
 	@Test
