@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -83,6 +84,15 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
      */
     @Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+        if (rep instanceof DefaultRepresentation) {
+            DelegatingResourceDescription description = new DelegatingResourceDescription();
+            description.addProperty("uuid");
+            description.addProperty("display", findMethod("getDisplayString")); // TODO override this method
+            description.addProperty("aIsToB");
+            description.addProperty("bIsToA");
+            description.addSelfLink();
+            return description;
+        }
         return null;
     }
 
