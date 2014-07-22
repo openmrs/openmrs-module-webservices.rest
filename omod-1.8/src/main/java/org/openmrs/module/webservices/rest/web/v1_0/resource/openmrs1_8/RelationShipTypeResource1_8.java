@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -84,13 +85,21 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
      */
     @Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+        DelegatingResourceDescription description = new DelegatingResourceDescription();
+        description.addProperty("uuid");
+        description.addProperty("display", findMethod("getDisplayString"));
+        description.addProperty("description");
+        description.addProperty("aIsToB");
+        description.addProperty("bIsToA");
+        description.addProperty("retired");
+        description.addSelfLink();
         if (rep instanceof DefaultRepresentation) {
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("display", findMethod("getDisplayString")); // TODO override this method
-            description.addProperty("aIsToB");
-            description.addProperty("bIsToA");
-            description.addSelfLink();
+            description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+            return description;
+        }
+        else if (rep instanceof FullRepresentation) {
+            description.addProperty("weight");
+            description.addProperty("auditInfo", findMethod("getAuditInfo"));
             return description;
         }
         return null;
@@ -138,6 +147,11 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
                 unRetiredRelationshipTypes.add(relationshipType);
         }
         return new NeedsPaging<RelationshipType>(unRetiredRelationshipTypes, context);
+    }
+
+    @Override
+    public String getDisplayString(RelationshipType delegate) {
+        return delegate.toString();
     }
 
     /**
