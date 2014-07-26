@@ -102,8 +102,8 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
      * @return relationship type and start date
      */
     public String getDisplayString(Relationship relationship) {
-        String ret = relationship.getRelationshipType().toString() == null ? "?" : relationship.getRelationshipType().toString();
-        return ret;
+        String relType = relationship.getRelationshipType() == null ? "NULL" : relationship.getRelationshipType().getaIsToB();
+        return relationship.getPersonA().getGivenName() + " is the " + relType + " of " + relationship.getPersonB().getGivenName();
     }
 
     /**

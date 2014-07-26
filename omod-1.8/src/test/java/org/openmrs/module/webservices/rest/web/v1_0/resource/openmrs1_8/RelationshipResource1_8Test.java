@@ -46,7 +46,7 @@ public class RelationshipResource1_8Test extends BaseDelegatingResourceTest<Rela
 
     @Override
     public String getDisplayProperty() {
-        return "Doctor/Patient";
+        return "Hippocrates is the Doctor of Horatio";
     }
 
     @Override
