@@ -122,7 +122,7 @@ public class RelationshipController1_8Test extends MainResourceControllerTest {
 
     @Test
     public void shouldSearchRelationshipsByPersonUuid() throws Exception {
-        String firstRelationshipUuidBelongsToPerson="4ce634c8-d744-40b3-9d5f-577a5f025b01";
+        String firstRelationshipUuidBelongsToPerson = "4ce634c8-d744-40b3-9d5f-577a5f025b01";
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("person", "86526ed6-3c11-11de-a0ba-001e378eb67e"))));
         List<Object> hits = Util.getResultsList(result);
         Assert.assertEquals(4, hits.size());
@@ -131,7 +131,7 @@ public class RelationshipController1_8Test extends MainResourceControllerTest {
 
     @Test
     public void shouldSearchRelationshipsByPersonUuidAndRelatedPersonUuid() throws Exception {
-        String firstRelationshipUuid="83d17902-2c7e-41e6-9d11-2d405c897da3";
+        String firstRelationshipUuid = "83d17902-2c7e-41e6-9d11-2d405c897da3";
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("person", "86526ed6-3c11-11de-a0ba-001e378eb67e"),
                 new Parameter("relatedPerson", "5946f880-b197-400b-9caa-a3c661d23041"))));
         List<Object> hits = Util.getResultsList(result);

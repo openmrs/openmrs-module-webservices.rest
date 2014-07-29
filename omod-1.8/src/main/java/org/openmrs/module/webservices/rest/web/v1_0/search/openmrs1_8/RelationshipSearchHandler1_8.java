@@ -62,10 +62,10 @@ public class RelationshipSearchHandler1_8 implements SearchHandler {
     public PageableResult search(RequestContext context) throws ResponseException {
 
         String person=context.getParameter("person");
-        String relatedPerson=context.getParameter("relatedPerson");
-        String relation=context.getParameter("relation");
-        String personA=context.getParameter("personA");
-        String personB=context.getParameter("personB");
+        String relatedPerson = context.getParameter("relatedPerson");
+        String relation = context.getParameter("relation");
+        String personA = context.getParameter("personA");
+        String personB = context.getParameter("personB");
         RelationshipType relationshipType=null;
         List<Relationship> relationshipList = null;
         Person personOb=null;
@@ -93,7 +93,7 @@ public class RelationshipSearchHandler1_8 implements SearchHandler {
 
         if(relation!=null){
             if(personService.getRelationshipTypeByUuid(relation)!=null){
-                relationshipType=personService.getRelationshipTypeByUuid(relation);
+                relationshipType = personService.getRelationshipTypeByUuid(relation);
             } else {
                 List<RelationshipType> relationshipTypes=personService.getAllRelationshipTypes();
                 for(RelationshipType temp:relationshipTypes) {

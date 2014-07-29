@@ -40,7 +40,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
     @Override
     public RelationshipType getByUniqueId(String uuid) {
         RelationshipType relationshipType=Context.getPersonService().getRelationshipTypeByUuid(uuid);
-        if(relationshipType==null) {
+        if(relationshipType == null) {
             List<RelationshipType> relationshipTypes=Context.getPersonService().getAllRelationshipTypes();
             for(RelationshipType possibleRelationshipType:relationshipTypes){
                 if(possibleRelationshipType.getaIsToB().equalsIgnoreCase(uuid) || possibleRelationshipType.getbIsToA().equalsIgnoreCase(uuid)){
@@ -140,7 +140,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
     @Override
     protected NeedsPaging<RelationshipType> doSearch(RequestContext context) {
         String queryString=context.getParameter("q");
-        List<RelationshipType> allRelationshipTypes=Context.getPersonService().getAllRelationshipTypes();
+        List<RelationshipType> allRelationshipTypes = Context.getPersonService().getAllRelationshipTypes();
         List<RelationshipType> unRetiredRelationshipTypes = new ArrayList<RelationshipType>();
         for (RelationshipType relationshipType : allRelationshipTypes) {
             if (!relationshipType.isRetired() && (relationshipType.getaIsToB().contains(queryString)||relationshipType.getbIsToA().contains(queryString)))
