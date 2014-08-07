@@ -139,7 +139,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 	}
@@ -190,7 +190,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        .getConcept().getUuid();
 		assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
@@ -240,7 +240,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-		assertNotNull(PropertyUtils.getProperty(newOrder, "startDate"));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals(order.get("specimenSource"), Util.getByPath(newOrder, "specimenSource/uuid"));
@@ -278,7 +278,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(orderToDiscontinue.getPatient().getUuid(), Util.getByPath(savedDCOrder, "patient/uuid"));
 		assertEquals(orderToDiscontinue.getCareSetting().getUuid(), Util.getByPath(savedDCOrder, "careSetting/uuid"));
 		assertEquals(dcOrder.get("previousOrder"), Util.getByPath(savedDCOrder, "previousOrder/uuid"));
-		assertNotNull(PropertyUtils.getProperty(savedDCOrder, "startDate"));
+		assertNotNull(PropertyUtils.getProperty(savedDCOrder, "dateActivated"));
 		assertEquals(orderToDiscontinue.getConcept().getUuid(), Util.getByPath(savedDCOrder, "concept/uuid"));
 		assertEquals(dcOrder.get("encounter"), Util.getByPath(savedDCOrder, "encounter/uuid"));
 		assertEquals(dcOrder.get("orderer"), Util.getByPath(savedDCOrder, "orderer/uuid"));
@@ -361,13 +361,13 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientService
 		        .getPatient(2).getUuid()), new Parameter("asOfDate", "2007-12-10"))));
 		
-		assertEquals(9, Util.getResultsSize(results));
+		assertEquals(2, Util.getResultsSize(results));
 		
 		results = deserialize(handle(newGetRequest(getURI(),
 		    new Parameter("patient", patientService.getPatient(2).getUuid()), new Parameter("asOfDate",
 		            "2007-12-10 00:01:00"))));
 		
-		assertEquals(8, Util.getResultsSize(results));
+		assertEquals(1, Util.getResultsSize(results));
 	}
 	
 	@Test

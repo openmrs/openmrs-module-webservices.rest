@@ -59,7 +59,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("action");
 			description.addProperty("careSetting", Representation.REF);
 			description.addProperty("previousOrder", Representation.REF);
-			description.addProperty("startDate");
+			description.addProperty("dateActivated");
 			description.addProperty("dateStopped");
 			description.addProperty("autoExpireDate");
 			description.addProperty("encounter", Representation.REF);
@@ -82,7 +82,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("action");
 			description.addProperty("careSetting", Representation.DEFAULT);
 			description.addProperty("previousOrder", Representation.REF);
-			description.addProperty("startDate");
+			description.addProperty("dateActivated");
 			description.addProperty("dateStopped");
 			description.addProperty("autoExpireDate");
 			description.addProperty("encounter", Representation.REF);
@@ -109,7 +109,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("encounter");
         d.addProperty("action");
-        d.addProperty("startDate");
+        d.addProperty("dateActivated");
 		d.addProperty("patient");
 		d.addProperty("concept");
 		d.addProperty("careSetting");
