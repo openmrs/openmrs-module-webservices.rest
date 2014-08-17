@@ -13,7 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.beans.PropertyDescriptor;
+import org.apache.commons.beanutils.*;
+import org.apache.commons.logging.*;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.api.*;
+import org.openmrs.module.webservices.rest.web.representation.*;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.*;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -31,19 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
 
 public class ConversionUtil {
 	
@@ -80,6 +78,7 @@ public class ConversionUtil {
 	 * @should convert strings to locales
 	 * @should convert strings to enum values
 	 * @should convert to an array
+	 * @should convert to a class
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
@@ -167,6 +166,13 @@ public class ConversionUtil {
 				return LocaleUtility.fromSpecification(object.toString());
 			} else if (toClass.isEnum()) {
 				return Enum.valueOf((Class<? extends Enum>) toClass, object.toString());
+			} else if (toClass.isAssignableFrom(Class.class)) {
+				try {
+					return Context.loadClass((String) object);
+				}
+				catch (ClassNotFoundException e) {
+					throw new ConversionException("Could not convert from " + object.getClass() + " to " + toType, e);
+				}
 			}
 			// look for a static valueOf(String) method (e.g. Double, Integer, Boolean)
 			try {

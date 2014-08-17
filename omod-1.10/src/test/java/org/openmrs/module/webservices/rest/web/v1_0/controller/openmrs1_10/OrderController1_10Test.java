@@ -13,18 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +33,13 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Integration tests for the Order resource
@@ -163,7 +158,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("drug", "3cfcf118-931c-46f7-8ff6-7b876f0d4202");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
-		order.add("dosingType", "SIMPLE");
+		order.add("dosingType", "org.openmrs.SimpleDosingInstructions");
 		order.add("dose", "300.0");
 		order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
 		order.add("quantity", "20.0");
