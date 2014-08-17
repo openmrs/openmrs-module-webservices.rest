@@ -14,9 +14,14 @@
 
 package org.openmrs.module.webservices.rest.web;
 
+import org.junit.Assert;
+import org.junit.Test;
+import org.openmrs.api.ConceptNameType;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,14 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.api.ConceptNameType;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -114,4 +111,14 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		assertThat(converted[1], is(Locale.FRENCH));
 	}
 	
+	/**
+	 * @see {@link ConversionUtil#convert(Object,Type)}
+	 * @verifies convert to a class
+	 */
+	@Test
+	public void convert_shouldConvertToAClass() throws Exception {
+		String input = "java.lang.String";
+		Class converted = (Class) ConversionUtil.convert(input, Class.class);
+		Assert.assertTrue(converted.isAssignableFrom(String.class));
+	}
 }
