@@ -14,12 +14,6 @@
 
 package org.openmrs.module.webservices.rest.web;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.openmrs.api.ConceptNameType;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -28,6 +22,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.openmrs.api.ConceptNameType;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
