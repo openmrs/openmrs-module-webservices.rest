@@ -14,12 +14,6 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
-import java.lang.reflect.ParameterizedType;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -28,6 +22,12 @@ import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+
+import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Is designed to be extended by classes testing BaseDelegatingResource.
@@ -296,5 +296,15 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		representation = getFullRepresentation();
 		
 		validateFullRepresentation();
+	}
+	
+	protected String findSelfLink(SimpleObject object) {
+		List<Hyperlink> links = (List<Hyperlink>) object.get("links");
+		for (Hyperlink link : links) {
+			if (link.getRel().equals("self")) {
+				return link.getUri();
+			}
+		}
+		return null;
 	}
 }

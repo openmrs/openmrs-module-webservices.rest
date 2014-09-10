@@ -13,6 +13,19 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -30,19 +43,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
 
 public class ConversionUtil {
 	
@@ -242,6 +242,17 @@ public class ConversionUtil {
 	
 	@SuppressWarnings("unchecked")
 	public static <S> Object convertToRepresentation(S o, Representation rep) throws ConversionException {
+		return convertToRepresentation(o, rep, (Converter) null);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <S> Object convertToRepresentation(S o, Representation rep, Class<?> convertAs) throws ConversionException {
+		Converter<?> converter = convertAs != null ? getConverter(convertAs) : null;
+		return convertToRepresentation(o, rep, converter);
+	}
+	
+	public static <S> Object convertToRepresentation(S o, Representation rep, Converter specificConverter)
+	        throws ConversionException {
 		if (o == null)
 			return null;
 		o = new HibernateLazyLoader().load(o);
@@ -249,12 +260,12 @@ public class ConversionUtil {
 		if (o instanceof Collection) {
 			List ret = new ArrayList();
 			for (Object item : ((Collection) o)) {
-				ret.add(convertToRepresentation(item, rep));
+				ret.add(convertToRepresentation(item, rep, specificConverter));
 			}
 			return ret;
 			
 		} else {
-			Converter<S> converter = (Converter<S>) getConverter(o.getClass());
+			Converter<S> converter = specificConverter != null ? specificConverter : (Converter) getConverter(o.getClass());
 			if (converter == null) {
 				// try a few known datatypes
 				if (o instanceof Date) {

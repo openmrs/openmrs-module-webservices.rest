@@ -19,6 +19,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.Creatable;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Deletable;
@@ -150,13 +151,14 @@ public class MainResourceController extends BaseRestController {
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		Searchable res = (Searchable) restService.getResourceByName(buildResourceName(resource));
+		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
 		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
 		
 		@SuppressWarnings("unchecked")
 		SearchHandler searchHandler = restService.getSearchHandler(buildResourceName(resource), request.getParameterMap());
 		if (searchHandler != null) {
-			return searchHandler.search(context).toSimpleObject();
+			return searchHandler.search(context).toSimpleObject(conv);
 		}
 		
 		Enumeration parameters = request.getParameterNames();

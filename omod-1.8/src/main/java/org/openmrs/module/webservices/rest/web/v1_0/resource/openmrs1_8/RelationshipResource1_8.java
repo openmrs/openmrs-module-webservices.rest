@@ -11,6 +11,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -75,9 +76,9 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("uuid");
             description.addProperty("display", findMethod("getDisplayString"));
-            description.addProperty("personA", Representation.REF);
+            description.addProperty("personA", Representation.REF, Person.class);
             description.addProperty("relationshipType", Representation.REF);
-            description.addProperty("personB", Representation.REF);
+            description.addProperty("personB", Representation.REF, Person.class);
             description.addProperty("voided");
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -86,9 +87,9 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("uuid");
             description.addProperty("display", findMethod("getDisplayString"));
-            description.addProperty("personA", Representation.DEFAULT);
+            description.addProperty("personA", Representation.DEFAULT, Person.class);
             description.addProperty("relationshipType", Representation.DEFAULT);
-            description.addProperty("personB", Representation.DEFAULT);
+            description.addProperty("personB", Representation.DEFAULT, Person.class);
             description.addProperty("voided");
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();

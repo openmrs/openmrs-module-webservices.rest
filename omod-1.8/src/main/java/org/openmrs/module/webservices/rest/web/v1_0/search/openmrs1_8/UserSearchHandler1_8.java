@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Allows for finding users by mapping
+ * Allows for finding users by username
  */
 @Component
 public class UserSearchHandler1_8 implements SearchHandler {
@@ -66,9 +67,9 @@ public class UserSearchHandler1_8 implements SearchHandler {
 			return new EmptySearchResult();
 		}
 		
-		List<User> users = new ArrayList<User>();
-		users.add(user);
-		return new NeedsPaging<User>(users, context);
+		List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
+		users.add(new UserAndPassword1_8(user));
+		return new NeedsPaging<UserAndPassword1_8>(users, context);
 	}
 	
 }

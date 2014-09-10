@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -36,6 +32,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.module.webservices.validation.ValidateUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -174,7 +173,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
 		PageableResult result = doSearch(context);
-		return result.toSimpleObject();
+		return result.toSimpleObject(this);
 	}
 	
 	/**
@@ -201,10 +200,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
 			PageableResult result = handler.getAllByType(context);
-			return result.toSimpleObject();
+			return result.toSimpleObject(this);
 		} else {
 			PageableResult result = doGetAll(context);
-			return result.toSimpleObject();
+			return result.toSimpleObject(this);
 		}
 	}
 	
