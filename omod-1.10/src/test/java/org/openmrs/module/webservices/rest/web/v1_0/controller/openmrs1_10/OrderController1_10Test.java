@@ -147,6 +147,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPlaceANewDrugOrder() throws Exception {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		executeDataSet("OrderController1_10Test-conceptMappings.xml");
 		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
@@ -168,7 +169,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
 		order.add("quantity", "20.0");
 		order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
-		order.add("duration", "20.0");
+		order.add("duration", "20");
 		order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
 		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
 		order.add("numRefills", "2");
