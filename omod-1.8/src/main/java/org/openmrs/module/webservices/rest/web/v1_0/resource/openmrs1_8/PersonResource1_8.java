@@ -133,6 +133,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
         description.addRequiredProperty("names");
         description.addRequiredProperty("causeOfDeath");
         description.addRequiredProperty("dead");
+        description.addProperty("deathDate");
         return description;
     }
 	
