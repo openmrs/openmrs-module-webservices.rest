@@ -878,4 +878,22 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	/**
+	 * @param delegate
+	 * @return the URI for the given delegate object
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getUri(Object delegate) {
+		if (delegate == null)
+			return "";
+		
+		org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
+		    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+		if (res != null) {
+			return RestConstants.URI_PREFIX + res.name() + "/" + getUniqueId((T) delegate);
+		}
+		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
+	}
 }
