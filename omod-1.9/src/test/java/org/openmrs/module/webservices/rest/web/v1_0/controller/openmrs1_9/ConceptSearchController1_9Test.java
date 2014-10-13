@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Tests functionality of searching for concepts and return concept search results
  * 
- * @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptSearchResource1_8
+ * @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptSearchResource1_9
  */
 public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	

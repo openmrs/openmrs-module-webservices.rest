@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptSearchResult;
@@ -19,7 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class ConceptSearchResource1_8Test extends BaseDelegatingResourceTest<ConceptSearchResource1_8, ConceptSearchResult> {
+public class ConceptSearchResource1_9Test extends BaseDelegatingResourceTest<ConceptSearchResource1_9, ConceptSearchResult> {
 	
 	@Override
 	public ConceptSearchResult newObject() {

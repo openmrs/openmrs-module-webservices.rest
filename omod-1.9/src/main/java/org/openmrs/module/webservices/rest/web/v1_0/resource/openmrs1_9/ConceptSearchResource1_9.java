@@ -10,7 +10,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ import java.util.Locale;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -35,7 +35,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.LocaleUtility;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
@@ -45,8 +44,8 @@ import org.openmrs.util.LocaleUtility;
  * their weights
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptsearch", supportedClass = ConceptSearchResult.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*" })
-public class ConceptSearchResource1_8 extends BaseDelegatingResource<ConceptSearchResult> implements Searchable {
+        "1.9.*", "1.10.*" })
+public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSearchResult> implements Searchable {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -54,13 +53,7 @@ public class ConceptSearchResource1_8 extends BaseDelegatingResource<ConceptSear
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = null;
-		if (rep instanceof RefRepresentation) {
-			description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("concept", Representation.REF);
-			description.addProperty("conceptName", Representation.REF);
-		}
-		if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation) {
 			description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("concept", Representation.REF);
@@ -91,19 +84,19 @@ public class ConceptSearchResource1_8 extends BaseDelegatingResource<ConceptSear
 		List<ConceptClass> conceptClasses = null;
 		String[] classUuids = context.getRequest().getParameterValues("conceptClasses");
 		if (classUuids != null) {
-			ConceptService cs = Context.getConceptService();
 			for (String uuid : classUuids) {
 				if (conceptClasses == null) {
 					conceptClasses = new ArrayList<ConceptClass>();
 				}
-				ConceptClass cc = cs.getConceptClassByUuid(uuid);
+				ConceptClass cc = (ConceptClass) ConversionUtil.convert(uuid, ConceptClass.class);
 				if (cc != null) {
 					conceptClasses.add(cc);
 				}
 			}
 		}
 		
-		List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
+		List<Locale> locales = new ArrayList<Locale>();
+		locales.add(Context.getLocale());
 		
 		return new NeedsPaging<ConceptSearchResult>(Context.getConceptService().getConcepts(query, locales,
 		    context.getIncludeAll(), conceptClasses, null, null, null, null, context.getStartIndex(), context.getLimit()),
