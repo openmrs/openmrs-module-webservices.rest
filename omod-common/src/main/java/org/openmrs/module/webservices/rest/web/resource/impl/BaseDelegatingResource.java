@@ -361,7 +361,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
 		        + ") as " + representation.getRepresentation(), null);
 	}
-	
+
+    /**
+     * @should return delegating resource description
+     */
 	private DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
 		DelegatingResourceDescription desc = new DelegatingResourceDescription();
 		
@@ -387,10 +390,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 					customRep.append(rep);
 					int open = 1;
 					for (i = i + 1; i < fragments.length; i++) {
-						if (fragments[i].contains("(")) {
-							open++;
-						} else if (fragments[i].contains(")")) {
-							open--;
+						for (char fragment : fragments[i].toCharArray()) {
+							if (fragment == '(') {
+								open++;
+							} else if (fragment == ')') {
+								open--;
+							}
 						}
 						
 						customRep.append(",");
