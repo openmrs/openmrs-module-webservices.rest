@@ -13,10 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import org.junit.Test;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+
+import java.util.List;
+
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertThat;
 
 public class OrderFrequencyResource1_10Test extends BaseDelegatingResourceTest<OrderFrequencyResource1_10, OrderFrequency> {
 	
@@ -34,5 +42,14 @@ public class OrderFrequencyResource1_10Test extends BaseDelegatingResourceTest<O
 	public String getUuidProperty() {
 		return RestTestConstants1_10.ORDER_FREQUENCY_UUID;
 	}
-	
+
+    @Test
+    public void testFullConceptRepresentation() throws Exception {
+        SimpleObject rep = getResource().asRepresentation(getObject(), new NamedRepresentation("fullconcept"));
+        SimpleObject concept = (SimpleObject) rep.get("concept");
+        List names = (List) concept.get("names");
+        SimpleObject name = (SimpleObject) names.get(0);
+        assertThat(name.get("locale"), notNullValue());
+    }
+
 }

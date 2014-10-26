@@ -41,6 +41,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+            description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("retired");
@@ -51,6 +52,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+            description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("concept", Representation.DEFAULT);
@@ -58,7 +60,11 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 			description.addSelfLink();
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			return description;
-		}
+		} else if (rep.getRepresentation().equals("fullconcept")) {
+            DelegatingResourceDescription description = getRepresentationDescription(Representation.FULL);
+            description.addProperty("concept", Representation.FULL);
+            return description;
+        }
 		return null;
 	}
 	
