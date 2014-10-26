@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -39,6 +35,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations
@@ -95,7 +96,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		
-		description.addRequiredProperty("encounterDatetime");
+		description.addProperty("encounterDatetime"); // has a default value set, hence not required here
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("encounterType");
 		
@@ -114,7 +115,9 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	@Override
 	public Encounter newDelegate() {
 		Encounter enc = new Encounter();
-		// As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
+        // default to now(), so a web client can create a real-time encounter based on the server time
+        enc.setEncounterDatetime(new Date());
+        // As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
 		enc.setOrders(new LinkedHashSet<Order>());
 		return enc;
 	}
@@ -188,7 +191,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 			instance.addObs(o);
 	}
 	
-	@PropertySetter("order")
+	@PropertySetter("orders")
 	public static void setOrders(Encounter instance, Set<Order> orders) {
 		for (Order o : orders)
 			instance.addOrder(o);
