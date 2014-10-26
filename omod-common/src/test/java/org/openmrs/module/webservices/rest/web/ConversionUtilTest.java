@@ -121,12 +121,12 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		Class converted = (Class) ConversionUtil.convert(input, Class.class);
 		Assert.assertTrue(converted.isAssignableFrom(String.class));
 	}
-
-    public void convert_shouldConvertIntToDouble() throws Exception {
-        assertThat((Double) ConversionUtil.convert(5, Double.class), is(5d));
-    }
-
-    public void convert_shouldConvertDoubleToInt() throws Exception {
-        assertThat((Integer) ConversionUtil.convert(5d, Integer.class), is(5));
-    }
+	
+	public void convert_shouldConvertIntToDouble() throws Exception {
+		assertThat((Double) ConversionUtil.convert(5, Double.class), is(5d));
+	}
+	
+	public void convert_shouldConvertDoubleToInt() throws Exception {
+		assertThat((Integer) ConversionUtil.convert(5d, Integer.class), is(5));
+	}
 }

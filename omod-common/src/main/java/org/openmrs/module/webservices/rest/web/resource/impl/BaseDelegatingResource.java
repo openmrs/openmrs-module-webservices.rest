@@ -13,20 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -59,6 +45,20 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -361,10 +361,10 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
 		        + ") as " + representation.getRepresentation(), null);
 	}
-
-    /**
-     * @should return delegating resource description
-     */
+	
+	/**
+	 * @should return delegating resource description
+	 */
 	private DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
 		DelegatingResourceDescription desc = new DelegatingResourceDescription();
 		
