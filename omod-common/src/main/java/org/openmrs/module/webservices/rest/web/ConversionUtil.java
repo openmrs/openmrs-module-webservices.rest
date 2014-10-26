@@ -186,6 +186,11 @@ public class ConversionUtil {
 		} else if (object instanceof Map) {
 			return convertMap((Map<String, ?>) object, toClass);
 		}
+		if (toClass.isAssignableFrom(Double.class) && object instanceof Number) {
+			return ((Number) object).doubleValue();
+		} else if (toClass.isAssignableFrom(Integer.class) && object instanceof Number) {
+			return ((Number) object).intValue();
+		}
 		throw new ConversionException("Don't know how to convert from " + object.getClass() + " to " + toType, null);
 	}
 	
