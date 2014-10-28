@@ -13,11 +13,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.TestOrder;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -33,8 +37,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-
-import java.util.List;
 
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
@@ -136,9 +138,17 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-		List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient, Context.getOrderService().getOrderTypeByName("Test order"),
-                careSetting, asOfDate);
-		return new NeedsPaging<Order>(drugOrders, context);
+		
+		boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
+		List<Order> testOrders;
+		OrderService os = Context.getOrderService();
+		OrderType orderType = os.getOrderTypeByName("Test order");
+		if (getInactive) {
+			testOrders = OrderUtil.getInactiveOrders(patient, careSetting, orderType, asOfDate);
+		} else {
+			testOrders = Context.getOrderService().getActiveOrders(patient, orderType, careSetting, asOfDate);
+		}
+		return new NeedsPaging<Order>(testOrders, context);
 	}
 	
 	/**

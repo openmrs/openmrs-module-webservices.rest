@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.api.OrderContext;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -108,8 +108,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("encounter");
-        d.addProperty("action");
-        d.addProperty("dateActivated");
+		d.addProperty("action");
+		d.addProperty("dateActivated");
 		d.addProperty("patient");
 		d.addProperty("concept");
 		d.addProperty("careSetting");
@@ -192,7 +192,14 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				    CareSetting.class)).getByUniqueId(careSettingUuid);
 			}
 			
-			List<Order> orders = Context.getOrderService().getActiveOrders(patient, null, careSetting, asOfDate);
+			boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
+			List<Order> orders;
+			OrderService os = Context.getOrderService();
+			if (getInactive) {
+				orders = OrderUtil.getInactiveOrders(patient, careSetting, null, asOfDate);
+			} else {
+				orders = os.getActiveOrders(patient, null, careSetting, asOfDate);
+			}
 			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
@@ -211,12 +218,12 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public String getResourceVersion() {
 		return RestConstants1_10.RESOURCE_VERSION;
 	}
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
-     */
-    @Override
-    public Order save(Order delegate) {
-        return Context.getOrderService().saveOrder(delegate, null);
-    }
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
+	 */
+	@Override
+	public Order save(Order delegate) {
+		return Context.getOrderService().saveOrder(delegate, null);
+	}
 }

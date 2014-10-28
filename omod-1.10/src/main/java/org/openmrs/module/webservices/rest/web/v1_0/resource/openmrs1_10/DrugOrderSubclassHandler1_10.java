@@ -19,7 +19,9 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -161,8 +163,16 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-		List<Order> drugOrders = Context.getOrderService().getActiveOrders(patient,
-		    Context.getOrderService().getOrderTypeByName("Drug order"), careSetting, asOfDate);
+		
+		boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
+		List<Order> drugOrders;
+		OrderService os = Context.getOrderService();
+		OrderType orderType = os.getOrderTypeByName("Drug order");
+		if (getInactive) {
+			drugOrders = OrderUtil.getInactiveOrders(patient, careSetting, orderType, asOfDate);
+		} else {
+			drugOrders = os.getActiveOrders(patient, orderType, careSetting, asOfDate);
+		}
 		return new NeedsPaging<Order>(drugOrders, context);
 	}
 	

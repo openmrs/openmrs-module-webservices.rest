@@ -397,4 +397,38 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
+	@Test
+	public void shouldGetAllInActiveOrdersForAPatient() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"), new Parameter("careSetting",
+		        RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-10"))));
+		assertEquals(0, Util.getResultsSize(results));
+		
+		String orderUuid = "dfca4077-493c-496b-8312-856ee5d1cc26";
+		results = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
+		            "2007-12-10 00:00:01"))));
+		assertEquals(1, Util.getResultsSize(results));
+		assertEquals(orderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
+		
+		results = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-17"))));
+		assertEquals(1, Util.getResultsSize(results));
+		assertEquals(orderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
+		
+		results = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
+		            "2007-12-17 00:00:01"))));
+		assertEquals(2, Util.getResultsSize(results));
+		
+		String[] expectedOrderUuids = new String[] { orderUuid, "4c96f25c-4949-4f72-9931-d808fbc226dh" };
+		List<Object> resultList = Util.getResultsList(results);
+		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
+		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString() });
+		assertThat(uuids, hasItems(expectedOrderUuids));
+	}
+	
 }
