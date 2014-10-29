@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -192,14 +191,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				    CareSetting.class)).getByUniqueId(careSettingUuid);
 			}
 			
-			boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
-			List<Order> orders;
-			OrderService os = Context.getOrderService();
-			if (getInactive) {
-				orders = OrderUtil.getInactiveOrders(patient, careSetting, null, asOfDate);
-			} else {
-				orders = os.getActiveOrders(patient, null, careSetting, asOfDate);
-			}
+			String status = context.getRequest().getParameter("status");
+			List<Order> orders = OrderUtil.getOrders(patient, careSetting, null, status, asOfDate, context.getIncludeAll());
 			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());

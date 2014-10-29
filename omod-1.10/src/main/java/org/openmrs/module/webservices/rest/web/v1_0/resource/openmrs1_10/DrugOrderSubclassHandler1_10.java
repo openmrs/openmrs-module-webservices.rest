@@ -164,15 +164,11 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
 		
-		boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
-		List<Order> drugOrders;
+		String status = context.getRequest().getParameter("status");
 		OrderService os = Context.getOrderService();
 		OrderType orderType = os.getOrderTypeByName("Drug order");
-		if (getInactive) {
-			drugOrders = OrderUtil.getInactiveOrders(patient, careSetting, orderType, asOfDate);
-		} else {
-			drugOrders = os.getActiveOrders(patient, orderType, careSetting, asOfDate);
-		}
+		List<Order> drugOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
+		    context.getIncludeAll());
 		return new NeedsPaging<Order>(drugOrders, context);
 	}
 	

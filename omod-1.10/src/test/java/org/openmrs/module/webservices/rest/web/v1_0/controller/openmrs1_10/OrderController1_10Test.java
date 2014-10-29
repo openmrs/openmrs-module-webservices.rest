@@ -400,26 +400,26 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldGetAllInActiveOrdersForAPatient() throws Exception {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
-		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"), new Parameter("careSetting",
+		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"), new Parameter("careSetting",
 		        RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-10"))));
 		assertEquals(0, Util.getResultsSize(results));
 		
 		String orderUuid = "dfca4077-493c-496b-8312-856ee5d1cc26";
 		results = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"),
 		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
 		            "2007-12-10 00:00:01"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(orderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 		
 		results = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"),
 		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-17"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(orderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 		
 		results = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("inactive", "true"),
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"),
 		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
 		            "2007-12-17 00:00:01"))));
 		assertEquals(2, Util.getResultsSize(results));
@@ -429,6 +429,22 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString() });
 		assertThat(uuids, hasItems(expectedOrderUuids));
+	}
+	
+	@Test
+	public void shouldGetAllOrdersForAPatientInTheSpecifiedCareSetting() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "any"), new Parameter("careSetting",
+		        RestTestConstants1_10.CARE_SETTING_UUID))));
+		assertEquals(8, Util.getResultsSize(results));
+	}
+	
+	@Test
+	public void shouldGetAllOrdersForAPatientInTheSpecifiedCareSettingIncludingVoidedOnesIfRequested() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "any"), new Parameter("careSetting",
+		        RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("includeAll", "true"))));
+		assertEquals(9, Util.getResultsSize(results));
 	}
 	
 }

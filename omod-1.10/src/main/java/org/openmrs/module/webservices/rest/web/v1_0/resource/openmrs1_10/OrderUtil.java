@@ -22,9 +22,12 @@ import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 
 public class OrderUtil {
+	
+	private static final String INACTIVE = "inactive";
 	
 	/**
 	 * Gets the inactive orders of the specified patient as of the specified date, defaults to
@@ -36,9 +39,23 @@ public class OrderUtil {
 	 * @param asOfDate
 	 * @return
 	 */
-	public static List<Order> getInactiveOrders(Patient patient, CareSetting careSetting, OrderType orderType, Date asOfDate) {
-		List<Order> orders = Context.getOrderService().getOrders(patient, careSetting, orderType, false);
-		removeActiveOrders(orders, asOfDate);
+	public static List<Order> getOrders(Patient patient, CareSetting careSetting, OrderType orderType, String status,
+	                                    Date asOfDate, boolean includeVoided) {
+		
+		OrderService os = Context.getOrderService();
+		if (!INACTIVE.equals(status) && !"any".equals(status)) {
+			return os.getActiveOrders(patient, orderType, careSetting, asOfDate);
+		}
+		
+		if (INACTIVE.equals(status)) {
+			includeVoided = false;
+		}
+		
+		List<Order> orders = os.getOrders(patient, careSetting, orderType, includeVoided);
+		if (INACTIVE.equals(status)) {
+			removeActiveOrders(orders, asOfDate);
+		}
+		
 		return orders;
 	}
 	

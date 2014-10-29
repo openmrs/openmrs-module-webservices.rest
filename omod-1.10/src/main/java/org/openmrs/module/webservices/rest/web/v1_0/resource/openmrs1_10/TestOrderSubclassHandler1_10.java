@@ -139,15 +139,11 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 			    CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
 		
-		boolean getInactive = Boolean.valueOf(context.getRequest().getParameter("inactive"));
-		List<Order> testOrders;
+		String status = context.getRequest().getParameter("status");
 		OrderService os = Context.getOrderService();
 		OrderType orderType = os.getOrderTypeByName("Test order");
-		if (getInactive) {
-			testOrders = OrderUtil.getInactiveOrders(patient, careSetting, orderType, asOfDate);
-		} else {
-			testOrders = Context.getOrderService().getActiveOrders(patient, orderType, careSetting, asOfDate);
-		}
+		List<Order> testOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
+		    context.getIncludeAll());
 		return new NeedsPaging<Order>(testOrders, context);
 	}
 	
