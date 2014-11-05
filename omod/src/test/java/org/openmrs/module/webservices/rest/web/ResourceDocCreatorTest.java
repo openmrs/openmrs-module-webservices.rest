@@ -27,8 +27,8 @@ import java.util.List;
  */
 @Ignore
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
-
-    @Ignore("This won't work unless you increase the openmrs-core version to 1.10.0")
+	
+	@Ignore("This won't work unless you increase the openmrs-core version to 1.10.0")
 	@Test
 	public void testCreatingCatalog() throws Exception {
 		List<ResourceDoc> resourceDocs = ResourceDocCreator.create("/ws");
