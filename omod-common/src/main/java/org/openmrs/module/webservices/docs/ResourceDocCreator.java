@@ -13,20 +13,7 @@
  */
 package org.openmrs.module.webservices.docs;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
@@ -43,6 +30,18 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Creates documentation about web service resources.
@@ -114,8 +113,17 @@ public class ResourceDocCreator {
 				continue; //Skip the test class
 			}
 			
-			Object delegate = resourceHandler.newDelegate();
-			
+			Object delegate = null;
+            try {
+                delegate = resourceHandler.newDelegate();
+            } catch (ResourceDoesNotSupportOperationException ex) {
+                continue;
+            }
+            if (delegate == null) {
+                // TODO: handle resources that don't implement newDelegate(), e.g. ConceptSearchResource1_9, all subclasses of EvaluatedResource in the reportingrest module
+                continue;
+            }
+
 			String resourceClassname = delegate.getClass().getSimpleName();
 			if (resourceClassname.equals("UserAndPassword1_8")) {
 				resourceClassname = "User"; //Work-around for UserAndPassword to be displayed as User
