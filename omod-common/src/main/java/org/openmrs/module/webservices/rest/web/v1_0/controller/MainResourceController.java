@@ -150,7 +150,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		Searchable res = (Searchable) restService.getResourceByName(buildResourceName(resource));
+		Object res = restService.getResourceByName(buildResourceName(resource));
 		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
 		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
