@@ -29,6 +29,8 @@ public class OrderUtil {
 	
 	private static final String INACTIVE = "inactive";
 	
+	private static final String ANY = "any";
+	
 	/**
 	 * Gets the inactive orders of the specified patient as of the specified date, defaults to
 	 * current date if no date is specified
@@ -43,7 +45,7 @@ public class OrderUtil {
 	                                    Date asOfDate, boolean includeVoided) {
 		
 		OrderService os = Context.getOrderService();
-		if (!INACTIVE.equals(status) && !"any".equals(status)) {
+		if (!INACTIVE.equals(status) && !ANY.equals(status)) {
 			return os.getActiveOrders(patient, orderType, careSetting, asOfDate);
 		}
 		
