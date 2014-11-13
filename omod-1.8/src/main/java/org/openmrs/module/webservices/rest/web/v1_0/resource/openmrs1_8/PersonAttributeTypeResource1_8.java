@@ -33,7 +33,7 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/personattributetype", supportedClass = PersonAttributeType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
+@Resource(name = RestConstants.VERSION_1 + "/personattributetype", supportedClass = PersonAttributeType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResource<PersonAttributeType> {
 
 	public PersonAttributeTypeResource1_8() {
