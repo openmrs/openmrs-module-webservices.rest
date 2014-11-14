@@ -67,22 +67,10 @@ public class OrderUtil {
 			
 			@Override
 			public boolean evaluate(Object object) {
-				return isDiscontinued((Order) object, asOfDate);
+				Order order = (Order) object;
+				return order.isDiscontinued(asOfDate) || order.isExpired(asOfDate);
 			}
 			
 		});
-	}
-	
-	private static boolean isDiscontinued(Order order, Date asOfDate) {
-		if (asOfDate == null) {
-			asOfDate = new Date();
-		}
-		
-		Date effectiveEndDate = order.getEffectiveStopDate();
-		if (effectiveEndDate == null) {
-			return false;
-		}
-		
-		return effectiveEndDate.before(asOfDate);
 	}
 }
