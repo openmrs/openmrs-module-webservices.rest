@@ -103,4 +103,5 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
         Object next = results.iterator().next();
         Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
     }
+    
 }

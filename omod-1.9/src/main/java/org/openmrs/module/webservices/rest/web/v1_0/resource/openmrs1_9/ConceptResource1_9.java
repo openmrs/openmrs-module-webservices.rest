@@ -32,4 +32,5 @@ public class ConceptResource1_9 extends ConceptResource1_8 {
 	public String getResourceVersion() {
 	    return RestConstants1_9.RESOURCE_VERSION;
 	}
+	
 }
