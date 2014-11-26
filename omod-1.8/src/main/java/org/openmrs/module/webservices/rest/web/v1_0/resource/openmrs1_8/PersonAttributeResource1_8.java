@@ -39,7 +39,7 @@ import org.openmrs.util.OpenmrsClassLoader;
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "attribute", supportedClass = PersonAttribute.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@SubResource(parent = PersonResource1_8.class, path = "attribute", supportedClass = PersonAttribute.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttribute, Person, PersonResource1_8> {
 
 	/**

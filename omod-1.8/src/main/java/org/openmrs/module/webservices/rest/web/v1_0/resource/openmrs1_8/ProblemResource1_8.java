@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Problem, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	
 	/**

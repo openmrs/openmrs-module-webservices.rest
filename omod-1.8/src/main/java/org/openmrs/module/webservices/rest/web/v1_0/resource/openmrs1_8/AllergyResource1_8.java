@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	
 	/**

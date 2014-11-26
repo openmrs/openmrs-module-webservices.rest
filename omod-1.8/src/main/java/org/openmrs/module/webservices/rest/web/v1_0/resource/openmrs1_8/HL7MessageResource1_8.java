@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * {@link Resource} for {@link IncomingHl7Message1_8}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/hl7", supportedClass = IncomingHl7Message1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/hl7", supportedClass = IncomingHl7Message1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl7Message1_8> {
 	
 	/**
