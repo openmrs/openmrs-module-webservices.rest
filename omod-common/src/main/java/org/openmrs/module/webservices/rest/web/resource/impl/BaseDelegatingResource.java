@@ -292,7 +292,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	protected String getUniqueId(T delegate) {
 		try {
-			return (String) PropertyUtils.getProperty(delegate, "uuid");
+			return (String) getProperty(delegate, "uuid");
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Cannot find String uuid property on " + delegate.getClass(), null);
