@@ -10,6 +10,15 @@
 	<name>Rest Web Services Common OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
+	<dependencies>
+		<dependency>
+		      <groupId>org.apache.tomcat</groupId>
+		      <artifactId>jasper</artifactId>
+		      <version>6.0.18</version>
+		      <scope>provided</scope>
+	     </dependency>
+	</dependencies>
+	
 	<build>
 		<resources>
 			<resource>
