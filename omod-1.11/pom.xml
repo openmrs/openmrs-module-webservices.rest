@@ -106,6 +106,13 @@
 			<scope>test</scope>
 			<version>${openmrs.version.1.11}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
+		
+		<dependency>
+		      <groupId>org.apache.tomcat</groupId>
+		      <artifactId>jasper</artifactId>
+		      <version>6.0.18</version>
+		      <scope>provided</scope>
+	     </dependency>
 
 	</dependencies>
 
