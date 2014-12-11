@@ -16,7 +16,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.DrugOrder;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;

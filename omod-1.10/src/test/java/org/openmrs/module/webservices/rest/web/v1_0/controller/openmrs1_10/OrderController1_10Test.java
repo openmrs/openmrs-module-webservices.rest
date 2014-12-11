@@ -16,7 +16,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.ConceptClass;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
@@ -34,8 +39,12 @@ import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 /**
  * Integration tests for the Order resource
  */
