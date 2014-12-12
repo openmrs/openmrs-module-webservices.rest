@@ -70,6 +70,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
+            d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
@@ -91,6 +92,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
+			d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
@@ -180,22 +182,14 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		StringBuilder ret = new StringBuilder();
 		if (delegate.getDrug() != null) {
 			ret.append(delegate.getDrug().getName());
-			ret.append(": ");
-			if (delegate.getDose() != null) {
-				ret.append(delegate.getDose());
-				if (delegate.getDoseUnits() != null && delegate.getDoseUnits().getName() != null) {
-					ret.append(delegate.getDoseUnits().getName().getName());
-				} else {
-					ret.append("[no units]");
-				}
-			} else {
-				ret.append("[no dose]");
-			}
 		} else {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			orderResource.getDisplayString(delegate);
+			ret.append(delegate.getConcept().getDisplayString());
 		}
+        if(delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
+            String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
+            ret.append(": ");
+            ret.append(dosingInstructionsAsString);
+        }
 		
 		return ret.toString();
 	}
