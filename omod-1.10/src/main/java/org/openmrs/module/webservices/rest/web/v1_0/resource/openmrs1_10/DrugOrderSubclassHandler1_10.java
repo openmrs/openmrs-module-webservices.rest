@@ -185,18 +185,10 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		} else {
 			ret.append(delegate.getConcept().getDisplayString());
 		}
-        ret.append(": ");
         if(delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
-            ret.append(delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale()));
-        } else if (delegate.getDose() != null) {
-            ret.append(delegate.getDose());
-            if (delegate.getDoseUnits() != null && delegate.getDoseUnits().getName() != null) {
-                ret.append(delegate.getDoseUnits().getName().getName());
-            } else {
-                ret.append("[no units]");
-            }
-        } else {
-            ret.append("[no dose]");
+            String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
+            ret.append(": ");
+            ret.append(dosingInstructionsAsString);
         }
 		
 		return ret.toString();
