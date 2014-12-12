@@ -70,7 +70,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-            d.addProperty("display", Representation.REF);
+            d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
@@ -92,7 +92,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("display", Representation.REF);
+			d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
