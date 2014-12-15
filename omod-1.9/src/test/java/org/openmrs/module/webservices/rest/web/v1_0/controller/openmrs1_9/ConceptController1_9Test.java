@@ -82,7 +82,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
     
 	@Test
 	public void shouldFindConceptByReferenceTerm() throws Exception {
-		executeDataSet("customConceptDataSet.xml");
+		executeDataSet("customConceptDataSet1_9.xml");
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + "CIEL:WGT234");
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
