@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -44,6 +46,8 @@ public class BaseRestController {
 	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
 	
 	private final String DEFAULT_ERROR_DETAIL = "";
+	
+	private final Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @should return unauthorized if not logged in
@@ -83,6 +87,7 @@ public class BaseRestController {
 	@ResponseBody
 	public SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
+		log.error(ex.getMessage(), ex);
 		int errorCode = DEFAULT_ERROR_CODE;
 		String errorDetail = DEFAULT_ERROR_DETAIL;
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
