@@ -13,19 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -43,6 +30,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
 
 public class ConversionUtil {
 	
@@ -209,14 +213,29 @@ public class ConversionUtil {
 		Converter converter = getConverter(toClass);
 		String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
 		Object ret = converter.newInstance(type);
-		for (Map.Entry<String, ?> prop : map.entrySet()) {
-			if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
-				continue;
-			converter.setProperty(ret, prop.getKey(), prop.getValue());
+		
+		// If the converter is a resource handler use the order of properties of its default representation
+		if (converter instanceof DelegatingResourceHandler) {
+
+			DelegatingResourceHandler handler = (DelegatingResourceHandler) converter;
+			DelegatingResourceDescription resDesc = handler.getRepresentationDescription(new DefaultRepresentation());
+			
+			for (Map.Entry<String, Property> prop :  resDesc.getProperties().entrySet()) {
+				if (map.containsKey(prop.getKey()) && !RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey())) {
+					converter.setProperty(ret, prop.getKey(), map.get(prop.getKey()));
+				}
+			}
 		}
+		
+		for (Map.Entry<String, ?> prop : map.entrySet()) {
+			if (!RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey())){
+				converter.setProperty(ret, prop.getKey(), prop.getValue());
+			}
+		}
+	
 		return ret;
 	}
-	
+
 	/**
 	 * Gets a property from the delegate, with the given representation
 	 * 

@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
@@ -232,17 +231,13 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		List<SimpleObject> obs = new ArrayList<SimpleObject>();
 		// weight in kg = 70
-		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }"));
+		obs.add(SimpleObject.parseJson("{ \"value\": 70, \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\" }"));
 		// civil status = married
-		obs
-		        .add(SimpleObject
-		                .parseJson("{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
+		obs.add(SimpleObject.parseJson("{ \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\", \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"}"));
 		// favorite food, non-coded = fried chicken
-		obs.add(SimpleObject
-		        .parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
 		// date of food assistance = 2011-06-21
-		obs.add(SimpleObject
-		        .parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
 		
 		return new SimpleObject().add("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8").add("encounterType",
 		    "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2011-01-15").add("patient",
