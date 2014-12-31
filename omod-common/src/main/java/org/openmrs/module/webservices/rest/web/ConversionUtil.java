@@ -216,7 +216,7 @@ public class ConversionUtil {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Gets a property from the delegate, with the given representation
 	 * 

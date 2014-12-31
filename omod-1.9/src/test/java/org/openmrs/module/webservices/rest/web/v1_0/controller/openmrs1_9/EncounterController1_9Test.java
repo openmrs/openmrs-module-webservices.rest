@@ -229,7 +229,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	 * @throws Exception
 	 */
 	private SimpleObject createEncounterWithObs() throws Exception {
-		
+
 		List<SimpleObject> obs = new ArrayList<SimpleObject>();
 		// weight in kg = 70
 		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }"));
