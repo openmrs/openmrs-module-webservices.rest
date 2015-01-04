@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>webservices.rest</artifactId>
-		<version>2.5-SNAPSHOT</version>
+		<version>2.9-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-omod</artifactId>
 	<packaging>jar</packaging>
@@ -47,6 +47,18 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>${project.parent.artifactId}-omod-1.10</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.parent.groupId}</groupId>
+            <artifactId>${project.parent.artifactId}-omod-1.10</artifactId>
+            <version>${project.parent.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 	
 	<build>

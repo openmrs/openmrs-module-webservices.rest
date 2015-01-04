@@ -76,26 +76,34 @@ public class AuthorizationFilter implements Filter {
 			        + "' is not authorized");
 		}
 		
-		// skip if we're already authenticated, or it's not an HTTP request
-		if (!Context.isAuthenticated() && request instanceof HttpServletRequest) {
+		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
+		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			String basicAuth = httpRequest.getHeader("Authorization");
-			if (basicAuth != null) {
-				// this is "Basic ${base64encode(username + ":" + password)}"
-				try {
-					basicAuth = basicAuth.substring(6); // remove the leading "Basic "
-					String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
-					String[] userAndPass = decoded.split(":");
-					Context.authenticate(userAndPass[0], userAndPass[1]);
-					if (log.isDebugEnabled())
-						log.debug("authenticated " + userAndPass[0]);
-				}
-				catch (Exception ex) {
-					// This filter never stops execution. If the user failed to
-					// authenticate, that will be caught later.
+			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()) {
+				HttpServletResponse httpResponse = (HttpServletResponse) response;
+				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Session timed out");
+			}
+			
+			if (!Context.isAuthenticated()) {
+				String basicAuth = httpRequest.getHeader("Authorization");
+				if (basicAuth != null) {
+					// this is "Basic ${base64encode(username + ":" + password)}"
+					try {
+						basicAuth = basicAuth.substring(6); // remove the leading "Basic "
+						String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
+						String[] userAndPass = decoded.split(":");
+						Context.authenticate(userAndPass[0], userAndPass[1]);
+						if (log.isDebugEnabled())
+							log.debug("authenticated " + userAndPass[0]);
+					}
+					catch (Exception ex) {
+						// This filter never stops execution. If the user failed to
+						// authenticate, that will be caught later.
+					}
 				}
 			}
 		}
+		
 		// continue with the filter chain in all circumstances
 		chain.doFilter(request, response);
 	}

@@ -202,4 +202,21 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		
 		deserialize(handle(newPostRequest(getURI(), json)));
 	}
+
+    /**
+     * @verifies return delegating resource description
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCustomRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.CustomRepresentation)
+     */
+    @Test
+    public void getCustomRepresentationDescription_shouldReturnDelegatingResourceDescription() throws Exception {
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("q", "Horatio");
+        req.addParameter("v", "custom:(uuid,identifiers:(uuid,identifierType:(uuid)),attributes:(uuid,attributeType:(uuid)))");
+        SimpleObject result = deserialize(handle(req));
+
+        assertEquals(1, Util.getResultsSize(result));
+        assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+        assertNotNull(PropertyUtils.getProperty(Util.getResultsList(result).get(0), "identifiers"));
+        assertNotNull(PropertyUtils.getProperty(Util.getResultsList(result).get(0), "attributes"));
+    }
 }

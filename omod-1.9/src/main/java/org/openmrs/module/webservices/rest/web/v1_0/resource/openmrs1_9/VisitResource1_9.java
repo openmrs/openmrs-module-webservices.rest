@@ -12,11 +12,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Set;
-
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
@@ -39,10 +34,14 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	/**
@@ -221,7 +220,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
-		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null, null, null, includeInactive, false), context).toSimpleObject();
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null, null, null, includeInactive, false), context).toSimpleObject(this);
 	}
 
     private Patient getPatient(String patientUniqueId) {

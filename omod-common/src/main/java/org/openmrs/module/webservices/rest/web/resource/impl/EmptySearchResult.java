@@ -13,11 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.util.Collections;
-
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Collections;
 
 /**
  * Empty list of search results
@@ -25,10 +26,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class EmptySearchResult implements PageableResult {
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchResult#toSimpleObject()
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.PageableResult#toSimpleObject(Converter)
 	 */
 	@Override
-	public SimpleObject toSimpleObject() throws ResponseException {
+	public SimpleObject toSimpleObject(Converter<?> preferredConverter) throws ResponseException {
 		return new SimpleObject().add("results", Collections.emptyList());
 	}
 	

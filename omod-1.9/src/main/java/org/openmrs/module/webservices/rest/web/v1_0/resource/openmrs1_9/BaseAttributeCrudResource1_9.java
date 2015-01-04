@@ -20,7 +20,9 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
+import org.openmrs.customdatatype.NotYetPersistedException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -51,7 +53,22 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 		if (StringUtils.isNotEmpty(value)) // check empty instead of blank, because " " is meaningful
 			instance.setValue(datatype.fromReferenceString(value));
 	}
-	
+
+    /**
+     * Gets an attribute value, catching any {@link NotYetPersistedException} and returning null in that case
+     * @param instance
+     * @return
+     */
+    @PropertyGetter("value")
+    public static Object getValue(Attribute<?, ?> instance) {
+        try {
+            return instance.getValue();
+        }
+        catch (NotYetPersistedException ex) {
+            return null;
+        }
+    }
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -61,8 +78,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("value");
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -71,8 +88,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("uuid");
-			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("value");
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -84,8 +101,8 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addRequiredProperty("value");
 		description.addRequiredProperty("attributeType");
+		description.addRequiredProperty("value");
 		return description;
 	}
 	

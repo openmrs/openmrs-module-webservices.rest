@@ -13,21 +13,24 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Resource controllers should extend this base class to have standard exception handling done
@@ -43,6 +46,8 @@ public class BaseRestController {
 	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
 	
 	private final String DEFAULT_ERROR_DETAIL = "";
+	
+	private final Log log = LogFactory.getLog(getClass());
 	
 	/**
 	 * @should return unauthorized if not logged in
@@ -70,10 +75,19 @@ public class BaseRestController {
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
 	
+	@ExceptionHandler(ValidationException.class)
+	@ResponseBody
+	public SimpleObject validationExceptionHandler(ValidationException validationException, HttpServletRequest request,
+	        HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return RestUtil.wrapValidationErrorResponse(validationException);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
 	public SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
+		log.error(ex.getMessage(), ex);
 		int errorCode = DEFAULT_ERROR_CODE;
 		String errorDetail = DEFAULT_ERROR_DETAIL;
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);

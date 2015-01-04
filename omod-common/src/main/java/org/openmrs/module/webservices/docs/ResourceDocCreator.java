@@ -13,20 +13,7 @@
  */
 package org.openmrs.module.webservices.docs;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
@@ -43,6 +30,19 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Creates documentation about web service resources.
@@ -64,7 +64,7 @@ public class ResourceDocCreator {
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		
 		fillRepresentations(resourceHandlers, resouceDocMap);
-		//fillOperations(resouceDocMap);
+		//fillOperations(resourceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
 		
 		return resouceDocMap;
@@ -84,11 +84,12 @@ public class ResourceDocCreator {
 		
 		docs.addAll(createDocMap(baseUrl).values());
 		
-		//Remove resources for subclasses
+		//Remove resources for subtype handlers
 		for (Iterator<ResourceDoc> it = docs.iterator(); it.hasNext();) {
 			ResourceDoc resourceDoc = it.next();
-			if (resourceDoc.getSuperResource() != null)
+			if (resourceDoc.isSubtypeHandler()) {
 				it.remove();
+			}
 		}
 		Collections.sort(docs);
 		
@@ -98,14 +99,28 @@ public class ResourceDocCreator {
 	/**
 	 * Fills a map of resource names and their documentation objects with resource representations.
 	 * 
-	 * @param classes resource classes.
-	 * @param resouceDocMap a map of each resource name and its corresponding documentation object.
+	 * @param resourceHandlers resource classes.
+	 * @param resourceDocMap a map of each resource name and its corresponding documentation object.
 	 * @throws IllegalAccessException
 	 * @throws InstantiationException
 	 */
 	private static void fillRepresentations(List<DelegatingResourceHandler<?>> resourceHandlers,
-	        Map<String, ResourceDoc> resouceDocMap) throws IllegalAccessException, InstantiationException,
+	        Map<String, ResourceDoc> resourceDocMap) throws IllegalAccessException, InstantiationException,
 	        ConversionException {
+		
+		//We want to handle all resources before their subresources
+		Collections.sort(resourceHandlers, new Comparator<DelegatingResourceHandler<?>>() {
+			
+			@Override
+			public int compare(DelegatingResourceHandler<?> left, DelegatingResourceHandler<?> right) {
+				return isSubclass(left).compareTo(isSubclass(right));
+			}
+			
+			private Boolean isSubclass(DelegatingResourceHandler<?> resourceHandler) {
+				return resourceHandler.getClass().getAnnotation(
+				    org.openmrs.module.webservices.rest.web.annotation.SubResource.class) != null;
+			}
+		});
 		
 		//Go through all resource classes asking each for its default, ref and full representation.                                                                                                   InstantiationException {
 		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
@@ -116,7 +131,17 @@ public class ResourceDocCreator {
 				continue; //Skip the test class
 			}
 			
-			Object delegate = resourceHandler.newDelegate();
+			Object delegate = null;
+			try {
+				delegate = resourceHandler.newDelegate();
+			}
+			catch (ResourceDoesNotSupportOperationException ex) {
+				continue;
+			}
+			if (delegate == null) {
+				// TODO: handle resources that don't implement newDelegate(), e.g. ConceptSearchResource1_9, all subclasses of EvaluatedResource in the reportingrest module
+				continue;
+			}
 			
 			String resourceClassname = delegate.getClass().getSimpleName();
 			if (resourceClassname.equals("UserAndPassword1_8")) {
@@ -127,6 +152,7 @@ public class ResourceDocCreator {
 				resourceClassname = "HL7";
 			}
 			
+			String subResourceForClass = null;
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) resourceHandler
 			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
@@ -142,27 +168,44 @@ public class ResourceDocCreator {
 					
 					resourceDoc.setResourceName(parentResourceAnnotation.name());
 					resourceDoc.setSubResourceName(subResourceAnnotation.path());
+					
+					subResourceForClass = parentResourceAnnotation.supportedClass().getSimpleName();
 				}
 			}
 			
 			Object instance = resourceHandler;
 			
+			// subtype handlers are not resources themselves, but further specify resources (e.g. drugorder for order)
 			if (resourceHandler instanceof DelegatingSubclassHandler) {
-				Class<?> superclass = ((DelegatingSubclassHandler<?, ?>) resourceHandler).getSuperclass();
-				instance = Context.getService(RestService.class).getResourceBySupportedClass(superclass);
-				//Add as a subresource
-				ResourceDoc superclassResourceDoc = resouceDocMap.get(superclass.getSimpleName());
-				if (superclassResourceDoc == null) {
-					superclassResourceDoc = new ResourceDoc(superclass.getSimpleName());
-					resouceDocMap.put(superclassResourceDoc.getName(), superclassResourceDoc);
+				Class<?> resourceClass = ((DelegatingSubclassHandler<?, ?>) resourceHandler).getSuperclass();
+				instance = Context.getService(RestService.class).getResourceBySupportedClass(resourceClass);
+				//Add as a subtype handler
+				ResourceDoc actualResourceDoc = resourceDocMap.get(resourceClass.getSimpleName());
+				if (actualResourceDoc == null) {
+					actualResourceDoc = new ResourceDoc(resourceClass.getSimpleName());
+					resourceDocMap.put(actualResourceDoc.getName(), actualResourceDoc);
 				}
-				superclassResourceDoc.addSubResource(resourceDoc);
+				actualResourceDoc.addSubtypeHandler(resourceDoc);
 			}
-			//Add as a resource
-			ResourceDoc previous = resouceDocMap.put(resourceDoc.getName(), resourceDoc);
-			if (previous != null) {
-				for (ResourceDoc subResource : previous.getSubResources()) {
-					resourceDoc.addSubResource(subResource);
+			
+			if (resourceDoc.isSubResource()) {
+				// Add as a subresource to an existing resource
+				ResourceDoc parentResourceDoc = resourceDocMap.get(subResourceForClass);
+				parentResourceDoc.addSubResource(resourceDoc);
+			} else {
+				// Add as a resource
+				
+				ResourceDoc previous = resourceDocMap.put(resourceDoc.getName(), resourceDoc);
+				
+				// in case we've put in a placeholder (since a subtype handler was processed before its resource)
+				// we need to preserve its children
+				if (previous != null) {
+					for (ResourceDoc subResource : previous.getSubResources()) {
+						resourceDoc.addSubResource(subResource);
+					}
+					for (ResourceDoc subtypeHandler : previous.getSubtypeHandlers()) {
+						resourceDoc.addSubtypeHandler(subtypeHandler);
+					}
 				}
 			}
 			
@@ -215,7 +258,6 @@ public class ResourceDocCreator {
 	/**
 	 * Returns a list of POST properties of the given description.
 	 * 
-	 * @param resourceDoc
 	 * @param description
 	 */
 	private static List<String> getPOSTProperties(DelegatingResourceDescription description) {
@@ -279,8 +321,9 @@ public class ResourceDocCreator {
 		
 		for (ResourceDoc doc : resouceDocMap.values()) {
 			//skip subclass handlers e.g DrugOrderSubclassHandler
-			if (doc.getSuperResource() != null)
+			if (doc.isSubtypeHandler()) {
 				continue;
+			}
 			
 			if (doc.getSubResourceName() == null) {
 				if (resourceOperations == null)
@@ -294,7 +337,7 @@ public class ResourceDocCreator {
 				
 				//Set the root url.
 				doc.setUrl(resourceUrl + "/" + doc.getResourceName());
-				setUrlInSubResources(resourceUrl, doc);
+				setUrlInSubResources(doc.getUrl(), doc);
 			} else {
 				//This is a sub resource that has a parent
 				if (subResourceOperations == null)
@@ -316,13 +359,13 @@ public class ResourceDocCreator {
 	/**
 	 * Sets URL in subResources.
 	 * 
-	 * @param url
+	 * @param parentUrl
 	 * @param doc
 	 */
-	private static void setUrlInSubResources(String url, ResourceDoc doc) {
+	private static void setUrlInSubResources(String parentUrl, ResourceDoc doc) {
 		for (ResourceDoc subResource : doc.getSubResources()) {
-			subResource.setUrl(url);
-			setUrlInSubResources(url, subResource);
+			subResource.setUrl(parentUrl + "/{uuid}/" + subResource.getSubResourceName());
+			setUrlInSubResources(subResource.getUrl(), subResource);
 		}
 	}
 	

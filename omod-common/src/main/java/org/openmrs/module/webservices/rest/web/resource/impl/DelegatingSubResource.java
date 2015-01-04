@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Auditable;
@@ -38,6 +35,9 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Base implementation of a sub-resource of a DelegatingCrudResource that delegates to a domain
@@ -178,7 +178,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	public SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException {
 		P parent = getParentResource().getByUniqueId(parentUniqueId);
 		PageableResult result = doGetAll(parent, context);
-		return result.toSimpleObject();
+		return result.toSimpleObject(this);
 	}
 	
 	private String getParentUri(T instance) {

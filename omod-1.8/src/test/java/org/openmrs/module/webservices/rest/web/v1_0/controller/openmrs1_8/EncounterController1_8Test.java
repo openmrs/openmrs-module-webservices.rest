@@ -13,18 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.exception.ConstraintViolationException;
@@ -45,6 +33,18 @@ import org.openmrs.util.Format;
 import org.openmrs.util.Format.FORMAT_TYPE;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+
 public class EncounterController1_8Test extends MainResourceControllerTest {
 	
 	public static final String currentTimezone = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
@@ -61,8 +61,19 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(newEncounter);
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 	}
-	
-	@Test
+
+    @Test
+    public void createEncounter_shouldDefaultDatetimeToNowIfNotSpecified() throws Exception {
+        Date since = new Date();
+        String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
+
+        Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
+        Assert.assertNotNull(newEncounter);
+        Date encounterDatetime = (Date) ConversionUtil.convert(((SimpleObject) newEncounter).get("encounterDatetime"), Date.class);
+        Assert.assertTrue(encounterDatetime.compareTo(since) >= 0);
+    }
+
+    @Test
 	public void createEncounter_shouldCreateANewEncounterWithEmptyUnitOnNumericConcept() throws Exception {
 		executeDataSet("customConceptDataset.xml");
 		int before = Context.getEncounterService().getAllEncounters(null).size();
@@ -269,6 +280,19 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(results);
 		Assert.assertEquals(3, results.size());
 	}
+
+    @Test
+    public void shouldGetEncountersByEncounterTypeAndPatient() throws Exception {
+        executeDataSet("EncountersForDifferentTypesWithObservations.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType", "ff7397ea-c090-11e3-be87-005056821db0"))));
+
+
+        ArrayList encounters = (ArrayList) result.get("results");
+        Assert.assertEquals(1, encounters.size());
+        String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
+        Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
+    }
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()

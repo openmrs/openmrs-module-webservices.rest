@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent = PatientResource1_8.class, path = "identifier", supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@SubResource(parent = PatientResource1_8.class, path = "identifier", supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource1_8> {
 	
 	@Override

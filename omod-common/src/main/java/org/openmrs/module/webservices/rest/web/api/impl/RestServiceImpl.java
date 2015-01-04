@@ -13,6 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
@@ -34,16 +44,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.util.OpenmrsConstants;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * Default implementation of the {@link RestService}
@@ -557,4 +557,16 @@ public class RestServiceImpl implements RestService {
 		return resourceHandlers;
 	}
 	
+	@Override
+	public void initialize() {
+		
+		// first clear out any existing values
+		resourceDefinitionsByNames = null;
+		resourcesBySupportedClasses = null;
+		searchHandlersByIds = null;
+		searchHandlersByParameter = null;
+		
+		initializeResources();
+		initializeSearchHandlers();
+	}
 }

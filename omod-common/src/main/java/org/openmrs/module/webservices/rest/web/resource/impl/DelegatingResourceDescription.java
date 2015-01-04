@@ -13,18 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.Hyperlink;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.RepresentationDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
  * Used by implementations of {@link DelegatingCrudResource} to indicate what delegate properties,
@@ -52,6 +52,10 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		addProperty(propertyName, propertyName, rep, true);
 	}
 	
+	public void addProperty(String propertyName, Representation rep, Class<?> convertAs) {
+		addProperty(propertyName, propertyName, rep, false, convertAs);
+	}
+	
 	public void addProperty(String propertyName, Method method) {
 		addProperty(propertyName, method, null, false);
 	}
@@ -77,9 +81,16 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 	}
 	
 	public void addProperty(String propertyName, String delegatePropertyName, Representation rep, boolean required) {
+		addProperty(propertyName, delegatePropertyName, rep, required, null);
+	}
+	
+	public void addProperty(String propertyName, String delegatePropertyName, Representation rep, boolean required,
+	        Class<?> convertAs) {
 		if (rep == null)
 			rep = Representation.DEFAULT;
-		properties.put(propertyName, new Property(delegatePropertyName, rep, required));
+		Property property = new Property(delegatePropertyName, rep, required);
+		property.setConvertAs(convertAs);
+		properties.put(propertyName, property);
 	}
 	
 	public void addProperty(String propertyName, Method method, Representation rep, boolean required) {
@@ -130,6 +141,8 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 		private Method method;
 		
 		private Representation rep;
+		
+		private Class<?> convertAs;
 		
 		private boolean required;
 		
@@ -213,16 +226,34 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 			this.required = required;
 		}
 		
+		/**
+		 * @return the specific class to convert this property as (which
+		 */
+		public Class<?> getConvertAs() {
+			return convertAs;
+		}
+		
+		/**
+		 * In case you want to force a specific converter, e.g. in relationship resource, force
+		 * personA to be converted by the person resource even if personA is actually a Patient
+		 * 
+		 * @param convertAs convert this property with the converter for this specific class, which
+		 *            should be a superclass of any object you intend to convert
+		 */
+		public void setConvertAs(Class<?> convertAs) {
+			this.convertAs = convertAs;
+		}
+		
 		public <T> Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {
 			if (delegateProperty != null) {
 				Object propVal = converter.getProperty(delegate, delegateProperty);
 				if (propVal instanceof Collection) {
 					List<Object> ret = new ArrayList<Object>();
 					for (Object element : (Collection<?>) propVal)
-						ret.add(ConversionUtil.convertToRepresentation(element, rep));
+						ret.add(ConversionUtil.convertToRepresentation(element, rep, getConvertAs()));
 					return ret;
 				} else {
-					return ConversionUtil.convertToRepresentation(propVal, rep);
+					return ConversionUtil.convertToRepresentation(propVal, rep, getConvertAs());
 				}
 			} else if (method != null) {
 				try {

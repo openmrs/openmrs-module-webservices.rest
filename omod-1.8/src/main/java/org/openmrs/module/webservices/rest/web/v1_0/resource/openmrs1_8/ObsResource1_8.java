@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -44,10 +39,17 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
@@ -81,10 +83,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("person", Representation.REF);
 			description.addProperty("concept", Representation.REF);
-			description.addProperty("value");
-			description.addProperty("valueModifier");
+			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup", Representation.REF);
@@ -95,6 +95,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("order", Representation.REF);
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("voided");
+			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -103,10 +105,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
-			description.addProperty("person", Representation.REF);
 			description.addProperty("concept");
-			description.addProperty("value");
-			description.addProperty("valueModifier");
+			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
 			description.addProperty("accessionNumber");
 			description.addProperty("obsGroup");
@@ -118,6 +118,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("encounter");
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("value");
+			description.addProperty("valueModifier");
 			description.addSelfLink();
 			return description;
 		}
@@ -138,12 +140,12 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		description.addProperty("location");
 		description.addProperty("order");
 		description.addProperty("encounter");
-		description.addProperty("value");
-		description.addProperty("valueModifier");
 		description.addProperty("accessionNumber");
 		description.addProperty("groupMembers");
 		description.addProperty("valueCodedName");
 		description.addProperty("comment");
+		description.addProperty("value");
+		description.addProperty("valueModifier");
 		
 		return description;
 	}
@@ -218,7 +220,22 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		
 		return null;
 	}
-	
+
+	/**
+	 * Sets the members of an obs group
+	 *
+	 * @param obsGroup the obs group whose members to set
+	 * @param members the members to set
+	 */
+	@PropertySetter("groupMembers")
+	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
+		for (Obs member : members) {
+			member.setObsGroup(obsGroup);
+			member.setGroupMembers(Collections.<Obs>emptySet());
+		}
+		obsGroup.setGroupMembers(members);
+	}
+
 	/**
 	 * Checks if there are more than one obs in GroupMembers and converts into a DEFAULT
 	 * representation
@@ -320,5 +337,5 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		
 		return new NeedsPaging<Obs>(Context.getObsService().getObservations(context.getParameter("q")), context);
 	}
-	
+
 }

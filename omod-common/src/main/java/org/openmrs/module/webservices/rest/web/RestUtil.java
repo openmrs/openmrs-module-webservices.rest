@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -31,9 +33,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -44,10 +43,14 @@ import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -812,5 +815,63 @@ public class RestUtil implements GlobalPropertyListener {
 		map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
 		map.put("detail", ExceptionUtils.getStackTrace(ex));
 		return new SimpleObject().add("error", map);
+	}
+	
+	/**
+	 * Creates a SimpleObject to sent to the client with all validation errors (with message codes
+	 * resolved)
+	 * 
+	 * @param ex
+	 * @return
+	 */
+	public static SimpleObject wrapValidationErrorResponse(ValidationException ex) {
+		
+		MessageSourceService messageSourceService = Context.getMessageSourceService();
+		
+		SimpleObject errors = new SimpleObject();
+		errors.add("message", messageSourceService.getMessage("webservices.rest.error.invalid.submission"));
+		errors.add("code", "webservices.rest.error.invalid.submission");
+		
+		List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
+		SimpleObject fieldErrors = new SimpleObject();
+		
+		if (ex.getErrors().hasGlobalErrors()) {
+			
+			for (Object errObj : ex.getErrors().getGlobalErrors()) {
+				
+				ObjectError err = (ObjectError) errObj;
+				String message = messageSourceService.getMessage(err.getCode());
+				
+				SimpleObject globalError = new SimpleObject();
+				globalError.put("code", err.getCode());
+				globalError.put("message", message);
+				globalErrors.add(globalError);
+			}
+			
+		}
+		
+		if (ex.getErrors().hasFieldErrors()) {
+			
+			for (Object errObj : ex.getErrors().getFieldErrors()) {
+				FieldError err = (FieldError) errObj;
+				String message = messageSourceService.getMessage(err.getCode());
+				
+				SimpleObject fieldError = new SimpleObject();
+				fieldError.put("code", err.getCode());
+				fieldError.put("message", message);
+				
+				if (!fieldErrors.containsKey(err.getField())) {
+					fieldErrors.put(err.getField(), new ArrayList<SimpleObject>());
+				}
+				
+				((List<SimpleObject>) fieldErrors.get(err.getField())).add(fieldError);
+			}
+			
+		}
+		
+		errors.put("globalErrors", globalErrors);
+		errors.put("fieldErrors", fieldErrors);
+		
+		return new SimpleObject().add("error", errors);
 	}
 }

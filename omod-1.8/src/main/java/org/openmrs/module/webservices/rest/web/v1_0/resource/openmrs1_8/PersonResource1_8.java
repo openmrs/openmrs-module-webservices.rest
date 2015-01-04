@@ -13,13 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -43,16 +36,17 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*"})
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
-	
-	public PersonResource1_8() {
-		remappedProperties.put("attributes", "activeAttributes");
-	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -139,6 +133,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
         description.addRequiredProperty("names");
         description.addRequiredProperty("causeOfDeath");
         description.addRequiredProperty("dead");
+        description.addProperty("deathDate");
         return description;
     }
 	
@@ -184,6 +179,16 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
                 instance.addName(name);
             }
         }
+    }
+
+    /**
+     * Returns non-voided attributes of a person
+     *
+     * @param instance
+     */
+    @PropertyGetter("attributes")
+    public static List<PersonAttribute> getAttributes(Person instance) {
+        return instance.getActiveAttributes();
     }
 	
     /**
@@ -264,6 +269,11 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		name.setPreferred(true);
 		instance.addName(name);
 	}
+
+    @PropertyGetter("preferredName")
+    public static PersonName getPreferredName(Person instance) {
+        return instance.getPersonName();
+    }
 	
 	@PropertySetter("age")
 	public static void setAge(Person person, Integer age) throws ResourceDoesNotSupportOperationException {
@@ -278,14 +288,14 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 * preferred.
 	 * 
 	 * @param instance
-	 * @param name
+	 * @param address
 	 * @throws ResourceDoesNotSupportOperationException
 	 */
 	@PropertySetter("preferredAddress")
-	public static void setPreferredAddress(Patient instance, PersonAddress address)
+	public static void setPreferredAddress(Person instance, PersonAddress address)
 	        throws ResourceDoesNotSupportOperationException {
 		if (address.getPersonAddressId() == null) {
-			throw new ResourceDoesNotSupportOperationException("Only an exsiting address can be markes as preferred!");
+			throw new ResourceDoesNotSupportOperationException("Only an existing address can be marked as preferred!");
 		}
 		
 		//un mark the current preferred address as preferred if any
@@ -296,7 +306,12 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		address.setPreferred(true);
 		
 	}
-	
+
+    @PropertyGetter("preferredAddress")
+    public static PersonAddress getPreferredAddress(Person instance) {
+        return instance.getPersonAddress();
+    }
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */

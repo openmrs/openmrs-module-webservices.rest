@@ -17,10 +17,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
@@ -391,7 +388,20 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertTrue(hasAnswer(concept, answer2));
 		Assert.assertEquals(2, concept.getAnswers().size());
 	}
-	
+
+	@Test
+	public void shouldReturnDefaultAndSelfLinkForCustomUuid() throws Exception {
+		String conceptUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65";
+
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		request.addParameter("v", "custom:(links)");
+		MockHttpServletResponse response = handle(request);
+		SimpleObject object = deserialize(response);
+		ArrayList<Object> data = (ArrayList<Object>) object.get("links");
+		Assert.assertEquals(data.get(0).toString(),"{rel=self, uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65}");
+		Assert.assertEquals(data.get(1).toString(),"{rel=default, uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65?v=default}");
+	}
+
 	@Test
 	public void shouldReturnCustomRepresentation() throws Exception {
 		String conceptUuid = "95312123-e0c2-466d-b6b1-cb6e990d0d65";

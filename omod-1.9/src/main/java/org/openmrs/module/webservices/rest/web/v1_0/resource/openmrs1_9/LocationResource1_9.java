@@ -13,9 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.LocationAttribute;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -27,10 +24,13 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class LocationResource1_9 extends org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8 {
 	
 	/**
