@@ -726,7 +726,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
 			
 			// try to find a @PropertyGetter-annotated method
-			Method annotatedGetter = findGetterMethod(handler, propertyName);
+			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
@@ -763,7 +763,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 			
 			// try to find a @PropertySetter-annotated method
-			Method annotatedSetter = findSetterMethod(handler, propertyName);
+			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
@@ -795,26 +795,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		catch (Exception ex) {
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
 		}
-	}
-	
-	private Method findSetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
-	}
-	
-	private Method findGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
 	}
 	
 	/**
