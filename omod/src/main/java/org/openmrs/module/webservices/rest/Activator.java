@@ -37,11 +37,6 @@ public class Activator extends BaseModuleActivator {
 	
 	@Override
 	public void stopped() {
-		log.info("Clearing caches...");
-		
-		ConversionUtil.clearCache();
-		ReflectionUtil.clearCaches();
-		
 		log.info("Stopped the REST Web Service module");
 	}
 	
@@ -49,6 +44,11 @@ public class Activator extends BaseModuleActivator {
 	public void contextRefreshed() {
 		// initialize all resources and search handlers
 		Context.getService(RestService.class).initialize();
+		
+		log.info("Clearing caches...");
+		
+		ConversionUtil.clearCache();
+		ReflectionUtil.clearCaches();
 	}
 	
 }

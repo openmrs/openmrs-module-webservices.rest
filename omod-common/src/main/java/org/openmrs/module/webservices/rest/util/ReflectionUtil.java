@@ -20,7 +20,6 @@ import java.lang.reflect.TypeVariable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.sun.tools.javac.util.Pair;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -31,23 +30,23 @@ import org.springframework.util.ReflectionUtils;
  */
 public class ReflectionUtil {
 	
-	private static ConcurrentMap<Pair<DelegatingResourceHandler<?>, String>, Method> setterMethodCache;
+	private static ConcurrentMap<String, Method> setterMethodCache;
 	
-	private static ConcurrentMap<Pair<DelegatingResourceHandler<?>, String>, Method> getterMethodCache;
+	private static ConcurrentMap<String, Method> getterMethodCache;
 	
 	private static Method nullMethod;
 	
 	static {
-		setterMethodCache = new ConcurrentHashMap<Pair<DelegatingResourceHandler<?>, String>, Method>();
-		getterMethodCache = new ConcurrentHashMap<Pair<DelegatingResourceHandler<?>, String>, Method>();
+		setterMethodCache = new ConcurrentHashMap<String, Method>();
+		getterMethodCache = new ConcurrentHashMap<String, Method>();
 		
-		// Just get this method to use as the token null method
+		// Just get a method from this class to use as the token null method
 		nullMethod = ReflectionUtil.class.getDeclaredMethods()[0];
 	}
 	
 	public static void clearCaches() {
-		setterMethodCache = new ConcurrentHashMap<Pair<DelegatingResourceHandler<?>, String>, Method>();
-		getterMethodCache = new ConcurrentHashMap<Pair<DelegatingResourceHandler<?>, String>, Method>();
+		setterMethodCache = new ConcurrentHashMap<String, Method>();
+		getterMethodCache = new ConcurrentHashMap<String, Method>();
 	}
 	
 	/**
@@ -90,7 +89,7 @@ public class ReflectionUtil {
 	}
 	
 	public static <T> Method findPropertyGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		Pair<DelegatingResourceHandler<?>, String> key = new Pair<DelegatingResourceHandler<?>, String>(handler, propName);
+		String key = handler.getClass().getName().concat(propName);
 		Method result = getterMethodCache.get(key);
 		if (result != null) {
 			return result == nullMethod ? null : result;
@@ -114,7 +113,7 @@ public class ReflectionUtil {
 	}
 	
 	public static <T> Method findPropertySetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		Pair<DelegatingResourceHandler<?>, String> key = new Pair<DelegatingResourceHandler<?>, String>(handler, propName);
+		String key = handler.getClass().getName().concat(propName);
 		Method result = setterMethodCache.get(key);
 		if (result != null) {
 			return result == nullMethod ? null : result;
