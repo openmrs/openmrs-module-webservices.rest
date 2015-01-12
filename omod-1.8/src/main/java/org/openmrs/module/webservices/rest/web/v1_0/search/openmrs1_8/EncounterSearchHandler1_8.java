@@ -33,12 +33,14 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
 public class EncounterSearchHandler1_8 implements SearchHandler {
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*"),
-            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType").withRequiredParameters("patient", "encounterType").build()));
+            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType").withRequiredParameters("patient", "encounterType").withOptionalParameters("order").build()));
 
     @Override
     public SearchConfig getSearchConfig() {
@@ -56,6 +58,10 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
         if (patient != null && encounterType != null) {
             List<Encounter> encounters = Context.getEncounterService()
                     .getEncounters(patient, null, null, null, null, Arrays.asList(encounterType), null, false);
+            String order = context.getRequest().getParameter("order");
+            if ("desc".equals(order)) {
+            	Collections.reverse(encounters);
+            }
             return new NeedsPaging<Encounter>(encounters, context);
         }
         return new EmptySearchResult();
