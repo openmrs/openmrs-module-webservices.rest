@@ -15,6 +15,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import static org.hamcrest.core.Is.is;
+import org.junit.Assert;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;

@@ -13,6 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -32,25 +45,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
-
-import java.lang.reflect.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ConversionUtil {
 	
@@ -60,25 +56,79 @@ public class ConversionUtil {
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
 	private static Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
 	
+	private static ConcurrentMap<Class<?>, Converter> converterCache;
+	
+	private static Converter nullConverter;
+	
+	static {
+		converterCache = new ConcurrentHashMap<Class<?>, Converter>();
+		nullConverter = new Converter() {
+			
+			@Override
+			public Object newInstance(String type) {
+				return null;
+			}
+			
+			@Override
+			public Object getByUniqueId(String string) {
+				return null;
+			}
+			
+			@Override
+			public SimpleObject asRepresentation(Object instance, Representation rep) throws ConversionException {
+				return null;
+			}
+			
+			@Override
+			public Object getProperty(Object instance, String propertyName) throws ConversionException {
+				return null;
+			}
+			
+			@Override
+			public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+				
+			}
+		};
+	}
+	
+	public static void clearCache() {
+		converterCache = new ConcurrentHashMap<Class<?>, Converter>();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
+		Converter<T> result = converterCache.get(clazz);
+		if (result != null) {
+			return result == nullConverter ? null : result;
+		}
+		
 		try {
-			
 			try {
 				Resource resource = Context.getService(RestService.class).getResourceBySupportedClass(clazz);
 				
 				if (resource instanceof Converter) {
-					return (Converter<T>) resource;
+					result = (Converter<T>) resource;
 				}
 			}
 			catch (APIException e) {}
 			
-			Converter<T> converter = HandlerUtil.getPreferredHandler(Converter.class, clazz);
-			return converter;
+			if (result == null) {
+				result = HandlerUtil.getPreferredHandler(Converter.class, clazz);
+			}
 		}
 		catch (APIException ex) {
-			return null;
+			result = null;
 		}
+		
+		// At this point, we don't really care if a result was found or not, we cache it regardless so that repeated
+		// searches are not performed.
+		if (result == null) {
+			converterCache.put(clazz, nullConverter);
+		} else {
+			converterCache.put(clazz, result);
+		}
+		
+		return result;
 	}
 	
 	/**

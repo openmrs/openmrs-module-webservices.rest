@@ -17,13 +17,37 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.springframework.util.ReflectionUtils;
 
 /**
  * Utility methods for reflection and introspection
  */
 public class ReflectionUtil {
+	
+	private static ConcurrentMap<String, Method> setterMethodCache;
+	
+	private static ConcurrentMap<String, Method> getterMethodCache;
+	
+	private static Method nullMethod;
+	
+	static {
+		setterMethodCache = new ConcurrentHashMap<String, Method>();
+		getterMethodCache = new ConcurrentHashMap<String, Method>();
+		
+		// Just get a method from this class to use as the token null method
+		nullMethod = ReflectionUtil.class.getDeclaredMethods()[0];
+	}
+	
+	public static void clearCaches() {
+		setterMethodCache = new ConcurrentHashMap<String, Method>();
+		getterMethodCache = new ConcurrentHashMap<String, Method>();
+	}
 	
 	/**
 	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type
@@ -62,5 +86,53 @@ public class ReflectionUtil {
 		if (ret == null)
 			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
 		return ret;
+	}
+	
+	public static <T> Method findPropertyGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
+		String key = handler.getClass().getName().concat(propName);
+		Method result = getterMethodCache.get(key);
+		if (result != null) {
+			return result == nullMethod ? null : result;
+		}
+		
+		for (Method candidate : handler.getClass().getMethods()) {
+			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
+			if (ann != null && ann.value().equals(propName)) {
+				result = candidate;
+				break;
+			}
+		}
+		
+		if (result == null) {
+			getterMethodCache.put(key, nullMethod);
+		} else {
+			getterMethodCache.put(key, result);
+		}
+		
+		return result;
+	}
+	
+	public static <T> Method findPropertySetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
+		String key = handler.getClass().getName().concat(propName);
+		Method result = setterMethodCache.get(key);
+		if (result != null) {
+			return result == nullMethod ? null : result;
+		}
+		
+		for (Method candidate : handler.getClass().getMethods()) {
+			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
+			if (ann != null && ann.value().equals(propName)) {
+				result = candidate;
+				break;
+			}
+		}
+		
+		if (result == null) {
+			setterMethodCache.put(key, nullMethod);
+		} else {
+			setterMethodCache.put(key, result);
+		}
+		
+		return result;
 	}
 }
