@@ -811,9 +811,16 @@ public class RestUtil implements GlobalPropertyListener {
 			map.put("message", reason);
 		} else
 			map.put("message", ex.getMessage());
-		StackTraceElement ste = ex.getStackTrace()[0];
-		map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
-		map.put("detail", ExceptionUtils.getStackTrace(ex));
+		StackTraceElement[] steElements = ex.getStackTrace();
+		if (steElements.length > 0) {
+			StackTraceElement ste = ex.getStackTrace()[0];
+			map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
+			map.put("detail", ExceptionUtils.getStackTrace(ex));
+		} else {
+			map.put("code", "");
+			map.put("detail", "");
+		}
+		
 		return new SimpleObject().add("error", map);
 	}
 	
