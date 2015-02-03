@@ -677,7 +677,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	private boolean unchangedValue(Object oldValue, Object newValue) {
-		if (newValue instanceof Map && oldValue != null) {
+		if (newValue instanceof Map && oldValue != null && !(oldValue instanceof Map)) {
 			newValue = ConversionUtil.convert(newValue, oldValue.getClass());
 			if (oldValue instanceof OpenmrsObject) {
 				return ((OpenmrsObject) oldValue).getUuid().equals(((OpenmrsObject) newValue).getUuid());
