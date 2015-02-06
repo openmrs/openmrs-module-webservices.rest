@@ -13,12 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -133,6 +137,73 @@ public class RestUtilTest {
 		request.setParameter(includeAllParam, (String) null);
 		Assert.assertNull("getBooleanParam should return null if includeAllParam is null",
 		    RestUtil.getBooleanParam(request, includeAllParam));
+	}
+	
+	/**
+	 * @see RestUtil#wrapErrorResponse(Exception,String)
+	 * @verifies sets message to the exception message if the reason given is null
+	 */
+	@Test
+	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsNull() throws Exception {
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), null);
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("exceptionmessage", errorResponseMap.get("message"));
+	}
+	
+	/**
+	 * @see RestUtil#wrapErrorResponse(Exception,String)
+	 * @verifies sets message to the exception message if the reason given is empty
+	 */
+	@Test
+	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsEmpty() throws Exception {
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "");
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("exceptionmessage", errorResponseMap.get("message"));
+	}
+	
+	/**
+	 * @see RestUtil#wrapErrorResponse(Exception,String)
+	 * @verifies sets the reason passed into wrapErrorResponse as the message if it is nonempty
+	 */
+	@Test
+	public void wrapErrorResponse_shouldSetReasonAsMessageIfNotEmpty() throws Exception {
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "reason");
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("reason", errorResponseMap.get("message"));
+	}
+	
+	/**
+	 * @see RestUtil#wrapErrorResponse(Exception,String)
+	 * @verifies set stack trace code if available
+	 */
+	@Test
+	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailIfAvailable() throws Exception {
+		Exception mockException = Mockito.mock(Exception.class);
+		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
+		StackTraceElement ste = new StackTraceElement("org.mypackage.myclassname", "methodName", "fileName", 149);
+		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] { ste });
+		
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(mockException, "wraperrorresponsemessage");
+		
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("org.mypackage.myclassname:149", errorResponseMap.get("code"));
+	}
+	
+	/**
+	 * @see RestUtil#wrapErrorResponse(Exception,String)
+	 * @verifies set stack trace code and detail empty if not available
+	 */
+	@Test
+	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailEmptyIfNotAvailable() throws Exception {
+		Exception mockException = Mockito.mock(Exception.class);
+		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
+		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] {});
+		
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(mockException, "wraperrorresponsemessage");
+		
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("", errorResponseMap.get("code"));
+		Assert.assertEquals("", errorResponseMap.get("detail"));
 	}
 	
 }
