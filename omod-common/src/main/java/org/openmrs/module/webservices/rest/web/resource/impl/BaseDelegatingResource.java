@@ -13,6 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -43,22 +58,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -675,7 +677,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	private boolean unchangedValue(Object oldValue, Object newValue) {
-		if (newValue instanceof Map && oldValue != null) {
+		if (newValue instanceof Map && oldValue != null && !(oldValue instanceof Map)) {
 			newValue = ConversionUtil.convert(newValue, oldValue.getClass());
 			if (oldValue instanceof OpenmrsObject) {
 				return ((OpenmrsObject) oldValue).getUuid().equals(((OpenmrsObject) newValue).getUuid());
@@ -724,7 +726,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
 			
 			// try to find a @PropertyGetter-annotated method
-			Method annotatedGetter = findGetterMethod(handler, propertyName);
+			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
@@ -761,7 +763,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			}
 			
 			// try to find a @PropertySetter-annotated method
-			Method annotatedSetter = findSetterMethod(handler, propertyName);
+			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
@@ -771,7 +773,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
-			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
+			
+			// Convert the value to the specified type
+			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0], instance);
 			
 			if (value instanceof Collection) {
 				//We need to handle collections in a way that Hibernate can track.
@@ -791,26 +795,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		catch (Exception ex) {
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
 		}
-	}
-	
-	private Method findSetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
-	}
-	
-	private Method findGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
 	}
 	
 	/**

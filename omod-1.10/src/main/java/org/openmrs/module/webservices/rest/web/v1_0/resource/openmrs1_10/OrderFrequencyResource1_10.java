@@ -12,6 +12,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import org.openmrs.Concept;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
 
 /**
  * {@link Resource} for {@link OrderFrequency}, supporting standard CRUD operations
@@ -85,13 +87,22 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 	}
 	
 	/**
-	 * Fetches a orderFrequency by uuid
+	 * Fetches a orderFrequency by uuid, or by the uuid or reference term of its concept.
+     * (E.g. supports specifying as "SNOMED CT:307486002")
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public OrderFrequency getByUniqueId(String uuid) {
-		return Context.getOrderService().getOrderFrequencyByUuid(uuid);
+        OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(uuid);
+        if (frequency == null) {
+            // concept resource handles things like "SNOMED CT:307486002" in addition to UUIDs
+            Concept concept = new ConceptResource1_9().getByUniqueId(uuid);
+            if (concept != null) {
+                frequency = Context.getOrderService().getOrderFrequencyByConcept(concept);
+            }
+        }
+        return frequency;
 	}
 	
 	/**

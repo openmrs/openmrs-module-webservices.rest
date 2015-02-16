@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -31,6 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,30 +45,108 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ConversionUtil {
 	
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
+	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
+	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
+	private static Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
+	
+	private static ConcurrentMap<Class<?>, Converter> converterCache;
+	
+	private static Converter nullConverter;
+	
+	static {
+		converterCache = new ConcurrentHashMap<Class<?>, Converter>();
+		nullConverter = new Converter() {
+			
+			@Override
+			public Object newInstance(String type) {
+				return null;
+			}
+			
+			@Override
+			public Object getByUniqueId(String string) {
+				return null;
+			}
+			
+			@Override
+			public SimpleObject asRepresentation(Object instance, Representation rep) throws ConversionException {
+				return null;
+			}
+			
+			@Override
+			public Object getProperty(Object instance, String propertyName) throws ConversionException {
+				return null;
+			}
+			
+			@Override
+			public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+				
+			}
+		};
+	}
+	
+	public static void clearCache() {
+		converterCache = new ConcurrentHashMap<Class<?>, Converter>();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> Converter<T> getConverter(Class<T> clazz) {
+		Converter<T> result = converterCache.get(clazz);
+		if (result != null) {
+			return result == nullConverter ? null : result;
+		}
+		
 		try {
-			
 			try {
 				Resource resource = Context.getService(RestService.class).getResourceBySupportedClass(clazz);
 				
 				if (resource instanceof Converter) {
-					return (Converter<T>) resource;
+					result = (Converter<T>) resource;
 				}
 			}
 			catch (APIException e) {}
 			
-			Converter<T> converter = HandlerUtil.getPreferredHandler(Converter.class, clazz);
-			return converter;
+			if (result == null) {
+				result = HandlerUtil.getPreferredHandler(Converter.class, clazz);
+			}
 		}
 		catch (APIException ex) {
-			return null;
+			result = null;
 		}
+		
+		// At this point, we don't really care if a result was found or not, we cache it regardless so that repeated
+		// searches are not performed.
+		if (result == null) {
+			converterCache.put(clazz, nullConverter);
+		} else {
+			converterCache.put(clazz, result);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Converts the given object to the given type
+	 * 
+	 * @param object The value to convert
+	 * @param toType The type to convert the value to
+	 * @param instance The source object instance
+	 * @return The specified object converted to the specified type
+	 * @should resolve TypeVariables to actual type
+	 */
+	public static Object convert(Object object, Type toType, Object instance) throws ConversionException {
+		if (instance != null && toType instanceof TypeVariable<?>) {
+			TypeVariable<?> temp = ((TypeVariable<?>) toType);
+			toType = getTypeVariableClass(instance.getClass(), temp);
+		}
+		
+		return convert(object, toType);
 	}
 	
 	/**
@@ -288,4 +368,62 @@ public class ConversionUtil {
 		}
 	}
 	
+	/**
+	 * Gets the type for the specified generic type variable.
+	 * 
+	 * @param instanceClass An instance of the class with the specified generic type variable.
+	 * @param typeVariable The generic type variable.
+	 * @return The actual type of the generic type variable or {@code null} if not found.
+	 * @should return the actual type if defined on the parent class
+	 * @should return the actual type if defined on the grand-parent class
+	 * @should return null when actual type cannot be found
+	 * @should return the correct actual type if there are multiple generic types
+	 * @should throw IllegalArgumentException when instance class is null
+	 * @should throw IllegalArgumentException when typeVariable is null
+	 */
+	public static Type getTypeVariableClass(Class<?> instanceClass, TypeVariable<?> typeVariable) {
+		if (instanceClass == null) {
+			throw new IllegalArgumentException("The instance class is required.");
+		}
+		if (typeVariable == null) {
+			throw new IllegalArgumentException("The type variable is required.");
+		}
+		
+		String genericTypeName = typeVariable.getName();
+		Type type = instanceClass;
+		
+		// Check to see if type variable has already been cached
+		Type result = typeVariableMap.get(instanceClass.getName().concat(genericTypeName));
+		
+		// Walk the inheritance chain up and try to find the generic type with the specified name
+		while (result == null && type != null && !type.equals(Object.class)) {
+			if (type instanceof Class) {
+				type = ((Class) type).getGenericSuperclass();
+			} else {
+				ParameterizedType parameterizedType = (ParameterizedType) type;
+				Class<?> rawType = (Class) parameterizedType.getRawType();
+				
+				Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+				TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+				for (int i = 0; i < actualTypeArguments.length; i++) {
+					String name = typeParameters[i].getName();
+					Type actualType = actualTypeArguments[i];
+					
+					// Cache each generic type's actual type
+					typeVariableMap.put(instanceClass.getName().concat(name), actualType);
+					
+					if (name.equals(genericTypeName)) {
+						// Found it
+						result = actualType;
+						break;
+					}
+				}
+				
+				// Move up to the parent class
+				type = rawType.getGenericSuperclass();
+			}
+		}
+		
+		return result;
+	}
 }

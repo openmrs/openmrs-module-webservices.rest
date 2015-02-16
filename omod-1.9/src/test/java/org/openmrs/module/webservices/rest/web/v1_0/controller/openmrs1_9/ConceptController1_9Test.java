@@ -14,34 +14,17 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
-import java.util.Map;
-import java.lang.*;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.ConceptName;
-import org.openmrs.ConceptSet;
-import org.openmrs.Drug;
-import org.openmrs.api.APIException;
-import org.openmrs.api.ConceptNameType;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -49,13 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * the controller inherits those methods from a subclass
  */
 public class ConceptController1_9Test extends MainResourceControllerTest {
-
-	private ConceptService service;
-
-	@Before
-		public void before() {
-			this.service = Context.getConceptService();
-		}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
@@ -103,4 +79,13 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
         Object next = results.iterator().next();
         Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
     }
+    
+	@Test
+	public void shouldFindConceptByReferenceTerm() throws Exception {
+		executeDataSet("customConceptDataset1_9.xml");
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + "CIEL:WGT234");
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+	}
+	
 }

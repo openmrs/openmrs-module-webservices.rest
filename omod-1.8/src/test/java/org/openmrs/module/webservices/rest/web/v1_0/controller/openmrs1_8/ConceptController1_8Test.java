@@ -13,13 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.collection.IsMapContaining;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,9 +45,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -397,9 +402,10 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		request.addParameter("v", "custom:(links)");
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
-		ArrayList<Object> data = (ArrayList<Object>) object.get("links");
-		Assert.assertEquals(data.get(0).toString(),"{rel=self, uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65}");
-		Assert.assertEquals(data.get(1).toString(),"{rel=default, uri=NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65?v=default}");
+		List<Map<String, String>> data = (List<Map<String, String>>) object.get("links");
+		Assert.assertThat(data, contains(allOf(hasEntry("rel", "self"), 
+			hasEntry("uri", "NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65")),
+			allOf(hasEntry("rel", "default"), hasEntry("uri", "NEED-TO-CONFIGURE/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65?v=default"))));
 	}
 
 	@Test
