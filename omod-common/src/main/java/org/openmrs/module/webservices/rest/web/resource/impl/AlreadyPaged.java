@@ -19,8 +19,10 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 
 /**
- * Wraps a list of search results that has already had the paging settings from the RequestContext applied.
- * This should be used by implementations of {@link Searchable} that can natively query in a page-limited way.
+ * Wraps a list of search results that has already had the paging settings from the RequestContext
+ * applied. This should be used by implementations of {@link Searchable} that can natively query in
+ * a page-limited way.
+ * 
  * @param <T> the generic type of the list of results
  */
 public class AlreadyPaged<T> extends BasePageableResult<T> {

@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Map;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,10 +28,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.HL7MessageController1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.IncomingHl7Message1_8;
 
+import java.util.Map;
+
 /**
  * {@link Resource} for {@link IncomingHl7Message1_8}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/hl7", supportedClass = IncomingHl7Message1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/hl7", supportedClass = IncomingHl7Message1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl7Message1_8> {
 	
 	/**
@@ -104,7 +104,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 	 *      boolean)
 	 */
 	@Override
-	protected void setConvertedProperties(IncomingHl7Message1_8 delegate, Map<String, Object> propertyMap,
+	public void setConvertedProperties(IncomingHl7Message1_8 delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
 			setProperty(delegate, prop.getKey(), prop.getValue());

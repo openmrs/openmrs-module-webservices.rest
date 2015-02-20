@@ -84,4 +84,8 @@ public class RestTestConstants1_8 {
 	public static final String CONCEPT_SOURCE_UUID = "75f5b378-5065-11de-80cb-001e378eb67e";
 	
 	public static final String PRIVILEGE_UUID = "d979d066-15e6-467c-9d4b-cb575ef97f0f";
+
+    public static final String RELATIONSHIP_UUID = "c18717dd-5d78-4a0e-84fc-ee62c5f0676a";
+
+    public static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
 }

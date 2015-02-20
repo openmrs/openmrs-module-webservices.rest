@@ -31,15 +31,17 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	////this is the value of the path attribute on the SubResource annotation
 	private String subResourceName;
 	
-	private String url;
+	private String subtypeHandlerForResourceName;
 	
-	private ResourceDoc superResource;
+	private String url;
 	
 	private List<ResourceOperation> operations = new ArrayList<ResourceOperation>();
 	
 	private List<ResourceRepresentation> representations = new ArrayList<ResourceRepresentation>();
 	
 	private List<ResourceDoc> subResources = new ArrayList<ResourceDoc>();
+	
+	private List<ResourceDoc> subtypeHandlers = new ArrayList<ResourceDoc>();
 	
 	public ResourceDoc(String name) {
 		setName(name);
@@ -79,6 +81,10 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	 */
 	public void setSubResourceName(String subResourceName) {
 		this.subResourceName = subResourceName;
+	}
+	
+	public String getSubtypeHandlerForResourceName() {
+		return subtypeHandlerForResourceName;
 	}
 	
 	public String getUrl() {
@@ -121,15 +127,16 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	}
 	
 	public void addSubResource(ResourceDoc resourceDoc) {
-		resourceDoc.superResource = this;
 		subResources.add(resourceDoc);
 	}
 	
-	/**
-	 * @return the superResource
-	 */
-	public ResourceDoc getSuperResource() {
-		return superResource;
+	public List<ResourceDoc> getSubtypeHandlers() {
+		return subtypeHandlers;
+	}
+	
+	public void addSubtypeHandler(ResourceDoc resourceDoc) {
+		resourceDoc.subtypeHandlerForResourceName = this.name;
+		subtypeHandlers.add(resourceDoc);
 	}
 	
 	@Override
@@ -138,8 +145,8 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		
 		text.append("h1. " + name);
 		
-		if (superResource != null) {
-			text.append(" subclass of " + superResource.getName());
+		if (subResourceName != null) {
+			text.append(" (subclass)");
 		}
 		
 		if (!operations.isEmpty()) {
@@ -194,4 +201,13 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	public int compareTo(ResourceDoc doc) {
 		return name.compareTo(doc.getName());
 	}
+	
+	public boolean isSubResource() {
+		return subResourceName != null;
+	}
+	
+	public boolean isSubtypeHandler() {
+		return subtypeHandlerForResourceName != null;
+	}
+	
 }

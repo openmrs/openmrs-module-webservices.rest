@@ -81,11 +81,9 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
 		if (delegate.isRetired()) {
 			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(delegate, "retiredBy", Representation.REF));
-			ret
-			        .put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(),
-			            Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil.convertToRepresentation(delegate.getRetireReason(),
-			    Representation.DEFAULT));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(delegate.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason",
+			    ConversionUtil.convertToRepresentation(delegate.getRetireReason(), Representation.DEFAULT));
 		}
 		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
 		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
@@ -114,15 +112,43 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	 * 
 	 * @param delegate the meta-data object.
 	 * @return the display string.
+	 * @should return a localized message if specified
+	 * @should return the name property when no localized message is specified
+	 * @should return the empty string when no localized message is specified and the name property
+	 *         is null
 	 */
 	public String getDisplayString(T delegate) {
-		StringBuilder displayString = null;
-		if (StringUtils.isNotBlank(delegate.getName())) {
-			displayString = new StringBuilder(delegate.getName());
+		String localization = getLocalization(delegate.getClass().getSimpleName(), delegate.getUuid());
+		if (localization != null) {
+			return localization;
 		} else {
-			displayString = new StringBuilder();
+			return StringUtils.isEmpty(delegate.getName()) ? "" : delegate.getName();
 		}
-		return displayString.toString();
+	}
+	
+	/**
+	 * This code is largely copied from the UI Framework:
+	 * org.openmrs.ui.framework.FormatterImpl#format(org.openmrs.OpenmrsMetadata, java.util.Locale)
+	 * 
+	 * @param shortClassName
+	 * @param uuid
+	 * @return localization for the given metadata, from message source, in the authenticated locale
+	 */
+	private String getLocalization(String shortClassName, String uuid) {
+		// in case this is a hibernate proxy, strip off anything after an underscore
+		// ie: EncounterType_$$_javassist_26 needs to be converted to EncounterType
+		int underscoreIndex = shortClassName.indexOf("_$");
+		if (underscoreIndex > 0) {
+			shortClassName = shortClassName.substring(0, underscoreIndex);
+		}
+		
+		String code = "ui.i18n." + shortClassName + ".name." + uuid;
+		String localization = Context.getMessageSourceService().getMessage(code);
+		if (localization == null || localization.equals(code)) {
+			return null;
+		} else {
+			return localization;
+		}
 	}
 	
 	/**

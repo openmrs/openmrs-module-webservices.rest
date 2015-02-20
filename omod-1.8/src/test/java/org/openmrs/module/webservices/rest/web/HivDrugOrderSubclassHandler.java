@@ -17,6 +17,7 @@ import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
+import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -30,6 +31,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * This is a contrived example for testing purposes
  */
+@SubClassHandler(supportedClass = HivDrugOrder.class, supportedOpenmrsVersions = {"1.8.*"})
 public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Order, HivDrugOrder> implements DelegatingSubclassHandler<Order, HivDrugOrder> {
 	
 	/**

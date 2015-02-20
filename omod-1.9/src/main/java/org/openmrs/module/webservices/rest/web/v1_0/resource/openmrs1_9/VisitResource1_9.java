@@ -12,8 +12,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.Set;
-
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
@@ -36,10 +34,14 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	/**
@@ -177,25 +179,8 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			return;
 		Context.getVisitService().purgeVisit(visit);
 	}
-	
-	/**
-	 * Gets un voided visits for the given patient including inactive ones
-	 * 
-	 * @param patientUniqueId @see {@link PatientResource1_8#getByUniqueId(String)} for interpretation
-	 * @param context
-	 * @return
-	 * @throws ResponseException
-	 */
-	public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient"))
-		        .getByUniqueId(patientUniqueId);
-		if (patient == null)
-			throw new ObjectNotFoundException();
-		return new NeedsPaging<Visit>(Context.getVisitService().getVisitsByPatient(patient, true, false), context)
-		        .toSimpleObject();
-	}
-	
-	/**
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
@@ -222,11 +207,26 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
-		String parameter = context.getRequest().getParameter("patient");
-		if (parameter != null) {
-			return getVisitsByPatient(parameter, context);
-		} else {
-			return super.search(context);
+		String patientParameter = context.getRequest().getParameter("patient");
+		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
+		if(patientParameter != null || includeInactiveParameter != null) {
+		    return getVisits(context, patientParameter, includeInactiveParameter);
+		}
+		else {
+		    return super.search(context);
 		}
 	}
+
+	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter) {
+		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
+		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null, null, null, includeInactive, false), context).toSimpleObject(this);
+	}
+
+    private Patient getPatient(String patientUniqueId) {
+        Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
+        if (patient == null)
+            throw new ObjectNotFoundException();
+        return patient;
+    }
 }

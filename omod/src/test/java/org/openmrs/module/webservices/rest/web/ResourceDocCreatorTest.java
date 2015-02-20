@@ -13,18 +13,28 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.util.List;
-
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.webservices.docs.ResourceDoc;
 import org.openmrs.module.webservices.docs.ResourceDocCreator;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
+import java.util.List;
+
 /**
  * Unit test for generating as much documentation as can be got from the source code.
  */
+@Ignore
 public class ResourceDocCreatorTest extends BaseModuleWebContextSensitiveTest {
+	
+	@Ignore("This won't work unless you increase the openmrs-core version to 1.10.0")
+	@Test
+	public void testCreatingCatalog() throws Exception {
+		List<ResourceDoc> resourceDocs = ResourceDocCreator.create("/ws");
+		String json = new ObjectMapper().writeValueAsString(resourceDocs);
+		System.out.println(json);
+	}
 	
 	@Test
 	@Ignore

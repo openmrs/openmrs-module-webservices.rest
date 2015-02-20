@@ -3,13 +3,22 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>webservices.rest</artifactId>
-		<version>2.0.1-SNAPSHOT</version>
+		<version>2.11-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-omod-common</artifactId>
 	<packaging>jar</packaging>
 	<name>Rest Web Services Common OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
+	<dependencies>
+		<dependency>
+		      <groupId>org.apache.tomcat</groupId>
+		      <artifactId>jasper</artifactId>
+		      <version>6.0.18</version>
+		      <scope>provided</scope>
+	     </dependency>
+	</dependencies>
+	
 	<build>
 		<resources>
 			<resource>

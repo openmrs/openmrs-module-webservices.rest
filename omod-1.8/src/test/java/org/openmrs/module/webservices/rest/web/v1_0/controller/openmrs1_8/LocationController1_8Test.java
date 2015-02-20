@@ -31,11 +31,16 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 /**
  * Tests functionality of {@link LocationController}. 
  */
 public class LocationController1_8Test extends MainResourceControllerTest {
-	
+
+    private static final String LOCATION_TAG_INITIAL_XML = "customLocationTagDataset.xml";
+
 	private LocationService service;
 	
 	@Before
@@ -137,7 +142,23 @@ public class LocationController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(editedName, editedLocation.getName());
 		
 	}
-	
+
+    /**
+     * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't been updated
+     */
+    @Test
+    public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
+        MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + getUuid());
+        SimpleObject location = deserialize(handle(get));
+        location.put("name", "New York");
+
+        MockHttpServletRequest post = newPostRequest(getURI() + "/" + getUuid(), location);
+        handle(post);
+
+        Location updatedLocation = service.getLocationByUuid(getUuid());
+        assertThat(updatedLocation.getName(), is("New York"));
+    }
+
 	@Test
 	public void shouldOverwriteAListOfChildLocations() throws Exception {
 		
@@ -240,5 +261,49 @@ public class LocationController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
-	
+
+    @Test
+    public void shouldSearchAndReturnListOfLocationsWithSpecifiedTag() throws Exception {
+
+        executeDataSet(LOCATION_TAG_INITIAL_XML);
+
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("tag", "001e503a-47ed-11df-bc8b-001e378eb67e");
+
+        SimpleObject result = deserialize(handle(req));
+        List<Object> hits = (List<Object>) result.get("results");
+        Assert.assertEquals(1, hits.size());    // should ignore retired location?
+        Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+    }
+
+    @Test
+    public void shouldSearchAndReturnListOfLocationsWithSpecifiedTagAndQueryString() throws Exception {
+
+        executeDataSet(LOCATION_TAG_INITIAL_XML);
+
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("tag", "0940c6d4-47ed-11df-bc8b-001e378eb67e");
+        req.addParameter("q", "Xan");
+
+        SimpleObject result = deserialize(handle(req));
+        List<Object> hits = (List<Object>) result.get("results");
+        Assert.assertEquals(1, hits.size());    // should ignore retired location?
+        Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+    }
+
+
+    @Test
+    public void shouldSearchAndReturnNothingIfTagDoesNotMatchEvenIfQueryDoes() throws Exception {
+
+        executeDataSet(LOCATION_TAG_INITIAL_XML);
+
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.addParameter("tag", "invalid-uuid");
+        req.addParameter("q", "Xan");
+
+        SimpleObject result = deserialize(handle(req));
+        List<Object> hits = (List<Object>) result.get("results");
+        Assert.assertEquals(0, hits.size());    // should ignore retired location?
+    }
+
 }

@@ -14,11 +14,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -322,5 +326,54 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 	public long getAllCount() {
 		return 0; //Not supported
 	}
-	
+
+	/**
+	 * @verifies setting observation group members
+	 */
+	@Test
+	public void setGroupMembers_shouldSetObservationGroupMembers () throws Exception {
+		executeDataSet("obsWithGroupMembers.xml");
+		String obsWannaBeParentUuid = "5117f5d4-96cc-11e0-8d6b-9b9415a91439";
+
+		// check if obs is a group parent
+		assertTrue(Context.getObsService().getObsByUuid(obsWannaBeParentUuid).
+				getGroupMembers().isEmpty());
+
+		String json = "{\"groupMembers\" : [\"5117f5d4-96cc-11e0-8d6b-9b9415a91433\", " +
+				"\"5117f5d4-96cc-11e0-8d6b-9b9415a91436\"]}";
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() +
+				"/" + obsWannaBeParentUuid);
+		req.setContent(json.getBytes());
+
+		Object response = deserialize(handle(req));
+		// get uuid for observation's new instance
+		String newObsUuid = PropertyUtils.getProperty(response, "uuid").toString();
+
+		assertFalse(Context.getObsService().getObsByUuid(newObsUuid).
+				getGroupMembers().isEmpty());
+
+	}
+
+
+    @Test
+    public void shouldGetObsByPatientAndConceptSet() throws Exception {
+        executeDataSet("obsWithGroupMembers.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("concept", "3f596de5-5caa-11e3-a4c0-0800271c1b75"))));
+        Util.log("Obs fetched (default)", result);
+
+        assertEquals(2,((ArrayList)result.get("results")).size());
+    }
+
+    @Test
+    public void shouldGetObsByPatient() throws Exception {
+        executeDataSet("obsWithGroupMembers.xml");
+
+        SimpleObject result = deserialize(handle(newGetRequest(getURI(),new Parameter("patient","86526ed5-3c11-11de-a0ba-001e378eb67a"))));
+
+        assertEquals(8,((ArrayList)result.get("results")).size());
+    }
+
+
 }

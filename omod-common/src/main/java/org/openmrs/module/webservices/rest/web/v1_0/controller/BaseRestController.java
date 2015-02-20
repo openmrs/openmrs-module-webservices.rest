@@ -13,14 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,13 +41,24 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/rest/**")
 public class BaseRestController {
 	
-	private int errorCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+	private final int DEFAULT_ERROR_CODE = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	
-	private String errorDetail;
+	private static final String DISABLE_WWW_AUTH_HEADER_NAME = "Disable-WWW-Authenticate";
 	
+	private final String DEFAULT_ERROR_DETAIL = "";
+	
+	private final Log log = LogFactory.getLog(getClass());
+	
+	/**
+	 * @should return unauthorized if not logged in
+	 * @should return forbidden if logged in
+	 */
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody
-	private SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletResponse response) throws Exception {
+	public SimpleObject apiAuthenticationExceptionHandler(Exception ex, HttpServletRequest request,
+	        HttpServletResponse response) throws Exception {
+		int errorCode;
+		String errorDetail;
 		if (Context.isAuthenticated()) {
 			// user is logged in but doesn't have the relevant privilege -> 403 FORBIDDEN
 			errorCode = HttpServletResponse.SC_FORBIDDEN;
@@ -52,15 +67,29 @@ public class BaseRestController {
 			// user is not logged in -> 401 UNAUTHORIZED
 			errorCode = HttpServletResponse.SC_UNAUTHORIZED;
 			errorDetail = "User is not logged in";
-			response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
+			if (shouldAddWWWAuthHeader(request)) {
+				response.addHeader("WWW-Authenticate", "Basic realm=\"OpenMRS at " + RestConstants.URI_PREFIX + "\"");
+			}
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
 	}
 	
+	@ExceptionHandler(ValidationException.class)
+	@ResponseBody
+	public SimpleObject validationExceptionHandler(ValidationException validationException, HttpServletRequest request,
+	        HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return RestUtil.wrapValidationErrorResponse(validationException);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	@ResponseBody
-	private SimpleObject handleException(Exception ex, HttpServletResponse response) throws Exception {
+	public SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
+	        throws Exception {
+		log.error(ex.getMessage(), ex);
+		int errorCode = DEFAULT_ERROR_CODE;
+		String errorDetail = DEFAULT_ERROR_DETAIL;
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			errorCode = ann.value().value();
@@ -69,12 +98,17 @@ public class BaseRestController {
 			}
 			
 		} else if (RestUtil.hasCause(ex, APIAuthenticationException.class)) {
-			return apiAuthenticationExceptionHandler(ex, response);
+			return apiAuthenticationExceptionHandler(ex, request, response);
 		} else if (ex.getClass() == HttpRequestMethodNotSupportedException.class) {
 			errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
+	}
+	
+	private boolean shouldAddWWWAuthHeader(HttpServletRequest request) {
+		return request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME) == null
+		        || !request.getHeader(DISABLE_WWW_AUTH_HEADER_NAME).equals("true");
 	}
 	
 	/**

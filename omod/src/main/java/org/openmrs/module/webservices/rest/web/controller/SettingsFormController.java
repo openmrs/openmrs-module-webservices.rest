@@ -106,7 +106,8 @@ public class SettingsFormController {
 		}
 		
 		/**
-		 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
+		 * @see org.springframework.validation.Validator#validate(java.lang.Object,
+		 *      org.springframework.validation.Errors)
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
@@ -146,8 +147,9 @@ public class SettingsFormController {
 		
 		/**
 		 * Returns the global property for the given propertyName
+		 * 
 		 * @param propertyName
-		 * @return 
+		 * @return
 		 */
 		public GlobalProperty getProperty(String propertyName) {
 			GlobalProperty prop = null;

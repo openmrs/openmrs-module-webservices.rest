@@ -13,21 +13,22 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
-import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Creatable;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
+import org.openmrs.module.webservices.rest.web.resource.api.Deletable;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
+import org.openmrs.module.webservices.rest.web.resource.api.Purgeable;
+import org.openmrs.module.webservices.rest.web.resource.api.Retrievable;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
+import org.openmrs.module.webservices.rest.web.resource.api.Updatable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +40,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
+
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
  * operations based on a {@link CrudResource}.
- * 
- * @param <R>
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
@@ -61,9 +64,9 @@ public class MainResourceController extends BaseRestController {
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
-	        HttpServletRequest request) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Retrievable res = (Retrievable) restService.getResourceByName(buildResourceName(resource));
 		return res.retrieve(uuid, context);
 	}
 	
@@ -78,8 +81,8 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
 	}
@@ -97,8 +100,8 @@ public class MainResourceController extends BaseRestController {
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
 		Object updated = res.update(uuid, post, context);
 		return RestUtil.updated(response, updated);
 	}
@@ -114,8 +117,8 @@ public class MainResourceController extends BaseRestController {
 	public Object delete(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
@@ -130,14 +133,13 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
-		RequestContext context = RestUtil.getRequestContext(request);
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Purgeable res = (Purgeable) restService.getResourceByName(buildResourceName(resource));
 		res.purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
 	
 	/**
-	 * @param query
 	 * @param request
 	 * @param response
 	 * @return
@@ -148,14 +150,15 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
-		CrudResource res = (CrudResource) restService.getResourceByName(buildResourceName(resource));
+		Object res = restService.getResourceByName(buildResourceName(resource));
+		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
-		RequestContext context = RestUtil.getRequestContext(request, Representation.REF);
+		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
 		
 		@SuppressWarnings("unchecked")
 		SearchHandler searchHandler = restService.getSearchHandler(buildResourceName(resource), request.getParameterMap());
 		if (searchHandler != null) {
-			return searchHandler.search(context).toSimpleObject();
+			return searchHandler.search(context).toSimpleObject(conv);
 		}
 		
 		Enumeration parameters = request.getParameterNames();

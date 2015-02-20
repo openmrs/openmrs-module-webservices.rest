@@ -29,6 +29,7 @@ public interface RestService {
 	
 	/**
 	 * Parses a representation requested by the client via the http request
+	 * 
 	 * @param requested
 	 * @return
 	 * @should get ref representation when specified
@@ -50,14 +51,15 @@ public interface RestService {
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
-	 * Returns a search handler, which supports the given resource and the map of parameters and values.
+	 * Returns a search handler, which supports the given resource and the map of parameters and
+	 * values.
 	 * 
 	 * @param resourceName
 	 * @param parameters
 	 * @return searchHandler or <code>null</code> if no match
 	 * @throws APIException
 	 */
-	SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException;
+	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
 	 * Returns all {@link DelegatingResourceHandler}s
@@ -66,4 +68,9 @@ public interface RestService {
 	 * @throws APIException
 	 */
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
+	
+	/**
+	 * Initializes all Resources and Search handlers for use; called after module startup
+	 */
+	public void initialize();
 }

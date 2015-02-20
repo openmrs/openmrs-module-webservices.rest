@@ -22,7 +22,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public interface Deletable extends Resource {
 	
 	/**
-	 * Deletes the specified resource, which in the OpenMRS context means either voiding or retiring it
+	 * Deletes the specified resource, which in the OpenMRS context means either voiding or retiring
+	 * it
+	 * 
 	 * @param uuid
 	 * @param reason
 	 * @param context

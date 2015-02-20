@@ -13,9 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -32,6 +44,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
+import org.xml.sax.InputSource;
 
 /**
  * Facilitates testing controllers.
@@ -206,4 +219,37 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	 * @return the count of all not retired/voided objects
 	 */
 	public abstract long getAllCount();
+	
+	/**
+	 * Evaluates an XPath expression on a XML string
+	 * 
+	 * @param xml
+	 * @param xPath
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	protected String evaluateXPath(String xml, String xPath) throws XPathExpressionException {
+		InputSource source = new InputSource(new StringReader(xml));
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		return xpath.evaluate(xPath, source);
+	}
+	
+	/**
+	 * Prints an XML string indented
+	 * 
+	 * @param xml
+	 * @throws TransformerException
+	 */
+	protected void printXML(String xml) throws TransformerException {
+		
+		Source xmlInput = new StreamSource(new StringReader(xml));
+		StringWriter stringWriter = new StringWriter();
+		
+		Transformer transformer = TransformerFactory.newInstance().newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, new StreamResult(stringWriter));
+		
+		System.out.println(stringWriter.toString());
+	}
+	
 }

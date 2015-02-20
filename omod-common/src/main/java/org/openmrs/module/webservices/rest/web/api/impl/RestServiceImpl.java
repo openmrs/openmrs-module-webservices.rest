@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleException;
@@ -49,9 +50,9 @@ import org.openmrs.util.OpenmrsConstants;
  */
 public class RestServiceImpl implements RestService {
 	
-	private volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
+	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 	
-	private volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
+	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
 	
@@ -291,6 +292,7 @@ public class RestServiceImpl implements RestService {
 			}
 			
 		}
+		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
@@ -396,14 +398,29 @@ public class RestServiceImpl implements RestService {
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
 		initializeResources();
 		
+		if (HibernateProxy.class.isAssignableFrom(resourceClass)) {
+			resourceClass = resourceClass.getSuperclass();
+		}
+		
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
+		
 		if (resource == null) {
-			for (Entry<Class<?>, Resource> resourceBySupportedClass : resourcesBySupportedClasses.entrySet()) {
-				if (resourceBySupportedClass.getKey().isAssignableFrom(resourceClass)) {
-					return resourceBySupportedClass.getValue();
+			Entry<Class<?>, Resource> bestResourceEntry = null;
+			
+			for (Entry<Class<?>, Resource> resourceEntry : resourcesBySupportedClasses.entrySet()) {
+				if (resourceEntry.getKey().isAssignableFrom(resourceClass)) {
+					if (bestResourceEntry == null || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey())) {
+						bestResourceEntry = resourceEntry;
+					}
 				}
 			}
 			
+			if (bestResourceEntry != null) {
+				resource = bestResourceEntry.getValue();
+			}
+		}
+		
+		if (resource == null) {
 			throw new APIException("Unknown resource: " + resourceClass);
 		} else {
 			return resource;
@@ -433,14 +450,14 @@ public class RestServiceImpl implements RestService {
 	 * @should return handler if case 2
 	 */
 	@Override
-	public SearchHandler getSearchHandler(String resourceName, Map<String, String> parameters) throws APIException {
+	public SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException {
 		initializeSearchHandlers();
 		
-		String searchId = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
-		if (searchId != null) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchId));
+		String[] searchIds = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
+		if (searchIds != null && searchIds.length > 0) {
+			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchIds[0]));
 			if (searchHandler == null) {
-				throw new InvalidSearchException("The search with id '" + searchId + "' for '" + resourceName
+				throw new InvalidSearchException("The search with id '" + searchIds[0] + "' for '" + resourceName
 				        + "' resource is not recognized");
 			} else {
 				return searchHandler;
@@ -540,4 +557,16 @@ public class RestServiceImpl implements RestService {
 		return resourceHandlers;
 	}
 	
+	@Override
+	public void initialize() {
+		
+		// first clear out any existing values
+		resourceDefinitionsByNames = null;
+		resourcesBySupportedClasses = null;
+		searchHandlersByIds = null;
+		searchHandlersByParameter = null;
+		
+		initializeResources();
+		initializeSearchHandlers();
+	}
 }

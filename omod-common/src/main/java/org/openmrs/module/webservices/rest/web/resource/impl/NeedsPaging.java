@@ -19,8 +19,10 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 
 /**
- * Wraps a list of search results that has not yet had any possible paging settings from the request context applied.
- * Typically this will be used by implementations of {@link Searchable} and {@link Listable} that do not have a native query capable of doing a page-limited search
+ * Wraps a list of search results that has not yet had any possible paging settings from the request
+ * context applied. Typically this will be used by implementations of {@link Searchable} and
+ * {@link Listable} that do not have a native query capable of doing a page-limited search
+ * 
  * @param <T> the generic type of the list of results
  */
 public class NeedsPaging<T> extends BasePageableResult<T> {

@@ -18,23 +18,29 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
 /**
- * Implement and register one of these for each subclass handled by a class-hierarchy-supporting resource 
+ * Implement and register one of these for each subclass handled by a class-hierarchy-supporting
+ * resource
  */
 public interface DelegatingSubclassHandler<Superclass, Subclass extends Superclass> extends DelegatingResourceHandler<Subclass> {
 	
 	/**
-	 * @return the user-friendly name for the type this handles (e.g. "drugorder" for org.openmrs.DrugOrder)
+	 * @return the user-friendly name for the type this handles (e.g. "drugorder" for
+	 *         org.openmrs.DrugOrder)
 	 */
 	String getTypeName();
 	
 	/**
-	 * Convenience method that lets you retrieve the declared superclass at runtime without needing to use introspection yourself
+	 * Convenience method that lets you retrieve the declared superclass at runtime without needing
+	 * to use introspection yourself
+	 * 
 	 * @return
 	 */
 	Class<Superclass> getSuperclass();
 	
 	/**
-	 * Convenience method that lets you retrieve the declared subclass at runtime without needing to use introspection yourself
+	 * Convenience method that lets you retrieve the declared subclass at runtime without needing to
+	 * use introspection yourself
+	 * 
 	 * @return
 	 */
 	Class<Subclass> getSubclassHandled();
@@ -44,7 +50,8 @@ public interface DelegatingSubclassHandler<Superclass, Subclass extends Supercla
 	 * 
 	 * @param context
 	 * @return
-	 * @throws ResourceDoesNotSupportOperationException if this resource does not support the operation
+	 * @throws ResourceDoesNotSupportOperationException if this resource does not support the
+	 *             operation
 	 */
 	PageableResult getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException;
 	

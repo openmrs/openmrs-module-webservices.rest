@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openmrs.Patient;
@@ -30,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -40,11 +42,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	
 	public PatientResource1_8() {
@@ -141,16 +144,17 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		description.addRequiredProperty("identifiers");
 		return description;
 	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-	 */
-	@Override
-	public DelegatingResourceDescription getUpdatableProperties() {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		return description;
-	}
-	
+
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+     */
+    @Override
+    public DelegatingResourceDescription getUpdatableProperties() {
+        DelegatingResourceDescription description = new DelegatingResourceDescription();
+        description.addRequiredProperty("person");
+        return description;
+    }
+    
 	/**
 	 * The method is overwritten, because we need to create a patient from an existing person. In
 	 * the POST body only person and identifiers are provided and other properties must come from
@@ -162,22 +166,31 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
-		Object object = propertiesToCreate.get("person");
-		if (object == null) {
-			throw new ConversionException("The person property is missing");
-		}
-		Person person = Context.getPersonService().getPersonByUuid((String) object);
-		
-		Patient delegate = new Patient(person);
-		
-		Context.evictFromSession(person);
-		
-		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
+        Patient delegate = getPatient(propertiesToCreate);
+        ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		return ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 	}
-	
-	/**
+
+    public Patient getPatient(SimpleObject propertiesToCreate) {
+        Object personProperty = propertiesToCreate.get("person");
+        Person person = null;
+        if (personProperty == null) {
+            throw new ConversionException("The person property is missing");
+        } else if (personProperty instanceof String) {
+            person = Context.getPersonService().getPersonByUuid((String) personProperty);
+            Context.evictFromSession(person);
+        } else if (personProperty instanceof Map) {
+            person = (Person) ConversionUtil.convert(personProperty, Person.class);
+            propertiesToCreate.put("person", "");
+        }
+
+        Patient delegate = new Patient(person);
+        setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
+        return delegate;
+    }
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
 	@Override
@@ -254,5 +267,23 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		
 		return patient.getPatientIdentifier().getIdentifier() + " - " + patient.getPersonName().getFullName();
 	}
+
+    @Override
+    public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+        if(propertiesToUpdate.get("person") == null) {
+            return super.update(uuid, propertiesToUpdate, context);
+        }
+        Patient patient = getPatientForUpdate(uuid, propertiesToUpdate);
+        ValidateUtil.validate(patient);
+        patient = save(patient);
+        return ConversionUtil.convertToRepresentation(patient, Representation.DEFAULT);
+    }
+
+    public Patient getPatientForUpdate(String uuid, Map<String, Object> propertiesToUpdate) {
+        Patient patient = getByUniqueId(uuid);
+        PersonResource1_8 personResource = (PersonResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Person.class);
+        personResource.setConvertedProperties(patient, (Map<String, Object>) propertiesToUpdate.get("person"), personResource.getUpdatableProperties(), false);
+        return patient;
+    }
 	
 }

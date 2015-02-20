@@ -15,22 +15,40 @@ package org.openmrs.module.webservices.rest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
+import org.openmrs.module.webservices.rest.util.ReflectionUtil;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 
 /**
- * {@link ModuleActivator} for the webservices.rest module 
+ * {@link ModuleActivator} for the webservices.rest module
  */
 public class Activator extends BaseModuleActivator {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
+	@Override
 	public void started() {
 		log.info("Started the REST Web Service module");
 	}
 	
+	@Override
 	public void stopped() {
 		log.info("Stopped the REST Web Service module");
+	}
+	
+	@Override
+	public void contextRefreshed() {
+		// initialize all resources and search handlers
+		Context.getService(RestService.class).initialize();
+		
+		log.info("Clearing caches...");
+		
+		ConversionUtil.clearCache();
+		ReflectionUtil.clearCaches();
 	}
 	
 }

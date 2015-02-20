@@ -13,18 +13,21 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Base implementation that converts the result list to the requested representation, and adds next/prev links if necessary 
+ * Base implementation that converts the result list to the requested representation, and adds
+ * next/prev links if necessary
+ * 
  * @param <T> the generic type of the list of results
  */
 public abstract class BasePageableResult<T> implements PageableResult {
@@ -36,13 +39,14 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	public abstract boolean hasMoreResults();
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchResult#toSimpleObject()
+	 * @see PageableResult#toSimpleObject(Converter)
 	 */
 	@Override
-	public SimpleObject toSimpleObject() throws ResponseException {
+	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
-		for (T match : getPageOfResults())
-			results.add(ConversionUtil.convertToRepresentation(match, context.getRepresentation()));
+		for (T match : getPageOfResults()) {
+			results.add(ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter));
+		}
 		
 		SimpleObject ret = new SimpleObject().add("results", results);
 		boolean hasMore = hasMoreResults();

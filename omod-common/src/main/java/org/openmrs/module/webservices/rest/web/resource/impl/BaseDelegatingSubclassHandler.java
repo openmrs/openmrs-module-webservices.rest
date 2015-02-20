@@ -34,7 +34,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends Superclass> implements DelegatingSubclassHandler<Superclass, Subclass> {
 	
 	/**
-	 * Uses introspection into the generic interface to determine the superclass plugged into by this handler
+	 * Uses introspection into the generic interface to determine the superclass plugged into by
+	 * this handler
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler#getSuperclass()
 	 */
@@ -45,7 +46,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	}
 	
 	/**
-	 * Uses introspection into the generic interface to determine the subclass handled by this handler
+	 * Uses introspection into the generic interface to determine the subclass handled by this
+	 * handler
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler#getSubclassHandled()
 	 */
@@ -73,7 +75,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	public void purge(Subclass delegate, RequestContext context) throws ResponseException {
 		getResource().purge(delegate, context);
@@ -100,6 +103,7 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	
 	/**
 	 * Assumes we can get a "display" property
+	 * 
 	 * @param delegate
 	 * @return standard REF representation of delegate
 	 * @throws ConversionException

@@ -14,6 +14,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -27,7 +30,9 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_8, Obs> {
 	
@@ -127,7 +132,34 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("numeric", number, rep.get("value"));
 	}
-	
+
+	@Test
+	public void setGroupMembers_shouldSetGroupMembers () throws Exception {
+		executeDataSet("obsWithGroupMembers.xml");
+		ObsResource1_8 resource = getResource();
+		Obs groupMemberParent = resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423");
+
+		Set<Obs> groupMembersBefore = groupMemberParent.getGroupMembers();
+		Set<Obs> groupMembersAfter = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+
+		ObsResource1_8.setGroupMembers(groupMemberParent, groupMembersAfter);
+		assertNotEquals(groupMembersBefore, groupMemberParent.getGroupMembers());
+		assertEquals(groupMembersAfter, groupMemberParent.getGroupMembers());
+	}
+
+    @Test
+    public void getGroupMembers_shouldReturnAllGroupMembers() throws Exception {
+        executeDataSet("obsWithGroupMembers.xml");
+
+        ObsResource1_8 resource = getResource();
+
+        Set<Obs> groupMembers1 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423"));
+        assertEquals(1, groupMembers1.size());
+
+        Set<Obs> groupMembers2 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+        assertEquals(2, groupMembers2.size());
+
+    }
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
 		obs.setValueCoded(type.equals(ObsType.CODED) ? (Concept) value : null);
 		obs.setValueComplex(type.equals(ObsType.COMPLEX) ? (String) value : null);
@@ -135,5 +167,20 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		obs.setValueDrug(type.equals(ObsType.DRUG) ? (Drug) value : null);
 		obs.setValueNumeric(type.equals(ObsType.NUMERIC) ? (Double) value : null);
 		obs.setValueText(type.equals(ObsType.TEXT) ? (String) value : null);
+	}
+
+	@Test
+	public void setConvertedProperties_shouldAllowAnyPropertyOrder() throws Exception {
+		ObsResource1_8 resource = getResource();
+		Obs obs = getObject();
+
+		Map<String, Object> propertyMap = new HashMap<String, Object>();
+		propertyMap.put("value", 10.0);
+		propertyMap.put("person", RestTestConstants1_8.PERSON_UUID);
+		propertyMap.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		propertyMap.put("obsDatetime", "2013-12-09T00:00:00.000+0100");
+
+		resource.setConvertedProperties(obs, propertyMap, resource.getUpdatableProperties(), false);
+		org.springframework.util.Assert.isTrue(((Double)ObsResource1_8.getValue(obs)) == 10.0);
 	}
 }

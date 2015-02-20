@@ -13,11 +13,22 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import junit.framework.Assert;
+import org.junit.Test;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
 
 public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonResource1_8, Person> {
 	
@@ -70,5 +81,34 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 	public String getUuidProperty() {
 		return RestTestConstants1_8.PERSON_UUID;
 	}
-	
+
+    @Test
+    public void getAttributes_shouldReturnAllAttributes() throws Exception {
+        PersonResource1_8 resource = getResource();
+
+        List<PersonAttribute> attributes1 = (List<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("df8ae447-6745-45be-b859-403241d9913c"));
+        Assert.assertEquals(2, attributes1.size());
+
+        List<PersonAttribute> attributes2 = (List<PersonAttribute>) PersonResource1_8.getAttributes(resource.getByUniqueId("341b4e41-790c-484f-b6ed-71dc8da222de"));
+        Assert.assertEquals(3, attributes2.size());
+    }
+
+    /**
+     * @see {@link https://issues.openmrs.org/browse/RESTWS-426}
+     * @throws Exception
+     */
+    @Test
+    public void testCorrectResourceForPatient() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter("q", "Che");
+        RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
+
+        SimpleObject simple = getResource().search(context);
+        List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
+        for (SimpleObject result : results) {
+            String selfLink = findSelfLink(result);
+            assertFalse("Resource should be person, but is " + selfLink, selfLink.contains("/patient/"));
+        }
+    }
+
 }

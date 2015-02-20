@@ -22,6 +22,7 @@ import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -37,7 +38,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * Exposes the {@link DrugOrder} subclass as a type in {@link OrderResource1_8}
  */
-@Handler(supports = DrugOrder.class)
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
 	
 	/**

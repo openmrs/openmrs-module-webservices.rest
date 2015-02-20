@@ -21,10 +21,11 @@ import java.lang.annotation.Target;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 
 /**
- * Use this annotation to mark a method in a {@link DelegatingCrudResource} implementation that describes how
- * to get a property on a delegate. (You would use this, for example, if you want to expose a "attributes"
- * property in the resource, but return from a different getter (getActiveAttributes) from the delegate.)
- * The "getter" method should have the form "Object getXyz(T delegate)" and may be static. 
+ * Use this annotation to mark a method in a {@link DelegatingCrudResource} implementation that
+ * describes how to get a property on a delegate. (You would use this, for example, if you want to
+ * expose a "attributes" property in the resource, but return from a different getter
+ * (getActiveAttributes) from the delegate.) The "getter" method should have the form
+ * "Object getXyz(T delegate)" and may be static.
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

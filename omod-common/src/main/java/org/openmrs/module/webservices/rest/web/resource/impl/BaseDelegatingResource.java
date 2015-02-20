@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,10 +29,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.proxy.HibernateProxy;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -41,6 +46,8 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
+import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -51,8 +58,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.HandlerUtil;
-import org.springframework.util.ReflectionUtils;
+
+import org.openmrs.util.OpenmrsConstants;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -65,6 +73,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
+	protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
+	
 	/**
 	 * Properties that should silently be ignored if you try to get them. Implementations should
 	 * generally configure this property with a list of properties that were added to their
@@ -75,16 +85,20 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	protected Set<String> allowedMissingProperties = new HashSet<String>();
 	
 	/**
-	 * Implementations should define mappings for properties that they want to expose with other
-	 * names. (Map from the exposed property name to the actual property name.)
-	 */
-	protected Map<String, String> remappedProperties = new HashMap<String, String>();
-	
-	/**
 	 * If this resource represents a class hierarchy (rather than a single class), this will hold
 	 * handlers for each subclass
 	 */
 	protected volatile List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
+	
+	/**
+	 * Default constructor will set propertiesIgnoredWhenUpdating to include "display", "links", and
+	 * "resourceVersion"
+	 */
+	protected BaseDelegatingResource() {
+		propertiesIgnoredWhenUpdating.add("display");
+		propertiesIgnoredWhenUpdating.add("links");
+		propertiesIgnoredWhenUpdating.add(RestConstants.PROPERTY_FOR_RESOURCE_VERSION);
+	}
 	
 	/**
 	 * All our resources support letting modules register subclass handlers. If any are registered,
@@ -98,25 +112,51 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)} or {@link #getSubclassHandler(String)}.
-	 * It finds all subclass handlers intented for this resource, and registers them.
+	 * This will be automatically called with the first call to {@link #getSubclassHandler(Class)}
+	 * or {@link #getSubclassHandler(String)}. It finds all subclass handlers intended for this
+	 * resource, and registers them.
 	 */
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void init() {
 		List<DelegatingSubclassHandler<T, ? extends T>> tmpSubclassHandlers = new ArrayList<DelegatingSubclassHandler<T, ? extends T>>();
 		
 		List<DelegatingSubclassHandler> handlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
 		for (DelegatingSubclassHandler handler : handlers) {
-			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handler.getClass(),
+			
+			Class<? extends DelegatingSubclassHandler> handlerClass = handler.getClass();
+			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerClass,
 			    DelegatingSubclassHandler.class, 0);
 			Resource resourceForHandler = Context.getService(RestService.class)
 			        .getResourceBySupportedClass(forDelegateClass);
 			if (getClass().equals(resourceForHandler.getClass())) {
-				tmpSubclassHandlers.add(handler);
+				SubClassHandler annotation = handlerClass.getAnnotation(SubClassHandler.class);
+				if (annotation != null) {
+					String[] supportedOpenmrsVersions = annotation.supportedOpenmrsVersions();
+					for (String version : supportedOpenmrsVersions) {
+						if (versionMatches(version)) {
+							tmpSubclassHandlers.add(handler);
+							break;
+						}
+					}
+				} else {
+					log.warn("SubclassHandler "
+					        + handlerClass.getName()
+					        + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass.");
+				}
 			}
 		}
 		
 		subclassHandlers = tmpSubclassHandlers;
+	}
+	
+	private boolean versionMatches(String supportedVersion) {
+		try {
+			ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+		}
+		catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -221,7 +261,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * Gets a description of resource's properties which can be edited.
-	 * <p>
+	 * <p/>
 	 * By default delegates to {@link #getCreatableProperties()} and removes sub-resources returned
 	 * by {@link #getPropertiesToExposeAsSubResources()}.
 	 * 
@@ -254,7 +294,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	protected String getUniqueId(T delegate) {
 		try {
-			return (String) PropertyUtils.getProperty(delegate, "uuid");
+			return (String) getProperty(delegate, "uuid");
 		}
 		catch (Exception ex) {
 			throw new RuntimeException("Cannot find String uuid property on " + delegate.getClass(), null);
@@ -324,6 +364,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		        + ") as " + representation.getRepresentation(), null);
 	}
 	
+	/**
+	 * @should return delegating resource description
+	 */
 	private DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
 		DelegatingResourceDescription desc = new DelegatingResourceDescription();
 		
@@ -333,7 +376,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		for (int i = 0; i < fragments.length; i++) {
 			String[] field = fragments[i].split(":"); //split into field and representation
 			if (field.length == 1) {
-				desc.addProperty(field[0]);
+				if (!field[0].equals("links"))
+					desc.addProperty(field[0]);
+				if (field[0].equals("links")) {
+					desc.addSelfLink();
+					desc.addLink("default", ".?v=" + RestConstants.REPRESENTATION_DEFAULT);
+				}
 			} else {
 				String property = field[0];
 				String rep = field[1];
@@ -344,10 +392,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 					customRep.append(rep);
 					int open = 1;
 					for (i = i + 1; i < fragments.length; i++) {
-						if (fragments[i].contains("(")) {
-							open++;
-						} else if (fragments[i].contains(")")) {
-							open--;
+						for (char fragment : fragments[i].toCharArray()) {
+							if (fragment == '(') {
+								open++;
+							} else if (fragment == ')') {
+								open--;
+							}
 						}
 						
 						customRep.append(",");
@@ -357,7 +407,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 							break;
 						}
 					}
-					
 					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
 				} else {
 					rep = rep.toUpperCase(); //normalize
@@ -534,8 +583,24 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 		List<Hyperlink> links = new ArrayList<Hyperlink>();
 		for (Hyperlink link : rep.getLinks()) {
-			if (link.getUri().startsWith("."))
+			if (link.getUri().startsWith(".")) {
 				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
+			}
+			
+			org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
+			    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			if (res != null) {
+				String name = res.name();
+				if (name.contains("/")) {
+					name = name.substring(name.lastIndexOf("/") + 1);
+				}
+				link.setResourceAlias(name);
+			} else {
+				SubResource sub = getClass().getAnnotation(SubResource.class);
+				if (sub != null) {
+					link.setResourceAlias(sub.path());
+				}
+			}
 			links.add(link);
 		}
 		if (links.size() > 0)
@@ -545,40 +610,80 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * @param delegate
-	 * @param propertiesToCreate
+	 * @param propertyMap
+	 * @param description
+	 * @param mustIncludeRequiredProperties
 	 * @throws ResponseException
+	 * @should allow setting a null value
 	 */
-	protected void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
+	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
 		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
-		//Set properties that are allowed to be changed or fail.
-		Set<String> notAllowedProperties = new HashSet<String>();
-		for (Map.Entry<String, Object> prop : propertyMap.entrySet()) {
-			if (allowedProperties.remove(prop.getKey()) != null && prop.getValue() != null) {
-				setProperty(delegate, prop.getKey(), prop.getValue());
-			} else {
-				notAllowedProperties.add(prop.getKey());
+		Map<String, Object> propertiesToSet = new HashMap<String, Object>(propertyMap);
+		propertiesToSet.keySet().removeAll(propertiesIgnoredWhenUpdating);
+		
+		// Apply properties in the order specified in the resource description (necessary e.g. so the obs resource
+		// can apply "concept" before "value"); we have already excluded unchanged and ignored properties.
+		// Because some resources (e.g. any AttributeResource) require some properties to be set before others can
+		// be fetched, we apply each property in its iteration, rather than testing everything first and applying later.
+		for (String property : allowedProperties.keySet()) {
+			if (!propertiesToSet.containsKey(property)) {
+				continue;
+			}
+			if (propertiesToSet.containsKey(property)) {
+				// Ignore any properties that were not actually changed, also covering the case where you post back an
+				// incomplete rep of a complex property
+				Object oldValue = getProperty(delegate, property);
+				Object newValue = propertiesToSet.get(property);
+				if (unchangedValue(oldValue, newValue)) {
+					propertiesToSet.remove(property);
+					continue;
+				}
+				
+				setProperty(delegate, property, propertiesToSet.get(property));
+			}
+		}
+		
+		// If any non-settable properties remain after the above logic, fail
+		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertiesToSet.keySet(),
+		    allowedProperties.keySet());
+		// Do allow posting back an unchanged value to an unchangeable property
+		for (Iterator<String> iterator = notAllowedProperties.iterator(); iterator.hasNext();) {
+			String property = iterator.next();
+			Object oldValue = getProperty(delegate, property);
+			Object newValue = propertiesToSet.get(property);
+			if (unchangedValue(oldValue, newValue)) {
+				iterator.remove();
 			}
 		}
 		if (!notAllowedProperties.isEmpty()) {
 			throw new ConversionException("Some properties are not allowed to be set: "
-			        + StringUtils.join(notAllowedProperties, ","));
+			        + StringUtils.join(notAllowedProperties, ", "));
 		}
 		
 		if (mustIncludeRequiredProperties) {
-			//Fail, if any required properties are missing.
 			Set<String> missingProperties = new HashSet<String>();
 			for (Entry<String, Property> prop : allowedProperties.entrySet()) {
-				if (prop.getValue().isRequired()) {
+				if (prop.getValue().isRequired() && !propertyMap.containsKey(prop.getKey())) {
 					missingProperties.add(prop.getKey());
 				}
 			}
 			if (!missingProperties.isEmpty()) {
 				throw new ConversionException("Some required properties are missing: "
-				        + StringUtils.join(missingProperties, ","));
+				        + StringUtils.join(missingProperties, ", "));
 			}
 		}
+	}
+	
+	private boolean unchangedValue(Object oldValue, Object newValue) {
+		if (newValue instanceof Map && oldValue != null && !(oldValue instanceof Map)) {
+			newValue = ConversionUtil.convert(newValue, oldValue.getClass());
+			if (oldValue instanceof OpenmrsObject) {
+				return ((OpenmrsObject) oldValue).getUuid().equals(((OpenmrsObject) newValue).getUuid());
+			}
+		}
+		return OpenmrsUtil.nullSafeEquals(oldValue, newValue);
 	}
 	
 	/**
@@ -603,15 +708,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	}
 	
 	/**
-	 * @param name the full method name to look for
-	 * @return the java Method object if found. (does not return null)
-	 * @throws RuntimeException if not method found by the given name in the current class
+	 * @see org.openmrs.module.webservices.rest.util.ReflectionUtil#findMethod(Class, String)
 	 */
 	protected Method findMethod(String name) {
 		// TODO replace this with something that looks specifically for a method that takes a single T argument
-		Method ret = ReflectionUtils.findMethod(getClass(), name, (Class<?>[]) null);
-		if (ret == null)
-			throw new RuntimeException("No suitable method \"" + name + "\" in " + getClass());
+		Method ret = ReflectionUtil.findMethod(getClass(), name);
 		return ret;
 	}
 	
@@ -624,17 +725,12 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
 			
-			// first, try to find a @PropertyGetter-annotated method
-			Method annotatedGetter = findGetterMethod(handler, propertyName);
+			// try to find a @PropertyGetter-annotated method
+			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
 			
-			// next use standard bean methods
-			// TODO remove remappedProperties, or make them work with subclass handlers
-			String override = remappedProperties.get(propertyName);
-			if (override != null)
-				propertyName = override;
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
@@ -651,6 +747,9 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	 */
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+		if (propertiesIgnoredWhenUpdating.contains(propertyName)) {
+			return;
+		}
 		try {
 			DelegatingResourceHandler<? extends T> handler;
 			
@@ -663,8 +762,8 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				handler = this;
 			}
 			
-			// first, try to find a @PropertySetter-annotated method
-			Method annotatedSetter = findSetterMethod(handler, propertyName);
+			// try to find a @PropertySetter-annotated method
+			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
@@ -672,15 +771,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 				return;
 			}
 			
-			// next use standard bean methods
-			// TODO remove remappedProperties, or make them work with subclass handlers
-			String override = remappedProperties.get(propertyName);
-			if (override != null)
-				propertyName = override;
-			
 			// we need the generic type of this property, not just the class
 			Method setter = PropertyUtils.getPropertyDescriptor(instance, propertyName).getWriteMethod();
-			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0]);
+			
+			// Convert the value to the specified type
+			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0], instance);
 			
 			if (value instanceof Collection) {
 				//We need to handle collections in a way that Hibernate can track.
@@ -700,26 +795,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		catch (Exception ex) {
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
 		}
-	}
-	
-	private Method findSetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
-	}
-	
-	private Method findGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				return candidate;
-			}
-		}
-		return null;
 	}
 	
 	/**
@@ -772,7 +847,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	protected Object findAndInvokeSubclassHandlerMethod(String type, String methodName, Object... arguments) {
 		Class<?>[] argumentTypes = new Class<?>[arguments.length];
 		for (int i = 0; i < arguments.length; ++i) {
-			argumentTypes[i] = arguments[i].getClass();
+			Class<?> t = arguments[i].getClass();
+			if (arguments[i] instanceof HibernateProxy) {
+				t = ((HibernateProxy) arguments[i]).getHibernateLazyInitializer().getPersistentClass();
+			}
+			argumentTypes[i] = t;
 		}
 		Method method = findSubclassHandlerMethod(type, methodName, argumentTypes);
 		if (method == null)
@@ -789,4 +868,21 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		}
 	}
 	
+	/**
+	 * @param delegate
+	 * @return the URI for the given delegate object
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public String getUri(Object delegate) {
+		if (delegate == null)
+			return "";
+		
+		org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
+		    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+		if (res != null) {
+			return RestConstants.URI_PREFIX + res.name() + "/" + getUniqueId((T) delegate);
+		}
+		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
+	}
 }

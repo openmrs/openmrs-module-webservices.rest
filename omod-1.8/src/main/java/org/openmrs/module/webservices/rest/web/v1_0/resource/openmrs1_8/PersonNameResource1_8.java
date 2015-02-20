@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@SubResource(parent = PersonResource1_8.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Person, PersonResource1_8> {
 	
 	@Override
@@ -88,7 +88,8 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		description.addProperty("familyNamePrefix");
 		description.addProperty("familyNameSuffix");
 		description.addProperty("degree");
-		return description;
+        description.addProperty("preferred");
+        return description;
 	}
 	
 	/**

@@ -4,6 +4,8 @@
 
 <%@ include file="localHeader.jsp"%>
 
+<openmrs:require anyPrivilege="View RESTWS, Manage RESTWS" otherwise="/login.htm" redirect="/module/webservices/rest/help.form" />
+
 <h2><spring:message code="webservices.rest.help.title" /></h2>
 
 Main documentation page for the module is on the wiki: 

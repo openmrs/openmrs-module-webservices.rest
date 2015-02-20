@@ -21,6 +21,10 @@ import java.util.Set;
  */
 public class RestConstants {
 	
+	public static final String PRIV_MANAGE_RESTWS = "Manage RESTWS";
+	
+	public static final String PRIV_VIEW_RESTWS = "View RESTWS";
+	
 	/**
 	 * The number of results to limit lists of objects to, if an admin has not defined a global
 	 * property
@@ -116,8 +120,8 @@ public class RestConstants {
 	public static final String REQUEST_PROPERTY_FOR_TYPE = "t";
 	
 	/**
-	 * An optional request parameter used by methods that return a list of objects to determine whether
-	 * voided (for data) or retired (for metadata) objects should be included in the list.
+	 * An optional request parameter used by methods that return a list of objects to determine
+	 * whether voided (for data) or retired (for metadata) objects should be included in the list.
 	 * 
 	 * @see RequestContext#getIncludeAll()
 	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)

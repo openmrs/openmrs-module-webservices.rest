@@ -11,10 +11,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -24,10 +20,14 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 /**
  * Allows standard CRUD for the {@link LocationAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = "1.9.*")
+@Resource(name = RestConstants.VERSION_1 + "/locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
 public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<LocationAttributeType> {
 	
 	public LocationAttributeTypeResource1_9() {

@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -35,6 +31,10 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
+import org.openmrs.module.webservices.validation.ValidateUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -91,6 +91,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		T delegate = handler.newDelegate();
 		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
+		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
 		
@@ -113,7 +114,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		
 		if (hasTypesDefined()) {
-			// if they specify a type discriminator it must match the expected one--type can't me modified
+			// if they specify a type discriminator it must match the expected one--type can't be modified
 			if (propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
 				String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
 				if (!delegate.getClass().equals(getActualSubclass(type))) {
@@ -129,6 +130,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
 		
 		setConvertedProperties(delegate, propertiesToUpdate, handler.getUpdatableProperties(), false);
+		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
@@ -171,7 +173,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
 		PageableResult result = doSearch(context);
-		return result.toSimpleObject();
+		return result.toSimpleObject(this);
 	}
 	
 	/**
@@ -198,10 +200,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
 			PageableResult result = handler.getAllByType(context);
-			return result.toSimpleObject();
+			return result.toSimpleObject(this);
 		} else {
 			PageableResult result = doGetAll(context);
-			return result.toSimpleObject();
+			return result.toSimpleObject(this);
 		}
 	}
 	
@@ -241,29 +243,12 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * /ws/rest/v1/concept) but when modules publish resources, they should be namespaced (e.g.
 	 * /ws/rest/v1/moduleId/moduleresource).
 	 * 
-	 * @deprecated Since 2.x the namespace must be declared in {@link Resource}'s name, {@link MainResourceController}
-	 * and {@link MainSubResourceController}.
+	 * @deprecated Since 2.x the namespace must be declared in {@link Resource}'s name,
+	 *             {@link MainResourceController} and {@link MainSubResourceController}.
 	 */
 	@Deprecated
 	protected final String getNamespacePrefix() {
 		throw new UnsupportedOperationException();
-	}
-	
-	/**
-	 * @param delegate
-	 * @return the URI for the given delegate object
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public String getUri(Object delegate) {
-		if (delegate == null)
-			return "";
-		
-		Resource res = getClass().getAnnotation(Resource.class);
-		if (res != null) {
-			return RestConstants.URI_PREFIX + res.name() + "/" + getUniqueId((T) delegate);
-		}
-		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 	}
 	
 }

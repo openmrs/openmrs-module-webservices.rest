@@ -13,12 +13,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -31,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent = PatientResource1_8.class, path = "identifier", supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@SubResource(parent = PatientResource1_8.class, path = "identifier", supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
 public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource1_8> {
 	
 	@Override
@@ -76,7 +79,37 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		description.addProperty("preferred");
 		return description;
 	}
-	
+
+    /**
+     * Sets the identifier type for a patient identifier.
+     *
+     * @param instance
+     * @param identifierType
+     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+     */
+    @PropertySetter("identifierType")
+    public void setIdentifierType(PatientIdentifier instance, PatientIdentifierType identifierType) {
+        String uuid = identifierType.getUuid();
+        String name = identifierType.getName();
+        if (name != null && !name.isEmpty()) {
+            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByName(name));
+        } else if (uuid != null && !uuid.isEmpty()) {
+            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByUuid(uuid));
+        }
+    }
+
+    /**
+     * Sets the location for a patient identifier.
+     *
+     * @param instance
+     * @param location
+     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+     */
+    @PropertySetter("location")
+    public void setLocation(PatientIdentifier instance, Location location) {
+        instance.setLocation(Context.getLocationService().getLocationByUuid(location.getUuid()));
+    }
+    
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */

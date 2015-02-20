@@ -15,8 +15,9 @@ package org.openmrs.module.webservices.rest.web;
 
 import org.junit.Test;
 import org.openmrs.api.APIException;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-public class RequestContextTest {
+public class RequestContextTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see RequestContext#setLimit(Integer)

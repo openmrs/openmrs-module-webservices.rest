@@ -52,12 +52,14 @@ public class AdminSection extends AdministrationSectionExt {
 		
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		
-		// using deprecated call here so that the module can be used on OpenMRS 1.6
-		if (Context.hasPrivilege(OpenmrsConstants.PRIV_MANAGE_GLOBAL_PROPERTIES))
+		if (Context.hasPrivilege(RestConstants.PRIV_MANAGE_RESTWS)) {
 			map.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.settings");
+		}
 		
-		map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
-		map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
+		if (Context.hasPrivilege(RestConstants.PRIV_VIEW_RESTWS) || Context.hasPrivilege(RestConstants.PRIV_MANAGE_RESTWS)) {
+			map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
+			map.put("module/webservices/rest/help.form", RestConstants.MODULE_ID + ".help");
+		}
 		
 		return map;
 	}

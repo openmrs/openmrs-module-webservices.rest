@@ -63,7 +63,7 @@ public class HL7MessageController1_8 extends BaseRestController {
 	@ResponseBody
 	public Object create(@RequestBody String hl7, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException, JsonParseException, JsonMappingException, IOException {
-		RequestContext context = RestUtil.getRequestContext(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
 		SimpleObject post = new SimpleObject();
 		
 		if (hl7.trim().startsWith("{")) {
