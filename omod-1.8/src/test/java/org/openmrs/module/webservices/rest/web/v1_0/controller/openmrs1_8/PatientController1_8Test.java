@@ -18,23 +18,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Privilege;
-import org.openmrs.Role;
-import org.openmrs.User;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -115,7 +104,6 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
 		assertEquals(originalCount + 1, service.getAllPatients().size());
 	}
-<<<<<<< HEAD
 
 	@Test
 	public void shouldNotCreatePatient() throws Exception {
@@ -144,8 +132,6 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 	}
-=======
->>>>>>> upstream/master
 	
 	@Test
 	public void shouldVoidAPatient() throws Exception {
