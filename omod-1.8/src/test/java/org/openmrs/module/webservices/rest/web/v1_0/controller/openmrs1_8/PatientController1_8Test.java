@@ -115,7 +115,6 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
 		assertEquals(originalCount + 1, service.getAllPatients().size());
 	}
-<<<<<<< HEAD
 
 	@Test
 	public void shouldNotCreatePatient() throws Exception {
@@ -144,8 +143,6 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 	}
-=======
->>>>>>> upstream/master
 	
 	@Test
 	public void shouldVoidAPatient() throws Exception {
