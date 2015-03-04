@@ -33,9 +33,9 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -108,14 +108,13 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("visitType");
-		description.addRequiredProperty("startDatetime");
-		
+		// Ticket # RESTWS-488, startDatetime not required
+		description.addProperty("startDatetime");
+		description.addProperty("stopDatetime");
 		description.addProperty("location");
 		description.addProperty("indication");
-		description.addProperty("stopDatetime");
 		description.addProperty("encounters");
 		description.addProperty("attributes");
-		
 		return description;
 	}
 	
@@ -143,6 +142,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public Visit save(Visit visit) {
+		// Ticket # RESTWS-488, set to current date if unavailable
+		if (visit.getStartDatetime() == null) {
+			visit.setStartDatetime (new Date ());
+		}
 		return Context.getVisitService().saveVisit(visit);
 	}
 	

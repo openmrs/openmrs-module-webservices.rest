@@ -93,6 +93,19 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldCreateVisitWithoutStartDatetime() throws Exception {
+		int originalCount = service.getAllVisits().size();
+		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
+		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants1_9.LOCATION_UUID + "\"}";
+		
+		Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
+		Object startDateObj = PropertyUtils.getProperty(newVisit, "startDatetime");
+		System.out.println(startDateObj.toString());
+		Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+		Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+	}
+	
+	@Test
 	public void shouldCreateAVisitWithEncounters() throws Exception {
 		int originalCount = service.getAllVisits().size();
 		final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
