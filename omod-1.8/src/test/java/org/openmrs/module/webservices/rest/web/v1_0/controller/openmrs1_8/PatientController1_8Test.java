@@ -18,13 +18,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Privilege;
+import org.openmrs.Role;
+import org.openmrs.User;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -43,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class PatientController1_8Test extends MainResourceControllerTest {
 	
 	private PatientService service;
+	private static final String datasetFilename = "customUserDataset.xml";
 	
 	@Override
 	public String getURI() {
@@ -60,8 +71,9 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Before
-	public void before() {
+	public void before() throws Exception {
 		this.service = Context.getPatientService();
+		executeDataSet (datasetFilename);
 	}
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
@@ -102,6 +114,34 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		
 		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
 		assertEquals(originalCount + 1, service.getAllPatients().size());
+	}
+
+	@Test
+	public void shouldNotCreatePatient() throws Exception {
+		// Fetch authenticated user
+		Context.authenticate ("Test_user", "Test1234");
+		long originalCount = service.getAllPatients().size();
+		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", "
+				+ "\"identifiers\": [{ \"identifier\":\"abcd1234\", "
+				+ "\"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", "
+				+ "\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", " + "\"preferred\": true }] }";
+		SimpleObject newPatient = deserialize(handle(newPostRequest(getURI(), json)));
+		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
+		assertEquals("Should not create patient without Add Patients privilege", originalCount, service.getAllPatients().size());
+	}
+
+	@Test(expected = ConversionException.class)
+	public void shouldNotSupportEditingAPatient() throws Exception {
+		final String newPersonUuid = "a7e04421-525f-442f-8138-05b619d16def";
+		assertFalse(newPersonUuid.equals(getUuid()));
+		SimpleObject patient = new SimpleObject();
+		patient.add("person", newPersonUuid);
+		
+		String json = new ObjectMapper().writeValueAsString(patient);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test
