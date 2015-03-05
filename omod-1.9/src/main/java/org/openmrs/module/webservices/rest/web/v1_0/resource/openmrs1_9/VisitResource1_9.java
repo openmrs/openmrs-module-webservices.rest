@@ -136,10 +136,17 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public Visit newDelegate() {
-		Visit visit = new Visit();
-		visit.setStartDatetime(new Date());
-		return visit;
+		return new Visit();
 	}
+	
+	@Override
+	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
+		// RESTWS-488: set startDatetime if not provided
+		if (propertiesToCreate.get("startDatetime") == null) {
+			propertiesToCreate.add("startDatetime", new Date());
+		}
+        return super.create(propertiesToCreate, context);
+	};
 	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
