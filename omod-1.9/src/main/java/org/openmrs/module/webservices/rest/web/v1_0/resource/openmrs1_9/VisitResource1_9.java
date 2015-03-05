@@ -136,7 +136,9 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public Visit newDelegate() {
-		return new Visit();
+		Visit visit = new Visit();
+		visit.setStartDatetime(new Date());
+		return visit;
 	}
 	
 	/**
@@ -144,10 +146,6 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@Override
 	public Visit save(Visit visit) {
-		// RESTWS-488: set startDatetime to current date if not provided
-		if (visit.getStartDatetime() == null) {
-			visit.setStartDatetime(new Date());
-		}
 		return Context.getVisitService().saveVisit(visit);
 	}
 	
