@@ -36,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -108,8 +109,8 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("visitType");
-		description.addRequiredProperty("startDatetime");
-		
+		// RESTWS-488: startDatetime property to be non-mandatory
+		description.addProperty("startDatetime");
 		description.addProperty("location");
 		description.addProperty("indication");
 		description.addProperty("stopDatetime");
@@ -137,6 +138,15 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Visit newDelegate() {
 		return new Visit();
 	}
+	
+	@Override
+	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
+		// RESTWS-488: set startDatetime if not provided
+		if (propertiesToCreate.get("startDatetime") == null) {
+			propertiesToCreate.add("startDatetime", new Date());
+		}
+        return super.create(propertiesToCreate, context);
+	};
 	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
