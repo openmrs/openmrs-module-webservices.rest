@@ -52,7 +52,7 @@ import java.util.Set;
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class ObsResource1_9 extends ObsResource1_8 {
 
     /**

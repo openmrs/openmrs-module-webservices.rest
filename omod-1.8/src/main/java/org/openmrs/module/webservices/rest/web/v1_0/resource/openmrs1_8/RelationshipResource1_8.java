@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relationship> {
 
     @Override

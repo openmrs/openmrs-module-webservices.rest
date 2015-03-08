@@ -43,7 +43,7 @@ import java.util.Set;
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	/**

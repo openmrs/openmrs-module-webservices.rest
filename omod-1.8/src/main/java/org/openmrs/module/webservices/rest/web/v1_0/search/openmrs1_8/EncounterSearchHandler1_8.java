@@ -39,7 +39,7 @@ import java.util.List;
 
 @Component
 public class EncounterSearchHandler1_8 implements SearchHandler {
-    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*"),
+    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
             Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType").withRequiredParameters("patient", "encounterType").withOptionalParameters("order").build()));
 
     @Override

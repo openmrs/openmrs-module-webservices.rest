@@ -41,7 +41,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
  * , supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
 public class OrderResource1_10 extends OrderResource1_8 {
 	
 	/**
