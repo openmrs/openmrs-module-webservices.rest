@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -43,7 +45,17 @@ public class SessionController extends BaseRestController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public Object get(WebRequest request) {
-		return new SimpleObject().add("sessionId", request.getSessionId()).add("authenticated", Context.isAuthenticated());
+		boolean authenticated = Context.isAuthenticated();
+		SimpleObject session = new SimpleObject();
+		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
+		if (authenticated) {
+			SimpleObject authenticatedUser = new SimpleObject();
+			User user = Context.getAuthenticatedUser();
+			authenticatedUser.add("uuid", user.getUuid()).add("display",
+			    StringUtils.isNotEmpty(user.getUsername()) ? user.getUsername() : user.getSystemId());
+			session.add("user", authenticatedUser);
+		}
+		return session;
 	}
 	
 	/**

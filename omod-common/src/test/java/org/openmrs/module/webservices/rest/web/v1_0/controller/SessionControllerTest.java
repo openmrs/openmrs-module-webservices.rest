@@ -45,11 +45,13 @@ public class SessionControllerTest extends BaseModuleWebContextSensitiveTest {
 	 * @verifies return the session id if the user is authenticated
 	 */
 	@Test
-	public void get_shouldReturnTheSessionIdIfTheUserIsAuthenticated() throws Exception {
+	public void get_shouldReturnTheSessionIdAndUserIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get(request);
+		Object userProp = PropertyUtils.getProperty(ret, "user");
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
+		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
 	}
 	
 	/**
