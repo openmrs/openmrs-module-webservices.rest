@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,8 @@ import java.util.List;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
+import org.openmrs.layout.web.name.NameSupport;
+import org.openmrs.layout.web.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -195,6 +198,21 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	 * @return the display string.
 	 */
 	public String getDisplayString(PersonName personName) {
-		return personName.getFullName();
+
+        try {
+            NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
+
+            if (nameTemplate!= null) {
+                // need to use reflection since the format method was not added until later versions of openmrs
+                Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
+                return (String) format.invoke(nameTemplate, personName);
+            }
+        }
+        catch (Exception e) {
+            // fall through to just returning full name if no format method found or format fails
+        }
+
+        // otherwise, just return full name
+        return personName.getFullName();
 	}
 }
