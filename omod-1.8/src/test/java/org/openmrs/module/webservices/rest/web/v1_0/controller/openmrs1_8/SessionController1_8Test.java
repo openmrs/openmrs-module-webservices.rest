@@ -52,11 +52,8 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
 		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
-                String rep = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
-                if(null != rep && rep.equals(RestConstants.REPRESENTATION_FULL)){
-                    Object personProp = PropertyUtils.getProperty(userProp, "person");
-                    Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(), PropertyUtils.getProperty(personProp, "uuid"));
-                }
+                Object personProp = PropertyUtils.getProperty(userProp, "person");
+                Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(), PropertyUtils.getProperty(personProp, "uuid"));
 	}
 	
 	/**

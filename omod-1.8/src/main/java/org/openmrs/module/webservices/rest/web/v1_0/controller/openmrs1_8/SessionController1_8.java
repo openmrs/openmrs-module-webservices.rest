@@ -13,15 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs1_8.UserConverter1_8;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,8 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_8 extends BaseRestController {
 	
+       @Autowired
+       RestService restService;
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
 	 * 
@@ -53,18 +56,9 @@ public class SessionController1_8 extends BaseRestController {
             SimpleObject session = new SimpleObject();
             session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
             if (authenticated) {
-                User user = Context.getAuthenticatedUser();
-                String rep = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
-                if(null == rep || RestConstants.REPRESENTATION_DEFAULT.equals(rep)){
-                    SimpleObject authenticatedUser = new SimpleObject();
-                    authenticatedUser.add("uuid", user.getUuid()).add("display",
-                    StringUtils.isNotEmpty(user.getUsername()) ? user.getUsername() : user.getSystemId());
-                    session.add("user", authenticatedUser);
-                }
-                else if(RestConstants.REPRESENTATION_FULL.equals(rep)){
-                    SimpleObject authenticatedUser = (SimpleObject)ConversionUtil.convertToRepresentation(user, Representation.DEFAULT, UserConverter1_8.class);
-                    session.add("user", authenticatedUser);
-                }
+                String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
+                Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
+                session.add("user",ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
             }
             return session;
 	}
