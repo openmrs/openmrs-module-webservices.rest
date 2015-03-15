@@ -13,8 +13,12 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -32,9 +36,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.module.webservices.validation.ValidateUtil;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -129,7 +130,11 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
 		
-		setConvertedProperties(delegate, propertiesToUpdate, handler.getUpdatableProperties(), false);
+		DelegatingResourceDescription description = handler.getUpdatableProperties();
+		if (delegate instanceof BaseOpenmrsMetadata) {
+			description.addProperty("retired");
+		}
+		setConvertedProperties(delegate, propertiesToUpdate, description, false);
 		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		

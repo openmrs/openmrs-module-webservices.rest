@@ -194,6 +194,21 @@ public class LocationController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUnretireALocation() throws Exception {
+		
+		Location location = service.getLocation(3);
+		Assert.assertTrue(location.isRetired());
+		
+		String json = "{ \"retired\": false }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		Location updatedLocation = service.getLocationByUuid(getUuid());
+		Assert.assertTrue(!updatedLocation.isRetired());
+		
+	}
+	
+	@Test
 	public void shouldPurgeARetiredLocation() throws Exception {
 		
 		Location location = service.getLocation(3);
