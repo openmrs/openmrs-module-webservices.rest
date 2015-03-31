@@ -87,7 +87,6 @@ public class BaseRestController {
 	@ResponseBody
 	public SimpleObject handleException(Exception ex, HttpServletRequest request, HttpServletResponse response)
 	        throws Exception {
-		log.error(ex.getMessage(), ex);
 		int errorCode = DEFAULT_ERROR_CODE;
 		String errorDetail = DEFAULT_ERROR_DETAIL;
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
@@ -101,6 +100,13 @@ public class BaseRestController {
 			return apiAuthenticationExceptionHandler(ex, request, response);
 		} else if (ex.getClass() == HttpRequestMethodNotSupportedException.class) {
 			errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+		}
+		if (errorCode >= 500) {
+			// if it's a server error, we log it at a high level of importance
+			log.error(ex.getMessage(), ex);
+		} else {
+			// 4xx client errors are logged at a lower level of importance
+			log.info(ex.getMessage(), ex);
 		}
 		response.setStatus(errorCode);
 		return RestUtil.wrapErrorResponse(ex, errorDetail);
