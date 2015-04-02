@@ -16,6 +16,11 @@ package org.openmrs.module.webservices.docs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+
 /**
  * Data structure containing documentation about a web service resource.
  */
@@ -42,6 +47,8 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	private List<ResourceDoc> subResources = new ArrayList<ResourceDoc>();
 	
 	private List<ResourceDoc> subtypeHandlers = new ArrayList<ResourceDoc>();
+	
+	private List<SearchHandler> searchHandlers = new ArrayList<SearchHandler>();
 	
 	public ResourceDoc(String name) {
 		setName(name);
@@ -138,6 +145,14 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		resourceDoc.subtypeHandlerForResourceName = this.name;
 		subtypeHandlers.add(resourceDoc);
 	}
+
+	public List<SearchHandler> getSearchHandlers() {
+		return searchHandlers;
+	}
+	
+	public void addSearchHandler(SearchHandler handler) {
+		searchHandlers.add(handler);
+	}
 	
 	@Override
 	public String toString() {
@@ -191,6 +206,30 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 			for (ResourceDoc subresource : subResources) {
 				text.append(LINE_SEPARATOR);
 				text.append(subresource.toString());
+			}
+		}
+		
+		if (searchHandlers.size() > 0) {
+
+			text.append(LINE_SEPARATOR);
+			text.append("h3. Search operations");
+
+			text.append(LINE_SEPARATOR);
+			text.append("|| name || description || required parameters || optional parameters || ");
+
+			text.append(LINE_SEPARATOR);
+			for (SearchHandler handler : searchHandlers) {
+				SearchConfig config = handler.getSearchConfig();
+				for (SearchQuery query : config.getSearchQueries()) {
+					text.append("|" + config.getId());
+					text.append("|" + query.getDescription());
+					String reqParameters = query.getRequiredParameters().size() == 0 ? " " : StringUtils.join(query.getRequiredParameters(), LINE_SEPARATOR);
+					String optParameters = query.getOptionalParameters().size() == 0 ? " " : StringUtils.join(query.getOptionalParameters(), LINE_SEPARATOR);
+					text.append("|" + reqParameters);
+					text.append("|" + optParameters);
+					text.append("|");
+					text.append(LINE_SEPARATOR);
+				}
 			}
 		}
 		

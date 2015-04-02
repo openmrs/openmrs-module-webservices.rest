@@ -126,10 +126,13 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			Class<? extends DelegatingSubclassHandler> handlerClass = handler.getClass();
 			Class forDelegateClass = ReflectionUtil.getParameterizedTypeFromInterface(handlerClass,
 			    DelegatingSubclassHandler.class, 0);
-            if (forDelegateClass == null) {
-                throw new IllegalStateException("Could not determine type information. Make sure that " + handlerClass.getName() + " explicitly says implements DelegatingSubclassHandler<...>. It is not sufficient to just extend a base class that implements this.");
-            }
-            Resource resourceForHandler = Context.getService(RestService.class)
+			if (forDelegateClass == null) {
+				throw new IllegalStateException(
+				        "Could not determine type information. Make sure that "
+				                + handlerClass.getName()
+				                + " explicitly says implements DelegatingSubclassHandler<...>. It is not sufficient to just extend a base class that implements this.");
+			}
+			Resource resourceForHandler = Context.getService(RestService.class)
 			        .getResourceBySupportedClass(forDelegateClass);
 			if (getClass().equals(resourceForHandler.getClass())) {
 				SubClassHandler annotation = handlerClass.getAnnotation(SubClassHandler.class);
