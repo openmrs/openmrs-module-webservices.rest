@@ -13,25 +13,6 @@
  */
 package org.openmrs.module.webservices.docs;
 
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
-import org.openmrs.util.OpenmrsUtil;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,7 +23,26 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
+
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Creates documentation about web service resources.
@@ -59,15 +59,15 @@ public class ResourceDocCreator {
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
 	        InstantiationException, IOException, ConversionException {
 		
-		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
+		Map<String, ResourceDoc> resourceDocMap = new HashMap<String, ResourceDoc>();
 		
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		
-		fillRepresentations(resourceHandlers, resouceDocMap);
-		//fillOperations(resourceDocMap);
-		fillUrls(baseUrl, resouceDocMap);
+		fillRepresentations(resourceHandlers, resourceDocMap);
+		fillUrls(baseUrl, resourceDocMap);
+		fillSearchHandlers(resourceDocMap);
 		
-		return resouceDocMap;
+		return resourceDocMap;
 	}
 	
 	/**
@@ -273,42 +273,6 @@ public class ResourceDocCreator {
 	}
 	
 	/**
-	 * Fills a map of resource names and their documentation objects with resource operations.
-	 * 
-	 * @param resouceDocMap a map of each resource name and its corresponding documentation object.
-	 */
-	private static void fillOperations(Map<String, ResourceDoc> resouceDocMap) throws IOException {
-		
-		File directory = new File(new File("").getAbsolutePath()
-		        + "/src/main/java/org/openmrs/module/webservices/rest/web/resource");
-		
-		//Look for all resource files in the resource folder.
-		String[] files = directory.list();
-		if (files == null)
-			return;
-		
-		for (int i = 0; i < files.length; i++) {
-			String file = files[i];
-			
-			//We are only interested in ......Resource.java files
-			if (file.endsWith("Resource.java")) {
-				
-				//Resource name is class name without the .java extension
-				String name = file.subSequence(0, file.length() - "Resource.java".length()).toString();
-				ResourceDoc resourceDoc = resouceDocMap.get(name);
-				
-				//Get the complete path and name of the java source file.
-				String fullPathName = directory.getAbsolutePath() + File.separator + file;
-				
-				String source = OpenmrsUtil.getFileAsString(new File(fullPathName));
-				
-				//Parse the file's JavaDoc annotations to get the supported web service operations.
-				resourceDoc.setOperations(JavadocParser.parse(source));
-			}
-		}
-	}
-	
-	/**
 	 * Fills a map of resource names and their documentation objects with resource urls.
 	 * 
 	 * @param baseUrl the base or root for all the urls. e.g http://localhost:8080/openmrs
@@ -460,4 +424,22 @@ public class ResourceDocCreator {
 		
 		return resourceOperations;
 	}
+	
+	/**
+	 * Populate resource documentation with search handlers information
+	 * @param resourceDocMap
+	 */
+	private static void fillSearchHandlers(Map<String, ResourceDoc> resourceDocMap) {
+		
+		RestService service = Context.getService(RestService.class);
+		
+		for (ResourceDoc doc : resourceDocMap.values()) {
+			Set<SearchHandler> handlers = service.getSearchHandlers(doc.getResourceName());
+			if (handlers != null) {
+				doc.getSearchHandlers().addAll(handlers);
+			}
+		}
+		
+	}
+	
 }
