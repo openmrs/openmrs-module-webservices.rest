@@ -49,7 +49,7 @@ import java.util.Set;
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*"})
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
@@ -251,10 +251,10 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Annotated setter for Concept
-	 * 
+	 *
 	 * @param obs
 	 * @param value
 	 */
@@ -262,7 +262,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	public static void setConcept(Obs obs, Object value) {
 		obs.setConcept(Context.getConceptService().getConceptByUuid((String) value));
 	}
-	
+
 	/**
 	 * Annotated setter for ConceptValue
 	 * 
