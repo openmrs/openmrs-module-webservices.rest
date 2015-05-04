@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {"1.8.*"})
 public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	
 	/**
@@ -95,7 +95,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	
 	/**
 	 * Annotated setter for allergen
-	 * 
+	 *
 	 * @param allergen
 	 * @param value
 	 */
@@ -103,7 +103,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	public static void setAllergen(Allergy allergy, Object value) {
 		allergy.setAllergen(Context.getConceptService().getConceptByUuid((String) value));
 	}
-	
+
 	/**
 	 * Gets allergies for a given patient (paged according to context if necessary) only if a
 	 * patient parameter exists in the request set on the {@link RequestContext}
