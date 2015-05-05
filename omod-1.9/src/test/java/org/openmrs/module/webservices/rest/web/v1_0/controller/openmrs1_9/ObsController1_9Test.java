@@ -18,14 +18,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 
-import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.ObsController1_8Test;
-
-import java.util.HashMap;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 /**
  * Created by tomasz on 27.04.15.
  */
-public class ObsController1_9Test extends ObsController1_8Test {
+public class ObsController1_9Test extends MainResourceControllerTest {
 
 
     @Test
@@ -39,5 +39,34 @@ public class ObsController1_9Test extends ObsController1_8Test {
         Assert.assertNotNull(PropertyUtils.getProperty(newObs, "concept"));
     }
 
+    /**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
+     */
+    @Override
+    public String getURI() {
+        return "obs";
+    }
 
+    @Override
+    public long getAllCount() {
+        return 0; //Not supported
+    }
+
+    /**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
+     */
+    @Override
+    public String getUuid() {
+        return RestTestConstants1_8.OBS_UUID;
+    }
+
+    /**
+     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
+     */
+    @Override
+    @Test(expected = ResourceDoesNotSupportOperationException.class)
+    public void shouldGetAll() throws Exception {
+        super.shouldGetAll();
+    }
 }
+
