@@ -180,7 +180,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	@PropertyGetter("display")
 	public static String getDisplay(DrugOrder delegate) {
 		StringBuilder ret = new StringBuilder();
-		ret.append(delegate.getAction() + " ");
+		ret.append("(" + delegate.getAction() + ") ");
 		if (delegate.getDrug() != null) {
 			ret.append(delegate.getDrug().getName());
 		} else {

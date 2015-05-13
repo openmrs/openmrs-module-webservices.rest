@@ -20,6 +20,6 @@ public class DrugOrderSubclassHandler1_10Test {
         order.setDrug(drug);
 
         String actual = DrugOrderSubclassHandler1_10.getDisplay(order);
-        assertThat(actual, is("DISCONTINUE Aspirin"));
+        assertThat(actual, is("(DISCONTINUE) Aspirin"));
     }
 }

@@ -193,7 +193,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
         assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
         assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
         assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
-        assertEquals("Triomune-30: 300.0 mg UNKNOWN Once 20 day", Util.getByPath(newOrder, "display"));
+        assertEquals("(NEW) Triomune-30: 300.0 mg UNKNOWN Once 20 day", Util.getByPath(newOrder, "display"));
         assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
         assertEquals(order.get("dosingType"), Util.getByPath(newOrder, "dosingType"));
         assertEquals(order.get("dose"), Util.getByPath(newOrder, "dose").toString());
@@ -248,7 +248,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
                 outPatient, null);
         assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
 
-        assertEquals("ASPIRIN: Follow these instructions closely", Util.getByPath(newOrder, "display"));
+        assertEquals("(NEW) ASPIRIN: Follow these instructions closely", Util.getByPath(newOrder, "display"));
     }
 
 	@Test
