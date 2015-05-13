@@ -180,12 +180,13 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	@PropertyGetter("display")
 	public static String getDisplay(DrugOrder delegate) {
 		StringBuilder ret = new StringBuilder();
+		ret.append(delegate.getAction() + " ");
 		if (delegate.getDrug() != null) {
 			ret.append(delegate.getDrug().getName());
 		} else {
 			ret.append(delegate.getConcept().getDisplayString());
 		}
-        if(delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
+        if (Order.Action.DISCONTINUE != delegate.getAction() && delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
             String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
             ret.append(": ");
             ret.append(dosingInstructionsAsString);
