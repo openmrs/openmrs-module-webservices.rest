@@ -21,6 +21,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -41,7 +42,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("identifier");
 			description.addProperty("identifierType", Representation.REF);
@@ -53,7 +54,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("identifier");
 			description.addProperty("identifierType", Representation.DEFAULT);
@@ -195,6 +196,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	 * @param id
 	 * @return identifier type + identifier (for concise display purposes)
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(PatientIdentifier id) {
 		if (id.getIdentifierType() == null)
 			return "";

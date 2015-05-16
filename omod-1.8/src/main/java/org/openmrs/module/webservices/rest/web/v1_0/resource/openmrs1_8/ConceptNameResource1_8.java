@@ -44,7 +44,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("locale");
@@ -55,7 +55,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("locale");
@@ -179,6 +179,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	 * @param conceptName the concept name object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptName conceptName) {
 		return conceptName.getName();
 	}

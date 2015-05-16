@@ -44,6 +44,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("javaClassName");
 			description.addProperty("retired");

@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -52,7 +53,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
@@ -67,7 +68,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("format");
@@ -76,7 +77,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 			description.addProperty("searchable");
 			description.addProperty("editPrivilege");
 			description.addProperty("retired");
-            description.addProperty("concept", findMethod("getConcept"));
+            description.addProperty("concept");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -158,6 +159,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		    null), context);
     }
 
+	@PropertyGetter("concept")
     public Object getConcept(PersonAttributeType delegate) {
         if (OpenmrsUtil.nullSafeEquals(delegate.getFormat(), Concept.class.getCanonicalName())) {
             Concept concept = Context.getConceptService().getConcept(delegate.getForeignKey());

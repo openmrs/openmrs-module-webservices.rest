@@ -18,6 +18,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -47,7 +48,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("conceptSource", Representation.REF);
 			description.addProperty("description");
@@ -60,7 +61,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("conceptSource");
 			description.addProperty("description");
@@ -93,6 +94,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptReferenceTerm delegate) {
 		if (delegate.getConceptSource() == null) {
 			return "";

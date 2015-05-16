@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -55,12 +56,12 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		DelegatingResourceDescription description = null;
 		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation) {
 			description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("conceptName", Representation.REF);
 		} else if (rep instanceof FullRepresentation) {
 			description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept", Representation.DEFAULT);
 			description.addProperty("conceptName", Representation.DEFAULT);
 			description.addProperty("word");
@@ -73,6 +74,7 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 	/**
 	 * @see
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptSearchResult csr) {
 		ConceptName cn = csr.getConcept().getName();
 		return cn == null ? null : cn.getName();

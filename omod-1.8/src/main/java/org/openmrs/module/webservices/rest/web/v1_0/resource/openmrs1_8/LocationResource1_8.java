@@ -47,7 +47,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("address1");
@@ -73,7 +73,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("address1");

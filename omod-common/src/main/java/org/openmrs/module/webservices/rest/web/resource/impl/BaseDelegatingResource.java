@@ -715,7 +715,11 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.util.ReflectionUtil#findMethod(Class, String)
+	 * @deprecated It is always best to annotate the method with @PropertyGetter instead of finding
+	 *             it this way, because properties defined this way cannot be included in custom
+	 *             representations
 	 */
+	@Deprecated
 	protected Method findMethod(String name) {
 		// TODO replace this with something that looks specifically for a method that takes a single T argument
 		Method ret = ReflectionUtil.findMethod(getClass(), name);

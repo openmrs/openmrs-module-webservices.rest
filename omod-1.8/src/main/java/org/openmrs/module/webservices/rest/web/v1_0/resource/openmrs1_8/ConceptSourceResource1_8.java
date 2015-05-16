@@ -45,7 +45,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("hl7Code");
@@ -56,7 +56,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("hl7Code");

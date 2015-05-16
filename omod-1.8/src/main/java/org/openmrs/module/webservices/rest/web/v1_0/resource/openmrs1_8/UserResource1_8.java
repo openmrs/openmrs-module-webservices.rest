@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -23,10 +24,12 @@ import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -54,7 +57,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	public SimpleObject asRef(UserAndPassword1_8 delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
-		description.addProperty("display", findMethod("getDisplayString"));
+		description.addProperty("display");
 		if (delegate.isRetired()) {
 			description.addProperty("retired");
 		}
@@ -70,7 +73,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("username");
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
@@ -84,7 +87,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("username");
 			description.addProperty("systemId");
 			description.addProperty("userProperties");
@@ -195,7 +198,6 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 *      java.lang.String, java.lang.Object)
 	 * @param instance
 	 * @param propertyName
-	 * @param value
 	 * @throws ConversionException
 	 */
 	@Override
@@ -204,6 +206,11 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			if (propertyName.equals("password")) {
 				return instance.getPassword();
 			} else {
+				// try to find a @PropertyGetter-annotated method
+				Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(this, propertyName);
+				if (annotatedGetter != null) {
+					return annotatedGetter.invoke(this, instance);
+				}
 				return PropertyUtils.getProperty(instance.getUser(), propertyName);
 			}
 		}
@@ -265,6 +272,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 * @param user
 	 * @return username or systemId (for concise display purposes)
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(UserAndPassword1_8 user) {
 		StringBuilder ret = new StringBuilder();
 		User u = user.getUser();

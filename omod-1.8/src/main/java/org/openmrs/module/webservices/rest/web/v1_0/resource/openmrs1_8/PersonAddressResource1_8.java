@@ -18,6 +18,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -50,7 +51,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("preferred");
 			description.addProperty("address1");
@@ -74,7 +75,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("preferred");
 			description.addProperty("address1");
@@ -241,6 +242,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	 * @param address the address object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(PersonAddress address) {
 		return address.getAddress1();
 	}

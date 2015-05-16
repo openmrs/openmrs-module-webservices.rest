@@ -78,7 +78,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("description");
@@ -96,7 +96,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("name");
 			description.addProperty("description");

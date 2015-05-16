@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -63,7 +64,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("messageState");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -71,7 +72,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("source", Representation.DEFAULT);
 			description.addProperty("sourceKey");
 			description.addProperty("data");
@@ -142,6 +143,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 	 * @param message the hl7 message.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(IncomingHl7Message1_8 message) {
 		return message.getSourceKey();
 	}

@@ -68,7 +68,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("urgency");
 			description.addProperty("instructions");
 			description.addProperty("commentToFulfiller");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -91,7 +91,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("urgency");
 			description.addProperty("instructions");
 			description.addProperty("commentToFulfiller");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;

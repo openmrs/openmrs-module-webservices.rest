@@ -46,12 +46,12 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("description");
 			description.addProperty("locale");
@@ -167,6 +167,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	 * @param conceptDescription the concept description object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptDescription conceptDescription) {
 		return conceptDescription.getDescription();
 	}

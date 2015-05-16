@@ -131,7 +131,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
     protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("uuid");
-        description.addProperty("display", findMethod("getDisplayName"));
+        description.addProperty("display");
         description.addProperty("name", Representation.DEFAULT);
         description.addProperty("datatype", Representation.DEFAULT);
         description.addProperty("conceptClass", Representation.DEFAULT);
@@ -170,7 +170,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayName"));
+			description.addProperty("display");
 			description.addProperty("name", Representation.DEFAULT);
 			description.addProperty("datatype", Representation.REF);
 			description.addProperty("conceptClass", Representation.REF);
@@ -291,6 +291,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * 
 	 * @param instance the delegate instance to get the display name off
 	 */
+	@PropertyGetter("display")
 	public String getDisplayName(Concept instance) {
 		ConceptName cn = instance.getName();
 		return cn == null ? null : cn.getName();

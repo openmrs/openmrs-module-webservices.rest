@@ -33,7 +33,7 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 	public SimpleObject asRef(T delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
-		description.addProperty("display", findMethod("getDisplayString"));
+		description.addProperty("display");
 		if (delegate.isVoided())
 			description.addProperty("voided");
 		description.addSelfLink();

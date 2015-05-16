@@ -44,7 +44,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("isHidden");
@@ -55,7 +55,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("isHidden");

@@ -21,6 +21,7 @@ import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -113,6 +114,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	 * @param order
 	 * @return ConceptName
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Order order) {
 		if (order.getConcept() == null)
 			return "[No Concept]";
@@ -127,7 +129,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("orderType", Representation.REF);
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("concept", Representation.REF);
@@ -148,7 +150,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("orderType");
 			description.addProperty("patient");
 			description.addProperty("concept");

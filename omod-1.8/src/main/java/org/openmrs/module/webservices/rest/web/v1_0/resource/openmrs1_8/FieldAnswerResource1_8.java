@@ -23,6 +23,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -46,7 +47,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public SimpleObject asRef(FieldAnswer delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
-		description.addProperty("display", findMethod("getDisplayString"));
+		description.addProperty("display");
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}
@@ -59,7 +60,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("field", Representation.REF);
 			description.addSelfLink();
@@ -68,7 +69,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept");
 			description.addProperty("field");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
@@ -146,6 +147,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	 * @param encounter
 	 * @return encounter type and date
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(FieldAnswer delegate) {
 		if (delegate == null)
 			return null;

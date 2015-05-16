@@ -76,10 +76,6 @@ public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<Locat
 		service().purgeLocationTag(delegate);
 	}
 	
-	public String getDisplayString(LocationTag delegate) {
-		return delegate.getName();
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

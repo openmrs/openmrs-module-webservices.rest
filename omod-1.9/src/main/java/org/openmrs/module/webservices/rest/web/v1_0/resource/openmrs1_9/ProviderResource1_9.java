@@ -19,6 +19,7 @@ import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -47,7 +48,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("identifier");
 			description.addProperty("attributes", "activeAttributes", Representation.REF);
@@ -58,7 +59,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("person", Representation.DEFAULT);
 			description.addProperty("identifier");
 			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
@@ -180,6 +181,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	 * @return identifier + name (for concise display purposes)
 	 */
 	@Override
+	@PropertyGetter("display")
 	public String getDisplayString(Provider provider) {
 		if (provider.getIdentifier() == null) {
 			return "";

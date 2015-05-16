@@ -15,6 +15,7 @@ import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -87,7 +88,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("uuid");
-        description.addProperty("display", findMethod("getDisplayString"));
+        description.addProperty("display");
         description.addProperty("description");
         description.addProperty("aIsToB");
         description.addProperty("bIsToA");
@@ -150,7 +151,9 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
     }
 
     @Override
+    @PropertyGetter("display")
     public String getDisplayString(RelationshipType delegate) {
+        // TODO i18n based on message properties
         return delegate.toString();
     }
 

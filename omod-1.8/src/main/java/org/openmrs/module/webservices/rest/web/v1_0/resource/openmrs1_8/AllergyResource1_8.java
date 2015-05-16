@@ -18,6 +18,7 @@ import org.openmrs.activelist.Allergy;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -86,6 +87,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	 * @param allergy
 	 * @return String ConceptName
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Allergy allergy) {
 		if (allergy.getAllergen() == null)
 			return "";

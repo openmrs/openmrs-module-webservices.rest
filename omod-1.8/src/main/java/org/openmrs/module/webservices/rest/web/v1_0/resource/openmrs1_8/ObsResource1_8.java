@@ -82,7 +82,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			// TODO how to handle valueCodedName?
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
@@ -104,7 +104,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			// TODO how to handle valueCodedName?
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("concept");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("obsDatetime");
@@ -182,6 +182,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	 * @param obs
 	 * @return String ConceptName = value
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Obs obs) {
 		if (obs.getConcept() == null)
 			return "";

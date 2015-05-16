@@ -49,7 +49,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 			description.addProperty("description");
 			description.addProperty("retired");
 			description.addProperty("careSettingType");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addSelfLink();
 			if (rep instanceof DefaultRepresentation) {
 				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);

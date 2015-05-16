@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -96,19 +97,19 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("patient");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("patient");
 			//description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -253,8 +254,9 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	 * @param member the patient
 	 * @return string that contains cohort member's identifier and full name
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(CohortMember1_8 member) {
-		
+
 		if (member.getPatient().getPatientIdentifier() == null)
 			return "";
 		

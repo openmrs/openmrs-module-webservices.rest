@@ -38,7 +38,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("activeListType", Representation.REF);
 			description.addProperty("startDate");
@@ -53,7 +53,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("activeListType", Representation.REF);
 			description.addProperty("startDate");

@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -53,7 +54,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("visitType", Representation.REF);
 			description.addProperty("indication", Representation.REF);
@@ -69,7 +70,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("visitType", Representation.REF);
 			description.addProperty("indication", Representation.REF);
@@ -92,6 +93,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 * @param visit
 	 * @return the display string
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Visit visit) {
 		String ret = visit.getVisitType().getName();
 		ret += " ";

@@ -17,6 +17,7 @@ import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -66,7 +67,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("voided");
@@ -77,7 +78,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("memberIds");
@@ -149,6 +150,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	 * @param cohort
 	 * @return cohort's name
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Cohort cohort) {
 		return cohort.getName();
 	}

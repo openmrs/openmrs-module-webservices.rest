@@ -128,7 +128,9 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
+	@PropertyGetter("display")
 	public String getDisplayString(Privilege delegate) {
+		// TODO figure out how to delegate to the superclass method to handler message-based i18n
 		String ret = getPrivilegeName(delegate);
 		return StringUtils.isNotBlank(ret) ? ret : "[No Name]";
 	}

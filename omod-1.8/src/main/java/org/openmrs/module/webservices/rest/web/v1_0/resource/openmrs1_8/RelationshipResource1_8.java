@@ -16,6 +16,7 @@ import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -75,7 +76,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
         if (rep instanceof DefaultRepresentation) {
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("uuid");
-            description.addProperty("display", findMethod("getDisplayString"));
+            description.addProperty("display");
             description.addProperty("personA", Representation.REF, Person.class);
             description.addProperty("relationshipType", Representation.REF);
             description.addProperty("personB", Representation.REF, Person.class);
@@ -86,7 +87,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
         } else if(rep instanceof FullRepresentation){
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("uuid");
-            description.addProperty("display", findMethod("getDisplayString"));
+            description.addProperty("display");
             description.addProperty("personA", Representation.DEFAULT, Person.class);
             description.addProperty("relationshipType", Representation.DEFAULT);
             description.addProperty("personB", Representation.DEFAULT, Person.class);
@@ -102,6 +103,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
      * @param relationship
      * @return relationship type and start date
      */
+    @PropertyGetter("display")
     public String getDisplayString(Relationship relationship) {
         String relType = relationship.getRelationshipType() == null ? "NULL" : relationship.getRelationshipType().getaIsToB();
         return relationship.getPersonA().getGivenName() + " is the " + relType + " of " + relationship.getPersonB().getGivenName();

@@ -56,7 +56,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("gender");
 			description.addProperty("age");
 			description.addProperty("birthdate");
@@ -74,7 +74,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("gender");
 			description.addProperty("age");
 			description.addProperty("birthdate");
@@ -374,7 +374,9 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 * @param person
 	 * @return fullname (for concise display purposes)
 	 */
+    @PropertyGetter("display")
 	public String getDisplayString(Person person) {
+        // TODO copy what is done in PatientResource to use configured name layout
 		if (person.getPersonName() == null)
 			return "";
 		

@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -35,7 +36,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("conceptReferenceTerm", Representation.REF);
 			description.addProperty("conceptMapType", Representation.REF);
@@ -44,7 +45,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("conceptReferenceTerm", Representation.DEFAULT);
 			description.addProperty("conceptMapType", Representation.DEFAULT);
@@ -80,6 +81,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	 * @param conceptMap the concept map object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptMap conceptMap) {
 		if (conceptMap.getConceptReferenceTerm() == null || conceptMap.getConceptReferenceTerm().getConceptSource() == null) {
 			return "";

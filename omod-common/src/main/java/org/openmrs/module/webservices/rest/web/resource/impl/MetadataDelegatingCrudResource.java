@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -42,7 +43,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject convertToRef(T delegate) throws ConversionException {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
-		rep.addProperty("display", findMethod("getDisplayString"));
+		rep.addProperty("display");
 		if (delegate.isRetired())
 			rep.addProperty("retired");
 		rep.addSelfLink();
@@ -53,7 +54,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject asDefaultRep(T delegate) throws Exception {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
-		rep.addProperty("display", findMethod("getDisplayString"));
+		rep.addProperty("display");
 		rep.addProperty("name");
 		rep.addProperty("description");
 		rep.addProperty("retired");
@@ -66,7 +67,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	public SimpleObject asFullRep(T delegate) throws Exception {
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
-		rep.addProperty("display", findMethod("getDisplayString"));
+		rep.addProperty("display");
 		rep.addProperty("name");
 		rep.addProperty("description");
 		rep.addProperty("retired");
@@ -117,6 +118,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	 * @should return the empty string when no localized message is specified and the name property
 	 *         is null
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(T delegate) {
 		String localization = getLocalization(delegate.getClass().getSimpleName(), delegate.getUuid());
 		if (localization != null) {

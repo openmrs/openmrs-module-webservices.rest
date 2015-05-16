@@ -199,7 +199,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	public SimpleObject asRef(T delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
-		description.addProperty("display", findMethod("getDisplayString"));
+		description.addProperty("display");
 		
 		Method method = ReflectionUtils.findMethod(delegate.getClass(), "isVoided");
 		

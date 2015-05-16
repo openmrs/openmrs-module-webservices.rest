@@ -19,6 +19,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -46,14 +47,14 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("termA", Representation.REF);
 			description.addProperty("termB", Representation.REF);
 			description.addProperty("conceptMapType", Representation.REF);
@@ -63,7 +64,7 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("termA", Representation.DEFAULT);
 			description.addProperty("termB", Representation.DEFAULT);
 			description.addProperty("conceptMapType", Representation.DEFAULT);
@@ -90,9 +91,10 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 	/**
 	 * Gets the display string for a concept map.
 	 * 
-	 * @param conceptMap the concept map object.
+	 * @param conceptReferenceTermMap the concept map object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptReferenceTermMap conceptReferenceTermMap) {
 		if (conceptReferenceTermMap.getTermA() == null || conceptReferenceTermMap.getTermB() == null) {
 			return "";

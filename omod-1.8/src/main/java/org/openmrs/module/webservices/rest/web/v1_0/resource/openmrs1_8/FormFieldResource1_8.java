@@ -23,6 +23,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -50,7 +51,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("parent", Representation.REF);
 			description.addProperty("form", Representation.REF);
 			description.addProperty("field", Representation.REF);
@@ -68,7 +69,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("parent");
 			description.addProperty("form");
 			description.addProperty("field");
@@ -133,6 +134,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	 * @param formField the formField name object
 	 * @return the display string
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(FormField formField) {
 		return formField.getName();
 	}

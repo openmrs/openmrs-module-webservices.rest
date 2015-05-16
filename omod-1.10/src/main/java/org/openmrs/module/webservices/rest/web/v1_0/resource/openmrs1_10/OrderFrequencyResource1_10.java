@@ -43,7 +43,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-            description.addProperty("display", findMethod("getDisplayString"));
+            description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("retired");
@@ -54,7 +54,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-            description.addProperty("display", findMethod("getDisplayString"));
+            description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("concept", Representation.DEFAULT);

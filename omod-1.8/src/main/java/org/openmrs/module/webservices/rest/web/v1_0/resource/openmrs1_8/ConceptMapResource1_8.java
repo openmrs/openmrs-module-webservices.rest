@@ -21,6 +21,7 @@ import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
@@ -44,7 +45,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("source", Representation.REF);
 			description.addProperty("sourceCode");
@@ -53,7 +54,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("source", Representation.DEFAULT);
 			description.addProperty("sourceCode");
@@ -82,6 +83,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	 * @param conceptMap the concept map object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(ConceptMap conceptMap) {
 		if (conceptMap.getSource() == null) {
 			return "";

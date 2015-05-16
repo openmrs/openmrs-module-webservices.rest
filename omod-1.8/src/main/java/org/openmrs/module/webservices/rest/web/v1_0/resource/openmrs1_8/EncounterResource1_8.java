@@ -55,7 +55,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("encounterDatetime");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("location", Representation.REF);
@@ -71,7 +71,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("encounterDatetime");
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("location");
@@ -168,6 +168,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	 * @param encounter
 	 * @return encounter type and date
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(Encounter encounter) {
 		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
 		ret += " ";

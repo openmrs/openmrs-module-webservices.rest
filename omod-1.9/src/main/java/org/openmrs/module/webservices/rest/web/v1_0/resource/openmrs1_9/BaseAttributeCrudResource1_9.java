@@ -76,7 +76,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("value");
@@ -86,7 +86,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("value");
@@ -112,6 +112,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	 * @param attr the attribute.
 	 * @return attribute type: value (for concise display purposes)
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(T attr) {
 		if (attr.getAttributeType() == null)
 			return "";

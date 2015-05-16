@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -49,9 +50,9 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
-			description.addProperty("value", findMethod("getValue"));
+			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
@@ -59,9 +60,9 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
-			description.addProperty("value", findMethod("getValue"));
+			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
@@ -220,6 +221,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * @param pa the person attribute.
 	 * @return attribute type + value (for concise display purposes)
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(PersonAttribute pa) {
 		if (pa.getAttributeType() == null)
 			return "";
@@ -236,6 +238,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * @param pa the person attribute.
 	 * @return an object containing the hydrated object.
 	 */
+	@PropertyGetter("value")
 	public Object getValue(PersonAttribute pa) {
 		Object value = pa.getHydratedObject();
 		if (value == null) {

@@ -25,6 +25,7 @@ import org.openmrs.layout.web.name.NameSupport;
 import org.openmrs.layout.web.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -45,7 +46,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");
@@ -57,7 +58,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("givenName");
 			description.addProperty("middleName");
@@ -197,6 +198,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	 * @param personName the person name object.
 	 * @return the display string.
 	 */
+	@PropertyGetter("display")
 	public String getDisplayString(PersonName personName) {
 
         try {

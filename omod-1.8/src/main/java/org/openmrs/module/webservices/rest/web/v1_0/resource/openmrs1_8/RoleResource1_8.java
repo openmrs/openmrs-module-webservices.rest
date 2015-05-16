@@ -83,7 +83,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("retired");
@@ -95,7 +95,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", findMethod("getDisplayString"));
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("retired");
@@ -199,7 +199,9 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
+	@PropertyGetter("display")
 	public String getDisplayString(Role delegate) {
+		// TODO can we delegate to superclass for message-based i18n?
 		String ret = getRoleName(delegate);
 		return StringUtils.isNotBlank(ret) ? ret : "[No Name]";
 	}
