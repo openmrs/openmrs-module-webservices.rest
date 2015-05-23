@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingPropertyAccessor;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.springframework.util.ReflectionUtils;
 
@@ -88,7 +89,7 @@ public class ReflectionUtil {
 		return ret;
 	}
 	
-	public static <T> Method findPropertyGetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
+	public static <T> Method findPropertyGetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = getterMethodCache.get(key);
 		if (result != null) {
@@ -112,7 +113,7 @@ public class ReflectionUtil {
 		return result;
 	}
 	
-	public static <T> Method findPropertySetterMethod(DelegatingResourceHandler<? extends T> handler, String propName) {
+	public static <T> Method findPropertySetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = setterMethodCache.get(key);
 		if (result != null) {

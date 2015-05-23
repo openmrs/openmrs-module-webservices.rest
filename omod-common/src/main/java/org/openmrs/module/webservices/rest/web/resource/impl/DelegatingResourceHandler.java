@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * 
  * @param <T> the class of the delegate this resource handles
  */
-public interface DelegatingResourceHandler<T> {
+public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor<T> {
 	
 	/**
 	 * Indicates a version of the supported resource.

@@ -244,7 +244,7 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 			this.convertAs = convertAs;
 		}
 		
-		public <T> Object evaluate(BaseDelegatingResource<T> converter, T delegate) throws ConversionException {
+		public <T> Object evaluate(BaseDelegatingConverter<T> converter, T delegate) throws ConversionException {
 			if (delegateProperty != null) {
 				Object propVal = converter.getProperty(delegate, delegateProperty);
 				if (propVal instanceof Collection) {

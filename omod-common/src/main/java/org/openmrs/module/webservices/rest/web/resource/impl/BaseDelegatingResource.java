@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,14 +39,10 @@ import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
-import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
-import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -69,7 +64,7 @@ import org.openmrs.util.OpenmrsUtil;
  * 
  * @param <T> the class we're delegating to
  */
-public abstract class BaseDelegatingResource<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
+public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
 	
 	private final Log log = LogFactory.getLog(getClass());
 	
@@ -579,41 +574,6 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 		return null;
 	}
 	
-	protected SimpleObject convertDelegateToRepresentation(T delegate, DelegatingResourceDescription rep)
-	        throws ConversionException {
-		if (delegate == null)
-			throw new NullPointerException();
-		SimpleObject ret = new SimpleObject();
-		for (Entry<String, Property> e : rep.getProperties().entrySet()) {
-			ret.put(e.getKey(), e.getValue().evaluate(this, delegate));
-		}
-		List<Hyperlink> links = new ArrayList<Hyperlink>();
-		for (Hyperlink link : rep.getLinks()) {
-			if (link.getUri().startsWith(".")) {
-				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
-			}
-			
-			org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
-			    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-			if (res != null) {
-				String name = res.name();
-				if (name.contains("/")) {
-					name = name.substring(name.lastIndexOf("/") + 1);
-				}
-				link.setResourceAlias(name);
-			} else {
-				SubResource sub = getClass().getAnnotation(SubResource.class);
-				if (sub != null) {
-					link.setResourceAlias(sub.path());
-				}
-			}
-			links.add(link);
-		}
-		if (links.size() > 0)
-			ret.put("links", links);
-		return ret;
-	}
-	
 	/**
 	 * @param delegate
 	 * @param propertyMap
@@ -787,20 +747,7 @@ public abstract class BaseDelegatingResource<T> implements Converter<T>, Resourc
 			// Convert the value to the specified type
 			value = ConversionUtil.convert(value, setter.getGenericParameterTypes()[0], instance);
 			
-			if (value instanceof Collection) {
-				//We need to handle collections in a way that Hibernate can track.
-				Collection<?> newCollection = (Collection<?>) value;
-				Object oldValue = PropertyUtils.getProperty(instance, propertyName);
-				if (oldValue instanceof Collection) {
-					Collection collection = (Collection) oldValue;
-					collection.clear();
-					collection.addAll(newCollection);
-				} else {
-					PropertyUtils.setProperty(instance, propertyName, value);
-				}
-			} else {
-				PropertyUtils.setProperty(instance, propertyName, value);
-			}
+			setPropertyWhichMayBeAHibernateCollection(instance, propertyName, value);
 		}
 		catch (Exception ex) {
 			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
