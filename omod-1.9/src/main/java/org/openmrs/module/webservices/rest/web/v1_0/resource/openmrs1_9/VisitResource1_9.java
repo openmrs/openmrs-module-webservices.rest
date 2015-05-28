@@ -62,7 +62,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			description.addProperty("startDatetime");
 			description.addProperty("stopDatetime");
 			description.addProperty("encounters", Representation.REF);
-			description.addProperty("attributes", "activeAttributes", Representation.REF);
+			description.addProperty("attributes", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -78,7 +78,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			description.addProperty("startDatetime");
 			description.addProperty("stopDatetime");
 			description.addProperty("encounters", Representation.DEFAULT);
-			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
+			description.addProperty("attributes", Representation.DEFAULT);
 			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -101,6 +101,11 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		ret += " - ";
 		ret += Context.getDateTimeFormat().format(visit.getStartDatetime());
 		return ret;
+	}
+
+	@PropertyGetter("attributes")
+	public Collection<VisitAttribute> getActiveAttributes(Visit visit) {
+		return visit.getActiveAttributes();
 	}
 	
 	/**
