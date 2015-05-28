@@ -98,16 +98,22 @@ public class VisitAttributeResource1_9 extends BaseAttributeCrudResource1_9<Visi
 	 */
 	@Override
 	public VisitAttribute save(VisitAttribute delegate) {
-		// make sure it has not already been added to the visit
-		boolean needToAdd = true;
-		for (VisitAttribute pa : delegate.getVisit().getActiveAttributes()) {
-			if (pa.equals(delegate)) {
-				needToAdd = false;
-				break;
-			}
+		if (delegate.getAttributeType().getMaxOccurs() == 1) {
+			// there is a convencience method for this case, that avoids the client having to make two calls (to void and create)
+			delegate.getVisit().setAttribute(delegate);
 		}
-		if (needToAdd) {
-			delegate.getVisit().addAttribute(delegate);
+		else {
+			// make sure it has not already been added to the visit
+			boolean needToAdd = true;
+			for (VisitAttribute pa : delegate.getVisit().getActiveAttributes()) {
+				if (pa.equals(delegate)) {
+					needToAdd = false;
+					break;
+				}
+			}
+			if (needToAdd) {
+				delegate.getVisit().addAttribute(delegate);
+			}
 		}
 		Context.getVisitService().saveVisit(delegate.getVisit());
 		return delegate;
