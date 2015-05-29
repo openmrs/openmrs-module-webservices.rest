@@ -73,4 +73,6 @@ public interface RestService {
 	 * Initializes all Resources and Search handlers for use; called after module startup
 	 */
 	public void initialize();
+	
+	public List<SearchHandler> getAllSearchHandlers();
 }

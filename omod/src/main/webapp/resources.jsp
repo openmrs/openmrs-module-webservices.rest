@@ -1,4 +1,23 @@
 <%@ include file="/WEB-INF/template/include.jsp"%>
+
+<style type="text/css">
+	table.innerTable, table.innerTable td
+	{
+	    width:100%;
+		border: 0px gray;
+		 border-collapse: collapse;
+	}
+	.formVersion{
+	  width: 50%;
+	}
+	.formField{
+	  float:left;
+	  overflow:hidden;
+	}
+</style>
+
+
+
 <c:forEach var="resource" items="${data}" varStatus="status">
 	<tr
 		class="<c:choose><c:when test="${status.index % 2 == 0}">d0</c:when><c:otherwise>d1</c:otherwise></c:choose>">
@@ -9,9 +28,14 @@
             <c:if test="${!empty resource.subtypeHandlerForResourceName}">extends ${resource.subtypeHandlerForResourceName}</c:if>
         </td>
 		<td>${resource.url}</td>
+		<td>
+		   <c:forEach var="ver" items="${resource.supportedOpenMRSVersion}">
+		     ${ver} 
+		   </c:forEach>
+		</td>
 
 		<td>
-			<table style="width: 100%">
+			<table class="innerTable">
 				<c:forEach var="representation" items="${resource.representations}">
 					<tr>
 						<td>${representation.name}: ${representation.properties}</td>
