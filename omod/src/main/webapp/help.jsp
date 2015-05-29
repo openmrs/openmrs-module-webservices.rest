@@ -17,6 +17,7 @@ Main documentation page for the module is on the wiki:
 	table.resourceData, table.resourceData th, table.resourceData td
 	{
 		border: 1px solid black;
+		border-collapse: collapse;
 	}
 	
 	table.resourceData tr.d0 td {
@@ -27,15 +28,35 @@ Main documentation page for the module is on the wiki:
 		background-color: #FEFEF2;
 	}
 	
+	.versionsFieldSet{
+	width:50%;
+	}
+	
 </style>
 
+<form:form method="post" modelAttribute="documentationConfiguration">
+<fieldset class="versionsFieldSet">
+<legend> Displayed Versions </legend>
+ <!--  <c:forEach var="openMRSVersion" items="${distinctVersions}">
+          <span> <input type="checkbox" name="${openMRSVersion}" value="${openMRSVersion}"> ${openMRSVersion} <span>
+    </c:forEach>-->
+    <form:checkboxes path="selectedVersions" items="${distinctVersions}" />
+    <input type="submit" value="Display"/> 
+</fieldset>
+</form:form>
+<div style="height:20px"></div>
 <table class="resourceData">
   <tr>
    <th>Resource</th>
    <th>Url</th>
+   <th>Version</th>
    <th>Representations</th>
   </tr>
   <jsp:include page="resources.jsp" />
+</table>
+<h2> Search Handlers </h2>
+
+  <jsp:include page="searchResources.jsp" />
 </table>
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

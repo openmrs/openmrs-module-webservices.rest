@@ -20,6 +20,8 @@ import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -63,6 +65,8 @@ public class ResourceDocCreator {
 		
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		
+		//Context.getService(RestService.class).
+		
 		fillRepresentations(resourceHandlers, resouceDocMap);
 		//fillOperations(resourceDocMap);
 		fillUrls(baseUrl, resouceDocMap);
@@ -91,6 +95,18 @@ public class ResourceDocCreator {
 				it.remove();
 			}
 		}
+		Collections.sort(docs);
+		
+		return docs;
+	}
+	
+	public static List<SearchHandlerDoc> createSearchHandlerDoc(String baseUrl) throws IllegalAccessException,
+	        InstantiationException, IOException, ConversionException {
+		
+		List<SearchHandler> searchHandlers = Context.getService(RestService.class).getAllSearchHandlers();
+		
+		List<SearchHandlerDoc> docs = fillSearchHandlers(searchHandlers, baseUrl);
+		
 		Collections.sort(docs);
 		
 		return docs;
@@ -154,10 +170,20 @@ public class ResourceDocCreator {
 			
 			String subResourceForClass = null;
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
+			resourceDoc.setResourceVersion(resourceHandler.getResourceVersion());
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) resourceHandler
 			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 			if (resourceAnnotation != null) {
 				resourceDoc.setResourceName(resourceAnnotation.name());
+				
+				String[] supportedVersions = resourceAnnotation.supportedOpenmrsVersions();
+				List<String> supportedVersionsList = new ArrayList<String>();
+				
+				for (String version : supportedVersions)
+					supportedVersionsList.add(version);
+				
+				resourceDoc.setSupportedOpenMRSVersion(supportedVersionsList);
+				
 			} else {
 				//this is a subResource, use the name of the collection
 				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) resourceHandler
@@ -459,5 +485,18 @@ public class ResourceDocCreator {
 		Collections.sort(resourceOperations);
 		
 		return resourceOperations;
+	}
+	
+	private static List<SearchHandlerDoc> fillSearchHandlers(List<SearchHandler> searchHandlers, String url) {
+		
+		List<SearchHandlerDoc> searchHandlerDocList = new ArrayList<SearchHandlerDoc>();
+		
+		for (SearchHandler searchHandler : searchHandlers) {
+			
+			SearchHandlerDoc searchHandlerDoc = new SearchHandlerDoc(searchHandler, url);
+			searchHandlerDocList.add(searchHandlerDoc);
+		}
+		
+		return searchHandlerDocList;
 	}
 }
