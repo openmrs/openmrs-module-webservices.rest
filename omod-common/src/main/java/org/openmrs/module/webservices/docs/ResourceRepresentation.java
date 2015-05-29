@@ -13,8 +13,10 @@
  */
 package org.openmrs.module.webservices.docs;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * This class stands for a resource representation.
@@ -67,4 +69,5 @@ public class ResourceRepresentation {
 		
 		return text;
 	}
+	
 }

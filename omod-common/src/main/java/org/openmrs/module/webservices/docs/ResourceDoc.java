@@ -15,7 +15,7 @@ package org.openmrs.module.webservices.docs;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
@@ -49,6 +49,10 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	private List<ResourceDoc> subtypeHandlers = new ArrayList<ResourceDoc>();
 	
 	private List<SearchHandler> searchHandlers = new ArrayList<SearchHandler>();
+	
+	private String resourceVersion;
+	
+	private List<String> supportedOpenMRSVersion;
 	
 	public ResourceDoc(String name) {
 		setName(name);
@@ -251,4 +255,35 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		return subtypeHandlerForResourceName != null;
 	}
 	
+	public void setSubtypeHandlerForResourceName(String name) {
+		this.subtypeHandlerForResourceName = name;
+	}
+	
+	/**
+	 * @return the resourceVersion
+	 */
+	public String getResourceVersion() {
+		return resourceVersion;
+	}
+	
+	/**
+	 * @param resourceVersion the resourceVersion to set
+	 */
+	public void setResourceVersion(String resourceVersion) {
+		this.resourceVersion = resourceVersion;
+	}
+	
+	/**
+	 * @return the supportedOpenMRSVersion
+	 */
+	public List<String> getSupportedOpenMRSVersion() {
+		return supportedOpenMRSVersion;
+	}
+	
+	/**
+	 * @param supportedOpenMRSVersion the supportedOpenMRSVersion to set
+	 */
+	public void setSupportedOpenMRSVersion(List<String> supportedOpenMRSVersion) {
+		this.supportedOpenMRSVersion = supportedOpenMRSVersion;
+	}
 }
