@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * {@link Resource} for {@link Form}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 	
 	/**

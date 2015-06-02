@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptR
 /**
  * {@link Resource} for {@link OrderFrequency}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/orderfrequency", supportedClass = OrderFrequency.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/orderfrequency", supportedClass = OrderFrequency.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
 public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<OrderFrequency> {
 	
 	/**

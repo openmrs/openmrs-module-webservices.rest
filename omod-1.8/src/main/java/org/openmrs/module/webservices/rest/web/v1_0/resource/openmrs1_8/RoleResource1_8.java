@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * {@link Resource} for Role, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/role", supportedClass = Role.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/role", supportedClass = Role.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**

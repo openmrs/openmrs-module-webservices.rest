@@ -44,7 +44,7 @@ import java.util.Set;
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/person", order = 2, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/person", order = 2, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	

@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@SubResource(parent = PersonResource1_8.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddress, Person, PersonResource1_8> {
 	
 	public PersonAddressResource1_8() {

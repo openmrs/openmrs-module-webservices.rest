@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<ConceptSource> {
 	
 	/**

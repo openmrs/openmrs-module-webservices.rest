@@ -47,7 +47,7 @@ import org.openmrs.module.webservices.validation.ValidateUtil;
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	
 	public PatientResource1_8() {

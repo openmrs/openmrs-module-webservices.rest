@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProblemR
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Problem, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12"})
 public class ProblemResource1_9 extends ProblemResource1_8 {
 
 	/**

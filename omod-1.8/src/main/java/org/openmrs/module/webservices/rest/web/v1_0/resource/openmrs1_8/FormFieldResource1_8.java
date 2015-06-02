@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
-@SubResource(parent = FormResource1_8.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*"})
+@SubResource(parent = FormResource1_8.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
 	/**
