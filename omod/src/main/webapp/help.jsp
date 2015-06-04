@@ -8,7 +8,7 @@
 
 <h2><spring:message code="webservices.rest.help.title" /></h2>
 
-Main documentation page for the module is on the wiki: 
+<spring:message code="webservices.rest.help.wikiTitle"/>: 
 <a href="https://wiki.openmrs.org/x/xoAaAQ">https://wiki.openmrs.org/display/projects/Webservices.rest+Module</a>
 
 <br/><br/>
@@ -37,5 +37,6 @@ Main documentation page for the module is on the wiki:
   </tr>
   <jsp:include page="resources.jsp" />
 </table>
+
 
 <%@ include file="/WEB-INF/template/footer.jsp"%>

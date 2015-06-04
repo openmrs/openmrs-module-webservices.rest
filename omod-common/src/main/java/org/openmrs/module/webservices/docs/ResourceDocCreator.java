@@ -34,6 +34,8 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -91,6 +93,18 @@ public class ResourceDocCreator {
 				it.remove();
 			}
 		}
+		Collections.sort(docs);
+		
+		return docs;
+	}
+	
+	public static List<SearchHandlerDoc> createSearchHandlerDoc(String baseUrl) throws IllegalAccessException,
+	        InstantiationException, IOException, ConversionException {
+		
+		List<SearchHandler> searchHandlers = Context.getService(RestService.class).getAllSearchHandlers();
+		
+		List<SearchHandlerDoc> docs = fillSearchHandlers(searchHandlers, baseUrl);
+		
 		Collections.sort(docs);
 		
 		return docs;
@@ -443,4 +457,16 @@ public class ResourceDocCreator {
 		
 	}
 	
+	private static List<SearchHandlerDoc> fillSearchHandlers(List<SearchHandler> searchHandlers, String url) {
+		
+		List<SearchHandlerDoc> searchHandlerDocList = new ArrayList<SearchHandlerDoc>();
+		
+		for (SearchHandler searchHandler : searchHandlers) {
+			
+			SearchHandlerDoc searchHandlerDoc = new SearchHandlerDoc(searchHandler, url);
+			searchHandlerDocList.add(searchHandlerDoc);
+		}
+		
+		return searchHandlerDocList;
+	}
 }
