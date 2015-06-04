@@ -13,6 +13,27 @@
  */
 package org.openmrs.module.webservices.docs;
 
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
+import org.openmrs.util.OpenmrsUtil;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -23,26 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Creates documentation about web service resources.
@@ -59,15 +61,15 @@ public class ResourceDocCreator {
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
 	        InstantiationException, IOException, ConversionException {
 		
-		Map<String, ResourceDoc> resourceDocMap = new HashMap<String, ResourceDoc>();
+		Map<String, ResourceDoc> resouceDocMap = new HashMap<String, ResourceDoc>();
 		
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		
-		fillRepresentations(resourceHandlers, resourceDocMap);
-		fillUrls(baseUrl, resourceDocMap);
-		fillSearchHandlers(resourceDocMap);
+		fillRepresentations(resourceHandlers, resouceDocMap);
+		//fillOperations(resourceDocMap);
+		fillUrls(baseUrl, resouceDocMap);
 		
-		return resourceDocMap;
+		return resouceDocMap;
 	}
 	
 	/**
@@ -91,6 +93,18 @@ public class ResourceDocCreator {
 				it.remove();
 			}
 		}
+		Collections.sort(docs);
+		
+		return docs;
+	}
+	
+	public static List<SearchHandlerDoc> createSearchHandlerDoc(String baseUrl) throws IllegalAccessException,
+	        InstantiationException, IOException, ConversionException {
+		
+		List<SearchHandler> searchHandlers = Context.getService(RestService.class).getAllSearchHandlers();
+		
+		List<SearchHandlerDoc> docs = fillSearchHandlers(searchHandlers, baseUrl);
+		
 		Collections.sort(docs);
 		
 		return docs;
@@ -154,10 +168,21 @@ public class ResourceDocCreator {
 			
 			String subResourceForClass = null;
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
+			resourceDoc.setResourceVersion(resourceHandler.getResourceVersion());
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) resourceHandler
 			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 			if (resourceAnnotation != null) {
 				resourceDoc.setResourceName(resourceAnnotation.name());
+				
+				String[] supportedVersions = resourceAnnotation.supportedOpenmrsVersions();
+				List<String> supportedVersionsList = new ArrayList<String>();
+				
+				for (String version : supportedVersions) {
+					supportedVersionsList.add(version);
+				}
+				
+				resourceDoc.setSupportedOpenMRSVersion(supportedVersionsList);
+				
 			} else {
 				//this is a subResource, use the name of the collection
 				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) resourceHandler
@@ -270,6 +295,42 @@ public class ResourceDocCreator {
 			}
 		}
 		return properties;
+	}
+	
+	/**
+	 * Fills a map of resource names and their documentation objects with resource operations.
+	 * 
+	 * @param resouceDocMap a map of each resource name and its corresponding documentation object.
+	 */
+	private static void fillOperations(Map<String, ResourceDoc> resouceDocMap) throws IOException {
+		
+		File directory = new File(new File("").getAbsolutePath()
+		        + "/src/main/java/org/openmrs/module/webservices/rest/web/resource");
+		
+		//Look for all resource files in the resource folder.
+		String[] files = directory.list();
+		if (files == null)
+			return;
+		
+		for (int i = 0; i < files.length; i++) {
+			String file = files[i];
+			
+			//We are only interested in ......Resource.java files
+			if (file.endsWith("Resource.java")) {
+				
+				//Resource name is class name without the .java extension
+				String name = file.subSequence(0, file.length() - "Resource.java".length()).toString();
+				ResourceDoc resourceDoc = resouceDocMap.get(name);
+				
+				//Get the complete path and name of the java source file.
+				String fullPathName = directory.getAbsolutePath() + File.separator + file;
+				
+				String source = OpenmrsUtil.getFileAsString(new File(fullPathName));
+				
+				//Parse the file's JavaDoc annotations to get the supported web service operations.
+				resourceDoc.setOperations(JavadocParser.parse(source));
+			}
+		}
 	}
 	
 	/**
@@ -425,22 +486,16 @@ public class ResourceDocCreator {
 		return resourceOperations;
 	}
 	
-	/**
-	 * Populate resource documentation with search handlers information
-	 * 
-	 * @param resourceDocMap
-	 */
-	private static void fillSearchHandlers(Map<String, ResourceDoc> resourceDocMap) {
+	private static List<SearchHandlerDoc> fillSearchHandlers(List<SearchHandler> searchHandlers, String url) {
 		
-		RestService service = Context.getService(RestService.class);
+		List<SearchHandlerDoc> searchHandlerDocList = new ArrayList<SearchHandlerDoc>();
 		
-		for (ResourceDoc doc : resourceDocMap.values()) {
-			Set<SearchHandler> handlers = service.getSearchHandlers(doc.getResourceName());
-			if (handlers != null) {
-				doc.getSearchHandlers().addAll(handlers);
-			}
+		for (SearchHandler searchHandler : searchHandlers) {
+			
+			SearchHandlerDoc searchHandlerDoc = new SearchHandlerDoc(searchHandler, url);
+			searchHandlerDocList.add(searchHandlerDoc);
 		}
 		
+		return searchHandlerDocList;
 	}
-	
 }

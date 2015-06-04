@@ -15,11 +15,7 @@ package org.openmrs.module.webservices.docs;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+import java.util.Set;
 
 /**
  * Data structure containing documentation about a web service resource.
@@ -48,7 +44,9 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	
 	private List<ResourceDoc> subtypeHandlers = new ArrayList<ResourceDoc>();
 	
-	private List<SearchHandler> searchHandlers = new ArrayList<SearchHandler>();
+	private String resourceVersion;
+	
+	private List<String> supportedOpenMRSVersion;
 	
 	public ResourceDoc(String name) {
 		setName(name);
@@ -146,14 +144,6 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 		subtypeHandlers.add(resourceDoc);
 	}
 	
-	public List<SearchHandler> getSearchHandlers() {
-		return searchHandlers;
-	}
-	
-	public void addSearchHandler(SearchHandler handler) {
-		searchHandlers.add(handler);
-	}
-	
 	@Override
 	public String toString() {
 		StringBuilder text = new StringBuilder();
@@ -209,32 +199,6 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 			}
 		}
 		
-		if (searchHandlers.size() > 0) {
-			
-			text.append(LINE_SEPARATOR);
-			text.append("h3. Search operations");
-			
-			text.append(LINE_SEPARATOR);
-			text.append("|| name || description || required parameters || optional parameters || ");
-			
-			text.append(LINE_SEPARATOR);
-			for (SearchHandler handler : searchHandlers) {
-				SearchConfig config = handler.getSearchConfig();
-				for (SearchQuery query : config.getSearchQueries()) {
-					text.append("|" + config.getId());
-					text.append("|" + query.getDescription());
-					String reqParameters = query.getRequiredParameters().size() == 0 ? " " : StringUtils.join(
-					    query.getRequiredParameters(), LINE_SEPARATOR);
-					String optParameters = query.getOptionalParameters().size() == 0 ? " " : StringUtils.join(
-					    query.getOptionalParameters(), LINE_SEPARATOR);
-					text.append("|" + reqParameters);
-					text.append("|" + optParameters);
-					text.append("|");
-					text.append(LINE_SEPARATOR);
-				}
-			}
-		}
-		
 		return text.toString();
 	}
 	
@@ -249,6 +213,38 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 	
 	public boolean isSubtypeHandler() {
 		return subtypeHandlerForResourceName != null;
+	}
+	
+	public void setSubtypeHandlerForResourceName(String name) {
+		this.subtypeHandlerForResourceName = name;
+	}
+	
+	/**
+	 * @return the resourceVersion
+	 */
+	public String getResourceVersion() {
+		return resourceVersion;
+	}
+	
+	/**
+	 * @param resourceVersion the resourceVersion to set
+	 */
+	public void setResourceVersion(String resourceVersion) {
+		this.resourceVersion = resourceVersion;
+	}
+	
+	/**
+	 * @return the supportedOpenMRSVersion
+	 */
+	public List<String> getSupportedOpenMRSVersion() {
+		return supportedOpenMRSVersion;
+	}
+	
+	/**
+	 * @param supportedOpenMRSVersion the supportedOpenMRSVersion to set
+	 */
+	public void setSupportedOpenMRSVersion(List<String> supportedOpenMRSVersion) {
+		this.supportedOpenMRSVersion = supportedOpenMRSVersion;
 	}
 	
 }
