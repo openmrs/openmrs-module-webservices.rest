@@ -58,6 +58,7 @@ public class LocationSearchHandler implements SearchHandler {
         List<Location> locations = new ArrayList<Location>();
         try {
             Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+            Context.addProxyPrivilege("Get Locations"); //1.11+
 
             LocationTag locationTag = Context.getLocationService().getLocationTagByUuid(tag);
             if (locationTag == null) {
@@ -70,6 +71,7 @@ public class LocationSearchHandler implements SearchHandler {
         }
         finally {
             Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+            Context.removeProxyPrivilege("Get Locations"); //1.11+
         }
 
 
