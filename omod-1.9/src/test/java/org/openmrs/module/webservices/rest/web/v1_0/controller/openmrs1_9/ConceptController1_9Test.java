@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.hamcrest.Matchers.is;
-
-import java.util.List;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,6 +22,10 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests functionality of {@link ConceptController}. This does not use @should annotations because

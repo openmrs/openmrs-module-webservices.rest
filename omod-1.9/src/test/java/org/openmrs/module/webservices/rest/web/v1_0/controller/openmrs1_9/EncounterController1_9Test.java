@@ -1,19 +1,11 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import junit.framework.Assert;
-
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -31,6 +23,15 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Calendar;
+
 /**
  * Contains tests for the 19 ext {@link EncounterController} Overrides the failing test methods from
  * the EncounterControllerTest in the rest web services modules in order to make them pass and adds
@@ -38,6 +39,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class EncounterController1_9Test extends MainResourceControllerTest {
 
+    @Before
+    public void setup() throws Exception{
+        executeDataSet(RestTestConstants1_9.TEST_DATASET);
+    }
 	/**
      * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
      */
@@ -59,7 +64,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
      */
     @Override
     public long getAllCount() {
-	    return 0; //not supported
+	    return Context.getEncounterService().getAllEncounters(null).size();
     }
     
     /**
@@ -127,12 +132,12 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		    "obs[0]/groupMembers[0]/concept/uuid"));
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[0]/value"));
 		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126", Util.getByPath(result,
-		    "obs[0]/groupMembers[1]/concept/uuid"));
+                "obs[0]/groupMembers[1]/concept/uuid"));
 		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT), Util
-		        .getByPath(result, "obs[0]/groupMembers[1]/value"));
+                .getByPath(result, "obs[0]/groupMembers[1]/value"));
 		// make sure there's a group in the group
 		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result,
-		    "obs[0]/groupMembers[2]/concept/uuid"));
+                "obs[0]/groupMembers[2]/concept/uuid"));
 		Assert.assertEquals("96408258-000b-424e-af1a-403919332938", Util.getByPath(result,
 		    "obs[0]/groupMembers[2]/groupMembers[0]/concept/uuid"));
 		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/value"));
@@ -159,7 +164,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		orders.add(SimpleObject.parseJson("{ \"type\": \"order\", \"concept\": \"" + foodAssistanceUuid
 		        + "\", \"orderType\": \"" + lunchOrderUuid + "\", \"instructions\": \"" + lunchInstructions + "\" }"));
 		orders.add(SimpleObject.parseJson("{ \"type\": \"drugorder\", \"concept\": \"" + triomuneConceptUuid
-		        + "\", \"drug\": \"" + triomuneDrugUuid + "\", \"dose\": \"1\", \"units\": \"tablet\" }"));
+                + "\", \"drug\": \"" + triomuneDrugUuid + "\", \"dose\": \"1\", \"units\": \"tablet\" }"));
 		post.add("orders", orders);
 		
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
@@ -190,10 +195,10 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newEncounterObject = deserialize(handle(newPostRequest(getURI(), post)));
-		
+
 		Assert.assertNotNull(newEncounterObject);
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(
-		    ((SimpleObject) newEncounterObject).get("uuid").toString());
+                ((SimpleObject) newEncounterObject).get("uuid").toString());
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 		//the encounter should have been assigned to the visit
 		Assert.assertNotNull(newEncounter);
@@ -221,7 +226,22 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		//the encounter should have been res assigned to the new visit
 		Assert.assertEquals(newVisit, update.getVisit());
 	}
-	
+
+    @Test
+    public void createEncounter_shouldCreateEncounterWithProviders() throws Exception {
+        long encountersBefore = getAllCount();
+
+        //Post
+        SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(),createEncounterWithProviders())));
+
+        Assert.assertNotNull(newEncounter);
+        Assert.assertEquals(encountersBefore+1,getAllCount());
+
+        Util.log("Created a new encounter with a list of providers with different roles",newEncounter);
+
+        List<Map> encounterProviderList = (List<Map>)newEncounter.get("encounterProviders");
+        Assert.assertEquals(2, encounterProviderList.size());
+    }
 	/**
 	 * Copied from The EncounterControllerTest class from the rest web services module
 	 * 
@@ -248,5 +268,73 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		    "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2011-01-15").add("patient",
 		    "da7f524f-27ce-4bb2-86d6-6d1d05312bd5").add("provider", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562").add("obs", obs);
 	}
-	
+
+    private SimpleObject createEncounterWithProviders() throws Exception{
+        Set<SimpleObject> providers = new HashSet<SimpleObject>();
+
+        providers.add(SimpleObject.parseJson("{\"provider\":\"c2299800-dgha-11e0-9572-0800200c9a66\"," +
+                "\"encounterRole\":\"a0b03050-c99b-11e0-9572-0800200c9a66\"}"));
+        providers.add(SimpleObject.parseJson("{\"provider\":\"c2299800-dgha-11e0-9572-0800200c9a66\"," +
+                "\"encounterRole\":\"a0b03050-c99b-11e0-9572-0800201c9a71\"}")) ;
+
+        return new SimpleObject().add("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8").add("encounterType",
+                "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2015-06-17").add("patient",
+                "da7f524f-27ce-4bb2-86d6-6d1d05312bd5").add("encounterProviders",providers);
+    }
+
+    @Test
+    public void updateEncounter_shouldUpdateEncounterProviders() throws Exception{
+        EncounterService es = Context.getEncounterService();
+        Encounter encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+
+        int initialCount = encounter.getEncounterProviders().size();
+
+        //Get one EncounterProvider
+        EncounterProvider existing = encounter.getEncounterProviders().iterator().next();
+
+        Assert.assertNotNull(existing);
+
+        String newRoleUuid = "a0b03050-c99b-11e0-9572-0800201c9a71";
+
+        Assert.assertNotNull(existing);
+        Assert.assertNotEquals(existing.getEncounterRole(), es.getEncounterRoleByUuid(newRoleUuid));
+
+        SimpleObject newOne = SimpleObject.parseJson("{" +
+                "\"uuid\": \"" + existing.getUuid() + "\"," +
+                "\"provider\": \"" + existing.getProvider().getUuid() + "\"," +
+                "\"encounterRole\": \"" + newRoleUuid + "\"," +
+                "\"encounter\": \"" + existing.getEncounter().getUuid() + "\"" +
+        "}");
+
+        Set<SimpleObject> encounterProvidersToPost = new HashSet<SimpleObject>();
+        encounterProvidersToPost.add(newOne);
+
+        SimpleObject encounterToModify = new SimpleObject().add(
+                "encounterProviders", encounterProvidersToPost
+        ).add("uuid", encounter.getUuid());
+
+        //Post the existing encounter
+        SimpleObject posted = deserialize(handle(newPostRequest(getURI() + "/" + encounter.getUuid(), encounterToModify)));
+
+        Encounter updatedEncounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+
+        EncounterProvider updateEncounterProvider = getEncounterProviderWthUuid(updatedEncounter.getEncounterProviders(),
+                existing.getUuid());
+
+        Assert.assertEquals(initialCount, updatedEncounter.getEncounterProviders().size());
+        Assert.assertNotNull(updatedEncounter);
+        Assert.assertEquals(es.getEncounterRoleByUuid(newRoleUuid), updateEncounterProvider.getEncounterRole());
+    }
+
+    private EncounterProvider getEncounterProviderWthUuid(Set<EncounterProvider> eps, String uuid) {
+        assert eps != null;
+        assert uuid != null;
+
+        for(EncounterProvider ep: eps) {
+            if(uuid.equals(ep.getUuid())) {
+                return ep;
+            }
+        }
+        return null;
+    }
 }

@@ -19,4 +19,16 @@
 	<visit_attribute visit_attribute_id="10" visit_id="1" attribute_type_id="1" value_reference="2011-04-25 00:00:00.0" creator="1" date_created="2005-02-01 00:00:00.0" voided="0" uuid="4c2tyr18-6faa-11e0-7899-001e378eb66a" />
 	<visit_attribute visit_attribute_id="11" visit_id="2" attribute_type_id="2" value_reference="2011-05-25 00:00:00.0" creator="1" date_created="2005-02-02 00:00:00.0" voided="0" uuid="5c2tyr18-6faa-11e0-7899-001e378eb66b" />
 	<visit_attribute visit_attribute_id="12" visit_id="1" attribute_type_id="1" value_reference="2011-06-25 00:00:00.0" creator="1" date_created="2005-02-03 00:00:00.0" voided="1" void_reason="none" uuid="6c2tyr18-6faa-11e0-7899-001e378eb66c" />
+
+    <encounter_role encounter_role_id="1" name="Unknown" creator="1" retired="false" date_created="2015-06-16 00:00:00.0"
+        uuid="a0b03050-c99b-11e0-9572-0800200c9a66"/>
+
+    <encounter_role encounter_role_id="2" name="Medicine Dispenser" creator="1" retired="false" date_created="2015-06-16 00:00:00.0"
+                    uuid="a0b03050-c99b-11e0-9572-0800201c9a71"/>
+
+    <encounter_provider encounter_provider_id="1" provider_id="1" encounter_id="1" encounter_role_id="1" date_created="2015-06-19 10:46:45.2"
+                        uuid="bf218490-1691-11df-97a5-7038c432aabf"/>
+
+    <encounter encounter_id="1" patient_id="2" location_id="10" form_id="1" encounter_datetime="2015-05-10 10:46:44.2"
+            creator="1" date_created="2015-06-19 10:44:45.2" voided="false" uuid="c59b3942-4fdd-11e5-8c3c-410f8777c163"/>
 </dataset>

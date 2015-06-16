@@ -17,8 +17,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
