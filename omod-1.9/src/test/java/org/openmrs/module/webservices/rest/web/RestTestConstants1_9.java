@@ -41,6 +41,6 @@ public class RestTestConstants1_9 {
 	public static final String CONCEPT_MAP_UUID = "23b6e712-49d8-11e0-8fed-18a905e044dc";
 
 	public static final String CONCEPT_UUID = "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
-        
-        public static final String GLOBAL_PROPERTY_UUID = "4f55827e-26fe-102b-80cb-0017a47871b3";
+	
+	public static final String GLOBAL_PROPERTY_UUID = "4f55827e-26fe-102b-80cb-0017a47871b3";
 }
