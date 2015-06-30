@@ -88,4 +88,11 @@ public class RestTestConstants1_8 {
     public static final String RELATIONSHIP_UUID = "c18717dd-5d78-4a0e-84fc-ee62c5f0676a";
 
     public static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
+
+    public static final String PROGRAM_UUID = "f386c3d2-dd75-441f-a582-2237824edfb0";
+
+    public static final String PATIENT_PROGRAM_UUID = "b75462a0-4c92-451e-b8bc-e98b38b76534";
+
+    public static final String PATIENT_IN_A_PROGRAM_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+
 }
