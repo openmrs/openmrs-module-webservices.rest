@@ -23,7 +23,7 @@ public class ProgramResource1_10 extends ProgramResource1_8{
             description.addProperty("retired");
             description.addProperty("description");
             description.addProperty("concept", Representation.REF);
-            description.addProperty("outcomesConcept", Representation.REF);
+            description.addProperty("outcomesConcept", Representation.FULL);
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
