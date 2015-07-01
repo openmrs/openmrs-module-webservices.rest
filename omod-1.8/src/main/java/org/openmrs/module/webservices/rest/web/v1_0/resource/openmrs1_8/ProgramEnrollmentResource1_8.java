@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = "1.8.*, 1.9.*, 1.10.*, 1.11.*, 1.12.*")
+@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {"1.8.*, 1.9.*"}, order=1)
 
 public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<PatientProgram>{
 
