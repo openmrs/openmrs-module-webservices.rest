@@ -81,6 +81,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             description.addProperty("relationshipType", Representation.REF);
             description.addProperty("personB", Representation.REF, Person.class);
             description.addProperty("voided");
+            description.addProperty("endDate");
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -92,6 +93,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             description.addProperty("relationshipType", Representation.DEFAULT);
             description.addProperty("personB", Representation.DEFAULT, Person.class);
             description.addProperty("voided");
+            description.addProperty("endDate");
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             return description;
@@ -141,6 +143,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
         //shouldn't be editing the patient
         description.removeProperty("personA");
         description.removeProperty("personB");
+        description.addProperty("voided");
         return description;
     }
 }
