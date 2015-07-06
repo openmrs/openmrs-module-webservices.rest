@@ -13,14 +13,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 public class ConceptResource1_8Test extends BaseDelegatingResourceTest<ConceptResource1_8, Concept> {
-	
+
 	@Override
 	public Concept newObject() {
 		return Context.getConceptService().getConceptByUuid(getUuidProperty());
@@ -68,5 +72,15 @@ public class ConceptResource1_8Test extends BaseDelegatingResourceTest<ConceptRe
 	public String getUuidProperty() {
 		return RestTestConstants1_8.CONCEPT_UUID;
 	}
-	
+
+    @Test
+    public void testGetNamedRepresentation() throws Exception {
+        Concept object = getObject();
+        object.addSetMember(object);
+        try {
+            SimpleObject rep = getResource().asRepresentation(object, new NamedRepresentation("fullchildreninternal"));
+        }catch (ConversionException e){
+            Assert.assertFalse(e.getCause().getCause().getMessage().contains("Cycles in children are not supported."));
+        }
+    }
 }

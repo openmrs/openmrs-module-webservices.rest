@@ -45,6 +45,7 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -664,10 +665,13 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		for (Method method : clazz.getMethods()) {
 			RepHandler ann = method.getAnnotation(RepHandler.class);
 			if (ann != null) {
-				if (ann.name().equals(rep.getRepresentation()))
-					return method;
-				if (ann.value().isAssignableFrom(rep.getClass()))
-					return method;
+				if (ann.value().isAssignableFrom(rep.getClass())) {
+					if (!(rep instanceof NamedRepresentation)) {
+						return method;
+					} else if (ann.name().equals(rep.getRepresentation())) {
+						return method;
+					}
+				}
 			}
 		}
 		return null;
