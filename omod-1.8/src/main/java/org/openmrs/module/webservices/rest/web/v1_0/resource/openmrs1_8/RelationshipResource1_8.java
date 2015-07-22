@@ -30,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.8.*"})
 public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relationship> {
 
     @Override
@@ -81,7 +81,6 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             description.addProperty("relationshipType", Representation.REF);
             description.addProperty("personB", Representation.REF, Person.class);
             description.addProperty("voided");
-            description.addProperty("endDate");
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -93,7 +92,6 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             description.addProperty("relationshipType", Representation.DEFAULT);
             description.addProperty("personB", Representation.DEFAULT, Person.class);
             description.addProperty("voided");
-            description.addProperty("endDate");
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             return description;
