@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -72,6 +73,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
             description.addProperty("name");
             description.addProperty("description");
             description.addProperty("retired");
+            description.addProperty("allWorkflows", Representation.DEFAULT);
             description.addProperty("concept", Representation.REF);
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -82,9 +84,18 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
             description.addProperty("name");
             description.addProperty("description");
             description.addProperty("retired");
+            description.addProperty("allWorkflows", Representation.FULL);
             description.addProperty("concept");
             description.addSelfLink();
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            return description;
+        } else if(rep instanceof RefRepresentation){
+            DelegatingResourceDescription description = new DelegatingResourceDescription();
+            description.addProperty("uuid");
+            description.addProperty("display");
+            description.addProperty("retired");
+            description.addProperty("allWorkflows", Representation.REF);
+            description.addSelfLink();
             return description;
         }
         return null;

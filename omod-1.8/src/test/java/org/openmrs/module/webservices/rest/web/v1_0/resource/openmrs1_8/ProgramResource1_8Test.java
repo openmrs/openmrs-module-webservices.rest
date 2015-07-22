@@ -48,6 +48,7 @@ public class ProgramResource1_8Test extends BaseDelegatingResourceTest<ProgramRe
         assertPropEquals("description", getObject().getDescription());
         assertPropEquals("retired", getObject().getRetired());
         assertPropPresent("concept");
+        assertPropPresent("allWorkflows");
     }
 
     @Override
