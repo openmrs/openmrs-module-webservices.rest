@@ -2,7 +2,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 
 import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -28,6 +27,7 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
             description.addProperty("location", Representation.REF);
             description.addProperty("voided");
             description.addProperty("outcome", Representation.REF);
+            description.addProperty("states", Representation.REF);
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -42,12 +42,12 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
             description.addProperty("location");
             description.addProperty("voided");
             description.addProperty("outcome");
+            description.addProperty("states", Representation.DEFAULT);
             description.addSelfLink();
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             return description;
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -56,11 +56,14 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
         d.addRequiredProperty("patient");
         d.addRequiredProperty("program");
         d.addRequiredProperty("dateEnrolled");
-
         d.addProperty("dateCompleted");
+        d.addProperty("states");
         d.addProperty("outcome");
         d.addProperty("location");
         d.addProperty("voided");
         return d;
     }
+
+
+
 }
