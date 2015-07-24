@@ -58,6 +58,8 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
 	
+	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
+	
 	public RestServiceImpl() {
 	}
 	
@@ -304,23 +306,28 @@ public class RestServiceImpl implements RestService {
 		
 		Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
 		Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
+		Map<String, Set<SearchHandler>> tempSearchHandlersByResource = new HashMap<String, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = Context.getRegisteredComponents(SearchHandler.class);
 		for (SearchHandler searchHandler : allSearchHandlers) {
-			addSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, searchHandler);
+			addSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, tempSearchHandlersByResource,
+			    searchHandler);
 		}
 		
 		searchHandlersByParameter = tempSearchHandlersByParameters;
 		searchHandlersByIds = tempSearchHandlersByIds;
+		searchHandlersByResource = tempSearchHandlersByResource;
 	}
 	
 	private void addSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters,
+	        Map<String, Set<SearchHandler>> tempSearchHandlersByResource, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
 			try {
 				ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
 				//If the OpenMRS version is supported then
 				addSupportedSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, searchHandler);
+				addSearchHandlerToResourceMap(tempSearchHandlersByResource, searchHandler);
 			}
 			catch (ModuleException e) {
 				//Not supported OpenMRS version
@@ -359,6 +366,17 @@ public class RestServiceImpl implements RestService {
 				list.add(searchHandler);
 			}
 		}
+	}
+	
+	private void addSearchHandlerToResourceMap(Map<String, Set<SearchHandler>> tempSearchHandlersByResource,
+	        SearchHandler searchHandler) {
+		SearchConfig config = searchHandler.getSearchConfig();
+		Set<SearchHandler> handlers = tempSearchHandlersByResource.get(config.getSupportedResource());
+		if (handlers == null) {
+			handlers = new HashSet<SearchHandler>();
+			tempSearchHandlersByResource.put(config.getSupportedResource(), handlers);
+		}
+		handlers.add(searchHandler);
 	}
 	
 	/**
@@ -557,6 +575,17 @@ public class RestServiceImpl implements RestService {
 		return resourceHandlers;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandlers(java.lang.String)
+	 */
+	@Override
+	public Set<SearchHandler> getSearchHandlers(String resourceName) {
+		if (searchHandlersByResource == null) {
+			initializeSearchHandlers();
+		}
+		return searchHandlersByResource.get(resourceName);
+	}
+	
 	@Override
 	public void initialize() {
 		
@@ -565,8 +594,10 @@ public class RestServiceImpl implements RestService {
 		resourcesBySupportedClasses = null;
 		searchHandlersByIds = null;
 		searchHandlersByParameter = null;
+		searchHandlersByResource = null;
 		
 		initializeResources();
 		initializeSearchHandlers();
 	}
+	
 }
