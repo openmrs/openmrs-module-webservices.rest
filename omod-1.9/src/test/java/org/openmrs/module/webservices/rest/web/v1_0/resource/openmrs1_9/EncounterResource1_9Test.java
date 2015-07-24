@@ -41,9 +41,9 @@ public class EncounterResource1_9Test extends BaseDelegatingResourceTest<Encount
 		assertPropPresent("location");
 		assertPropPresent("form");
 		assertPropPresent("encounterType");
+		assertPropPresent("provider");
 		assertPropPresent("obs");
 		assertPropPresent("orders");
-        assertPropPresent("encounterProviders");
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("visit");
 		assertPropEquals("resourceVersion", "1.9");
@@ -61,7 +61,7 @@ public class EncounterResource1_9Test extends BaseDelegatingResourceTest<Encount
 		assertPropPresent("location");
 		assertPropPresent("form");
 		assertPropPresent("encounterType");
-		assertPropPresent("encounterProviders");
+		assertPropPresent("provider");
 		assertPropPresent("obs");
 		assertPropPresent("orders");
 		assertPropEquals("voided", getObject().getVoided());
