@@ -141,6 +141,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
         //shouldn't be editing the patient
         description.removeProperty("personA");
         description.removeProperty("personB");
+        description.addProperty("voided");
         return description;
     }
 }
