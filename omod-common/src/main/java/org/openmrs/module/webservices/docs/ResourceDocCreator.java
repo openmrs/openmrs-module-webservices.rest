@@ -427,6 +427,7 @@ public class ResourceDocCreator {
 	
 	/**
 	 * Populate resource documentation with search handlers information
+	 * 
 	 * @param resourceDocMap
 	 */
 	private static void fillSearchHandlers(Map<String, ResourceDoc> resourceDocMap) {
