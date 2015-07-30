@@ -59,18 +59,18 @@ public class CreateUpdatePatientResource1_8Test extends BaseModuleWebContextSens
 
 		Date birthdate = (Date) ConversionUtil.convert("1979-12-08T00:00:00.000+0530", Date.class);
 
-        Assert.assertEquals("101-6 - Rama Kabira", created.get("display"));
+        Assert.assertEquals("101-6 - Mr. Horatio Test Hornblower Esq.", created.get("display"));
         Map<String, Object> person = (Map<String, Object>) created.get("person");
         Assert.assertEquals("F", person.get("gender"));
         Assert.assertNotNull(person.get("age"));
         Assert.assertEquals(ConversionUtil.convertToRepresentation(birthdate, Representation.DEFAULT), person.get("birthdate"));
         Assert.assertEquals(false, person.get("birthdateEstimated"));
         Map preferredName = (Map) person.get("preferredName");
-        Assert.assertEquals("Rama Kabira", preferredName.get("display"));
+        Assert.assertEquals("Mr. Horatio Test Hornblower Esq.", preferredName.get("display"));
         Map preferredAddress = (Map) person.get("preferredAddress");
-        Assert.assertEquals("address 1", preferredAddress.get("display"));
+        Assert.assertEquals("1050 Wishard Blvd.", preferredAddress.get("display"));
         List<Map> attributes = (List<Map>) person.get("attributes");
-        Assert.assertEquals("Race = Muslim", attributes.get(0).get("display"));
+        Assert.assertEquals("Race = ", attributes.get(0).get("display"));
     }
 
 }

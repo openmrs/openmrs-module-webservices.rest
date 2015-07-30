@@ -178,6 +178,11 @@ public class RestConstants {
 	public static final String PROPERTY_FOR_RESOURCE_VERSION_DEFAULT_VALUE = "1.8";
 	
 	/**
+	 * The uuid property.
+	 */
+	public static final String PROPERTY_UUID = "uuid";
+	
+	/**
 	 * A set of special request parameter names
 	 */
 	public static final Set<String> SPECIAL_REQUEST_PARAMETERS;
