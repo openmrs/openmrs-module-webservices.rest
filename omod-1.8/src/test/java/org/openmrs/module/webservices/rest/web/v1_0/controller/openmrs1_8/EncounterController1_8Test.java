@@ -61,6 +61,19 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(newEncounter);
 		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
 	}
+	
+	/**
+	 * @verifies create a new encounter using encounter type ref
+	 */
+	@Test
+	public void createEncounter_shouldCreateANewEncounterUsingEncounterTypeRef() throws Exception {
+		int before = Context.getEncounterService().getAllEncounters(null).size();
+		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": {\"uuid\":\"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"name\":\"ADULT INITIAL\", \"display\":\"TESTING\", \"auditInfo\":\"SOME VALUES\"}, \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
+		
+		Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(newEncounter);
+		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+	}
 
     @Test
     public void createEncounter_shouldDefaultDatetimeToNowIfNotSpecified() throws Exception {
