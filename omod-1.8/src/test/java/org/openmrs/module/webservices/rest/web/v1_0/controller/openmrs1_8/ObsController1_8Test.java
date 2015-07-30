@@ -14,15 +14,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -375,5 +375,35 @@ public class ObsController1_8Test extends MainResourceControllerTest {
         assertEquals(8,((ArrayList)result.get("results")).size());
     }
 
+    /**
+     * @see ObsController#createObs(SimpleObject,WebRequest,HttpServletResponse)
+     * @verifies create a new obs group with text concept
+     */
+     @Test
+     public void createObs_shouldCreateANewObsGroupWithMembers() throws Exception {
+     	List<Obs> observationsByPerson = Context.getObsService().getObservationsByPerson(
+     	    (Context.getPatientService().getPatient(7)));
+     	int before = observationsByPerson.size();
+     	
+     	String json = "{\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2012-09-19T00:00:00.000+0530\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"groupMembers\":[{\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2012-09-19T00:00:00.000+0530\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"value\":\"100\"},{\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2012-09-19T00:00:00.000+0530\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"value\":\"200\" },{\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2012-09-19T00:00:00.000+0530\",\"concept\":\"96408258-000b-424e-af1a-403919332938\",\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"value\":\"90\"}]}";
 
+     	MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		handle(req);
+		
+     	List<Obs> observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+     	    (Context.getPatientService().getPatient(7)));
+     	
+     	//must have 4 new obs (The parent, and three children)
+     	Assert.assertEquals(before + 4, observationsByPersonAfterSave.size());
+     	
+     	//The first among the new ones must be an obs group
+     	Obs obsGroup = observationsByPersonAfterSave.get(0);
+     	Assert.assertTrue(obsGroup.isObsGrouping());
+     	
+     	//The next three obs must be children whose parent is the obs group above
+     	Assert.assertEquals(obsGroup, observationsByPersonAfterSave.get(1).getObsGroup());
+     	Assert.assertEquals(obsGroup, observationsByPersonAfterSave.get(2).getObsGroup());
+     	Assert.assertEquals(obsGroup, observationsByPersonAfterSave.get(3).getObsGroup());
+     }
 }
