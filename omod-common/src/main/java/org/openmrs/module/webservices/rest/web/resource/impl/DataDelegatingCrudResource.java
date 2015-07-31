@@ -64,4 +64,8 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 		return ret;
 	}
 	
+	@Override
+	public boolean isVoidable() {
+		return true;
+	}
 }
