@@ -165,4 +165,9 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		
 		return description;
 	}
+	
+	@Override
+	public boolean isRetirable() {
+		return true;
+	}
 }
