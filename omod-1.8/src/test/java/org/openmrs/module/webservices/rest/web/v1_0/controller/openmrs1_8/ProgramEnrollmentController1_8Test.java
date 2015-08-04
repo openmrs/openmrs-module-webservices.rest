@@ -47,8 +47,8 @@ import java.util.Map;
  */
 public class ProgramEnrollmentController1_8Test extends MainResourceControllerTest {
 
-	private ProgramWorkflowService service;
-	private PatientService patientService;
+	protected ProgramWorkflowService service;
+	protected PatientService patientService;
 
 	@Before
 	public void before() {
