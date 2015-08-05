@@ -125,4 +125,13 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
         d.addRequiredProperty("state");
         return d;
     }
+
+    @Override
+    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+        DelegatingResourceDescription updatableProperties = super.getUpdatableProperties();
+        updatableProperties.addProperty("startDate");
+        updatableProperties.addProperty("endDate");
+        updatableProperties.addProperty("voided");
+        return updatableProperties;
+    }
 }
