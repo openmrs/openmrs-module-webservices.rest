@@ -288,16 +288,17 @@ public class ConversionUtil {
 		// TODO handle refs by fetching the object at their URI
 		Converter converter = getConverter(toClass);
 		
+		Object ret = null;
 		Object uuid = map.get(RestConstants.PROPERTY_UUID);
 		if (uuid instanceof String) {
-			Object object = converter.getByUniqueId(uuid.toString());
-			if (object != null) {
-				return object;
-			}
+			ret = converter.getByUniqueId(uuid.toString());
 		}
 		
-		String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
-		Object ret = converter.newInstance(type);
+		if (ret == null) {
+			String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
+			ret = converter.newInstance(type);
+		}
+		
 		for (Map.Entry<String, ?> prop : map.entrySet()) {
 			if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
 				continue;
