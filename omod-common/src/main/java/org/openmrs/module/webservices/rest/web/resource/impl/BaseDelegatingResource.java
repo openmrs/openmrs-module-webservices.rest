@@ -93,6 +93,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	protected BaseDelegatingResource() {
 		propertiesIgnoredWhenUpdating.add("display");
 		propertiesIgnoredWhenUpdating.add("links");
+		propertiesIgnoredWhenUpdating.add("auditInfo");
 		propertiesIgnoredWhenUpdating.add(RestConstants.PROPERTY_FOR_RESOURCE_VERSION);
 	}
 	
