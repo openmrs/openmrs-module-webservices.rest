@@ -201,23 +201,40 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		if (obs.isObsGrouping())
 			return null;
 		
-		if (obs.getValueDatetime() != null)
-			return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
+		if (obs.getValueDatetime() != null) {
+            return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
+        }
+
+		if (obs.getValueCoded() != null) {
+            return obs.getValueCoded();
+        }
 		
-		if (obs.getValueCoded() != null)
-			return obs.getValueCoded();
+		if (obs.getValueComplex() != null) {
+            return obs.getValueComplex();
+        }
 		
-		if (obs.getValueComplex() != null)
-			return obs.getValueComplex();
+		if (obs.getValueDrug() != null) {
+            return obs.getValueDrug();
+        }
 		
-		if (obs.getValueDrug() != null)
-			return obs.getValueDrug();
+		if (obs.getValueText() != null) {
+            if ("org.openmrs.Location".equals(obs.getComment())) {  // string first to make it null-safe
+                try {
+                   return Context.getLocationService().getLocation(new Integer(obs.getValueText()));
+                }
+                catch (NumberFormatException e) {
+                    return Context.getLocationService().getLocationByUuid(obs.getValueText());
+                }
+            }
+            else {
+                return obs.getValueText();
+            }
+
+        }
 		
-		if (obs.getValueText() != null)
-			return obs.getValueText();
-		
-		if (obs.getValueNumeric() != null)
-			return obs.getValueNumeric();
+		if (obs.getValueNumeric() != null) {
+            return obs.getValueNumeric();
+        }
 		
 		return null;
 	}
