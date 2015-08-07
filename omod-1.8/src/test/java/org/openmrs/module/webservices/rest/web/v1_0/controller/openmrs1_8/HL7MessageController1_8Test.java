@@ -95,6 +95,44 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		}
 	}
 	
+	@Test
+	public void adt_a28_shouldCreatePatient() throws Exception {
+		
+		//get the initial number of patients
+		int count = Context.getPatientService().getAllPatients().size();
+		
+		//all hl7 queues should be empty
+		Assert.assertEquals(0, service.getAllHL7InQueues().size());
+		Assert.assertEquals(0, service.getAllHL7InErrors().size());
+		Assert.assertEquals(0, service.getAllHL7InArchives().size());
+		
+		//create an ADT_A28 hl7 message
+		SimpleObject hl7Message = new SimpleObject();
+		String hl7Data = "MSH|^~\\&|REST|LOCAL|HL7HANDLER|OPENMRS|20140331101300^0|HUP|ADT^A28^ADT_A05|ADD PERSON INFO|P|2.5|1|||AL||ASCII\r"
+			+"EVN|A28|20140331101300|||1\r"
+			+"PID|||1991^^^Old Identification Number||Rest^Created^Patient||20011114000000|M|||20371^02^2400^724||||||724^Y||||||02|||11|20371|724^DEUT^N||N";
+		hl7Message.add("hl7", hl7Data);
+		
+		//post the hl7 message
+		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
+		handle(req);
+		
+		//only the hl7 in queue should have data
+		Assert.assertEquals(1, service.getAllHL7InQueues().size());
+		Assert.assertEquals(0, service.getAllHL7InErrors().size());
+		Assert.assertEquals(0, service.getAllHL7InArchives().size());
+		
+		service.processHL7InQueue(service.getAllHL7InQueues().get(0));
+		
+		//only the hl7 archive queue should have data
+		Assert.assertEquals(0, service.getAllHL7InQueues().size());
+		Assert.assertEquals(0, service.getAllHL7InErrors().size());
+		Assert.assertEquals(1, service.getAllHL7InArchives().size());
+		
+		//a new patient should be created
+		Assert.assertEquals((count + 1), Context.getPatientService().getAllPatients().size());
+	}
+	
 	@Test(expected = ConversionException.class)
 	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
 		SimpleObject hl7Message = new SimpleObject();

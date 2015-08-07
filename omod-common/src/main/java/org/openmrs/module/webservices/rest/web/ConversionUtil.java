@@ -287,8 +287,18 @@ public class ConversionUtil {
 	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {
 		// TODO handle refs by fetching the object at their URI
 		Converter converter = getConverter(toClass);
-		String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
-		Object ret = converter.newInstance(type);
+		
+		Object ret = null;
+		Object uuid = map.get(RestConstants.PROPERTY_UUID);
+		if (uuid instanceof String) {
+			ret = converter.getByUniqueId(uuid.toString());
+		}
+		
+		if (ret == null) {
+			String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
+			ret = converter.newInstance(type);
+		}
+		
 		for (Map.Entry<String, ?> prop : map.entrySet()) {
 			if (RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey()))
 				continue;
