@@ -13,16 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -30,6 +25,11 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -93,6 +93,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 	@Test
 	public void asRepresentation_shouldReturnProperlyEncodedValues() throws Exception {
 		Obs obs = getObject();
+        obs.setComment(null);  // to test that we don't get a NPE when no comment (specifically with the Location example)
 		
 		// coded
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");
@@ -131,7 +132,32 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		clearAndSetValue(obs, ObsType.NUMERIC, number);
 		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("numeric", number, rep.get("value"));
-	}
+
+        // location
+        Location location = Context.getLocationService().getLocation(2);
+        clearAndSetValue(obs, ObsType.TEXT, location.getId().toString());
+        obs.setComment("org.openmrs.Location");
+        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        Assert.assertTrue(rep.keySet().contains("value"));
+        rep = (SimpleObject) rep.get("value");
+        Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));;
+
+        // location referenced by uuid
+        location = Context.getLocationService().getLocation(2);
+        clearAndSetValue(obs, ObsType.TEXT, location.getUuid());
+        obs.setComment("org.openmrs.Location");
+        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        Assert.assertTrue(rep.keySet().contains("value"));
+        rep = (SimpleObject) rep.get("value");
+        Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));
+
+        // location that doesn't exist shouldn't cause error, just return null
+        clearAndSetValue(obs, ObsType.TEXT, "20000");
+        obs.setComment("org.openmrs.Location");
+        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        Assert.assertNull(rep.get("value"));
+        rep = (SimpleObject) rep.get("value");
+    }
 
 	@Test
 	public void setGroupMembers_shouldSetGroupMembers () throws Exception {
