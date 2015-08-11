@@ -14,6 +14,13 @@
 
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
@@ -32,15 +39,15 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Encounte
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 @Component
 public class EncounterSearchHandler1_8 implements SearchHandler {
+	private static final String DATE_FROM = "date_from";
+	private static final String DATE_TO = "date_to";
+	
+	private static final DateTimeFormatter isoParser = ISODateTimeFormat.dateTimeNoMillis();
+	
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
-            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType").withRequiredParameters("patient", "encounterType").withOptionalParameters("order").build()));
+            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType (and optionally by dates where dates must be given in ISO8601 syntax)").withRequiredParameters("patient", "encounterType").withOptionalParameters(DATE_FROM, DATE_TO, "order").build()));
 
     @Override
     public SearchConfig getSearchConfig() {
@@ -51,13 +58,20 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
     public PageableResult search(RequestContext context) throws ResponseException {
         String patientUuid = context.getRequest().getParameter("patient");
         String encounterTypeUuid = context.getRequest().getParameter("encounterType");
+        
+        String dateFrom = context.getRequest().getParameter(DATE_FROM);
+        String dateTo = context.getRequest().getParameter(DATE_TO);
+        
+        Date fromDate = dateFrom!=null ? isoParser.parseDateTime(dateFrom).toDate() : null;
+        Date toDate = dateTo != null? isoParser.parseDateTime(dateTo).toDate() : null;
+        
         Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
                 Patient.class)).getByUniqueId(patientUuid);
         EncounterType encounterType = ((EncounterTypeResource1_8)
                 Context.getService(RestService.class).getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
         if (patient != null && encounterType != null) {
             List<Encounter> encounters = Context.getEncounterService()
-                    .getEncounters(patient, null, null, null, null, Arrays.asList(encounterType), null, false);
+                    .getEncounters(patient, null, fromDate, toDate, null, Arrays.asList(encounterType), null, false);
             String order = context.getRequest().getParameter("order");
             if ("desc".equals(order)) {
             	Collections.reverse(encounters);

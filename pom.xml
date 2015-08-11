@@ -152,6 +152,12 @@
 				<version>1.9.5</version>
 				<scope>test</scope>
 			</dependency>
+			
+			<dependency>
+			  <groupId>joda-time</groupId>
+			  <artifactId>joda-time</artifactId>
+			  <version>2.8.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -208,6 +214,10 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
 		</dependency>
+			<dependency>
+			  <groupId>joda-time</groupId>
+			  <artifactId>joda-time</artifactId>
+			</dependency>
 	</dependencies>
 
 	<build>
