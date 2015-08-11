@@ -15,6 +15,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -48,6 +50,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
  */
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*, 1.10.*", "1.11.*", "1.12.*"})
 public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
+	
+	/**
+	 * The name of the parameter that can be used to restrict a search to roles. 
+	 */
+	static final String PARAMETER_ROLES = "roles";
 	
 	public UserResource1_8() {
 		
@@ -179,17 +186,76 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	}
 	
 	/**
+	 * @param context A {@link RequestContext} that can contain two parameter values: 'q' for the user name and 'roles' for the role restriction.
+	 * 		If a user name is given, users with a user name beginning with this string will be returned (prefix search).
+	 * 		If no user name is given, the search will not be restricted to specific user names.
+	 * 
+	 * 		The roles have to be given as a comma separated string. If multiple roles are given, the users having at least one of the roles will be returned.
+	 * 		A role may be specified either by its UUID or by its display name.
+	 * 		If no role parameter is given, the search will not be restricted to roles.
+	 *  		
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<UserAndPassword1_8> doSearch(RequestContext context) {
-		List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
-		for (User user : Context.getUserService().getUsers(context.getParameter("q"), null, context.getIncludeAll())) {
-			users.add(new UserAndPassword1_8(user));
+		// determine roles 
+		List<Role> foundRoles = null;
+		final String requestedRolesParameter = context.getParameter(PARAMETER_ROLES);
+		if (requestedRolesParameter != null) {
+			foundRoles = getRequestedRoles(requestedRolesParameter);
 		}
-		return new NeedsPaging<UserAndPassword1_8>(users, context);
+		
+		// forward query
+		final List<User> users;
+		if (isNoRequestedRoleFound(foundRoles))
+		{
+			// for an empty role list there shall be no results
+			users = Collections.emptyList();
+		}
+		else
+		{
+			// Note: a null value for roles is interpreted as 'no restriction to roles'
+			users = Context.getUserService().getUsers(context.getParameter("q"), foundRoles, context.getIncludeAll());
+		}
+
+		// convert to UserAndPassword class
+		final List<UserAndPassword1_8> usersResult = new ArrayList<UserAndPassword1_8>();
+		for (User user : users) {
+			usersResult.add(new UserAndPassword1_8(user));
+		}
+		
+		return new NeedsPaging<UserAndPassword1_8>(usersResult, context);
 	}
+
+	private boolean isNoRequestedRoleFound(List<Role> roles) {
+	    return roles != null && roles.isEmpty();
+    }
 	
+	/**
+	 * @param rolesParameter A comma separated list of role names or role UUIDs. May not be null. 
+	 * @return A non-null list of existing {@link Role}s that may be empty, if no valid roles are found.
+	 */
+	private List<Role> getRequestedRoles(final String rolesParameter) {
+		final List<Role> result = new ArrayList<Role>();
+		
+		final List<String> roleStrings = Arrays.asList(StringUtils.split(rolesParameter, ","));
+		for (String roleString : roleStrings) {
+			// try with uuid
+			Role role = Context.getUserService().getRoleByUuid(roleString);
+			
+			// try with display name
+			if (role == null) {
+				role = Context.getUserService().getRole(roleString);
+			}
+			
+			// add if found
+			if (role != null) {
+				result.add(role);
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
 	 * UserAndPassword instead of UserAndPassword itself

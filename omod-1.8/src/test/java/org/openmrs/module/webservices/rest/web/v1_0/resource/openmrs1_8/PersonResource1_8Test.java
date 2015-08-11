@@ -105,6 +105,8 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 
         SimpleObject simple = getResource().search(context);
         List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
+
+        assertFalse("A non-empty list is expected.", results.isEmpty());
         for (SimpleObject result : results) {
             String selfLink = findSelfLink(result);
             assertFalse("Resource should be person, but is " + selfLink, selfLink.contains("/patient/"));
