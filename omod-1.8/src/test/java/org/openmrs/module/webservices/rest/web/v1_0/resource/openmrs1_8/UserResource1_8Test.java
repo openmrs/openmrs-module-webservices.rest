@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -114,7 +115,7 @@ public class UserResource1_8Test extends BaseDelegatingResourceTest<UserResource
 		final MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addParameter("q", userName);
 		if (roles != null) {
-			final String rolesAsCommaSeparatedString = String.join(",", roles);
+			final String rolesAsCommaSeparatedString = StringUtils.join(roles, ",");
 			request.addParameter(UserResource1_8.PARAMETER_ROLES, rolesAsCommaSeparatedString);
 		}
 		final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
