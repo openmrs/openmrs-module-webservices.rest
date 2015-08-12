@@ -33,12 +33,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.web.controller.maintenance.SettingsProperty;
 
 /**
  * {@link Resource} for {@link GlobalProperty}, supporting standard CRUD
  * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/systemsetting", supportedClass = GlobalProperty.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/systemsetting", supportedClass = GlobalProperty.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*","1.12.*"})
 public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalProperty> {
 
     public static final String GENERAL = "General Settings";
@@ -61,7 +62,6 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
             description.addProperty("value");
             description.addProperty("description");
             description.addProperty("display");
-            description.addProperty("datatypeClassname");
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -205,21 +205,25 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
      * Gets the display name of the global property delegate
      *
      * @param instance the delegate instance to get the display name off
+     * @return string as "section - name = value"
      */
     @PropertyGetter("display")
     public String getDisplayString(GlobalProperty globalProperty) {
-        String section = GENERAL;
-        String name = globalProperty.getProperty();
-        int sectionEnd = globalProperty.getProperty().indexOf(".");
-        if (sectionEnd > 0) {
-            section = globalProperty.getProperty().substring(0, sectionEnd);
-            section = beautify(section);
-            name = globalProperty.getProperty().substring(sectionEnd + 1);
-            name = beautify(name);
-        }
-        return section + " - " + name + " = " + globalProperty.getValue();
+        SettingsProperty property = new SettingsProperty(globalProperty);
+        return property.getSection() + " - " + property.getName() + " = " + globalProperty.getValue();
     }
 
+    /**
+     * Gets the value of the global property delegate
+     *
+     * @param instance the delegate instance to get the value off
+     * @return value object
+     */
+    @PropertyGetter("value")
+    public Object getValue(GlobalProperty globalProperty) {
+        return globalProperty.getValue();
+    }
+    
     /**
      * Sets value for given property.
      *
@@ -237,31 +241,10 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
                     property.setPropertyValue(value);
                 }
             }
+            else
+                property.setPropertyValue(value);
         } else {
             property.setPropertyValue(value);
         }
     }
-
-    /**
-     * Beautifies string
-     *
-     * @param section
-     * @return
-     */
-    private String beautify(String section) {
-        section = section.replace("_", " ");
-        section = section.replace(".", " ");
-
-        String[] sections = StringUtils.splitByCharacterTypeCamelCase(section);
-        section = StringUtils.join(sections, " ");
-
-        sections = StringUtils.split(section);
-        for (int i = 0; i < sections.length; i++) {
-            sections[i] = StringUtils.capitalize(sections[i]);
-        }
-        section = StringUtils.join(sections, " ");
-
-        return section;
-    }
-
 }
