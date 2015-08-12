@@ -14,17 +14,21 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import junit.framework.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
+import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Obs;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.util.OpenmrsConstants;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -36,10 +40,35 @@ import static org.junit.Assert.assertNotEquals;
 
 public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_8, Obs> {
 	
+	public static final String BOOLEAN_CONCEPT_UUID = "0dde1358-7fcf-4341-a330-f119241a46e8";
+
+	private Concept trueConcept;
+
+	private Concept falseConcept;
+
 	private enum ObsType {
 		CODED, COMPLEX, DATETIME, DRUG, NUMERIC, TEXT
 	}
-	
+
+	@Before
+	public void setup() throws Exception {
+		GlobalProperty trueConceptGlobalProperty = new GlobalProperty(
+				OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT, "7",
+				"Concept id of the concept defining the TRUE boolean concept");
+		GlobalProperty falseConceptGlobalProperty = new GlobalProperty(
+				OpenmrsConstants.GLOBAL_PROPERTY_FALSE_CONCEPT, "8",
+				"Concept id of the concept defining the FALSE boolean concept");
+		Context.getAdministrationService().saveGlobalProperty(trueConceptGlobalProperty);
+		Context.getAdministrationService().saveGlobalProperty(falseConceptGlobalProperty);
+		trueConcept = Context
+				.getConceptService().getConcept(Integer.parseInt(Context.getAdministrationService()
+				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT)));
+		falseConcept = Context
+				.getConceptService().getConcept(Integer.parseInt(Context.getAdministrationService()
+				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_FALSE_CONCEPT)));
+
+	}
+
 	@Override
 	public Obs newObject() {
 		return Context.getObsService().getObsByUuid(getUuidProperty());
@@ -186,6 +215,46 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
         assertEquals(2, groupMembers2.size());
 
     }
+
+	@Test
+	public void setValue_shouldReturnUuidForConceptTrue() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+		ObsResource1_8.setValue(obs, trueConcept);
+		assertEquals(trueConcept, ObsResource1_8.getValue(obs));
+	}
+
+	@Test
+	public void setValue_shouldReturnUuidForConceptFalse() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+		ObsResource1_8.setValue(obs, falseConcept);
+		assertEquals(falseConcept, ObsResource1_8.getValue(obs));
+	}
+
+	@Test(expected = APIException.class)
+	public void setValue_shouldThrowExceptionOnUnexpectedValue() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+		ObsResource1_8.setValue(obs, "unexpected");
+	}
+
+	@Test
+	public void setValue_shouldReturnUuidForPrimitiveTrue() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+		ObsResource1_8.setValue(obs, true);
+		assertEquals(trueConcept, ObsResource1_8.getValue(obs));
+	}
+
+	@Test
+	public void setValue_shouldReturnUuidForPrimitiveFalse() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+		ObsResource1_8.setValue(obs, false);
+		assertEquals(falseConcept, ObsResource1_8.getValue(obs));
+	}
+
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
 		obs.setValueCoded(type.equals(ObsType.CODED) ? (Concept) value : null);
 		obs.setValueComplex(type.equals(ObsType.COMPLEX) ? (String) value : null);
