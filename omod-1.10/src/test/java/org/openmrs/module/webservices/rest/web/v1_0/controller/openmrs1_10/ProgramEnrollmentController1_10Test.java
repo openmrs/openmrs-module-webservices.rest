@@ -112,45 +112,4 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
         Assert.assertEquals(1, actualPatientStates.size());
         Assert.assertEquals(stateStartDate, dateFormat.format(actualPatientStates.iterator().next().getStartDate()));
     }
-
-
-    @Test
-    public void shouldVoidPatientState() throws Exception {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-        Assert.assertEquals(1, patientProgram.getStates().size());
-
-        //Transit the existing patient state to new state
-        String stateStartDate = "2015-08-04";
-        String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_8.STATE_UUID + "\"}, \"startDate\": \"" + stateStartDate + "\"}]}";
-
-        MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), SimpleObject.parseJson(json));
-        SimpleObject result = deserialize(handle(req));
-
-        patientProgram = service.getPatientProgramByUuid(getUuid());
-        Assert.assertNotNull(result);
-        List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
-        Assert.assertEquals(2, states.size());
-
-        PatientState transitedPatientState = states.get(1);
-        PatientState existingPatientState = states.get(0);
-        String existingStateEndDate = dateFormat.format(existingPatientState.getEndDate());
-        Assert.assertEquals(stateStartDate, existingStateEndDate);
-
-        //Delete the last patient state
-        req = newDeleteRequest(getURI() + "/" + getUuid() + "/state/" + transitedPatientState.getUuid(), new Parameter("!purge", ""), new Parameter("reason", "none"));
-        handle(req);
-
-        patientProgram = service.getPatientProgramByUuid(getUuid());
-
-        states = new ArrayList<PatientState>(patientProgram.getStates());
-        PatientState voidedPatientState = states.get(1);
-        existingPatientState = states.get(0);
-
-        Assert.assertTrue(voidedPatientState.getVoided());
-        Assert.assertFalse(existingPatientState.getVoided());
-        Assert.assertNull(existingPatientState.getEndDate());
-
-    }
 }
