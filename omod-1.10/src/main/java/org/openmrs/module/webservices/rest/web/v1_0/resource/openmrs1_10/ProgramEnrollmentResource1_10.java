@@ -100,10 +100,6 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
                 if(existingState == null) {
                     Date onDate = patientState.getStartDate() == null ? new Date() : patientState.getStartDate();
                     instance.transitionToState(Context.getProgramWorkflowService().getStateByUuid(patientState.getState().getUuid()), onDate);
-                }else{
-                    existingState.setStartDate(patientState.getStartDate());
-                    existingState.setEndDate(patientState.getEndDate());
-                    existingState.setVoided(patientState.getVoided());
                 }
             }
         }
@@ -113,13 +109,13 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
         Collections.sort(patientStates, new Comparator<PatientState>() {
             @Override
             public int compare(PatientState o1, PatientState o2) {
-                return OpenmrsUtil.compareWithNullAsLatest(o1.getStartDate(), o2.getEndDate());
+                return OpenmrsUtil.compareWithNullAsLatest(o1.getStartDate(), o2.getStartDate());
             }
         });
     }
 
-    private static PatientState getMatchingPatientState(PatientState patientState, Set<PatientState> patientStates) {
-        for (PatientState existingState : patientStates) {
+    private static PatientState getMatchingPatientState(PatientState patientState, Set<PatientState> existingPatientStates) {
+        for (PatientState existingState : existingPatientStates) {
             if (existingState.equals(patientState)) return existingState;
         }
         return null;
