@@ -13,12 +13,15 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -85,6 +88,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
         Assert.assertNotNull(result);
         List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
         Assert.assertEquals(2, states.size());
+        sortPatientStatesBasedOnStartDate(states);
         Assert.assertEquals(RestTestConstants1_8.STATE_UUID, states.get(1).getState().getUuid());
         String existingStateEndDate = dateFormat.format(states.get(0).getEndDate());
         Assert.assertEquals(stateStartDate, existingStateEndDate);
@@ -112,4 +116,59 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
         Assert.assertEquals(1, actualPatientStates.size());
         Assert.assertEquals(stateStartDate, dateFormat.format(actualPatientStates.iterator().next().getStartDate()));
     }
+
+
+    @Test
+    public void shouldVoidPatientState() throws Exception {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
+        Assert.assertEquals(1, patientProgram.getStates().size());
+
+        //Transit the existing patient state to new state
+        String stateStartDate = "2015-08-04";
+        String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_8.STATE_UUID + "\"}, \"startDate\": \"" + stateStartDate + "\"}]}";
+
+        MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), SimpleObject.parseJson(json));
+        SimpleObject result = deserialize(handle(req));
+
+        patientProgram = service.getPatientProgramByUuid(getUuid());
+        Assert.assertNotNull(result);
+        List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
+        sortPatientStatesBasedOnStartDate(states);
+        Assert.assertEquals(2, states.size());
+
+        PatientState transitedPatientState = states.get(1);
+        PatientState existingPatientState = states.get(0);
+        String existingStateEndDate = dateFormat.format(existingPatientState.getEndDate());
+        Assert.assertEquals(stateStartDate, existingStateEndDate);
+        Assert.assertFalse(existingPatientState.getVoided());
+        Assert.assertFalse(transitedPatientState.getVoided());
+
+        //Delete the last patient state
+        req = newDeleteRequest(getURI() + "/" + getUuid() + "/state/" + transitedPatientState.getUuid(), new Parameter("!purge", ""), new Parameter("reason", "none"));
+        handle(req);
+
+        patientProgram = service.getPatientProgramByUuid(getUuid());
+
+        states = new ArrayList<PatientState>(patientProgram.getStates());
+        sortPatientStatesBasedOnStartDate(states);
+        PatientState voidedPatientState = states.get(1);
+        existingPatientState = states.get(0);
+
+        Assert.assertTrue(voidedPatientState.getVoided());
+        Assert.assertFalse(existingPatientState.getVoided());
+        Assert.assertNull(existingPatientState.getEndDate());
+
+    }
+
+    private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {
+        Collections.sort(patientStates, new Comparator<PatientState>() {
+            @Override
+            public int compare(PatientState o1, PatientState o2) {
+                return OpenmrsUtil.compareWithNullAsLatest(o1.getStartDate(), o2.getStartDate());
+            }
+        });
+    }
+
 }
