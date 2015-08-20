@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
+import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,6 +31,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsUtil;
+
+import java.net.SocketPermission;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * {@link Resource} for PatientState, supporting standard CRUD operations
@@ -64,8 +72,37 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 
     @Override
     protected void delete(PatientState delegate, String reason, RequestContext context) throws ResponseException {
-        throw new ResourceDoesNotSupportOperationException("Deletion of patient state not supported.");
+        PatientProgram patientProgram = delegate.getPatientProgram();
+        PatientState lastPatientState = getLastPatientState(delegate.getState().getProgramWorkflow(), patientProgram);
+        if(lastPatientState != null) {
+            if (lastPatientState.getUuid().equals(delegate.getUuid())) {
+                patientProgram.voidLastState(delegate.getState().getProgramWorkflow(), Context.getAuthenticatedUser(), null, null);
+                Context.getProgramWorkflowService().savePatientProgram(patientProgram);
+            } else {
+                throw new ResourceDoesNotSupportOperationException("Only last state can be deleted");
+            }
+        }
     }
+
+    private PatientState getLastPatientState(ProgramWorkflow currentWorkflow, PatientProgram patientProgram) {
+        List<PatientState> patientStates = new ArrayList<PatientState>(patientProgram.statesInWorkflow(currentWorkflow, false));
+        if(patientStates.size() > 0){
+            sortPatientStatesBasedOnStartDate(patientStates);
+            return patientStates.get(patientStates.size() - 1);
+        }else{
+            return null;
+        }
+    }
+
+    private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {
+        Collections.sort(patientStates, new Comparator<PatientState>() {
+            @Override
+            public int compare(PatientState o1, PatientState o2) {
+                return OpenmrsUtil.compareWithNullAsLatest(o1.getStartDate(), o2.getStartDate());
+            }
+        });
+    }
+
 
     @Override
     public PatientState newDelegate() {
@@ -93,6 +130,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             description.addProperty("patientProgram", Representation.REF);
             description.addProperty("startDate");
             description.addProperty("endDate");
+            description.addProperty("voided");
             description.addSelfLink();
             return description;
         } else if (rep instanceof DefaultRepresentation) {
@@ -102,6 +140,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             description.addProperty("patientProgram", Representation.DEFAULT);
             description.addProperty("startDate");
             description.addProperty("endDate");
+            description.addProperty("voided");
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
