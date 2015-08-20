@@ -90,9 +90,9 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("state", Representation.REF);
             description.addProperty("uuid");
-            description.addProperty("patientProgram", Representation.REF);
             description.addProperty("startDate");
             description.addProperty("endDate");
+            description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             return description;
         } else if (rep instanceof DefaultRepresentation) {
@@ -102,6 +102,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             description.addProperty("patientProgram", Representation.DEFAULT);
             description.addProperty("startDate");
             description.addProperty("endDate");
+            description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
             return description;
@@ -113,6 +114,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             description.addProperty("startDate");
             description.addProperty("endDate");
             description.addProperty("voided");
+            description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             return description;
         }
