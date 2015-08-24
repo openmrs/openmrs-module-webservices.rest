@@ -36,6 +36,7 @@ public class PersonResource1_11 extends PersonResource1_8 {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 		if (description != null) {
 			description.addProperty("deathdateEstimated");
+			description.addProperty("birthtime");
 		}
 		return description;
 	}
@@ -47,6 +48,7 @@ public class PersonResource1_11 extends PersonResource1_8 {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addProperty("deathdateEstimated");
+		description.addProperty("birthtime");
 		return description;
 	}
 	
@@ -59,6 +61,7 @@ public class PersonResource1_11 extends PersonResource1_8 {
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
     	DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("deathdateEstimated");
+		description.addProperty("birthtime");
 		return description;
     }
 	
