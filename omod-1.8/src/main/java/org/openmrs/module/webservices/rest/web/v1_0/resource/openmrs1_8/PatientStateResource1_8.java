@@ -33,11 +33,10 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.net.SocketPermission;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * {@link Resource} for PatientState, supporting standard CRUD operations
@@ -127,7 +126,6 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("state", Representation.REF);
             description.addProperty("uuid");
-            description.addProperty("patientProgram", Representation.REF);
             description.addProperty("startDate");
             description.addProperty("endDate");
             description.addProperty("voided");
@@ -137,7 +135,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("state", Representation.DEFAULT);
             description.addProperty("uuid");
-            description.addProperty("patientProgram", Representation.DEFAULT);
+            description.addProperty("patientProgram", Representation.REF);
             description.addProperty("startDate");
             description.addProperty("endDate");
             description.addProperty("voided");
@@ -148,10 +146,11 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("state", Representation.FULL);
             description.addProperty("uuid");
-            description.addProperty("patientProgram", Representation.FULL);
+            description.addProperty("patientProgram", Representation.DEFAULT);
             description.addProperty("startDate");
             description.addProperty("endDate");
             description.addProperty("voided");
+            description.addProperty("auditInfo", findMethod("getAuditInfo"));
             description.addSelfLink();
             return description;
         }

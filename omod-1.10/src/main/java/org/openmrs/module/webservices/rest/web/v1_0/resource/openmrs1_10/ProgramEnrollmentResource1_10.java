@@ -9,6 +9,7 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProgramEnrollmentResource1_8;
@@ -25,7 +26,17 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
 
     @Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        if (rep instanceof DefaultRepresentation) {
+        if (rep instanceof RefRepresentation) {
+            DelegatingResourceDescription description = new DelegatingResourceDescription();
+            description.addProperty("uuid");
+            description.addProperty("program", Representation.REF);
+            description.addProperty("display");
+            description.addProperty("dateEnrolled");
+            description.addProperty("dateCompleted");
+            description.addSelfLink();
+            description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+            return description;
+        } else if (rep instanceof DefaultRepresentation) {
             DelegatingResourceDescription description = new DelegatingResourceDescription();
             description.addProperty("uuid");
             description.addProperty("patient", Representation.REF);
@@ -51,7 +62,7 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
             description.addProperty("location");
             description.addProperty("voided");
             description.addProperty("outcome");
-            description.addProperty("states", Representation.DEFAULT);
+            description.addProperty("states", Representation.FULL);
             description.addSelfLink();
             description.addProperty("auditInfo", findMethod("getAuditInfo"));
             return description;
