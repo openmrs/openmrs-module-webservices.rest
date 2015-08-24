@@ -86,8 +86,10 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 	 */
 	@Override
 	public void purge(EncounterRole encounterRole, RequestContext context) throws ResponseException {
-		if (encounterRole == null)
+		if (encounterRole == null) {
 			return;
+		}
+		
 		Context.getEncounterService().purgeEncounterRole(encounterRole);
 	}
 	
