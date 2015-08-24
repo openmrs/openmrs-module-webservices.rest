@@ -30,20 +30,22 @@ public class PatientStateResource1_8Test extends BaseDelegatingResourceTest <Pat
     public void validateRefRepresentation() throws Exception {
         assertPropEquals("startDate",getObject().getStartDate());
         assertPropEquals("endDate",getObject().getEndDate());
-        assertPropPresent("patientProgram");
         assertPropPresent("state");
         assertPropEquals("uuid",getObject().getUuid());
     }
 
     @Override
     public void validateDefaultRepresentation() throws Exception {
-      validateRefRepresentation();
+        assertPropPresent("patientProgram");
+        validateRefRepresentation();
     }
 
     @Override
     public void validateFullRepresentation() throws Exception {
         validateRefRepresentation();
+        assertPropPresent("patientProgram");
         assertPropEquals("voided",getObject().getVoided());
+        assertPropPresent("auditInfo");
     }
 
     @Override
