@@ -59,6 +59,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
+			description.addProperty("uniquenessBehavior");
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -75,6 +76,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("checkDigit");
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
+			description.addProperty("uniquenessBehavior");
 			description.addProperty("validator");
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
