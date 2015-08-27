@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import org.junit.Test;
 import org.openmrs.FormResource;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
@@ -77,5 +78,10 @@ public class FormResourceResource1_9Test extends BaseDelegatingResourceTest<Form
     @Override
     public String getUuidProperty() {
         return RestTestConstants1_9.FORM_RESOURCE_UUID;
+    }
+
+    @Test
+    public void doSearch_shouldReturnListOfFormResourcesWithDefaultRep() throws Exception {
+
     }
 }
