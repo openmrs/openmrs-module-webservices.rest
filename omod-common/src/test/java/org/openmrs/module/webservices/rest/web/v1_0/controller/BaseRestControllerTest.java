@@ -13,8 +13,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Field;
+
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,15 +31,14 @@ import org.openmrs.Person;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -40,11 +48,21 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	MockHttpServletResponse response;
 	
+	Log spyOnLog;
+	
 	@Before
-	public void before() {
+	public void before() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		controller = new BaseRestController();
 		request = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
+		spyOnLog = spy(LogFactory.getLog(BaseRestController.class));
+		// Need to get the logger using reflection
+		Field log;
+		log = controller.getClass().getDeclaredField("log");
+		log.setAccessible(true);
+		
+		log.set(controller, spyOnLog);
+		
 	}
 	
 	/**
@@ -84,5 +102,39 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject errors = (SimpleObject) responseSimpleObject.get("error");
 		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
+	}
+	
+	@Test
+	public void handleException_shouldLogUnannotatedAsErrors() throws Exception {
+		
+		String message = "ErrorMessage";
+		Exception ex = new Exception(message);
+		controller.handleException(ex, request, response);
+		
+		verify(spyOnLog).error(message, ex);
+		
+	}
+	
+	@Test
+	public void handleException_shouldLog500AndAboveAsErrors() throws Exception {
+		
+		String message = "ErrorMessage";
+		Exception ex = new ConversionException(message);
+		
+		controller.handleException(ex, request, response);
+		
+		verify(spyOnLog).error(message, ex);
+		
+	}
+	
+	@Test
+	public void handleException_shouldLogBelow500AsInfo() throws Exception {
+		
+		String message = "ErrorMessage";
+		Exception ex = new IllegalPropertyException(message);
+		
+		controller.handleException(ex, request, response);
+		
+		verify(spyOnLog).info(message, ex);
 	}
 }
