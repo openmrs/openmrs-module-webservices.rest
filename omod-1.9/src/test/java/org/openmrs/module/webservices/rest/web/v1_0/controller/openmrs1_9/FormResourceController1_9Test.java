@@ -1,11 +1,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.hibernate.annotations.SourceType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.SetOverrideType;
 import org.openmrs.Form;
 import org.openmrs.FormResource;
 import org.openmrs.api.context.Context;

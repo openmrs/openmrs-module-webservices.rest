@@ -28,7 +28,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 

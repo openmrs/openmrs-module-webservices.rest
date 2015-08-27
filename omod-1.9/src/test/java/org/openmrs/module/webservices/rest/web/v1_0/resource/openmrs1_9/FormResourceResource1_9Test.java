@@ -79,9 +79,4 @@ public class FormResourceResource1_9Test extends BaseDelegatingResourceTest<Form
     public String getUuidProperty() {
         return RestTestConstants1_9.FORM_RESOURCE_UUID;
     }
-
-    @Test
-    public void doSearch_shouldReturnListOfFormResourcesWithDefaultRep() throws Exception {
-
-    }
 }

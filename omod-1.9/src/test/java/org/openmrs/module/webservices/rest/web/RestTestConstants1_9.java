@@ -47,4 +47,6 @@ public class RestTestConstants1_9 {
     public final static String FORM_RESOURCE_UUID =  "efd9f224-0994-47fb-b8fb-4f59de70ccdf";
 
     public static final String  FORM_RESOURCE_DATA_SET = "formResourceTestDataset1_9.xml";
+
+    public static final String CLOBDATATYPESTORAGE_RESOURCE_UUID = "a4c65286-f295-4a0f-8813-f39e1df3da48";
 }

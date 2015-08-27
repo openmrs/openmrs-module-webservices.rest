@@ -251,5 +251,8 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		
 		System.out.println(stringWriter.toString());
 	}
-	
+
+    public String getBaseRestURI() {
+        return "/rest/" + getNamespace() + "/";
+    }
 }
