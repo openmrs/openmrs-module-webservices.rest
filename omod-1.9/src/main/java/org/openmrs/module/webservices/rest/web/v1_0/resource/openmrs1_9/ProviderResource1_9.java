@@ -25,8 +25,10 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -160,10 +162,19 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected AlreadyPaged<Provider> doSearch(RequestContext context) {
-		List<Provider> providers = Context.getProviderService().getProviders(context.getParameter("q"),
+	protected PageableResult doSearch(RequestContext context) {
+		String query = context.getParameter("q");
+		if (query == null) {
+			return new EmptySearchResult();
+		}
+		
+		List<Provider> providers = Context.getProviderService().getProviders(query,
 		    context.getStartIndex(), context.getLimit(), null);
-		return new AlreadyPaged<Provider>(context, providers, false);
+		
+		int count = Context.getProviderService().getCountOfProviders(query);
+		boolean hasMore = count > context.getStartIndex() + context.getLimit();
+		
+		return new AlreadyPaged<Provider>(context, providers, hasMore);
 		
 	}
 	
