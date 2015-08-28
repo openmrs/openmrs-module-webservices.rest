@@ -178,7 +178,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
 	 * Display string for Obs
-	 * 
+	 *
 	 * @param obs
 	 * @return String ConceptName = value
 	 */
@@ -192,7 +192,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
 	 * Retrives the Obs Value as string
-	 * 
+	 *
 	 * @param obs
 	 * @return
 	 */
@@ -257,7 +257,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	/**
 	 * Checks if there are more than one obs in GroupMembers and converts into a DEFAULT
 	 * representation
-	 * 
+	 *
 	 * @param obs
 	 * @return Object
 	 * @throws ConversionException
@@ -283,11 +283,17 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 
 	/**
 	 * Annotated setter for ConceptValue
-	 * 
+	 *
 	 * @param obs
 	 * @param value
 	 * @throws ParseException
 	 * @throws ConversionException
+	 * @should return uuid for foncept true
+	 * @should return uuid for concept false
+	 * @should throw exception on unexpected value
+	 * @should return uuid for primitive true
+	 * @should return uuid for primitive false
+	 *
 	 */
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException {
@@ -315,8 +321,15 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 							}
 						}
 					}
+				} else if (obs.getConcept().getDatatype().isBoolean()) {
+					if (value.equals(Context.getConceptService().getTrueConcept())) {
+						value = true;
+					} else if (value.equals(Context.getConceptService().getFalseConcept())) {
+						value = false;
+					} else if (!value.getClass().isAssignableFrom(Boolean.class)) {
+						throw new APIException("Unexpected value: " + value + " set as the value of boolean. Boolean, ConceptService.getTrueConcept or , ConceptService.getFalseConcept expected");
+					}
 				}
-				
 				obs.setValueAsString(value.toString());
 			}
 		} else
@@ -327,7 +340,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	 * Gets obs by patient or encounter (paged according to context if necessary) only if a patient
 	 * or encounter parameter exists respectively in the request set on the {@link RequestContext}
 	 * otherwise searches for obs that match the specified query
-	 * 
+	 *
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -336,7 +349,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
 			List<Obs> obs = Context.getObsService().getObservationsByPerson(patient);
@@ -346,7 +359,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		String encounterUuid = context.getRequest().getParameter("encounter");
 		if (encounterUuid != null) {
 			Encounter enc = ((EncounterResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Encounter.class)).getByUniqueId(encounterUuid);
+					Encounter.class)).getByUniqueId(encounterUuid);
 			if (enc == null)
 				return new EmptySearchResult();
 			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
