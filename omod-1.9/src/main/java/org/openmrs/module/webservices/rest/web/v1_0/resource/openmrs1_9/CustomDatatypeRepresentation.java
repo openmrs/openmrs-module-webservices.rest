@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class CustomDatatypeRepresentation {
 	
 	private String uuid;
@@ -23,6 +25,21 @@ public class CustomDatatypeRepresentation {
 	
     public String getUuid() {
 	    return uuid;
+    }
+    
+    public String getTextToDisplay() {
+    	String display = "";
+    	if (datatypeClassname != null && datatypeClassname.lastIndexOf(".") != -1) {
+    		String classname = datatypeClassname.substring(datatypeClassname.lastIndexOf(".") + 1);
+    		String[] splittedClassname = StringUtils.splitByCharacterTypeCamelCase(classname);
+    		
+    		for (int i = 0; i < splittedClassname.length; i++) {
+    			splittedClassname[i] = StringUtils.capitalize(splittedClassname[i]);
+    		}
+    		display = StringUtils.join(splittedClassname, " ");
+    	}
+    	
+    	return display;
     }
 	
 	public String getDatatypeClassname() {

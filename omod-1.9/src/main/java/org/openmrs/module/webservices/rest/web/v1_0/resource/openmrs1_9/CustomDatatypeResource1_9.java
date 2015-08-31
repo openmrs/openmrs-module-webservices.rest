@@ -71,14 +71,14 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", "datatypeClassname");
+			description.addProperty("display", "textToDisplay");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", "datatypeClassname");
+			description.addProperty("display", "textToDisplay");
 			description.addProperty("datatypeClassname");
 			description.addProperty("handlerClassnames");
 			description.addSelfLink();
@@ -87,7 +87,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-			description.addProperty("display", "datatypeClassname");
+			description.addProperty("display", "textToDisplay");
 			description.addProperty("datatypeClassname");
 			description.addProperty("handlerClassnames");
 			description.addSelfLink();
