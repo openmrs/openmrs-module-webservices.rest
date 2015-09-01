@@ -107,7 +107,7 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
     @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = super.getUpdatableProperties();
-        description.addRequiredProperty("property");
+        description.removeProperty("property");
         description.addRequiredProperty("description");
         description.addProperty("datatypeClassname");
         description.addProperty("datatypeConfig");
