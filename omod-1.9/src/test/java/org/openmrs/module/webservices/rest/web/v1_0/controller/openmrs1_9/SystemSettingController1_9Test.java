@@ -13,12 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
@@ -68,7 +69,6 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
 	}
@@ -79,20 +79,20 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		property.add("property", "a.property.test");
 		property.add("description", "Testing post operation of global property");
 		property.add("datatypeClassname", "org.openmrs.customdatatype.datatype.BooleanDatatype");
-		property.add("datatypeConfig", null);
-        property.add("value", "false");
+        property.add("value", "true");
 		String json = new ObjectMapper().writeValueAsString(property);
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
                 
 		SimpleObject newlyCreatedSetting = deserialize(handle(req));
-        String uuid = (String) PropertyUtils.getProperty(newlyCreatedSetting, "uuid");
-                
+		String uuid = (String) PropertyUtils.getProperty(newlyCreatedSetting, "uuid");
+        
         MockHttpServletRequest getReq = request(RequestMethod.GET, getURI() + "/"+uuid);
         getReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-		SimpleObject result = deserialize(handle(getReq));
-		assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
-        assertEquals("false", PropertyUtils.getProperty(result, "value"));
+        SimpleObject result = deserialize(handle(getReq));
+        assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
+        assertEquals("Testing post operation of global property", PropertyUtils.getProperty(newlyCreatedSetting, "description"));
+        assertEquals("true", PropertyUtils.getProperty(result, "value"));
         assertEquals("org.openmrs.customdatatype.datatype.BooleanDatatype", PropertyUtils.getProperty(result, "datatypeClassname"));
         assertNull(PropertyUtils.getProperty(result, "datatypeConfig"));
 	}
@@ -109,6 +109,7 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
                 
 		SimpleObject result = deserialize(handle(req));
         assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
+        assertEquals("Testing post operation of global property", PropertyUtils.getProperty(result, "description"));
         assertEquals("Saving property value without custome datatype", PropertyUtils.getProperty(result, "value"));
 	}
         
