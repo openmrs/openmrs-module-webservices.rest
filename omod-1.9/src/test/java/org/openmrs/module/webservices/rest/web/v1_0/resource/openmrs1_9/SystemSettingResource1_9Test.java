@@ -18,7 +18,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class SystemSettingtResource1_9Test extends BaseDelegatingResourceTest<SystemSettingResource1_9, GlobalProperty> {
+public class SystemSettingResource1_9Test extends BaseDelegatingResourceTest<SystemSettingResource1_9, GlobalProperty> {
 	
 	@Override
 	public GlobalProperty newObject() {
