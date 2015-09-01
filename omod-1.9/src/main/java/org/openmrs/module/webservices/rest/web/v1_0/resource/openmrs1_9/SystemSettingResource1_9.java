@@ -12,6 +12,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
@@ -134,13 +135,20 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
     }
 
     /**
-     * Fetches a global property by uuid
+     * Fetches a global property by uuid, if no match is found, it tries to look up one with a
+	 * matching name with the assumption that the passed parameter is a global property name
      *
      * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
      */
     @Override
     public GlobalProperty getByUniqueId(String uuid) {
-        return Context.getAdministrationService().getGlobalPropertyByUuid(uuid);
+    	GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyByUuid(uuid);
+    	if (gp == null) {
+    		//We assume the caller is fetching by name
+    		gp = Context.getAdministrationService().getGlobalPropertyObject(uuid);
+    	}
+    	
+    	return gp;
     }
 
     /**

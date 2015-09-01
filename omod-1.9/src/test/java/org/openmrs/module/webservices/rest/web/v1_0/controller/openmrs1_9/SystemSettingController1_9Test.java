@@ -123,6 +123,19 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		assertEquals(expectedProperty.getProperty(), PropertyUtils.getProperty(property, "property"));
         assertEquals(expectedProperty.getValue(), PropertyUtils.getProperty(property, "value"));
 	}
+    
+    @Test
+	public void shouldGetASystemSettingByName() throws Exception {
+		final String name = service.getAllGlobalProperties().get(0).getProperty();
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		SimpleObject result = deserialize(handle(req));
+		
+		GlobalProperty gp = service.getGlobalPropertyObject(name);
+		assertEquals(gp.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(gp.getProperty(), PropertyUtils.getProperty(result, "property"));
+		assertEquals(gp.getDescription(), PropertyUtils.getProperty(result, "description"));
+		assertEquals(gp.getValue(), PropertyUtils.getProperty(result, "value"));
+	}
         
     @Test
 	public void shouldEditASystemSetting() throws Exception {
