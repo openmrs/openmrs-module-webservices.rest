@@ -22,7 +22,7 @@ public class SystemSettingtResource1_9Test extends BaseDelegatingResourceTest<Sy
 	
 	@Override
 	public GlobalProperty newObject() {
-            return Context.getAdministrationService().getGlobalPropertyByUuid(getUuidProperty());
+		return Context.getAdministrationService().getGlobalPropertyByUuid(getUuidProperty());
 	}
 	
 	@Override
@@ -31,8 +31,7 @@ public class SystemSettingtResource1_9Test extends BaseDelegatingResourceTest<Sy
 		assertPropPresent("property");
 		assertPropPresent("value");
 		assertPropPresent("description");
-                assertPropEquals("display", getDisplayProperty());
-
+        assertPropEquals("display", getDisplayProperty());
 	}
 	
 	@Override
@@ -41,16 +40,15 @@ public class SystemSettingtResource1_9Test extends BaseDelegatingResourceTest<Sy
 		assertPropPresent("property");
 		assertPropPresent("value");
 		assertPropPresent("description");
-                assertPropEquals("display", getDisplayProperty());
-                assertPropPresent("datatypeClassname");
-                assertPropPresent("datatypeConfig");
-                assertPropPresent("preferredHandlerClassname");
-                assertPropPresent("handlerConfig");
+        assertPropEquals("display", getDisplayProperty());
+        assertPropPresent("datatypeClassname");
+        assertPropPresent("datatypeConfig");
+        assertPropPresent("preferredHandlerClassname");
+        assertPropPresent("handlerConfig");
 	}
 	
 	@Override
-	public String getDisplayProperty() {
-            
+	public String getDisplayProperty() {    
 		return "Locale - Allowed List = en";
 	}
 	

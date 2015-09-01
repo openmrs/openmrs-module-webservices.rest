@@ -226,10 +226,12 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
      */
     @PropertyGetter("value")
     public static Object getValue(GlobalProperty globalProperty) {
-        if (StringUtils.isNotEmpty(globalProperty.getDatatypeClassname()) && StringUtils.isNotEmpty(globalProperty.getDatatypeConfig()))
+        if (StringUtils.isNotEmpty(globalProperty.getDatatypeClassname()) && StringUtils.isNotEmpty(globalProperty.getDatatypeConfig())) {
             return globalProperty.getValue();
-        else
+        }
+        else {
             return globalProperty.getPropertyValue();
+        }
             
     }
     
