@@ -239,6 +239,17 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null, null, null, includeInactive, false), context).toSimpleObject(this);
 	}
+	
+	/**
+     * Get all the visits
+     *
+     * @see
+     * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+     */
+    @Override
+    protected NeedsPaging<Visit> doGetAll(RequestContext context) {
+        return new NeedsPaging<Visit>(Context.getVisitService().getAllVisits(), context);
+    }
 
     private Patient getPatient(String patientUniqueId) {
         Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);

@@ -17,13 +17,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -32,7 +28,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
-import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 public class VisitController1_9Test extends MainResourceControllerTest {
@@ -62,16 +57,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 0; //not supported
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
-	 */
-	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
-	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		return service.getAllVisits().size();
 	}
 	
 	@Before
