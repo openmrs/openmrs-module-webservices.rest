@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
 import org.openmrs.module.webservices.validation.ValidateUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -102,6 +104,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		return ret;
 	}
+
+    public Object create(MultipartFile file, RequestContext context) throws ResponseException, IOException {
+        throw  new ResourceDoesNotSupportOperationException("Resource does not allow file uploads via rest");
+    }
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,

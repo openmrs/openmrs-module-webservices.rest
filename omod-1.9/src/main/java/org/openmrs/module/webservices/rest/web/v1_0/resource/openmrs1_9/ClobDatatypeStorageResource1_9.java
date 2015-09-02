@@ -1,5 +1,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import com.sun.corba.se.impl.corba.ContextImpl;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.ClobDatatypeStorage;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -16,6 +20,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 @Resource(name= RestConstants.VERSION_1 + "/clobdata", supportedClass = ClobDatatypeStorage.class,
         supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
@@ -60,6 +69,16 @@ public class ClobDatatypeStorageResource1_9 extends DelegatingCrudResource<ClobD
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("value");
         return description;
+    }
+
+    @Override
+    public Object create(MultipartFile file, RequestContext context) throws ResponseException, IOException {
+        ClobDatatypeStorage clobdata = new ClobDatatypeStorage();
+        String encoding = context.getRequest().getHeader("Content-Encoding");
+        if(StringUtils.isBlank(encoding)) encoding = "UTF-8";
+        clobdata.setValue(IOUtils.toString(file.getInputStream(),encoding));
+        clobdata = Context.getDatatypeService().saveClobDatatypeStorage(clobdata);
+        return clobdata;
     }
 
     @Override
