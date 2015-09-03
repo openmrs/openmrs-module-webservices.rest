@@ -60,7 +60,7 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 	public EncounterRole newDelegate() {
 		return new EncounterRole();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */

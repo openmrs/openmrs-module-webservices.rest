@@ -11,8 +11,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.text.SimpleDateFormat;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +22,8 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Tests functionality of {@link VisitAttributeController}.

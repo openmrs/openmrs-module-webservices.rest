@@ -54,8 +54,12 @@ public class RestTestConstants1_9 {
 	public static final String CONCEPT_MAP_UUID = "23b6e712-49d8-11e0-8fed-18a905e044dc";
 
 	public static final String CONCEPT_UUID = "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
-	
+
 	public final static String ENCOUNTER_ROLE_UUID = "a0b03050-c99b-11e0-9572-0800200c9a66";
-        
+
     public static final String GLOBAL_PROPERTY_UUID = "4f55827e-26fe-102b-80cb-0017a47871b3";
+
+    public static final String ENCOUNTER_PROVIDER_UUID = "bf218490-1691-11df-97a5-7038c432aabf";
+
+    public static final String ENCOUNTER_UUID = "c59b3942-4fdd-11e5-8c3c-410f8777c163";
 }
