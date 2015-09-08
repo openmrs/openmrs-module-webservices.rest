@@ -28,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.OpenmrsConstants;
 
 import java.util.Date;
@@ -232,7 +233,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		assertEquals(falseConcept, ObsResource1_8.getValue(obs));
 	}
 
-	@Test(expected = APIException.class)
+	@Test(expected = ConversionException.class)
 	public void setValue_shouldThrowExceptionOnUnexpectedValue() throws Exception {
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
