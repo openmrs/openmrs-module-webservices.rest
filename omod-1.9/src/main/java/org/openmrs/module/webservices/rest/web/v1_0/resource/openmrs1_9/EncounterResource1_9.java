@@ -86,7 +86,7 @@ public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.we
      */
     @Override
     public String getResourceVersion() {
-        return "1.9";
+        return RestConstants1_9.RESOURCE_VERSION;
     }
 
 }
