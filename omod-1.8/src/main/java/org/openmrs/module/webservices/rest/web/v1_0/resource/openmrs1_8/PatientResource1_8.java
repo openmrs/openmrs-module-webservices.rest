@@ -79,6 +79,9 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	@PropertySetter("identifiers")
 	public static void setIdentifiers(Patient instance, List<PatientIdentifier> identifiers)
 	        throws ResourceDoesNotSupportOperationException {
+		if (instance.getIdentifiers() != null && instance.getIdentifiers().containsAll(identifiers)) {
+			return;
+		}
 		if (instance.getIdentifiers() != null && !instance.getIdentifiers().isEmpty()) {
 			throw new ResourceDoesNotSupportOperationException("Identifiers can only be set for newly created objects!");
 		}
