@@ -80,7 +80,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 			description.addProperty("uuid");
 			description.addProperty("display", "textToDisplay");
 			description.addProperty("datatypeClassname");
-			description.addProperty("handlerClassnames");
+			description.addProperty("handlers", Representation.FULL);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -89,7 +89,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 			description.addProperty("uuid");
 			description.addProperty("display", "textToDisplay");
 			description.addProperty("datatypeClassname");
-			description.addProperty("handlerClassnames");
+			description.addProperty("handlers", Representation.FULL);
 			description.addSelfLink();
 			return description;
 		}
@@ -123,7 +123,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 	        
 	        List<Class<? extends CustomDatatypeHandler>> handlerClasses = Context.getDatatypeService().getHandlerClasses(datatypeClass);
 	        for (Class<? extends CustomDatatypeHandler> handlerClass : handlerClasses) {
-	            datatype.getHandlerClassnames().add(handlerClass.getName());
+	            datatype.getHandlers().add(new CustomDatatypeHandlerRepresentation(datatype, handlerClass.getName()));
             }
         }
 	    return datatypes;

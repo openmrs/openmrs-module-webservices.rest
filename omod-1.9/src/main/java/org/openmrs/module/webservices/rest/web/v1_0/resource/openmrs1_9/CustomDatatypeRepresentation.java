@@ -21,25 +21,28 @@ public class CustomDatatypeRepresentation {
 	
 	private String datatypeClassname;
 	
-	private List<String> handlerClassnames = new ArrayList<String>();
+	private List<CustomDatatypeHandlerRepresentation> handlers = new ArrayList<CustomDatatypeHandlerRepresentation>();
 	
     public String getUuid() {
 	    return uuid;
     }
     
     public String getTextToDisplay() {
-    	String display = "";
-    	if (datatypeClassname != null && datatypeClassname.lastIndexOf(".") != -1) {
-    		String classname = datatypeClassname.substring(datatypeClassname.lastIndexOf(".") + 1);
-    		String[] splittedClassname = StringUtils.splitByCharacterTypeCamelCase(classname);
+    	return prettifyClassname(datatypeClassname);
+    }
+
+	public static String prettifyClassname(String classname) {
+	    String display = "";
+    	if (classname != null && classname.lastIndexOf(".") != -1) {
+    		String prettyclassname = classname.substring(classname.lastIndexOf(".") + 1);
+    		String[] splittedClassname = StringUtils.splitByCharacterTypeCamelCase(prettyclassname);
     		
     		for (int i = 0; i < splittedClassname.length; i++) {
     			splittedClassname[i] = StringUtils.capitalize(splittedClassname[i]);
     		}
     		display = StringUtils.join(splittedClassname, " ");
     	}
-    	
-    	return display;
+	    return display;
     }
 	
 	public String getDatatypeClassname() {
@@ -51,11 +54,11 @@ public class CustomDatatypeRepresentation {
 		this.uuid = UUID.nameUUIDFromBytes(datatypeClassname.getBytes()).toString();
 	}
 	
-	public List<String> getHandlerClassnames() {
-		return handlerClassnames;
+	public List<CustomDatatypeHandlerRepresentation> getHandlers() {
+		return handlers;
 	}
 	
-	public void setHandlerClassnames(List<String> handlerClassnames) {
-		this.handlerClassnames = handlerClassnames;
+	public void setHandlers(List<CustomDatatypeHandlerRepresentation> handlers) {
+		this.handlers = handlers;
 	}
 }
