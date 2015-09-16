@@ -17,10 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This is a marker class for all response expections. Controllers should throw these if an error
+ * This is a marker class for all response exceptions. Controllers should throw these if an error
  * has occurred or a status needs to be shown to a user
  */
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Unable to convert object into response content")
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Unable to convert object into response content")
 public class ConversionException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
