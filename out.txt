@@ -1,0 +1,164 @@
+On branch gsoc2015
+Your branch is up-to-date with 'origin/gsoc2015'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/css/print.css
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/css/reset.css
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/css/screen.css
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/css/typography.css
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-700.eot
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-700.svg
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-700.ttf
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-700.woff
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-700.woff2
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-regular.eot
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-regular.svg
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-regular.ttf
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-regular.woff
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/fonts/droid-sans-v6-latin-regular.woff2
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/explorer_icons.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/favicon-16x16.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/favicon-32x32.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/favicon.ico
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/logo_small.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/pet_store_api.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/throbber.gif
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/images/wordnik_api.png
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/index.html
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/backbone-min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/handlebars-2.0.0.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/highlight.7.3.pack.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/jquery-1.8.0.min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/jquery.ba-bbq.min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/jquery.slideto.min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/jquery.wiggle.min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/marked.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/swagger-oauth.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/underscore-min.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/lib/underscore-min.map
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/o2c.html
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/swagger-ui.js
+	new file:   omod/src/main/webapp/resources/js/swagger-ui/dist/swagger-ui.min.js
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/ResourceDoc.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/ResourceRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Contact.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Definition.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/DefinitionProperty.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Definitions.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Info.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/License.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Operation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/OperationEnum.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Parameter.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Path.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Paths.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Properties.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Response.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Schema.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/SwaggerSpecification.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/SwaggerSpecificationCreator.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Tag.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/RequestContext.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/RestConstants.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/RestInit.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/RestUtil.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/PropertyGetter.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/PropertySetter.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/RepHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/Resource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/SubClassHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/SubResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/annotation/WSDoc.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/api/RestHelperService.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/api/impl/RestHelperServiceImpl.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/filter/AuthorizationFilter.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/propertyeditor/UuidEditor.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/CustomRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/DefaultRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/FullRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/NamedRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/RefRepresentation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/representation/Representation.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Converter.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Creatable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/CrudResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Deletable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Listable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/PageableResult.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Purgeable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/RepresentationDescription.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Resource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Retrievable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/SearchConfig.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/SearchHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Searchable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/SubResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/api/Updatable.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/AlreadyPaged.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/BaseDelegatingResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/BaseDelegatingSubclassHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/BasePageableResult.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DataDelegatingCrudResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DelegatingCrudResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DelegatingResourceDescription.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DelegatingResourceHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DelegatingSubResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/DelegatingSubclassHandler.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/EmptySearchResult.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/MetadataDelegatingCrudResource.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/NeedsPaging.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/resource/impl/ServiceSearcher.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/ConversionException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/GenericRestException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/IllegalPropertyException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/InvalidSearchException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/ObjectMismatchException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/ObjectNotFoundException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/ResourceDoesNotSupportOperationException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/ResponseException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/SuccessfulDeletion.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/response/UnknownResourceException.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/v1_0/controller/BaseRestController.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/v1_0/controller/CatalogController.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/v1_0/controller/MainResourceController.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/v1_0/controller/MainSubResourceController.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/rest/web/v1_0/controller/UnknownResourceController.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/validation/ValidateUtil.java
+	modified:   omod-common/src/main/java/org/openmrs/module/webservices/validation/ValidationException.java
+	modified:   omod-common/src/main/resources/messages.properties
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/test/OpenmrsProfileRule.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/test/SameDatetimeMatcher.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/test/Util.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/ConversionUtilTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/RequestContextTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/RestUtilComponentTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/RestUtilTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/api/RestServiceTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/api/impl/RestServiceImplTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/resource/impl/BaseDelegatingResourceTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/resource/impl/MetadataDelegatingCrudResourceTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/v1_0/controller/BaseRestControllerTest.java
+	modified:   omod-common/src/test/java/org/openmrs/module/webservices/rest/web/v1_0/controller/MainResourceControllerTest.java
+	modified:   omod/pom.xml
+	modified:   omod/src/main/java/org/openmrs/module/webservices/rest/Activator.java
+	modified:   omod/src/main/java/org/openmrs/module/webservices/rest/web/controller/HelpController.java
+	modified:   omod/src/main/webapp/swaggerDoc.jsp
+	modified:   omod/src/test/java/org/openmrs/module/webservices/rest/util/ReflectionUtilTest.java
+	modified:   omod/src/test/java/org/openmrs/module/webservices/rest/web/ResourceDocCreatorTest.java
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Test.java
+	omod-common/src/main/java/org/openmrs/module/webservices/docs/swagger/Test2.java
+	omod/src/main/webapp/resources/js/swaggerLoader.js
+	out.txt
+	pieceOfCode.txt
+

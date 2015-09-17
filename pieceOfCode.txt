@@ -1,0 +1,102 @@
+	File file = new File("C://Users//zakaria//Desktop//output.json");
+			
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			swaggerSpecificationJSON = creator.BuildJSON();
+			bw.write(swaggerSpecificationJSON);
+			bw.close();
+
+
+//////////////////////////////
+
+	private void serialize() {
+		try {
+			FileOutputStream fileOut = new FileOutputStream("C://Users//zakaria//Desktop//spec.ser");
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(swaggerSpecification);
+			out.close();
+			fileOut.close();
+		}
+		catch (Exception exp) {
+			exp.printStackTrace();
+		}
+	}
+	
+	private Path mergePaths(Path path1, Path path2) {
+		
+		Path mergedPath = new Path();
+		Map<String, Operation> path1Operation = path1.getOperations();
+		Map<String, Operation> path2Operation = path2.getOperations();
+		
+		Map<String, Operation> mergedOperations = new HashMap<String, Operation>();
+		
+		for (String key : path1Operation.keySet())
+			mergedOperations.put(key, path1Operation.get(key));
+		
+		for (String key : path2Operation.keySet())
+			mergedOperations.put(key, path2Operation.get(key));
+		
+		mergedPath.setOperations(mergedOperations);
+		
+		return mergedPath;
+		
+	}
+
+////////////////
+<!--  <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-16x16.png" sizes="16x16" />
+  <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/typography.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/reset.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/screen.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/reset.css" media="print" rel="stylesheet" type="text/css"/>
+  <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/print.css" media="print" rel="stylesheet" type="text/css"/>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery-1.8.0.min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.slideto.min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.wiggle.min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.ba-bbq.min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/handlebars-2.0.0.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/underscore-min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/backbone-min.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/swagger-ui.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/highlight.7.3.pack.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/marked.js" type="text/javascript"></script>
+  <script src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/lib/swagger-oauth.js" 
+type="text/javascript"></script>
+  -->
+
+////////////////////////// 
+
+  <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-16x16.png" sizes="16x16" />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/css/typography.css"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/css/reset.css"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/css/screen.css"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/css/reset.css"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/css/print.css"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery-1.8.0.min.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.slideto.min.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.wiggle.min.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.ba-bbq.min.js"  />
+ <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/handlebars-2.0.0.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/underscore-min.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/backbone-min.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/swagger-ui.js"  />
+ <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/highlight.7.3.pack.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/marked.js"  />
+  <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/swagger-oauth.js" />
+
+
+"fetching resource list: "+this.url
+
+
+			/*if (resourceDoc.isSubResource()) {
+									//path.getOperations().get("get").setSummary("Subresource");
+									pathMap.put("/" + resourceName + "/{uuid}/" + resourceDoc.getSubResourceName(), path);
+								} else{
+									pathMap.put("/" + resourceName, path);
+								}*/

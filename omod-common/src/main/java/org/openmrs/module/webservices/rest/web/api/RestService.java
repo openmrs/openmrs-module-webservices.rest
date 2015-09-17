@@ -15,7 +15,6 @@ package org.openmrs.module.webservices.rest.web.api;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -63,14 +62,6 @@ public interface RestService {
 	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
-	 * Returns all search handlers supporting a resource
-	 * 
-	 * @param resourceName
-	 * @return
-	 */
-	Set<SearchHandler> getSearchHandlers(String resourceName);
-	
-	/**
 	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
 	 * @return list of {@link DelegatingResourceHandler}s
@@ -82,4 +73,6 @@ public interface RestService {
 	 * Initializes all Resources and Search handlers for use; called after module startup
 	 */
 	public void initialize();
+	
+	public List<SearchHandler> getAllSearchHandlers();
 }
