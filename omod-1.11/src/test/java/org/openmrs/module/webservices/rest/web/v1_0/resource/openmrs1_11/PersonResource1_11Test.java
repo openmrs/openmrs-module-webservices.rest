@@ -13,13 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import org.junit.Ignore;
 import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-@Ignore
 public class PersonResource1_11Test extends BaseDelegatingResourceTest<PersonResource1_11, Person> {
 
 	@Override
@@ -31,14 +29,14 @@ public class PersonResource1_11Test extends BaseDelegatingResourceTest<PersonRes
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
 		assertPropEquals("deathdateEstimated", getObject().getDeathdateEstimated());
-		//assertPropEquals("birthtime", getObject().getBirthtime());
+		assertPropEquals("birthtime", getObject().getBirthtime());
 	}
 
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
 		assertPropEquals("deathdateEstimated", getObject().getDeathdateEstimated());
-		//assertPropEquals("birthtime", getObject().getBirthtime());
+		assertPropEquals("birthtime", getObject().getBirthtime());
 	}
 	
 	@Override
