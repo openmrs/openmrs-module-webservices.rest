@@ -60,6 +60,8 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
 	
+	private volatile List<SearchHandler> allSearchHandlers;
+	
 	public RestServiceImpl() {
 	}
 	
@@ -313,7 +315,7 @@ public class RestServiceImpl implements RestService {
 			addSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, tempSearchHandlersByResource,
 			    searchHandler);
 		}
-		
+		this.allSearchHandlers = allSearchHandlers;
 		searchHandlersByParameter = tempSearchHandlersByParameters;
 		searchHandlersByIds = tempSearchHandlersByIds;
 		searchHandlersByResource = tempSearchHandlersByResource;
@@ -573,6 +575,11 @@ public class RestServiceImpl implements RestService {
 		}
 		
 		return resourceHandlers;
+	}
+	
+	public List<SearchHandler> getAllSearchHandlers() {
+		
+		return allSearchHandlers;
 	}
 	
 	/* (non-Javadoc)

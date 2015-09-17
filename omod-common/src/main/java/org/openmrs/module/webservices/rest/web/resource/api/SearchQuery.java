@@ -21,7 +21,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 
 /**
- * Used by {@link SearchConfig}.
+ * Used by {@link SearchHandlerConfig}.
  */
 public class SearchQuery {
 	
