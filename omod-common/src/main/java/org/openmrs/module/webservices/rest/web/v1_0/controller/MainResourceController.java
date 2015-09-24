@@ -75,7 +75,7 @@ public class MainResourceController extends BaseRestController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST)
 	@ResponseBody
@@ -93,7 +93,7 @@ public class MainResourceController extends BaseRestController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
@@ -110,7 +110,7 @@ public class MainResourceController extends BaseRestController {
 	 * @param uuid
 	 * @param reason
 	 * @param request
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
@@ -127,7 +127,7 @@ public class MainResourceController extends BaseRestController {
 	 * @param uuid
 	 * @param request
 	 * @param response
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody

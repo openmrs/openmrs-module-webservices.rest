@@ -35,9 +35,8 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
 /**
  * Filter intended for all /ws/rest calls that allows the user to authenticate via Basic
  * authentication. (It will not fail on invalid or missing credentials. We count on the API to throw
- * exceptions if an unauthenticated user tries to do something they are not allowed to do.) <br/>
- * <br/>
- * IP address authorization is also performed based on the global property:
+ * exceptions if an unauthenticated user tries to do something they are not allowed to do.) IP
+ * address authorization is also performed based on the global property:
  * {@link RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME}
  */
 public class AuthorizationFilter implements Filter {

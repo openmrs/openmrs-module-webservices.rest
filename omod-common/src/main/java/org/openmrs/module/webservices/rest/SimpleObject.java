@@ -41,9 +41,9 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	/**
 	 * Puts a property in this map, and returns the map itself (for chained method calls)
 	 * 
-	 * @param key
-	 * @param value
-	 * @return
+	 * @param key key
+	 * @param value value
+	 * @return return
 	 */
 	public SimpleObject add(String key, Object value) {
 		put(key, value);
@@ -53,8 +53,8 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	/**
 	 * Removes a property from the map, and returns the map itself (for chained method calls)
 	 * 
-	 * @param key
-	 * @return
+	 * @param key key
+	 * @return return
 	 */
 	public SimpleObject removeProperty(String key) {
 		remove(key);
@@ -64,11 +64,11 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	/**
 	 * Creates an instance from the given json string.
 	 * 
-	 * @param json
+	 * @param json json to parse
 	 * @return the simpleObject
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws JsonParseException json parse error
+	 * @throws JsonMappingException json mapping error
+	 * @throws IOException io error
 	 */
 	public static SimpleObject parseJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();

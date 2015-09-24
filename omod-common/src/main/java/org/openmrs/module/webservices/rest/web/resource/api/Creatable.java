@@ -26,10 +26,10 @@ public interface Creatable extends Resource {
 	 * Creates a resource (presumably saving it to some persistent storage) and returns the resource
 	 * created
 	 * 
-	 * @param post
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param post desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public Object create(SimpleObject post, RequestContext context) throws ResponseException;
 	

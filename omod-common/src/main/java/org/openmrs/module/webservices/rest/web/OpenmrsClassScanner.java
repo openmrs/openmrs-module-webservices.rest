@@ -63,11 +63,11 @@ public class OpenmrsClassScanner {
 	/**
 	 * Searches for classes extending or implementing the given type.
 	 * 
-	 * @param <T>
-	 * @param type
+	 * @param <T> desc needed
+	 * @param type desc needed
 	 * @param concrete true if only concrete classes should be returned
 	 * @return the list of found classes
-	 * @throws IOException
+	 * @throws IOException desc needed
 	 */
 	
 	public <T> List<Class<? extends T>> getClasses(Class<? extends T> type, boolean concrete) throws IOException {

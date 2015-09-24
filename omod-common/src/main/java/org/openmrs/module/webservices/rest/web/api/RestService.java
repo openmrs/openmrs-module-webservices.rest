@@ -31,8 +31,8 @@ public interface RestService {
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
-	 * @param requested
-	 * @return
+	 * @param requested requested rep
+	 * @return rep
 	 * @should get ref representation when specified
 	 * @should get default representation when specified
 	 * @should get full representation when specified
@@ -40,14 +40,20 @@ public interface RestService {
 	 */
 	public Representation getRepresentation(String requested);
 	
+	/**
+	 * Parses a representation requested by the client via the http request
+	 * 
+	 * @param name requested rep
+	 * @return rep
+	 */
 	Resource getResourceByName(String name) throws APIException;
 	
 	/**
 	 * Auto generated method comment
 	 * 
-	 * @param supportedClass
-	 * @return
-	 * @throws APIException
+	 * @param supportedClass supportedClass
+	 * @return rep
+	 * @throws APIException apiexception
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
@@ -55,18 +61,18 @@ public interface RestService {
 	 * Returns a search handler, which supports the given resource and the map of parameters and
 	 * values.
 	 * 
-	 * @param resourceName
-	 * @param parameters
+	 * @param resourceName resourceName
+	 * @param parameters parameters
 	 * @return searchHandler or <code>null</code> if no match
-	 * @throws APIException
+	 * @throws APIException apiexception
 	 */
 	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
 	 * Returns all search handlers supporting a resource
 	 * 
-	 * @param resourceName
-	 * @return
+	 * @param resourceName resoureName
+	 * @return searchHandlers
 	 */
 	Set<SearchHandler> getSearchHandlers(String resourceName);
 	
@@ -74,7 +80,7 @@ public interface RestService {
 	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
 	 * @return list of {@link DelegatingResourceHandler}s
-	 * @throws APIException
+	 * @throws APIException apiexception
 	 */
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
 	

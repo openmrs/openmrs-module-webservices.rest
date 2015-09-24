@@ -18,8 +18,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
- * Can convert from String -> T. Can convert from T -> json-friendly version of a given
- * Representation
+ * Can convert from String - T. Can convert from T - json-friendly version of a given Representation
  */
 public interface Converter<T> {
 	
@@ -31,32 +30,32 @@ public interface Converter<T> {
 	T newInstance(String type);
 	
 	/**
-	 * @param string
+	 * @param string desc needed
 	 * @return the result of converting the String input to a T
 	 */
 	T getByUniqueId(String string);
 	
 	/**
-	 * @param instance
-	 * @param rep
+	 * @param instance desc needed
+	 * @param rep desc needed
 	 * @return a convertible-to-json object for instance in the given representation
-	 * @throws Exception
+	 * @throws ConversionException desc needed
 	 */
 	SimpleObject asRepresentation(T instance, Representation rep) throws ConversionException;
 	
 	/**
-	 * @param instance
-	 * @param propertyName
-	 * @return
-	 * @throws ConversionException
+	 * @param instance desc needed
+	 * @param propertyName desc needed
+	 * @return desc needed
+	 * @throws ConversionException desc needed
 	 */
 	Object getProperty(T instance, String propertyName) throws ConversionException;
 	
 	/**
-	 * @param instance
-	 * @param propertyName
-	 * @param value
-	 * @throws ConversionException
+	 * @param instance desc needed
+	 * @param propertyName desc needed
+	 * @param value desc needed
+	 * @throws ConversionException desc needed
 	 */
 	void setProperty(Object instance, String propertyName, Object value) throws ConversionException;
 	

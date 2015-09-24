@@ -99,8 +99,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void delete(T delegate, String reason, RequestContext context) throws ResponseException {

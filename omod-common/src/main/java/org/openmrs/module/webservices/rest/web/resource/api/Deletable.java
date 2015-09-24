@@ -25,10 +25,10 @@ public interface Deletable extends Resource {
 	 * Deletes the specified resource, which in the OpenMRS context means either voiding or retiring
 	 * it
 	 * 
-	 * @param uuid
-	 * @param reason
-	 * @param context
-	 * @throws ResponseException
+	 * @param uuid desc needed
+	 * @param reason desc needed
+	 * @param context desc needed
+	 * @throws ResponseException desc needed
 	 */
 	void delete(String uuid, String reason, RequestContext context) throws ResponseException;
 	

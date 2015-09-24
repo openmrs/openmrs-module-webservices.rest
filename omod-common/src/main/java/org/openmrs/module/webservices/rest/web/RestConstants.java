@@ -90,18 +90,12 @@ public class RestConstants {
 	/**
 	 * An optional request parameter used by methods that return lists of patients to cut down on
 	 * the number of potential results
-	 * 
-	 * @see RequestContext#getLimit()
-	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
 	 */
 	public static String REQUEST_PROPERTY_FOR_LIMIT = "limit";
 	
 	/**
 	 * An optional request parameter used by methods that return lists of patients to determine how
 	 * far into a list to start returning results.
-	 * 
-	 * @see RequestContext#getStartIndex()()
-	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
 	 */
 	public static String REQUEST_PROPERTY_FOR_START_INDEX = "startIndex";
 	
@@ -122,9 +116,6 @@ public class RestConstants {
 	/**
 	 * An optional request parameter used by methods that return a list of objects to determine
 	 * whether voided (for data) or retired (for metadata) objects should be included in the list.
-	 * 
-	 * @see RequestContext#getIncludeAll()
-	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
 	 */
 	public static final String REQUEST_PROPERTY_FOR_INCLUDE_ALL = "includeAll";
 	
