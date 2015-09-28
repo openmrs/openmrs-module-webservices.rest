@@ -51,10 +51,14 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type
-	 * with the given index from that interface. This method will recursively look at superclasses
-	 * until it finds one implementing the requested interface
+	 * If clazz implements genericInterface - T, U, ... -, this method returns the parameterized
+	 * type with the given index from that interface. This method will recursively look at
+	 * superclasses until it finds one implementing the requested interface
 	 * 
+	 * @param clazz the clazz to look in
+	 * @param genericInterface the full method name to look for
+	 * @param index the full method name to look for
+	 * @return return
 	 * @should find genericInterface on a superclass if clazz does not directly implement it
 	 * @should ignore type variables on the declaring interface
 	 * @should not inspect superclasses of the specified genericInterface
@@ -77,10 +81,9 @@ public class ReflectionUtil {
 	}
 	
 	/**
+	 * @param clazz the clazz to look in
 	 * @param name the full method name to look for
-	 * @return the java Method object if found. (does not return null)
-	 * @throws RuntimeException if not method found by the given name in the current class
-	 * @return
+	 * @return return
 	 */
 	public static Method findMethod(Class<?> clazz, String name) {
 		Method ret = ReflectionUtils.findMethod(clazz, name, (Class<?>[]) null);
@@ -89,6 +92,12 @@ public class ReflectionUtil {
 		return ret;
 	}
 	
+	/**
+	 * @param <T> type
+	 * @param handler handler
+	 * @param propName propName
+	 * @return return
+	 */
 	public static <T> Method findPropertyGetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = getterMethodCache.get(key);
@@ -113,6 +122,12 @@ public class ReflectionUtil {
 		return result;
 	}
 	
+	/**
+	 * @param <T> type
+	 * @param handler handler
+	 * @param propName propName
+	 * @return return
+	 */
 	public static <T> Method findPropertySetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = setterMethodCache.get(key);

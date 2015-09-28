@@ -26,11 +26,11 @@ public interface Updatable extends Resource {
 	/**
 	 * Sets the given properties on the resource identified by the given uuid
 	 * 
-	 * @param uuid
-	 * @param propertiesToUpdate
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param uuid desc needed
+	 * @param propertiesToUpdate desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException;
 	

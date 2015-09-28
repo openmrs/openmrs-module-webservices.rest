@@ -29,9 +29,9 @@ public interface SearchHandler {
 	/**
 	 * The search.
 	 * 
-	 * @param context
-	 * @return the result
-	 * @throws ResponseException
+	 * @param context desc needed
+	 * @return the result desc needed
+	 * @throws ResponseException desc needed
 	 */
 	PageableResult search(RequestContext context) throws ResponseException;
 }

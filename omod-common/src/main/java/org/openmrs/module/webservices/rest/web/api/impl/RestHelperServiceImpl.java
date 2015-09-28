@@ -35,7 +35,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getConceptMapByUuid(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByUuid(java.lang.Class,
+	 *      java.lang.String)
 	 */
 	@Override
 	@Transactional(readOnly = true)
@@ -54,8 +55,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByField(java.lang.Class,
-	 *      java.lang.String, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectsByFields(java.lang.Class,
+	 *      Field...)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

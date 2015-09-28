@@ -54,7 +54,9 @@ public class ResourceDocCreator {
 	 * 
 	 * @param baseUrl the base or root for all the urls. e.g http://localhost:8080/openmrs
 	 * @return a map of ResourceData objects keyed by their resource names.
-	 * @throws IOException
+	 * @throws IOException an exception
+	 * @throws IllegalAccessException an exception
+	 * @throws InstantiationException an exception
 	 */
 	public static Map<String, ResourceDoc> createDocMap(String baseUrl) throws IllegalAccessException,
 	        InstantiationException, IOException, ConversionException {
@@ -73,9 +75,11 @@ public class ResourceDocCreator {
 	/**
 	 * Creates a list of resource documentation objects.
 	 * 
+	 * @param baseUrl the base or root for all the urls. e.g http://localhost:8080/openmrs
 	 * @return the documentation object list.
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
+	 * @throws IOException an exception
+	 * @throws IllegalAccessException an exception
+	 * @throws InstantiationException an exception
 	 */
 	public static List<ResourceDoc> create(String baseUrl) throws IllegalAccessException, InstantiationException,
 	        IOException, ConversionException {

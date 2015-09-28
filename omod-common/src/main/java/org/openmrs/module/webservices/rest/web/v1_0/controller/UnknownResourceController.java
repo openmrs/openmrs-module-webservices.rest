@@ -22,8 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Handles unknown resource requests which result in 404.
- * 
- * @see https://jira.springsource.org/browse/SPR-8837
+ * https://jira.springsource.org/browse/SPR-8837
  */
 @Controller
 @RequestMapping("/rest/unknownResource")
@@ -31,7 +30,7 @@ public class UnknownResourceController extends BaseRestController {
 	
 	/**
 	 * @return
-	 * @throws Exception
+	 * @throws UnknownResourceException
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody

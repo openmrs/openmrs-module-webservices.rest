@@ -28,34 +28,34 @@ public interface SubResource extends Resource {
 	/**
 	 * Add a sub-resource to a parent resource
 	 * 
-	 * @param parentUniqueId
-	 * @param post
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param post desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Fetch the given sub-resource of the given parent resource
 	 * 
-	 * @param parentUniqueId
-	 * @param uniqueId
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param uniqueId desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	Object retrieve(String parentUniqueId, String uniqueId, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Edit an existing sub-resource of a given parent resource
 	 * 
-	 * @param parentUniqueId
-	 * @param uniqueId
-	 * @param propertiesToUpdate
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param uniqueId desc needed
+	 * @param propertiesToUpdate desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	Object update(String parentUniqueId, String uniqueId, SimpleObject propertiesToUpdate, RequestContext context)
 	        throws ResponseException;
@@ -63,31 +63,31 @@ public interface SubResource extends Resource {
 	/**
 	 * Remove an existing sub-resource from a parent resource (voiding it or retiring it)
 	 * 
-	 * @param parentUniqueId
-	 * @param uniqueId
-	 * @param reason
-	 * @param context
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param uniqueId desc needed
+	 * @param reason desc needed
+	 * @param context desc needed
+	 * @throws ResponseException desc needed
 	 */
 	void delete(String parentUniqueId, String uniqueId, String reason, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Completely removes an existing sub-resource from persistent storage
 	 * 
-	 * @param parentUniqueId
-	 * @param uniqueId
-	 * @param context
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param uniqueId desc needed
+	 * @param context desc needed
+	 * @throws ResponseException desc needed
 	 */
 	void purge(String parentUniqueId, String uniqueId, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Lists all instances of this sub-resource that belong to the given parent resource
 	 * 
-	 * @param parentUniqueId
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param parentUniqueId desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException;
 	

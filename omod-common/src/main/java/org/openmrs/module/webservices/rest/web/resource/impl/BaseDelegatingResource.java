@@ -165,7 +165,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	/**
 	 * Registers the given subclass handler.
 	 * 
-	 * @param handler
+	 * @param handler desc needed
 	 */
 	public void registerSubclassHandler(DelegatingSubclassHandler<T, ? extends T> handler) {
 		if (subclassHandlers == null) {
@@ -224,7 +224,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * "unique id" means a uuid, or if they also want to retrieve delegates based on a unique
 	 * human-readable property.
 	 * 
-	 * @param uniqueId
+	 * @param uniqueId desc needed
 	 * @return the delegate for the given uniqueId
 	 */
 	@Override
@@ -233,43 +233,40 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	/**
 	 * Void or retire delegate, whichever action is appropriate for the resource type. Subclasses
 	 * need to override this method, which is called internally by
-	 * {@link #delete(String, String, RequestContext)}.
 	 * 
-	 * @param delegate
-	 * @param reason
-	 * @param context
-	 * @throws ResponseException
+	 * @param delegate desc needed
+	 * @param reason desc needed
+	 * @param context desc needed
+	 * @throws ResponseException desc needed
 	 */
 	protected abstract void delete(T delegate, String reason, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Purge delegate from persistent storage. Subclasses need to override this method, which is
-	 * called internally by {@link #purge(String, RequestContext)}.
 	 * 
-	 * @param delegate
-	 * @param context
-	 * @throws ResponseException
+	 * @param delegate desc needed
+	 * @param context desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public abstract void purge(T delegate, RequestContext context) throws ResponseException;
 	
 	/**
 	 * Gets a description of resource's properties which can be set on creation.
 	 * 
-	 * @return the description
-	 * @throws ResponseException
+	 * @return the description desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
-	 * Gets a description of resource's properties which can be edited.
-	 * <p/>
-	 * By default delegates to {@link #getCreatableProperties()} and removes sub-resources returned
-	 * by {@link #getPropertiesToExposeAsSubResources()}.
+	 * Gets a description of resource's properties which can be edited. By default delegates to
+	 * {@link DelegatingSubResource#getCreatableProperties()} and removes sub-resources returned by
+	 * {@link #getPropertiesToExposeAsSubResources()}.
 	 * 
-	 * @return the description
-	 * @throws ResponseException
+	 * @return the description desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = getCreatableProperties();
@@ -292,7 +289,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * Implementations should override this method if T is not uniquely identified by a "uuid"
 	 * property.
 	 * 
-	 * @param delegate
+	 * @param delegate desc needed
 	 * @return the uuid property of delegate
 	 */
 	protected String getUniqueId(T delegate) {
@@ -308,8 +305,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * Creates an object of the given representation, pulling values from fields and methods as
 	 * specified by a subclass
 	 * 
-	 * @param representation
-	 * @return
+	 * @param representation desc needed
+	 * @return desc needed
 	 * @should return valid RefRepresentation
 	 * @should return valid DefaultRepresentation
 	 * @should return valid FullRepresentation
@@ -455,8 +452,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * If this resources supports subclasses, this method gets the user-friendly type name for the
 	 * given subclass
 	 * 
-	 * @param subclass
-	 * @return
+	 * @param subclass desc needed
+	 * @return desc needed
 	 */
 	protected String getTypeName(Class<? extends T> subclass) {
 		if (hasTypesDefined()) {
@@ -522,7 +519,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 	
 	/**
-	 * @param clazz
+	 * @param clazz desc needed
 	 * @return a subclass handler if any is suitable for the given class, or this resource itself if
 	 *         no subclass handler works
 	 */
@@ -577,12 +574,12 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 	
 	/**
-	 * @param delegate
-	 * @param propertyMap
-	 * @param description
-	 * @param mustIncludeRequiredProperties
-	 * @throws ResponseException
-	 * @should allow setting a null value
+	 * @param delegate desc needed
+	 * @param propertyMap desc needed
+	 * @param description desc needed
+	 * @param mustIncludeRequiredProperties desc needed
+	 * @throws ResponseException desc needed
+	 * @should allow setting a null value desc needed
 	 */
 	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {
@@ -658,9 +655,9 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * Finds a method on clazz or a superclass that is annotated with {@link RepHandler} and is
 	 * suitable for rep
 	 * 
-	 * @param clazz
-	 * @param rep
-	 * @return
+	 * @param clazz desc needed
+	 * @param rep desc needed
+	 * @return desc needed
 	 */
 	private Method findAnnotatedMethodForRepresentation(Class<?> clazz, Representation rep) {
 		for (Method method : clazz.getMethods()) {
@@ -764,7 +761,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * convenience method for subclass-aware resources that want to limit query results to a given
 	 * type.
 	 * 
-	 * @param collection
+	 * @param collection desc needed
 	 * @param type a user-friendly type name
 	 */
 	protected void filterByType(Collection<T> collection, String type) {
@@ -780,8 +777,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * type
 	 * 
 	 * @param type user-friendly type name
-	 * @param methodName
-	 * @param argumentTypes
+	 * @param methodName desc needed
+	 * @param argumentTypes desc needed
 	 * @return the indicated method if it exists, null otherwise
 	 */
 	protected Method findSubclassHandlerMethod(String type, String methodName, Class<?>... argumentTypes) {
@@ -802,8 +799,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * and invokes it
 	 * 
 	 * @param type user-friendly type name
-	 * @param methodName
-	 * @param arguments
+	 * @param methodName desc needed
+	 * @param arguments desc needed
 	 * @return the result of invoking the indicated method, or null if the method wasn't found
 	 */
 	protected Object findAndInvokeSubclassHandlerMethod(String type, String methodName, Object... arguments) {
@@ -831,7 +828,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 	
 	/**
-	 * @param delegate
+	 * @param delegate desc needed
 	 * @return the URI for the given delegate object
 	 */
 	@SuppressWarnings("unchecked")

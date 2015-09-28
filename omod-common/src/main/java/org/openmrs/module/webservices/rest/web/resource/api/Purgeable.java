@@ -27,10 +27,10 @@ public interface Purgeable extends Resource {
 	 * Deletes a resources from persistent storage, so that it no longer exists, not even in a
 	 * voided or retired state.
 	 * 
-	 * @param uuid
-	 * @param context
-	 * @throws ObjectNotFoundException
-	 * @throws ResponseException
+	 * @param uuid desc needed
+	 * @param context desc needed
+	 * @throws ObjectNotFoundException desc needed
+	 * @throws ResponseException desc needed
 	 */
 	void purge(String uuid, RequestContext context) throws ResponseException;
 	

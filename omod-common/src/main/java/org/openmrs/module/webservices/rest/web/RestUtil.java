@@ -15,6 +15,7 @@ package org.openmrs.module.webservices.rest.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -69,7 +70,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Looks up the admin defined global property for the system limit
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
+	 * @see RequestContext#getLimit()
 	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
@@ -93,7 +94,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Looks up the admin defined global property for the absolute limit to results of REST calls
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
+	 * @see RequestContext#getLimit()
 	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getAbsoluteLimit() {
@@ -128,8 +129,8 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Tests whether or not there is a match between the given IP address and the candidates.
 	 * 
-	 * @param ip
-	 * @param candidateIps
+	 * @param ip desc needed
+	 * @param candidateIps desc needed
 	 * @return <code>true</code> if there is a match
 	 * @should return true if list is empty
 	 * @should return false if there is no match
@@ -416,9 +417,9 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	
 	/**
-	 * Determines the request representation, if not provided, uses default. <br/>
-	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
-	 * Determines how far into a list to start with given the startIndex param. <br/>
+	 * Determines the request representation, if not provided, uses default. Determines number of
+	 * results to limit to, if not provided, uses default set by admin. Determines how far into a
+	 * list to start with given the startIndex param.
 	 * 
 	 * @param request the current http web request
 	 * @param response the current http web response
@@ -485,8 +486,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @return a {@link RequestContext} object filled with all the necessary values
-	 * @see getRequestContext(javax.servlet.http.HttpServletRequest,
-	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
+	 * @see #getRequestContext(javax.servlet.http.HttpServletRequest,
+	 *      javax.servlet.http.HttpServletResponse)
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
 		return getRequestContext(request, response, Representation.DEFAULT);
@@ -536,8 +537,8 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Sets the HTTP status on the response according to the exception
 	 * 
-	 * @param ex
-	 * @param response
+	 * @param ex desc needed
+	 * @param response desc needed
 	 */
 	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
@@ -556,8 +557,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
 	 * returning from a @ResponseBody annotated Spring controller method.
 	 * 
-	 * @param response
-	 * @return
+	 * @param response desc needed
+	 * @return desc needed
 	 */
 	public static Object noContent(HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -567,8 +568,8 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute
 	 * 
-	 * @param response
-	 * @param created
+	 * @param response desc needed
+	 * @param created desc needed
 	 * @return the object passed in
 	 */
 	public static Object created(HttpServletResponse response, Object created) {
@@ -584,8 +585,8 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Sets the HTTP status for UPDATED and (if 'updated' has a uri) the Location header attribute
 	 * 
-	 * @param response
-	 * @param updated
+	 * @param response desc needed
+	 * @param updated desc needed
 	 * @return the object passed in
 	 */
 	public static Object updated(HttpServletResponse response, Object updated) {
@@ -601,8 +602,6 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Updates the Uri prefix through which clients consuming web services will connect to the web
 	 * app
-	 * 
-	 * @return the webapp's Url prefix
 	 */
 	public static void setUriPrefix() {
 		if (contextEnabled) {
@@ -635,6 +634,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * A Set is returned by removing voided data from passed Collection. The Collection passed as
 	 * parameter is not modified
 	 * 
+	 * @param <D> type of collection
+	 * @param <C> sub type of collection
 	 * @param input collection of OpenmrsData
 	 * @return non-voided OpenmrsData
 	 */
@@ -652,6 +653,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * A Set is returned by removing retired data from passed Collection. The Collection passed as
 	 * parameter is not modified
 	 * 
+	 * @param <M> type of collection
+	 * @param <C> sub type of collection
 	 * @param input collection of OpenmrsMetadata
 	 * @return non-retired OpenmrsMetaData
 	 */
@@ -693,8 +696,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Inspects the cause chain for the given throwable, looking for an exception of the given class
 	 * (e.g. to find an APIAuthenticationException wrapped in an InvocationTargetException)
 	 * 
-	 * @param throwable
-	 * @param causeClassToLookFor
+	 * @param throwable desc needed
+	 * @param causeClassToLookFor desc needed
 	 * @return whether any exception in the cause chain of throwable is an instance of
 	 *         causeClassToLookFor
 	 */
@@ -708,6 +711,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param pkgname the package name.
 	 * @param suffix the ending text on name. eg "Resource.class"
 	 * @return the list of classes.
+	 * @throws IOException desc needed
 	 */
 	public static ArrayList<Class<?>> getClassesForPackage(String pkgname, String suffix) throws IOException {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
@@ -801,9 +805,9 @@ public class RestUtil implements GlobalPropertyListener {
 	/**
 	 * Wraps the exception message as a SimpleObject to be sent to client
 	 * 
-	 * @param ex
-	 * @param reason
-	 * @return
+	 * @param ex desc needed
+	 * @param reason desc needed
+	 * @return desc needed
 	 */
 	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
 		LinkedHashMap map = new LinkedHashMap();
@@ -828,8 +832,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Creates a SimpleObject to sent to the client with all validation errors (with message codes
 	 * resolved)
 	 * 
-	 * @param ex
-	 * @return
+	 * @param ex desc needed
+	 * @return desc needed
 	 */
 	public static SimpleObject wrapValidationErrorResponse(ValidationException ex) {
 		

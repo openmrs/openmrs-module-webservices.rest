@@ -35,8 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
  * operations based on a {@link SubResource}.
- * 
- * @param <R>
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
@@ -85,7 +83,7 @@ public class MainSubResourceController extends BaseRestController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.POST)
 	@ResponseBody
@@ -105,7 +103,7 @@ public class MainSubResourceController extends BaseRestController {
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
@@ -124,7 +122,7 @@ public class MainSubResourceController extends BaseRestController {
 	 * @param uuid
 	 * @param reason
 	 * @param request
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
@@ -143,7 +141,7 @@ public class MainSubResourceController extends BaseRestController {
 	 * @param uuid
 	 * @param request
 	 * @param response
-	 * @throws Exception
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.DELETE, params = "purge")
 	@ResponseBody

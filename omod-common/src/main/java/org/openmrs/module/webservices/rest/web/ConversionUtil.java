@@ -152,10 +152,10 @@ public class ConversionUtil {
 	/**
 	 * Converts the given object to the given type
 	 * 
-	 * @param object
-	 * @param toType a simple class or generic type
-	 * @return
-	 * @throws ConversionException
+	 * @param object desc needed
+	 * @param toType a simple class or generic type desc needed
+	 * @return desc needed
+	 * @throws ConversionException desc needed
 	 * @should convert strings to locales
 	 * @should convert strings to enum values
 	 * @should convert to an array
@@ -281,7 +281,7 @@ public class ConversionUtil {
 	 * @param toClass the class to convert map to
 	 * @return the result of using a converter to instantiate a new class and set map's properties
 	 *         on it
-	 * @throws ConversionException
+	 * @throws ConversionException desc needed
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {
@@ -310,10 +310,11 @@ public class ConversionUtil {
 	/**
 	 * Gets a property from the delegate, with the given representation
 	 * 
-	 * @param propertyName
-	 * @param rep
-	 * @return
-	 * @throws ConversionException
+	 * @param propertyName desc needed
+	 * @param rep desc needed
+	 * @param bean desc needed
+	 * @return desc needed
+	 * @throws ConversionException desc needed
 	 */
 	public static Object getPropertyWithRepresentation(Object bean, String propertyName, Representation rep)
 	        throws ConversionException {

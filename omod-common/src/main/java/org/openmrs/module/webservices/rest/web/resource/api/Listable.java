@@ -28,7 +28,7 @@ public interface Listable extends Resource {
 	 * 
 	 * @param context the {@link RequestContext} object
 	 * @return a list of all objects in the database represented by the implementing resource
-	 * @throws ResponseException
+	 * @throws ResponseException desc needed
 	 */
 	public SimpleObject getAll(RequestContext context) throws ResponseException;
 	
