@@ -64,7 +64,15 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
      */
     @Override
     public long getAllCount() {
-	    return Context.getEncounterService().getAllEncounters(null).size();
+        Map<Integer, List<Encounter>> allPatientEncounters = Context.getEncounterService().getAllEncounters(null);
+        int totalEncounters = 0;
+        for (Integer integer : allPatientEncounters.keySet()) {
+            List<Encounter> encounters = allPatientEncounters.get(integer);
+            if (encounters != null) {
+                totalEncounters = totalEncounters + encounters.size();
+            }
+        }
+        return totalEncounters;
     }
     
     /**
@@ -81,14 +89,17 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	 */
     @Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
-		int before = Context.getEncounterService().getAllEncounters(null).size();
-		SimpleObject post = createEncounterWithObs();
+		long before = getAllCount();
+        Util.log("before = ", before);
+
+        SimpleObject post = createEncounterWithObs();
 		
 		MockHttpServletResponse response = handle(newPostRequest(getURI(), post));
 		SimpleObject newEncounter = deserialize(response);
 		
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+        Util.log("after = ", getAllCount());
+		Assert.assertEquals(before + 1, getAllCount());
 		
 		Util.log("created encounter with obs", newEncounter);
 		@SuppressWarnings("unchecked")
@@ -158,7 +169,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		String triomuneConceptUuid = "d144d24f-6913-4b63-9660-a9108c2bebef";
 		String triomuneDrugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
 		
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		SimpleObject post = createEncounterWithObs();
 		List<SimpleObject> orders = new ArrayList<SimpleObject>();
 		orders.add(SimpleObject.parseJson("{ \"type\": \"order\", \"concept\": \"" + foodAssistanceUuid
@@ -170,7 +181,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
 		
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 		Util.log("created encounter with obs and orders", newEncounter);
 		
 		@SuppressWarnings("unchecked")
@@ -186,7 +197,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void createEncounter_shouldCreateANewEncounterWithAVisitProperty() throws Exception {
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		final String visitUuid = "1e5d5d48-6b78-11e0-93c3-18a905e044dc";
 		String json = "{\"visit\":\""
 		        + visitUuid
@@ -199,7 +210,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(newEncounterObject);
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(
                 ((SimpleObject) newEncounterObject).get("uuid").toString());
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 		//the encounter should have been assigned to the visit
 		Assert.assertNotNull(newEncounter);
 		Assert.assertNotNull(newEncounter.getVisit());

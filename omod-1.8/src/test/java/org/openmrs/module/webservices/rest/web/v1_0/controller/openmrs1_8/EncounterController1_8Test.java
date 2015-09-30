@@ -54,12 +54,12 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createEncounter_shouldCreateANewEncounter() throws Exception {
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
 		
 		Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 	}
 	
 	/**
@@ -67,23 +67,23 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createEncounter_shouldCreateANewEncounterUsingEncounterTypeRef() throws Exception {
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": {\"uuid\":\"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"name\":\"ADULT INITIAL\", \"display\":\"TESTING\", \"auditInfo\":\"SOME VALUES\"}, \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
 		
 		Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 	}
 	
 	@Test
 	public void createEncounter_shouldCreateANewEncounterUsingPatientRef() throws Exception {
-		int countBefore = Context.getEncounterService().getAllEncounters(null).size();
+		long countBefore = getAllCount();
 		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": { \"uuid\" : \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"identifiers\": [\"8a9aac6e-3f9f-4ed2-8fb5-25215f8bb614\"], \"person\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\" }, \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
 		
 		Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
 		
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(countBefore + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(countBefore + 1, getAllCount());
 	}
 
     @Test
@@ -100,7 +100,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
     @Test
 	public void createEncounter_shouldCreateANewEncounterWithEmptyUnitOnNumericConcept() throws Exception {
 		executeDataSet("customConceptDataset.xml");
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		String json = "{\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", "
 		        + "\"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", "
 		        + "\"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", "
@@ -108,7 +108,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		        + "\"obs\": [ { \"concept\": \"d102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"value\": 8 } ] }";
 		Object newEncounter = deserialize(handle(newPostRequest(getURI(), json)));
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 	}
 	
 	private SimpleObject encounterWithObs() throws Exception {
@@ -136,13 +136,13 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		SimpleObject post = encounterWithObs();
 		
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
 		
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 		
 		Util.log("created encounter with obs", newEncounter);
 		List<Map> obs = (List<Map>) newEncounter.get("obs");
@@ -170,7 +170,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		String triomuneConceptUuid = "d144d24f-6913-4b63-9660-a9108c2bebef";
 		String triomuneDrugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
 		
-		int before = Context.getEncounterService().getAllEncounters(null).size();
+		long before = getAllCount();
 		SimpleObject post = encounterWithObs();
 		List<SimpleObject> orders = new ArrayList<SimpleObject>();
 		orders.add(SimpleObject.parseJson("{ \"type\": \"order\", \"concept\": \"" + foodAssistanceUuid
@@ -182,7 +182,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
 		
 		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, Context.getEncounterService().getAllEncounters(null).size());
+		Assert.assertEquals(before + 1, getAllCount());
 		Util.log("created encounter with obs and orders", newEncounter);
 		
 		List<Map> newOrders = (List<Map>) newEncounter.get("orders");
@@ -348,6 +348,14 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 0; //Not supported
+        Map<Integer, List<Encounter>> allPatientEncounters = Context.getEncounterService().getAllEncounters(null);
+        int totalEncounters = 0;
+        for (Integer integer : allPatientEncounters.keySet()) {
+            List<Encounter> encounters = allPatientEncounters.get(integer);
+            if (encounters != null) {
+                totalEncounters = totalEncounters + encounters.size();
+            }
+        }
+        return totalEncounters;
 	}
 }
