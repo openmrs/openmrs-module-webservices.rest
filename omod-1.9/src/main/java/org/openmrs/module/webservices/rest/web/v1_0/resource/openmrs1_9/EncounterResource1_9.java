@@ -17,6 +17,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -24,6 +25,9 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * {@link Resource} for {@link EncounterResource1_9}, supporting standard CRUD operations
@@ -79,6 +83,11 @@ public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.we
         }
         Context.getEncounterService().saveEncounter(delegate);
         return delegate;
+    }
+
+    @PropertyGetter("encounterProviders")
+    public static Set<EncounterProvider> getActiveEncounterProviders(Encounter instance) {
+        return new LinkedHashSet<EncounterProvider>(instance.getActiveEncounterProviders());
     }
 
     /**

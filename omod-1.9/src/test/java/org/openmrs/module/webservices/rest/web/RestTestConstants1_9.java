@@ -63,6 +63,10 @@ public class RestTestConstants1_9 {
 
     public static final String ENCOUNTER_UUID = "c59b3942-4fdd-11e5-8c3c-410f8777c163";
 
+    public static final String SECOND_ENCOUNTER_UUID = "E8B79256-213C-4E2D-B812-D09D6C220273";
+
+    public static final String VOIDED_ENCOUNTER_PROVIDER = "BDB06BD6-6C41-4E6B-8C9C-8B24D5BF62E5";
+
     public final static String FORM_RESOURCE_UUID =  "efd9f224-0994-47fb-b8fb-4f59de70ccdf";
 
     public static final String FORM_UUID = "df887dee-1350-11df-a1f1-0026b9348838";
@@ -72,4 +76,5 @@ public class RestTestConstants1_9 {
     public static final String CLOBDATATYPESTORAGE_RESOURCE_UUID = "a4c65286-f295-4a0f-8813-f39e1df3da48";
 
     public static final String TEST_RESOURCE_FILE = "formResourcefile.txt";
+
 }

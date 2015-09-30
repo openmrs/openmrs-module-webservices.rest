@@ -1,5 +1,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -292,6 +293,47 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
                 "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2015-06-17").add("patient",
                 "da7f524f-27ce-4bb2-86d6-6d1d05312bd5").add("encounterProviders",providers);
     }
+
+
+    @Test
+    public void getEncounter_shouldGetOnlyNonVoidedEncounterProviders() throws Exception {
+        Encounter encounter = Context.getEncounterService().getEncounterByUuid(RestTestConstants1_9.SECOND_ENCOUNTER_UUID);
+        Set<EncounterProvider> encounterProviders = encounter.getEncounterProviders();
+        String voidedEncounterProviderUuid = null;
+        if (encounterProviders != null) {
+            for (EncounterProvider encounterProvider : encounterProviders) {
+                if (encounterProvider.isVoided()) {
+                    voidedEncounterProviderUuid = encounterProvider.getUuid();
+                    break;
+                }
+            }
+        }
+        Assert.assertNotNull(voidedEncounterProviderUuid);
+        // the encounter has a voided encounter provider
+        Assert.assertEquals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, voidedEncounterProviderUuid);
+
+        // retrieve the same encounter via the encounter web service
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + RestTestConstants1_9.SECOND_ENCOUNTER_UUID);
+        MockHttpServletResponse response = handle(req);
+        SimpleObject result = deserialize(response);
+
+        voidedEncounterProviderUuid = null;
+        List<Map> encounterProviderList = (List<Map>)result.get("encounterProviders");
+        // we now check to make sure the encounter REST web service does not return voided encounter provider
+        if (encounterProviderList != null) {
+            for (Map wsEncounterProvider : encounterProviderList) {
+                if (StringUtils.equals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, (String) wsEncounterProvider.get("uuid"))) {
+                    voidedEncounterProviderUuid = (String) wsEncounterProvider.get("uuid");
+                    // we found the voided encounter provider
+                    break;
+                }
+
+            }
+        }
+        // the voided encounter provider is not returned by the encounter web service
+        Assert.assertNull(voidedEncounterProviderUuid);
+    }
+
 
     @Test
     public void updateEncounter_shouldUpdateEncounterProviders() throws Exception{
