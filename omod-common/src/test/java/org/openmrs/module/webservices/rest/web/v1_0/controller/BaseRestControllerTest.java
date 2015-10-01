@@ -31,7 +31,7 @@ import org.openmrs.Person;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -119,7 +119,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	public void handleException_shouldLog500AndAboveAsErrors() throws Exception {
 		
 		String message = "ErrorMessage";
-		Exception ex = new ConversionException(message);
+		Exception ex = new GenericRestException(message);
 		
 		controller.handleException(ex, request, response);
 		
