@@ -15,11 +15,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-<<<<<<< HEAD
 import org.openmrs.Allergies;
-=======
-import org.openmrs.allergyapi.Allergies;
->>>>>>> origin/TRUNK-4747-A
 import org.openmrs.api.PatientService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;

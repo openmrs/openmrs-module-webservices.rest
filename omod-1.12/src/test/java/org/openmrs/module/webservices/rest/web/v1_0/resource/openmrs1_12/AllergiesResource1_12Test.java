@@ -2,11 +2,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
-<<<<<<< HEAD
 import org.openmrs.Allergies;
-=======
-import org.openmrs.allergyapi.Allergies;
->>>>>>> origin/TRUNK-4747-A
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;

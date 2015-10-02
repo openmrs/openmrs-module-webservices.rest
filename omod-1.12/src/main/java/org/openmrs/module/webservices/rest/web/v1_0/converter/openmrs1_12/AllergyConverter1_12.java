@@ -14,11 +14,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs1_12;
 
 import org.openmrs.annotation.Handler;
-<<<<<<< HEAD
 import org.openmrs.Allergy;
-=======
-import org.openmrs.allergyapi.Allergy;
->>>>>>> origin/TRUNK-4747-A
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
