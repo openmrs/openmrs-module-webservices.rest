@@ -37,6 +37,7 @@
 		<module>omod-1.10</module>
 		<module>omod-1.11</module>
 		<module>omod</module>
+		<module>omod-1.12</module>
 	</modules>
 
 	<properties>
