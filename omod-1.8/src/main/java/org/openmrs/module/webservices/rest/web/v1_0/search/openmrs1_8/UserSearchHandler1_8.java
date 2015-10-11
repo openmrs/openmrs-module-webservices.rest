@@ -38,15 +38,17 @@ import java.util.List;
  */
 @Component
 public class UserSearchHandler1_8 implements SearchHandler {
-	
+
 	@Autowired
 	@Qualifier("userService")
 	UserService userService;
-	
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user", Arrays.asList(
-	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"), new SearchQuery.Builder("Allows you to find users by username")
-	        .withRequiredParameters("username").build());
-	
+
+	private final SearchConfig searchConfig = new SearchConfig("default",
+			RestConstants.VERSION_1 + "/user", Arrays.asList("1.9.*", "1.10.*",
+					"1.11.*", "1.12.*"), new SearchQuery.Builder(
+					"Allows you to find users by username")
+					.withRequiredParameters("username").build());
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
 	 */
@@ -54,22 +56,23 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	public SearchConfig getSearchConfig() {
 		return searchConfig;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public PageableResult search(RequestContext context) throws ResponseException {
+	public PageableResult search(RequestContext context)
+			throws ResponseException {
 		String username = context.getParameter("username");
-		
+
 		User user = userService.getUserByUsername(username);
 		if (user == null) {
 			return new EmptySearchResult();
 		}
-		
+
 		List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
 		users.add(new UserAndPassword1_8(user));
 		return new NeedsPaging<UserAndPassword1_8>(users, context);
 	}
-	
+
 }

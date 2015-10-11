@@ -30,16 +30,20 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for {@link ConceptDatatype}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptDatatype}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptdatatype", supportedClass = ConceptDatatype.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<ConceptDatatype> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptdatatype", supportedClass = ConceptDatatype.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
+public class ConceptDatatypeResource1_8 extends
+		MetadataDelegatingCrudResource<ConceptDatatype> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -49,7 +53,8 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 			description.addProperty("hl7Abbreviation");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -65,7 +70,7 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -73,7 +78,7 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	public ConceptDatatype newDelegate() {
 		return new ConceptDatatype();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -81,54 +86,60 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	public ConceptDatatype save(ConceptDatatype conceptDatatype) {
 		return Context.getConceptService().saveConceptDatatype(conceptDatatype);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#update(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.SimpleObject,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+	public Object update(String uuid, SimpleObject propertiesToUpdate,
+			RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public ConceptDatatype getByUniqueId(String uuid) {
-		ConceptDatatype datatype = Context.getConceptService().getConceptDatatypeByUuid(uuid);
+		ConceptDatatype datatype = Context.getConceptService()
+				.getConceptDatatypeByUuid(uuid);
 		if (datatype == null)
-			datatype = Context.getConceptService().getConceptDatatypeByName(uuid);
-		
+			datatype = Context.getConceptService().getConceptDatatypeByName(
+					uuid);
+
 		return datatype;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptDatatype conceptDatatype, RequestContext context) throws ResponseException {
+	public void purge(ConceptDatatype conceptDatatype, RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#delete(org.openmrs.OpenmrsMetadata,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(ConceptDatatype delegate, String reason, RequestContext context) throws ResponseException {
+	public void delete(ConceptDatatype delegate, String reason,
+			RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptDatatype> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptDatatype>(Context.getConceptService().getAllConceptDatatypes(context.getIncludeAll()),
-		        context);
+		return new NeedsPaging<ConceptDatatype>(Context.getConceptService()
+				.getAllConceptDatatypes(context.getIncludeAll()), context);
 	}
-	
+
 }

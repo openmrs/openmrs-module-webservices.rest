@@ -28,18 +28,21 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for ActiveListType, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/activelisttype", supportedClass = ActiveListType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<ActiveListType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/activelisttype", supportedClass = ActiveListType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
+public class ActiveListTypeResource1_8 extends
+		MetadataDelegatingCrudResource<ActiveListType> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		//Let the superclass handle this
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		// Let the superclass handle this
 		return null;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -47,7 +50,7 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	public ActiveListType newDelegate() {
 		return new ActiveListType();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -55,7 +58,7 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	public ActiveListType save(ActiveListType activeListType) {
 		return null;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -63,16 +66,17 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	public ActiveListType getByUniqueId(String uuid) {
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ActiveListType activeListType, RequestContext context) throws ResponseException {
+	public void purge(ActiveListType activeListType, RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

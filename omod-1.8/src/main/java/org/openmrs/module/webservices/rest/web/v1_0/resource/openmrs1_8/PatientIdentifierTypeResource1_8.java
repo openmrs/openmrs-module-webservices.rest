@@ -30,23 +30,26 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/patientidentifiertype", supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudResource<PatientIdentifierType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/patientidentifiertype", order = 200, supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PatientIdentifierTypeResource1_8 extends
+		MetadataDelegatingCrudResource<PatientIdentifierType> {
+
 	public PatientIdentifierTypeResource1_8() {
 		allowedMissingProperties.add("locationBehavior");
 		allowedMissingProperties.add("uniquenessBehavior");
 	}
-	
+
 	private PatientService service() {
 		return Context.getPatientService();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -62,7 +65,8 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("uniquenessBehavior");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -85,7 +89,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -104,7 +108,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 		description.addProperty("validator");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -112,27 +116,29 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public PatientIdentifierType getByUniqueId(String uniqueId) {
-		PatientIdentifierType type = service().getPatientIdentifierTypeByUuid(uniqueId);
+		PatientIdentifierType type = service().getPatientIdentifierTypeByUuid(
+				uniqueId);
 		if (type == null)
 			type = service().getPatientIdentifierTypeByName(uniqueId);
 		return type;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<PatientIdentifierType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<PatientIdentifierType>(service().getAllPatientIdentifierTypes(context.getIncludeAll()),
-		        context);
+	protected NeedsPaging<PatientIdentifierType> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<PatientIdentifierType>(service()
+				.getAllPatientIdentifierTypes(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -140,7 +146,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public PatientIdentifierType newDelegate() {
 		return new PatientIdentifierType();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -148,13 +154,15 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public PatientIdentifierType save(PatientIdentifierType delegate) {
 		return service().savePatientIdentifierType(delegate);
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(PatientIdentifierType delegate, RequestContext context) throws ResponseException {
+	public void purge(PatientIdentifierType delegate, RequestContext context)
+			throws ResponseException {
 		service().purgePatientIdentifierType(delegate);
 	}
-	
+
 }

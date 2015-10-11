@@ -33,22 +33,25 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Problem, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*"})
+@Resource(name = RestConstants.VERSION_1 + "/problem", order = 200, supportedClass = Problem.class, supportedOpenmrsVersions = { "1.9.*" })
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			DelegatingResourceDescription description = super
+					.getRepresentationDescription(rep);
 			description.addProperty("modifier");
 			description.addProperty("sortWeight");
 			description.addProperty("problem", Representation.REF);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			DelegatingResourceDescription description = super
+					.getRepresentationDescription(rep);
 			description.addProperty("modifier");
 			description.addProperty("sortWeight");
 			description.addProperty("problem", Representation.DEFAULT);
@@ -56,20 +59,21 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addRequiredProperty("problem");
 		description.addProperty("modifier");
 		description.addProperty("sortWeight");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -77,7 +81,7 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	public Problem newDelegate() {
 		return new Problem();
 	}
-	
+
 	/**
 	 * Display string for Problem
 	 * 
@@ -88,10 +92,10 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	public String getDisplayString(Problem problem) {
 		if (problem.getProblem() == null)
 			return "";
-		
+
 		return problem.getProblem().getName().toString();
 	}
-	
+
 	/**
 	 * Annotated setter for Problem
 	 *
@@ -101,12 +105,14 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 
 	@PropertySetter("problem")
 	public static void setProblem(Problem problem, Object value) {
-		problem.setProblem(Context.getConceptService().getConceptByUuid((String) value));
+		problem.setProblem(Context.getConceptService().getConceptByUuid(
+				(String) value));
 	}
 
 	/**
-	 * Gets problems for a given patient (paged according to context if necessary) only if a patient
-	 * parameter exists in the request set on the {@link RequestContext}
+	 * Gets problems for a given patient (paged according to context if
+	 * necessary) only if a patient parameter exists in the request set on the
+	 * {@link RequestContext}
 	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
@@ -115,15 +121,18 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+			Patient patient = ((PatientResource1_8) Context.getService(
+					RestService.class).getResourceBySupportedClass(
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
-			return new NeedsPaging<Problem>(Context.getPatientService().getProblems(patient), context);
+			return new NeedsPaging<Problem>(Context.getPatientService()
+					.getProblems(patient), context);
 		}
-		
-		//currently this is not supported since the superclass throws an exception
+
+		// currently this is not supported since the superclass throws an
+		// exception
 		return super.doSearch(context);
 	}
-	
+
 }

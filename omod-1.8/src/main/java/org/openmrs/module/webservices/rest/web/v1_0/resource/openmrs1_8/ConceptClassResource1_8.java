@@ -26,20 +26,24 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for {@link ConceptClass}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptClass}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptclass", supportedClass = ConceptClass.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<ConceptClass> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptclass", supportedClass = ConceptClass.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
+public class ConceptClassResource1_8 extends
+		MetadataDelegatingCrudResource<ConceptClass> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		//Let the superclass handle this
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		// Let the superclass handle this
 		return null;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -47,7 +51,7 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 	public ConceptClass newDelegate() {
 		return new ConceptClass();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -55,37 +59,40 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 	public ConceptClass save(ConceptClass conceptClass) {
 		return Context.getConceptService().saveConceptClass(conceptClass);
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public ConceptClass getByUniqueId(String uuid) {
-		ConceptClass conceptClass = Context.getConceptService().getConceptClassByUuid(uuid);
+		ConceptClass conceptClass = Context.getConceptService()
+				.getConceptClassByUuid(uuid);
 		if (conceptClass == null)
-			conceptClass = Context.getConceptService().getConceptClassByName(uuid);
-		
+			conceptClass = Context.getConceptService().getConceptClassByName(
+					uuid);
+
 		return conceptClass;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptClass conceptClass, RequestContext context) throws ResponseException {
+	public void purge(ConceptClass conceptClass, RequestContext context)
+			throws ResponseException {
 		if (conceptClass == null)
 			return;
 		Context.getConceptService().purgeConceptClass(conceptClass);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptClass> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(context.getIncludeAll()),
-		        context);
+		return new NeedsPaging<ConceptClass>(Context.getConceptService()
+				.getAllConceptClasses(context.getIncludeAll()), context);
 	}
-	
+
 }

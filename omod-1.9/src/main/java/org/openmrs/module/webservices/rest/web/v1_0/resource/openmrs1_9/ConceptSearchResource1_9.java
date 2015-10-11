@@ -39,22 +39,25 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
- * {@link org.openmrs.ConceptSearchResult}, supporting only search operations for concepts and
- * returns ConceptSearchResults instead of Concepts, this is useful when searching for concepts and
- * the client needs to know extra details about the matches e.g the matched words, concept names and
- * their weights
+ * {@link org.openmrs.ConceptSearchResult}, supporting only search operations
+ * for concepts and returns ConceptSearchResults instead of Concepts, this is
+ * useful when searching for concepts and the client needs to know extra details
+ * about the matches e.g the matched words, concept names and their weights
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsearch", supportedClass = ConceptSearchResult.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
-public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSearchResult> implements Searchable {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptsearch", order = 100, supportedClass = ConceptSearchResult.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class ConceptSearchResource1_9 extends
+		BaseDelegatingResource<ConceptSearchResult> implements Searchable {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		DelegatingResourceDescription description = null;
-		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation
+				|| rep instanceof DefaultRepresentation) {
 			description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
@@ -67,10 +70,10 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 			description.addProperty("word");
 			description.addProperty("transientWeight");
 		}
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see
 	 */
@@ -79,32 +82,36 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		ConceptName cn = csr.getConcept().getName();
 		return cn == null ? null : cn.getName();
 	}
-	
+
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
 		String query = context.getParameter("q");
 		List<ConceptClass> conceptClasses = null;
-		String[] classUuids = context.getRequest().getParameterValues("conceptClasses");
+		String[] classUuids = context.getRequest().getParameterValues(
+				"conceptClasses");
 		if (classUuids != null) {
 			for (String uuid : classUuids) {
 				if (conceptClasses == null) {
 					conceptClasses = new ArrayList<ConceptClass>();
 				}
-				ConceptClass cc = (ConceptClass) ConversionUtil.convert(uuid, ConceptClass.class);
+				ConceptClass cc = (ConceptClass) ConversionUtil.convert(uuid,
+						ConceptClass.class);
 				if (cc != null) {
 					conceptClasses.add(cc);
 				}
 			}
 		}
-		
+
 		List<Locale> locales = new ArrayList<Locale>();
 		locales.add(Context.getLocale());
-		
-		return new NeedsPaging<ConceptSearchResult>(Context.getConceptService().getConcepts(query, locales,
-		    context.getIncludeAll(), conceptClasses, null, null, null, null, context.getStartIndex(), context.getLimit()),
-		        context).toSimpleObject(this);
+
+		return new NeedsPaging<ConceptSearchResult>(Context.getConceptService()
+				.getConcepts(query, locales, context.getIncludeAll(),
+						conceptClasses, null, null, null, null,
+						context.getStartIndex(), context.getLimit()), context)
+				.toSimpleObject(this);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -112,7 +119,7 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 	public ConceptSearchResult newDelegate() {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(String)
 	 */
@@ -120,7 +127,7 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 	public ConceptSearchResult getByUniqueId(String uniqueId) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(Object)
 	 */
@@ -128,22 +135,24 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 	public ConceptSearchResult save(ConceptSearchResult delegate) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(Object,
 	 *      String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(ConceptSearchResult delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(ConceptSearchResult delegate, String reason,
+			RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptSearchResult delegate, RequestContext context) throws ResponseException {
+	public void purge(ConceptSearchResult delegate, RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
 }

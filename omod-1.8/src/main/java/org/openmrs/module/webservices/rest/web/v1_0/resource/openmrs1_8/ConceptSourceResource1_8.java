@@ -32,16 +32,20 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptSource}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<ConceptSource> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
+public class ConceptSourceResource1_8 extends
+		MetadataDelegatingCrudResource<ConceptSource> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -51,7 +55,8 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 			description.addProperty("hl7Code");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -67,20 +72,21 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
 		description.addProperty("hl7Code");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -88,23 +94,26 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	public ConceptSource newDelegate() {
 		return new ConceptSource();
 	}
-	
+
 	/**
-	 * Fetches a conceptSource by uuid, if no match is found, it tries to look up one with a
-	 * matching name with the assumption that the passed parameter is a conceptSource name
+	 * Fetches a conceptSource by uuid, if no match is found, it tries to look
+	 * up one with a matching name with the assumption that the passed parameter
+	 * is a conceptSource name
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public ConceptSource getByUniqueId(String uuid) {
-		ConceptSource conceptSource = Context.getConceptService().getConceptSourceByUuid(uuid);
-		//We assume the caller was fetching by name
+		ConceptSource conceptSource = Context.getConceptService()
+				.getConceptSourceByUuid(uuid);
+		// We assume the caller was fetching by name
 		if (conceptSource == null)
-			conceptSource = Context.getConceptService().getConceptSourceByName(uuid);
-		
+			conceptSource = Context.getConceptService().getConceptSourceByName(
+					uuid);
+
 		return conceptSource;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -112,24 +121,26 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	public ConceptSource save(ConceptSource conceptSource) {
 		return Context.getConceptService().saveConceptSource(conceptSource);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptSource conceptSource, RequestContext context) throws ResponseException {
+	public void purge(ConceptSource conceptSource, RequestContext context)
+			throws ResponseException {
 		if (conceptSource == null)
 			return;
 		Context.getConceptService().purgeConceptSource(conceptSource);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doGetAll(RequestContext context) {
-		List<ConceptSource> sources = Context.getConceptService().getAllConceptSources();
+		List<ConceptSource> sources = Context.getConceptService()
+				.getAllConceptSources();
 		if (context.getIncludeAll()) {
 			return new NeedsPaging<ConceptSource>(sources, context);
 		}
@@ -140,19 +151,23 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 		}
 		return new NeedsPaging<ConceptSource>(unretiredSources, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doSearch(RequestContext context) {
-		List<ConceptSource> sources = Context.getConceptService().getAllConceptSources();
-		for (Iterator<ConceptSource> iterator = sources.iterator(); iterator.hasNext();) {
+		List<ConceptSource> sources = Context.getConceptService()
+				.getAllConceptSources();
+		for (Iterator<ConceptSource> iterator = sources.iterator(); iterator
+				.hasNext();) {
 			ConceptSource conceptSource = iterator.next();
-			//find matches excluding retired ones if necessary
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(
-			    conceptSource.getName()).find()
-			        || (!context.getIncludeAll() && conceptSource.isRetired())) {
+			// find matches excluding retired ones if necessary
+			if (!Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE)
+					.matcher(conceptSource.getName()).find()
+					|| (!context.getIncludeAll() && conceptSource.isRetired())) {
 				iterator.remove();
 			}
 		}

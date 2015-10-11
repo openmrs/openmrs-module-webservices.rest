@@ -36,27 +36,32 @@ import java.util.Set;
 /**
  * {@link Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
-public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/provider", order = 100, supportedClass = Provider.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class ProviderResource1_9 extends
+		MetadataDelegatingCrudResource<Provider> {
+
 	public ProviderResource1_9() {
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display");
 			description.addProperty("person", Representation.REF);
 			description.addProperty("identifier");
-			description.addProperty("attributes", "activeAttributes", Representation.REF);
+			description.addProperty("attributes", "activeAttributes",
+					Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -64,7 +69,8 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 			description.addProperty("display");
 			description.addProperty("person", Representation.DEFAULT);
 			description.addProperty("identifier");
-			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
+			description.addProperty("attributes", "activeAttributes",
+					Representation.DEFAULT);
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -72,7 +78,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -85,21 +91,24 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		description.addProperty("retired");
 		return description;
 	}
-	
+
 	/**
 	 * Sets the attributes of a Provider
 	 * 
-	 * @param provider whose attributes to be set
-	 * @param attributes the attributes to be set
+	 * @param provider
+	 *            whose attributes to be set
+	 * @param attributes
+	 *            the attributes to be set
 	 */
 	@PropertySetter("attributes")
-	public static void setAttributes(Provider provider, Set<ProviderAttribute> attributes) {
+	public static void setAttributes(Provider provider,
+			Set<ProviderAttribute> attributes) {
 		for (ProviderAttribute attribute : attributes) {
 			attribute.setOwner(provider);
 		}
 		provider.setAttributes(attributes);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -107,7 +116,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -115,7 +124,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public Provider newDelegate() {
 		return new Provider();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -123,7 +132,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public Provider save(Provider provider) {
 		return Context.getProviderService().saveProvider(provider);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -131,33 +140,36 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public Provider getByUniqueId(String uuid) {
 		return Context.getProviderService().getProviderByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(Provider provider, String reason, RequestContext context) throws ResponseException {
+	public void delete(Provider provider, String reason, RequestContext context)
+			throws ResponseException {
 		if (provider.isRetired()) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getProviderService().retireProvider(provider, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Provider provider, RequestContext context) throws ResponseException {
+	public void purge(Provider provider, RequestContext context)
+			throws ResponseException {
 		if (provider == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getProviderService().purgeProvider(provider);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -167,26 +179,28 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		if (query == null) {
 			return new EmptySearchResult();
 		}
-		
-		List<Provider> providers = Context.getProviderService().getProviders(query,
-		    context.getStartIndex(), context.getLimit(), null);
-		
+
+		List<Provider> providers = Context.getProviderService().getProviders(
+				query, context.getStartIndex(), context.getLimit(), null);
+
 		int count = Context.getProviderService().getCountOfProviders(query);
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
-		
+
 		return new AlreadyPaged<Provider>(context, providers, hasMore);
-		
+
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Provider> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Provider>(Context.getProviderService().getAllProviders(), context);
+	protected NeedsPaging<Provider> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<Provider>(Context.getProviderService()
+				.getAllProviders(), context);
 	}
-	
+
 	/**
 	 * @param provider
 	 * @return identifier + name (for concise display purposes)
@@ -199,7 +213,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		}
 		return provider.getIdentifier() + " - " + provider.getName();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */

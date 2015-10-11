@@ -31,24 +31,28 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * This is a contrived example for testing purposes
  */
-@SubClassHandler(supportedClass = HivDrugOrder.class, supportedOpenmrsVersions = {"1.8.*"})
-public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Order, HivDrugOrder> implements DelegatingSubclassHandler<Order, HivDrugOrder> {
-	
+@SubClassHandler(supportedClass = HivDrugOrder.class, supportedOpenmrsVersions = { "1.9.*" })
+public class HivDrugOrderSubclassHandler extends
+		BaseDelegatingSubclassHandler<Order, HivDrugOrder> implements
+		DelegatingSubclassHandler<Order, HivDrugOrder> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#newDelegate()
 	 */
 	@Override
 	public HivDrugOrder newDelegate() {
 		HivDrugOrder o = new HivDrugOrder();
-		o.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+		o.setOrderType(Context.getOrderService().getOrderType(
+				OpenmrsConstants.ORDERTYPE_DRUG));
 		return o;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription d = new DelegatingResourceDescription();
 			d.addProperty("patient", Representation.REF);
@@ -69,12 +73,13 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCreatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
+	public DelegatingResourceDescription getCreatableProperties()
+			throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("patient");
 		d.addRequiredProperty("concept");
@@ -83,17 +88,18 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		d.addProperty("standardRegimenCode");
 		d.addProperty("instructions");
 		return d;
-		
+
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getAllByType(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public PageableResult getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException {
+	public PageableResult getAllByType(RequestContext context)
+			throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler#getTypeName()
 	 */
@@ -101,15 +107,16 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	public String getTypeName() {
 		return "hivdrugorder";
 	}
-	
+
 	@PropertyGetter("standardRegimenCode")
 	public static String getStandardRegimenCode(HivDrugOrder delegate) {
-		return delegate.getInstructions().substring("Standard Regimen: ".length());
+		return delegate.getInstructions().substring(
+				"Standard Regimen: ".length());
 	}
-	
+
 	@PropertySetter("standardRegimenCode")
 	public static void setStandardRegimenCode(HivDrugOrder delegate, String code) {
 		delegate.setInstructions("Standard Regimen: " + code);
 	}
-	
+
 }

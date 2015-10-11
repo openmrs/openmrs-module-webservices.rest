@@ -31,16 +31,20 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * {@link Resource} for {@link ConceptMapType}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptMapType}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptmaptype", supportedClass = ConceptMapType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<ConceptMapType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptmaptype", order = 100, supportedClass = ConceptMapType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class ConceptMapTypeResource1_9 extends
+		MetadataDelegatingCrudResource<ConceptMapType> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -50,7 +54,8 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 			description.addProperty("isHidden");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -66,21 +71,21 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addRequiredProperty("name");
 		description.addProperty("description");
 		description.addProperty("isHidden");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -88,7 +93,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	public ConceptMapType newDelegate() {
 		return new ConceptMapType();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -96,62 +101,72 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	public ConceptMapType save(ConceptMapType conceptMapType) {
 		return Context.getConceptService().saveConceptMapType(conceptMapType);
 	}
-	
+
 	/**
-	 * Fetches a conceptMapType by uuid, if no match is found, it tries to look up one with a
-	 * matching name with the assumption that the passed parameter is a conceptMapType name
+	 * Fetches a conceptMapType by uuid, if no match is found, it tries to look
+	 * up one with a matching name with the assumption that the passed parameter
+	 * is a conceptMapType name
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public ConceptMapType getByUniqueId(String uuid) {
-		ConceptMapType conceptMapType = Context.getConceptService().getConceptMapTypeByUuid(uuid);
-		//We assume the caller was fetching by name
+		ConceptMapType conceptMapType = Context.getConceptService()
+				.getConceptMapTypeByUuid(uuid);
+		// We assume the caller was fetching by name
 		if (conceptMapType == null)
-			conceptMapType = Context.getConceptService().getConceptMapTypeByName(uuid);
-		
+			conceptMapType = Context.getConceptService()
+					.getConceptMapTypeByName(uuid);
+
 		return conceptMapType;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptMapType conceptMapType, RequestContext context) throws ResponseException {
+	public void purge(ConceptMapType conceptMapType, RequestContext context)
+			throws ResponseException {
 		if (conceptMapType == null)
 			return;
 		Context.getConceptService().purgeConceptMapType(conceptMapType);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptMapType> doGetAll(RequestContext context) {
-		//Note that if includeAll is set to false, then types marked as hidden will be excluded
-		return new NeedsPaging<ConceptMapType>(Context.getConceptService().getConceptMapTypes(context.getIncludeAll(),
-		    context.getIncludeAll()), context);
+		// Note that if includeAll is set to false, then types marked as hidden
+		// will be excluded
+		return new NeedsPaging<ConceptMapType>(Context.getConceptService()
+				.getConceptMapTypes(context.getIncludeAll(),
+						context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptMapType> doSearch(RequestContext context) {
-		List<ConceptMapType> types = Context.getConceptService().getConceptMapTypes(context.getIncludeAll(),
-		    context.getIncludeAll());
-		for (Iterator<ConceptMapType> iterator = types.iterator(); iterator.hasNext();) {
+		List<ConceptMapType> types = Context.getConceptService()
+				.getConceptMapTypes(context.getIncludeAll(),
+						context.getIncludeAll());
+		for (Iterator<ConceptMapType> iterator = types.iterator(); iterator
+				.hasNext();) {
 			ConceptMapType type = iterator.next();
-			//find matches excluding retired ones if necessary
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(type.getName())
-			        .find()) {
+			// find matches excluding retired ones if necessary
+			if (!Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE).matcher(type.getName())
+					.find()) {
 				iterator.remove();
 			}
 		}
 		return new NeedsPaging<ConceptMapType>(types, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */

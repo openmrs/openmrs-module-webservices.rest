@@ -36,13 +36,16 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for {@link ConceptDescription}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptDescription}, supporting standard CRUD
+ * operations
  */
-@SubResource(parent = ConceptResource1_8.class, path = "description", supportedClass = ConceptDescription.class, supportedOpenmrsVersions = "1.8.*")
-public class ConceptDescriptionResource1_8 extends DelegatingSubResource<ConceptDescription, Concept, ConceptResource1_8> {
-	
+@SubResource(parent = ConceptResource1_8.class, path = "description", supportedClass = ConceptDescription.class, supportedOpenmrsVersions = "1.9.*", order = 200)
+public class ConceptDescriptionResource1_8 extends
+		DelegatingSubResource<ConceptDescription, Concept, ConceptResource1_8> {
+
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -56,7 +59,8 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 			description.addProperty("description");
 			description.addProperty("locale");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -69,7 +73,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -80,7 +84,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		description.addRequiredProperty("locale");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -88,7 +92,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public Concept getParent(ConceptDescription instance) {
 		return instance.getConcept();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -97,14 +101,15 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public void setParent(ConceptDescription instance, Concept concept) {
 		instance.setConcept(concept);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<ConceptDescription> doGetAll(Concept parent, RequestContext context) throws ResponseException {
-		//convert from a collection to a list
+	public NeedsPaging<ConceptDescription> doGetAll(Concept parent,
+			RequestContext context) throws ResponseException {
+		// convert from a collection to a list
 		List<ConceptDescription> descriptions = new ArrayList<ConceptDescription>();
 		if (parent != null) {
 			for (ConceptDescription description : parent.getDescriptions()) {
@@ -113,7 +118,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		}
 		return new NeedsPaging<ConceptDescription>(descriptions, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -121,27 +126,31 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public ConceptDescription getByUniqueId(String uuid) {
 		return Context.getConceptService().getConceptDescriptionByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(ConceptDescription cd, String reason, RequestContext context) throws ResponseException {
-		//concept descriptions are neither voidable nor retireable, so delegate to purge
+	public void delete(ConceptDescription cd, String reason,
+			RequestContext context) throws ResponseException {
+		// concept descriptions are neither voidable nor retireable, so delegate
+		// to purge
 		purge(cd, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptDescription cd, RequestContext context) throws ResponseException {
+	public void purge(ConceptDescription cd, RequestContext context)
+			throws ResponseException {
 		cd.getConcept().removeDescription(cd);
 		Context.getConceptService().saveConcept(cd.getConcept());
 	}
-	
+
 	/**
 	 * @param newDescription
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
@@ -152,7 +161,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		Context.getConceptService().saveConcept(newDescription.getConcept());
 		return newDescription;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -160,18 +169,19 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public ConceptDescription newDelegate() {
 		return new ConceptDescription();
 	}
-	
+
 	/**
 	 * Gets the display string for a concept description including its locale.
 	 * 
-	 * @param conceptDescription the concept description object.
+	 * @param conceptDescription
+	 *            the concept description object.
 	 * @return the display string.
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptDescription conceptDescription) {
 		return conceptDescription.getDescription();
 	}
-	
+
 	/**
 	 * Gets extra book-keeping info, for the full representation
 	 * 
@@ -179,16 +189,23 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	 * @return
 	 * @throws Exception
 	 */
-	public SimpleObject getAuditInfo(ConceptDescription description) throws Exception {
+	public SimpleObject getAuditInfo(ConceptDescription description)
+			throws Exception {
 		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(description, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(description.getDateCreated(), Representation.DEFAULT));
-		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(description, "changedBy", Representation.REF));
-		ret.put("dateChanged", ConversionUtil.convertToRepresentation(description.getDateChanged(), Representation.DEFAULT));
-		
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(
+				description, "creator", Representation.REF));
+		ret.put("dateCreated",
+				ConversionUtil.convertToRepresentation(
+						description.getDateCreated(), Representation.DEFAULT));
+		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(
+				description, "changedBy", Representation.REF));
+		ret.put("dateChanged",
+				ConversionUtil.convertToRepresentation(
+						description.getDateChanged(), Representation.DEFAULT));
+
 		return ret;
 	}
-	
+
 	/**
 	 * Returns the locale as a string
 	 * 
@@ -199,7 +216,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public String getLocaleAsString(ConceptDescription instance) {
 		if (instance.getLocale() == null)
 			return "";
-		
+
 		return instance.getLocale().toString();
 	}
 }

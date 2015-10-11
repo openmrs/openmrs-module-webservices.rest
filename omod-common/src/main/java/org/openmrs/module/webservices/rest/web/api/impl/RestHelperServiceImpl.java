@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
@@ -28,9 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHelperService {
 	
-	SessionFactory sessionFactory;
+	DbSessionFactory sessionFactory;
 	
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	

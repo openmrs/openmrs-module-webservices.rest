@@ -40,14 +40,17 @@ import org.openmrs.util.OpenmrsClassLoader;
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "attribute", supportedClass = PersonAttribute.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttribute, Person, PersonResource1_8> {
+@SubResource(parent = PersonResource1_8.class, path = "attribute", order = 200, supportedClass = PersonAttribute.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PersonAttributeResource1_8 extends
+		DelegatingSubResource<PersonAttribute, Person, PersonResource1_8> {
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -56,7 +59,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -73,6 +77,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return null;
 	}
 
+	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("value");
@@ -81,36 +86,41 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return description;
 	}
 
-    /*
-        We may need to hydrate Attributables in the request. To do that we need to know
-        its type. So we can't set hydratedObject until attributeType has been set.
-        Since SimpleObject is a LinkedHashMap, it is ordered, and the following method is
-        overridden to ensure hydratedObject will appear last in the properties.
-     */
-    @Override
-    public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
-        uglyMethodToEnsureHydratedObjectWillBeSetLast(post);
-        return super.create(parentUniqueId, post, context);
-    }
+	/*
+	 * We may need to hydrate Attributables in the request. To do that we need
+	 * to know its type. So we can't set hydratedObject until attributeType has
+	 * been set. Since SimpleObject is a LinkedHashMap, it is ordered, and the
+	 * following method is overridden to ensure hydratedObject will appear last
+	 * in the properties.
+	 */
+	@Override
+	public Object create(String parentUniqueId, SimpleObject post,
+			RequestContext context) throws ResponseException {
+		uglyMethodToEnsureHydratedObjectWillBeSetLast(post);
+		return super.create(parentUniqueId, post, context);
+	}
 
-    private void uglyMethodToEnsureHydratedObjectWillBeSetLast(SimpleObject post) {
-        Object hydratedObject = post.get("hydratedObject");
-        if (hydratedObject != null) {
-            post.remove("hydratedObject");
-            post.put("hydratedObject", hydratedObject);
-        }
-    }
+	private void uglyMethodToEnsureHydratedObjectWillBeSetLast(SimpleObject post) {
+		Object hydratedObject = post.get("hydratedObject");
+		if (hydratedObject != null) {
+			post.remove("hydratedObject");
+			post.put("hydratedObject", hydratedObject);
+		}
+	}
 
-    @PropertySetter("hydratedObject")
-    public void setHydratedObject(PersonAttribute personAttribute, String attributableUuid) {
-        try {
-            Class<?> attributableClass = OpenmrsClassLoader.getInstance().loadClass(personAttribute.getAttributeType().getFormat());
-            Attributable value = (Attributable) ConversionUtil.convert(attributableUuid, attributableClass);
-            personAttribute.setValue(value.serialize());
-        } catch (ClassNotFoundException e) {
-            throw new APIException("Could not convert value to Attributable", e);
-        }
-    }
+	@PropertySetter("hydratedObject")
+	public void setHydratedObject(PersonAttribute personAttribute,
+			String attributableUuid) {
+		try {
+			Class<?> attributableClass = OpenmrsClassLoader.getInstance()
+					.loadClass(personAttribute.getAttributeType().getFormat());
+			Attributable value = (Attributable) ConversionUtil.convert(
+					attributableUuid, attributableClass);
+			personAttribute.setValue(value.serialize());
+		} catch (ClassNotFoundException e) {
+			throw new APIException("Could not convert value to Attributable", e);
+		}
+	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
@@ -145,17 +155,19 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		instance.setPerson(person);
 	}
 
-    /**
-     * Sets the attribute type for a person attribute.
-     *
-     * @param instance
-     * @param attributeType
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     */
-    @PropertySetter("attributeType")
-    public void setAttributeType(PersonAttribute instance, PersonAttributeType attributeType) {
-        instance.setAttributeType(Context.getPersonService().getPersonAttributeTypeByUuid(attributeType.getUuid()));
-    }
+	/**
+	 * Sets the attribute type for a person attribute.
+	 *
+	 * @param instance
+	 * @param attributeType
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 */
+	@PropertySetter("attributeType")
+	public void setAttributeType(PersonAttribute instance,
+			PersonAttributeType attributeType) {
+		instance.setAttributeType(Context.getPersonService()
+				.getPersonAttributeTypeByUuid(attributeType.getUuid()));
+	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
@@ -170,8 +182,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<PersonAttribute> doGetAll(Person parent, RequestContext context) throws ResponseException {
-		return new NeedsPaging<PersonAttribute>(parent.getActiveAttributes(), context);
+	public NeedsPaging<PersonAttribute> doGetAll(Person parent,
+			RequestContext context) throws ResponseException {
+		return new NeedsPaging<PersonAttribute>(parent.getActiveAttributes(),
+				context);
 	}
 
 	/**
@@ -197,10 +211,12 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(PersonAttribute delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(PersonAttribute delegate, String reason,
+			RequestContext context) throws ResponseException {
 		delegate.voidAttribute(reason);
 		Context.getPersonService().savePerson(delegate.getPerson());
 	}
@@ -210,7 +226,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(PersonAttribute delegate, RequestContext context) throws ResponseException {
+	public void purge(PersonAttribute delegate, RequestContext context)
+			throws ResponseException {
 		delegate.getPerson().removeAttribute(delegate);
 		Context.getPersonService().savePerson(delegate.getPerson());
 	}
@@ -218,24 +235,28 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	/**
 	 * Gets the display string for a person attribute.
 	 *
-	 * @param pa the person attribute.
+	 * @param pa
+	 *            the person attribute.
 	 * @return attribute type + value (for concise display purposes)
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonAttribute pa) {
 		if (pa.getAttributeType() == null)
 			return "";
-        if (Concept.class.getName().equals(pa.getAttributeType().getFormat()) && pa.getValue() != null) {
-            Concept concept = Context.getConceptService().getConcept(pa.getValue());
-            return concept == null ? null : concept.getDisplayString();
-        }
-        return pa.getAttributeType().getName() + " = " + pa.getValue();
-    }
+		if (Concept.class.getName().equals(pa.getAttributeType().getFormat())
+				&& pa.getValue() != null) {
+			Concept concept = Context.getConceptService().getConcept(
+					pa.getValue());
+			return concept == null ? null : concept.getDisplayString();
+		}
+		return pa.getAttributeType().getName() + " = " + pa.getValue();
+	}
 
 	/**
 	 * Gets the hydrated object of person attribute.
 	 *
-	 * @param pa the person attribute.
+	 * @param pa
+	 *            the person attribute.
 	 * @return an object containing the hydrated object.
 	 */
 	@PropertyGetter("value")
@@ -245,7 +266,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			return null;
 		}
 
-		return ConversionUtil.convertToRepresentation(value, Representation.REF);
+		return ConversionUtil
+				.convertToRepresentation(value, Representation.REF);
 	}
 
 }

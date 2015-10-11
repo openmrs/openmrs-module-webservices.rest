@@ -50,21 +50,22 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Obs, supporting standard CRUD operations
+ * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Obs,
+ * supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 100, supportedClass = Obs.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class ObsResource1_9 extends ObsResource1_8 {
 
-    /**
-     * Annotated setter for Concept
-     *
-     * @param obs
-     * @param value
-     */
-    @PropertySetter("concept")
-    public static void setConcept(Obs obs, Object value) {
-        obs.setConcept(new ConceptResource1_9().getByUniqueId((String) value));
-    }
-
+	/**
+	 * Annotated setter for Concept
+	 *
+	 * @param obs
+	 * @param value
+	 */
+	@PropertySetter("concept")
+	public static void setConcept(Obs obs, Object value) {
+		obs.setConcept(new ConceptResource1_9().getByUniqueId((String) value));
+	}
 
 }

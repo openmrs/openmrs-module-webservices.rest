@@ -36,12 +36,13 @@
 		<module>omod-1.9</module>
 		<module>omod-1.10</module>
 		<module>omod-1.11</module>
+		<module>omod-2.0</module>
 		<module>omod</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>1.8.4</openmrs.version>
+		<openmrs.version>2.0.0-SNAPSHOT</openmrs.version>
 
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
@@ -307,6 +308,7 @@
 				<plugin>
 					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 					<artifactId>maven-java-formatter-plugin</artifactId>
+					<version>0.3</version>
 					<configuration>
 						<compilerSource>${javaCompilerVersion}</compilerSource>
 						<compilerCompliance>${javaCompilerVersion}</compilerCompliance>

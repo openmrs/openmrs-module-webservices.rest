@@ -385,7 +385,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * 
 	 * return simpleObject; }
 	 */
-	
+
 	/*
 	 * Used by code commented out above. Ready for possible deletion.
 	 * 
@@ -414,7 +414,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * return null; // throw new NoSuchMethodException("No method on class " + c
 	 * + // " with name " + name + " with param " + param); }
 	 */
-	
+
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
 	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>

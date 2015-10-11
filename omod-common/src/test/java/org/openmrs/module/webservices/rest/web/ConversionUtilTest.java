@@ -160,22 +160,22 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		ChildGenericType_Temp t = new ChildGenericType_Temp();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(ChildGenericType_Int.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(ChildGenericType_Int.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(s, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(ChildGenericType_String.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildGenericType_String.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(String.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(t, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(ChildGenericType_Temp.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildGenericType_Temp.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Temp.class, type);
@@ -191,15 +191,15 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		GreatGrandchildGenericType_Int i2 = new GreatGrandchildGenericType_Int();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "value").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(GrandchildGenericType_Int.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(GrandchildGenericType_Int.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i2, "value").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(GreatGrandchildGenericType_Int.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(GreatGrandchildGenericType_Int.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
@@ -228,22 +228,22 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		ChildMultiGenericType i = new ChildMultiGenericType();
 		
 		Method setter = PropertyUtils.getPropertyDescriptor(i, "first").getWriteMethod();
-		Type type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		Type type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Integer.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i, "second").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(String.class, type);
 		
 		setter = PropertyUtils.getPropertyDescriptor(i, "third").getWriteMethod();
-		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class,
-		    (TypeVariable<?>) setter.getGenericParameterTypes()[0]);
+		type = ConversionUtil.getTypeVariableClass(ChildMultiGenericType.class, (TypeVariable<?>) setter
+		        .getGenericParameterTypes()[0]);
 		
 		Assert.assertNotNull(type);
 		Assert.assertEquals(Temp.class, type);

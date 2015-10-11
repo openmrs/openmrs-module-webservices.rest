@@ -33,23 +33,26 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {"1.8.*"})
+@Resource(name = RestConstants.VERSION_1 + "/allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = { "1.9.*" }, order = 200)
 public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			DelegatingResourceDescription description = super
+					.getRepresentationDescription(rep);
 			description.addProperty("allergyType");
 			description.addProperty("reaction", Representation.REF);
 			description.addProperty("severity");
 			description.addProperty("allergen", Representation.REF);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			DelegatingResourceDescription description = super
+					.getRepresentationDescription(rep);
 			description.addProperty("allergyType");
 			description.addProperty("reaction", Representation.DEFAULT);
 			description.addProperty("severity");
@@ -58,7 +61,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -66,21 +69,22 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	public Allergy newDelegate() {
 		return new Allergy();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addRequiredProperty("allergyType");
 		description.addRequiredProperty("allergen");
 		description.addProperty("reaction");
 		description.addProperty("severity");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * Display string for allergy
 	 * 
@@ -91,10 +95,10 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	public String getDisplayString(Allergy allergy) {
 		if (allergy.getAllergen() == null)
 			return "";
-		
+
 		return allergy.getAllergen().getName().toString();
 	}
-	
+
 	/**
 	 * Annotated setter for allergen
 	 *
@@ -103,12 +107,14 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	 */
 	@PropertySetter("allergen")
 	public static void setAllergen(Allergy allergy, Object value) {
-		allergy.setAllergen(Context.getConceptService().getConceptByUuid((String) value));
+		allergy.setAllergen(Context.getConceptService().getConceptByUuid(
+				(String) value));
 	}
 
 	/**
-	 * Gets allergies for a given patient (paged according to context if necessary) only if a
-	 * patient parameter exists in the request set on the {@link RequestContext}
+	 * Gets allergies for a given patient (paged according to context if
+	 * necessary) only if a patient parameter exists in the request set on the
+	 * {@link RequestContext}
 	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
@@ -117,16 +123,19 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+			Patient patient = ((PatientResource1_8) Context.getService(
+					RestService.class).getResourceBySupportedClass(
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
-			
-			return new NeedsPaging<Allergy>(Context.getPatientService().getAllergies(patient), context);
+
+			return new NeedsPaging<Allergy>(Context.getPatientService()
+					.getAllergies(patient), context);
 		}
-		
-		//currently this is not supported since the superclass throws an exception
+
+		// currently this is not supported since the superclass throws an
+		// exception
 		return super.doSearch(context);
 	}
-	
+
 }

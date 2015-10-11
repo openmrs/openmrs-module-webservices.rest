@@ -113,7 +113,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * or {@link #getSubclassHandler(String)}. It finds all subclass handlers intended for this
 	 * resource, and registers them.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings( { "unchecked", "rawtypes" })
 	public void init() {
 		List<DelegatingSubclassHandler<T, ? extends T>> tmpSubclassHandlers = new ArrayList<DelegatingSubclassHandler<T, ? extends T>>();
 		
@@ -142,9 +142,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 						}
 					}
 				} else {
-					log.warn("SubclassHandler "
-					        + handlerClass.getName()
-					        + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass.");
+					log
+					        .warn("SubclassHandler "
+					                + handlerClass.getName()
+					                + " does not have a @SubClassHandler annotation. This can cause conflicts in resolving handlers for your subclass.");
 				}
 			}
 		}
@@ -614,8 +615,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		}
 		
 		// If any non-settable properties remain after the above logic, fail
-		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertiesToSet.keySet(),
-		    allowedProperties.keySet());
+		Collection<String> notAllowedProperties = CollectionUtils.subtract(propertiesToSet.keySet(), allowedProperties
+		        .keySet());
 		// Do allow posting back an unchanged value to an unchangeable property
 		for (Iterator<String> iterator = notAllowedProperties.iterator(); iterator.hasNext();) {
 			String property = iterator.next();

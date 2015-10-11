@@ -27,13 +27,15 @@ import java.util.regex.Pattern;
 /**
  * Allows standard CRUD for the {@link VisitAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/visitattributetype", supportedClass = VisitAttributeType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<VisitAttributeType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/visitattributetype", order = 100, supportedClass = VisitAttributeType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class VisitAttributeTypeResource1_9 extends
+		BaseAttributeTypeCrudResource1_9<VisitAttributeType> {
+
 	private VisitService getService() {
 		return Context.getVisitService();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -41,7 +43,7 @@ public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource
 	public VisitAttributeType newDelegate() {
 		return new VisitAttributeType();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -49,24 +51,28 @@ public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource
 	public VisitAttributeType getByUniqueId(String uniqueId) {
 		return getService().getVisitAttributeTypeByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<VisitAttributeType> doGetAll(RequestContext context) throws ResponseException {
+	protected NeedsPaging<VisitAttributeType> doGetAll(RequestContext context)
+			throws ResponseException {
 		if (context.getIncludeAll())
-			return new NeedsPaging<VisitAttributeType>(getService().getAllVisitAttributeTypes(), context);
-		
-		List<VisitAttributeType> vats = getService().getAllVisitAttributeTypes();
-		for (Iterator<VisitAttributeType> iterator = vats.iterator(); iterator.hasNext();) {
+			return new NeedsPaging<VisitAttributeType>(getService()
+					.getAllVisitAttributeTypes(), context);
+
+		List<VisitAttributeType> vats = getService()
+				.getAllVisitAttributeTypes();
+		for (Iterator<VisitAttributeType> iterator = vats.iterator(); iterator
+				.hasNext();) {
 			VisitAttributeType visitAttributeType = iterator.next();
 			if (visitAttributeType.isRetired())
 				iterator.remove();
 		}
 		return new NeedsPaging<VisitAttributeType>(vats, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -74,29 +80,35 @@ public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource
 	public VisitAttributeType save(VisitAttributeType delegate) {
 		return getService().saveVisitAttributeType(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(VisitAttributeType delegate, RequestContext context) throws ResponseException {
+	public void purge(VisitAttributeType delegate, RequestContext context)
+			throws ResponseException {
 		getService().purgeVisitAttributeType(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<VisitAttributeType> doSearch(RequestContext context) {
 		// TODO: Should be a VisitAttributeType search method in VisitService
-		List<VisitAttributeType> vats = getService().getAllVisitAttributeTypes();
-		for (Iterator<VisitAttributeType> iterator = vats.iterator(); iterator.hasNext();) {
+		List<VisitAttributeType> vats = getService()
+				.getAllVisitAttributeTypes();
+		for (Iterator<VisitAttributeType> iterator = vats.iterator(); iterator
+				.hasNext();) {
 			VisitAttributeType visitAttributeType = iterator.next();
-			//find matches excluding retired ones if necessary
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
-			        .matcher(visitAttributeType.getName()).find()
-			        || (!context.getIncludeAll() && visitAttributeType.isRetired())) {
+			// find matches excluding retired ones if necessary
+			if (!Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE)
+					.matcher(visitAttributeType.getName()).find()
+					|| (!context.getIncludeAll() && visitAttributeType
+							.isRetired())) {
 				iterator.remove();
 			}
 		}
