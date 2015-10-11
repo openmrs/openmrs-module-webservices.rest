@@ -35,11 +35,14 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Sub-resource for patient identifiers
  */
-@SubResource(parent = PatientResource1_8.class, path = "identifier", supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientIdentifier, Patient, PatientResource1_8> {
-	
+@SubResource(parent = PatientResource1_8.class, path = "identifier", order = 200, supportedClass = PatientIdentifier.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PatientIdentifierResource1_8 extends
+		DelegatingSubResource<PatientIdentifier, Patient, PatientResource1_8> {
+
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -50,7 +53,8 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 			description.addProperty("preferred");
 			description.addProperty("voided");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -67,7 +71,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -81,36 +85,40 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		return description;
 	}
 
-    /**
-     * Sets the identifier type for a patient identifier.
-     *
-     * @param instance
-     * @param identifierType
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     */
-    @PropertySetter("identifierType")
-    public void setIdentifierType(PatientIdentifier instance, PatientIdentifierType identifierType) {
-        String uuid = identifierType.getUuid();
-        String name = identifierType.getName();
-        if (name != null && !name.isEmpty()) {
-            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByName(name));
-        } else if (uuid != null && !uuid.isEmpty()) {
-            instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByUuid(uuid));
-        }
-    }
+	/**
+	 * Sets the identifier type for a patient identifier.
+	 *
+	 * @param instance
+	 * @param identifierType
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 */
+	@PropertySetter("identifierType")
+	public void setIdentifierType(PatientIdentifier instance,
+			PatientIdentifierType identifierType) {
+		String uuid = identifierType.getUuid();
+		String name = identifierType.getName();
+		if (name != null && !name.isEmpty()) {
+			instance.setIdentifierType(Context.getPatientService()
+					.getPatientIdentifierTypeByName(name));
+		} else if (uuid != null && !uuid.isEmpty()) {
+			instance.setIdentifierType(Context.getPatientService()
+					.getPatientIdentifierTypeByUuid(uuid));
+		}
+	}
 
-    /**
-     * Sets the location for a patient identifier.
-     *
-     * @param instance
-     * @param location
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     */
-    @PropertySetter("location")
-    public void setLocation(PatientIdentifier instance, Location location) {
-        instance.setLocation(Context.getLocationService().getLocationByUuid(location.getUuid()));
-    }
-    
+	/**
+	 * Sets the location for a patient identifier.
+	 *
+	 * @param instance
+	 * @param location
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 */
+	@PropertySetter("location")
+	public void setLocation(PatientIdentifier instance, Location location) {
+		instance.setLocation(Context.getLocationService().getLocationByUuid(
+				location.getUuid()));
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -118,11 +126,11 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	private PatientService service() {
 		return Context.getPatientService();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -130,7 +138,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public Patient getParent(PatientIdentifier instance) {
 		return instance.getPatient();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -139,7 +147,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public void setParent(PatientIdentifier instance, Patient patient) {
 		instance.setPatient(patient);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -147,7 +155,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public PatientIdentifier getByUniqueId(String uniqueId) {
 		return service().getPatientIdentifierByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -155,7 +163,8 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public PatientIdentifier save(PatientIdentifier delegate) {
 		// make sure it has already been added to the patient
 		boolean needToAdd = true;
-		for (PatientIdentifier pi : delegate.getPatient().getActiveIdentifiers()) {
+		for (PatientIdentifier pi : delegate.getPatient()
+				.getActiveIdentifiers()) {
 			if (pi.equals(delegate)) {
 				needToAdd = false;
 				break;
@@ -165,33 +174,37 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 			delegate.getPatient().addIdentifier(delegate);
 		return service().savePatientIdentifier(delegate);
 	}
-	
+
 	@Override
 	public PatientIdentifier newDelegate() {
 		return new PatientIdentifier();
 	}
-	
+
 	@Override
-	protected void delete(PatientIdentifier delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(PatientIdentifier delegate, String reason,
+			RequestContext context) throws ResponseException {
 		service().voidPatientIdentifier(delegate, reason);
 	}
-	
+
 	@Override
-	public void purge(PatientIdentifier delegate, RequestContext context) throws ResponseException {
+	public void purge(PatientIdentifier delegate, RequestContext context)
+			throws ResponseException {
 		Patient patient = delegate.getPatient();
 		patient.removeIdentifier(delegate);
 		service().savePatient(patient);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
-		return new NeedsPaging<PatientIdentifier>(parent.getActiveIdentifiers(), context);
+	public NeedsPaging<PatientIdentifier> doGetAll(Patient parent,
+			RequestContext context) throws ResponseException {
+		return new NeedsPaging<PatientIdentifier>(
+				parent.getActiveIdentifiers(), context);
 	}
-	
+
 	/**
 	 * @param id
 	 * @return identifier type + identifier (for concise display purposes)
@@ -200,7 +213,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public String getDisplayString(PatientIdentifier id) {
 		if (id.getIdentifierType() == null)
 			return "";
-		
+
 		return id.getIdentifierType().getName() + " = " + id.getIdentifier();
 	}
 }

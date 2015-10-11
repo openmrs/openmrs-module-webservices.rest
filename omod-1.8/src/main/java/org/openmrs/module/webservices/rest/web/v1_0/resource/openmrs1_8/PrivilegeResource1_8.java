@@ -30,20 +30,23 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Privilege, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/privilege", supportedClass = Privilege.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privilege> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/privilege", order = 200, supportedClass = Privilege.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PrivilegeResource1_8 extends
+		MetadataDelegatingCrudResource<Privilege> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Privilege getByUniqueId(String uniqueId) {
-		Privilege privilege = Context.getUserService().getPrivilegeByUuid(uniqueId);
+		Privilege privilege = Context.getUserService().getPrivilegeByUuid(
+				uniqueId);
 		if (privilege == null)
 			privilege = Context.getUserService().getPrivilege(uniqueId);
 		return privilege;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -51,7 +54,7 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	public Privilege newDelegate() {
 		return new Privilege();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
@@ -59,40 +62,43 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	public Privilege save(Privilege delegate) {
 		return Context.getUserService().savePrivilege(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Privilege delegate, RequestContext context) throws ResponseException {
+	public void purge(Privilege delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getUserService().purgePrivilege(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
-		// you aren't allowed to edit the name of an existing privilege, since that is its PK.
+		// you aren't allowed to edit the name of an existing privilege, since
+		// that is its PK.
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -100,12 +106,12 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
-		
+
 		description.addProperty("description");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @param delegate
 	 * @return
@@ -114,7 +120,7 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	public static String getPrivilegeName(Privilege delegate) {
 		return delegate.getPrivilege();
 	}
-	
+
 	/**
 	 * @param delegate
 	 * @param name
@@ -123,24 +129,27 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	public static void setPrivilegeName(Privilege delegate, String name) {
 		delegate.setPrivilege(name);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */
 	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(Privilege delegate) {
-		// TODO figure out how to delegate to the superclass method to handler message-based i18n
+		// TODO figure out how to delegate to the superclass method to handler
+		// message-based i18n
 		String ret = getPrivilegeName(delegate);
 		return StringUtils.isNotBlank(ret) ? ret : "[No Name]";
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Privilege> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Privilege>(Context.getUserService().getAllPrivileges(), context);
+	protected NeedsPaging<Privilege> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<Privilege>(Context.getUserService()
+				.getAllPrivileges(), context);
 	}
-	
+
 }

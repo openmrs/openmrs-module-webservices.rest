@@ -33,9 +33,9 @@ import java.util.List;
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = { "1.9.*" }, order = 200)
 public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -43,7 +43,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	public Drug getByUniqueId(String uniqueId) {
 		return Context.getConceptService().getDrugByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -51,7 +51,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	public Drug newDelegate() {
 		return new Drug();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -59,23 +59,25 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	public Drug save(Drug delegate) {
 		return Context.getConceptService().saveDrug(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Drug delegate, RequestContext context) throws ResponseException {
+	public void purge(Drug delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate == null)
 			return;
 		Context.getConceptService().purgeDrug(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -92,7 +94,8 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			description.addProperty("combination");
 			description.addProperty("route", Representation.REF);
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -113,19 +116,20 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			description.addSelfLink();
 			return description;
 		}
-		//Let the superclass handle this
+		// Let the superclass handle this
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addRequiredProperty("combination");
 		description.addRequiredProperty("concept");
-		
+
 		description.addProperty("name");
 		description.addProperty("doseStrength");
 		description.addProperty("maximumDailyDose");
@@ -133,39 +137,44 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		description.addProperty("units");
 		description.addProperty("dosageForm");
 		description.addProperty("route");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Drug> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(context.getIncludeAll()), context);
+	protected NeedsPaging<Drug> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(
+				context.getIncludeAll()), context);
 	}
 
-    /**
-     * Drug searches support the following query parameters:
-     * <ul>
-     * <li>q=(name): searches drug with name containing the query string
-     * </li>
-     * </ul>
-     *
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
-     */
-    @Override
-    protected PageableResult doSearch(RequestContext ctx) {
-        boolean searchOnPhrase = true;
-        boolean searchDrugConceptNames = false;
-        boolean includeRetired = ctx.getIncludeAll();
-        Integer startIndex = ctx.getStartIndex();
-        Integer limit = ctx.getLimit();
-        String drugName = ctx.getParameter("q");
+	/**
+	 * Drug searches support the following query parameters:
+	 * <ul>
+	 * <li>q=(name): searches drug with name containing the query string</li>
+	 * </ul>
+	 *
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
+	 */
+	@Override
+	protected PageableResult doSearch(RequestContext ctx) {
+		boolean searchOnPhrase = true;
+		boolean searchDrugConceptNames = false;
+		boolean includeRetired = ctx.getIncludeAll();
+		Integer startIndex = ctx.getStartIndex();
+		Integer limit = ctx.getLimit();
+		String drugName = ctx.getParameter("q");
 
-        Integer countOfDrugs = Context.getConceptService().getCountOfDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired);
-        List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired, startIndex, limit);
-        boolean hasMore = countOfDrugs > startIndex + limit;
-        return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
-    }
+		Integer countOfDrugs = Context.getConceptService().getCountOfDrugs(
+				drugName, null, searchOnPhrase, searchDrugConceptNames,
+				includeRetired);
+		List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null,
+				searchOnPhrase, searchDrugConceptNames, includeRetired,
+				startIndex, limit);
+		boolean hasMore = countOfDrugs > startIndex + limit;
+		return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
+	}
 }

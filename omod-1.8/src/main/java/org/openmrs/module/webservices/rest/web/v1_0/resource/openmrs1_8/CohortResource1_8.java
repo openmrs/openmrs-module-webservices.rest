@@ -32,22 +32,25 @@ import java.util.List;
 /**
  * {@link Resource} for Cohorts, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
 public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(Cohort cohort, String reason, RequestContext context) throws ResponseException {
+	protected void delete(Cohort cohort, String reason, RequestContext context)
+			throws ResponseException {
 		if (cohort.isVoided()) {
 			// http operation DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getCohortService().voidCohort(cohort, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -58,12 +61,13 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 			return Context.getCohortService().getCohort(param);
 		return result;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -73,7 +77,8 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("voided");
 			description.addProperty("memberIds", Representation.REF);
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -89,34 +94,34 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
 		description.addRequiredProperty("memberIds");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -124,20 +129,21 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	public Cohort newDelegate() {
 		return new Cohort();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Cohort cohort, RequestContext context) throws ResponseException {
+	public void purge(Cohort cohort, RequestContext context)
+			throws ResponseException {
 		if (cohort == null) {
 			// http operation DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getCohortService().purgeCohort(cohort);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -145,7 +151,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	public Cohort save(Cohort cohort) {
 		return Context.getCohortService().saveCohort(cohort);
 	}
-	
+
 	/**
 	 * @param cohort
 	 * @return cohort's name
@@ -154,22 +160,25 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	public String getDisplayString(Cohort cohort) {
 		return cohort.getName();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Cohort> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Cohort>(Context.getCohortService().getAllCohorts(context.getIncludeAll()), context);
+	protected NeedsPaging<Cohort> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<Cohort>(Context.getCohortService()
+				.getAllCohorts(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Cohort> doSearch(RequestContext context) {
-		List<Cohort> cohorts = Context.getCohortService().getCohorts(context.getParameter("q"));
+		List<Cohort> cohorts = Context.getCohortService().getCohorts(
+				context.getParameter("q"));
 		return new NeedsPaging<Cohort>(cohorts, context);
 	}
-	
+
 }

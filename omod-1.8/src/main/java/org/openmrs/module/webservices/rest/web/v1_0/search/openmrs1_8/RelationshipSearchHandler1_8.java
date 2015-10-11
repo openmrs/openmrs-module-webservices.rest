@@ -36,99 +36,131 @@ import java.util.List;
 @Component
 public class RelationshipSearchHandler1_8 implements SearchHandler {
 
-    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/relationship",
-            Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),Arrays.asList(new SearchQuery.Builder(
-            "Allows you to find relationship by person uuid").withRequiredParameters("person").build(), new SearchQuery.Builder(
-            "Allows you to find relationships between two persons by specifying their uuids").withRequiredParameters("person",
-            "relatedPerson").build(), new SearchQuery.Builder(
-            "Allows you to find relationships where person is related to other by type of relationship").withRequiredParameters(
-            "person", "relation").build(), new SearchQuery.Builder(
-            "Allows you to find relationships of personA of given relationship type ").withRequiredParameters("personA", "relation").build(),
-            new SearchQuery.Builder(
-            "Allows you to find relationships between personA and personB").withRequiredParameters("personA", "personB").build(),new SearchQuery.Builder(
-            "Allows you to find relationships between personA and personB given relationship type ").withRequiredParameters("personA","personB", "relation").build(),
-            new SearchQuery.Builder(
-            "Allows you to find relationships of personB of given relationship type").withRequiredParameters("personB", "relation").build()));
+	private final SearchConfig searchConfig = new SearchConfig(
+			"default",
+			RestConstants.VERSION_1 + "/relationship",
+			Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*"),
+			Arrays.asList(
+					new SearchQuery.Builder(
+							"Allows you to find relationship by person uuid")
+							.withRequiredParameters("person").build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships between two persons by specifying their uuids")
+							.withRequiredParameters("person", "relatedPerson")
+							.build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships where person is related to other by type of relationship")
+							.withRequiredParameters("person", "relation")
+							.build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships of personA of given relationship type ")
+							.withRequiredParameters("personA", "relation")
+							.build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships between personA and personB")
+							.withRequiredParameters("personA", "personB")
+							.build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships between personA and personB given relationship type ")
+							.withRequiredParameters("personA", "personB",
+									"relation").build(),
+					new SearchQuery.Builder(
+							"Allows you to find relationships of personB of given relationship type")
+							.withRequiredParameters("personB", "relation")
+							.build()));
 
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
-     */
-    @Override
-    public SearchConfig getSearchConfig() {
-        return searchConfig;
-    }
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
+	 */
+	@Override
+	public SearchConfig getSearchConfig() {
+		return searchConfig;
+	}
 
-    @Override
-    public PageableResult search(RequestContext context) throws ResponseException {
+	@Override
+	public PageableResult search(RequestContext context)
+			throws ResponseException {
 
-        String person=context.getParameter("person");
-        String relatedPerson = context.getParameter("relatedPerson");
-        String relation = context.getParameter("relation");
-        String personA = context.getParameter("personA");
-        String personB = context.getParameter("personB");
-        RelationshipType relationshipType=null;
-        List<Relationship> relationshipList = null;
-        Person personOb=null;
-        Person personAOb=null;
-        Person personBOb=null;
-        Person relatedPersonOb=null;
+		String person = context.getParameter("person");
+		String relatedPerson = context.getParameter("relatedPerson");
+		String relation = context.getParameter("relation");
+		String personA = context.getParameter("personA");
+		String personB = context.getParameter("personB");
+		RelationshipType relationshipType = null;
+		List<Relationship> relationshipList = null;
+		Person personOb = null;
+		Person personAOb = null;
+		Person personBOb = null;
+		Person relatedPersonOb = null;
 
-        PersonService personService=Context.getPersonService();
+		PersonService personService = Context.getPersonService();
 
-        if(person!=null){
-            personOb=personService.getPersonByUuid(person);
-        }
+		if (person != null) {
+			personOb = personService.getPersonByUuid(person);
+		}
 
-        if(personA!=null){
-            personAOb=personService.getPersonByUuid(personA);
-        }
+		if (personA != null) {
+			personAOb = personService.getPersonByUuid(personA);
+		}
 
-        if(personB!=null){
-            personBOb=personService.getPersonByUuid(personB);
-        }
+		if (personB != null) {
+			personBOb = personService.getPersonByUuid(personB);
+		}
 
-        if(relatedPerson!=null){
-            relatedPersonOb=personService.getPersonByUuid(relatedPerson);
-        }
+		if (relatedPerson != null) {
+			relatedPersonOb = personService.getPersonByUuid(relatedPerson);
+		}
 
-        if(relation!=null){
-            if(personService.getRelationshipTypeByUuid(relation)!=null){
-                relationshipType = personService.getRelationshipTypeByUuid(relation);
-            } else {
-                List<RelationshipType> relationshipTypes=personService.getAllRelationshipTypes();
-                for(RelationshipType temp:relationshipTypes) {
-                    if(temp.getbIsToA().equalsIgnoreCase(relation) || temp.getaIsToB().equalsIgnoreCase(relation)) {
-                        relationshipType=temp;
-                        break;
-                    }
-                }
-            }
-        }
+		if (relation != null) {
+			if (personService.getRelationshipTypeByUuid(relation) != null) {
+				relationshipType = personService
+						.getRelationshipTypeByUuid(relation);
+			} else {
+				List<RelationshipType> relationshipTypes = personService
+						.getAllRelationshipTypes();
+				for (RelationshipType temp : relationshipTypes) {
+					if (temp.getbIsToA().equalsIgnoreCase(relation)
+							|| temp.getaIsToB().equalsIgnoreCase(relation)) {
+						relationshipType = temp;
+						break;
+					}
+				}
+			}
+		}
 
-        List<Relationship> tempList;
-        if(personOb!=null && relatedPersonOb!=null){
-            tempList=personService.getRelationships(personOb,relatedPersonOb,null);
-            tempList.addAll(personService.getRelationships(relatedPersonOb, personOb, null));
-            relationshipList=tempList;
-        } else if(personOb!=null && relationshipType!=null) {
-            tempList=personService.getRelationships(personOb,null,relationshipType);
-            tempList.addAll(personService.getRelationships(null, personOb, relationshipType));
-             relationshipList=tempList;
-        } else if(personOb!=null) {
-            relationshipList=personService.getRelationshipsByPerson(personOb);
-        } else if(personAOb!=null && personBOb!=null && relationshipType!=null) {
-            relationshipList=personService.getRelationships(personAOb,personBOb,relationshipType);
-        } else if(personAOb!=null && personBOb!=null) {
-            relationshipList=personService.getRelationships(personAOb,personBOb,null);
-        } else if(personAOb!=null && relationshipType!=null) {
-            relationshipList=personService.getRelationships(personAOb,null,relationshipType);
-        } else if(personBOb!=null && relationshipType!=null) {
-            relationshipList=personService.getRelationships(null,personBOb,relationshipType);
-        }
+		List<Relationship> tempList;
+		if (personOb != null && relatedPersonOb != null) {
+			tempList = personService.getRelationships(personOb,
+					relatedPersonOb, null);
+			tempList.addAll(personService.getRelationships(relatedPersonOb,
+					personOb, null));
+			relationshipList = tempList;
+		} else if (personOb != null && relationshipType != null) {
+			tempList = personService.getRelationships(personOb, null,
+					relationshipType);
+			tempList.addAll(personService.getRelationships(null, personOb,
+					relationshipType));
+			relationshipList = tempList;
+		} else if (personOb != null) {
+			relationshipList = personService.getRelationshipsByPerson(personOb);
+		} else if (personAOb != null && personBOb != null
+				&& relationshipType != null) {
+			relationshipList = personService.getRelationships(personAOb,
+					personBOb, relationshipType);
+		} else if (personAOb != null && personBOb != null) {
+			relationshipList = personService.getRelationships(personAOb,
+					personBOb, null);
+		} else if (personAOb != null && relationshipType != null) {
+			relationshipList = personService.getRelationships(personAOb, null,
+					relationshipType);
+		} else if (personBOb != null && relationshipType != null) {
+			relationshipList = personService.getRelationships(null, personBOb,
+					relationshipType);
+		}
 
-        if(relationshipList==null){
-            return new EmptySearchResult();
-        }
-        return new NeedsPaging<Relationship>(relationshipList, context);
-    }
+		if (relationshipList == null) {
+			return new EmptySearchResult();
+		}
+		return new NeedsPaging<Relationship>(relationshipList, context);
+	}
 }

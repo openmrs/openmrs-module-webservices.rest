@@ -48,20 +48,23 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*, 1.10.*", "1.11.*", "1.12.*"})
-public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/user", order = 200, supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
+		"1.9.*, 1.10.*", "1.11.*", "1.12.*" })
+public class UserResource1_8 extends
+		MetadataDelegatingCrudResource<UserAndPassword1_8> {
+
 	/**
-	 * The name of the parameter that can be used to restrict a search to roles. 
+	 * The name of the parameter that can be used to restrict a search to roles.
 	 */
 	static final String PARAMETER_ROLES = "roles";
-	
+
 	public UserResource1_8() {
-		
+
 	}
-	
+
 	@RepHandler(RefRepresentation.class)
-	public SimpleObject asRef(UserAndPassword1_8 delegate) throws ConversionException {
+	public SimpleObject asRef(UserAndPassword1_8 delegate)
+			throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("display");
@@ -71,12 +74,13 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -89,7 +93,8 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			description.addProperty("roles", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -111,7 +116,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -121,16 +126,16 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		description.addRequiredProperty("username");
 		description.addRequiredProperty("password");
 		description.addRequiredProperty("person");
-		
+
 		description.addProperty("systemId");
 		description.addProperty("userProperties");
 		description.addProperty("roles");
 		description.addProperty("proficientLocales");
 		description.addProperty("secretQuestion");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -138,7 +143,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	public UserAndPassword1_8 newDelegate() {
 		return new UserAndPassword1_8();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -146,76 +151,89 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	public UserAndPassword1_8 save(UserAndPassword1_8 user) {
 		User openmrsUser = new User();
 		String password = user.getPassword();
-		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
+		openmrsUser = Context.getUserService().saveUser(user.getUser(),
+				password);
 		return new UserAndPassword1_8(openmrsUser);
-		
+
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public UserAndPassword1_8 getByUniqueId(String uuid) {
-		return new UserAndPassword1_8(Context.getUserService().getUserByUuid(uuid));
+		return new UserAndPassword1_8(Context.getUserService().getUserByUuid(
+				uuid));
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(UserAndPassword1_8 user, String reason, RequestContext context) throws ResponseException {
+	public void delete(UserAndPassword1_8 user, String reason,
+			RequestContext context) throws ResponseException {
 		if (user.isRetired()) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getUserService().retireUser(Context.getUserService().getUser(user.getId()), reason);
+		Context.getUserService().retireUser(
+				Context.getUserService().getUser(user.getId()), reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(UserAndPassword1_8 user, RequestContext context) throws ResponseException {
+	public void purge(UserAndPassword1_8 user, RequestContext context)
+			throws ResponseException {
 		if (user == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getUserService().purgeUser(user.getUser());
 	}
-	
+
 	/**
-	 * @param context A {@link RequestContext} that can contain two parameter values: 'q' for the user name and 'roles' for the role restriction.
-	 * 		If a user name is given, users with a user name beginning with this string will be returned (prefix search).
-	 * 		If no user name is given, the search will not be restricted to specific user names.
+	 * @param context
+	 *            A {@link RequestContext} that can contain two parameter
+	 *            values: 'q' for the user name and 'roles' for the role
+	 *            restriction. If a user name is given, users with a user name
+	 *            beginning with this string will be returned (prefix search).
+	 *            If no user name is given, the search will not be restricted to
+	 *            specific user names.
 	 * 
-	 * 		The roles have to be given as a comma separated string. If multiple roles are given, the users having at least one of the roles will be returned.
-	 * 		A role may be specified either by its UUID or by its display name.
-	 * 		If no role parameter is given, the search will not be restricted to roles.
-	 *  		
+	 *            The roles have to be given as a comma separated string. If
+	 *            multiple roles are given, the users having at least one of the
+	 *            roles will be returned. A role may be specified either by its
+	 *            UUID or by its display name. If no role parameter is given,
+	 *            the search will not be restricted to roles.
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<UserAndPassword1_8> doSearch(RequestContext context) {
-		// determine roles 
+		// determine roles
 		List<Role> foundRoles = null;
-		final String requestedRolesParameter = context.getParameter(PARAMETER_ROLES);
+		final String requestedRolesParameter = context
+				.getParameter(PARAMETER_ROLES);
 		if (requestedRolesParameter != null) {
 			foundRoles = getRequestedRoles(requestedRolesParameter);
 		}
-		
+
 		// forward query
 		final List<User> users;
-		if (isNoRequestedRoleFound(foundRoles))
-		{
+		if (isNoRequestedRoleFound(foundRoles)) {
 			// for an empty role list there shall be no results
 			users = Collections.emptyList();
-		}
-		else
-		{
-			// Note: a null value for roles is interpreted as 'no restriction to roles'
-			users = Context.getUserService().getUsers(context.getParameter("q"), foundRoles, context.getIncludeAll());
+		} else {
+			// Note: a null value for roles is interpreted as 'no restriction to
+			// roles'
+			users = Context.getUserService().getUsers(
+					context.getParameter("q"), foundRoles,
+					context.getIncludeAll());
 		}
 
 		// convert to UserAndPassword class
@@ -223,31 +241,35 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		for (User user : users) {
 			usersResult.add(new UserAndPassword1_8(user));
 		}
-		
+
 		return new NeedsPaging<UserAndPassword1_8>(usersResult, context);
 	}
 
 	private boolean isNoRequestedRoleFound(List<Role> roles) {
-	    return roles != null && roles.isEmpty();
-    }
-	
+		return roles != null && roles.isEmpty();
+	}
+
 	/**
-	 * @param rolesParameter A comma separated list of role names or role UUIDs. May not be null. 
-	 * @return A non-null list of existing {@link Role}s that may be empty, if no valid roles are found.
+	 * @param rolesParameter
+	 *            A comma separated list of role names or role UUIDs. May not be
+	 *            null.
+	 * @return A non-null list of existing {@link Role}s that may be empty, if
+	 *         no valid roles are found.
 	 */
 	private List<Role> getRequestedRoles(final String rolesParameter) {
 		final List<Role> result = new ArrayList<Role>();
-		
-		final List<String> roleStrings = Arrays.asList(StringUtils.split(rolesParameter, ","));
+
+		final List<String> roleStrings = Arrays.asList(StringUtils.split(
+				rolesParameter, ","));
 		for (String roleString : roleStrings) {
 			// try with uuid
 			Role role = Context.getUserService().getRoleByUuid(roleString);
-			
+
 			// try with display name
 			if (role == null) {
 				role = Context.getUserService().getRole(roleString);
 			}
-			
+
 			// add if found
 			if (role != null) {
 				result.add(role);
@@ -257,8 +279,8 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	}
 
 	/**
-	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
-	 * UserAndPassword instead of UserAndPassword itself
+	 * Overrides BaseDelegatingResource getProperty method to get properties
+	 * from User property of UserAndPassword instead of UserAndPassword itself
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
 	 *      java.lang.String, java.lang.Object)
@@ -267,27 +289,30 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 * @throws ConversionException
 	 */
 	@Override
-	public Object getProperty(UserAndPassword1_8 instance, String propertyName) throws ConversionException {
+	public Object getProperty(UserAndPassword1_8 instance, String propertyName)
+			throws ConversionException {
 		try {
 			if (propertyName.equals("password")) {
 				return instance.getPassword();
 			} else {
 				// try to find a @PropertyGetter-annotated method
-				Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(this, propertyName);
+				Method annotatedGetter = ReflectionUtil
+						.findPropertyGetterMethod(this, propertyName);
 				if (annotatedGetter != null) {
 					return annotatedGetter.invoke(this, instance);
 				}
-				return PropertyUtils.getProperty(instance.getUser(), propertyName);
+				return PropertyUtils.getProperty(instance.getUser(),
+						propertyName);
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-	
+
 	/**
-	 * Overrides BaseDelegatingResource setProperty method to allow properties to be set on User
-	 * property of UserAndPassword instead of UserAndPassword itself
+	 * Overrides BaseDelegatingResource setProperty method to allow properties
+	 * to be set on User property of UserAndPassword instead of UserAndPassword
+	 * itself
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setProperty(T,
 	 *      java.lang.String, java.lang.Object)
@@ -297,21 +322,24 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 * @throws ConversionException
 	 */
 	@Override
-	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+	public void setProperty(Object instance, String propertyName, Object value)
+			throws ConversionException {
 		try {
 			UserAndPassword1_8 userAndPassword = (UserAndPassword1_8) instance;
 			if (propertyName.equals("password")) {
-				userAndPassword.setPassword(value != null ? value.toString() : null);
+				userAndPassword.setPassword(value != null ? value.toString()
+						: null);
 			} else {
-				// just treat every other property like a we're on the User object
-				super.setProperty(userAndPassword.getUser(), propertyName, value);
+				// just treat every other property like a we're on the User
+				// object
+				super.setProperty(userAndPassword.getUser(), propertyName,
+						value);
 			}
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new ConversionException(propertyName, ex);
 		}
 	}
-	
+
 	/**
 	 * @param user
 	 * @return roles for user
@@ -322,7 +350,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			return null;
 		return RestUtil.removeRetiredData(user.getUser().getRoles());
 	}
-	
+
 	/**
 	 * @param user
 	 * @return all roles for user
@@ -331,21 +359,29 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	public Set<Role> getAllRoles(UserAndPassword1_8 user) {
 		if (user.getUser().getRoles() == null)
 			return null;
-		return RestUtil.removeRetiredData(user.getUser().getAllRoles()); //Get all active roles, including inherited roles
+		return RestUtil.removeRetiredData(user.getUser().getAllRoles()); // Get
+																			// all
+																			// active
+																			// roles,
+																			// including
+																			// inherited
+																			// roles
 	}
-	
+
 	/**
 	 * @param user
 	 * @return username or systemId (for concise display purposes)
 	 */
+	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(UserAndPassword1_8 user) {
 		StringBuilder ret = new StringBuilder();
 		User u = user.getUser();
-		ret.append(StringUtils.isNotEmpty(u.getUsername()) ? u.getUsername() : u.getSystemId());
+		ret.append(StringUtils.isNotEmpty(u.getUsername()) ? u.getUsername()
+				: u.getSystemId());
 		return ret.toString();
 	}
-	
+
 	/**
 	 * Overridden here since the unique id is not on UserAndPassword directly
 	 * 
@@ -355,28 +391,39 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	protected String getUniqueId(UserAndPassword1_8 delegate) {
 		return delegate.getUser().getUuid();
 	}
-	
+
 	/**
-	 * Overridden here since the auditInfo is not on UserAndPassword directly, but on the User
+	 * Overridden here since the auditInfo is not on UserAndPassword directly,
+	 * but on the User
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getAuditInfo(java.lang.Object)
 	 */
 	@Override
-	public SimpleObject getAuditInfo(UserAndPassword1_8 delegate) throws Exception {
+	public SimpleObject getAuditInfo(UserAndPassword1_8 delegate)
+			throws Exception {
 		User user = delegate.getUser();
 		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(user, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(user.getDateCreated(), Representation.DEFAULT));
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(user,
+				"creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(
+				user.getDateCreated(), Representation.DEFAULT));
 		if (user.isRetired()) {
-			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(user, "retiredBy", Representation.REF));
-			ret.put("dateRetired", ConversionUtil.convertToRepresentation(user.getDateRetired(), Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil.convertToRepresentation(user.getRetireReason(), Representation.DEFAULT));
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(
+					user, "retiredBy", Representation.REF));
+			ret.put("dateRetired",
+					ConversionUtil.convertToRepresentation(
+							user.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason",
+					ConversionUtil.convertToRepresentation(
+							user.getRetireReason(), Representation.DEFAULT));
 		}
-		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(user, "changedBy", Representation.REF));
-		ret.put("dateChanged", ConversionUtil.convertToRepresentation(user.getDateChanged(), Representation.DEFAULT));
+		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(user,
+				"changedBy", Representation.REF));
+		ret.put("dateChanged", ConversionUtil.convertToRepresentation(
+				user.getDateChanged(), Representation.DEFAULT));
 		return ret;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

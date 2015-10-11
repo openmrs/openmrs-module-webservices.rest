@@ -32,14 +32,16 @@ import java.util.List;
 /**
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/field", order = 200, supportedClass = Field.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -54,7 +56,8 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 			description.addProperty("selectMultiple");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -75,24 +78,25 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addRequiredProperty("fieldType");
 		description.addRequiredProperty("selectMultiple");
-		
+
 		description.addProperty("concept");
 		description.addProperty("tableName");
 		description.addProperty("attributeName");
 		description.addProperty("defaultValue");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -100,7 +104,7 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	public Field getByUniqueId(String uniqueId) {
 		return Context.getFormService().getFieldByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -108,7 +112,7 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	public Field newDelegate() {
 		return new Field();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -116,26 +120,29 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	public Field save(Field delegate) {
 		return Context.getFormService().saveField(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Field delegate, RequestContext context) throws ResponseException {
+	public void purge(Field delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate == null)
 			return;
 		Context.getFormService().purgeField(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<Field> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Field>(Context.getFormService().getAllFields(context.getIncludeAll()), context);
+	protected NeedsPaging<Field> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<Field>(Context.getFormService().getAllFields(
+				context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getPropertiesToExposeAsSubResources()
 	 */

@@ -37,9 +37,9 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * Resource for {@link Order} and all of its subclasses
  */
-@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"}, order = 1)
+@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "1.9.*" }, order = 200)
 public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#hasTypesDefined()
 	 */
@@ -47,7 +47,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	public boolean hasTypesDefined() {
 		return true;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -55,7 +55,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	public Order getByUniqueId(String uniqueId) {
 		return Context.getOrderService().getOrderByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -63,7 +63,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	public Order newDelegate() {
 		return new Order();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -71,43 +71,51 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	public Order save(Order delegate) {
 		return Context.getOrderService().saveOrder(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(Order delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(Order delegate, String reason, RequestContext context)
+			throws ResponseException {
 		if (delegate.isVoided()) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
 		Context.getOrderService().voidOrder(delegate, reason);
-		
+
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Order delegate, RequestContext context) throws ResponseException {
+	public void purge(Order delegate, RequestContext context)
+			throws ResponseException {
 		Context.getOrderService().purgeOrder(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
-	 * @should return all Orders (including retired) if context.includeAll is set
+	 * @should return all Orders (including retired) if context.includeAll is
+	 *         set
 	 */
 	@Override
-	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		//ORDER_STATUS.ANY is used to specify that all orders, including voided ones should be retrieved
-		ORDER_STATUS orderStatus = context.getIncludeAll() ? ORDER_STATUS.ANY : null;
-		
-		return new NeedsPaging<Order>(Context.getOrderService().getOrders(Order.class, null, null, orderStatus, null, null,
-		    null), context);
+	protected PageableResult doGetAll(RequestContext context)
+			throws ResponseException {
+		// ORDER_STATUS.ANY is used to specify that all orders, including voided
+		// ones should be retrieved
+		ORDER_STATUS orderStatus = context.getIncludeAll() ? ORDER_STATUS.ANY
+				: null;
+
+		return new NeedsPaging<Order>(Context.getOrderService().getOrders(
+				Order.class, null, null, orderStatus, null, null, null),
+				context);
 	}
-	
+
 	/**
 	 * Display string for {@link Order}
 	 * 
@@ -120,12 +128,13 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			return "[No Concept]";
 		return order.getConcept().getName().getName();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -145,7 +154,8 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			description.addProperty("discontinuedReasonNonCoded");
 			description.addProperty("voided");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -172,7 +182,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -194,42 +204,50 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		d.addProperty("accessionNumber");
 		return d;
 	}
-	
+
 	/**
-	 * Gets orders by given patient (paged according to context if necessary) only if a patient
-	 * parameter exists in the request set on the {@link RequestContext} otherwise
+	 * Gets orders by given patient (paged according to context if necessary)
+	 * only if a patient parameter exists in the request set on the
+	 * {@link RequestContext} otherwise
 	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-	 * @return all orders for a given patient (possibly filtered by context.type)
+	 * @return all orders for a given patient (possibly filtered by
+	 *         context.type)
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+			Patient patient = ((PatientResource1_8) Context.getService(
+					RestService.class).getResourceBySupportedClass(
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
-			
-			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
+
+			// if the user indicated a specific type, try to delegate to the
+			// appropriate subclass handler
 			if (context.getType() != null) {
-				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
-				    "getOrdersByPatient", patient, context);
+				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(
+						context.getType(), "getOrdersByPatient", patient,
+						context);
 				if (ret != null)
 					return ret;
 			}
-			
-			List<Order> orders = Context.getOrderService().getOrdersByPatient(patient);
-			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
+
+			List<Order> orders = Context.getOrderService().getOrdersByPatient(
+					patient);
+			// if the user indicated a specific type, and we couldn't delegate
+			// to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
 			}
 			return new NeedsPaging<Order>(orders, context);
 		}
-		
-		//currently this is not supported since the superclass throws an exception
+
+		// currently this is not supported since the superclass throws an
+		// exception
 		return super.doSearch(context);
 	}
-	
+
 }

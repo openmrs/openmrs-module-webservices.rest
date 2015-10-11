@@ -79,8 +79,8 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(0), "concept/uuid"));
-		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(1), "concept/uuid"));
+		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(1), "concept/uuid"));
+		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(0), "concept/uuid"));
 	}
 	
 	@Test
@@ -101,8 +101,8 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		
 		hits = (List<Object>) result.get("results");
 		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(0), "concept/uuid"));
-		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(1), "concept/uuid"));
+		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(1), "concept/uuid"));
+		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(0), "concept/uuid"));
 	}
 	
 	@Override

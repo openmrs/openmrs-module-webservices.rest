@@ -38,17 +38,19 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderRes
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
- * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
- * , supporting standard CRUD operations
+ * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
+ * {@link org.openmrs.Order} , supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/order", order = 90, supportedClass = Order.class, supportedOpenmrsVersions = {
+		"1.10.*", "1.11.*", "1.12.*" })
 public class OrderResource1_10 extends OrderResource1_8 {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -70,7 +72,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("commentToFulfiller");
 			description.addProperty("display");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -99,7 +102,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -123,7 +126,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		d.addProperty("commentToFulfiller");
 		return d;
 	}
-	
+
 	/**
 	 * Fetches an order by uuid or order number
 	 * 
@@ -137,73 +140,85 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		}
 		return order;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+	protected PageableResult doGetAll(RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+	public DelegatingResourceDescription getUpdatableProperties()
+			throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
-	 * Gets orders by given patient (paged according to context if necessary) only if a patient
-	 * parameter exists in the request set on the {@link RequestContext}, optional careSetting,
-	 * asOfDate request parameters can be specified to filter on
+	 * Gets orders by given patient (paged according to context if necessary)
+	 * only if a patient parameter exists in the request set on the
+	 * {@link RequestContext}, optional careSetting, asOfDate request parameters
+	 * can be specified to filter on
 	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-	 * @return all orders for a given patient (possibly filtered by context.type)
+	 * @return all orders for a given patient (possibly filtered by
+	 *         context.type)
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+			Patient patient = ((PatientResource1_8) Context.getService(
+					RestService.class).getResourceBySupportedClass(
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null) {
 				return new EmptySearchResult();
 			}
-			
-			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
+
+			// if the user indicated a specific type, try to delegate to the
+			// appropriate subclass handler
 			if (context.getType() != null) {
-				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
-				    "getActiveOrders", patient, context);
+				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(
+						context.getType(), "getActiveOrders", patient, context);
 				if (ret != null) {
 					return ret;
 				}
 			}
-			
-			String careSettingUuid = context.getRequest().getParameter("careSetting");
-			String asOfDateString = context.getRequest().getParameter("asOfDate");
+
+			String careSettingUuid = context.getRequest().getParameter(
+					"careSetting");
+			String asOfDateString = context.getRequest().getParameter(
+					"asOfDate");
 			CareSetting careSetting = null;
 			Date asOfDate = null;
 			if (StringUtils.isNotBlank(asOfDateString)) {
-				asOfDate = (Date) ConversionUtil.convert(asOfDateString, Date.class);
+				asOfDate = (Date) ConversionUtil.convert(asOfDateString,
+						Date.class);
 			}
 			if (StringUtils.isNotBlank(careSettingUuid)) {
-				careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
-				    CareSetting.class)).getByUniqueId(careSettingUuid);
+				careSetting = ((CareSettingResource1_10) Context.getService(
+						RestService.class).getResourceBySupportedClass(
+						CareSetting.class)).getByUniqueId(careSettingUuid);
 			}
-			
+
 			String status = context.getRequest().getParameter("status");
-			List<Order> orders = OrderUtil.getOrders(patient, careSetting, null, status, asOfDate, context.getIncludeAll());
-			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
+			List<Order> orders = OrderUtil.getOrders(patient, careSetting,
+					null, status, asOfDate, context.getIncludeAll());
+			// if the user indicated a specific type, and we couldn't delegate
+			// to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
 			}
-			
+
 			return new NeedsPaging<Order>(orders, context);
 		}
-		
+
 		return new EmptySearchResult();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -211,7 +226,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public String getResourceVersion() {
 		return RestConstants1_10.RESOURCE_VERSION;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */

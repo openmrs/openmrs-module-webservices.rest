@@ -36,19 +36,22 @@ import java.util.List;
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddress, Person, PersonResource1_8> {
-	
+@SubResource(parent = PersonResource1_8.class, path = "address", order = 200, supportedClass = PersonAddress.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PersonAddressResource1_8 extends
+		DelegatingSubResource<PersonAddress, Person, PersonResource1_8> {
+
 	public PersonAddressResource1_8() {
 		allowedMissingProperties.add("startDate");
 		allowedMissingProperties.add("endDate");
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -71,7 +74,8 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 			description.addProperty("longitude");
 			description.addProperty("voided");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -102,7 +106,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -129,7 +133,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 		description.addProperty("longitude");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -137,7 +141,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -145,34 +149,38 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public PersonAddress getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonAddressByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(PersonAddress address, String reason, RequestContext context) throws ResponseException {
-		///API had no void methods as of 1.8 other
-		//we should be calling voidPersonAddress that was added in 1.9
+	public void delete(PersonAddress address, String reason,
+			RequestContext context) throws ResponseException {
+		// /API had no void methods as of 1.8 other
+		// we should be calling voidPersonAddress that was added in 1.9
 		address.setVoided(true);
 		address.setVoidedBy(Context.getAuthenticatedUser());
 		address.setDateVoided(new Date());
 		address.setVoidReason(reason);
 		Context.getPersonService().savePerson(address.getPerson());
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(PersonAddress address, RequestContext context) throws ResponseException {
-		///API has no void methods as of 1.8 and earlier versios,
-		//we should be calling voidPersonAddress(PersonAddress, Reason) that was added in 1.9
+	public void purge(PersonAddress address, RequestContext context)
+			throws ResponseException {
+		// /API has no void methods as of 1.8 and earlier versios,
+		// we should be calling voidPersonAddress(PersonAddress, Reason) that
+		// was added in 1.9
 		address.getPerson().removeAddress(address);
 		Context.getPersonService().savePerson(address.getPerson());
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -186,16 +194,16 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 				break;
 			}
 		}
-		
+
 		if (needToAdd) {
 			newAddress.getPerson().addAddress(newAddress);
 		}
-		
+
 		Context.getPersonService().savePerson(newAddress.getPerson());
-		
+
 		return newAddress;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -203,7 +211,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public PersonAddress newDelegate() {
 		return new PersonAddress();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -211,7 +219,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public Person getParent(PersonAddress instance) {
 		return instance.getPerson();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -220,26 +228,29 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public void setParent(PersonAddress instance, Person parent) {
 		instance.setPerson(parent);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<PersonAddress> doGetAll(Person parent, RequestContext context) throws ResponseException {
-		//We don't return voided addresses
-		List<PersonAddress> nonVoidedAddresses = new ArrayList<PersonAddress>(parent.getAddresses().size());
+	public NeedsPaging<PersonAddress> doGetAll(Person parent,
+			RequestContext context) throws ResponseException {
+		// We don't return voided addresses
+		List<PersonAddress> nonVoidedAddresses = new ArrayList<PersonAddress>(
+				parent.getAddresses().size());
 		for (PersonAddress personAddress : parent.getAddresses()) {
 			if (!personAddress.isVoided())
 				nonVoidedAddresses.add(personAddress);
 		}
 		return new NeedsPaging<PersonAddress>(nonVoidedAddresses, context);
 	}
-	
+
 	/**
 	 * Gets the display string for a person address.
 	 * 
-	 * @param address the address object.
+	 * @param address
+	 *            the address object.
 	 * @return the display string.
 	 */
 	@PropertyGetter("display")

@@ -41,14 +41,22 @@ import java.util.List;
  */
 @Component
 public class ConceptSearchHandler1_8 implements SearchHandler {
-	
+
 	@Autowired
 	@Qualifier("conceptService")
 	ConceptService conceptService;
-	
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
-	        Arrays.asList(new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source").withOptionalParameters("code").build(),new SearchQuery.Builder("Allows you to find concepts by name").withRequiredParameters("name").build()));
-	
+
+	private final SearchConfig searchConfig = new SearchConfig("default",
+			RestConstants.VERSION_1 + "/concept", Arrays.asList("1.9.*",
+					"1.10.*", "1.11.*", "1.12.*"), Arrays.asList(
+					new SearchQuery.Builder(
+							"Allows you to find concepts by source and code")
+							.withRequiredParameters("source")
+							.withOptionalParameters("code").build(),
+					new SearchQuery.Builder(
+							"Allows you to find concepts by name")
+							.withRequiredParameters("name").build()));
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
 	 */
@@ -56,63 +64,67 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	public SearchConfig getSearchConfig() {
 		return searchConfig;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public PageableResult search(RequestContext context) throws ResponseException {
+	public PageableResult search(RequestContext context)
+			throws ResponseException {
 		String source = context.getParameter("source");
 		String code = context.getParameter("code");
 		String name = context.getParameter("name");
 
 		List<Concept> concepts = new ArrayList<Concept>();
-		
-		if(name!=null)
-		{
+
+		if (name != null) {
 			Concept concept = conceptService.getConceptByName(name);
 			concepts.add(concept);
-			if (concept != null)
-			{
+			if (concept != null) {
 				boolean isPreferredOrFullySpecified = false;
 				for (ConceptName conceptname : concept.getNames()) {
-					if (conceptname.getName().equalsIgnoreCase(name) && (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
+					if (conceptname.getName().equalsIgnoreCase(name)
+							&& (conceptname.isPreferred() || conceptname
+									.isFullySpecifiedName())) {
 						isPreferredOrFullySpecified = true;
 						break;
 					}
 				}
 				if (!isPreferredOrFullySpecified)
-					throw new APIException("The concept name should be either a fully specified or locale preferred name");
-				
+					throw new APIException(
+							"The concept name should be either a fully specified or locale preferred name");
+
 				return new NeedsPaging<Concept>(concepts, context);
-			}
-			else
-			{
+			} else {
 				return new EmptySearchResult();
 			}
 		}
-		
-		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
+
+		ConceptSource conceptSource = conceptService
+				.getConceptSourceByUuid(source);
 		if (conceptSource == null) {
 			conceptSource = conceptService.getConceptSourceByName(source);
 		}
 		if (conceptSource == null) {
 			return new EmptySearchResult();
 		}
-		
+
 		if (code == null) {
-			List<ConceptMap> conceptMaps = conceptService.getConceptsByConceptSource(conceptSource);
+			List<ConceptMap> conceptMaps = conceptService
+					.getConceptsByConceptSource(conceptSource);
 			for (ConceptMap conceptMap : conceptMaps) {
-				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
+				if (!conceptMap.getConcept().isRetired()
+						|| context.getIncludeAll()) {
 					concepts.add(conceptMap.getConcept());
 				}
 			}
 			return new NeedsPaging<Concept>(concepts, context);
 		} else {
-			List<Concept> conceptsByMapping = conceptService.getConceptsByMapping(code, source, false);
-			
+			List<Concept> conceptsByMapping = conceptService
+					.getConceptsByMapping(code, source, false);
+
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
 	}
-	
+
 }

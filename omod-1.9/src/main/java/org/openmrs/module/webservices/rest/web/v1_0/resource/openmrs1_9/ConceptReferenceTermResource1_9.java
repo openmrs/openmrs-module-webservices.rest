@@ -35,16 +35,20 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.List;
 
 /**
- * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD operations
+ * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptreferenceterm", supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResource<ConceptReferenceTerm> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/conceptreferenceterm", order = 100, supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class ConceptReferenceTermResource1_9 extends
+		MetadataDelegatingCrudResource<ConceptReferenceTerm> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -56,7 +60,8 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 			description.addProperty("version");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -74,7 +79,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -86,10 +91,10 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		description.addProperty("name");
 		description.addProperty("description");
 		description.addProperty("version");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */
@@ -99,15 +104,16 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		if (delegate.getConceptSource() == null) {
 			return "";
 		}
-		String display =  delegate.getConceptSource().getName() + ": " + delegate.getCode();
-		
+		String display = delegate.getConceptSource().getName() + ": "
+				+ delegate.getCode();
+
 		if (!StringUtils.isBlank(delegate.getName())) {
 			display += " (" + delegate.getName() + ")";
 		}
-		
+
 		return display;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -115,15 +121,16 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	public ConceptReferenceTerm newDelegate() {
 		return new ConceptReferenceTerm();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
 	public ConceptReferenceTerm save(ConceptReferenceTerm conceptReferenceTerm) {
-		return Context.getConceptService().saveConceptReferenceTerm(conceptReferenceTerm);
+		return Context.getConceptService().saveConceptReferenceTerm(
+				conceptReferenceTerm);
 	}
-	
+
 	/**
 	 * Fetches a conceptReferenceTerm by uuid
 	 * 
@@ -133,27 +140,30 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	public ConceptReferenceTerm getByUniqueId(String uuid) {
 		return Context.getConceptService().getConceptReferenceTermByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptReferenceTerm conceptReferenceTerm, RequestContext context) throws ResponseException {
+	public void purge(ConceptReferenceTerm conceptReferenceTerm,
+			RequestContext context) throws ResponseException {
 		if (conceptReferenceTerm == null)
 			return;
-		Context.getConceptService().purgeConceptReferenceTerm(conceptReferenceTerm);
+		Context.getConceptService().purgeConceptReferenceTerm(
+				conceptReferenceTerm);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<ConceptReferenceTerm> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptReferenceTerm>(Context.getConceptService().getConceptReferenceTerms(
-		    context.getIncludeAll()), context);
+		return new NeedsPaging<ConceptReferenceTerm>(Context
+				.getConceptService().getConceptReferenceTerms(
+						context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -163,13 +173,15 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		String query = context.getParameter("q");
 		if (query == null)
 			return new EmptySearchResult();
-		List<ConceptReferenceTerm> terms = cs.getConceptReferenceTerms(query, null, context.getStartIndex(),
-		    context.getLimit(), context.getIncludeAll());
-		int count = cs.getCountOfConceptReferenceTerms(query, null, context.getIncludeAll());
+		List<ConceptReferenceTerm> terms = cs.getConceptReferenceTerms(query,
+				null, context.getStartIndex(), context.getLimit(),
+				context.getIncludeAll());
+		int count = cs.getCountOfConceptReferenceTerms(query, null,
+				context.getIncludeAll());
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
 		return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */

@@ -27,18 +27,20 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  *
  */
-@Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
-public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/ordertype", order = 200, supportedClass = OrderType.class, supportedOpenmrsVersions = { "1.9.*" })
+public class OrderTypeResource1_8 extends
+		MetadataDelegatingCrudResource<OrderType> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		// use the defaults for metadata from the parent class
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -46,7 +48,7 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 	public OrderType getByUniqueId(String uniqueId) {
 		return Context.getOrderService().getOrderTypeByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -54,7 +56,7 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 	public OrderType newDelegate() {
 		return new OrderType();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -62,16 +64,19 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 	public OrderType save(OrderType delegate) {
 		return Context.getOrderService().saveOrderType(delegate);
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(OrderType delegate, RequestContext context) throws ResponseException {
+	public void purge(OrderType delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate.getOrderTypeId().equals(OpenmrsConstants.ORDERTYPE_DRUG)) {
-			throw new IllegalArgumentException("You are not allowed to delete the Drug ordertype");
+			throw new IllegalArgumentException(
+					"You are not allowed to delete the Drug ordertype");
 		}
 		Context.getOrderService().purgeOrderType(delegate);
 	}
-	
+
 }

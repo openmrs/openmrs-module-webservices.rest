@@ -29,11 +29,13 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptR
 /**
  * {@link Resource} for {@link ConceptMap}, supporting standard CRUD operations
  */
-@SubResource(path = "mapping", parent = ConceptResource1_8.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@SubResource(path = "mapping", parent = ConceptResource1_8.class, order = 100, supportedClass = ConceptMap.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
-	
+
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -41,13 +43,15 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 			description.addProperty("conceptReferenceTerm", Representation.REF);
 			description.addProperty("conceptMapType", Representation.REF);
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("uuid");
-			description.addProperty("conceptReferenceTerm", Representation.DEFAULT);
+			description.addProperty("conceptReferenceTerm",
+					Representation.DEFAULT);
 			description.addProperty("conceptMapType", Representation.DEFAULT);
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -55,7 +59,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -66,7 +70,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 		description.addRequiredProperty("conceptMapType");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -74,23 +78,29 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	public String getResourceVersion() {
 		return "1.9";
 	}
-	
+
 	/**
 	 * Gets the display string for a concept map.
 	 * 
-	 * @param conceptMap the concept map object.
+	 * @param conceptMap
+	 *            the concept map object.
 	 * @return the display string.
 	 */
+	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptMap conceptMap) {
-		if (conceptMap.getConceptReferenceTerm() == null || conceptMap.getConceptReferenceTerm().getConceptSource() == null) {
+		if (conceptMap.getConceptReferenceTerm() == null
+				|| conceptMap.getConceptReferenceTerm().getConceptSource() == null) {
 			return "";
 		}
-		
-		String display = conceptMap.getConceptReferenceTerm().getConceptSource().getName() + ": "
-		        + conceptMap.getConceptReferenceTerm().getCode();
-		if (!StringUtils.isBlank(conceptMap.getConceptReferenceTerm().getName())) {
-			display += " (" + conceptMap.getConceptReferenceTerm().getName() + ")";
+
+		String display = conceptMap.getConceptReferenceTerm()
+				.getConceptSource().getName()
+				+ ": " + conceptMap.getConceptReferenceTerm().getCode();
+		if (!StringUtils
+				.isBlank(conceptMap.getConceptReferenceTerm().getName())) {
+			display += " (" + conceptMap.getConceptReferenceTerm().getName()
+					+ ")";
 		}
 		return display;
 	}

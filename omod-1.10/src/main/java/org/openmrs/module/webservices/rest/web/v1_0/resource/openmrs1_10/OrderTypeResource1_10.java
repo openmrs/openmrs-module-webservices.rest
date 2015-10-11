@@ -31,17 +31,22 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
- * {@link Resource} for {@link org.openmrs.OrderType}, supporting standard CRUD operations
+ * {@link Resource} for {@link org.openmrs.OrderType}, supporting standard CRUD
+ * operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
-public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/ordertype", order = 90, supportedClass = OrderType.class, supportedOpenmrsVersions = {
+		"1.10.*", "1.11.*", "1.12.*" })
+public class OrderTypeResource1_10 extends
+		MetadataDelegatingCrudResource<OrderType> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		if (rep instanceof DefaultRepresentation
+				|| rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display");
@@ -53,17 +58,19 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 			if (rep instanceof DefaultRepresentation) {
 				description.addProperty("conceptClasses", Representation.REF);
 				description.addProperty("parent", Representation.REF);
-				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+				description.addLink("full", ".?v="
+						+ RestConstants.REPRESENTATION_FULL);
 			} else {
 				description.addProperty("conceptClasses");
 				description.addProperty("parent");
-				description.addProperty("auditInfo", findMethod("getAuditInfo"));
+				description
+						.addProperty("auditInfo", findMethod("getAuditInfo"));
 			}
 			return description;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -71,7 +78,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	public OrderType newDelegate() {
 		return new OrderType();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -79,7 +86,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	public OrderType save(OrderType orderType) {
 		return Context.getOrderService().saveOrderType(orderType);
 	}
-	
+
 	/**
 	 * Fetches an orderType by uuid
 	 * 
@@ -93,42 +100,48 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 		}
 		return ot;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(OrderType orderType, RequestContext context) throws ResponseException {
+	public void purge(OrderType orderType, RequestContext context)
+			throws ResponseException {
 		if (orderType == null)
 			return;
 		Context.getOrderService().purgeOrderType(orderType);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<OrderType> doGetAll(RequestContext context) {
-		return new NeedsPaging<OrderType>(Context.getOrderService().getOrderTypes(context.getIncludeAll()), context);
+		return new NeedsPaging<OrderType>(Context.getOrderService()
+				.getOrderTypes(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<OrderType> doSearch(RequestContext context) {
-		List<OrderType> orderTypes = Context.getOrderService().getOrderTypes(context.getIncludeAll());
-		for (Iterator<OrderType> iterator = orderTypes.iterator(); iterator.hasNext();) {
+		List<OrderType> orderTypes = Context.getOrderService().getOrderTypes(
+				context.getIncludeAll());
+		for (Iterator<OrderType> iterator = orderTypes.iterator(); iterator
+				.hasNext();) {
 			OrderType ot = iterator.next();
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(ot.getName())
-			        .find()) {
+			if (!Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE).matcher(ot.getName())
+					.find()) {
 				iterator.remove();
 			}
 		}
 		return new NeedsPaging<OrderType>(orderTypes, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -136,7 +149,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	public String getResourceVersion() {
 		return RestConstants1_10.RESOURCE_VERSION;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

@@ -29,14 +29,17 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FieldType}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/fieldtype", supportedClass = FieldType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/fieldtype", order = 200, supportedClass = FieldType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class FieldTypeResource1_8 extends
+		MetadataDelegatingCrudResource<FieldType> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -46,7 +49,8 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 			description.addProperty("isSet");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -62,7 +66,7 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -70,7 +74,7 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	public FieldType getByUniqueId(String uniqueId) {
 		return Context.getFormService().getFieldTypeByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -78,7 +82,7 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	public FieldType newDelegate() {
 		return new FieldType();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -86,22 +90,26 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	public FieldType save(FieldType delegate) {
 		return Context.getFormService().saveFieldType(delegate);
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(FieldType delegate, RequestContext context) throws ResponseException {
+	public void purge(FieldType delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate == null)
 			return;
 		Context.getFormService().purgeFieldType(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<FieldType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<FieldType>(Context.getFormService().getAllFieldTypes(), context);
+	protected NeedsPaging<FieldType> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<FieldType>(Context.getFormService()
+				.getAllFieldTypes(), context);
 	}
 }

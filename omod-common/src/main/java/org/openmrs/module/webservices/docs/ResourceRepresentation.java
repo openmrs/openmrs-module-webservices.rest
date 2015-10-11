@@ -53,7 +53,7 @@ public class ResourceRepresentation {
 		for (String property : properties) {
 			text += System.getProperty("line.separator") + "* " + property;
 		}*/
-		
+
 		String text = null;
 		
 		for (String property : properties) {

@@ -27,9 +27,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/hl7source", supportedClass = HL7Source.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Source> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/hl7source", order = 200, supportedClass = HL7Source.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class HL7SourceResource1_8 extends
+		MetadataDelegatingCrudResource<HL7Source> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -37,27 +39,30 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 	public HL7Source getByUniqueId(String uniqueId) {
 		return Context.getHL7Service().getHL7SourceByName(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
-		//description is set as optional on the superclass, we need to over ride that
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
+		// description is set as optional on the superclass, we need to over
+		// ride that
 		description.addRequiredProperty("description");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -65,16 +70,17 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 	public HL7Source newDelegate() {
 		return new HL7Source();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(HL7Source delegate, RequestContext context) throws ResponseException {
+	public void purge(HL7Source delegate, RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */

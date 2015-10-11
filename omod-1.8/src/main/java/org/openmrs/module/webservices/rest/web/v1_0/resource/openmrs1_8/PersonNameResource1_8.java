@@ -39,11 +39,14 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Person, PersonResource1_8> {
-	
+@SubResource(parent = PersonResource1_8.class, path = "name", order = 200, supportedClass = PersonName.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PersonNameResource1_8 extends
+		DelegatingSubResource<PersonName, Person, PersonResource1_8> {
+
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -54,7 +57,8 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 			description.addProperty("familyName2");
 			description.addProperty("voided");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -76,7 +80,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -92,10 +96,10 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		description.addProperty("familyNamePrefix");
 		description.addProperty("familyNameSuffix");
 		description.addProperty("degree");
-        description.addProperty("preferred");
-        return description;
+		description.addProperty("preferred");
+		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -103,7 +107,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -111,7 +115,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public Person getParent(PersonName instance) {
 		return instance.getPerson();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -120,20 +124,21 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public void setParent(PersonName instance, Person person) {
 		instance.setPerson(person);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<PersonName> doGetAll(Person parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<PersonName> doGetAll(Person parent,
+			RequestContext context) throws ResponseException {
 		List<PersonName> names = new ArrayList<PersonName>();
 		if (parent != null) {
 			names.addAll(parent.getNames());
 		}
 		return new NeedsPaging<PersonName>(names, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -141,30 +146,33 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public PersonName getByUniqueId(String uuid) {
 		return Context.getPersonService().getPersonNameByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
+	public void delete(PersonName pn, String reason, RequestContext context)
+			throws ResponseException {
 		pn.setVoided(true);
 		pn.setVoidedBy(Context.getAuthenticatedUser());
 		pn.setVoidReason(reason);
 		pn.setDateVoided(new Date());
 		Context.getPersonService().savePerson(pn.getPerson());
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(PersonName pn, RequestContext context) throws ResponseException {
+	public void purge(PersonName pn, RequestContext context)
+			throws ResponseException {
 		pn.getPerson().removeName(pn);
 		Context.getPersonService().savePerson(pn.getPerson());
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -183,7 +191,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		Context.getPersonService().savePerson(newName.getPerson());
 		return newName;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -191,30 +199,34 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public PersonName newDelegate() {
 		return new PersonName();
 	}
-	
+
 	/**
 	 * Gets the display string for a person name.
 	 * 
-	 * @param personName the person name object.
+	 * @param personName
+	 *            the person name object.
 	 * @return the display string.
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonName personName) {
 
-        try {
-            NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
+		try {
+			NameTemplate nameTemplate = NameSupport.getInstance()
+					.getDefaultLayoutTemplate();
 
-            if (nameTemplate!= null) {
-                // need to use reflection since the format method was not added until later versions of openmrs
-                Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
-                return (String) format.invoke(nameTemplate, personName);
-            }
-        }
-        catch (Exception e) {
-            // fall through to just returning full name if no format method found or format fails
-        }
+			if (nameTemplate != null) {
+				// need to use reflection since the format method was not added
+				// until later versions of openmrs
+				Method format = NameTemplate.class.getDeclaredMethod("format",
+						PersonName.class);
+				return (String) format.invoke(nameTemplate, personName);
+			}
+		} catch (Exception e) {
+			// fall through to just returning full name if no format method
+			// found or format fails
+		}
 
-        // otherwise, just return full name
-        return personName.getFullName();
+		// otherwise, just return full name
+		return personName.getFullName();
 	}
 }

@@ -20,9 +20,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptN
 /**
  * Implemented to increase the resource version.
  */
-@SubResource(parent = ConceptResource1_9.class, path = "name", supportedClass = ConceptName.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@SubResource(parent = ConceptResource1_9.class, path = "name", order = 100, supportedClass = ConceptName.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class ConceptNameResource1_9 extends ConceptNameResource1_8 {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */

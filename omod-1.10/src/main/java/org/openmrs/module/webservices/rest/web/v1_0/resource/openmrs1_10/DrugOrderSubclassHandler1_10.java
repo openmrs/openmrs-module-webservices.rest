@@ -41,9 +41,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugOrde
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {
+		"1.10.*", "1.11.*", "1.12.*" })
 public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#newDelegate()
 	 */
@@ -51,26 +52,30 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	public DrugOrder newDelegate() {
 		return new DrugOrder();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler#getAllByType(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public PageableResult getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException {
+	public PageableResult getAllByType(RequestContext context)
+			throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-            d.addProperty("display");
+			OrderResource1_10 orderResource = (OrderResource1_10) Context
+					.getService(RestService.class).getResourceBySupportedClass(
+							Order.class);
+			DelegatingResourceDescription d = orderResource
+					.getRepresentationDescription(rep);
+			d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
@@ -89,9 +94,11 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			d.addProperty("dispenseAsWritten");
 			return d;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
+			OrderResource1_10 orderResource = (OrderResource1_10) Context
+					.getService(RestService.class).getResourceBySupportedClass(
+							Order.class);
+			DelegatingResourceDescription d = orderResource
+					.getRepresentationDescription(rep);
 			d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
@@ -113,15 +120,17 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		DelegatingResourceDescription d = orderResource.getCreatableProperties();
+		OrderResource1_10 orderResource = (OrderResource1_10) Context
+				.getService(RestService.class).getResourceBySupportedClass(
+						Order.class);
+		DelegatingResourceDescription d = orderResource
+				.getCreatableProperties();
 		d.addProperty("drug");
 		d.addProperty("dosingType");
 		d.addProperty("dose");
@@ -141,39 +150,45 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		d.addProperty("dispenseAsWritten");
 		return d;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUpdatableProperties()
 	 */
 	@Override
-	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		//this actually throws a ResourceDoesNotSupportOperationException
+	public DelegatingResourceDescription getUpdatableProperties()
+			throws ResourceDoesNotSupportOperationException {
+		OrderResource1_10 orderResource = (OrderResource1_10) Context
+				.getService(RestService.class).getResourceBySupportedClass(
+						Order.class);
+		// this actually throws a ResourceDoesNotSupportOperationException
 		return orderResource.getUpdatableProperties();
 	}
-	
-	public PageableResult getActiveOrders(Patient patient, RequestContext context) {
-		String careSettingUuid = context.getRequest().getParameter("careSetting");
+
+	public PageableResult getActiveOrders(Patient patient,
+			RequestContext context) {
+		String careSettingUuid = context.getRequest().getParameter(
+				"careSetting");
 		String asOfDateString = context.getRequest().getParameter("asOfDate");
 		CareSetting careSetting = null;
 		java.util.Date asOfDate = null;
 		if (StringUtils.isNotBlank(asOfDateString)) {
-			asOfDate = (java.util.Date) ConversionUtil.convert(asOfDateString, java.util.Date.class);
+			asOfDate = (java.util.Date) ConversionUtil.convert(asOfDateString,
+					java.util.Date.class);
 		}
 		if (StringUtils.isNotBlank(careSettingUuid)) {
-			careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
-			    CareSetting.class)).getByUniqueId(careSettingUuid);
+			careSetting = ((CareSettingResource1_10) Context.getService(
+					RestService.class).getResourceBySupportedClass(
+					CareSetting.class)).getByUniqueId(careSettingUuid);
 		}
-		
+
 		String status = context.getRequest().getParameter("status");
 		OrderService os = Context.getOrderService();
 		OrderType orderType = os.getOrderTypeByName("Drug order");
-		List<Order> drugOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
-		    context.getIncludeAll());
+		List<Order> drugOrders = OrderUtil.getOrders(patient, careSetting,
+				orderType, status, asOfDate, context.getIncludeAll());
 		return new NeedsPaging<Order>(drugOrders, context);
 	}
-	
+
 	/**
 	 * @see OrderResource1_10#getDisplayString(org.openmrs.Order)
 	 */
@@ -186,12 +201,16 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		} else {
 			ret.append(delegate.getConcept().getDisplayString());
 		}
-        if (Order.Action.DISCONTINUE != delegate.getAction() && delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
-            String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
-            ret.append(": ");
-            ret.append(dosingInstructionsAsString);
-        }
-		
+		if (Order.Action.DISCONTINUE != delegate.getAction()
+				&& delegate.getDosingType() != null
+				&& delegate.getDosingInstructionsInstance() != null) {
+			String dosingInstructionsAsString = delegate
+					.getDosingInstructionsInstance()
+					.getDosingInstructionsAsString(Context.getLocale());
+			ret.append(": ");
+			ret.append(dosingInstructionsAsString);
+		}
+
 		return ret.toString();
 	}
 }

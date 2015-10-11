@@ -34,8 +34,10 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/personattributetype", supportedClass = PersonAttributeType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResource<PersonAttributeType> {
+@Resource(name = RestConstants.VERSION_1 + "/personattributetype", order = 200, supportedClass = PersonAttributeType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class PersonAttributeTypeResource1_8 extends
+		MetadataDelegatingCrudResource<PersonAttributeType> {
 
 	public PersonAttributeTypeResource1_8() {
 
@@ -49,7 +51,8 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -63,7 +66,8 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 			description.addProperty("editPrivilege");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -77,7 +81,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 			description.addProperty("searchable");
 			description.addProperty("editPrivilege");
 			description.addProperty("retired");
-            description.addProperty("concept");
+			description.addProperty("concept");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -121,8 +125,10 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<PersonAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<PersonAttributeType>(service().getAllPersonAttributeTypes(context.getIncludeAll()), context);
+	protected NeedsPaging<PersonAttributeType> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<PersonAttributeType>(service()
+				.getAllPersonAttributeTypes(context.getIncludeAll()), context);
 	}
 
 	/**
@@ -146,7 +152,8 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(PersonAttributeType delegate, RequestContext context) throws ResponseException {
+	public void purge(PersonAttributeType delegate, RequestContext context)
+			throws ResponseException {
 		service().purgePersonAttributeType(delegate);
 	}
 
@@ -155,16 +162,20 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	 */
 	@Override
 	protected NeedsPaging<PersonAttributeType> doSearch(RequestContext context) {
-		return new NeedsPaging<PersonAttributeType>(service().getPersonAttributeTypes(context.getParameter("q"), null, null,
-		    null), context);
-    }
+		return new NeedsPaging<PersonAttributeType>(service()
+				.getPersonAttributeTypes(context.getParameter("q"), null, null,
+						null), context);
+	}
 
 	@PropertyGetter("concept")
-    public Object getConcept(PersonAttributeType delegate) {
-        if (OpenmrsUtil.nullSafeEquals(delegate.getFormat(), Concept.class.getCanonicalName())) {
-            Concept concept = Context.getConceptService().getConcept(delegate.getForeignKey());
-            return ConversionUtil.convertToRepresentation(concept, Representation.FULL);
-        }
-        return null;
+	public Object getConcept(PersonAttributeType delegate) {
+		if (OpenmrsUtil.nullSafeEquals(delegate.getFormat(),
+				Concept.class.getCanonicalName())) {
+			Concept concept = Context.getConceptService().getConcept(
+					delegate.getForeignKey());
+			return ConversionUtil.convertToRepresentation(concept,
+					Representation.FULL);
+		}
+		return null;
 	}
 }

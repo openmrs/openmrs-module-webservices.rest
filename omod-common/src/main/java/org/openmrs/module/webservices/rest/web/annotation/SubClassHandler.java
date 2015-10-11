@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * Holds metadata that represents a subclass handler.
  */
 @Component
-@Target({ ElementType.TYPE })
+@Target( { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SubClassHandler {
 	

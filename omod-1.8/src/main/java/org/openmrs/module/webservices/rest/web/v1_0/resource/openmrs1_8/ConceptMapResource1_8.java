@@ -38,11 +38,13 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for ConceptMaps, supporting standard CRUD operations
  */
-@SubResource(path = "mapping", parent = ConceptResource1_8.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.8.*")
-public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Concept, ConceptResource1_8> {
-	
+@SubResource(path = "mapping", parent = ConceptResource1_8.class, supportedClass = ConceptMap.class, supportedOpenmrsVersions = "1.9.*", order = 200)
+public class ConceptMapResource1_8 extends
+		DelegatingSubResource<ConceptMap, Concept, ConceptResource1_8> {
+
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
@@ -50,7 +52,8 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 			description.addProperty("source", Representation.REF);
 			description.addProperty("sourceCode");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -65,7 +68,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -76,11 +79,12 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		description.addRequiredProperty("sourceCode");
 		return description;
 	}
-	
+
 	/**
 	 * Gets the display string for a concept map.
 	 * 
-	 * @param conceptMap the concept map object.
+	 * @param conceptMap
+	 *            the concept map object.
 	 * @return the display string.
 	 */
 	@PropertyGetter("display")
@@ -88,9 +92,10 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		if (conceptMap.getSource() == null) {
 			return "";
 		}
-		return conceptMap.getSource().getName() + ":" + conceptMap.getSourceCode();
+		return conceptMap.getSource().getName() + ":"
+				+ conceptMap.getSourceCode();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#newDelegate()
 	 */
@@ -98,7 +103,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	public ConceptMap newDelegate() {
 		return new ConceptMap();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -108,7 +113,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		Context.getConceptService().saveConcept(newMap.getConcept());
 		return newMap;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -116,7 +121,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	public Concept getParent(ConceptMap instance) {
 		return instance.getConcept();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -125,41 +130,47 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	public void setParent(ConceptMap instance, Concept parent) {
 		instance.setConcept(parent);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public PageableResult doGetAll(Concept parent, RequestContext context) throws ResponseException {
-		List<ConceptMap> maps = new ArrayList<ConceptMap>(parent.getConceptMappings());
+	public PageableResult doGetAll(Concept parent, RequestContext context)
+			throws ResponseException {
+		List<ConceptMap> maps = new ArrayList<ConceptMap>(
+				parent.getConceptMappings());
 		return new NeedsPaging<ConceptMap>(maps, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public ConceptMap getByUniqueId(String uniqueId) {
-		return Context.getService(RestHelperService.class).getObjectByUuid(ConceptMap.class, uniqueId);
+		return Context.getService(RestHelperService.class).getObjectByUuid(
+				ConceptMap.class, uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(ConceptMap delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(ConceptMap delegate, String reason,
+			RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptMap delegate, RequestContext context) throws ResponseException {
+	public void purge(ConceptMap delegate, RequestContext context)
+			throws ResponseException {
 		delegate.getConcept().removeConceptMapping(delegate);
 	}
-	
+
 }

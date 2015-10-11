@@ -27,16 +27,18 @@ import java.util.regex.Pattern;
 /**
  * Allows standard CRUD for the {@link LocationAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<LocationAttributeType> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/locationattributetype", order = 100, supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class LocationAttributeTypeResource1_9 extends
+		BaseAttributeTypeCrudResource1_9<LocationAttributeType> {
+
 	public LocationAttributeTypeResource1_9() {
 	}
-	
+
 	private LocationService service() {
 		return Context.getLocationService();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -44,15 +46,17 @@ public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResou
 	public LocationAttributeType getByUniqueId(String uniqueId) {
 		return service().getLocationAttributeTypeByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected NeedsPaging<LocationAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<LocationAttributeType>(service().getAllLocationAttributeTypes(), context);
+	protected NeedsPaging<LocationAttributeType> doGetAll(RequestContext context)
+			throws ResponseException {
+		return new NeedsPaging<LocationAttributeType>(service()
+				.getAllLocationAttributeTypes(), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -60,7 +64,7 @@ public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResou
 	public LocationAttributeType newDelegate() {
 		return new LocationAttributeType();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -68,27 +72,32 @@ public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResou
 	public LocationAttributeType save(LocationAttributeType delegate) {
 		return service().saveLocationAttributeType(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(LocationAttributeType delegate, RequestContext context) throws ResponseException {
+	public void purge(LocationAttributeType delegate, RequestContext context)
+			throws ResponseException {
 		service().purgeLocationAttributeType(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<LocationAttributeType> doSearch(RequestContext context) {
-		// TODO: Should be a LocationAttributeType search method in LocationService
-		List<LocationAttributeType> allAttrs = service().getAllLocationAttributeTypes();
+		// TODO: Should be a LocationAttributeType search method in
+		// LocationService
+		List<LocationAttributeType> allAttrs = service()
+				.getAllLocationAttributeTypes();
 		List<LocationAttributeType> queryResult = new ArrayList<LocationAttributeType>();
 		for (LocationAttributeType locAttr : allAttrs) {
-			if (Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
-			        .matcher(locAttr.getName()).find()) {
+			if (Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE)
+					.matcher(locAttr.getName()).find()) {
 				queryResult.add(locAttr);
 			}
 		}

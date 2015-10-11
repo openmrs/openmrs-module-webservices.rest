@@ -96,7 +96,7 @@ public class OpenmrsClassScanner {
 							
 							@SuppressWarnings("unchecked")
 							Class<? extends T> metadata = (Class<? extends T>) OpenmrsClassLoader.getInstance().loadClass(
-							
+
 							classname);
 							
 							types.add(metadata);

@@ -34,15 +34,19 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
  * {@link org.openmrs.CareSetting}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/caresetting", supportedClass = CareSetting.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
-public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<CareSetting> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/caresetting", order = 90, supportedClass = CareSetting.class, supportedOpenmrsVersions = {
+		"1.10.*", "1.11.*", "1.12.*" })
+public class CareSettingResource1_10 extends
+		MetadataDelegatingCrudResource<CareSetting> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		if (rep instanceof DefaultRepresentation
+				|| rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("name");
@@ -52,15 +56,17 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 			description.addProperty("display");
 			description.addSelfLink();
 			if (rep instanceof DefaultRepresentation) {
-				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+				description.addLink("full", ".?v="
+						+ RestConstants.REPRESENTATION_FULL);
 			} else {
-				description.addProperty("auditInfo", findMethod("getAuditInfo"));
+				description
+						.addProperty("auditInfo", findMethod("getAuditInfo"));
 			}
 			return description;
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -68,7 +74,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	public DelegatingResourceDescription getCreatableProperties() {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -76,7 +82,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	public CareSetting newDelegate() {
 		return new CareSetting();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(Object)
 	 */
@@ -84,7 +90,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	public CareSetting save(CareSetting careSetting) {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * Fetches a careSettings by uuid or name
 	 * 
@@ -92,46 +98,53 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	 */
 	@Override
 	public CareSetting getByUniqueId(String uniqueId) {
-		CareSetting cs = Context.getOrderService().getCareSettingByUuid(uniqueId);
+		CareSetting cs = Context.getOrderService().getCareSettingByUuid(
+				uniqueId);
 		if (cs == null) {
 			cs = Context.getOrderService().getCareSettingByName(uniqueId);
 		}
 		return cs;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(CareSetting careSetting, RequestContext context) throws ResponseException {
+	public void purge(CareSetting careSetting, RequestContext context)
+			throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<CareSetting> doGetAll(RequestContext context) {
-		return new NeedsPaging<CareSetting>(Context.getOrderService().getCareSettings(context.getIncludeAll()), context);
+		return new NeedsPaging<CareSetting>(Context.getOrderService()
+				.getCareSettings(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<CareSetting> doSearch(RequestContext context) {
-		List<CareSetting> careSettings = Context.getOrderService().getCareSettings(context.getIncludeAll());
-		for (Iterator<CareSetting> iterator = careSettings.iterator(); iterator.hasNext();) {
+		List<CareSetting> careSettings = Context.getOrderService()
+				.getCareSettings(context.getIncludeAll());
+		for (Iterator<CareSetting> iterator = careSettings.iterator(); iterator
+				.hasNext();) {
 			CareSetting cs = iterator.next();
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(cs.getName())
-			        .find()) {
+			if (!Pattern
+					.compile(Pattern.quote(context.getParameter("q")),
+							Pattern.CASE_INSENSITIVE).matcher(cs.getName())
+					.find()) {
 				iterator.remove();
 			}
 		}
 		return new NeedsPaging<CareSetting>(careSettings, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */

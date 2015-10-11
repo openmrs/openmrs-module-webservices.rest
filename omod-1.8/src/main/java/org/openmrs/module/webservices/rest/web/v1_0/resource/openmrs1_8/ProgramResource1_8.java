@@ -31,96 +31,102 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.List;
 
-
-@Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = {"1.8.*, 1.9.*"} , order = 1)
+@Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = { "1.8.*, 1.9.*" }, order = 200)
 public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> {
 
-    @Override
-    public Program getByUniqueId(String uniqueId) {
-        Program programByUuid = Context.getProgramWorkflowService().getProgramByUuid(uniqueId);
-        //We assume the caller was fetching by name
-        if(programByUuid == null) {
-            programByUuid = Context.getProgramWorkflowService().getProgramByName(uniqueId);
-        }
-        return programByUuid;
-    }
+	@Override
+	public Program getByUniqueId(String uniqueId) {
+		Program programByUuid = Context.getProgramWorkflowService()
+				.getProgramByUuid(uniqueId);
+		// We assume the caller was fetching by name
+		if (programByUuid == null) {
+			programByUuid = Context.getProgramWorkflowService()
+					.getProgramByName(uniqueId);
+		}
+		return programByUuid;
+	}
 
-    @Override
-    public Program newDelegate() {
-        return new Program();
-    }
+	@Override
+	public Program newDelegate() {
+		return new Program();
+	}
 
-    @Override
-    public Program save(Program program) {
-        return Context.getProgramWorkflowService().saveProgram(program);
-    }
+	@Override
+	public Program save(Program program) {
+		return Context.getProgramWorkflowService().saveProgram(program);
+	}
 
-    @Override
-    public void purge(Program program, RequestContext context) throws ResponseException {
-        Context.getProgramWorkflowService().purgeProgram(program);
-    }
+	@Override
+	public void purge(Program program, RequestContext context)
+			throws ResponseException {
+		Context.getProgramWorkflowService().purgeProgram(program);
+	}
 
-    @Override
-    protected NeedsPaging<Program> doGetAll(RequestContext context) {
-        return new NeedsPaging<Program>(Context.getProgramWorkflowService().getAllPrograms(), context);
-    }
+	@Override
+	protected NeedsPaging<Program> doGetAll(RequestContext context) {
+		return new NeedsPaging<Program>(Context.getProgramWorkflowService()
+				.getAllPrograms(), context);
+	}
 
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        if (rep instanceof DefaultRepresentation) {
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("name");
-            description.addProperty("description");
-            description.addProperty("retired");
-            description.addProperty("allWorkflows", Representation.DEFAULT);
-            description.addProperty("concept", Representation.REF);
-            description.addSelfLink();
-            description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-            return description;
-        } else if (rep instanceof FullRepresentation) {
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("name");
-            description.addProperty("description");
-            description.addProperty("retired");
-            description.addProperty("allWorkflows", Representation.FULL);
-            description.addProperty("concept");
-            description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
-            return description;
-        } else if(rep instanceof RefRepresentation){
-            DelegatingResourceDescription description = new DelegatingResourceDescription();
-            description.addProperty("uuid");
-            description.addProperty("display");
-            description.addProperty("retired");
-            description.addProperty("allWorkflows", Representation.REF);
-            description.addSelfLink();
-            return description;
-        }
-        return null;
-    }
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("description");
+			description.addProperty("retired");
+			description.addProperty("allWorkflows", Representation.DEFAULT);
+			description.addProperty("concept", Representation.REF);
+			description.addSelfLink();
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("name");
+			description.addProperty("description");
+			description.addProperty("retired");
+			description.addProperty("allWorkflows", Representation.FULL);
+			description.addProperty("concept");
+			description.addSelfLink();
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			return description;
+		} else if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addProperty("retired");
+			description.addProperty("allWorkflows", Representation.REF);
+			description.addSelfLink();
+			return description;
+		}
+		return null;
+	}
 
-    @Override
-    public DelegatingResourceDescription getCreatableProperties() {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addRequiredProperty("name");
-        description.addRequiredProperty("description");
-        description.addRequiredProperty("concept");
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("name");
+		description.addRequiredProperty("description");
+		description.addRequiredProperty("concept");
 
-        description.addProperty("retired");
-        return description;
-    }
+		description.addProperty("retired");
+		return description;
+	}
 
-    @Override
-    protected PageableResult doSearch(RequestContext context) {
-        String query = context.getParameter("q");
+	@Override
+	protected PageableResult doSearch(RequestContext context) {
+		String query = context.getParameter("q");
 
-        if (query != null) {
-            List<Program> programs = Context.getProgramWorkflowService().getPrograms(query);
-            return new NeedsPaging<Program>(programs, context);
-        }
-        return new EmptySearchResult();
-    }
+		if (query != null) {
+			List<Program> programs = Context.getProgramWorkflowService()
+					.getPrograms(query);
+			return new NeedsPaging<Program>(programs, context);
+		}
+		return new EmptySearchResult();
+	}
 
 }

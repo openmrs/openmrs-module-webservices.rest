@@ -64,8 +64,8 @@ public class Util {
 				Integer index;
 				if (pathElements[i].indexOf("[") > 0) {
 					property = pathElements[i].substring(0, pathElements[i].indexOf("["));
-					index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1,
-					    pathElements[i].indexOf("]")));
+					index = Integer.valueOf(pathElements[i].substring(pathElements[i].indexOf("[") + 1, pathElements[i]
+					        .indexOf("]")));
 				} else {
 					property = pathElements[i];
 					index = null;

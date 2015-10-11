@@ -36,14 +36,16 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = "1.8.*")
-public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location> {
-	
+@Resource(name = RestConstants.VERSION_1 + "/location", order = 200, supportedClass = Location.class, supportedOpenmrsVersions = "1.9.*")
+public class LocationResource1_8 extends
+		MetadataDelegatingCrudResource<Location> {
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -68,7 +70,8 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 			description.addProperty("childLocations", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -99,16 +102,16 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addRequiredProperty("name");
-		
+
 		description.addProperty("description");
 		description.addProperty("address1");
 		description.addProperty("address2");
@@ -126,10 +129,10 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		description.addProperty("tags");
 		description.addProperty("parentLocation");
 		description.addProperty("childLocations");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -137,7 +140,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -145,7 +148,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	public Location newDelegate() {
 		return new Location();
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -153,75 +156,82 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	public Location save(Location location) {
 		return Context.getLocationService().saveLocation(location);
 	}
-	
+
 	/**
-	 * Fetches a location by uuid, if no match is found, it tries to look up one with a matching
-	 * name with the assumption that the passed parameter is a location name
+	 * Fetches a location by uuid, if no match is found, it tries to look up one
+	 * with a matching name with the assumption that the passed parameter is a
+	 * location name
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Location getByUniqueId(String uuid) {
-		Location location = Context.getLocationService().getLocationByUuid(uuid);
-		//We assume the caller was fetching by name
+		Location location = Context.getLocationService()
+				.getLocationByUuid(uuid);
+		// We assume the caller was fetching by name
 		if (location == null)
 			location = Context.getLocationService().getLocation(uuid);
-		
+
 		return location;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Location location, RequestContext context) throws ResponseException {
+	public void purge(Location location, RequestContext context)
+			throws ResponseException {
 		if (location == null)
 			return;
 		Context.getLocationService().purgeLocation(location);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Location> doGetAll(RequestContext context) {
-		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
+		return new NeedsPaging<Location>(Context.getLocationService()
+				.getAllLocations(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-     *
-     * A query string and/or a tag uuid can be passed in; if both are passed in, returns an intersection of the results; excludes retired locations
+	 *
+	 *      A query string and/or a tag uuid can be passed in; if both are
+	 *      passed in, returns an intersection of the results; excludes retired
+	 *      locations
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 
-        LocationService locationService = Context.getLocationService();
+		LocationService locationService = Context.getLocationService();
 
-        String tagUuid = context.getParameter("tag");
-        String query = context.getParameter("q");
+		String tagUuid = context.getParameter("tag");
+		String query = context.getParameter("q");
 
-        List<Location> locationsByTag = null;
-        List<Location> locationsByQuery = null;
+		List<Location> locationsByTag = null;
+		List<Location> locationsByQuery = null;
 
-        if (tagUuid != null) {
-            LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
-            locationsByTag = locationService.getLocationsByTag(locationTag);
-        }
+		if (tagUuid != null) {
+			LocationTag locationTag = locationService
+					.getLocationTagByUuid(tagUuid);
+			locationsByTag = locationService.getLocationsByTag(locationTag);
+		}
 
-        if (query != null) {
-            locationsByQuery = locationService.getLocations(query);
-        }
+		if (query != null) {
+			locationsByQuery = locationService.getLocations(query);
+		}
 
-        if (locationsByTag == null) {
-            return new NeedsPaging<Location> (locationsByQuery, context);
-        }
-        else if (locationsByQuery == null) {
-            return new NeedsPaging<Location>(locationsByTag, context);
-        }
-        else {
-            return new NeedsPaging<Location>((List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
-        }
+		if (locationsByTag == null) {
+			return new NeedsPaging<Location>(locationsByQuery, context);
+		} else if (locationsByQuery == null) {
+			return new NeedsPaging<Location>(locationsByTag, context);
+		} else {
+			return new NeedsPaging<Location>(
+					(List<Location>) CollectionUtils.intersection(
+							locationsByQuery, locationsByTag), context);
+		}
 	}
 }

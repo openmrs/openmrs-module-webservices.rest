@@ -40,9 +40,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FieldAnswer}, supporting standard CRUD operations
  */
-@SubResource(parent = FieldResource1_8.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, Field, FieldResource1_8> {
-	
+@SubResource(parent = FieldResource1_8.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" }, order = 200)
+public class FieldAnswerResource1_8 extends
+		DelegatingSubResource<FieldAnswer, Field, FieldResource1_8> {
+
+	@Override
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(FieldAnswer delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -51,12 +54,13 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -64,7 +68,8 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("field", Representation.REF);
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -78,7 +83,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */
@@ -87,10 +92,10 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("field");
 		description.addRequiredProperty("concept");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -98,7 +103,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public FieldAnswer getByUniqueId(String uniqueId) {
 		return Context.getFormService().getFieldAnswerByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -106,29 +111,34 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public FieldAnswer newDelegate() {
 		return new FieldAnswer();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@Override
 	public FieldAnswer save(FieldAnswer delegate) {
-		throw new UnsupportedOperationException("A field answer must be added to a field, not created on its own.");
+		throw new UnsupportedOperationException(
+				"A field answer must be added to a field, not created on its own.");
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(FieldAnswer delegate, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("A field answer must be removed from a field, not purged on its own.");
+	public void purge(FieldAnswer delegate, RequestContext context)
+			throws ResponseException {
+		throw new UnsupportedOperationException(
+				"A field answer must be removed from a field, not purged on its own.");
 	}
-	
+
 	@Override
-	protected void delete(FieldAnswer delegate, String reason, RequestContext context) throws ResponseException {
-		throw new UnsupportedOperationException("A field answer must be removed from a field, not deleted on its own.");
+	protected void delete(FieldAnswer delegate, String reason,
+			RequestContext context) throws ResponseException {
+		throw new UnsupportedOperationException(
+				"A field answer must be removed from a field, not deleted on its own.");
 	}
-	
+
 	/**
 	 * provide audit info for a FieldAnswer
 	 * 
@@ -138,11 +148,14 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	 */
 	public SimpleObject getAuditInfo(FieldAnswer delegate) throws Exception {
 		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(
+				delegate, "creator", Representation.REF));
+		ret.put("dateCreated",
+				ConversionUtil.convertToRepresentation(
+						delegate.getDateCreated(), Representation.DEFAULT));
 		return ret;
 	}
-	
+
 	/**
 	 * @param encounter
 	 * @return encounter type and date
@@ -151,12 +164,16 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public String getDisplayString(FieldAnswer delegate) {
 		if (delegate == null)
 			return null;
-		
-		return new StringBuilder().append(delegate.getField() == null ? "Null Field" : delegate.getField().getName())
-		        .append(" - ").append(
-		            delegate.getConcept() == null ? "Null Concept" : delegate.getConcept().getName().toString()).toString();
+
+		return new StringBuilder()
+				.append(delegate.getField() == null ? "Null Field" : delegate
+						.getField().getName())
+				.append(" - ")
+				.append(delegate.getConcept() == null ? "Null Concept"
+						: delegate.getConcept().getName().toString())
+				.toString();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -164,7 +181,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public Field getParent(FieldAnswer instance) {
 		return instance.getField();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -173,18 +190,19 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	public void setParent(FieldAnswer instance, Field parent) {
 		instance.setField(parent);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<FieldAnswer> doGetAll(Field parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<FieldAnswer> doGetAll(Field parent,
+			RequestContext context) throws ResponseException {
 		List<FieldAnswer> fieldAnswers = new ArrayList<FieldAnswer>();
 		if (parent.getAnswers() != null) {
 			fieldAnswers.addAll(parent.getAnswers());
 		}
 		return new NeedsPaging<FieldAnswer>(fieldAnswers, context);
 	}
-	
+
 }

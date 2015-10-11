@@ -223,10 +223,10 @@ public class ResourceDoc implements Comparable<ResourceDoc> {
 				for (SearchQuery query : config.getSearchQueries()) {
 					text.append("|" + config.getId());
 					text.append("|" + query.getDescription());
-					String reqParameters = query.getRequiredParameters().size() == 0 ? " " : StringUtils.join(
-					    query.getRequiredParameters(), LINE_SEPARATOR);
-					String optParameters = query.getOptionalParameters().size() == 0 ? " " : StringUtils.join(
-					    query.getOptionalParameters(), LINE_SEPARATOR);
+					String reqParameters = query.getRequiredParameters().size() == 0 ? " " : StringUtils.join(query
+					        .getRequiredParameters(), LINE_SEPARATOR);
+					String optParameters = query.getOptionalParameters().size() == 0 ? " " : StringUtils.join(query
+					        .getOptionalParameters(), LINE_SEPARATOR);
 					text.append("|" + reqParameters);
 					text.append("|" + optParameters);
 					text.append("|");

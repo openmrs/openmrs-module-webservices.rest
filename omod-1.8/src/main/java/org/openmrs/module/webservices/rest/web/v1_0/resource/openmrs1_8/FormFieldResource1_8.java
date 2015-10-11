@@ -40,14 +40,17 @@ import java.util.List;
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
-@SubResource(parent = FormResource1_8.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
-public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
-	
+@SubResource(parent = FormResource1_8.class, path = "formfield", order = 200, supportedClass = FormField.class, supportedOpenmrsVersions = {
+		"1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+public class FormFieldResource1_8 extends
+		DelegatingSubResource<FormField, Form, FormResource1_8> {
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -64,7 +67,8 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 			description.addProperty("sortWeight");
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			description.addLink("full", ".?v="
+					+ RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -87,7 +91,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -97,7 +101,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		description.addRequiredProperty("form");
 		description.addRequiredProperty("field");
 		description.addRequiredProperty("required");
-		
+
 		description.addProperty("parent");
 		description.addProperty("fieldNumber");
 		description.addProperty("fieldPart");
@@ -105,40 +109,48 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		description.addProperty("minOccurs");
 		description.addProperty("maxOccurs");
 		description.addProperty("sortWeight");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAuditInfo(org.openmrs.BaseOpenmrsObject)
 	 */
 	@Override
-	public SimpleObject getAuditInfo(BaseOpenmrsObject resource) throws Exception {
+	public SimpleObject getAuditInfo(BaseOpenmrsObject resource)
+			throws Exception {
 		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(resource, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(((Auditable) resource).getDateCreated(),
-		    Representation.DEFAULT));
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(
+				resource, "creator", Representation.REF));
+		ret.put("dateCreated",
+				ConversionUtil.convertToRepresentation(
+						((Auditable) resource).getDateCreated(),
+						Representation.DEFAULT));
 		if (((Retireable) resource).isRetired()) {
-			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(resource, "retiredBy", Representation.REF));
-			ret.put("dateRetired", ConversionUtil.convertToRepresentation(((Retireable) resource).getDateRetired(),
-			    Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil.convertToRepresentation(((Retireable) resource).getRetireReason(),
-			    Representation.DEFAULT));
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(
+					resource, "retiredBy", Representation.REF));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(
+					((Retireable) resource).getDateRetired(),
+					Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(
+					((Retireable) resource).getRetireReason(),
+					Representation.DEFAULT));
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Gets the display string.
 	 * 
-	 * @param formField the formField name object
+	 * @param formField
+	 *            the formField name object
 	 * @return the display string
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(FormField formField) {
 		return formField.getName();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -146,7 +158,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	public FormField getByUniqueId(String uniqueId) {
 		return Context.getFormService().getFormFieldByUuid(uniqueId);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -154,7 +166,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	public FormField newDelegate() {
 		return new FormField();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -162,18 +174,19 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	public FormField save(FormField delegate) {
 		return Context.getFormService().saveFormField(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(FormField delegate, RequestContext context) throws ResponseException {
+	public void purge(FormField delegate, RequestContext context)
+			throws ResponseException {
 		if (delegate == null)
 			return;
 		Context.getFormService().purgeFormField(delegate);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -181,7 +194,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	public Form getParent(FormField instance) {
 		return instance.getForm();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -190,29 +203,32 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	public void setParent(FormField instance, Form parent) {
 		instance.setForm(parent);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public NeedsPaging<FormField> doGetAll(Form parent, RequestContext context) throws ResponseException {
+	public NeedsPaging<FormField> doGetAll(Form parent, RequestContext context)
+			throws ResponseException {
 		List<FormField> formFields = new ArrayList<FormField>();
 		for (FormField formField : parent.getFormFields()) {
 			if (!formField.isRetired()) {
 				formFields.add(formField);
 			}
 		}
-		
+
 		return new NeedsPaging<FormField>(formFields, context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected void delete(FormField delegate, String reason, RequestContext context) throws ResponseException {
+	protected void delete(FormField delegate, String reason,
+			RequestContext context) throws ResponseException {
 		delegate.setRetired(true);
 		delegate.setRetireReason(reason);
 		delegate.setRetiredBy(Context.getAuthenticatedUser());

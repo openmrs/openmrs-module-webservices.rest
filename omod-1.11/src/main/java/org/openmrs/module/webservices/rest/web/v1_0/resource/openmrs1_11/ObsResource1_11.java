@@ -21,38 +21,42 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 1, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 80, supportedClass = Obs.class, supportedOpenmrsVersions = {
+		"1.11.*", "1.12.*" })
 public class ObsResource1_11 extends ObsResource1_8 {
-	
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-		if (description != null) {		
+	public DelegatingResourceDescription getRepresentationDescription(
+			Representation rep) {
+		DelegatingResourceDescription description = super
+				.getRepresentationDescription(rep);
+		if (description != null) {
 			description.addProperty("formFieldPath");
 			description.addProperty("formFieldNamespace");
 		}
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription description = super.getCreatableProperties();
+		DelegatingResourceDescription description = super
+				.getCreatableProperties();
 		description.addProperty("formFieldPath");
 		description.addProperty("formFieldNamespace");
 		return description;
 	}
-    
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
 	public String getResourceVersion() {
-	    return RestConstants1_11.RESOURCE_VERSION;
+		return RestConstants1_11.RESOURCE_VERSION;
 	}
 }
