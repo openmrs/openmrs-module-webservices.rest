@@ -45,7 +45,7 @@
 		</property>
 		<property name="target">
 			<bean class="org.openmrs.module.webservices.rest.web.api.impl.RestHelperServiceImpl">
-				<property name="sessionFactory" ref="dbSessionFactory" />
+				<property name="sessionFactory" ref="sessionFactory" />
 			</bean>
 		</property>
 		<property name="preInterceptors">
