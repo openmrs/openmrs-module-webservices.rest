@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.web.representation.Representation;

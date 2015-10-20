@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -21,7 +21,6 @@ import org.openmrs.Drug;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Obs;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -128,7 +127,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		// coded
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");
 		clearAndSetValue(obs, ObsType.CODED, concept);
-		SimpleObject rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		SimpleObject rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
 		Assert.assertEquals("coded", concept.getUuid(), rep.get("uuid"));
@@ -136,13 +135,13 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		// datetime
 		Date datetime = new Date();
 		clearAndSetValue(obs, ObsType.DATETIME, datetime);
-		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("datetime", datetime, ConversionUtil.convert(rep.get("value"), Date.class));
 		
 		// drug
 		Drug drug = Context.getConceptService().getDrugByUuid("3cfcf118-931c-46f7-8ff6-7b876f0d4202");
 		clearAndSetValue(obs, ObsType.DRUG, drug);
-		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
 		Assert.assertEquals("drug", drug.getUuid(), rep.get("uuid"));
@@ -150,24 +149,24 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 		// string-based (complex, text)
 		String test = "whoa";
 		clearAndSetValue(obs, ObsType.COMPLEX, test);
-		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("complex", test, rep.get("value"));
 		
 		clearAndSetValue(obs, ObsType.TEXT, test);
-		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("text", test, rep.get("value"));
 		
 		// numeric
 		Double number = Double.MAX_VALUE;
 		clearAndSetValue(obs, ObsType.NUMERIC, number);
-		rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertEquals("numeric", number, rep.get("value"));
 
         // location
         Location location = Context.getLocationService().getLocation(2);
         clearAndSetValue(obs, ObsType.TEXT, location.getId().toString());
         obs.setComment("org.openmrs.Location");
-        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
         Assert.assertTrue(rep.keySet().contains("value"));
         rep = (SimpleObject) rep.get("value");
         Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));;
@@ -176,7 +175,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
         location = Context.getLocationService().getLocation(2);
         clearAndSetValue(obs, ObsType.TEXT, location.getUuid());
         obs.setComment("org.openmrs.Location");
-        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
         Assert.assertTrue(rep.keySet().contains("value"));
         rep = (SimpleObject) rep.get("value");
         Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));
@@ -184,7 +183,7 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
         // location that doesn't exist shouldn't cause error, just return null
         clearAndSetValue(obs, ObsType.TEXT, "20000");
         obs.setComment("org.openmrs.Location");
-        rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+        rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
         Assert.assertNull(rep.get("value"));
         rep = (SimpleObject) rep.get("value");
     }

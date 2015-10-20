@@ -43,6 +43,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @SubResource(parent = FieldResource1_8.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, Field, FieldResource1_8> {
 	
+	@Override
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(FieldAnswer delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();

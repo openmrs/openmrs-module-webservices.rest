@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class FormResourceController1_9Test extends MainResourceControllerTest {
     private FormService formService;
     private DatatypeService datatypeService;
@@ -139,7 +141,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 
         Assert.assertNotEquals(valueReferenceBefore, valueReferenceAfter);
         Assert.assertNotNull(datatypeService.getClobDatatypeStorageByUuid(valueReferenceAfter));
-        Assert.assertEquals(MockHttpServletResponse.SC_CREATED, response.getStatus());
+        Assert.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
     }
 
     @Test

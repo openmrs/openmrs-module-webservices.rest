@@ -109,7 +109,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
 		for (Map<String, String> o : obs) {
-			obsDisplayValues.add((String) o.get("display"));
+			obsDisplayValues.add(o.get("display"));
 		}
 		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
 		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED: fried chicken"));

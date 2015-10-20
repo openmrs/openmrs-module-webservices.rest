@@ -21,7 +21,6 @@ import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 
 /**
  * {@link ModuleActivator} for the webservices.rest module

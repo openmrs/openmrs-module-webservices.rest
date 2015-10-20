@@ -37,7 +37,7 @@ public class SameDatetimeMatcher extends BaseMatcher<String> {
 	
 	@Override
 	public boolean matches(Object item) {
-		Date actual = (Date) ConversionUtil.convert((String) item, Date.class);
+		Date actual = (Date) ConversionUtil.convert(item, Date.class);
 		return expected.getTime() == actual.getTime();
 	}
 	

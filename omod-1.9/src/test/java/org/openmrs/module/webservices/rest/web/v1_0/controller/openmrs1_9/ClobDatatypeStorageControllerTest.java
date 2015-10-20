@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class ClobDatatypeStorageControllerTest extends MainResourceControllerTest {
     private DatatypeService datatypeService;
 
@@ -45,7 +47,7 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 
         MockHttpServletResponse response = handle(request);
 
-        Assert.assertEquals(MockHttpServletResponse.SC_CREATED, response.getStatus());
+        Assert.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
         Assert.assertEquals(before + 1, getAllCount());
     }
 
@@ -75,7 +77,7 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
         clob = datatypeService.getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 
         Assert.assertNull(clob);
-        Assert.assertEquals(MockHttpServletResponse.SC_OK, response.getStatus());
+        Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
     }
 
     @Override

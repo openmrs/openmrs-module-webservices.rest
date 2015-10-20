@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class ProblemResource1_8Test extends BaseDelegatingResourceTest<ProblemRe
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");
 		problem.setProblem(concept);
 		
-		SimpleObject rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		SimpleObject rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertTrue(rep.keySet().contains("problem"));
 		rep = (SimpleObject) rep.get("problem");
 		Assert.assertEquals("problem", concept.getUuid(), rep.get("uuid"));

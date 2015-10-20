@@ -250,6 +250,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * @param context
 	 * @throws ResponseException
 	 */
+	@Override
 	public abstract void purge(T delegate, RequestContext context) throws ResponseException;
 	
 	/**
@@ -258,6 +259,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * @return the description
 	 * @throws ResponseException
 	 */
+	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
@@ -271,6 +273,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * @return the description
 	 * @throws ResponseException
 	 */
+	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = getCreatableProperties();
 		for (String property : getPropertiesToExposeAsSubResources()) {
@@ -698,7 +701,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
-			DelegatingResourceHandler<? extends T> handler = getResourceHandler((T) instance);
+			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
 			
 			// try to find a @PropertyGetter-annotated method
 			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);

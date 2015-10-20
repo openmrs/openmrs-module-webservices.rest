@@ -29,6 +29,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.WebRequest;
 
 /**
@@ -55,7 +56,7 @@ public class SettingsFormController {
 		}
 		
 		request.setAttribute(WebConstants.OPENMRS_MSG_ATTR, Context.getMessageSourceService().getMessage("general.saved"),
-		    WebRequest.SCOPE_SESSION);
+		    RequestAttributes.SCOPE_SESSION);
 		return "redirect:settings.form";
 	}
 	

@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
  */
 public class DefaultRepresentation implements Representation {
 	
+	@Override
 	public String getRepresentation() {
 		return RestConstants.REPRESENTATION_DEFAULT;
 	}

@@ -78,6 +78,7 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
+	@Override
 	public void purge(Subclass delegate, RequestContext context) throws ResponseException {
 		getResource().purge(delegate, context);
 	}

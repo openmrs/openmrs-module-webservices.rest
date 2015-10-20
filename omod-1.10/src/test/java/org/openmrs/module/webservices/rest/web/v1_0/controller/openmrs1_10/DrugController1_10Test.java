@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertThat;
 

@@ -188,7 +188,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @throws Exception
 	 */
 	public SimpleObject newRefRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.REF);
+		return getResource().asRepresentation(getObject(), Representation.REF);
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @throws Exception
 	 */
 	public SimpleObject newDefaultRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		return getResource().asRepresentation(getObject(), Representation.DEFAULT);
 	}
 	
 	/**
@@ -214,7 +214,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @throws Exception
 	 */
 	public SimpleObject getFullRepresentation() throws Exception {
-		return (SimpleObject) getResource().asRepresentation(getObject(), Representation.FULL);
+		return getResource().asRepresentation(getObject(), Representation.FULL);
 	}
 	
 	/**

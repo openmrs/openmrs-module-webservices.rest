@@ -13,7 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +94,7 @@ public class AllergyResource1_8Test extends BaseDelegatingResourceTest<AllergyRe
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");
 		allergy.setAllergen(concept);
 		
-		SimpleObject rep = (SimpleObject) getResource().asRepresentation(getObject(), Representation.DEFAULT);
+		SimpleObject rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Assert.assertTrue(rep.keySet().contains("allergen"));
 		rep = (SimpleObject) rep.get("allergen");
 		Assert.assertEquals("allergen", concept.getUuid(), rep.get("uuid"));
