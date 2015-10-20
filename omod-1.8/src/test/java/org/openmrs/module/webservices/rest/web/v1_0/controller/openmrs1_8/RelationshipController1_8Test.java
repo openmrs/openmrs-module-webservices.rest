@@ -25,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**

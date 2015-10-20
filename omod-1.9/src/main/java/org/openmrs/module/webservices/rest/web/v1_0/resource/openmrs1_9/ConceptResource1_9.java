@@ -34,6 +34,7 @@ public class ConceptResource1_9 extends ConceptResource1_8 {
 	    return RestConstants1_9.RESOURCE_VERSION;
 	}
 	
+	@Override
 	public Concept getByUniqueId(String identifier) {
 		
 		Concept concept = null;

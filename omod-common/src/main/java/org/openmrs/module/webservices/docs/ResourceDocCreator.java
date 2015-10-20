@@ -154,16 +154,16 @@ public class ResourceDocCreator {
 			
 			String subResourceForClass = null;
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) resourceHandler
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = (resourceHandler
 			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 			if (resourceAnnotation != null) {
 				resourceDoc.setResourceName(resourceAnnotation.name());
 			} else {
 				//this is a subResource, use the name of the collection
-				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.SubResource) resourceHandler
+				org.openmrs.module.webservices.rest.web.annotation.SubResource subResourceAnnotation = (resourceHandler
 				        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class));
 				if (subResourceAnnotation != null) {
-					org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = ((org.openmrs.module.webservices.rest.web.annotation.Resource) subResourceAnnotation
+					org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = (subResourceAnnotation
 					        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 					
 					resourceDoc.setResourceName(parentResourceAnnotation.name());
@@ -346,7 +346,7 @@ public class ResourceDocCreator {
 	        boolean supportsSearching) {
 		
 		//If the documentation annotation exists, then no need for auto generating the description.
-		WSDoc docAnnotation = (WSDoc) method.getAnnotation(WSDoc.class);
+		WSDoc docAnnotation = method.getAnnotation(WSDoc.class);
 		if (docAnnotation != null)
 			return docAnnotation.value();
 		
@@ -389,7 +389,7 @@ public class ResourceDocCreator {
 		List<ResourceOperation> resourceOperations = new ArrayList<ResourceOperation>();
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
-			RequestMapping antn = (RequestMapping) method.getAnnotation(RequestMapping.class);
+			RequestMapping antn = method.getAnnotation(RequestMapping.class);
 			if (antn == null)
 				continue;
 			

@@ -81,6 +81,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 	 * @param conceptMap the concept map object.
 	 * @return the display string.
 	 */
+	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptMap conceptMap) {
 		if (conceptMap.getConceptReferenceTerm() == null || conceptMap.getConceptReferenceTerm().getConceptSource() == null) {

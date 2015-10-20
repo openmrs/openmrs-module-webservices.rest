@@ -73,6 +73,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return null;
 	}
 
+	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("value");

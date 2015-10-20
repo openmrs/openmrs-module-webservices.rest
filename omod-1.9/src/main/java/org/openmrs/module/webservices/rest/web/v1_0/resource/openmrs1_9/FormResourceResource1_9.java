@@ -113,7 +113,8 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
         return Context.getFormService().getFormResourceByUuid(uniqueId);
     }
 
-    public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
+    @Override
+	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addProperty("form");
         description.addProperty("name");

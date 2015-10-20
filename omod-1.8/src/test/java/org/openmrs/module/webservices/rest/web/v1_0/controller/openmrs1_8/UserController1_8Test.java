@@ -240,7 +240,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Object next = results.iterator().next();
 		
 		Util.log("Found " + results.size() + " user(s) by username", response);
-		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
 	}
 	
 	@Test

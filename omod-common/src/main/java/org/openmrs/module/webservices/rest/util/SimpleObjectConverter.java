@@ -27,10 +27,12 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		super(mapper);
 	}
 	
+	@Override
 	public boolean canConvert(Class clazz) {
 		return SimpleObject.class.isAssignableFrom(clazz);
 	}
 	
+	@Override
 	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
 		if (value instanceof Map) {
 			Map<?, ?> map = (Map<?, ?>) value;
@@ -81,6 +83,7 @@ public class SimpleObjectConverter extends AbstractCollectionConverter {
 		return null;
 	}
 	
+	@Override
 	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
 		return null;
 	}

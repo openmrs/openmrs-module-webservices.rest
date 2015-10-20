@@ -14,7 +14,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Before;
 import org.openmrs.VisitAttribute;

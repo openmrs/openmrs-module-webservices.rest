@@ -338,6 +338,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 * @param user
 	 * @return username or systemId (for concise display purposes)
 	 */
+	@Override
 	@PropertyGetter("display")
 	public String getDisplayString(UserAndPassword1_8 user) {
 		StringBuilder ret = new StringBuilder();

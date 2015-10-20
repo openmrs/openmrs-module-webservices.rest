@@ -1,6 +1,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		        + "\",\"value\":\"2005-01-01\"}]}";
 		handle(newPostRequest(getURI(), json));
 		Assert.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
-		Provider provider = (Provider) Context.getProviderService().getAllProviders().get(1);
+		Provider provider = Context.getProviderService().getAllProviders().get(1);
 		Assert.assertEquals(1, provider.getAttributes().size());
 	}
 	

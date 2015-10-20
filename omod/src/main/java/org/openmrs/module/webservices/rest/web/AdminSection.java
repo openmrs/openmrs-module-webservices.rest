@@ -19,7 +19,6 @@ import java.util.Map;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
-import org.openmrs.util.OpenmrsConstants;
 
 /**
  * This class defines the links that will appear on the administration page under the

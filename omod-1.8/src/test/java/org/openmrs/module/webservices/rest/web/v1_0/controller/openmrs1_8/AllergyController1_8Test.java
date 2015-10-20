@@ -17,7 +17,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;

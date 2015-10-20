@@ -27,6 +27,7 @@ public class CustomRepresentation implements Representation {
 		this.specification = specification;
 	}
 	
+	@Override
 	public String getRepresentation() {
 		return specification;
 	}
