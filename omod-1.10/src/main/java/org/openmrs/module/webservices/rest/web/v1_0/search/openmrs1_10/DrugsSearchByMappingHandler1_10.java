@@ -59,7 +59,7 @@ public class DrugsSearchByMappingHandler1_10 implements SearchHandler {
 	        .withOptionalParameters(REQUEST_PARAM_CODE, REQUEST_PARAM_MAP_TYPES).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("getDrugsByMapping", RestConstants.VERSION_1 + "/drug",
-	        Arrays.asList("1.10.*", "1.11.*", "1.12.*"), searchQuery);
+	        Arrays.asList("1.10.*", "1.11.*", "1.12.*", "2.0.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

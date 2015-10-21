@@ -14,9 +14,11 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -30,6 +32,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	
 	SessionFactory sessionFactory;
 	
+	Method method;
+	
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -40,8 +44,32 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	@Override
 	@Transactional(readOnly = true)
 	public <T> T getObjectByUuid(Class<? extends T> type, String uuid) {
-		return type.cast(sessionFactory.getCurrentSession().createCriteria(type).add(Restrictions.eq("uuid", uuid))
-		        .uniqueResult());
+		return type.cast(getSession().createCriteria(type).add(Restrictions.eq("uuid", uuid)).uniqueResult());
+	}
+	
+	private Session getSession() {
+		if (method == null) {
+			try {
+				return sessionFactory.getCurrentSession();
+			}
+			catch (NoSuchMethodError error) {
+				//Supports Hibernate 3 by casting org.hibernate.classic.Session to org.hibernate.Session
+				try {
+					method = sessionFactory.getClass().getMethod("getCurrentSession");
+					return (Session) method.invoke(sessionFactory);
+				}
+				catch (Exception e) {
+					throw new IllegalStateException(e);
+				}
+			}
+		} else {
+			try {
+				return (Session) method.invoke(sessionFactory);
+			}
+			catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}
 	}
 	
 	/**
@@ -50,7 +78,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	 */
 	@Override
 	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
-		return type.cast(sessionFactory.getCurrentSession().get(type, id));
+		return type.cast(getSession().get(type, id));
 	}
 	
 	/**
@@ -60,7 +88,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields) {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(type);
+		Criteria criteria = getSession().createCriteria(type);
 		for (Field field : fields) {
 			if (field != null) {
 				criteria.add(Restrictions.eq(field.getName(), field.getValue()));

@@ -10,7 +10,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/orderentryconfig", supportedClass = Object.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/orderentryconfig", supportedClass = Object.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class OrderEntryConfigResource1_10 implements Listable {
 
     @Override

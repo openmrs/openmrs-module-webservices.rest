@@ -15,7 +15,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/workflow", supportedClass = ProgramWorkflow.class, supportedOpenmrsVersions = {"1.8.*, 1.9.*","1.10.*","1.11.*","1.12.*"} , order = 1)
+@Resource(name = RestConstants.VERSION_1 + "/workflow", supportedClass = ProgramWorkflow.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"} , order = 1)
 public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<ProgramWorkflow> {
 
     @Override

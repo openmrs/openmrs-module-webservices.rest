@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 /**
  * Allows standard CRUD for the {@link ProviderAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/providerattributetype", supportedClass = ProviderAttributeType.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+@Resource(name = RestConstants.VERSION_1 + "/providerattributetype", supportedClass = ProviderAttributeType.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
 public class ProviderAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<ProviderAttributeType> {
 	
 	public ProviderAttributeTypeResource1_9() {

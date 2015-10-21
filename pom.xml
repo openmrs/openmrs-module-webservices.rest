@@ -36,12 +36,14 @@
 		<module>omod-1.9</module>
 		<module>omod-1.10</module>
 		<module>omod-1.11</module>
+		<module>omod-2.0</module>
 		<module>omod</module>
 	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<openmrs.version>1.8.4</openmrs.version>
+		<java.version>1.6</java.version>
 
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.parent.name}</MODULE_NAME>
@@ -259,8 +261,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<target>1.6</target>
-						<source>1.6</source>
+						<target>${java.version}</target>
+						<source>${java.version}</source>
 					</configuration>
 				</plugin>
 

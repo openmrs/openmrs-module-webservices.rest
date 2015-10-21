@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * {@link Resource} for ProviderAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = ProviderResource1_9.class, path = "attribute", supportedClass = ProviderAttribute.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+@SubResource(parent = ProviderResource1_9.class, path = "attribute", supportedClass = ProviderAttribute.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
 public class ProviderAttributeResource1_9 extends BaseAttributeCrudResource1_9<ProviderAttribute, Provider, ProviderResource1_9> {
 	
 	/**

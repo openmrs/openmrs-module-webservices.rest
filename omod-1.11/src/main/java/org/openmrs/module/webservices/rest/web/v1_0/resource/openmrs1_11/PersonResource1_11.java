@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*", "2.0.*"})
 public class PersonResource1_11 extends PersonResource1_8 {
 	
 	/**

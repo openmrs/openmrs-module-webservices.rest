@@ -27,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/hl7source", supportedClass = HL7Source.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/hl7source", supportedClass = HL7Source.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Source> {
 	
 	/**

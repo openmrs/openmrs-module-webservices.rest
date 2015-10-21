@@ -13,8 +13,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.util.List;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThat;
 
+import java.util.List;
+import java.util.Map;
+
+import org.azeckoski.reflectutils.refmap.FinalizableReference;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -78,9 +86,7 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(0), "concept/uuid"));
-		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(1), "concept/uuid"));
+		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"), isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
 	@Test
@@ -100,11 +106,27 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		result = deserialize(handle(req));
 		
 		hits = (List<Object>) result.get("results");
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("92afda7c-78c9-47bd-a841-0de0817027d4", Util.getByPath(hits.get(0), "concept/uuid"));
-		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(1), "concept/uuid"));
+		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"), isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
+	private Matcher<? super Object> isConceptWithUuid(final String uuid) {
+	    return new TypeSafeMatcher<Object>(Object.class) {
+
+			@Override
+            public void describeTo(Description description) {
+            }
+
+			@Override
+            protected boolean matchesSafely(Object item) {
+				@SuppressWarnings("unchecked")
+                Map<String, Object> safeItem = (Map<String, Object>) item;
+				@SuppressWarnings("unchecked")
+                Map<String, Object> concept = (Map<String, Object>) safeItem.get("concept");
+				
+	            return uuid.equals(concept.get("uuid"));
+            }};
+    }
+
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {

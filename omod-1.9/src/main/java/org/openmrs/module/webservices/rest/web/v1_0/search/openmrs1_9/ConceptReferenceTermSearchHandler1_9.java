@@ -43,7 +43,7 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	ConceptService conceptService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/conceptreferenceterm",
-	        "1.9.*", new SearchQuery.Builder("Allows you to find terms by source, code and name")
+		Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"), new SearchQuery.Builder("Allows you to find terms by source, code and name")
 	                .withRequiredParameters("source").withOptionalParameters("code", "name").build());
 	
 	/**

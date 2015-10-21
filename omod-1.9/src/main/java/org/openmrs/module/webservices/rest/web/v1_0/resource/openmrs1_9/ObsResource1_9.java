@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResou
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class ObsResource1_9 extends ObsResource1_8 {
 
     /**

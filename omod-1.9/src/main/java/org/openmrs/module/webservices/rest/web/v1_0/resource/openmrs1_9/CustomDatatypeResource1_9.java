@@ -31,7 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomDatatypeRepresentation> {
 
 	@Override

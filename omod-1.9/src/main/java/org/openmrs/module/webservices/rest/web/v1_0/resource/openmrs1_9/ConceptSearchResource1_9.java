@@ -45,7 +45,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * their weights
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptsearch", supportedClass = ConceptSearchResult.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
 public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSearchResult> implements Searchable {
 	
 	/**

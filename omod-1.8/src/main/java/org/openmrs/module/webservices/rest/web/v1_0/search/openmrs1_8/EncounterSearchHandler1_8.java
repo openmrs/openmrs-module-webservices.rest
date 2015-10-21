@@ -44,7 +44,7 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 	private static final String DATE_FROM = "fromdate";
 	private static final String DATE_TO = "todate";
 	
-    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
+    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"),
             Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)").withRequiredParameters("patient", "encounterType").withOptionalParameters(DATE_FROM, DATE_TO, "order").build()));
 
     @Override

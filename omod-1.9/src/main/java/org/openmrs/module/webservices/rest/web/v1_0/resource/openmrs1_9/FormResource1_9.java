@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormReso
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, order = 10,
-        supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+        supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class FormResource1_9 extends FormResource1_8{
     // TODO: Find out why autowiring is failing, in the mean time use Context.getService
 //    @Autowired

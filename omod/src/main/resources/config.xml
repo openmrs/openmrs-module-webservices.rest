@@ -25,6 +25,13 @@
 		<class>org.openmrs.module.webservices.rest.web.AdminSection</class>
 	</extension>
 	
+	<conditionalResources>
+		<conditionalResource>
+			<path>/lib/webservices.rest-omod-2.0.*</path>
+			<openmrsVersion>2.0</openmrsVersion>
+		</conditionalResource>
+	</conditionalResources>
+	
 	<!-- AOP -->
 	
 	<!-- Required Privileges -->

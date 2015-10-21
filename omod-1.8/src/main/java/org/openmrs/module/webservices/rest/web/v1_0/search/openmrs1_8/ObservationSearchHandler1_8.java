@@ -1,8 +1,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -15,11 +19,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The contents of this file are subject to the OpenMRS Public License
@@ -37,7 +37,7 @@ import java.util.List;
 @Component
 public class ObservationSearchHandler1_8 implements SearchHandler {
 
-    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/obs", Arrays.asList("1.8.*", "1.9.*","1.10.*", "1.11.*", "1.12.*"),
+    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/obs", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"),
             Arrays.asList(new SearchQuery.Builder("Allows you to find Observations by patient and concept").withRequiredParameters("patient", "concept").build()));
 
     @Override

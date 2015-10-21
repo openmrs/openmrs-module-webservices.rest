@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * {@link Resource} for {@link VisitType}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitType> {
 	
 	/**

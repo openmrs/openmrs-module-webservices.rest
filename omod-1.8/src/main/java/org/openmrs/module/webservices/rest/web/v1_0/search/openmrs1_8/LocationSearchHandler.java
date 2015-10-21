@@ -35,7 +35,7 @@ import java.util.List;
 public class LocationSearchHandler implements SearchHandler {
 
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/location", Arrays.asList(
-            "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"), new SearchQuery.Builder("Allows you to find locations by tag uuid or tag name").withRequiredParameters("tag")
+            "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"), new SearchQuery.Builder("Allows you to find locations by tag uuid or tag name").withRequiredParameters("tag")
             .build());
 
     /**

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * {@link Resource} for VisitAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = VisitResource1_9.class, path = "attribute", supportedClass = VisitAttribute.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@SubResource(parent = VisitResource1_9.class, path = "attribute", supportedClass = VisitAttribute.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class VisitAttributeResource1_9 extends BaseAttributeCrudResource1_9<VisitAttribute, Visit, VisitResource1_9> {
 	
 	/**
