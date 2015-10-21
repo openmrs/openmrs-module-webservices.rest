@@ -18,7 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.openmrs.annotation.Handler;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
 /**
@@ -26,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Handler
 public @interface SubResource {
 	
 	/**
