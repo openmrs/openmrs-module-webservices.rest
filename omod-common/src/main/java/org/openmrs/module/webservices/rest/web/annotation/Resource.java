@@ -18,11 +18,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.openmrs.annotation.Handler;
+
 /**
  * Indicates that the annotated class is a REST-accessible resource, and indicates its base URI
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
+@Handler
 public @interface Resource {
 	
 	String name();

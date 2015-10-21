@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +28,6 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleException;
 import org.openmrs.module.ModuleUtil;
-import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -59,6 +57,8 @@ public class RestServiceImpl implements RestService {
 	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
 	
 	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
+	
+	private List<Resource> resources;
 	
 	public RestServiceImpl() {
 	}
@@ -169,6 +169,14 @@ public class RestServiceImpl implements RestService {
 		
 	}
 	
+	public void setResources(List<Resource> resources) {
+		this.resources = resources;
+	}
+	
+	public List<Resource> getResources() {
+		return resources;
+	}
+	
 	/**
 	 * It should be used in TESTS ONLY.
 	 * 
@@ -193,19 +201,15 @@ public class RestServiceImpl implements RestService {
 		Map<String, ResourceDefinition> tempResourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
 		Map<Class<?>, Resource> tempResourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
 		
-		List<Class<? extends Resource>> resources;
-		try {
-			resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
-		}
-		catch (IOException e) {
-			throw new APIException("Cannot access REST resources", e);
+		if (resources == null) {
+			resources = new ArrayList<Resource>();
 		}
 		
-		for (Class<? extends Resource> resource : resources) {
+		for (Resource resource : resources) {
 			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
 			try {
-				resourceAnnotation = resource
-				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+				resourceAnnotation = resource.getClass().getAnnotation(
+				    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
 			}
 			catch (Exception e) {
 				//Missing class
@@ -221,7 +225,7 @@ public class RestServiceImpl implements RestService {
 				SubResource subresourceAnnotation = null;
 				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = null;
 				try {
-					subresourceAnnotation = resource.getAnnotation(SubResource.class);
+					subresourceAnnotation = resource.getClass().getAnnotation(SubResource.class);
 					parentResourceAnnotation = subresourceAnnotation.parent().getAnnotation(
 					    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
 				}
@@ -287,10 +291,8 @@ public class RestServiceImpl implements RestService {
 			}
 			
 			if (addResource) {
-				Resource newResource = newResource(resource);
-				
-				tempResourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
-				tempResourcesBySupportedClasses.put(supportedClass, newResource);
+				tempResourceDefinitionsByNames.put(name, new ResourceDefinition(resource, order));
+				tempResourcesBySupportedClasses.put(supportedClass, resource);
 			}
 			
 		}
@@ -442,20 +444,6 @@ public class RestServiceImpl implements RestService {
 			throw new APIException("Unknown resource: " + resourceClass);
 		} else {
 			return resource;
-		}
-	}
-	
-	/**
-	 * @throws InstantiationException
-	 */
-	private Resource newResource(Class<? extends Resource> resourceClass) {
-		try {
-			Resource resource = resourceClass.newInstance();
-			
-			return resource;
-		}
-		catch (Exception ex) {
-			throw new APIException("Failed to instantiate " + resourceClass, ex);
 		}
 	}
 	
