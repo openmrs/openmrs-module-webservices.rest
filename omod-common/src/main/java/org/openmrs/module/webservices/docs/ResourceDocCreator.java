@@ -154,8 +154,8 @@ public class ResourceDocCreator {
 			
 			String subResourceForClass = null;
 			ResourceDoc resourceDoc = new ResourceDoc(resourceClassname);
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = (resourceHandler
-			        .getClass().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
+			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = (resourceHandler.getClass()
+			        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class));
 			if (resourceAnnotation != null) {
 				resourceDoc.setResourceName(resourceAnnotation.name());
 			} else {
