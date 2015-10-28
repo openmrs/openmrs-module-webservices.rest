@@ -86,50 +86,8 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
     }
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController1_9Test#createEncounter_shouldCreateEncounterWithObsAttributesUnordered()
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController1_9Test#createEncounter_shouldCreateANewEncounterWithObs()
 	 */
-    @Test
-	public void createEncounter_shouldCreateEncounterWithObsAttributesUnordered() throws Exception {
-		long before = getAllCount();
-
-		List<SimpleObject> obs = new ArrayList<SimpleObject>();
-
-		SimpleObject weight = new SimpleObject();
-		weight.put("value", 70);
-		weight.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
-		obs.add(weight);
-		
-		SimpleObject civilStatus = new SimpleObject();
-		civilStatus.put("value", "92afda7c-78c9-47bd-a841-0de0817027d4");
-		civilStatus.put("concept","89ca642a-dab6-4f20-b712-e12ca4fc6d36" );
-		obs.add(civilStatus);
-		
-		SimpleObject encounter = new SimpleObject();
-		encounter.put("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
-		encounter.put("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
-		encounter.put("encounterDatetime", "2011-01-15");
-		encounter.put("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
-		encounter.put("provider", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
-		encounter.put("obs", obs);
-			
-		MockHttpServletResponse response = handle(newPostRequest(getURI(), encounter));
-		SimpleObject newEncounter = deserialize(response);
-		
-		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, getAllCount());
-
-        List<Map<String, String>> result = (List<Map<String, String>>) newEncounter.get("obs");
-		
-		Assert.assertEquals(2, result.size());
-		Set<String> obsDisplayValues = new HashSet<String>();
-		for (Map<String, String> o : result) {
-			obsDisplayValues.add(o.get("display"));
-		}
-		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
-		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
-		
-	}
-    
     @Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
 		long before = getAllCount();
@@ -293,7 +251,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 
         Util.log("Created a new encounter with a list of providers with different roles",newEncounter);
 
-        List<?> encounterProviderList = newEncounter.get("encounterProviders");
+        List<Map> encounterProviderList = (List<Map>)newEncounter.get("encounterProviders");
         Assert.assertEquals(2, encounterProviderList.size());
     }
 	/**
@@ -306,16 +264,17 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		List<SimpleObject> obs = new ArrayList<SimpleObject>();
 		// weight in kg = 70
-		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\",\"value\": 70 }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\", \"value\": 70 }"));
 		// civil status = married
-		obs.add(SimpleObject.parseJson(
-				"{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
+		obs
+		        .add(SimpleObject
+		                .parseJson("{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
 		// favorite food, non-coded = fried chicken
 		obs.add(SimpleObject
-				.parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
+		        .parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
 		// date of food assistance = 2011-06-21
-		obs.add(SimpleObject.parseJson(
-				"{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
+		obs.add(SimpleObject
+		        .parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
 		
 		return new SimpleObject().add("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8").add("encounterType",
 		    "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2011-01-15").add("patient",
@@ -359,12 +318,12 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
         SimpleObject result = deserialize(response);
 
         voidedEncounterProviderUuid = null;
-        List<Map<String,String>> encounterProviderList = result.get("encounterProviders");
+        List<Map> encounterProviderList = (List<Map>)result.get("encounterProviders");
         // we now check to make sure the encounter REST web service does not return voided encounter provider
         if (encounterProviderList != null) {
-            for (Map<String,String> wsEncounterProvider : encounterProviderList) {
-                if (StringUtils.equals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, wsEncounterProvider.get("uuid"))) {
-                    voidedEncounterProviderUuid = wsEncounterProvider.get("uuid");
+            for (Map wsEncounterProvider : encounterProviderList) {
+                if (StringUtils.equals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, (String) wsEncounterProvider.get("uuid"))) {
+                    voidedEncounterProviderUuid = (String) wsEncounterProvider.get("uuid");
                     // we found the voided encounter provider
                     break;
                 }
@@ -408,7 +367,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
         ).add("uuid", encounter.getUuid());
 
         //Post the existing encounter
-        deserialize(handle(newPostRequest(getURI() + "/" + encounter.getUuid(), encounterToModify)));
+        SimpleObject posted = deserialize(handle(newPostRequest(getURI() + "/" + encounter.getUuid(), encounterToModify)));
 
         Encounter updatedEncounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
 
