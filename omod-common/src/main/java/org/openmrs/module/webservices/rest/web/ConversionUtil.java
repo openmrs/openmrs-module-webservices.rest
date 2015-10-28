@@ -13,20 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.util.HandlerUtil;
-import org.openmrs.util.LocaleUtility;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -47,6 +33,24 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.APIException;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.util.HandlerUtil;
+import org.openmrs.util.LocaleUtility;
 
 public class ConversionUtil {
 	
@@ -297,6 +301,22 @@ public class ConversionUtil {
 		if (ret == null) {
 			String type = (String) map.get(RestConstants.PROPERTY_FOR_TYPE);
 			ret = converter.newInstance(type);
+		}
+		
+		// If the converter is a resource handler use the order of properties of its default representation
+		if (converter instanceof DelegatingResourceHandler) {
+
+			DelegatingResourceHandler handler = (DelegatingResourceHandler) converter;
+			DelegatingResourceDescription resDesc = handler.getRepresentationDescription(new DefaultRepresentation());
+			
+			// Some resources do not have delegating resource description
+			if (resDesc != null) {
+				for (Map.Entry<String, Property> prop : resDesc.getProperties().entrySet()) {
+					if (map.containsKey(prop.getKey()) && !RestConstants.PROPERTY_FOR_TYPE.equals(prop.getKey())) {
+						converter.setProperty(ret, prop.getKey(), map.get(prop.getKey()));
+					}
+				}
+			}
 		}
 		
 		for (Map.Entry<String, ?> prop : map.entrySet()) {

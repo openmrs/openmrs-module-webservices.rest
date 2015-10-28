@@ -145,10 +145,10 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, getAllCount());
 		
 		Util.log("created encounter with obs", newEncounter);
-		List<Map> obs = (List<Map>) newEncounter.get("obs");
+		List<Map<String,String>> obs = newEncounter.get("obs");
 		Assert.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
-		for (Map o : obs) {
+		for (Map<String,String> o : obs) {
 			obsDisplayValues.add((String) o.get("display"));
 		}
 		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
@@ -185,10 +185,10 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, getAllCount());
 		Util.log("created encounter with obs and orders", newEncounter);
 		
-		List<Map> newOrders = (List<Map>) newEncounter.get("orders");
+		List<Map<String,String>> newOrders = newEncounter.get("orders");
 		Assert.assertEquals(2, newOrders.size());
 		List<String> lookFor = new ArrayList<String>(Arrays.asList("FOOD ASSISTANCE", "Triomune-30: 1.0 tablet"));
-		for (Map o : newOrders) {
+		for (Map<String,String> o : newOrders) {
 			lookFor.remove(o.get("display"));
 		}
 		Assert.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
@@ -287,7 +287,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 		Object result = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
 		        "5946f880-b197-400b-9caa-a3c661d23041"))));
 		Assert.assertNotNull(result);
-		List encList = (List) PropertyUtils.getProperty(result, "results");
+		List<String> encList = (List<String>) PropertyUtils.getProperty(result, "results");
 		Assert.assertNotNull(encList);
 		Assert.assertTrue(encList.size() > 0);
 		List<String> uuids = new ArrayList<String>();
@@ -311,8 +311,7 @@ public class EncounterController1_8Test extends MainResourceControllerTest {
 
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType", "ff7397ea-c090-11e3-be87-005056821db0"))));
 
-
-        ArrayList encounters = (ArrayList) result.get("results");
+        List<?> encounters = result.get("results");
         Assert.assertEquals(1, encounters.size());
         String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
         Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
