@@ -134,6 +134,20 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
 	}
 	
+
+	@Test
+	public void shouldSearchPatientsWithCustomRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("q", "Horatio");
+		String customRep = "custom:(uuid,identifiers:(identifierType:(name),identifier),person:(preferredName,age,gender))";
+		req.addParameter("v", customRep);
+		SimpleObject result = deserialize(handle(req));
+		assertEquals(1, Util.getResultsSize(result));
+		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+		assertEquals("Horatio", PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.givenName"));
+		assertEquals("Hornblower", PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.familyName"));
+	}
+	
 	@Test
 	public void shouldRespectStartIndexAndLimit() throws Exception {
 		MockHttpServletRequest req = newGetRequest(getURI());
