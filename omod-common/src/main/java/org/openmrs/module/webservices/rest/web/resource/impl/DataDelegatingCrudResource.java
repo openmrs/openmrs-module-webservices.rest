@@ -15,11 +15,9 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import org.openmrs.OpenmrsData;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
@@ -47,20 +45,6 @@ public abstract class DataDelegatingCrudResource<T extends OpenmrsData> extends 
 		ret.put("display", delegate.toString());
 		ret.put("voided", delegate.isVoided());
 		ret.put("links", "[ All Data resources need to define their representations ]");
-		return ret;
-	}
-	
-	public SimpleObject getAuditInfo(T delegate) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(delegate, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(delegate.getDateCreated(), Representation.DEFAULT));
-		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "changedBy", Representation.REF));
-		ret.put("dateChanged", ConversionUtil.convertToRepresentation(delegate.getDateChanged(), Representation.DEFAULT));
-		if (delegate.isVoided()) {
-			ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(delegate, "voidedBy", Representation.REF));
-			ret.put("dateVoided", ConversionUtil.convertToRepresentation(delegate.getDateVoided(), Representation.DEFAULT));
-			ret.put("voidReason", ConversionUtil.convertToRepresentation(delegate.getVoidReason(), Representation.DEFAULT));
-		}
 		return ret;
 	}
 	
