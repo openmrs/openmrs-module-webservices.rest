@@ -52,7 +52,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -294,28 +293,6 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	public String getDisplayName(Concept instance) {
 		ConceptName cn = instance.getName();
 		return cn == null ? null : cn.getName();
-	}
-	
-	/**
-	 * Must put this here because we cannot extend {@link MetadataDelegatingCrudResource}
-	 * 
-	 * @param concept the delegate concept
-	 * @return audit information
-	 * @throws Exception
-	 */
-	public SimpleObject getAuditInfo(Concept concept) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(concept, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(concept.getDateCreated(), Representation.DEFAULT));
-		if (concept.isRetired()) {
-			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(concept, "retiredBy", Representation.REF));
-			ret.put("dateRetired", ConversionUtil.convertToRepresentation(concept.getDateRetired(), Representation.DEFAULT));
-			ret.put("retireReason", ConversionUtil
-			        .convertToRepresentation(concept.getRetireReason(), Representation.DEFAULT));
-		}
-		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(concept, "changedBy", Representation.REF));
-		ret.put("dateChanged", ConversionUtil.convertToRepresentation(concept.getDateChanged(), Representation.DEFAULT));
-		return ret;
 	}
 	
 	/**
