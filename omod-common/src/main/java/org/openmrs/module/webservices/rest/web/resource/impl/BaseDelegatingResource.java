@@ -41,7 +41,6 @@ import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -55,6 +54,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -850,16 +850,4 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 	}
-	
-	/**
-	 * Gets the audit information of a resource.
-	 * 
-	 * @param resource the resource.
-	 * @return a {@link SimpleObject} with the audit information.
-	 */
-	@PropertyGetter("auditInfo")
-	protected SimpleObject getAuditInfo(Object resource) {
-		return ConversionUtil.getAuditInfo(resource);
-	}
-	
 }

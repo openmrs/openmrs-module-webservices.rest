@@ -37,9 +37,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Auditable;
-import org.openmrs.Retireable;
-import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -459,41 +456,4 @@ public class ConversionUtil {
 		
 		return result;
 	}
-	
-	/**
-	 * Gets extra book-keeping info, for the full representation
-	 * 
-	 * @param delegate
-	 * @return
-	 */
-	public static SimpleObject getAuditInfo(Object delegate) {
-		SimpleObject ret = new SimpleObject();
-		
-		if (delegate instanceof Auditable) {
-			Auditable auditable = (Auditable) delegate;
-			ret.put("creator", getPropertyWithRepresentation(auditable, "creator", Representation.REF));
-			ret.put("dateCreated",convertToRepresentation(auditable.getDateCreated(), Representation.DEFAULT));
-			ret.put("changedBy", getPropertyWithRepresentation(auditable, "changedBy", Representation.REF));
-			ret.put("dateChanged", convertToRepresentation(auditable.getDateChanged(), Representation.DEFAULT));
-		}
-		if (delegate instanceof Retireable) {
-			Retireable retireable = (Retireable) delegate;
-			if (retireable.isRetired()) {
-				ret.put("retiredBy", getPropertyWithRepresentation(retireable, "retiredBy", Representation.REF));
-				ret.put("dateRetired", convertToRepresentation(retireable.getDateRetired(), Representation.DEFAULT));
-				ret.put("retireReason", convertToRepresentation(retireable.getRetireReason(), Representation.DEFAULT));
-			}
-		}
-		if (delegate instanceof Voidable) {
-			Voidable voidable = (Voidable) delegate;
-			if (voidable.isVoided()) {
-				ret.put("voidedBy", getPropertyWithRepresentation(voidable, "voidedBy", Representation.REF));
-				ret.put("dateVoided", convertToRepresentation(voidable.getDateVoided(), Representation.DEFAULT));
-				ret.put("voidReason", convertToRepresentation(voidable.getVoidReason(), Representation.DEFAULT));
-			}
-		}
-		
-		return ret;
-	}
-	
 }
