@@ -13,11 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -40,6 +35,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
@@ -88,7 +88,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 			description.addProperty("addresses");
 			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
 			description.addProperty("voided");
-			description.addProperty("auditInfo");
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
 		}
@@ -471,10 +471,18 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
      * @return audit information
      * @throws Exception
      */
-    @PropertyGetter("auditInfo")
+    @Override
     public SimpleObject getAuditInfo(Person person) throws Exception {
-        SimpleObject ret = super.getAuditInfo(person);
+        SimpleObject ret = new SimpleObject();
+        ret.put("creator", ConversionUtil.getPropertyWithRepresentation(person, "creator", Representation.REF));
         ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
+        ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(person, "changedBy", Representation.REF));
+        ret.put("dateChanged", ConversionUtil.convertToRepresentation(person.getDateChanged(), Representation.DEFAULT));
+        if (person.isVoided()) {
+            ret.put("voidedBy", ConversionUtil.getPropertyWithRepresentation(person, "voidedBy", Representation.REF));
+            ret.put("dateVoided", ConversionUtil.convertToRepresentation(person.getDateVoided(), Representation.DEFAULT));
+            ret.put("voidReason", ConversionUtil.convertToRepresentation(person.getVoidReason(), Representation.DEFAULT));
+        }
         return ret;
     }
 }

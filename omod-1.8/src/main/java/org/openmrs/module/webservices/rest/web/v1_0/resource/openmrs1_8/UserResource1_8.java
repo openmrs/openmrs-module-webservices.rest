@@ -22,12 +22,12 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -105,7 +105,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			description.addProperty("proficientLocales");
 			description.addProperty("secretQuestion");
 			description.addProperty("retired");
-			description.addProperty("auditInfo");
+			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
 		}
@@ -362,9 +362,19 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getAuditInfo(java.lang.Object)
 	 */
-	@PropertyGetter("auditInfo")
+	@Override
 	public SimpleObject getAuditInfo(UserAndPassword1_8 delegate) throws Exception {
-		SimpleObject ret = super.getAuditInfo(delegate.getUser());
+		User user = delegate.getUser();
+		SimpleObject ret = new SimpleObject();
+		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(user, "creator", Representation.REF));
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(user.getDateCreated(), Representation.DEFAULT));
+		if (user.isRetired()) {
+			ret.put("retiredBy", ConversionUtil.getPropertyWithRepresentation(user, "retiredBy", Representation.REF));
+			ret.put("dateRetired", ConversionUtil.convertToRepresentation(user.getDateRetired(), Representation.DEFAULT));
+			ret.put("retireReason", ConversionUtil.convertToRepresentation(user.getRetireReason(), Representation.DEFAULT));
+		}
+		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(user, "changedBy", Representation.REF));
+		ret.put("dateChanged", ConversionUtil.convertToRepresentation(user.getDateChanged(), Representation.DEFAULT));
 		return ret;
 	}
 	
