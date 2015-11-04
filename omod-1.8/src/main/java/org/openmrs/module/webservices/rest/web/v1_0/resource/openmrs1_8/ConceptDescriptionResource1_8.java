@@ -19,8 +19,6 @@ import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -170,23 +168,6 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptDescription conceptDescription) {
 		return conceptDescription.getDescription();
-	}
-	
-	/**
-	 * Gets extra book-keeping info, for the full representation
-	 * 
-	 * @param description
-	 * @return
-	 * @throws Exception
-	 */
-	public SimpleObject getAuditInfo(ConceptDescription description) throws Exception {
-		SimpleObject ret = new SimpleObject();
-		ret.put("creator", ConversionUtil.getPropertyWithRepresentation(description, "creator", Representation.REF));
-		ret.put("dateCreated", ConversionUtil.convertToRepresentation(description.getDateCreated(), Representation.DEFAULT));
-		ret.put("changedBy", ConversionUtil.getPropertyWithRepresentation(description, "changedBy", Representation.REF));
-		ret.put("dateChanged", ConversionUtil.convertToRepresentation(description.getDateChanged(), Representation.DEFAULT));
-		
-		return ret;
 	}
 	
 	/**
