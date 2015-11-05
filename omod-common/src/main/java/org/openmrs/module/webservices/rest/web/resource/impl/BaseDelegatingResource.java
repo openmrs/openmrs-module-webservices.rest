@@ -682,19 +682,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.util.ReflectionUtil#findMethod(Class, String)
-	 * @deprecated It is always best to annotate the method with @PropertyGetter instead of finding
-	 *             it this way, because properties defined this way cannot be included in custom
-	 *             representations
-	 */
-	@Deprecated
-	protected Method findMethod(String name) {
-		// TODO replace this with something that looks specifically for a method that takes a single T argument
-		Method ret = ReflectionUtil.findMethod(getClass(), name);
-		return ret;
-	}
-	
-	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(java.lang.Object,
 	 *      java.lang.String)
 	 */
@@ -858,7 +845,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * @return a {@link SimpleObject} with the audit information.
 	 */
 	@PropertyGetter("auditInfo")
-	protected SimpleObject getAuditInfo(Object resource) {
+	public SimpleObject getAuditInfo(Object resource) {
 		return ConversionUtil.getAuditInfo(resource);
 	}
 	

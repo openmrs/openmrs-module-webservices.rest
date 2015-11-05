@@ -91,7 +91,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("value");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -70,7 +70,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 			description.addProperty("familyNameSuffix");
 			description.addProperty("degree");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -92,7 +92,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("instructions");
 			description.addProperty("commentToFulfiller");
 			description.addProperty("display");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		} else {

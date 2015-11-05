@@ -69,7 +69,7 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 		rep.addProperty("name");
 		rep.addProperty("description");
 		rep.addProperty("retired");
-		rep.addProperty("auditInfo", findMethod("getAuditInfo"));
+		rep.addProperty("auditInfo");
 		rep.addSelfLink();
 		return convertDelegateToRepresentation(delegate, rep);
 	}

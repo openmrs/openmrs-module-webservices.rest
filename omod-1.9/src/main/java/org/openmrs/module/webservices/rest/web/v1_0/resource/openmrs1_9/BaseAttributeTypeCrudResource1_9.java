@@ -59,7 +59,7 @@ public abstract class BaseAttributeTypeCrudResource1_9<T extends AttributeType<?
 			description.addProperty("preferredHandlerClassname");
 			description.addProperty("handlerConfig");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

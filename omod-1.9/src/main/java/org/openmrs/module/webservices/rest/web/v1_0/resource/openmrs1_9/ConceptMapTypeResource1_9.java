@@ -60,7 +60,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 			description.addProperty("description");
 			description.addProperty("isHidden");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

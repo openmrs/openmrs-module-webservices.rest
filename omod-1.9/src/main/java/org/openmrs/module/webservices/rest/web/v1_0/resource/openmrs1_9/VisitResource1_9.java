@@ -80,7 +80,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			description.addProperty("encounters", Representation.DEFAULT);
 			description.addProperty("attributes", Representation.DEFAULT);
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

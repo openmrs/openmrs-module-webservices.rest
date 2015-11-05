@@ -81,7 +81,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 			description.addProperty("obs");
 			description.addProperty("orders");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

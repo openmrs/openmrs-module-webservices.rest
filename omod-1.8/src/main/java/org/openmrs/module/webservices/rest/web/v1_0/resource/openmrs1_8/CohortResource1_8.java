@@ -83,7 +83,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 			description.addProperty("description");
 			description.addProperty("memberIds");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

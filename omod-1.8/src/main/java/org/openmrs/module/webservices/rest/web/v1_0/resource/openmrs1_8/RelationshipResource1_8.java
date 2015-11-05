@@ -92,7 +92,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
             description.addProperty("relationshipType", Representation.DEFAULT);
             description.addProperty("personB", Representation.DEFAULT, Person.class);
             description.addProperty("voided");
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             description.addSelfLink();
             return description;
         }

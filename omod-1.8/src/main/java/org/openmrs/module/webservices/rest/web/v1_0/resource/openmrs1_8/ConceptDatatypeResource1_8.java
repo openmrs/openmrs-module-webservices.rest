@@ -59,7 +59,7 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 			description.addProperty("description");
 			description.addProperty("hl7Abbreviation");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -150,7 +150,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
             description.addProperty("startDate");
             description.addProperty("endDate");
             description.addProperty("voided");
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             description.addSelfLink();
             return description;
         }

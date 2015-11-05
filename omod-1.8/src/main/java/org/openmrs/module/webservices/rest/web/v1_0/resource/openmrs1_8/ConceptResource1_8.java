@@ -144,8 +144,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 
         description.addProperty("answers", Representation.DEFAULT);
         description.addProperty("setMembers", Representation.DEFAULT);
-        //description.addProperty("conceptMappings", Representation.DEFAULT);  add as subresource
-        description.addProperty("auditInfo", findMethod("getAuditInfo"));
+        description.addProperty("auditInfo");
         description.addSelfLink();
         if (delegate.isNumeric()) {
             description.addProperty("hiNormal");

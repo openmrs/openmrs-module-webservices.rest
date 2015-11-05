@@ -65,7 +65,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addProperty("hydratedObject");
 			description.addSelfLink();
 			return description;

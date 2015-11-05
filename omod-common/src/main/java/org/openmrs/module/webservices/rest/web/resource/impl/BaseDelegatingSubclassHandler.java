@@ -134,7 +134,7 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	 * @return a {@link SimpleObject} with the audit information.
 	 */
 	@PropertyGetter("auditInfo")
-	protected SimpleObject getAuditInfo(Object resource) {
+	public SimpleObject getAuditInfo(Object resource) {
 		return ConversionUtil.getAuditInfo(resource);
 	}
 }

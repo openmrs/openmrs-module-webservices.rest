@@ -54,7 +54,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 			if (rep instanceof DefaultRepresentation) {
 				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			} else {
-				description.addProperty("auditInfo", findMethod("getAuditInfo"));
+				description.addProperty("auditInfo");
 			}
 			return description;
 		}

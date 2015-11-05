@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentMap;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingPropertyAccessor;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * Utility methods for reflection and introspection
@@ -76,18 +75,12 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 * @param name the full method name to look for
-	 * @return the java Method object if found. (does not return null)
-	 * @throws RuntimeException if not method found by the given name in the current class
+	 * Find getter method in handler class or any of its superclasses
+	 * 
+	 * @param handler
+	 * @param propName
 	 * @return
 	 */
-	public static Method findMethod(Class<?> clazz, String name) {
-		Method ret = ReflectionUtils.findMethod(clazz, name, (Class<?>[]) null);
-		if (ret == null)
-			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
-		return ret;
-	}
-	
 	public static <T> Method findPropertyGetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = getterMethodCache.get(key);
@@ -95,23 +88,30 @@ public class ReflectionUtil {
 			return result == nullMethod ? null : result;
 		}
 		
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertyGetter ann = candidate.getAnnotation(PropertyGetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				result = candidate;
-				break;
+		Class<?> clazz = handler.getClass();
+		while (clazz != Object.class && result == null) {
+			for (Method method : clazz.getMethods()) {
+				PropertyGetter ann = method.getAnnotation(PropertyGetter.class);
+				if (ann != null && ann.value().equals(propName)) {
+					result = method;
+					break;
+				}
 			}
+			clazz = clazz.getSuperclass();
 		}
 		
-		if (result == null) {
-			getterMethodCache.put(key, nullMethod);
-		} else {
-			getterMethodCache.put(key, result);
-		}
+		getterMethodCache.put(key, result == null ? nullMethod : result);
 		
 		return result;
 	}
 	
+	/**
+	 * Find setter method in handler class or any of its superclasses
+	 * 
+	 * @param handler
+	 * @param propName
+	 * @return
+	 */
 	public static <T> Method findPropertySetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
 		Method result = setterMethodCache.get(key);
@@ -119,20 +119,21 @@ public class ReflectionUtil {
 			return result == nullMethod ? null : result;
 		}
 		
-		for (Method candidate : handler.getClass().getMethods()) {
-			PropertySetter ann = candidate.getAnnotation(PropertySetter.class);
-			if (ann != null && ann.value().equals(propName)) {
-				result = candidate;
-				break;
+		Class<?> clazz = handler.getClass();
+		while (clazz != Object.class && result == null) {
+			for (Method method : clazz.getMethods()) {
+				PropertySetter ann = method.getAnnotation(PropertySetter.class);
+				if (ann != null && ann.value().equals(propName)) {
+					result = method;
+					break;
+				}
 			}
+			clazz = clazz.getSuperclass();
 		}
 		
-		if (result == null) {
-			setterMethodCache.put(key, nullMethod);
-		} else {
-			setterMethodCache.put(key, result);
-		}
+		setterMethodCache.put(key, result == null ? nullMethod : result);
 		
 		return result;
 	}
+	
 }

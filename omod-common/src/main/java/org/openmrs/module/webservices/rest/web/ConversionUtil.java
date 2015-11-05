@@ -308,7 +308,7 @@ public class ConversionUtil {
 		
 		// If the converter is a resource handler use the order of properties of its default representation
 		if (converter instanceof DelegatingResourceHandler) {
-
+			
 			DelegatingResourceHandler handler = (DelegatingResourceHandler) converter;
 			DelegatingResourceDescription resDesc = handler.getRepresentationDescription(new DefaultRepresentation());
 			
@@ -472,7 +472,7 @@ public class ConversionUtil {
 		if (delegate instanceof Auditable) {
 			Auditable auditable = (Auditable) delegate;
 			ret.put("creator", getPropertyWithRepresentation(auditable, "creator", Representation.REF));
-			ret.put("dateCreated",convertToRepresentation(auditable.getDateCreated(), Representation.DEFAULT));
+			ret.put("dateCreated", convertToRepresentation(auditable.getDateCreated(), Representation.DEFAULT));
 			ret.put("changedBy", getPropertyWithRepresentation(auditable, "changedBy", Representation.REF));
 			ret.put("dateChanged", convertToRepresentation(auditable.getDateChanged(), Representation.DEFAULT));
 		}

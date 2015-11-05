@@ -87,7 +87,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
             description.addProperty("allWorkflows", Representation.FULL);
             description.addProperty("concept");
             description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             return description;
         } else if(rep instanceof RefRepresentation){
             DelegatingResourceDescription description = new DelegatingResourceDescription();

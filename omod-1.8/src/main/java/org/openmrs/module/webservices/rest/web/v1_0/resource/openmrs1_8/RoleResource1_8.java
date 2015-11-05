@@ -102,7 +102,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 			description.addProperty("privileges", Representation.DEFAULT);
 			description.addProperty("inheritedRoles", Representation.DEFAULT);
 			description.addProperty("allInheritedRoles", Representation.DEFAULT);
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

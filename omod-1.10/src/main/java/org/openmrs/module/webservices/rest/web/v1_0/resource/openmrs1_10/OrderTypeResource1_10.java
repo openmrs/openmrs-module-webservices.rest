@@ -57,7 +57,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 			} else {
 				description.addProperty("conceptClasses");
 				description.addProperty("parent");
-				description.addProperty("auditInfo", findMethod("getAuditInfo"));
+				description.addProperty("auditInfo");
 			}
 			return description;
 		}

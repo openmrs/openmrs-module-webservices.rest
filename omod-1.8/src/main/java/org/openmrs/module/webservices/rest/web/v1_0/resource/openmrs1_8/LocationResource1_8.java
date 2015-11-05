@@ -93,7 +93,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 			description.addProperty("parentLocation", Representation.DEFAULT);
 			description.addProperty("childLocations", Representation.DEFAULT);
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

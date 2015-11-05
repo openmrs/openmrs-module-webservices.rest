@@ -62,7 +62,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 			description.addProperty("stopObs", Representation.REF);
 			description.addProperty("comments");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

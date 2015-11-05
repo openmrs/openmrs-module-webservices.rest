@@ -61,7 +61,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 			description.addProperty("location", Representation.DEFAULT);
 			description.addProperty("preferred");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}
