@@ -76,7 +76,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 			description.addProperty("required");
 			description.addProperty("sortWeight");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

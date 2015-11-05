@@ -130,7 +130,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("identifiers", Representation.DEFAULT);
 			description.addProperty("person", Representation.FULL);
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

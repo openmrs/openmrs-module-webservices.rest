@@ -60,7 +60,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 			description.addProperty("concept", Representation.DEFAULT);
 			description.addProperty("retired");
 			description.addSelfLink();
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			return description;
 		} else if (rep.getRepresentation().equals("fullconcept")) {
             DelegatingResourceDescription description = getRepresentationDescription(Representation.FULL);

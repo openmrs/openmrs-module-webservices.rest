@@ -38,7 +38,7 @@ public class ProgramResource1_10 extends ProgramResource1_8{
             description.addProperty("outcomesConcept");
             description.addProperty("allWorkflows", Representation.FULL);
             description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             return description;
         } else if(rep instanceof RefRepresentation){
             DelegatingResourceDescription description = new DelegatingResourceDescription();

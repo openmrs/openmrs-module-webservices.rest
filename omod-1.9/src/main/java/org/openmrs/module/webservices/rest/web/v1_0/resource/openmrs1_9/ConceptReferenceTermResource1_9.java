@@ -68,7 +68,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 			description.addProperty("code");
 			description.addProperty("version");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

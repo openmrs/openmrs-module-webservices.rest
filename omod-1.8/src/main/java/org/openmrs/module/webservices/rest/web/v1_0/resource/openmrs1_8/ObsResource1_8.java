@@ -117,7 +117,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			description.addProperty("order");
 			description.addProperty("encounter");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addProperty("value");
 			description.addProperty("valueModifier");
 			description.addSelfLink();

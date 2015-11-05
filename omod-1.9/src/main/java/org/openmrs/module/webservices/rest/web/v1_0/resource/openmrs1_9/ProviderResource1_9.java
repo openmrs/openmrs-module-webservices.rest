@@ -66,7 +66,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 			description.addProperty("identifier");
 			description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -56,7 +56,7 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 			description.addProperty("description");
 			description.addProperty("isSet");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -78,7 +78,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 			description.addProperty("editPrivilege");
 			description.addProperty("retired");
             description.addProperty("concept");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

@@ -165,7 +165,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			description.addProperty("discontinuedReason");
 			description.addProperty("discontinuedReasonNonCoded");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		} else {

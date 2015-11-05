@@ -64,7 +64,7 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
             description.addProperty("outcome");
             description.addProperty("states", Representation.FULL);
             description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             return description;
         }
         return null;

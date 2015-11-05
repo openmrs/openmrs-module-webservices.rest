@@ -59,7 +59,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 			description.addProperty("source", Representation.DEFAULT);
 			description.addProperty("sourceCode");
 			description.addProperty("comment");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

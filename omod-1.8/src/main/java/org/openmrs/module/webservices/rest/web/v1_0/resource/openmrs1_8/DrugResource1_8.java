@@ -109,7 +109,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("combination");
 			description.addProperty("route", Representation.REF);
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

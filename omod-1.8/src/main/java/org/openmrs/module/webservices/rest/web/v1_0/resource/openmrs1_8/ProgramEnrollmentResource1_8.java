@@ -97,7 +97,7 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
             description.addProperty("location");
             description.addProperty("voided");
             description.addSelfLink();
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             return description;
         } else {
             return null;

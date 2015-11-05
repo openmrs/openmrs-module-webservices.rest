@@ -61,7 +61,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 			description.addProperty("description");
 			description.addProperty("hl7Code");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

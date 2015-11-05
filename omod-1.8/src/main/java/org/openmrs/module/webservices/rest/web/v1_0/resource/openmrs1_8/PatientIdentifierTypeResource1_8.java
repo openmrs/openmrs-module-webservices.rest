@@ -79,7 +79,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("uniquenessBehavior");
 			description.addProperty("validator");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

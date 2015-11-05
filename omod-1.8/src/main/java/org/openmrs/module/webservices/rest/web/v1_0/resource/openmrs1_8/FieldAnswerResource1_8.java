@@ -72,7 +72,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 			description.addProperty("display");
 			description.addProperty("concept");
 			description.addProperty("field");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

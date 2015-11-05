@@ -96,7 +96,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 			description.addProperty("latitude");
 			description.addProperty("longitude");
 			description.addProperty("voided");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

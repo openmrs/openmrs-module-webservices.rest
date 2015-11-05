@@ -69,7 +69,7 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 			description.addProperty("defaultValue");
 			description.addProperty("selectMultiple");
 			description.addProperty("retired");
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

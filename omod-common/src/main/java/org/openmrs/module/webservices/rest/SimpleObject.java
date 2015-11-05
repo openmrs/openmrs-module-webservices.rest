@@ -77,12 +77,14 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	}
 	
 	/**
-	 * Returns the value to which the specified key is mapped, or null if this map contains no mapping for the key. 
+	 * Returns the value to which the specified key is mapped, or null if this map contains no
+	 * mapping for the key.
+	 * 
 	 * @param key
 	 * @return
 	 */
 	public <T> T get(String key) {
-		return (T)super.get(key);
+		return (T) super.get(key);
 	}
 	
 }

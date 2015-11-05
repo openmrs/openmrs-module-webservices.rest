@@ -46,7 +46,7 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
             description.addProperty("provider", Representation.DEFAULT);
             description.addProperty("encounterRole", Representation.DEFAULT);
             description.addProperty("voided");
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
+            description.addProperty("auditInfo");
             description.addSelfLink();
             return description;
         }

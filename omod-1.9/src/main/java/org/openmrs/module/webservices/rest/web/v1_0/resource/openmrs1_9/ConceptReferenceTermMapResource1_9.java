@@ -66,7 +66,7 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 			description.addProperty("termA", Representation.DEFAULT);
 			description.addProperty("termB", Representation.DEFAULT);
 			description.addProperty("conceptMapType", Representation.DEFAULT);
-			description.addProperty("auditInfo", findMethod("getAuditInfo"));
+			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}

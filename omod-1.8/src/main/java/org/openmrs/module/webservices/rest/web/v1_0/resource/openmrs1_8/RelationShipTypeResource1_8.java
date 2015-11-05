@@ -94,15 +94,14 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
         description.addProperty("bIsToA");
         description.addProperty("retired");
         description.addSelfLink();
-        if (rep instanceof DefaultRepresentation) {
-            description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-            return description;
-        }
-        else if (rep instanceof FullRepresentation) {
-            description.addProperty("weight");
-            description.addProperty("auditInfo", findMethod("getAuditInfo"));
-            return description;
-        }
+		if (rep instanceof DefaultRepresentation) {
+			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			description.addProperty("weight");
+			description.addProperty("auditInfo");
+			return description;
+		}
         return null;
     }
 
