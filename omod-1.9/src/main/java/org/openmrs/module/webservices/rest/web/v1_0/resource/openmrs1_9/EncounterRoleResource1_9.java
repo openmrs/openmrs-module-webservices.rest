@@ -17,7 +17,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
@@ -31,15 +30,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<EncounterRole> {
 
-	/**
-	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
-	 */
-	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		// superclass has the desired behavior
-		return null;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

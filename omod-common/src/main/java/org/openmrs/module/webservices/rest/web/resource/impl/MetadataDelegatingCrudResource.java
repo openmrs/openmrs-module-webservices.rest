@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -36,6 +37,29 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * @param <T>
  */
 public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> extends DelegatingCrudResource<T> {
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
+	 */
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addProperty("name");
+			description.addProperty("description");
+			description.addProperty("retired");
+			description.addSelfLink();
+			if (rep instanceof DefaultRepresentation) {
+				description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+			} else {
+				description.addProperty("auditInfo");
+			}
+			return description;
+		}
+		return null;
+	}
 	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject convertToRef(T delegate) throws ConversionException {
