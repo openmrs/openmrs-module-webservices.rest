@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingPropertyAccessor;
+import org.springframework.util.ReflectionUtils;
 
 /**
  * Utility methods for reflection and introspection
@@ -136,4 +137,20 @@ public class ReflectionUtil {
 		return result;
 	}
 	
+	/**
+	 * @param name the full method name to look for
+	 * @return the java Method object if found. (does not return null)
+	 * @throws RuntimeException if not method found by the given name in the current class
+	 * 
+	 * @param clazz
+	 * @param propName
+	 * @return
+	 */
+	public static Method findMethod(Class<?> clazz, String name) {
+		Method ret = ReflectionUtils.findMethod(clazz, name, (Class<?>[]) null);
+		if (ret == null)
+			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
+		return ret;
+	}
+
 }
