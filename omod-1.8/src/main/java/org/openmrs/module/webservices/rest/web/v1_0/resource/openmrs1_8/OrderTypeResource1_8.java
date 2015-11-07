@@ -18,8 +18,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsConstants;
@@ -29,15 +27,6 @@ import org.openmrs.util.OpenmrsConstants;
  */
 @Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
 public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderType> {
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
-	 */
-	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		// use the defaults for metadata from the parent class
-		return null;
-	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
