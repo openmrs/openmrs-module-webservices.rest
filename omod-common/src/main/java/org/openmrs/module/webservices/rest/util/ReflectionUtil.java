@@ -141,7 +141,6 @@ public class ReflectionUtil {
 	 * @param name the full method name to look for
 	 * @return the java Method object if found. (does not return null)
 	 * @throws RuntimeException if not method found by the given name in the current class
-	 * 
 	 * @param clazz
 	 * @param propName
 	 * @return
@@ -152,5 +151,5 @@ public class ReflectionUtil {
 			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
 		return ret;
 	}
-
+	
 }

@@ -837,12 +837,12 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		}
 		throw new RuntimeException(getClass() + " needs a @Resource or @SubResource annotation");
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.util.ReflectionUtil#findMethod(Class,String)
-	 * @deprecated It is always best to annotate the method with @PropertyGetter
-	 *             instead of finding it this way, because properties defined
-	 *             this way cannot be included in custom representations
+	 * @deprecated It is always best to annotate the method with @PropertyGetter instead of finding
+	 *             it this way, because properties defined this way cannot be included in custom
+	 *             representations
 	 */
 	@Deprecated
 	protected Method findMethod(String name) {
