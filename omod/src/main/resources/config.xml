@@ -19,6 +19,10 @@
 	
 	<require_version>${openmrs.version}</require_version>
 	
+	<aware_of_modules>
+	    <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+	</aware_of_modules>
+	
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
