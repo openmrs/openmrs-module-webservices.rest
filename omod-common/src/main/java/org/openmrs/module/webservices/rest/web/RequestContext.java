@@ -116,7 +116,6 @@ public class RequestContext {
 	
 	/**
 	 * @param includeAll whether or not to include voided data / retired metadata
-	 * @see RestUtil#getRequestContext
 	 */
 	public void setIncludeAll(Boolean includeAll) {
 		this.includeAll = includeAll;
@@ -126,7 +125,6 @@ public class RequestContext {
 	 * Should be used to limit the number of main results returned by search methods
 	 * 
 	 * @return the integer limit set in a request parameter
-	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_LIMIT
 	 */
 	public Integer getLimit() {
@@ -152,7 +150,6 @@ public class RequestContext {
 	 * by users in a request parameter
 	 * 
 	 * @return the integer startIndex
-	 * @see RestUtil#getRequestContext(org.springframework.web.context.request.WebRequest)
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_START_INDEX
 	 */
 	public Integer getStartIndex() {

@@ -27,9 +27,9 @@ public interface Searchable extends Resource {
 	/**
 	 * Searches for all instances of the given resource that match the given query.
 	 * 
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public SimpleObject search(RequestContext context) throws ResponseException;
 	

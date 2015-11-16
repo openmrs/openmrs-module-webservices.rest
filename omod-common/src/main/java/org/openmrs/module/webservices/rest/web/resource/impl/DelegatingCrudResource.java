@@ -47,8 +47,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Retrievable#retrieve(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public Object retrieve(String uuid, RequestContext context) throws ResponseException {
@@ -73,7 +71,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Creatable#create(org.springframework.web.context.request.WebRequest)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Creatable#create(SimpleObject,
+	 *      RequestContext)
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
@@ -104,8 +103,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.SimpleObject)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(String,
+	 *      SimpleObject, RequestContext)
 	 */
 	@Override
 	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
@@ -151,7 +150,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Deletable#delete(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Deletable#delete(String, String,
+	 *      RequestContext)
 	 */
 	@Override
 	public void delete(String uuid, String reason, RequestContext context) throws ResponseException {
@@ -162,7 +162,8 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Purgeable#purge(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Purgeable#purge(String,
+	 *      RequestContext)
 	 */
 	@Override
 	public void purge(String uuid, RequestContext context) throws ResponseException {

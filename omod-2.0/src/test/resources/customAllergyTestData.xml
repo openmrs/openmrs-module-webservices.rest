@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <allergy allergy_id="1" coded_allergen="18" patient_id="2" allergen_type="POLLEN" severity_concept_id="23" voided="0" creator="1" date_created="2010-05-25 12:00:00" uuid="40fb7f47-e80a-7890-9285-bd798be13c61"/>
+</dataset>

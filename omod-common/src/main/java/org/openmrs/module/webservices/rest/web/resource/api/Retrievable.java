@@ -27,10 +27,10 @@ public interface Retrievable extends Resource {
 	/**
 	 * Gets the object with the given uuid, in the given representation
 	 * 
-	 * @param uuid
-	 * @param context
-	 * @return
-	 * @throws ResponseException
+	 * @param uuid desc needed
+	 * @param context desc needed
+	 * @return desc needed
+	 * @throws ResponseException desc needed
 	 */
 	public Object retrieve(String uuid, RequestContext context) throws ResponseException;
 	

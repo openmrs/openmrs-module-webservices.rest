@@ -46,7 +46,7 @@ public class NamedRepresentation implements Representation {
 	}
 	
 	/**
-	 * @param ann
+	 * @param ann desc needed
 	 * @return true if ann is for {@link NamedRepresentation} with the correct name specified
 	 */
 	public boolean matchesAnnotation(RepHandler ann) {

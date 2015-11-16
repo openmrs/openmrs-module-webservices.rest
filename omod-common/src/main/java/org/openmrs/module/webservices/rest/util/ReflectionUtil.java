@@ -50,10 +50,14 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 * If clazz implements genericInterface<T, U, ...>, this method returns the parameterized type
-	 * with the given index from that interface. This method will recursively look at superclasses
-	 * until it finds one implementing the requested interface
+	 * If clazz implements genericInterface - T, U, ... -, this method returns the parameterized
+	 * type with the given index from that interface. This method will recursively look at
+	 * superclasses until it finds one implementing the requested interface
 	 * 
+	 * @param clazz the clazz to look in
+	 * @param genericInterface the full method name to look for
+	 * @param index the full method name to look for
+	 * @return return
 	 * @should find genericInterface on a superclass if clazz does not directly implement it
 	 * @should ignore type variables on the declaring interface
 	 * @should not inspect superclasses of the specified genericInterface
@@ -76,11 +80,10 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 * Find getter method in handler class or any of its superclasses
-	 * 
-	 * @param handler
-	 * @param propName
-	 * @return
+	 * @param <T> type
+	 * @param handler handler
+	 * @param propName propName
+	 * @return return
 	 */
 	public static <T> Method findPropertyGetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
@@ -107,11 +110,10 @@ public class ReflectionUtil {
 	}
 	
 	/**
-	 * Find setter method in handler class or any of its superclasses
-	 * 
-	 * @param handler
-	 * @param propName
-	 * @return
+	 * @param <T> type
+	 * @param handler handler
+	 * @param propName propName
+	 * @return return
 	 */
 	public static <T> Method findPropertySetterMethod(DelegatingPropertyAccessor<? extends T> handler, String propName) {
 		String key = handler.getClass().getName().concat(propName);
