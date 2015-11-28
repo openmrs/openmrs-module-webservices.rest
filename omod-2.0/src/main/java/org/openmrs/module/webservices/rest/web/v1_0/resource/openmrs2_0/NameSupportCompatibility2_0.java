@@ -20,7 +20,9 @@ import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.resource.api.NameSupportCompatibility;
+import org.springframework.stereotype.Component;
 
+@Component("webservices.rest.NameSupportCompatibility2_0")
 @OpenmrsProfile(openmrsPlatformVersion = "2.0.*")
 public class NameSupportCompatibility2_0 implements NameSupportCompatibility {
 

@@ -159,7 +159,7 @@ public class PatientController1_8Test extends MainResourceControllerTest {
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		results = deserialize(handle(req));
 		int firstCount = Util.getResultsSize(results);
-		assertEquals(2, firstCount);
+		assertEquals(1, firstCount);
 		
 		req.removeParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_START_INDEX, "2");
