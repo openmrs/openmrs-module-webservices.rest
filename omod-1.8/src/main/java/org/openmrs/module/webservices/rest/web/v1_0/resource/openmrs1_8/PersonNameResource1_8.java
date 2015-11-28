@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,8 +20,6 @@ import java.util.List;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
-import org.openmrs.layout.web.name.NameSupport;
-import org.openmrs.layout.web.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -31,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.NameSupportCompatibility;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -41,6 +39,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  */
 @SubResource(parent = PersonResource1_8.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Person, PersonResource1_8> {
+	
+	private NameSupportCompatibility nameSupport;
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
@@ -200,21 +200,9 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonName personName) {
-
-        try {
-            NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
-
-            if (nameTemplate!= null) {
-                // need to use reflection since the format method was not added until later versions of openmrs
-                Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
-                return (String) format.invoke(nameTemplate, personName);
-            }
-        }
-        catch (Exception e) {
-            // fall through to just returning full name if no format method found or format fails
-        }
-
-        // otherwise, just return full name
-        return personName.getFullName();
+		if (nameSupport == null) {
+			nameSupport = Context.getRegisteredComponents(NameSupportCompatibility.class).get(0);
+		}
+        return nameSupport.getDisplayString(personName);
 	}
 }
