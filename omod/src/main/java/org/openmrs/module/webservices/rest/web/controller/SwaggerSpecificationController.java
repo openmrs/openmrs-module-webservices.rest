@@ -61,6 +61,10 @@ public class SwaggerSpecificationController {
 			String resourcesUrl = Context.getAdministrationService().getGlobalProperty(
 			    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString());
 			
+			if (!resourcesUrl.endsWith("/")) {
+				resourcesUrl += "/";
+			}
+			
 			resourcesUrl += "ws/rest";
 			
 			String urlWithoutScheme = "";
