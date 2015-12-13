@@ -87,7 +87,14 @@ public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.we
 
     @PropertyGetter("encounterProviders")
     public static Set<EncounterProvider> getActiveEncounterProviders(Encounter instance) {
-        return new LinkedHashSet<EncounterProvider>(instance.getActiveEncounterProviders());
+    	Set<EncounterProvider> encounterProviders = instance.getEncounterProviders();
+    	Set<EncounterProvider> providers = new LinkedHashSet<EncounterProvider>();
+    	for (EncounterProvider encounterProvider : encounterProviders) {
+    		if (!encounterProvider.isVoided()) {
+    			providers.add(encounterProvider);
+	        }
+        }
+        return providers;
     }
 
     /**
