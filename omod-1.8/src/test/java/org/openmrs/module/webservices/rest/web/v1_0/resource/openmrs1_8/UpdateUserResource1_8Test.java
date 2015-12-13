@@ -17,15 +17,22 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.api.PasswordException;
+import org.openmrs.api.WeakPasswordException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Integration tests for the framework that lets a resource handle an entire class hierarchy
@@ -55,4 +62,46 @@ public class UpdateUserResource1_8Test extends BaseModuleWebContextSensitiveTest
         SimpleObject updatedAgain = (SimpleObject) resource.update("c98a1558-e131-11de-babe-001e378eb67e", userSimpleObject, new RequestContext());
     }
 
+    @Test
+    public void shouldUpdatePassword() throws Exception {
+        SimpleObject userSimpleObject = new SimpleObject();
+
+        userSimpleObject.put("uuid", "1010d442-e134-11de-babe-001e378eb67e");
+        userSimpleObject.put("password", "Admin123");
+        resource.update("1010d442-e134-11de-babe-001e378eb67e", userSimpleObject, new RequestContext());
+
+
+        assertTrue(Context.isAuthenticated());
+        assertEquals("admin", Context.getAuthenticatedUser().getUsername());
+    }
+
+    @Test(expected=PasswordException.class)
+    public void shouldNotUpdatePasswordIfItIsNotAuthenticated() throws Exception {
+        SimpleObject userSimpleObject = new SimpleObject();
+
+        userSimpleObject.put("uuid", "1010d442-e134-11de-babe-001e378eb67e");
+        userSimpleObject.put("password", "blah");
+
+        resource.update("1010d442-e134-11de-babe-001e378eb67e", userSimpleObject, new RequestContext());
+    }
+
+    @Test
+    public void shouldNotTryUpdatingPasswordIfThePasswordIsNull() throws Exception {
+        SimpleObject userSimpleObject = new SimpleObject();
+
+        userSimpleObject.put("uuid", "1010d442-e134-11de-babe-001e378eb67e");
+        userSimpleObject.put("password", null);
+
+        resource.update("1010d442-e134-11de-babe-001e378eb67e", userSimpleObject, new RequestContext());
+    }
+
+    @Test(expected = ConversionException.class)
+    public void shouldUpdatePasswordOnlyIfTheSameUserChangesIt() throws Exception {
+        SimpleObject userSimpleObject = new SimpleObject();
+
+        userSimpleObject.put("uuid", "1010d442-e134-11de-babe-001e378eb67e");
+        userSimpleObject.put("password", "Admin123");
+
+        resource.update("c98a1558-e131-11de-babe-001e378eb67e", userSimpleObject, new RequestContext());
+    }
 }
