@@ -117,17 +117,13 @@ public class SwaggerSpecificationCreator {
 			
 			Object delegate = null;
 			try {
-				if (resourceHandler.newDelegate() == null) {
-					continue;
-				}
-				
 				//System.out.println("Class " + resourceHandler.newDelegate().getClass());
 				if (!Modifier.isInterface(resourceHandler.newDelegate().getClass().getModifiers())
 				        && !Modifier.isAbstract(resourceHandler.newDelegate().getClass().getModifiers())) {
 					delegate = resourceHandler.newDelegate();
 				}
 			}
-			catch (ResourceDoesNotSupportOperationException ex) {
+			catch (Exception ex) {
 				continue;
 			}
 			if (delegate == null) {
