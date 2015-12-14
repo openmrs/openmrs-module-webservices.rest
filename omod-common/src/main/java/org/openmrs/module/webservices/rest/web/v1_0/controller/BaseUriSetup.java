@@ -17,7 +17,7 @@ public class BaseUriSetup {
 				uri.append(":").append(request.getServerPort());
 			}
 			if (!StringUtils.isBlank(request.getContextPath())) {
-				uri.append("/").append(request.getContextPath());
+				uri.append(request.getContextPath());
 			}
 			
 			RestConstants.URI_PREFIX = RestConstants.URI_PREFIX.replace("NEED-TO-CONFIGURE", uri.toString());
