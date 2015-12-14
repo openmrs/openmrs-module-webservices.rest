@@ -14,6 +14,8 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
@@ -609,5 +613,4 @@ public class RestServiceImpl implements RestService {
 		initializeResources();
 		initializeSearchHandlers();
 	}
-	
 }
