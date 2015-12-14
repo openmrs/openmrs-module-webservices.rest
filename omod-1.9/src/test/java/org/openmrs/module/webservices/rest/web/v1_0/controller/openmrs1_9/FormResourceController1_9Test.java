@@ -1,5 +1,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,13 +27,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class FormResourceController1_9Test extends MainResourceControllerTest {
     private FormService formService;
@@ -97,11 +97,9 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
                     (String)PropertyUtils.getProperty(link, "uri"));
         }
 
-        String uriPrefix = Context.getAdministrationService()
-                .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME,
-                        RestConstants.URI_PREFIX_GP_DEFAULT_VALUE);
+        String uriPrefix = RestConstants.URI_PREFIX;
 
-        String expectedLink = uriPrefix + "/ws/rest/" + RestConstants.VERSION_1 + "/" + getURI() + "/" +
+        String expectedLink = uriPrefix + "v1/" + getURI() + "/" +
                 getUuid() + "/value";
 
         Assert.assertTrue(linksMap.containsKey("value"));
