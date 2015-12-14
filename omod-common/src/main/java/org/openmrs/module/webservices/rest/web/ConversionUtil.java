@@ -278,6 +278,11 @@ public class ConversionUtil {
 		} else if (toClass.isAssignableFrom(Integer.class) && object instanceof Number) {
 			return ((Number) object).intValue();
 		}
+		
+		if (toClass.isAssignableFrom(String.class) && object instanceof Boolean) {
+			return String.valueOf(object);
+		}
+		
 		throw new ConversionException("Don't know how to convert from " + object.getClass() + " to " + toType, null);
 	}
 	

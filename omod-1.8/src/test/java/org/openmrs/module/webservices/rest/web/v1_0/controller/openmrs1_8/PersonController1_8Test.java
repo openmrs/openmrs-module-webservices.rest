@@ -13,12 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +38,8 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests CRUD operations for {@link Person}s via web service calls
@@ -155,7 +151,7 @@ public class PersonController1_8Test extends MainResourceControllerTest {
 		String json = "{\"gender\":\"F\",\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}";
         SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
         assertNotNull(response);
-        Object responsePersonContents=PropertyUtils.getProperty(response,"person");
+        Object responsePersonContents=PropertyUtils.getProperty(response, "person");
         assertNotNull(responsePersonContents);
         assertTrue("F".equals(PropertyUtils.getProperty(responsePersonContents,"gender").toString()));
 		assertEquals("F", person.getGender());
@@ -349,5 +345,41 @@ public class PersonController1_8Test extends MainResourceControllerTest {
 		results = deserialize(handle(req));
 		int restCount = Util.getResultsSize(results);
 		assertEquals(fullCount, firstCount + restCount);
+	}
+
+	@Test
+	public void shouldCreateAPersonWithBooleanAttributeWithoutQuotes() throws Exception {
+		executeDataSet("personAttributeTypeWithConcept.xml");
+		long originalCount = service.getPeople("", false).size();
+		String givenName = "TestName1";
+		String attributeUuid = "55e6ce9e-25bf-11e3-a013-3c0754156a5f";
+		int attributeId = 10;
+		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":true,\"attributeType\":" +
+				"\""+ attributeUuid +"\"}],"+"\"names\": [{\"givenName\":\"" +
+				givenName +"\", \"familyName\":\"TestFamily\"}]}";
+		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
+		String uuid = PropertyUtils.getProperty(newPerson, "uuid").toString();
+		Person person = Context.getPersonService().getPersonByUuid(uuid);
+		assertEquals(++originalCount, service.getPeople("", false).size());
+		assertEquals(givenName, person.getGivenName());
+		assertEquals("true", person.getAttribute(attributeId).getValue());
+	}
+
+	@Test
+	public void shouldCreateAPersonWithBooleanAttributeWithQuotes() throws Exception {
+		executeDataSet("personAttributeTypeWithConcept.xml");
+		long originalCount = service.getPeople("", false).size();
+		String givenName = "TestName2";
+		int attributeId = 10;
+		String attributeUuid = "55e6ce9e-25bf-11e3-a013-3c0754156a5f";
+		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":\"true\",\"attributeType\":" +
+				"\""+ attributeUuid +"\"}],"+"\"names\": [{\"givenName\":\"" +
+				givenName +"\", \"familyName\":\"TestFamily\"}]}";
+		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
+		String uuid = PropertyUtils.getProperty(newPerson, "uuid").toString();
+		Person person = Context.getPersonService().getPersonByUuid(uuid);
+		assertEquals(++originalCount, service.getPeople("", false).size());
+		assertEquals(givenName, person.getGivenName());
+		assertEquals("true", person.getAttribute(attributeId).getValue());
 	}
 }
