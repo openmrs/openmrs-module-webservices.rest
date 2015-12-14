@@ -55,6 +55,9 @@ public class MainResourceController extends BaseRestController {
 	@Autowired
 	RestService restService;
 	
+	@Autowired
+	BaseUriSetup baseUriSetup;
+	
 	/**
 	 * @param uuid
 	 * @param request
@@ -65,6 +68,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Retrievable res = (Retrievable) restService.getResourceByName(buildResourceName(resource));
 		return res.retrieve(uuid, context);
@@ -81,6 +85,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object create(@PathVariable("resource") String resource, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
@@ -100,6 +105,7 @@ public class MainResourceController extends BaseRestController {
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
 		Object updated = res.update(uuid, post, context);
@@ -117,6 +123,7 @@ public class MainResourceController extends BaseRestController {
 	public Object delete(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 		res.delete(uuid, reason, context);
@@ -133,6 +140,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Purgeable res = (Purgeable) restService.getResourceByName(buildResourceName(resource));
 		res.purge(uuid, context);
@@ -150,6 +158,7 @@ public class MainResourceController extends BaseRestController {
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		Object res = restService.getResourceByName(buildResourceName(resource));
 		Converter conv = res instanceof Converter ? (Converter) res : null;
 		

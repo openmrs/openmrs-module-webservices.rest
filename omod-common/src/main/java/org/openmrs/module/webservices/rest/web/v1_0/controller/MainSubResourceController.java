@@ -45,6 +45,9 @@ public class MainSubResourceController extends BaseRestController {
 	@Autowired
 	RestService restService;
 	
+	@Autowired
+	BaseUriSetup baseUriSetup;
+	
 	/**
 	 * @param parentUuid
 	 * @param uuid
@@ -57,6 +60,7 @@ public class MainSubResourceController extends BaseRestController {
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.retrieve(parentUuid, uuid, context);
@@ -74,6 +78,7 @@ public class MainSubResourceController extends BaseRestController {
 	public SimpleObject getAll(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.getAll(parentUuid, context);
@@ -92,6 +97,7 @@ public class MainSubResourceController extends BaseRestController {
 	public Object create(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object created = res.create(parentUuid, post, context);
@@ -113,6 +119,7 @@ public class MainSubResourceController extends BaseRestController {
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object updated = res.update(parentUuid, uuid, post, context);
@@ -132,6 +139,7 @@ public class MainSubResourceController extends BaseRestController {
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.delete(parentUuid, uuid, reason, context);
@@ -150,6 +158,7 @@ public class MainSubResourceController extends BaseRestController {
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.purge(parentUuid, uuid, context);
