@@ -159,10 +159,7 @@ public class RestConstants {
 	// to the web application
 	public static final String URI_PREFIX_GLOBAL_PROPERTY_NAME = MODULE_ID + ".uriPrefix";
 	
-	// The dafault value for URI prefix
-	public static final String URI_PREFIX_GP_DEFAULT_VALUE = "NEED-TO-CONFIGURE";
-	
-	//The suffix to be used for all messages codes for logic names of global properties 
+	//The suffix to be used for all messages codes for logic names of global properties
 	//e.g "webservices.rest.fooBar.label for the 'webservices.rest.fooBar' global property
 	public static final String GLOBAL_PROPERTY_LOGICAL_NAME_MESSAGE_CODE_SUFFIX = ".label";
 	

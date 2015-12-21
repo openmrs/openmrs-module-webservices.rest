@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class BaseUriSetup {
 	
 	public void setup(HttpServletRequest request) {
-		if (RestConstants.URI_PREFIX.contains("NEED-TO-CONFIGURE")) {
+		if (!RestConstants.URI_PREFIX.startsWith("http://") && !RestConstants.URI_PREFIX.startsWith("https://")) {
 			StringBuilder uri = new StringBuilder();
 			uri.append(request.getScheme()).append("://").append(request.getServerName());
 			if (request.getServerPort() != 80) {
@@ -20,7 +20,7 @@ public class BaseUriSetup {
 				uri.append(request.getContextPath());
 			}
 			
-			RestConstants.URI_PREFIX = RestConstants.URI_PREFIX.replace("NEED-TO-CONFIGURE", uri.toString());
+			RestConstants.URI_PREFIX = uri.toString() + RestConstants.URI_PREFIX;
 		}
 	}
 }
