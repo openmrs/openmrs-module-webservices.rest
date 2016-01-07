@@ -13,17 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.openmrs.api.context.Context;
@@ -37,56 +26,49 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller("SwaggerSpecificationController")
 @RequestMapping("/module/webservices/rest/swaggerSpec.json")
 public class SwaggerSpecificationController {
-	
+
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody
-	String getSwaggerSpecification(HttpServletRequest request) throws Exception {
-		
+	public @ResponseBody String getSwaggerSpecification(HttpServletRequest request) throws Exception {
+
 		String swaggerSpecificationJSON = "";
-		try {
-			StringBuilder baseUrl = new StringBuilder();
-			String scheme = request.getScheme();
-			int port = request.getServerPort();
-			
-			baseUrl.append(scheme); // http, https
-			baseUrl.append("://");
-			baseUrl.append(request.getServerName());
-			if ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)) {
-				baseUrl.append(':');
-				baseUrl.append(request.getServerPort());
-			}
-			
-			baseUrl.append(request.getContextPath());
-			
-			String resourcesUrl = Context.getAdministrationService().getGlobalProperty(
-			    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString());
-			
-			if (!resourcesUrl.endsWith("/")) {
-				resourcesUrl += "/";
-			}
-			
-			resourcesUrl += "ws/rest";
-			
-			String urlWithoutScheme = "";
-			
-			/* Swagger appends scheme to urls, so we should remove it */
-			if (scheme.equals("http"))
-				urlWithoutScheme = resourcesUrl.replace("http://", "");
-			
-			else if (scheme.equals("https"))
-				urlWithoutScheme = resourcesUrl.replace("https://", "");
-			
-			SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator(urlWithoutScheme);
-			
-			swaggerSpecificationJSON = creator.BuildJSON();
-			
+		StringBuilder baseUrl = new StringBuilder();
+		String scheme = request.getScheme();
+		int port = request.getServerPort();
+
+		baseUrl.append(scheme); // http, https
+		baseUrl.append("://");
+		baseUrl.append(request.getServerName());
+		if ((scheme.equals("http") && port != 80) || (scheme.equals("https") && port != 443)) {
+			baseUrl.append(':');
+			baseUrl.append(request.getServerPort());
 		}
-		catch (Exception exception) {
-			
-			return "";
+
+		baseUrl.append(request.getContextPath());
+
+		String resourcesUrl = Context.getAdministrationService()
+		        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString());
+
+		if (!resourcesUrl.endsWith("/")) {
+			resourcesUrl += "/";
 		}
+
+		resourcesUrl += "ws/rest";
+
+		String urlWithoutScheme = "";
+
+		/* Swagger appends scheme to urls, so we should remove it */
+		if (scheme.equals("http"))
+			urlWithoutScheme = resourcesUrl.replace("http://", "");
+
+		else if (scheme.equals("https"))
+			urlWithoutScheme = resourcesUrl.replace("https://", "");
+
+		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator(urlWithoutScheme);
+
+		swaggerSpecificationJSON = creator.BuildJSON();
+
 		return swaggerSpecificationJSON;
-		
+
 	}
-	
+
 }

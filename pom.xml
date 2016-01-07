@@ -235,7 +235,7 @@
 				<directory>src/main/webapp</directory>
 				<filtering>true</filtering>
 				<excludes>
-					<exclude>resources</exclude>
+					<exclude>resources/**</exclude>
 				</excludes>
 				<targetPath>web/module</targetPath>
 			</resource>
@@ -243,7 +243,7 @@
 				<directory>src/main/webapp</directory>
 				<filtering>false</filtering>
 				<includes>
-					<include>resources</include>
+					<include>resources/**</include>
 				</includes>
 				<targetPath>web/module</targetPath>
 			</resource>
