@@ -26,15 +26,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller("SwaggerSpecificationController")
 @RequestMapping("/module/webservices/rest/swaggerSpec.json")
 public class SwaggerSpecificationController {
-
+	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody String getSwaggerSpecification(HttpServletRequest request) throws Exception {
-
+	public @ResponseBody
+	String getSwaggerSpecification(HttpServletRequest request) throws Exception {
+		
 		String swaggerSpecificationJSON = "";
 		StringBuilder baseUrl = new StringBuilder();
 		String scheme = request.getScheme();
 		int port = request.getServerPort();
-
+		
 		baseUrl.append(scheme); // http, https
 		baseUrl.append("://");
 		baseUrl.append(request.getServerName());
@@ -42,33 +43,33 @@ public class SwaggerSpecificationController {
 			baseUrl.append(':');
 			baseUrl.append(request.getServerPort());
 		}
-
+		
 		baseUrl.append(request.getContextPath());
-
-		String resourcesUrl = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString());
-
+		
+		String resourcesUrl = Context.getAdministrationService().getGlobalProperty(
+		    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, baseUrl.toString());
+		
 		if (!resourcesUrl.endsWith("/")) {
 			resourcesUrl += "/";
 		}
-
+		
 		resourcesUrl += "ws/rest";
-
+		
 		String urlWithoutScheme = "";
-
+		
 		/* Swagger appends scheme to urls, so we should remove it */
 		if (scheme.equals("http"))
 			urlWithoutScheme = resourcesUrl.replace("http://", "");
-
+		
 		else if (scheme.equals("https"))
 			urlWithoutScheme = resourcesUrl.replace("https://", "");
-
+		
 		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator(urlWithoutScheme);
-
+		
 		swaggerSpecificationJSON = creator.BuildJSON();
-
+		
 		return swaggerSpecificationJSON;
-
+		
 	}
-
+	
 }
