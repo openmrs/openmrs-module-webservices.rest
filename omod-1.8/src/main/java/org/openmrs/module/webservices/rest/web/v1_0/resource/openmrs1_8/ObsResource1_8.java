@@ -330,7 +330,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
                     } else if(value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
                         value = false;
                     } else if(!value.getClass().isAssignableFrom(Boolean.class)) {
-                    	if (!(Boolean.TRUE.toString().equals(value) || Boolean.FALSE.toString().equals(value))) {
+                    	String val = value.toString().toLowerCase();
+                    	if (!(Boolean.TRUE.toString().equals(val) || Boolean.FALSE.toString().equals(val))) {
 	                        throw new ConversionException("Unexpected value: " + value +
 	                                " set as the value of boolean. Boolean (true or false), ConceptService.getTrueConcept or " +
 	                                ", ConceptService.getFalseConcept expected");
