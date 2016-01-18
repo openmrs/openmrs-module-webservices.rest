@@ -164,6 +164,43 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
+	 * @verifies create a new obs with boolean concept
+	 */
+	@Test
+	public void createObs_shouldCreateANewObsWithBooleanConcept() throws Exception {
+		List<Obs> observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		int before = observationsByPerson.size();
+		String json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"true\"}";
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		Object newObs = deserialize(handle(req));
+		
+		List<Obs> observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(0);
+		Assert.assertEquals(Boolean.TRUE, ((Obs) newObs).getValueAsBoolean());	
+		
+		
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"false\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(1);
+		Assert.assertEquals(Boolean.FALSE, ((Obs) newObs).getValueAsBoolean());
+	}
+	
+	/**
 	 * @verifies void a obs
 	 */
 	@Test
