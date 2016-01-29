@@ -13,6 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -38,13 +46,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -330,10 +331,20 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
                     } else if(value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
                         value = false;
                     } else if(!value.getClass().isAssignableFrom(Boolean.class)) {
-                    	String val = value.toString().toLowerCase();
-                    	if (!(Boolean.TRUE.toString().equals(val) || Boolean.FALSE.toString().equals(val))) {
+                    	List<String> trueValues = Arrays.asList("true", "1", "on", "yes");
+                    	List<String> falseValues = Arrays.asList("false", "0", "off", "no");
+                    	
+                    	String val = value.toString().trim().toLowerCase();
+                    	if (trueValues.contains(val)) {
+                    		value = Boolean.TRUE;
+                    	}
+                    	else if (falseValues.contains(val)) {
+                    		value = Boolean.FALSE;
+                    	}
+                    	
+                    	if (!(Boolean.TRUE.equals(value) || Boolean.FALSE.equals(value))) {
 	                        throw new ConversionException("Unexpected value: " + value +
-	                                " set as the value of boolean. Boolean (true or false), ConceptService.getTrueConcept or " +
+	                                " set as the value of boolean. " + trueValues + falseValues + ", ConceptService.getTrueConcept or " +
 	                                ", ConceptService.getFalseConcept expected");
                     	}
                     }

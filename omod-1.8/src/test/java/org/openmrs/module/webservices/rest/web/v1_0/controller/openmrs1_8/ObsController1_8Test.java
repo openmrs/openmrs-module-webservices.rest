@@ -183,7 +183,6 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 		newObs = observationsByPersonAfterSave.get(0);
 		Assert.assertEquals(Boolean.TRUE, ((Obs) newObs).getValueAsBoolean());	
 		
-		
 		observationsByPerson = Context.getObsService().getObservationsByPerson(
 		    (Context.getPatientService().getPatient(7)));
 		before = observationsByPerson.size();
@@ -197,6 +196,102 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 		    (Context.getPatientService().getPatient(7)));
 		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
 		newObs = observationsByPersonAfterSave.get(1);
+		Assert.assertEquals(Boolean.FALSE, ((Obs) newObs).getValueAsBoolean());
+		
+		//1 should be treated as true
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"1\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(2);
+		Assert.assertEquals(Boolean.TRUE, ((Obs) newObs).getValueAsBoolean());
+		
+		//0 should be treated as false
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"0\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(3);
+		Assert.assertEquals(Boolean.FALSE, ((Obs) newObs).getValueAsBoolean());
+		
+		//yes should be treated as true
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"yes\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(4);
+		Assert.assertEquals(Boolean.TRUE, ((Obs) newObs).getValueAsBoolean());
+		
+		//no should be treated as false
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"no\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(5);
+		Assert.assertEquals(Boolean.FALSE, ((Obs) newObs).getValueAsBoolean());
+		
+		//on should be treated as true
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"on\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(6);
+		Assert.assertEquals(Boolean.TRUE, ((Obs) newObs).getValueAsBoolean());
+		
+		//off should be treated as false
+		observationsByPerson = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		before = observationsByPerson.size();
+		json = "{\"location\":\"dc5c1fcc-0459-4201-bf70-0b90535ba362\",\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"obsDatetime\":\"2011-05-18\",\"value\":\"off\"}";
+		
+		req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		newObs = deserialize(handle(req));
+		
+		observationsByPersonAfterSave = Context.getObsService().getObservationsByPerson(
+		    (Context.getPatientService().getPatient(7)));
+		Assert.assertEquals(before + 1, observationsByPersonAfterSave.size());
+		newObs = observationsByPersonAfterSave.get(7);
 		Assert.assertEquals(Boolean.FALSE, ((Obs) newObs).getValueAsBoolean());
 	}
 	
