@@ -61,6 +61,11 @@
         <description>A comma-separate list of IP addresses that are allowed to access the web services. An empty string allows everyone to access all ws. 
         IPs can be declared with bit masks e.g. 10.0.0.0/30 matches 10.0.0.0 - 10.0.0.3 and 10.0.0.0/24 matches 10.0.0.0 - 10.0.0.255.</description>
     </globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.quietDocs</property>
+		<defaultValue>true</defaultValue>
+		<description>If the value of this setting is "true", then nothing is logged while the Swagger specification is being generated.</description>
+	</globalProperty>
 
     <!-- DWR -->
 	

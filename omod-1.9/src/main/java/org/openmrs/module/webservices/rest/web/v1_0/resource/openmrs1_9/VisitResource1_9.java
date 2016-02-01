@@ -95,11 +95,11 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Visit visit) {
-		String ret = visit.getVisitType().getName();
+		String ret = visit.getVisitType() == null ? "?" : visit.getVisitType().getName();
 		ret += " ";
 		ret += visit.getLocation() == null ? "?" : "@ " + visit.getLocation().getName();
 		ret += " - ";
-		ret += Context.getDateTimeFormat().format(visit.getStartDatetime());
+		ret += visit.getStartDatetime() == null ? "?" : Context.getDateTimeFormat().format(visit.getStartDatetime());
 		return ret;
 	}
 

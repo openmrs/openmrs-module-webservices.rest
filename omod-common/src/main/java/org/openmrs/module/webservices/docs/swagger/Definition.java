@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*An object that hold data types that can be consumed and produced by operations. These data types can be primitives, arrays or models.*/
@@ -24,8 +25,11 @@ public class Definition {
 	
 	private Properties properties;
 	
+	private Xml xml;
+	
 	public Definition() {
-		
+		required = new ArrayList<String>();
+		properties = new Properties();
 	}
 	
 	public String getType() {
@@ -53,6 +57,12 @@ public class Definition {
 		this.required = required;
 	}
 	
+	public void addRequired(String property) {
+		if (!required.contains(property)) {
+			required.add(property);
+		}
+	}
+	
 	/**
 	 * @return the properties
 	 */
@@ -67,4 +77,11 @@ public class Definition {
 		this.properties = properties;
 	}
 	
+	public Xml getXml() {
+		return xml;
+	}
+	
+	public void setXml(Xml xml) {
+		this.xml = xml;
+	}
 }

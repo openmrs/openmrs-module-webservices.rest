@@ -42,7 +42,7 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	 */
 	@Override
 	public ActiveListType save(ActiveListType activeListType) {
-		return null;
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	 */
 	@Override
 	public ActiveListType getByUniqueId(String uuid) {
-		return null;
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -67,6 +67,6 @@ public class ActiveListTypeResource1_8 extends MetadataDelegatingCrudResource<Ac
 	 */
 	@Override
 	protected NeedsPaging<ActiveListType> doGetAll(RequestContext context) {
-		return null;
+		throw new ResourceDoesNotSupportOperationException();
 	}
 }

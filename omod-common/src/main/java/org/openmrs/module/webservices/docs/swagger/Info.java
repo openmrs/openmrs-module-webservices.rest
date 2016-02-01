@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /* The object provides metadata about the API.*/
 public class Info {
 	
@@ -25,6 +28,10 @@ public class Info {
 	private Contact contact;
 	
 	private License license;
+	
+	//An object to hold data about platform and module versions
+	@JsonProperty("x-versions")
+	private Versions versions;
 	
 	public Info() {
 		
@@ -100,4 +107,12 @@ public class Info {
 		this.description = description;
 	}
 	
+	@JsonGetter("x-versions")
+	public Versions getVersions() {
+		return versions;
+	}
+	
+	public void setVersions(Versions versions) {
+		this.versions = versions;
+	}
 }

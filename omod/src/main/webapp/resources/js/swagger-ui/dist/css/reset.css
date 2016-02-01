@@ -1,6 +1,4 @@
 /* http://meyerweb.com/eric/tools/css/reset/ v2.0 | 20110126 */
-html,
-body,
 div,
 span,
 applet,
@@ -122,4 +120,10 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+#logocell,
+#barcell {
+  vertical-align: middle;
+  padding: 1px;
+  margin: 1px;
 }
