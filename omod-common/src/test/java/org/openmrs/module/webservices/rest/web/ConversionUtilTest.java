@@ -57,7 +57,8 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see ConversionUtil#convert(Object,Type)
-	 * @verifies String to Date conversion for multiple formatted date/dateTime strings having timezone
+	 * @verifies String to Date conversion for multiple formatted date/dateTime strings having
+	 *           timezone
 	 */
 	@Test
 	public void convert_shouldReturnCorrectDateWhenParsingStringHavingTimeZone() throws Exception {
@@ -65,7 +66,7 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		//Added to check against more ISO8601 format dates im 'dates2' array
 		Date expectedDate2 = (Date) ConversionUtil.convert("2014-02-20T11:00:00.000-0500", Date.class);
 		
-		String[] dates1 = {"2016-01-12T06:00:00+05:30", "2016-01-12T06:00:00+0530"};
+		String[] dates1 = { "2016-01-12T06:00:00+05:30", "2016-01-12T06:00:00+0530" };
 		String[] dates2 = { "2014-02-20T11:00:00.000-05:00", "2014-02-20T11:00:00.000-05" };
 		
 		for (String date : dates1) {

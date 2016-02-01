@@ -20,6 +20,11 @@ public class License {
 	
 	private String url;
 	
+	public License(String name, String url) {
+		this.name = name;
+		this.url = url;
+	}
+	
 	/**
 	 * @return the name
 	 */

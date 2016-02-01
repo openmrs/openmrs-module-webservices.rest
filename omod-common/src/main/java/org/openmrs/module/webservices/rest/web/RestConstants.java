@@ -195,4 +195,14 @@ public class RestConstants {
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_SEARCH_ID);
 	}
 	
+	/**
+	 * Constants used when generating the Swagger specification
+	 */
+	public static String SWAGGER_IMPOSSIBLE_UNIQUE_ID = "a--b";
+	
+	public static String SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".quietDocs";
+	
+	public static boolean SWAGGER_LOGS_ON = true;
+	
+	public static boolean SWAGGER_LOGS_OFF = false;
 }

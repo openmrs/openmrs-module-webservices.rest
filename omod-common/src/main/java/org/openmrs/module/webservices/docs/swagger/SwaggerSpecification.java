@@ -45,6 +45,9 @@ public class SwaggerSpecification {
 	//The available paths and operations for the API.
 	private Paths paths;
 	
+	//The security definitions
+	private SecurityDefinitions securityDefinitions;
+	
 	//An object to hold data types produced and consumed by operations.
 	private Definitions definitions;
 	
@@ -150,6 +153,14 @@ public class SwaggerSpecification {
 		this.paths = paths;
 	}
 	
+	public SecurityDefinitions getSecurityDefinitions() {
+		return securityDefinitions;
+	}
+	
+	public void setSecurityDefinitions(SecurityDefinitions securityDefinitions) {
+		this.securityDefinitions = securityDefinitions;
+	}
+	
 	/**
 	 * @return the definitions
 	 */
@@ -184,5 +195,4 @@ public class SwaggerSpecification {
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
-	
 }

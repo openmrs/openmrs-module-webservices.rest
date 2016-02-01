@@ -1,5 +1,12 @@
 package org.openmrs.module.webservices.docs.swagger;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import org.codehaus.jackson.annotate.JsonProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The contents of this file are subject to the OpenMRS Public License Version 1.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy of the
@@ -24,11 +31,15 @@ public class Parameter {
 	/*Determines whether this parameter is mandatory*/
 	private Boolean required;
 	
-	/* we only need string */
-	private String type = "string";
+	private String type;
+	
+	@JsonProperty("enum")
+	private List<String> enumeration;
+	
+	private Schema schema;
 	
 	public Parameter() {
-		
+		type = "string"; // default to string
 	}
 	
 	/**
@@ -94,4 +105,34 @@ public class Parameter {
 		return type;
 	}
 	
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	@JsonGetter("enum")
+	public List<String> getEnumeration() {
+		return this.enumeration;
+	}
+	
+	@JsonSetter("enum")
+	public void setEnumeration(List<String> enumeration) {
+		this.enumeration = enumeration;
+	}
+	
+	public void addEnumerationItem(String enumerationItem) {
+		if (enumeration == null)
+			enumeration = new ArrayList<String>();
+		
+		if (!this.enumeration.contains(enumerationItem)) {
+			this.enumeration.add(enumerationItem);
+		}
+	}
+	
+	public Schema getSchema() {
+		return schema;
+	}
+	
+	public void setSchema(Schema schema) {
+		this.schema = schema;
+	}
 }

@@ -20,8 +20,9 @@ public class Contact {
 	
 	private String url;
 	
-	public Contact() {
-		
+	public Contact(String name, String url) {
+		this.setName(name);
+		this.setUrl(url);
 	}
 	
 	/**
