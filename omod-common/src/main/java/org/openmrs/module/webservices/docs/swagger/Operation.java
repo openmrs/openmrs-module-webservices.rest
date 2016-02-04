@@ -21,11 +21,23 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 //Describes an operation available on a single path
 public class Operation {
 	
+	public static String OPERATION_GET_ALL_METHOD = "doGetAll";
+	
+	public static String OPERATION_GET_BY_ID = "getByUniqueId";
+	
+	public static String OPERATION_VOID_RETIRE_METHOD = "delete";
+	
+	public static String OPERATION_DELETE_METHOD = "purge";
+	
+	public static String OPERATION_CREATE_METHOD = "create";
+	
+	public static String OPERATION_UPDATE_METHOD = "save";
+	
 	@JsonIgnore
 	private String name;
 	
 	//A verbose explanation of the operation behavior
-	private String descritpion;
+	private String description;
 	
 	//A short summary of what the operation does
 	private String summary;
@@ -64,17 +76,17 @@ public class Operation {
 	}
 	
 	/**
-	 * @return the descritpion
+	 * @return the description
 	 */
-	public String getDescritpion() {
-		return descritpion;
+	public String getDescription() {
+		return description;
 	}
 	
 	/**
-	 * @param descritpion the descritpion to set
+	 * @param description the description to set
 	 */
-	public void setDescritpion(String descritpion) {
-		this.descritpion = descritpion;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	/**
