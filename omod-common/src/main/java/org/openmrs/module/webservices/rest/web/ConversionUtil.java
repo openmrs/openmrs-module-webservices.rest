@@ -234,13 +234,12 @@ public class ConversionUtil {
 			Converter<?> converter = getConverter(toClass);
 			if (converter != null)
 				return converter.getByUniqueId(string);
-
-
-
+			
 			if (toClass.isAssignableFrom(Date.class)) {
 				ParseException pex = null;
-				String[] supportedFormats = {"yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-						"yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
+				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
+				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss",
+				        "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
 				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
 						Date date = new SimpleDateFormat(supportedFormats[i]).parse(string);

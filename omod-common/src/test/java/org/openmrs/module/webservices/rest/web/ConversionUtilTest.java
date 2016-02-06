@@ -54,16 +54,18 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 			Assert.assertEquals(result, expected);
 		}
 	}
+	
 	/**
 	 * @see ConversionUtil#convert(Object,Type)
-	 * @verifies String to Date conversion for multiple formatted date/dateTime strings having timezone
+	 * @verifies String to Date conversion for multiple formatted date/dateTime strings having
+	 *           timezone
 	 */
 	@Test
 	public void convert_shouldReturnCorrectDateWhenParsingStringHavingTimeZone() throws Exception {
 		Date expectedDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").parse("2016-01-12T06:00:00+0530");
-
-		String[] dates = {"2016-01-12T06:00:00+05:30", "2016-01-12T06:00:00+0530"};
-
+		
+		String[] dates = { "2016-01-12T06:00:00+05:30", "2016-01-12T06:00:00+0530" };
+		
 		for (String date : dates) {
 			Date actualDate = (Date) ConversionUtil.convert(date, Date.class);
 			Assert.assertEquals(expectedDate, actualDate);
