@@ -37,6 +37,8 @@ import java.util.concurrent.ConcurrentMap;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
 import org.openmrs.Retireable;
 import org.openmrs.Voidable;
@@ -238,15 +240,15 @@ public class ConversionUtil {
 
 
 			if (toClass.isAssignableFrom(Date.class)) {
-				ParseException pex = null;
+				IllegalArgumentException pex = null;
 				String[] supportedFormats = {"yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
 						"yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
 				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
-						Date date = new SimpleDateFormat(supportedFormats[i]).parse(string);
+						Date date = DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
 						return date;
 					}
-					catch (ParseException ex) {
+					catch (IllegalArgumentException ex) {
 						pex = ex;
 					}
 				}
