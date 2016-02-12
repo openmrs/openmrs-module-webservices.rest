@@ -92,7 +92,12 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
     public DelegatingResourceDescription getCreatableProperties() {
         DelegatingResourceDescription description = new DelegatingResourceDescription();
         description.addRequiredProperty("property");
-        addPropertiesCommonForCreateAndUpdate(description);
+        description.addProperty("description");
+        description.addProperty("datatypeClassname");
+        description.addProperty("datatypeConfig");
+        description.addProperty("preferredHandlerClassname");
+        description.addProperty("handlerConfig");
+        description.addProperty("value");
         return description;
     }
 
@@ -102,9 +107,8 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
      */
     @Override
     public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-        DelegatingResourceDescription description = super.getUpdatableProperties();
+        DelegatingResourceDescription description = getCreatableProperties();
         description.removeProperty("property");
-        addPropertiesCommonForCreateAndUpdate(description);
         return description;
     }
 
@@ -255,14 +259,5 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
         } else {
             property.setPropertyValue(value);
         }
-    }
-
-    private void addPropertiesCommonForCreateAndUpdate(DelegatingResourceDescription description) {
-        description.addProperty("description");
-        description.addProperty("datatypeClassname");
-        description.addProperty("datatypeConfig");
-        description.addProperty("preferredHandlerClassname");
-        description.addProperty("handlerConfig");
-        description.addProperty("value");
     }
 }
