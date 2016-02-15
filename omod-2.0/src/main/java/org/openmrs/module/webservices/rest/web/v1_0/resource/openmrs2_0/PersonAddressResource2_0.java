@@ -74,4 +74,12 @@ public class PersonAddressResource2_0 extends PersonAddressResource1_8 {
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return RestConstants2_0.RESOURCE_VERSION;
+	}
 }
