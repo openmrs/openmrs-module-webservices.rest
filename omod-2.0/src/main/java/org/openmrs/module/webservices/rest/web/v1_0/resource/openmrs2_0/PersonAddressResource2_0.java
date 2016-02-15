@@ -48,4 +48,30 @@ public class PersonAddressResource2_0 extends PersonAddressResource1_8 {
 		}
 		return description;
 	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("address7");
+		description.addProperty("address8");
+		description.addProperty("address9");
+		description.addProperty("address10");
+		description.addProperty("address11");
+		description.addProperty("address12");
+		description.addProperty("address13");
+		description.addProperty("address14");
+		description.addProperty("address15");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() {
+		return getCreatableProperties();
+	}
 }
