@@ -32,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ObjectMismatchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.util.ReflectionUtils;
@@ -236,6 +237,14 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		
 		description.addSelfLink();
 		return convertDelegateToRepresentation(delegate, description);
+	}
+	
+	/**
+	 * @see SubResource#p[ut(java.lang.String, SimpleObject, RequestContext)
+	 */
+	@Override
+	public void put(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 }

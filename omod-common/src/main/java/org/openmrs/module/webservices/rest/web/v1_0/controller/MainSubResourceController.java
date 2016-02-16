@@ -165,4 +165,60 @@ public class MainSubResourceController extends BaseRestController {
 		return RestUtil.noContent(response);
 	}
 	
+	/**
+	 * @param parentUuid
+	 * @param reason
+	 * @param request
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.DELETE, params = "!purge")
+	@ResponseBody
+	public Object delete(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	        @PathVariable("subResource") String subResource,
+	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		res.delete(parentUuid, null, reason, context);
+		return RestUtil.noContent(response);
+	}
+	
+	/**
+	 * @param parentUuid
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.DELETE, params = "purge")
+	@ResponseBody
+	public Object purge(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		baseUriSetup.setup(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		res.purge(parentUuid, null, context);
+		return RestUtil.noContent(response);
+	}
+	
+	/**
+	 * @param parentUuid
+	 * @param post
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.PUT)
+	@ResponseBody
+	public Object put(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	        @PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		res.put(parentUuid, post, context);
+		return RestUtil.noContent(response);
+	}
 }
