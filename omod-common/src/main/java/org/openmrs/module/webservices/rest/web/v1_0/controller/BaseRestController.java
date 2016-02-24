@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
  * Resource controllers should extend this base class to have standard exception handling done
@@ -81,6 +82,18 @@ public class BaseRestController {
 	        HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		return RestUtil.wrapValidationErrorResponse(validationException);
+	}
+	
+	/**
+	 * Handle ConvertionException - return response with exception message - ConversionUtil throws
+	 * ConversionException
+	 */
+	@ExceptionHandler(ConversionException.class)
+	@ResponseBody
+	public SimpleObject conversionExceptionHandler(ConversionException conversionException, HttpServletRequest request,
+	        HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return RestUtil.wrapErrorResponse(conversionException, "");
 	}
 	
 	@ExceptionHandler(Exception.class)
