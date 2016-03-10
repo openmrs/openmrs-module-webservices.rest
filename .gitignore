@@ -72,3 +72,5 @@ nb-configuration.xml
 /webapp/src/main/webapp/WEB-INF/dwr-modules.xml
 /webapp/src/main/webapp/WEB-INF/module_messages*
 #############
+
+!omod/src/main/webapp/resources/js/swagger-ui/*
