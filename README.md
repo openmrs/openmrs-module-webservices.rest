@@ -13,7 +13,7 @@ The module exposes the OpenMRS API as REST web services. If an OpenMRS instance 
 ## Download
 
 If you are not a developer, or just want to install the REST Web Services module into your
-system, visit [module download page](https://modules.openmrs.org/#/show/153/webservices-rest) instead.
+system, visit [the module download page](https://modules.openmrs.org/#/show/153/webservices-rest) instead.
 
 > The required OpenMRS version to run the REST Web Services Module is `1.8.4+` or `1.9.0+`
 
