@@ -13,10 +13,20 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*Defines the type of the property */
 public class DefinitionProperty {
 	
 	private String type;
+	
+	@JsonProperty("enum")
+	private List<String> enumeration;
 	
 	public DefinitionProperty() {
 		
@@ -36,4 +46,22 @@ public class DefinitionProperty {
 		this.type = type;
 	}
 	
+	@JsonGetter("enum")
+	public List<String> getEnumeration() {
+		return this.enumeration;
+	}
+	
+	@JsonSetter("enum")
+	public void setEnumeration(List<String> enumeration) {
+		this.enumeration = enumeration;
+	}
+	
+	public void addEnumerationItem(String enumerationItem) {
+		if (enumeration == null)
+			enumeration = new ArrayList<String>();
+		
+		if (!this.enumeration.contains(enumerationItem)) {
+			this.enumeration.add(enumerationItem);
+		}
+	}
 }

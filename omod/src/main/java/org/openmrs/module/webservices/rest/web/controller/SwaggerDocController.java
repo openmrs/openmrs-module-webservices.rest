@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller("webservices.rest.SwaggerDocController")
-@RequestMapping("/module/webservices/rest/swaggerDoc")
+@RequestMapping("/module/webservices/rest/apiDocs")
 public class SwaggerDocController {
 	
 	@RequestMapping(method = RequestMethod.GET)

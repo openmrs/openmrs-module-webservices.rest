@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -23,7 +24,7 @@ public class Properties {
 	private Map<String, DefinitionProperty> properties;
 	
 	public Properties() {
-		
+		properties = new HashMap<String, DefinitionProperty>();
 	}
 	
 	/**
@@ -39,6 +40,10 @@ public class Properties {
 	 */
 	public void setProperties(Map<String, DefinitionProperty> properties) {
 		this.properties = properties;
+	}
+	
+	public void addProperty(String propertyKey, DefinitionProperty property) {
+		properties.put(propertyKey, property);
 	}
 	
 }

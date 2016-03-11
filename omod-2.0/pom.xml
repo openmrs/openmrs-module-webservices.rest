@@ -120,6 +120,13 @@
 			<scope>test</scope>
 			<version>${openmrs.version.2.0}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>4.1.4.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
 		
 		<dependency>
 		      <groupId>org.apache.tomcat</groupId>

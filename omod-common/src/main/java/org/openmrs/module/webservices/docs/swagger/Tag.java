@@ -16,7 +16,7 @@ package org.openmrs.module.webservices.docs.swagger;
 import java.io.Serializable;
 
 // Unique tag used to group operations
-public class Tag implements Serializable {
+public class Tag implements Serializable, Comparable<Tag> {
 	
 	private String name;
 	
@@ -54,4 +54,8 @@ public class Tag implements Serializable {
 		this.description = description;
 	}
 	
+	@Override
+	public int compareTo(Tag tag) {
+		return name.compareToIgnoreCase(tag.getName());
+	}
 }

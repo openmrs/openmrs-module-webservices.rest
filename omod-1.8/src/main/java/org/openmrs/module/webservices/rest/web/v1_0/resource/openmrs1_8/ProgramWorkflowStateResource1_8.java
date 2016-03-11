@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.ArrayList;
 import java.util.List;
 
-@SubResource(parent = ProgramWorkflowResource1_8.class, path = "/state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
 public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<ProgramWorkflowState,ProgramWorkflow,ProgramWorkflowResource1_8>{
     @Override
     public ProgramWorkflow getParent(ProgramWorkflowState instance) {
