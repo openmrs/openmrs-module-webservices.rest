@@ -34,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsClassLoader;
 
@@ -76,31 +77,11 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("value");
 		description.addRequiredProperty("attributeType");
+		description.addProperty("value");
 		description.addProperty("hydratedObject");
 		return description;
 	}
-
-    /*
-        We may need to hydrate Attributables in the request. To do that we need to know
-        its type. So we can't set hydratedObject until attributeType has been set.
-        Since SimpleObject is a LinkedHashMap, it is ordered, and the following method is
-        overridden to ensure hydratedObject will appear last in the properties.
-     */
-    @Override
-    public Object create(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
-        uglyMethodToEnsureHydratedObjectWillBeSetLast(post);
-        return super.create(parentUniqueId, post, context);
-    }
-
-    private void uglyMethodToEnsureHydratedObjectWillBeSetLast(SimpleObject post) {
-        Object hydratedObject = post.get("hydratedObject");
-        if (hydratedObject != null) {
-            post.remove("hydratedObject");
-            post.put("hydratedObject", hydratedObject);
-        }
-    }
 
     @PropertySetter("hydratedObject")
     public void setHydratedObject(PersonAttribute personAttribute, String attributableUuid) {
@@ -112,6 +93,42 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
             throw new APIException("Could not convert value to Attributable", e);
         }
     }
+
+	@PropertySetter("value")
+	public  void setValue(PersonAttribute personAttribute, String value) {
+		PersonAttributeType attributeType = personAttribute.getAttributeType();
+		if(attributeType == null) {
+			personAttribute.setValue(value);
+		} else {
+			// Check if expected value is attributable and do the right thing.
+			try {
+				String format = personAttribute.getAttributeType().getFormat();
+				if(format == null) {
+					personAttribute.setValue(value);
+				} else {
+					Class<?> clazz = Context.loadClass(personAttribute.getAttributeType().getFormat());
+					if (Attributable.class.isAssignableFrom(clazz)) {
+						Attributable instance = (Attributable) ConversionUtil.convert(value, clazz);
+						if (instance != null) {
+							personAttribute.setValue(instance.serialize());
+						} else {
+							// Could not find a corresponding domain object, so just set the value?
+							personAttribute.setValue(value);
+						}
+					} else {
+						// Not Attributable just assign
+						personAttribute.setValue(value);
+					}
+				}
+			} catch (ClassNotFoundException cnfe) {
+				// No Class found? just assign the string
+				personAttribute.setValue(value);
+			} catch (ConversionException ce) {
+				// Couldn't convert? just assign the string
+				personAttribute.setValue(value);
+			}
+		}
+	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
