@@ -16,6 +16,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 import org.openmrs.Drug;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource1_8;
 
 /**
@@ -31,5 +35,16 @@ public class DrugResource1_10 extends DrugResource1_8 {
 	@Override
 	public String getResourceVersion() {
 		return RestConstants1_10.RESOURCE_VERSION;
+	}
+	
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		 DelegatingResourceDescription repDesc = super.getRepresentationDescription(rep);
+		 if(rep instanceof DefaultRepresentation){
+			 repDesc.addProperty("strength");
+		 } else if(rep instanceof FullRepresentation){
+			 repDesc.addProperty("strength");
+		 }
+		 return repDesc;
 	}
 }
