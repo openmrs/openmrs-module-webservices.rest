@@ -145,6 +145,17 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		Assert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
 	}
 	
+	@Test
+	public void shouldSetStrengthWhenCreatingDrug() throws Exception {
+		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		SimpleObject drug = new SimpleObject();
+		drug.add("concept", "25f83cd6-64e9-4e07-a5f9-364d3b14a43e");
+		drug.add("combination", "true");
+		drug.add("strength", "high");
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), drug)));
+		Assert.assertThat("high", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+	}
+	
 	/**
 	 * @verifies get drugs linked to concepts with names that match the phrase and related locales
 	 * @see ConceptService#getDrugs(String, java.util.Locale, boolean, boolean)

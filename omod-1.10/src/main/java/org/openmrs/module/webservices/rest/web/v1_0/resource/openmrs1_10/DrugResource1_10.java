@@ -14,12 +14,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import org.openmrs.Drug;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource1_8;
 
 /**
@@ -47,4 +50,14 @@ public class DrugResource1_10 extends DrugResource1_8 {
 		 }
 		 return repDesc;
 	}
+	
+	
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("strength");
+		
+		return description;
+	}
+	
 }
