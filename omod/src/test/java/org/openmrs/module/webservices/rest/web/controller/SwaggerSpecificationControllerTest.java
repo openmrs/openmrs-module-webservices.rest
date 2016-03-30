@@ -19,6 +19,20 @@ public class SwaggerSpecificationControllerTest {
 	private SwaggerSpecificationController ssc = new SwaggerSpecificationController();
 	
 	@Test(expected=org.openmrs.api.APIException.class)
+	public void test_0100() throws Exception {
+		
+		when(req.getScheme()).thenReturn("asdf");
+		when(req.getServerPort()).thenReturn(443);
+		when(req.getServerName()).thenReturn("name");
+		when(req.getContextPath()).thenReturn("path");
+		//when(req.getScheme()).thenReturn("asdasda");        
+		//when(reg.getServerPort()).thenReturn(81);
+		
+		ssc.getSwaggerSpecification(req);
+		
+	}	
+	
+	@Test(expected=org.openmrs.api.APIException.class)
 	public void test_1100() throws Exception {
 		
 		when(req.getScheme()).thenReturn("http");
@@ -26,62 +40,70 @@ public class SwaggerSpecificationControllerTest {
 		when(req.getServerName()).thenReturn("name");
 		when(req.getContextPath()).thenReturn("path");
 		//when(req.getScheme()).thenReturn("asdasda");        
-		//when(reg.getPort()).thenReturn(81);
+		//when(reg.getServerPort()).thenReturn(81);
 		
 		ssc.getSwaggerSpecification(req);
 		
 	}
 	 
-	  @Test(expected=org.openmrs.api.APIException.class)
-	  public void test_0100() throws Exception{
-	      HttpServletRequest req = mock(HttpServletRequest.class);
-	      
-	      when(req.getScheme()).thenReturn("asdf");
-	      when(reg.getPort()).thenReturn(443);
-	      
-	      getSwaggerSpecification(req);
-	  }
+	 	@Test(expected=org.openmrs.api.APIException.class)
+	public void test_0001() throws Exception {
+		
+		when(req.getScheme()).thenReturn("asdf");
+		when(req.getServerPort()).thenReturn(80);
+		when(req.getServerName()).thenReturn("name");
+		when(req.getContextPath()).thenReturn("path");
+		//when(req.getScheme()).thenReturn("asdasda");        
+		//when(reg.getServerPort()).thenReturn(81);
+		
+		ssc.getSwaggerSpecification(req);
+		
+	}
+	 
+	 
+	 
+	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	public void test_0010() throws Exception {
+		
+		when(req.getScheme()).thenReturn("https");
+		when(req.getServerPort()).thenReturn(443);
+		when(req.getServerName()).thenReturn("name");
+		when(req.getContextPath()).thenReturn("path");
+		//when(req.getScheme()).thenReturn("asdasda");        
+		//when(reg.getServerPort()).thenReturn(81);
+		
+		ssc.getSwaggerSpecification(req);
+		
+	}
+	 
+	 
+	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	public void test_0011() throws Exception {
+		
+		when(req.getScheme()).thenReturn("https");
+		when(req.getServerPort()).thenReturn(80);
+		when(req.getServerName()).thenReturn("name");
+		when(req.getContextPath()).thenReturn("path");
+		//when(req.getScheme()).thenReturn("asdasda");        
+		//when(reg.getServerPort()).thenReturn(81);
+		
+		ssc.getSwaggerSpecification(req);
+		
+	}
+	
+	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	public void test_1000() throws Exception {
+		
+		when(req.getScheme()).thenReturn("https");
+		when(req.getServerPort()).thenReturn(443);
+		when(req.getServerName()).thenReturn("name");
+		when(req.getContextPath()).thenReturn("path");
+		//when(req.getScheme()).thenReturn("asdasda");        
+		//when(reg.getServerPort()).thenReturn(81);
+		
+		ssc.getSwaggerSpecification(req);
+		
+	}
 
-
-
-	  @Test(expected=org.openmrs.api.APIException.class)
-	  public void test_0001() throws Exception{
-	      HttpServletRequest req = mock(HttpServletRequest.class);
-	      
-	      when(req.getScheme()).thenReturn("asdf");
-	      when(reg.getPort()).thenReturn(80);
-	      
-	      getSwaggerSpecification(req);
-	  }
-	  
-	  @Test(expected=org.openmrs.api.APIException.class)
-	  public void test_0010() throws Exception{
-	      HttpServletRequest req = mock(HttpServletRequest.class);
-	      
-	      when(req.getScheme()).thenReturn("https");
-	      when(reg.getPort()).thenReturn(443);
-	      
-	      getSwaggerSpecification(req);
-	  }
-	  
-	  @Test(expected=org.openmrs.api.APIException.class)
-	  public void test_0011() throws Exception{
-	      HttpServletRequest req = mock(HttpServletRequest.class);
-	      
-	      when(req.getScheme()).thenReturn("https");
-	      when(reg.getPort()).thenReturn(80);
-	      
-	      getSwaggerSpecification(req);
-	  }
-	  @Test(expected=org.openmrs.api.APIException.class)
-	  public void test_1000() throws Exception{
-	      HttpServletRequest req = mock(HttpServletRequest.class);
-	      
-	      when(req.getScheme()).thenReturn("http");
-	      when(reg.getPort()).thenReturn(443);
-	      
-	      getSwaggerSpecification(req);
-	  }    
-	  
-	  
+    //
 }
