@@ -149,6 +149,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	public void shouldSetStrengthWhenCreatingDrug() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);
 		SimpleObject drug = new SimpleObject();
+		drug.add("name", "testName");
 		drug.add("concept", "25f83cd6-64e9-4e07-a5f9-364d3b14a43e");
 		drug.add("combination", "true");
 		drug.add("strength", "high");

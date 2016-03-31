@@ -56,6 +56,7 @@ public class DrugResource1_10 extends DrugResource1_8 {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addProperty("strength");
+		description.addRequiredProperty("name");
 		
 		return description;
 	}
