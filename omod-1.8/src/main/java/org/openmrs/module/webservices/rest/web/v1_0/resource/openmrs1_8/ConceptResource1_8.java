@@ -31,6 +31,7 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
@@ -207,6 +208,17 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		description.addProperty("mappings");
 		description.addProperty("answers");
 		description.addProperty("setMembers");
+		
+		//ConceptNumeric properties
+		description.addProperty("hiNormal");
+        description.addProperty("hiAbsolute");
+        description.addProperty("hiCritical");
+        description.addProperty("lowNormal");
+        description.addProperty("lowAbsolute");
+        description.addProperty("lowCritical");
+        description.addProperty("units");
+		description.addProperty("allowDecimal");
+		description.addProperty("displayPrecision");
 		return description;
 	}
 	
@@ -251,6 +263,9 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 */
 	@PropertySetter("names")
 	public static void setNames(Concept instance, List<ConceptName> names) {
+		for(ConceptName name : names){
+			name.setConcept(instance);
+		}
 		instance.setNames(new HashSet<ConceptName>(names));
 	}
 	
@@ -295,11 +310,23 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	}
 	
 	/**
+	 * {@link #newDelegate(SimpleObject)} is used instead to support ConceptNumeric
+	 * 
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
 	@Override
 	public Concept newDelegate() {
-		return new Concept();
+		throw new ResourceDoesNotSupportOperationException("Should use newDelegate(SimpleObject) instead");
+	}
+	
+	@Override
+	public Concept newDelegate(SimpleObject object) {
+		String datatypeUuid = (String) object.get("datatype");
+		if (ConceptDatatype.NUMERIC_UUID.equals(datatypeUuid)) {
+			return new ConceptNumeric();
+		} else {
+			return new Concept();
+		}
 	}
 	
 	/**

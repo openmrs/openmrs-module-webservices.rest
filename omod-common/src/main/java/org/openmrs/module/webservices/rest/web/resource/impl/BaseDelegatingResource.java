@@ -861,4 +861,9 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		return ConversionUtil.getAuditInfo(resource);
 	}
 	
+	@Override
+	public T newDelegate(SimpleObject object) {
+		return newDelegate();
+	}
+	
 }
