@@ -89,7 +89,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			handler = this;
 		}
 		
-		T delegate = handler.newDelegate();
+		T delegate = handler.newDelegate(propertiesToCreate);
 		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
 		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
