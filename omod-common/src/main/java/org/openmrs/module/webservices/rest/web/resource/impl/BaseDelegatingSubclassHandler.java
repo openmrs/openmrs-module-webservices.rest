@@ -137,4 +137,9 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	public SimpleObject getAuditInfo(Object resource) {
 		return ConversionUtil.getAuditInfo(resource);
 	}
+	
+	@Override
+	public Subclass newDelegate(SimpleObject object) {
+		return newDelegate();
+	}
 }
