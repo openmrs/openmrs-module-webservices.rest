@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Obs;
 import org.openmrs.api.APIException;
@@ -167,6 +168,7 @@ public class ObsController1_8Test extends MainResourceControllerTest {
 	 * @verifies create a new obs with boolean concept
 	 */
 	@Test
+	@Ignore("unstable see https://ci.openmrs.org/browse/RESTWS-RESTWS-JOB1-533/test/case/77609812")
 	public void createObs_shouldCreateANewObsWithBooleanConcept() throws Exception {
 		List<Obs> observationsByPerson = Context.getObsService().getObservationsByPerson(
 		    (Context.getPatientService().getPatient(7)));
