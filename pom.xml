@@ -43,7 +43,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>1.9.11-SNAPSHOT</openmrs.version>
+		<openmrs.version>1.9.10</openmrs.version>
 		<java.version>1.6</java.version>
 
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
