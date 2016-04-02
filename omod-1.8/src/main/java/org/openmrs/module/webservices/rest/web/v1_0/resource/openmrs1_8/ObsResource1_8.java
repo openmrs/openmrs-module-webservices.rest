@@ -27,6 +27,7 @@ import org.openmrs.ConceptNumeric;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.Drug;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -45,6 +46,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -206,16 +208,16 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
             return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
         }
 
+		if (obs.getValueDrug() != null) {
+			return obs.getValueDrug();
+		}
+
 		if (obs.getValueCoded() != null) {
             return obs.getValueCoded();
         }
 		
 		if (obs.getValueComplex() != null) {
             return obs.getValueComplex();
-        }
-		
-		if (obs.getValueDrug() != null) {
-            return obs.getValueDrug();
         }
 		
 		if (obs.getValueText() != null) {
@@ -302,7 +304,20 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			if (obs.getConcept().getDatatype().isCoded()) {
 				// setValueAsString is not implemented for coded obs (in core)
 				Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
-				obs.setValueCoded(valueCoded);
+				if (valueCoded == null) {
+					//try checking if this this is value drug
+					Drug valueDrug = (Drug) ConversionUtil.convert(value, Drug.class);
+					if (valueDrug != null) {
+						obs.setValueCoded(valueDrug.getConcept());
+						obs.setValueDrug(valueDrug);
+					} else {
+						throw new ObjectNotFoundException();
+					}
+
+				} else  {
+					obs.setValueCoded(valueCoded);
+				}
+
 			} else {
 				if (obs.getConcept().isNumeric()) {
 					//get the actual persistent object rather than the hibernate proxy
