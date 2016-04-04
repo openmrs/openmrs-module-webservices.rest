@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.atteo.evo.inflector.English;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
@@ -436,13 +437,13 @@ public class SwaggerSpecificationCreator {
 			if (resourceParentName == null) {
 				if (testOperationImplemented(OperationEnum.get, resourceHandler)) {
 					
-					getOperation = createOperation("get", resourceName, resourceParentName, getRepresentation,
-					    OperationEnum.get);
+					getOperation = createOperation(resourceHandler, "get", resourceName, resourceParentName,
+					    getRepresentation, OperationEnum.get);
 				}
 			} else {
 				if (testOperationImplemented(OperationEnum.getSubresource, resourceHandler)) {
-					getOperation = createOperation("get", resourceName, resourceParentName, getRepresentation,
-					    OperationEnum.getSubresource);
+					getOperation = createOperation(resourceHandler, "get", resourceName, resourceParentName,
+					    getRepresentation, OperationEnum.getSubresource);
 				}
 			}
 			
@@ -450,6 +451,7 @@ public class SwaggerSpecificationCreator {
 				Map<String, Operation> operationsMap = path.getOperations();
 				
 				String tag = resourceParentName == null ? resourceName : resourceParentName;
+				tag = tag.replaceAll("/", "_");
 				addResourceTag(tag);
 				
 				getOperation.setTags(Arrays.asList(tag));
@@ -471,11 +473,11 @@ public class SwaggerSpecificationCreator {
 			
 			if (testOperationImplemented(OperationEnum.getWithUUID, resourceHandler)) {
 				if (resourceParentName == null) {
-					getOperation = createOperation("get", resourceName, resourceParentName, getRepresentation,
-					    OperationEnum.getWithUUID);
+					getOperation = createOperation(resourceHandler, "get", resourceName, resourceParentName,
+					    getRepresentation, OperationEnum.getWithUUID);
 				} else {
-					getOperation = createOperation("get", resourceName, resourceParentName, getRepresentation,
-					    OperationEnum.getSubresourceWithUUID);
+					getOperation = createOperation(resourceHandler, "get", resourceName, resourceParentName,
+					    getRepresentation, OperationEnum.getSubresourceWithUUID);
 				}
 			}
 			
@@ -483,6 +485,7 @@ public class SwaggerSpecificationCreator {
 				Map<String, Operation> operationsMap = path.getOperations();
 				
 				String tag = resourceParentName == null ? resourceName : resourceParentName;
+				tag = tag.replaceAll("/", "_");
 				addResourceTag(tag);
 				
 				getOperation.setTags(Arrays.asList(tag));
@@ -504,12 +507,12 @@ public class SwaggerSpecificationCreator {
 			
 			if (resourceParentName == null) {
 				if (testOperationImplemented(OperationEnum.postCreate, resourceHandler)) {
-					postCreateOperation = createOperation("post", resourceName, resourceParentName,
+					postCreateOperation = createOperation(resourceHandler, "post", resourceName, resourceParentName,
 					    postCreateRepresentation, OperationEnum.postCreate);
 				}
 			} else {
 				if (testOperationImplemented(OperationEnum.postSubresource, resourceHandler)) {
-					postCreateOperation = createOperation("post", resourceName, resourceParentName,
+					postCreateOperation = createOperation(resourceHandler, "post", resourceName, resourceParentName,
 					    postCreateRepresentation, OperationEnum.postSubresource);
 				}
 			}
@@ -518,6 +521,7 @@ public class SwaggerSpecificationCreator {
 				Map<String, Operation> operationsMap = path.getOperations();
 				
 				String tag = resourceParentName == null ? resourceName : resourceParentName;
+				tag = tag.replaceAll("/", "_");
 				addResourceTag(tag);
 				
 				postCreateOperation.setTags(Arrays.asList(tag));
@@ -539,12 +543,12 @@ public class SwaggerSpecificationCreator {
 			
 			if (resourceParentName == null) {
 				if (testOperationImplemented(OperationEnum.postUpdate, resourceHandler)) {
-					postUpdateOperation = createOperation("post", resourceName, resourceParentName,
+					postUpdateOperation = createOperation(resourceHandler, "post", resourceName, resourceParentName,
 					    postUpdateRepresentation, OperationEnum.postUpdate);
 				}
 			} else {
 				if (testOperationImplemented(OperationEnum.postUpdateSubresouce, resourceHandler)) {
-					postUpdateOperation = createOperation("post", resourceName, resourceParentName,
+					postUpdateOperation = createOperation(resourceHandler, "post", resourceName, resourceParentName,
 					    postUpdateRepresentation, OperationEnum.postUpdateSubresouce);
 				}
 			}
@@ -553,6 +557,7 @@ public class SwaggerSpecificationCreator {
 				Map<String, Operation> operationsMap = path.getOperations();
 				
 				String tag = resourceParentName == null ? resourceName : resourceParentName;
+				tag = tag.replaceAll("/", "_");
 				addResourceTag(tag);
 				
 				postUpdateOperation.setTags(Arrays.asList(tag));
@@ -571,13 +576,13 @@ public class SwaggerSpecificationCreator {
 		
 		if (resourceParentName == null) {
 			if (testOperationImplemented(OperationEnum.delete, resourceHandler)) {
-				deleteOperation = createOperation("delete", resourceName, resourceParentName, new ResourceRepresentation(
-				        "delete", new ArrayList()), OperationEnum.delete);
+				deleteOperation = createOperation(resourceHandler, "delete", resourceName, resourceParentName,
+				    new ResourceRepresentation("delete", new ArrayList()), OperationEnum.delete);
 			}
 		} else {
 			if (testOperationImplemented(OperationEnum.deleteSubresource, resourceHandler)) {
-				deleteOperation = createOperation("delete", resourceName, resourceParentName, new ResourceRepresentation(
-				        "delete", new ArrayList()), OperationEnum.deleteSubresource);
+				deleteOperation = createOperation(resourceHandler, "delete", resourceName, resourceParentName,
+				    new ResourceRepresentation("delete", new ArrayList()), OperationEnum.deleteSubresource);
 			}
 		}
 		
@@ -585,6 +590,7 @@ public class SwaggerSpecificationCreator {
 			Map<String, Operation> operationsMap = path.getOperations();
 			
 			String tag = resourceParentName == null ? resourceName : resourceParentName;
+			tag = tag.replaceAll("/", "_");
 			addResourceTag(tag);
 			
 			deleteOperation.setTags(Arrays.asList(tag));
@@ -621,13 +627,13 @@ public class SwaggerSpecificationCreator {
 			
 			if (resourceParentName == null) {
 				if (testOperationImplemented(OperationEnum.purge, resourceHandler)) {
-					purgeOperation = createOperation("delete", resourceName, resourceParentName, new ResourceRepresentation(
-					        "purge", new ArrayList()), OperationEnum.purge);
+					purgeOperation = createOperation(resourceHandler, "delete", resourceName, resourceParentName,
+					    new ResourceRepresentation("purge", new ArrayList()), OperationEnum.purge);
 				}
 			} else {
 				if (testOperationImplemented(OperationEnum.purgeSubresource, resourceHandler)) {
-					purgeOperation = createOperation("delete", resourceName, resourceParentName, new ResourceRepresentation(
-					        "purge", new ArrayList()), OperationEnum.purgeSubresource);
+					purgeOperation = createOperation(resourceHandler, "delete", resourceName, resourceParentName,
+					    new ResourceRepresentation("purge", new ArrayList()), OperationEnum.purgeSubresource);
 				}
 			}
 			
@@ -635,6 +641,7 @@ public class SwaggerSpecificationCreator {
 				Map<String, Operation> operationsMap = path.getOperations();
 				
 				String tag = resourceParentName == null ? resourceName : resourceParentName;
+				tag = tag.replaceAll("/", "_");
 				addResourceTag(tag);
 				
 				purgeOperation.setTags(Arrays.asList(tag));
@@ -673,8 +680,8 @@ public class SwaggerSpecificationCreator {
 		return ret;
 	}
 	
-	private void addSearchOperations(String resourceName, String resourceParentName, Path getAllPath,
-	        Map<String, Path> pathMap) {
+	private void addSearchOperations(DelegatingResourceHandler<?> resourceHandler, String resourceName,
+	        String resourceParentName, Path getAllPath, Map<String, Path> pathMap) {
 		boolean wasNew = false;
 		
 		if (resourceName != null && hasSearchHandler(resourceName)) {
@@ -747,6 +754,7 @@ public class SwaggerSpecificationCreator {
 			}
 			
 			get.setParameters(new ArrayList(parameterMap.values()));
+			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			
 			if (wasNew) {
 				getAllPath.getOperations().put("get", get);
@@ -807,7 +815,7 @@ public class SwaggerSpecificationCreator {
 			/////////////////////////
 			// GET search          //
 			/////////////////////////
-			addSearchOperations(resourceName, resourceParentName, rootPathGetAll, pathMap);
+			addSearchOperations(resourceHandler, resourceName, resourceParentName, rootPathGetAll, pathMap);
 			
 			/////////////////////////
 			// POST create         //
@@ -1051,6 +1059,34 @@ public class SwaggerSpecificationCreator {
 		return schemaName;
 	}
 	
+	private String getOperationTitle(DelegatingResourceHandler<?> resourceHandler, Boolean pluralize) {
+		StringBuilder ret = new StringBuilder();
+		English inflector = new English();
+		
+		// get rid of slashes
+		String simpleClassName = resourceHandler.getClass().getSimpleName();
+		
+		// get rid of 'Resource' and version number suffixes
+		simpleClassName = simpleClassName.replaceAll("\\d_\\d{1,2}$", "");
+		simpleClassName = simpleClassName.replaceAll("Resource$", "");
+		
+		// pluralize if require
+		if (pluralize) {
+			String[] words = simpleClassName.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+			String suffix = words[words.length - 1];
+			
+			for (int i = 0; i < words.length - 1; i++) {
+				ret.append(words[i]);
+			}
+			
+			ret.append(inflector.getPlural(suffix));
+		} else {
+			ret.append(simpleClassName);
+		}
+		
+		return ret.toString();
+	}
+	
 	private void createDefinition(OperationEnum operationEnum, String resourceName, String resourceParentName,
 	        ResourceRepresentation representation) {
 		
@@ -1086,8 +1122,9 @@ public class SwaggerSpecificationCreator {
 		definitionMap.put(definitionName, definition);
 	}
 	
-	private Operation createOperation(String operationName, String resourceName, String resourceParentName,
-	        ResourceRepresentation representation, OperationEnum operationEnum) {
+	private Operation createOperation(DelegatingResourceHandler<?> resourceHandler, String operationName,
+	        String resourceName, String resourceParentName, ResourceRepresentation representation,
+	        OperationEnum operationEnum) {
 		Map<String, Response> responses = new HashMap<String, Response>();
 		
 		Operation operation = new Operation();
@@ -1132,6 +1169,7 @@ public class SwaggerSpecificationCreator {
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
+			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
@@ -1139,6 +1177,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.getWithUUID) {
 			
 			operation.setSummary("Fetch by uuid");
+			operation.setOperationId("get" + getOperationTitle(resourceHandler, false));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.getWithUUID));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to filter by"));
 			statusOKResponse.setSchema(responseBodySchema);
@@ -1148,6 +1187,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.postCreate) {
 			
 			operation.setSummary("Create with properties in request");
+			operation.setOperationId("create" + getOperationTitle(resourceHandler, false));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(buildPOSTBodyParameter(resourceName, resourceParentName, OperationEnum.postCreate));
 			responses.put("201", createdOKResponse);
@@ -1155,6 +1195,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.postUpdate) {
 			
 			operation.setSummary("Edit with given uuid, only modifying properties in request");
+			operation.setOperationId("update" + getOperationTitle(resourceHandler, false));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid of resource to update"));
 			parameters.add(buildPOSTBodyParameter(resourceName, resourceParentName, OperationEnum.postUpdate));
@@ -1163,6 +1204,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.getSubresource) {
 			
 			operation.setSummary("Fetch all non-retired " + resourceName + " subresources");
+			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			statusOKResponse.setSchema(responseBodySchema);
@@ -1171,6 +1213,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.postSubresource) {
 			
 			operation.setSummary("Create " + resourceName + " subresource with properties in request");
+			operation.setOperationId("create" + getOperationTitle(resourceHandler, false));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(buildPOSTBodyParameter(resourceName, resourceParentName, OperationEnum.postSubresource));
@@ -1180,6 +1223,7 @@ public class SwaggerSpecificationCreator {
 			
 			operation.setSummary("Edit " + resourceName
 			        + " subresource with given uuid, only modifying properties in request");
+			operation.setOperationId("update" + getOperationTitle(resourceHandler, false));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid of resource to update"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
@@ -1189,6 +1233,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.getSubresourceWithUUID) {
 			
 			operation.setSummary("Fetch " + resourceName + " subresources by uuid");
+			operation.setOperationId("get" + getOperationTitle(resourceHandler, false));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.getSubresourceWithUUID));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to filter by"));
@@ -1199,6 +1244,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.delete) {
 			
 			operation.setSummary("Delete resource by uuid");
+			operation.setOperationId("delete" + getOperationTitle(resourceHandler, false));
 			statusOKResponse.setDescription("Successful operation");
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to delete"));
 			responses.put("204", deletedOKResponse);
@@ -1207,6 +1253,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.deleteSubresource) {
 			
 			operation.setSummary("Delete " + resourceName + " subresource by uuid");
+			operation.setOperationId("delete" + getOperationTitle(resourceHandler, false));
 			statusOKResponse.setDescription("Successful operation");
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to delete"));
@@ -1216,6 +1263,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.purge) {
 			
 			operation.setSummary("Purge resource by uuid");
+			operation.setOperationId("purge" + getOperationTitle(resourceHandler, false));
 			statusOKResponse.setDescription("Successful operation");
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to delete"));
 			responses.put("204", deletedOKResponse);
@@ -1223,6 +1271,7 @@ public class SwaggerSpecificationCreator {
 		} else if (operationEnum == OperationEnum.purgeSubresource) {
 			
 			operation.setSummary("Purge " + resourceName + " subresource by uuid");
+			operation.setOperationId("purge" + getOperationTitle(resourceHandler, false));
 			statusOKResponse.setDescription("Successful operation");
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to delete"));
@@ -1318,5 +1367,9 @@ public class SwaggerSpecificationCreator {
 	
 	public String getBaseUrl() {
 		return baseUrl;
+	}
+	
+	public SwaggerSpecification getSwaggerSpecification() {
+		return swaggerSpecification;
 	}
 }
