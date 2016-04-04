@@ -31,7 +31,7 @@ public class SwaggerSpecificationControllerTest {
 		ssc.getSwaggerSpecification(req);
 		
 	}	
-	
+//quick commit by rev
 	@Test(expected=org.openmrs.api.APIException.class)
 	public void test_1100() throws Exception {
 		
