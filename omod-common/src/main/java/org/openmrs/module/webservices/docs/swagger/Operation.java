@@ -57,6 +57,9 @@ public class Operation {
 	//Custom field added for specifying if the operation is a search handler
 	private String isSearchHandler = "false";
 	
+	//Unique identifier for the operation
+	private String operationId;
+	
 	public Operation() {
 		
 	}
@@ -173,4 +176,11 @@ public class Operation {
 		this.summary = summary;
 	}
 	
+	public String getOperationId() {
+		return operationId;
+	}
+	
+	public void setOperationId(String operationId) {
+		this.operationId = operationId;
+	}
 }
