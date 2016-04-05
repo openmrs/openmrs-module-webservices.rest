@@ -690,6 +690,7 @@ public class SwaggerSpecificationCreator {
 			if (getAllPath.getOperations().isEmpty() || getAllPath.getOperations().get("get") == null) {
 				// create search-only operation
 				get = new Operation();
+				get.setName("get");
 				
 				get.setSummary("Search for " + resourceName);
 				get.setDescription("At least one search parameter must be specified");
@@ -747,12 +748,19 @@ public class SwaggerSpecificationCreator {
 							p.setDescription(buildSearchParameterDependencyString(searchQuery.getRequiredParameters()));
 							p.setIn("query");
 							parameterMap.put(requiredParameter, p);
-							;
 						}
 					}
 				}
 			}
 			
+			// representations query parameter
+			Parameter v = new Parameter();
+			v.setName("v");
+			v.setDescription("The representation to return (ref, default, full or custom)");
+			v.setIn("query");
+			v.setType("string");
+			parameterMap.put("v", v);
+
 			get.setParameters(new ArrayList(parameterMap.values()));
 			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			
@@ -1166,11 +1174,19 @@ public class SwaggerSpecificationCreator {
 		Response notFoundResponse = new Response();
 		notFoundResponse.setDescription("Resource with given uuid doesn't exist");
 		
+		// representations query parameter
+		Parameter v = new Parameter();
+		v.setName("v");
+		v.setDescription("The representation to return (ref, default, full or custom)");
+		v.setIn("query");
+		v.setType("string");
+
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
 			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
+			parameters.add(v);
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			
@@ -1180,6 +1196,7 @@ public class SwaggerSpecificationCreator {
 			operation.setOperationId("get" + getOperationTitle(resourceHandler, false));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.getWithUUID));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to filter by"));
+			parameters.add(v);
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			responses.put("404", notFoundResponse);
@@ -1207,6 +1224,7 @@ public class SwaggerSpecificationCreator {
 			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
+			parameters.add(v);
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			
@@ -1237,6 +1255,7 @@ public class SwaggerSpecificationCreator {
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.getSubresourceWithUUID));
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			parameters.add(buildRequiredUUIDParameter("uuid", "uuid to filter by"));
+			parameters.add(v);
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			responses.put("404", notFoundResponse);

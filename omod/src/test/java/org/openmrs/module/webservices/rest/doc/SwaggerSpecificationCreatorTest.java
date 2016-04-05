@@ -17,10 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.Operation;
-import org.openmrs.module.webservices.docs.swagger.Path;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecification;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.*;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -34,79 +31,110 @@ import java.util.List;
 import java.util.Map;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
-	
+
 	Map<String, Integer> beforeCounts;
-	
+
 	public Map<String, Integer> getRowCounts() throws Exception {
 		Map<String, Integer> ret = new HashMap<String, Integer>();
-		
+
 		Connection con = this.getConnection();
 		DatabaseMetaData metaData = con.getMetaData();
 		DatabaseConnection dbcon = new DatabaseConnection(con);
-		
+
 		ResultSet rs = metaData.getTables(null, "PUBLIC", "%", null);
 		while (rs.next()) {
 			String tableName = rs.getString(3);
-			
+
 			ret.put(tableName, dbcon.getRowCount(tableName));
 		}
-		
+
 		return ret;
 	}
-	
+
 	@Before
 	public void init() throws Exception {
 		// init REST
 		Context.getService(RestService.class).initialize();
-		
+
 		Context.getAdministrationService().saveGlobalProperty(
 		    new GlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
-		
+
 		// ensure GP is written to database before we count the rows
 		Context.flushSession();
-		
+
 		beforeCounts = getRowCounts();
 	}
-	
+
 	@Test
 	public void checkNoDatabaseChanges() throws Exception {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
 		ssc.BuildJSON();
-		
+
 		Map<String, Integer> afterCounts = getRowCounts();
-		
+
 		Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
 		Assert.assertTrue("Ensure that no data was added or removed from any tables",
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
-	
+
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) throws Exception {
 		for (String key : beforeCounts.keySet()) {
 			if (beforeCounts.get(key) != afterCounts.get(key)) {
 				System.err.println("The " + key + " table has a different number of rows (" + beforeCounts.get(key)
 				        + " before, " + afterCounts.get(key) + " after).");
-				
+
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	// makes sure that every operation has a unique operationId
 	@Test
 	public void checkOperationIdsSet() throws Exception {
 		List<String> operationIds = new ArrayList<String>();
-		
+
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
 		ssc.BuildJSON();
 		SwaggerSpecification spec = ssc.getSwaggerSpecification();
-		
+
 		for (Path p : spec.getPaths().getPaths().values()) {
 			for (Operation o : p.getOperations().values()) {
 				Assert.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
 				operationIds.add(o.getOperationId());
 			}
 		}
+	}
+
+	// makes sure that every GET operation has the "v" parameter
+	@Test
+	public void checkRepresentationParamExists() throws Exception {
+		List<String> operationIds = new ArrayList<String>();
+
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
+		ssc.BuildJSON();
+		SwaggerSpecification spec = ssc.getSwaggerSpecification();
+
+		for (Path p : spec.getPaths().getPaths().values()) {
+			for (Operation o : p.getOperations().values()) {
+				if (o.getName().equals("get")) {
+					Assert.assertTrue("Ensure each GET operation has the 'v' query parameter",
+					    operationHasRepresentationParam(o));
+				}
+			}
+		}
+	}
+
+	private boolean operationHasRepresentationParam(Operation o) {
+		boolean ret = false;
+
+		for (Parameter p : o.getParameters()) {
+			if (p.getName().equals("v")) {
+				ret = true;
+			}
+		}
+
+		return ret;
 	}
 }
