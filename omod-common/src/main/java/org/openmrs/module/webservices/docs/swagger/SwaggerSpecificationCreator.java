@@ -760,8 +760,9 @@ public class SwaggerSpecificationCreator {
 			v.setIn("query");
 			v.setType("string");
 			parameterMap.put("v", v);
-
+			
 			get.setParameters(new ArrayList(parameterMap.values()));
+			get.getParameters().addAll(buildPagingParameters());
 			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			
 			if (wasNew) {
@@ -992,6 +993,26 @@ public class SwaggerSpecificationCreator {
 		return parameter;
 	}
 	
+	private List<Parameter> buildPagingParameters() {
+		List<Parameter> pagingParams = new ArrayList<Parameter>();
+		
+		Parameter limit = new Parameter();
+		limit.setName("limit");
+		limit.setDescription("The number of results to return");
+		limit.setIn("query");
+		limit.setType("integer");
+		pagingParams.add(limit);
+		
+		Parameter startIndex = new Parameter();
+		startIndex.setName("startIndex");
+		startIndex.setDescription("The offset at which to start");
+		startIndex.setIn("query");
+		startIndex.setType("integer");
+		pagingParams.add(startIndex);
+		
+		return pagingParams;
+	}
+	
 	private Parameter buildPOSTBodyParameter(String resourceName, String resourceParentName, OperationEnum operationEnum) {
 		Parameter parameter = new Parameter();
 		Schema bodySchema = new Schema();
@@ -1180,13 +1201,14 @@ public class SwaggerSpecificationCreator {
 		v.setDescription("The representation to return (ref, default, full or custom)");
 		v.setIn("query");
 		v.setType("string");
-
+		
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
 			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(v);
+			parameters.addAll(buildPagingParameters());
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			
@@ -1225,6 +1247,7 @@ public class SwaggerSpecificationCreator {
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(v);
+			parameters.addAll(buildPagingParameters());
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
 			
