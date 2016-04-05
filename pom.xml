@@ -337,7 +337,7 @@
 						</execution>
 					</executions>
 				</plugin>
-
+ 
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>buildnumber-maven-plugin</artifactId>
@@ -446,6 +446,12 @@
                 <module>omod-1.11</module>
                 <module>omod</module>
             </modules>
+
+   <reporting>
+
+
+
+  </reporting>
         </profile>
 
 
@@ -523,5 +529,7 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+
+
 
 </project>
