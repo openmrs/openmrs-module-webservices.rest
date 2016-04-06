@@ -1024,11 +1024,13 @@ public class SwaggerSpecificationCreator {
 		switch (operationEnum) {
 			case postCreate:
 			case postSubresource:
-				parameter.setName("resource to create");
+				parameter.setName("resource");
+				parameter.setDescription("Resource to create");
 				break;
 			case postUpdate:
 			case postUpdateSubresouce:
-				parameter.setName("resource properties to update");
+				parameter.setName("resource");
+				parameter.setDescription("Resource properties to update");
 		}
 		
 		bodySchema.setRef(getSchemaRef(resourceName, resourceParentName, operationEnum));
