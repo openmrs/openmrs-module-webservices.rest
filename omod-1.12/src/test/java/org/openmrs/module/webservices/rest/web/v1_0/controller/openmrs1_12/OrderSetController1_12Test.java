@@ -127,13 +127,12 @@ public class OrderSetController1_12Test extends MainResourceControllerTest{
                 "      },\n" +
                 "      \"concept\": {\n" +
                 "        \"name\": \"Amoxicillin\",\n" +
-                "        \"uuid\": \"627a6041-ad81-4968-8adf-2f49aec4433b\"\n" +
+                "        \"uuid\": \"b055abd8-a420-4a11-8b98-02ee170a7b54\"\n" +
                 "      }\n" +
                 "    }\n" +
                 "    ]\n" +
                 "}";
 
-        System.out.println(json);
         MockHttpServletRequest req = request(RequestMethod.POST, getURI());
         req.setContent(json.getBytes());
 
