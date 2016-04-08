@@ -1,4 +1,5 @@
 package org.openmrs.module.webservices.rest.web.controller;
+
 import org.openmrs.api.APIException;
 
 import java.io.*;
@@ -18,7 +19,7 @@ public class SwaggerSpecificationControllerTest {
 	
 	private SwaggerSpecificationController ssc = new SwaggerSpecificationController();
 	
-	@Test(expected=org.openmrs.api.APIException.class)
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_0100() throws Exception {
 		
 		when(req.getScheme()).thenReturn("asdf");
@@ -30,9 +31,10 @@ public class SwaggerSpecificationControllerTest {
 		
 		ssc.getSwaggerSpecification(req);
 		
-	}	
-//quick commit by rev
-	@Test(expected=org.openmrs.api.APIException.class)
+	}
+	
+	//quick commit by rev
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_1100() throws Exception {
 		
 		when(req.getScheme()).thenReturn("http");
@@ -45,8 +47,8 @@ public class SwaggerSpecificationControllerTest {
 		ssc.getSwaggerSpecification(req);
 		
 	}
-	 
-	 	@Test(expected=org.openmrs.api.APIException.class)
+	
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_0001() throws Exception {
 		
 		when(req.getScheme()).thenReturn("asdf");
@@ -59,10 +61,8 @@ public class SwaggerSpecificationControllerTest {
 		ssc.getSwaggerSpecification(req);
 		
 	}
-	 
-	 
-	 
-	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_0010() throws Exception {
 		
 		when(req.getScheme()).thenReturn("https");
@@ -75,9 +75,8 @@ public class SwaggerSpecificationControllerTest {
 		ssc.getSwaggerSpecification(req);
 		
 	}
-	 
-	 
-	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_0011() throws Exception {
 		
 		when(req.getScheme()).thenReturn("https");
@@ -91,7 +90,7 @@ public class SwaggerSpecificationControllerTest {
 		
 	}
 	
-	 	 	@Test(expected=org.openmrs.api.APIException.class)
+	@Test(expected = org.openmrs.api.APIException.class)
 	public void test_1000() throws Exception {
 		
 		when(req.getScheme()).thenReturn("https");
@@ -104,6 +103,6 @@ public class SwaggerSpecificationControllerTest {
 		ssc.getSwaggerSpecification(req);
 		
 	}
-
-    //
+	
+	//
 }
