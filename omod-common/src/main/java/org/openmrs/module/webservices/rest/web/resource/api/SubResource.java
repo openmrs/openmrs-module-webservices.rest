@@ -91,4 +91,15 @@ public interface SubResource extends Resource {
 	 */
 	SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException;
 	
+	/**
+	 * Put a sub-resource to a parent resource
+	 * 
+	 * @param parentUniqueId
+	 * @param post
+	 * @param context
+	 * @return
+	 * @throws ResponseException
+	 */
+	void put(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException;
+	
 }
