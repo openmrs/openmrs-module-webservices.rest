@@ -22,7 +22,6 @@ import java.util.Map;
 import org.dbunit.database.DatabaseConnection;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
@@ -35,7 +34,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-@Ignore("Ignore for now as i fix it")
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
 	Map<String, Integer> beforeCounts;
