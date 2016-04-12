@@ -760,7 +760,15 @@ public class SwaggerSpecificationCreator {
 			v.setIn("query");
 			v.setType("string");
 			parameterMap.put("v", v);
-			
+
+			// query parameter
+			Parameter q = new Parameter();
+			q.setName("q");
+			q.setDescription("The search query");
+			q.setIn("query");
+			q.setType("string");
+			parameterMap.put("q", q);
+
 			get.setParameters(new ArrayList(parameterMap.values()));
 			get.getParameters().addAll(buildPagingParameters());
 			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
@@ -1204,12 +1212,20 @@ public class SwaggerSpecificationCreator {
 		v.setIn("query");
 		v.setType("string");
 		
+		// query parameter
+		Parameter q = new Parameter();
+		q.setName("q");
+		q.setDescription("The search query");
+		q.setIn("query");
+		q.setType("string");
+		
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
 			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(v);
+			parameters.add(q);
 			parameters.addAll(buildPagingParameters());
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
@@ -1249,6 +1265,7 @@ public class SwaggerSpecificationCreator {
 			parameters.add(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			responseBodySchema.setRef(getSchemaRef(resourceName, resourceParentName, OperationEnum.get));
 			parameters.add(v);
+			parameters.add(q);
 			parameters.addAll(buildPagingParameters());
 			statusOKResponse.setSchema(responseBodySchema);
 			responses.put("200", statusOKResponse);
