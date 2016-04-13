@@ -83,7 +83,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>${project.parent.artifactId}-omod-1.12</artifactId>
 			<version>${project.parent.version}</version>
@@ -94,7 +94,7 @@
 			<version>${project.parent.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
-		</dependency>
+		</dependency>//-->
 	</dependencies>
 	
 	<build>
