@@ -225,6 +225,18 @@ public class ObsResource1_8Test extends BaseDelegatingResourceTest<ObsResource1_
 	}
 
 	@Test
+	public void setValue_shouldReturnDrug() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = Context.getConceptService().getConceptByUuid("89ca642a-dab6-4f20-b712-e12ca4fc6d36");
+		obs.setConcept(concept);
+		// drug
+		String drugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
+		Drug drug = Context.getConceptService().getDrugByUuid(drugUuid);
+		ObsResource1_8.setValue(obs, drugUuid);
+		assertEquals(drug, ObsResource1_8.getValue(obs));
+	}
+
+	@Test
 	public void setValue_shouldReturnUuidForConceptFalse() throws Exception {
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));

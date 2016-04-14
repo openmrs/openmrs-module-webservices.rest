@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -39,6 +40,17 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	 * @return
 	 */
 	T newDelegate();
+	
+	/**
+	 * Instantiates a new instance of the handled delegate based on object's properties. It is used
+	 * for example to create ConceptNumeric if datatype property is set to Numeric. It has a default
+	 * implementation in {@link BaseDelegatingResource#newDelegate(SimpleObject)}, which delegates
+	 * to {@link #newDelegate()}.
+	 * 
+	 * @param object
+	 * @return
+	 */
+	T newDelegate(SimpleObject object);
 	
 	/**
 	 * Writes the delegate to the database

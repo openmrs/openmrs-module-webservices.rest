@@ -133,6 +133,27 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		return request;
 	}
 	
+	public MockHttpServletRequest newPutRequest(String requestURI, Object content) {
+		try {
+			String json = new ObjectMapper().writeValueAsString(content);
+			return newPutRequest(requestURI, json);
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public MockHttpServletRequest newPutRequest(String requestURI, String content) {
+		MockHttpServletRequest request = request(RequestMethod.PUT, requestURI);
+		try {
+			request.setContent(content.getBytes("UTF-8"));
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return request;
+	}
+	
 	/**
 	 * Passes the given request to a proper controller.
 	 * 

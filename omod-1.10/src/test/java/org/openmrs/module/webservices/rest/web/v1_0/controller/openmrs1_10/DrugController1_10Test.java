@@ -21,9 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.ConceptClass;
+import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -117,6 +120,41 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, Util.getResultsSize(results));
 		Assert.assertEquals(conceptService.getDrug(2).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
+	}
+	
+	
+	@Test
+	public void shouldIncludeStrengthInDefaultRepresentation() throws Exception {
+		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		String drugUuid = "8e2323fa-0fa0-461f-9b59-6765997d849d";
+		Drug drug = conceptService.getDrugByUuid(drugUuid);
+		drug.setStrength("full");
+		conceptService.saveDrug(drug);
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + drugUuid)));
+		Assert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+	}
+	
+	@Test
+	public void shouldIncludeStrengthInFullRepresentation() throws Exception {
+		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		String drugUuid = "8e2323fa-0fa0-461f-9b59-6765997d849d";
+		Drug drug = conceptService.getDrugByUuid(drugUuid);
+		drug.setStrength("full");
+		conceptService.saveDrug(drug);
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + drugUuid, new Parameter("v", "full"))));
+		Assert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+	}
+	
+	@Test
+	public void shouldSetStrengthWhenCreatingDrug() throws Exception {
+		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		SimpleObject drug = new SimpleObject();
+		drug.add("name", "testName");
+		drug.add("concept", "25f83cd6-64e9-4e07-a5f9-364d3b14a43e");
+		drug.add("combination", "true");
+		drug.add("strength", "high");
+		SimpleObject result = deserialize(handle(newPostRequest(getURI(), drug)));
+		Assert.assertThat("high", Matchers.is(PropertyUtils.getProperty(result, "strength")));
 	}
 	
 	/**

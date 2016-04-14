@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>webservices.rest</artifactId>
-		<version>2.14-SNAPSHOT</version>
+		<version>2.15-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-omod-2.0</artifactId>
 	<packaging>jar</packaging>
@@ -11,7 +11,7 @@
 	<description>OpenMRS module project for Rest Web Services</description>
 
 	<properties>
-		<openmrs.version.2.0>2.0.0-alpha</openmrs.version.2.0>
+		<openmrs.version.2.0>2.0.0-beta</openmrs.version.2.0>
 	</properties>
 
 	<dependencies>
