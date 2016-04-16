@@ -21,7 +21,9 @@ import com.thoughtworks.xstream.mapper.Mapper;
 import com.thoughtworks.xstream.core.TreeMarshaller;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.core.DefaultConverterLookup;
-import com.thoughtworks.xstream.converters.collections.CharArrayConverter;
+import com.thoughtworks.xstream.converters.basic.StringConverter;
+import com.thoughtworks.xstream.converters.SingleValueConverterWrapper;
+import com.thoughtworks.xstream.converters.Converter;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -31,66 +33,99 @@ public class SimpleObjectConverterTest {
 	
 	HierarchicalStreamWriter writer;
 	
+	StringWriter swriter;
+	
 	MarshallingContext context;
 	
 	SimpleObjectConverter con;
 	
 	List l;
 	
+	//@TODO General cleanup before it's ready for a pull request
 	@Before
 	public void setup() {
 		con = new SimpleObjectConverter((Mapper) null);
-		writer = new PrettyPrintWriter(new StringWriter());
+		swriter = new StringWriter();
+		writer = new PrettyPrintWriter(swriter);
+		
 		DefaultConverterLookup conlook = new DefaultConverterLookup();
-		conlook.registerConverter(new CharArrayConverter(), 1);
+		conlook.registerConverter(new SingleValueConverterWrapper(new StringConverter()), 1);
 		context = new TreeMarshaller(writer, conlook, (Mapper) null);
 	}
 	
-	//Map, writer, context
 	@Test
-	public void BaseChoiceTest() {
+	public void HashMapTest() {
 		Map m = new HashMap();
+		m.put("key", "value");
 		
 		con.marshal(m, writer, context);
+		String convertedResult = swriter.toString();
+		assertTrue(convertedResult.contains("<key>value"));
 		
 	}
 	
-	//Map, writer, null
 	@Test
-	public void test1() {
-		Map m = new HashMap();
+	public void ListTest() {
+		List l = new ArrayList();
+		SimpleObject simpl = new SimpleObject();
+		simpl.add("key", "value");
+		l.add(simpl);
 		
-		con.marshal(m, writer, null);
+		//con.marshal(l, writer, context);
+		String convertedResult = swriter.toString();
+		assertTrue(convertedResult.contains("<key>value"));
+		
 	}
 	
-	//Map, null, context
 	@Test
-	public void test2() {
-		Map m = new HashMap();
+	public void ListTestWithCustomSubresource() {
+		class HyperlinkConverter implements Converter {
+			
+			public boolean canConvert(Class clazz) {
+				return clazz.equals(Hyperlink.class);
+			}
+			
+			public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+				Hyperlink link = (Hyperlink) value;
+				
+				writer.startNode("Link");
+				
+				writer.startNode("rel");
+				writer.setValue(link.getRel());
+				writer.endNode();
+				
+				writer.startNode("uri");
+				writer.setValue(link.getUri());
+				writer.endNode();
+				
+				writer.endNode();
+			}
+			
+			//this returns a cannot find symbol error?
+			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+				return null;
+			}
+		}
 		
-		con.marshal(m, null, context);
-	}
-	
-	//List, writer, context
-	@Test
-	public void test3() {
-		List l = new LinkedList();
+		con.registerConverter(new HyperLinkConverter(), 1);
+		
+		ArrayList l = new ArrayList();
+		SimpleObject simpl = new SimpleObject();
+		
+		List links = new ArrayList();
+		Hyperlink hlink = new Hyperlink("self", "uri");
+		hlink.setResourceAlias("uri");
+		links.add(hlink);
+		
+		simpl.add("key", "value");
+		simpl.add("links", links);
+		
+		l.add(simpl);
 		
 		con.marshal(l, writer, context);
-	}
-	
-	//null, writer, context
-	@Test
-	public void test4() {
-		con.marshal(null, writer, context);
-	}
-	
-	//Integer, writer, context
-	@Test
-	public void test5() {
-		char[] i = { 'a' };
-		
-		con.marshal(i, writer, context);
+		String convertedResult = swriter.toString();
+		System.out.println(convertedResult);//.contains("<key>value"));
+		assertTrue(convertedResult.contains("<uri>"));
 	}
 	
 }
