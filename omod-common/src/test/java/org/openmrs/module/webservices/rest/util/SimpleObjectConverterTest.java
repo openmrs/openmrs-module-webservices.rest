@@ -15,6 +15,7 @@ import org.openmrs.module.webservices.rest.web.RestInit;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
@@ -29,6 +30,33 @@ import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.*;
 
+class HyperlinkConverter implements Converter {
+	
+	public boolean canConvert(Class clazz) {
+		return Hyperlink.class.isAssignableFrom(clazz);
+	}
+	
+	public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
+		Hyperlink link = (Hyperlink) value;
+		
+		writer.startNode("Link");
+		
+		writer.startNode("rel");
+		writer.setValue(link.getRel());
+		writer.endNode();
+		
+		writer.startNode("uri");
+		writer.setValue(link.getUri());
+		writer.endNode();
+		
+		writer.endNode();
+	}
+	
+	public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+		return null;
+	}
+}
+
 public class SimpleObjectConverterTest {
 	
 	HierarchicalStreamWriter writer;
@@ -39,6 +67,8 @@ public class SimpleObjectConverterTest {
 	
 	SimpleObjectConverter con;
 	
+	DefaultConverterLookup conlook;
+	
 	List l;
 	
 	//@TODO General cleanup before it's ready for a pull request
@@ -48,8 +78,10 @@ public class SimpleObjectConverterTest {
 		swriter = new StringWriter();
 		writer = new PrettyPrintWriter(swriter);
 		
-		DefaultConverterLookup conlook = new DefaultConverterLookup();
+		conlook = new DefaultConverterLookup();
 		conlook.registerConverter(new SingleValueConverterWrapper(new StringConverter()), 1);
+		conlook.registerConverter(new HyperlinkConverter(), 1);
+		conlook.registerConverter(new CollectionConverter((Mapper) null), 1);
 		context = new TreeMarshaller(writer, conlook, (Mapper) null);
 	}
 	
@@ -71,44 +103,25 @@ public class SimpleObjectConverterTest {
 		simpl.add("key", "value");
 		l.add(simpl);
 		
-		//con.marshal(l, writer, context);
+		con.marshal(l, writer, context);
 		String convertedResult = swriter.toString();
 		assertTrue(convertedResult.contains("<key>value"));
 		
 	}
 	
 	@Test
+	public void SimpleObjectWithString() {
+		SimpleObject simpl = new SimpleObject();
+		List l = new ArrayList();
+		l.add("hello");
+		simpl.add("links", l);
+		
+		con.marshal(l, writer, context);
+		
+	}
+	
+	@Test
 	public void ListTestWithCustomSubresource() {
-		class HyperlinkConverter implements Converter {
-			
-			public boolean canConvert(Class clazz) {
-				return clazz.equals(Hyperlink.class);
-			}
-			
-			public void marshal(Object value, HierarchicalStreamWriter writer, MarshallingContext context) {
-				Hyperlink link = (Hyperlink) value;
-				
-				writer.startNode("Link");
-				
-				writer.startNode("rel");
-				writer.setValue(link.getRel());
-				writer.endNode();
-				
-				writer.startNode("uri");
-				writer.setValue(link.getUri());
-				writer.endNode();
-				
-				writer.endNode();
-			}
-			
-			//this returns a cannot find symbol error?
-			public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-				return null;
-			}
-		}
-		
-		con.registerConverter(new HyperLinkConverter(), 1);
-		
 		ArrayList l = new ArrayList();
 		SimpleObject simpl = new SimpleObject();
 		
