@@ -147,7 +147,7 @@ public class RestUtilTest {
 	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsNull() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), null);
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("exceptionmessage", errorResponseMap.get("message"));
+		Assert.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class RestUtilTest {
 	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsEmpty() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "");
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("exceptionmessage", errorResponseMap.get("message"));
+		Assert.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public class RestUtilTest {
 	public void wrapErrorResponse_shouldSetReasonAsMessageIfNotEmpty() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "reason");
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("reason", errorResponseMap.get("message"));
+		Assert.assertEquals("reason [exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
