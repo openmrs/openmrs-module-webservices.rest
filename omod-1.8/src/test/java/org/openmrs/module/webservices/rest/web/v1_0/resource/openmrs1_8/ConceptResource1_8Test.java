@@ -18,9 +18,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -82,10 +85,9 @@ public class ConceptResource1_8Test extends BaseDelegatingResourceTest<ConceptRe
 	public String getUuidProperty() {
 		return RestTestConstants1_8.CONCEPT_UUID;
 	}
-	
-	
-	@Test
-	public void testSetNames() throws Exception {
+    
+    @Test
+    public void testSetNames() throws Exception {
     	Concept instance = new Concept();
     	List<ConceptName> otherNames = new ArrayList<ConceptName>();
     	ConceptName otherName = new ConceptName();
@@ -112,30 +114,6 @@ public class ConceptResource1_8Test extends BaseDelegatingResourceTest<ConceptRe
     	ConceptResource1_8.setNames(instance, getMockNamesList());
     	assertEquals(instance.getNames().size(), 2);
     	assertFalse(instance.getNames().contains(otherName));
-	}
-    @Test
-    public void testCheckIfNamesContainNameByProperties() throws Exception { 
-    	String duplicatedUuid = "newUuid";
-    	List<ConceptName> someNames = new ArrayList<ConceptName>();
-    	
-    	ConceptName newName = new ConceptName();
-    	newName.setLocale(Locale.ENGLISH);
-    	newName.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
-    	newName.setName("newName");
-    	newName.setUuid(duplicatedUuid);
-    	
-    	//oldNames is empty
-    	assertFalse(ConceptResource1_8.checkIfNamesContainNameByProperties(someNames, newName));
-    	//assign some names, but different from newName
-    	someNames = getMockNamesList();    	
-    	assertFalse(ConceptResource1_8.checkIfNamesContainNameByProperties(someNames, newName));
-    	
-    	someNames.add(newName);
-    	assertTrue(ConceptResource1_8.checkIfNamesContainNameByProperties(someNames, newName));
-    	
-    	ConceptName otherName = new ConceptName();
-    	otherName.setUuid(duplicatedUuid);
-    	assertTrue(ConceptResource1_8.checkIfNamesContainNameByProperties(someNames, otherName));
     }
     
     public List<ConceptName> getMockNamesList(){
