@@ -807,9 +807,9 @@ public class RestUtil implements GlobalPropertyListener {
 	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
 		LinkedHashMap map = new LinkedHashMap();
 		if (reason != null && !reason.isEmpty()) {
-			map.put("message", reason);
+			map.put("message", reason + " [" + ex.getMessage() + "]");
 		} else
-			map.put("message", ex.getMessage());
+			map.put("message", "[" + ex.getMessage() + "]");
 		StackTraceElement[] steElements = ex.getStackTrace();
 		if (steElements.length > 0) {
 			StackTraceElement ste = ex.getStackTrace()[0];

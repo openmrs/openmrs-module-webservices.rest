@@ -702,7 +702,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 			// some properties are allowed to be missing, since they may have been added in later OpenMRS versions
 			if (allowedMissingProperties.contains(propertyName))
 				return null;
-			throw new ConversionException(propertyName, ex);
+			throw new ConversionException(propertyName + " on " + instance.getClass(), ex);
 		}
 	}
 	

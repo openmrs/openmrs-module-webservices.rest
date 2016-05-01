@@ -39,6 +39,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import java.util.LinkedHashMap;
 
 public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -136,5 +138,16 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		controller.handleException(ex, request, response);
 		
 		verify(spyOnLog).info(message, ex);
+	}
+	
+	@Test
+	public void handleConversionException_shouldLogConversionErrorAsInfo() throws Exception {
+		
+		String message = "conversion error";
+		ConversionException ex = new ConversionException(message);
+		SimpleObject responseSimpleObject = controller.conversionExceptionHandler(ex, request, response);
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
+		LinkedHashMap errors = (LinkedHashMap) responseSimpleObject.get("error");
+		Assert.assertEquals("[" + message + "]", errors.get("message"));
 	}
 }

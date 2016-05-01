@@ -15,12 +15,14 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -230,6 +232,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		
 		description.addProperty("name");
+		description.addProperty("names");
 		
 		return description;
 	}
@@ -258,6 +261,9 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * It's needed, because of ConversionException: Don't know how to handle collection class:
 	 * interface java.util.Collection
 	 * 
+	 * if request to update Concept updates ConceptName, adequate resource takes care of it,
+	 * so this method just adds new and removes deleted names.
+	 * 
 	 * @param instance
 	 * @param names
 	 */
@@ -266,7 +272,43 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		for(ConceptName name : names){
 			name.setConcept(instance);
 		}
-		instance.setNames(new HashSet<ConceptName>(names));
+		//delete names which are absent new list of names
+		for (ConceptName name : instance.getNames()){
+			if(!checkIfNamesContainNameByProperties(names, name)){
+				instance.removeName(name);
+			}
+		}
+		//add names which are absent in old list of names
+		for(ConceptName name : names){
+			if(!checkIfNamesContainNameByProperties(instance.getNames(), name)){
+				instance.addName(name);
+			}
+		}
+	}
+	/**
+	 * helper method for {@link #setNames(Concept, List<ConceptName>)}
+	 * checks if specified name is present in concept's names list
+	 * 
+	 * @should return true if list contains name with given uuid
+	 * @should return true if list contains name with same properties
+	 * @should return false if there is no concept with same properties
+	 * 
+	 * @param names
+	 * @param searched
+	 * @return
+	 */
+	public static boolean checkIfNamesContainNameByProperties(Collection<ConceptName> names, ConceptName searched) {
+		for(ConceptName name : names){
+			if(Objects.equals(name.getUuid(), searched.getUuid())){
+				return true;
+			}
+			else if(Objects.equals(name.getName(), searched.getName())
+					&&Objects.equals(name.getConceptNameType(), searched.getConceptNameType())
+					&&Objects.equals(name.getLocale(), searched.getLocale())){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
