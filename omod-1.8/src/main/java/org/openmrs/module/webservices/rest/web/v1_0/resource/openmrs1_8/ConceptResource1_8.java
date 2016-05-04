@@ -13,10 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,6 +28,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -39,6 +43,7 @@ import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -233,6 +238,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		
 		description.addProperty("name");
 		description.addProperty("names");
+		description.addProperty("descriptions");
 		
 		return description;
 	}
@@ -256,6 +262,51 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		ConceptName fullySpecifiedName = new ConceptName(name, Context.getLocale());
 		instance.setFullySpecifiedName(fullySpecifiedName);
 	}
+	/**
+	 * 
+	 * @param instance
+	 * @param propertyName name of property to set
+	 * @param items objects to be added to property
+	 * @param itemsComparator is used to compare new and old list element's, which determines if item is added/removed
+	 * @return 
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
+	protected static <T>void setHibernateCollectionProperty(Concept instance, String propertyName, Collection<T> items, Comparator<T> itemsComparator) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		
+		String elementName = StringUtils.capitalize(propertyName.substring(0, propertyName.length()-1));
+		String addMethodName = "add"+elementName;
+		String removeMethodName ="remove"+elementName;
+		
+		Method addMethod = ReflectionUtil.findMethod(Concept.class, addMethodName);
+		Method removeMethod = ReflectionUtil.findMethod(Concept.class, removeMethodName);
+		
+		for(T value : items){
+			PropertyUtils.setProperty(value, "concept", instance);
+		}
+		//delete object which are absent in new list
+		removeRedundant:
+		for(T oldValue : (Collection<T>)PropertyUtils.getProperty(instance, propertyName)){
+			for(T newValue : items){
+				if(itemsComparator.compare(oldValue, newValue)==0){
+					continue removeRedundant;
+				}
+			}
+			removeMethod.invoke(instance, oldValue);
+		}
+		//add object which are absent in old list
+		addNew:
+		for(T newValue : items){
+			for(T oldValue : (Collection<T>)PropertyUtils.getProperty(instance, propertyName)){
+				if(itemsComparator.compare(oldValue, newValue)==0){
+					continue addNew;
+				}
+			}
+			addMethod.invoke(instance, newValue);
+		}
+	}
 	
 	/**
 	 * It's needed, because of ConversionException: Don't know how to handle collection class:
@@ -266,49 +317,26 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * 
 	 * @param instance
 	 * @param names
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
 	@PropertySetter("names")
-	public static void setNames(Concept instance, List<ConceptName> names) {
-		for(ConceptName name : names){
-			name.setConcept(instance);
-		}
-		//delete names which are absent new list of names
-		for (ConceptName name : instance.getNames()){
-			if(!checkIfNamesContainNameByProperties(names, name)){
-				instance.removeName(name);
+	public static void setNames(Concept instance, List<ConceptName> names) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    	setHibernateCollectionProperty(instance, "names", names, new Comparator<ConceptName>(){
+			@Override
+			public int compare(ConceptName left, ConceptName right) {
+				if(Objects.equals(left.getUuid(), right.getUuid())){
+					return 0;
+				}
+				boolean areEqual = (Objects.equals(left.getName(), right.getName())
+						&&Objects.equals(left.getConceptNameType(), right.getConceptNameType())
+						&&Objects.equals(left.getLocale(), right.getLocale()));
+				return areEqual? 0 : 1;
 			}
-		}
-		//add names which are absent in old list of names
-		for(ConceptName name : names){
-			if(!checkIfNamesContainNameByProperties(instance.getNames(), name)){
-				instance.addName(name);
-			}
-		}
-	}
-	/**
-	 * helper method for {@link #setNames(Concept, List<ConceptName>)}
-	 * checks if specified name is present in concept's names list
-	 * 
-	 * @should return true if list contains name with given uuid
-	 * @should return true if list contains name with same properties
-	 * @should return false if there is no concept with same properties
-	 * 
-	 * @param names
-	 * @param searched
-	 * @return
-	 */
-	public static boolean checkIfNamesContainNameByProperties(Collection<ConceptName> names, ConceptName searched) {
-		for(ConceptName name : names){
-			if(Objects.equals(name.getUuid(), searched.getUuid())){
-				return true;
-			}
-			else if(Objects.equals(name.getName(), searched.getName())
-					&&Objects.equals(name.getConceptNameType(), searched.getConceptNameType())
-					&&Objects.equals(name.getLocale(), searched.getLocale())){
-				return true;
-			}
-		}
-		return false;
+    		
+    	});
 	}
 	
 	/**
@@ -317,10 +345,27 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * 
 	 * @param instance
 	 * @param descriptions
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
 	 */
 	@PropertySetter("descriptions")
-	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions) {
-		instance.setDescriptions(new HashSet<ConceptDescription>(descriptions));
+	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+
+    	setHibernateCollectionProperty(instance, "descriptions", descriptions, new Comparator<ConceptDescription>(){
+
+			@Override
+			public int compare(ConceptDescription left, ConceptDescription right) {
+				if(Objects.equals(left.getUuid(), right.getUuid())){
+					return 0;
+				}
+				boolean areEqual = (Objects.equals(left.getDescription(), right.getDescription())
+						&&Objects.equals(left.getLocale(), right.getLocale()));
+				return areEqual? 0 : 1;
+			}
+    		
+    	});
 	}
 	
 	/**
