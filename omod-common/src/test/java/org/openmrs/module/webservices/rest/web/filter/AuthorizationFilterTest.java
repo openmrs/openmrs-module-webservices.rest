@@ -33,54 +33,52 @@ import static org.mockito.Mockito.*;
 import org.mockito.Matchers;
 
 public class AuthorizationFilterTest {
-    
-    AuthorizationFilter filter = new AuthorizationFilter();
+	
+	AuthorizationFilter filter = new AuthorizationFilter();
+	
 	private AdministrationService ad = mock(AdministrationService.class);
-    
+	
 	private Context con = new Context();
+	
 	@Before
 	public void setup() {
 		ServiceContext scon = ServiceContext.getInstance();
 		con.setServiceContext(scon);
 		scon.setAdministrationService(ad);
 	}
-    
-    @Test
-    public void InvalidIPShouldReturn403() throws IOException, ServletException{
-
-        ServletRequestWrapper req = mock(ServletRequestWrapper.class);
-        HttpServletResponse res = mock(HttpServletResponse.class);
-        FilterChain chain = mock(FilterChain.class);
- 		doReturn("localhost").when(ad).getGlobalProperty(anyString(), anyString());       
-        when(req.getRemoteAddr()).thenReturn("1.1.1.1");
-        
-        filter.doFilter(req, res, chain);
-        
-        verify(res).sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
-        
-        
-    
-    }
-    
-    @Test
-    public void ShouldSendErrorIfTimedOut() throws IOException, ServletException{
-        ContextDAO dao = mock(ContextDAO.class);
-        con.setContextDAO(dao);
-        Context.openSession();
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        HttpServletResponse res = mock(HttpServletResponse.class);
-        FilterChain chain = mock(FilterChain.class);
- 		doReturn("localhost").when(ad).getGlobalProperty(anyString(), anyString());       
-        when(req.getRemoteAddr()).thenReturn("localhost");
-        when(req.isRequestedSessionIdValid()).thenReturn(false);
-        when(req.getRequestedSessionId()).thenReturn("x");
-        
-        filter.doFilter(req, res, chain);
-        Context.closeSession();
-        verify(res).sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
-        
-    }
-    
-    
-    
+	
+	@Test
+	public void InvalidIPShouldReturn403() throws IOException, ServletException {
+		
+		ServletRequestWrapper req = mock(ServletRequestWrapper.class);
+		HttpServletResponse res = mock(HttpServletResponse.class);
+		FilterChain chain = mock(FilterChain.class);
+		doReturn("localhost").when(ad).getGlobalProperty(anyString(), anyString());
+		when(req.getRemoteAddr()).thenReturn("1.1.1.1");
+		
+		filter.doFilter(req, res, chain);
+		
+		verify(res).sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
+		
+	}
+	
+	@Test
+	public void ShouldSendErrorIfTimedOut() throws IOException, ServletException {
+		ContextDAO dao = mock(ContextDAO.class);
+		con.setContextDAO(dao);
+		Context.openSession();
+		HttpServletRequest req = mock(HttpServletRequest.class);
+		HttpServletResponse res = mock(HttpServletResponse.class);
+		FilterChain chain = mock(FilterChain.class);
+		doReturn("localhost").when(ad).getGlobalProperty(anyString(), anyString());
+		when(req.getRemoteAddr()).thenReturn("localhost");
+		when(req.isRequestedSessionIdValid()).thenReturn(false);
+		when(req.getRequestedSessionId()).thenReturn("x");
+		
+		filter.doFilter(req, res, chain);
+		Context.closeSession();
+		verify(res).sendError(eq(HttpServletResponse.SC_FORBIDDEN), anyString());
+		
+	}
+	
 }
