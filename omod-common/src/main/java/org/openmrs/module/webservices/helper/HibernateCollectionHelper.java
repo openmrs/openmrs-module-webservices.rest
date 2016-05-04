@@ -27,7 +27,7 @@ import java.util.Comparator;
  * @param <T>
  * @param <E>
  */
-public abstract class HibernateCollectionHelper<T, E extends OpenmrsObject> implements Comparator<E> {
+public abstract class HibernateCollectionHelper<T, E> implements Comparator<E> {
 	
 	protected T instance;
 	
