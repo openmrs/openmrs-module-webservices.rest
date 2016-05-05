@@ -11,9 +11,20 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -42,11 +53,9 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.util.ReflectionUtils;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.Map.Entry;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class SwaggerSpecificationCreator {
 	
@@ -760,7 +769,7 @@ public class SwaggerSpecificationCreator {
 			v.setIn("query");
 			v.setType("string");
 			parameterMap.put("v", v);
-
+			
 			// query parameter
 			Parameter q = new Parameter();
 			q.setName("q");
@@ -768,7 +777,7 @@ public class SwaggerSpecificationCreator {
 			q.setIn("query");
 			q.setType("string");
 			parameterMap.put("q", q);
-
+			
 			get.setParameters(new ArrayList(parameterMap.values()));
 			get.getParameters().addAll(buildPagingParameters());
 			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));

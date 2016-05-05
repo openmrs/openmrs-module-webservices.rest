@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.webservices.helper;
 
-import org.openmrs.OpenmrsObject;
-
 import java.util.Collection;
 import java.util.Comparator;
 
