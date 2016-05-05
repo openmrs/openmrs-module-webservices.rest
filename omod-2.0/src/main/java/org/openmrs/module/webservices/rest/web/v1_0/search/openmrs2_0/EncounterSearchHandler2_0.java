@@ -11,8 +11,7 @@
  * <p/>
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_0;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,15 +35,17 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterTypeResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.parameter.EncounterSearchCriteria;
+import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EncounterSearchHandler1_8 implements SearchHandler {
+public class EncounterSearchHandler2_0 implements SearchHandler {
 	
 	private static final String DATE_FROM = "fromdate";
 	private static final String DATE_TO = "todate";
 	
-    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
+    private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("2.0.*"),
             Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)").withRequiredParameters("patient", "encounterType").withOptionalParameters(DATE_FROM, DATE_TO, "order").build()));
 
     @Override
@@ -68,8 +69,13 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
         EncounterType encounterType = ((EncounterTypeResource1_8)
                 Context.getService(RestService.class).getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
         if (patient != null && encounterType != null) {
+        	EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder().setPatient(patient)
+        			.setFromDate(fromDate)
+        			.setToDate(toDate)
+        			.setEncounterTypes(Arrays.asList(encounterType))
+    		        .setIncludeVoided(false).createEncounterSearchCriteria();
             List<Encounter> encounters = Context.getEncounterService()
-                    .getEncounters(patient, null, fromDate, toDate, null, Arrays.asList(encounterType), null, false);
+                    .getEncounters(encounterSearchCriteria);
             String order = context.getRequest().getParameter("order");
             if ("desc".equals(order)) {
             	Collections.reverse(encounters);
@@ -78,6 +84,4 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
         }
         return new EmptySearchResult();
     }
-
 }
-

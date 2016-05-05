@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
      <!--patient one-->
-    <patient patient_id="100" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
     <person person_id="100" gender="M" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="41c6b35e-c093-11e3-be87-005056821db0"/>
+    <patient patient_id="100" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
     <person_name person_name_id="100" preferred="true" person_id="100" given_name="John" middle_name=" " family_name="Doe" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="48076422-c093-11e3-be87-005056821db0"/>
 
     <!--patient two-->
@@ -22,7 +22,7 @@
 
     <encounter encounter_id="2001" encounter_type="101" patient_id="100" location_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="63ca2dce-c091-11e3-be87-005056821db0" />
     <!-- obs group -->
-    <obs obs_id="2003" person_id="100" encounter_id="1001" concept_id="23" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="7ef6b093-c092-11e3-be87-005056821db0" />
+    <obs obs_id="2003" person_id="100" encounter_id="2001" concept_id="23" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="7ef6b093-c092-11e3-be87-005056821db0" />
     <!-- containing two obs -->
     <obs obs_id="2004" person_id="100" encounter_id="2001" obs_group_id="2003" concept_id="19" value_text="Some text" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="8c6d6d78-c091-11e3-be87-005056821db0" />
     <obs obs_id="2005" person_id="100" encounter_id="2001" obs_group_id="2003" concept_id="20" value_datetime="2011-06-12 00:00:00.0" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="9107afcf-c091-11e3-be87-005056821db0" />
