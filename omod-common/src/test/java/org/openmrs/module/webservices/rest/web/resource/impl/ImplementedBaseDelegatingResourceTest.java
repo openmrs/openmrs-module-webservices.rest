@@ -1,7 +1,5 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
@@ -16,6 +14,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.*;
 
+import org.junit.Assert;
+import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -112,7 +112,7 @@ public class ImplementedBaseDelegatingResourceTest extends BaseDelegatingResourc
 		
 		scon.setApplicationContext(mockContext);
 		
-		init();
+		//init();
 		
 	}
 	
