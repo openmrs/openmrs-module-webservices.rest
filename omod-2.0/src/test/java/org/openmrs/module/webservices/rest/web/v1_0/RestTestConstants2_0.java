@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.openmrs.module.webservices.rest.web;
+package org.openmrs.module.webservices.rest.web.v1_0;
 
 public class RestTestConstants2_0 {
 	

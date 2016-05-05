@@ -47,13 +47,13 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
 	
 	/**
 	 * The name of the parameter that can be used to restrict a search to roles. 
 	 */
-	static final String PARAMETER_ROLES = "roles";
+	public static final String PARAMETER_ROLES = "roles";
 	
 	public UserResource1_8() {
 		

@@ -13,12 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import org.junit.Before;
 import org.openmrs.Allergy;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants2_0;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PatientAllergyResource2_0;
-import org.junit.Before;
 
 public class PatientAllergyResource2_0Test extends BaseDelegatingResourceTest<PatientAllergyResource2_0, Allergy> {
 	

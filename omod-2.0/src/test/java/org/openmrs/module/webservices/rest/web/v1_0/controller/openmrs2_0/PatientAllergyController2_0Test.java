@@ -13,59 +13,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Collection;
-import java.util.UUID;
-
-import org.openmrs.Allergy;
-import org.openmrs.Allergen;
-import org.openmrs.AllergenType;
-import org.openmrs.Allergies;
-import org.openmrs.AllergyReaction;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptName;
-import org.openmrs.ConceptSet;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptMap;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.User;
-import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants2_0;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
+import org.openmrs.Allergen;
+import org.openmrs.Allergies;
+import org.openmrs.Allergy;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.WebRequest;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.util.OpenmrsUtil;
-
-/*
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-*/
-
-import org.apache.commons.beanutils.PropertyUtils;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 public class PatientAllergyController2_0Test extends MainResourceControllerTest {
 	
