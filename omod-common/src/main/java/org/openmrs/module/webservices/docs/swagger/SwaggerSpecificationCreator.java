@@ -760,7 +760,7 @@ public class SwaggerSpecificationCreator {
 			v.setIn("query");
 			v.setType("string");
 			parameterMap.put("v", v);
-
+			
 			// query parameter
 			Parameter q = new Parameter();
 			q.setName("q");
@@ -768,7 +768,7 @@ public class SwaggerSpecificationCreator {
 			q.setIn("query");
 			q.setType("string");
 			parameterMap.put("q", q);
-
+			
 			get.setParameters(new ArrayList(parameterMap.values()));
 			get.getParameters().addAll(buildPagingParameters());
 			get.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
