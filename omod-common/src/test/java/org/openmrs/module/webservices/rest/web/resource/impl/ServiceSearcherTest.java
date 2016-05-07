@@ -26,7 +26,6 @@ import org.mockito.Matchers;
 
 public class ServiceSearcherTest {
 	
-	//@TODO rename method, clean formatting, add actual assert
 	@Test
 	public void ServiceSearcherShouldReturnSearch() {
 		ServiceContext scon = ServiceContext.getInstance();
