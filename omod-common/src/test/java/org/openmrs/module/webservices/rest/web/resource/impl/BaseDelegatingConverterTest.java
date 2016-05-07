@@ -48,7 +48,8 @@ public class BaseDelegatingConverterTest {
 		String del = "delegateString";
 		BaseDelegatingConverter mockedConverter = mock(BaseDelegatingConverter.class);
 		when(mockedConverter.asRepresentation(anyObject(), any(Representation.class))).thenCallRealMethod();
-		when(mockedConverter.convertDelegateToRepresentation(anyObject(), any(DelegatingResourceDescription.class))).thenCallRealMethod();
+		when(mockedConverter.convertDelegateToRepresentation(anyObject(), any(DelegatingResourceDescription.class)))
+		        .thenCallRealMethod();
 		when(mockedConverter.getRepresentationDescription(any(Representation.class))).thenReturn(description);
 		SimpleObject res = mockedConverter.asRepresentation(del, new DefaultRepresentation());
 		
