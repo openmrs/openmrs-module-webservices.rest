@@ -35,7 +35,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.web.controller.maintenance.SettingsProperty;
 
 /**
  * {@link Resource} for {@link GlobalProperty}, supporting standard CRUD
@@ -216,10 +215,60 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
      */
     @PropertyGetter("display")
     public static String getDisplayString(GlobalProperty globalProperty) {
-        SettingsProperty property = new SettingsProperty(globalProperty);
-        return property.getSection() + " - " + property.getName() + " = " + globalProperty.getValue();
+        return getSection(globalProperty) + " - " + getName(globalProperty) + " = " + globalProperty.getValue();
     }
 
+    /**
+	 * @return the section
+	 */
+	private static String getSection(GlobalProperty globalProperty) {
+		String section = GENERAL;
+		int sectionEnd = globalProperty.getProperty().indexOf(".");
+		if (sectionEnd > 0) {
+			section = globalProperty.getProperty().substring(0, sectionEnd);
+			section = beautify(section);
+		}
+
+		return section;
+	}
+
+	/**
+	 * @return the name
+	 */
+	private static String getName(GlobalProperty globalProperty) {
+		String name = globalProperty.getProperty();
+		int sectionEnd = globalProperty.getProperty().indexOf(".");
+		if (sectionEnd > 0) {
+			name = globalProperty.getProperty().substring(sectionEnd + 1);
+		}
+
+		name = beautify(name);
+
+		return name;
+	}
+	
+	/**
+	 * Beautifies a string
+	 *
+	 * @param section
+	 * @return
+	 */
+	private static String beautify(String section) {
+		section = section.replace("_", " ");
+		section = section.replace(".", " ");
+
+		String[] sections = StringUtils.splitByCharacterTypeCamelCase(section);
+		section = StringUtils.join(sections, " ");
+
+		sections = StringUtils.split(section);
+		for (int i = 0; i < sections.length; i++) {
+			sections[i] = StringUtils.capitalize(sections[i]);
+		}
+		section = StringUtils.join(sections, " ");
+
+		return section;
+	}
+	
     /**
      * Gets the value of the global property delegate
      *
