@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
@@ -24,16 +28,13 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.PrivilegeConstants;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class LocationSearchHandler implements SearchHandler {
 
+	private static final String VIEW_LOCATIONS = "View Locations";
+	
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/location", Arrays.asList(
             "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"), new SearchQuery.Builder("Allows you to find locations by tag uuid or tag name").withRequiredParameters("tag")
             .build());
@@ -57,7 +58,7 @@ public class LocationSearchHandler implements SearchHandler {
 
         List<Location> locations = new ArrayList<Location>();
         try {
-            Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+            Context.addProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
             Context.addProxyPrivilege("Get Locations"); //1.11+
 
             LocationTag locationTag = Context.getLocationService().getLocationTagByUuid(tag);
@@ -70,7 +71,7 @@ public class LocationSearchHandler implements SearchHandler {
             }
         }
         finally {
-            Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
+            Context.removeProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
             Context.removeProxyPrivilege("Get Locations"); //1.11+
         }
 
