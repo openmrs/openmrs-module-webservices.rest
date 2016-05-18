@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -25,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = { "2.0.*" })
 public class UserResource2_0 extends UserResource1_8 {
 	
 	/**
@@ -48,9 +49,11 @@ public class UserResource2_0 extends UserResource1_8 {
 		User openmrsUser = new User();
 		if (user.getUser().getUserId() == null) {
 			openmrsUser = Context.getUserService().createUser(user.getUser(), user.getPassword());
-		}
-		else {
+		} else {
 			openmrsUser = Context.getUserService().saveUser(user.getUser());
+			if (openmrsUser.getId() != null && StringUtils.isNotBlank(user.getPassword())) {
+				Context.getUserService().changePassword(openmrsUser, user.getPassword());
+			}
 		}
 		
 		return new UserAndPassword1_8(openmrsUser);

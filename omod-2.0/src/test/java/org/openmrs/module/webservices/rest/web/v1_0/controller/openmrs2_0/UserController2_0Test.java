@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -34,6 +35,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserController2_0Test extends MainResourceControllerTest {
 	
@@ -254,6 +259,31 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Util.log("Total users fetched: ", getAllCount());
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
+
+    @Test
+    public void updateUser_shouldUpdateTheUserPassword() throws Exception {
+        User user = service.getUserByUuid(getUuid());
+        assertNotNull(user);
+        assertNotEquals(user, Context.getAuthenticatedUser());
+        final String username = user.getUsername();
+        final String newPassword = "SomeOtherPassword123";
+
+        ContextAuthenticationException exception = null;
+        try {
+            Context.authenticate(username, newPassword);
+        }
+        catch (ContextAuthenticationException e) {
+            exception = e;
+        }
+        assertNotNull(exception);
+        assertEquals("Invalid username and/or password: " + username, exception.getMessage());
+
+        handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
+        Context.logout();
+
+        Context.authenticate(username, newPassword);
+        assertEquals(user, Context.getAuthenticatedUser());
+    }
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()

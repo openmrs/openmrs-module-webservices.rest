@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,10 +25,13 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -39,6 +46,9 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	
 	private UserService service;
 	
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+	
 	@Before
 	public void init() {
 		service = Context.getUserService();
@@ -46,7 +56,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#createUser(SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies create a new user
 	 */
 	@Test
@@ -68,12 +78,12 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		Util.log("Created User", newUser);
 		Assert.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	/**
 	 * @see UserController#createUser(SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies create a new user
 	 */
 	@Test
@@ -96,7 +106,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		Util.log("Created another user with a role this time.", newUser);
 		Assert.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		assertEquals(originalCount + 1, getAllCount());
 		
 		User createdUser = service.getUserByUuid(getUuid());
 		Assert.assertNotNull(createdUser);
@@ -105,7 +115,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#getUser(UserAndPassword1_8,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies get a default representation of a UserAndPassword
 	 */
 	@Test
@@ -119,16 +129,16 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		Util.log("User retrieved (default)", result);
 		
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		
-		Assert.assertEquals(userName, PropertyUtils.getProperty(result, "username"));
+		assertEquals(userName, PropertyUtils.getProperty(result, "username"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
 	 * @see PatientController#getPatient(String,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies get a full representation of a patient
 	 */
 	@Test
@@ -141,15 +151,15 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Util.log("User retrieved (full)", result);
 		
 		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
-		Assert.assertEquals("", PropertyUtils.getProperty(result, "secretQuestion"));
+		assertEquals("", PropertyUtils.getProperty(result, "secretQuestion"));
 	}
 	
 	/**
 	 * @see UserController#updateUser(UserAndPassword1_8,SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies change a property on a patient
 	 */
 	@Test
@@ -167,13 +177,13 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		User editedUser = service.getUserByUuid(getUuid());
 		Assert.assertNotNull(editedUser);
-		Assert.assertEquals("5-6", editedUser.getSystemId());
+		assertEquals("5-6", editedUser.getSystemId());
 		Util.log("Edited User SystemId: ", editedUser.getSystemId());
 	}
 	
 	/**
 	 * @see UserController#retireUser(User,String,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies void a patient
 	 */
 	@Test
@@ -189,12 +199,12 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		User retiredUser = service.getUserByUuid(getUuid());
 		Assert.assertTrue(retiredUser.isRetired());
-		Assert.assertEquals("unit test", retiredUser.getRetireReason());
+		assertEquals("unit test", retiredUser.getRetireReason());
 	}
 	
 	/**
 	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies return no results if there are no matching users
 	 */
 	@Test
@@ -207,12 +217,12 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		
 		List<User> hits = (List<User>) result.get("results");
-		Assert.assertEquals(0, hits.size());
+		assertEquals(0, hits.size());
 	}
 	
 	/**
 	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies find matching users
 	 */
 	@Test
@@ -225,10 +235,10 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
+		assertEquals(1, hits.size());
 		
 		Util.log("Found " + hits.size() + " user(s)", result);
-		Assert.assertEquals(service.getUserByUuid(getUuid()).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		assertEquals(service.getUserByUuid(getUuid()).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -236,11 +246,11 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "butch"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, results.size());
+		assertEquals(1, results.size());
 		Object next = results.iterator().next();
 		
 		Util.log("Found " + results.size() + " user(s) by username", response);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
+		assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
 	}
 	
 	@Test
@@ -253,7 +263,32 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		
 		Util.log("Total users fetched: ", getAllCount());
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		assertEquals(getAllCount(), Util.getResultsSize(result));
+	}
+	
+	@Test
+	public void updateUser_shouldUpdateTheUserPassword() throws Exception {
+		User user = service.getUserByUuid(getUuid());
+		assertNotNull(user);
+		assertNotEquals(user, Context.getAuthenticatedUser());
+		final String username = user.getUsername();
+		final String newPassword = "SomeOtherPassword123";
+		
+		ContextAuthenticationException exception = null;
+		try {
+			Context.authenticate(username, newPassword);
+		}
+		catch (ContextAuthenticationException e) {
+			exception = e;
+		}
+		assertNotNull(exception);
+		assertEquals("Invalid username and/or password: " + username, exception.getMessage());
+		
+		handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
+		Context.logout();
+		
+		Context.authenticate(username, newPassword);
+		assertEquals(user, Context.getAuthenticatedUser());
 	}
 	
 	/**

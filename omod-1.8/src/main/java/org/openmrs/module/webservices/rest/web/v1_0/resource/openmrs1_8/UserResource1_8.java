@@ -47,11 +47,12 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
 public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
 	
 	/**
-	 * The name of the parameter that can be used to restrict a search to roles. 
+	 * The name of the parameter that can be used to restrict a search to roles.
 	 */
 	public static final String PARAMETER_ROLES = "roles";
 	
@@ -146,6 +147,9 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		User openmrsUser = new User();
 		String password = user.getPassword();
 		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
+		if (openmrsUser.getId() != null && StringUtils.isNotBlank(password)) {
+			Context.getUserService().changePassword(openmrsUser, password);
+		}
 		return new UserAndPassword1_8(openmrsUser);
 		
 	}
@@ -185,14 +189,14 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	}
 	
 	/**
-	 * @param context A {@link RequestContext} that can contain two parameter values: 'q' for the user name and 'roles' for the role restriction.
-	 * 		If a user name is given, users with a user name beginning with this string will be returned (prefix search).
-	 * 		If no user name is given, the search will not be restricted to specific user names.
-	 * 
-	 * 		The roles have to be given as a comma separated string. If multiple roles are given, the users having at least one of the roles will be returned.
-	 * 		A role may be specified either by its UUID or by its display name.
-	 * 		If no role parameter is given, the search will not be restricted to roles.
-	 *  		
+	 * @param context A {@link RequestContext} that can contain two parameter values: 'q' for the
+	 *            user name and 'roles' for the role restriction. If a user name is given, users
+	 *            with a user name beginning with this string will be returned (prefix search). If
+	 *            no user name is given, the search will not be restricted to specific user names.
+	 *            The roles have to be given as a comma separated string. If multiple roles are
+	 *            given, the users having at least one of the roles will be returned. A role may be
+	 *            specified either by its UUID or by its display name. If no role parameter is
+	 *            given, the search will not be restricted to roles.
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
@@ -206,17 +210,14 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		
 		// forward query
 		final List<User> users;
-		if (isNoRequestedRoleFound(foundRoles))
-		{
+		if (isNoRequestedRoleFound(foundRoles)) {
 			// for an empty role list there shall be no results
 			users = Collections.emptyList();
-		}
-		else
-		{
+		} else {
 			// Note: a null value for roles is interpreted as 'no restriction to roles'
 			users = Context.getUserService().getUsers(context.getParameter("q"), foundRoles, context.getIncludeAll());
 		}
-
+		
 		// convert to UserAndPassword class
 		final List<UserAndPassword1_8> usersResult = new ArrayList<UserAndPassword1_8>();
 		for (User user : users) {
@@ -225,14 +226,15 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		
 		return new NeedsPaging<UserAndPassword1_8>(usersResult, context);
 	}
-
+	
 	private boolean isNoRequestedRoleFound(List<Role> roles) {
-	    return roles != null && roles.isEmpty();
-    }
+		return roles != null && roles.isEmpty();
+	}
 	
 	/**
-	 * @param rolesParameter A comma separated list of role names or role UUIDs. May not be null. 
-	 * @return A non-null list of existing {@link Role}s that may be empty, if no valid roles are found.
+	 * @param rolesParameter A comma separated list of role names or role UUIDs. May not be null.
+	 * @return A non-null list of existing {@link Role}s that may be empty, if no valid roles are
+	 *         found.
 	 */
 	private List<Role> getRequestedRoles(final String rolesParameter) {
 		final List<Role> result = new ArrayList<Role>();
@@ -254,7 +256,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Overrides BaseDelegatingResource getProperty method to get properties from User property of
 	 * UserAndPassword instead of UserAndPassword itself
