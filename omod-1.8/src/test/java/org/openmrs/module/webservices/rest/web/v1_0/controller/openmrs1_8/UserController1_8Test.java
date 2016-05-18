@@ -25,9 +25,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -45,9 +43,6 @@ import org.springframework.web.context.request.WebRequest;
 public class UserController1_8Test extends MainResourceControllerTest {
 	
 	private UserService service;
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 	
 	@Before
 	public void init() {
