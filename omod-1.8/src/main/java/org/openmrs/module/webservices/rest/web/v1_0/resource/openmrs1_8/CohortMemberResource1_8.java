@@ -13,6 +13,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -22,6 +25,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -33,9 +37,6 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.CohortMember1_8;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sub-resource for cohort members
@@ -50,7 +51,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	@Override
 	public NeedsPaging<CohortMember1_8> doGetAll(Cohort parent, RequestContext context) throws ResponseException {
 		List<CohortMember1_8> members = new ArrayList<CohortMember1_8>();
-		for (Patient cohortMember : Context.getPatientSetService().getPatients(parent.getMemberIds())) {
+		for (Patient cohortMember : Context.getService(RestHelperService.class).getPatients(parent.getMemberIds())) {
 			members.add(new CohortMember1_8(cohortMember, parent));
 		}
 		return new NeedsPaging<CohortMember1_8>(members, context);

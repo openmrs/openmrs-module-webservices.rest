@@ -14,9 +14,11 @@
 package org.openmrs.module.webservices.rest.web.api;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.openmrs.ConceptMap;
+import org.openmrs.Patient;
 
 /**
  * It is provided as a workaround for missing API methods to fetch {@link ConceptMap}, etc.
@@ -28,6 +30,8 @@ public interface RestHelperService {
 	<T> T getObjectById(Class<? extends T> type, Serializable id);
 	
 	<T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields);
+	
+	List<Patient> getPatients(Collection<Integer> patientIds);
 	
 	public static class Field {
 		

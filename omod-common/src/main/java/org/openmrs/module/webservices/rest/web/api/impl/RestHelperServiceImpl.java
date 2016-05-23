@@ -15,12 +15,16 @@ package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,5 +99,23 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 			}
 		}
 		return criteria.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Patient> getPatients(Collection<Integer> patientIds) {
+		List<Patient> ret = new ArrayList<Patient>();
+		
+		if (!patientIds.isEmpty()) {
+			Criteria criteria = getSession().createCriteria(Patient.class);
+			criteria.setCacheMode(CacheMode.IGNORE);
+			criteria.add(Restrictions.in("patientId", patientIds));
+			criteria.add(Restrictions.eq("voided", false));
+			List<Patient> temp = criteria.list();
+			for (Patient p : temp) {
+				ret.add(p);
+			}
+		}
+		
+		return ret;
 	}
 }
