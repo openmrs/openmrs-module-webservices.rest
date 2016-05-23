@@ -22,6 +22,7 @@ public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
         // invalid object, no exception should be thrown
 
 		Location loc = new Location();
+		loc.setName("name");
 		ValidateUtil.validate(loc);
 	}
 	

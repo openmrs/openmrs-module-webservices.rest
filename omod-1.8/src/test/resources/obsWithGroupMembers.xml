@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <encounter encounter_id="5000" encounter_type="2" patient_id="7" provider_id="502" location_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="62967e68-96bb-11e0-8d6b-9b9415a91434" />
+    <encounter encounter_id="5000" encounter_type="2" patient_id="7" location_id="1" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" void_reason="" uuid="62967e68-96bb-11e0-8d6b-9b9415a91434" />
 
     <!-- obs group -->
     <obs obs_id="5000" person_id="7" encounter_id="5000" concept_id="23" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="47f18998-96cc-11e0-8d6b-9b9415a91423" />

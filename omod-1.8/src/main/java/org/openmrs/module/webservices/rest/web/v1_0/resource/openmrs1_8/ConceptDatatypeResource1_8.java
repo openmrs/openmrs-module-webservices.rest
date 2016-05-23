@@ -79,7 +79,7 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	 */
 	@Override
 	public ConceptDatatype save(ConceptDatatype conceptDatatype) {
-		return Context.getConceptService().saveConceptDatatype(conceptDatatype);
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

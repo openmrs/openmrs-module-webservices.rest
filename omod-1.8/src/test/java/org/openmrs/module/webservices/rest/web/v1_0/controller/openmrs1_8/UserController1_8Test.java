@@ -60,7 +60,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
-		user.add("username", "test user");
+		user.add("username", "testuser");
 		user.add("password", "Secret123");
 		user.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
 		
@@ -87,7 +87,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
-		user.add("username", "test user");
+		user.add("username", "testuser");
 		user.add("password", "Secret123");
 		user.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
 		user.add("roles", new String[] { "3480cb6d-c291-46c8-8d3a-96dc33d199fb" });

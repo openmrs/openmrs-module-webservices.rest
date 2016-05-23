@@ -13,13 +13,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
+import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import static org.junit.Assert.assertEquals;
 
 public class PersonAttributeTypeResourceWithConcept1_8Test extends BaseDelegatingResourceTest<PersonAttributeTypeResource1_8, PersonAttributeType> {
 
@@ -37,8 +37,8 @@ public class PersonAttributeTypeResourceWithConcept1_8Test extends BaseDelegatin
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-        SimpleObject concept = (SimpleObject) getRepresentation().get("concept");
-        assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.get("uuid"));
+        Concept concept = (Concept) getRepresentation().get("concept");
+        assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.getUuid());
     }
 	
 	@Override

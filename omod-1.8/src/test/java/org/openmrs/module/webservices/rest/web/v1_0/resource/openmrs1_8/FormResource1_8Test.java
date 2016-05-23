@@ -69,10 +69,7 @@ public class FormResource1_8Test extends BaseDelegatingResourceTest<FormResource
 		assertPropEquals("build", getObject().getBuild());
 		assertPropEquals("published", getObject().getPublished());
 		assertPropPresent("formFields");
-		
 		assertPropPresent("auditInfo");
-		assertPropEquals("xslt", getObject().getXslt());
-		assertPropEquals("template", getObject().getTemplate());
 	}
 	
 }

@@ -69,7 +69,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 
         resource.setValue(attribute, location.getUuid());
 
-        Assert.assertEquals(location.getLocationId(), Integer.valueOf(attribute.getValue()));
+        Assert.assertEquals(location.getUuid(), attribute.getValue());
     }
 
     @Test
