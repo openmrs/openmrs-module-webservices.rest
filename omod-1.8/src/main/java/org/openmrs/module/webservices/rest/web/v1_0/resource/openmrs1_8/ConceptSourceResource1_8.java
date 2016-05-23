@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<ConceptSource> {
 	
 	/**
@@ -129,7 +129,10 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doGetAll(RequestContext context) {
-		List<ConceptSource> sources = Context.getConceptService().getAllConceptSources();
+		return doGetAll(context, Context.getConceptService().getAllConceptSources());
+	}
+	
+	protected NeedsPaging<ConceptSource> doGetAll(RequestContext context, List<ConceptSource> sources) {
 		if (context.getIncludeAll()) {
 			return new NeedsPaging<ConceptSource>(sources, context);
 		}
@@ -146,7 +149,10 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doSearch(RequestContext context) {
-		List<ConceptSource> sources = Context.getConceptService().getAllConceptSources();
+		return doSearch(context, Context.getConceptService().getAllConceptSources());
+	}
+	
+	protected NeedsPaging<ConceptSource> doSearch(RequestContext context, List<ConceptSource> sources) {
 		for (Iterator<ConceptSource> iterator = sources.iterator(); iterator.hasNext();) {
 			ConceptSource conceptSource = iterator.next();
 			//find matches excluding retired ones if necessary
