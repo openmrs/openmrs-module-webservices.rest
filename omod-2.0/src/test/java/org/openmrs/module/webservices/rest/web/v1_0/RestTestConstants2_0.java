@@ -23,4 +23,8 @@ public class RestTestConstants2_0 {
 	
 	public static final String PATIENT_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 
+	public static final String CONCEPT_ATTRIBUTE_DATA_SET = "conceptAttributeDataSet.xml";
+	public static final String CONCEPT_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
+	public static final String CONCEPT_UUID = "0cbe2ed3-cd5f-4f46-9459-26127c9265ab";
+	public static final String CONCEPT_ATTRIBUTE_UUID = "3a2bdb18-6faa-11e0-8414-001e378eb67f";
 }

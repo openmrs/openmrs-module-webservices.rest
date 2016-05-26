@@ -32,7 +32,7 @@
 	<conditionalResources>
 		<conditionalResource>
 			<path>/lib/webservices.rest-omod-2.0.*</path>
-			<openmrsVersion>2.0.*</openmrsVersion>
+			<openmrsVersion>2.*</openmrsVersion>
 		</conditionalResource>
 	</conditionalResources>
 	
