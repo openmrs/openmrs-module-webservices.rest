@@ -10,7 +10,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonR
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonNameResource1_8;
 
 @SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {
-        "2.0.*" })
+        "2.0.*", "2.1.*" })
 public class PersonNameResource2_0 extends PersonNameResource1_8 {
 
 	@Override
