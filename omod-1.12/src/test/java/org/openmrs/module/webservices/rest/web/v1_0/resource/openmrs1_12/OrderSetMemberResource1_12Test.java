@@ -25,6 +25,7 @@ public class OrderSetMemberResource1_12Test extends BaseDelegatingResourceTest<O
         assertPropEquals("name", getObject().getName());
         assertPropEquals("uuid", getObject().getUuid());
         assertPropEquals("description", getObject().getDescription());
+        assertPropPresent("orderTemplateType");
     }
 
     @Override
@@ -35,6 +36,7 @@ public class OrderSetMemberResource1_12Test extends BaseDelegatingResourceTest<O
         assertPropEquals("retired", getObject().getRetired());
         assertPropEquals("retireBy", getObject().getRetiredBy());
         assertPropPresent("auditInfo");
+        assertPropPresent("orderTemplateType");
     }
 
     @Override

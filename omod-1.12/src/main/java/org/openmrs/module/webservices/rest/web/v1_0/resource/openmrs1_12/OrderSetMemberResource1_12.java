@@ -49,6 +49,7 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
             description.addProperty("retired");
             description.addProperty("orderType", Representation.REF);
             description.addProperty("orderTemplate");
+            description.addProperty("orderTemplateType");
             description.addProperty("concept", Representation.REF);
             description.addSelfLink();
             description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -59,6 +60,7 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
             description.addProperty("retired");
             description.addProperty("orderType", Representation.DEFAULT);
             description.addProperty("orderTemplate");
+            description.addProperty("orderTemplateType");
             description.addProperty("concept", Representation.DEFAULT);
             description.addSelfLink();
             description.addProperty("auditInfo");
