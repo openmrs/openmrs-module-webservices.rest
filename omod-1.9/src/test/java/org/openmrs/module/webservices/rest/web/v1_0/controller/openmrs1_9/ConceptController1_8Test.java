@@ -14,11 +14,14 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -35,22 +38,27 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -212,7 +220,137 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-	
+
+	//Custom matcher
+	FeatureMatcher<Object, String> hasUuid(String uuid) {
+		return new FeatureMatcher<Object, String>(CoreMatchers.equalTo(uuid), "uuid", "uuid") {
+			@Override
+			protected String featureValueOf(Object o) {
+				try {
+					return(String) PropertyUtils.getProperty(o, "uuid");
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
+	@Test
+	public void shouldSearchAndReturnConceptsThatEqualsToClassAndName() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
+
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Aspirin"; //ASPIRIN
+		String searchType = "equals";
+
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+
+		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+
+		//Should not find it when it has partial name:
+		name = "Asp";
+		req.setParameter("name", name);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+
+		assertThat(hits, is(empty()));
+	}
+
+	@Test
+	public void shouldNotReturnAnythingWhenConceptDoesntMatchClass() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
+
+		String conceptClassUuid = "97097dd9-b092-4b68-a2dc-e5e5be961d42"; // TEST
+		String name = "CD4 COU"; //CD4 COUNT
+		String searchType = "fuzzy";
+
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+
+		assertThat(hits, contains(hasUuid("a09ab2c5-878e-4905-b25d-5784167d0216")));
+
+		//Should not find it when it has partial name:
+		conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		req.setParameter("class", conceptClassUuid);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+
+		assertThat(hits, is(empty()));
+	}
+
+	@Test
+	public void shouldSearchAndReturnConceptsThatContainsNamePartInRequest() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
+
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Asp"; //ASPIRIN
+		String searchType = "fuzzy";
+
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+
+		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void shouldThrowExceptionWhenSearchRequiredParametersAreCalledTwice() throws Exception {
+		new SearchQuery.Builder("Some search description")
+				.withRequiredParameters("source")
+				.withRequiredParameters("name") // <- Exception
+				.withOptionalParameters("code")
+				.build();
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void shouldThrowExceptionWhenSearchOptionalParametersAreCalledTwice() throws Exception {
+		new SearchQuery.Builder("Some search description")
+				.withRequiredParameters("source")
+				.withOptionalParameters("name") // <- Exception
+				.withOptionalParameters("code")
+				.build();
+	}
+
+	@Test(expected = InvalidSearchException.class)
+	public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Aspirin"; //ASPIRIN
+		String searchType = "equalz";
+
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
+
+		result = deserialize(handle(req));
+	}
+
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {

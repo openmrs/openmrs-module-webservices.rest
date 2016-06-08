@@ -43,12 +43,20 @@ public class SearchQuery {
 		}
 		
 		public Builder withRequiredParameters(String... requiredParameters) {
+			if (searchQuery.requiredParameters != null) {
+				throw new IllegalStateException("requiredParameters() must not be called twice");
+			}
+			
 			searchQuery.requiredParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
 			        .asList(requiredParameters)));
 			return this;
 		}
 		
 		public Builder withOptionalParameters(String... optionalParameters) {
+			if (searchQuery.optionalParameters != null) {
+				throw new IllegalStateException("withOptionalParameters() must not be called twice");
+			}
+			
 			searchQuery.optionalParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
 			        .asList(optionalParameters)));
 			return this;
