@@ -13,14 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,9 +25,18 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests CRUD operations for {@link ConceptReferenceTerm}s via web service calls
@@ -187,5 +188,41 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		assertThat(Util.getResultsSize(result), is(1));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
+	}
+	@Test
+	public void shouldFindBySourceAndNameStartingWith() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("source", "Some Standardized Terminology"),
+				new Parameter("name", "weight"),
+				new Parameter("searchType", "startsWith"))));
+		assertThat(Util.getResultsSize(result), is(1));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
+	}
+
+	@Test
+	public void shouldFindBySourceAndCodeStartingWith() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("source", "Some Standardized Terminology"),
+				new Parameter("code", "WGT"),
+				new Parameter("searchType", "startsWith"))));
+		assertThat(Util.getResultsSize(result), is(1));
+		List<Object> results = Util.getResultsList(result);
+		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
+	}
+	@Test
+	public void shouldReturnEmptyIfCodeStartsWithButNameDont() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("source", "Some Standardized Terminology"),
+				new Parameter("name", "weightDON'T MATCH"),
+				new Parameter("code", "WGT"),
+				new Parameter("searchType", "startsWith"))));
+		assertThat(Util.getResultsSize(result), is(0));
+	}
+	@Test(expected = InvalidSearchException.class)
+	public void shouldThrowExceptionWhenSearchTypeIsInvalid() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("source", "Some Standardized Terminology"),
+				new Parameter("searchType", "invalid"))));
 	}
 }
