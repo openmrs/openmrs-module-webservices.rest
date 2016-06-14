@@ -13,17 +13,23 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptMap;
-import org.openmrs.ConceptName;
-import org.openmrs.ConceptNumeric;
-import org.openmrs.ConceptSearchResult;
-import org.openmrs.Drug;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.helper.HibernateCollectionHelper;
@@ -49,19 +55,6 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.LocaleUtility;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
@@ -347,30 +340,27 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			}
 		}.set(descriptions);
 	}
-
+	
 	/**
-	* It's needed, because of ConversionException: Don't know how to handle collection class:
-	* interface java.util.Collection
-	*
-	* @param instance
-	* @param mappings
-	*/
+	 * It's needed, because of ConversionException: Don't know how to handle collection class:
+	 * interface java.util.Collection
+	 *
+	 * @param instance
+	 * @param mappings
+	 */
 	@PropertySetter("mappings")
 	public static void setMappings(Concept instance, List<ConceptMap> mappings) {
-		instance.getConceptMappings().clear();
-		for (ConceptMap map : mappings) {
-			instance.addConceptMapping(map);
-		}
+		instance.setConceptMappings(mappings);
 	}
-
+	
 	@PropertyGetter("mappings")
 	public static List<ConceptMap> getMappings(Concept instance) {
 		return new ArrayList<ConceptMap>(instance.getConceptMappings());
 	}
-
+	
 	/**
 	 * Gets the display name of the Concept delegate
-	 *
+	 * 
 	 * @param instance the delegate instance to get the display name off
 	 */
 	@PropertyGetter("display")

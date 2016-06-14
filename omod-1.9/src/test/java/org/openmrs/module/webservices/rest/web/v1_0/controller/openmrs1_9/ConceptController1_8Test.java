@@ -13,6 +13,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,9 +31,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
-import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
-import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptSet;
 import org.openmrs.Drug;
 import org.openmrs.api.APIException;
@@ -38,17 +47,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests functionality of {@link ConceptController}. This does not use @should annotations because
@@ -392,50 +390,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertTrue(hasAnswer(concept, answer1));
 		Assert.assertTrue(hasAnswer(concept, answer2));
 		Assert.assertEquals(2, concept.getAnswers().size());
-	}
-
-	@Test
-	public void shouldSetMappingsOnConcept() throws Exception {
-		//before adding
-		Concept concept = service.getConceptByUuid(getUuid());
-		assertThat(concept.getConceptMappings().size(), is(0));
-
-		//add one mapping
-		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		ConceptReferenceTerm referenceTerm = service.getAllConceptReferenceTerms().get(0);
-		String mapTypeUuid = service.getDefaultConceptMapType().getUuid();
-		String json = "{ \"mappings\": [{\"conceptReferenceTerm\":\""+referenceTerm.getUuid()+"\",\"conceptMapType\":\""+mapTypeUuid+"\"}]}";
-		request.setContent(json.getBytes());
-
-		handle(request);
-
-		concept = service.getConceptByUuid(getUuid());
-		assertThat(concept.getConceptMappings().size(), is(1));
-		assertThat(hasMappingToTerm(concept, referenceTerm), is(true));
-
-		//set mappings to empty
-		MockHttpServletRequest requestEmpty = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		String jsonEmpty = "{ \"mappings\": []}";
-		requestEmpty.setContent(jsonEmpty.getBytes());
-
-		handle(requestEmpty);
-
-		assertThat(concept.getConceptMappings().size(), is(0));
-	}
-	/**
-	 * Convenience helper method to look for the given mapping amongst the mappings on concept
-	 *
-	 * @param concept the concept to be checked
-	 * @param term the reference term, which is searched for in mappings
-	 * @return true if the term is found in mappings of the concept
-	 */
-	private boolean hasMappingToTerm(Concept concept, ConceptReferenceTerm term){
-		for(ConceptMap map : concept.getConceptMappings()){
-			if(map.getConceptReferenceTerm().equals(term)){
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Test
