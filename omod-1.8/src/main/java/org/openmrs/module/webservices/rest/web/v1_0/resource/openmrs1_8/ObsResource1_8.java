@@ -176,7 +176,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	 */
 	@Override
 	public Obs save(Obs delegate) {
-		return Context.getObsService().saveObs(delegate, "REST web service");
+		Obs savedObs = Context.getObsService().saveObs(delegate, "REST web service");
+		return Context.getObsService().getObs(savedObs.getId());
 	}
 	
 	/**
