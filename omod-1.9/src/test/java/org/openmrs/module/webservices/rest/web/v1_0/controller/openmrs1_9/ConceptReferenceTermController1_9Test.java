@@ -173,27 +173,19 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 	}
 	
 	@Test
-	public void shouldFindBySourceAndCode() throws Exception {
+	public void shouldFindBySourceAndCodeOrName() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
-		        "Some Standardized Terminology"), new Parameter("code", "WGT234"))));
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT234"))));
 		assertThat(Util.getResultsSize(result), is(1));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
 	}
-	
+
 	@Test
-	public void shouldFindBySourceAndName() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
-		        "Some Standardized Terminology"), new Parameter("name", "weight term"))));
-		assertThat(Util.getResultsSize(result), is(1));
-		List<Object> results = Util.getResultsList(result);
-		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
-	}
-	@Test
-	public void shouldFindBySourceAndNameStartingWith() throws Exception {
+	public void shouldFindBySourceAndCodeOrNameStartingWith() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
 				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("name", "weight"),
+				new Parameter("codeOrName", "WGT"),
 				new Parameter("searchType", "startsWith"))));
 		assertThat(Util.getResultsSize(result), is(1));
 		List<Object> results = Util.getResultsList(result);
@@ -201,24 +193,16 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 	}
 
 	@Test
-	public void shouldFindBySourceAndCodeStartingWith() throws Exception {
+	public void shouldFindBySourceStartingWithAndCodeOrNameStartingWith() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("code", "WGT"),
+				new Parameter("source", "Some Standardized"),
+				new Parameter("codeOrName", "WGT"),
 				new Parameter("searchType", "startsWith"))));
 		assertThat(Util.getResultsSize(result), is(1));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(BeanUtils.getProperty(results.get(0), "uuid"), is("SSTRM-WGT234"));
 	}
-	@Test
-	public void shouldReturnEmptyIfCodeStartsWithButNameDont() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("name", "weightDON'T MATCH"),
-				new Parameter("code", "WGT"),
-				new Parameter("searchType", "startsWith"))));
-		assertThat(Util.getResultsSize(result), is(0));
-	}
+
 	@Test(expected = InvalidSearchException.class)
 	public void shouldThrowExceptionWhenSearchTypeIsInvalid() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
