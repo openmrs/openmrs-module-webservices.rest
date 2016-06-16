@@ -16,6 +16,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.util.List;
 
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 
 /**
@@ -57,4 +58,11 @@ public class NeedsPaging<T> extends BasePageableResult<T> {
 		return unpagedResults.size() > context.getStartIndex() + context.getLimit();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#getTotalCount()
+	 */
+	@Override
+	public Long getTotalCount() {
+		return (long) unpagedResults.size();
+	}
 }

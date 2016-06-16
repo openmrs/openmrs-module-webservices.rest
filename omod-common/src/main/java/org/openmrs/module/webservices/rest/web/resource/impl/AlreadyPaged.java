@@ -31,10 +31,17 @@ public class AlreadyPaged<T> extends BasePageableResult<T> {
 	
 	private boolean hasMoreResults;
 	
+	private Long totalCount;
+	
 	public AlreadyPaged(RequestContext context, List<T> results, boolean hasMoreResults) {
 		this.context = context;
 		this.results = results;
 		this.hasMoreResults = hasMoreResults;
+	}
+	
+	public AlreadyPaged(RequestContext context, List<T> results, boolean hasMoreResults, Long totalCount) {
+		this(context, results, hasMoreResults);
+		this.totalCount = totalCount;
 	}
 	
 	/**
@@ -53,4 +60,11 @@ public class AlreadyPaged<T> extends BasePageableResult<T> {
 		return hasMoreResults;
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#getTotalCount()
+	 */
+	@Override
+	public Long getTotalCount() {
+		return totalCount;
+	}
 }

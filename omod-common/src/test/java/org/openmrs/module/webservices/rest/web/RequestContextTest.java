@@ -13,9 +13,14 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 import org.openmrs.api.APIException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public class RequestContextTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -37,4 +42,44 @@ public class RequestContextTest extends BaseModuleWebContextSensitiveTest {
 		new RequestContext().setLimit(null);
 	}
 	
+	/**
+	 * @see RequestContext#getParameter(String)
+	 * @verifies return null if request is null
+	 */
+	@Test
+	public void getParameter_shouldReturnNullIfRequestIsNull() throws Exception {
+		
+		RequestContext requestContext = new RequestContext();
+		
+		assertNull(requestContext.getParameter("UNKOWN"));
+	}
+	
+	/**
+	 * @see RequestContext#getParameter(String)
+	 * @verifies return null if the wanted request parameter is not present in the request
+	 */
+	@Test
+	public void getParameter_shouldReturnNullIfTheWantedRequestParameterIsNotPresentInTheRequest() throws Exception {
+		
+		RequestContext requestContext = new RequestContext();
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		requestContext.setRequest(request);
+		
+		assertNull(requestContext.getParameter("UNKOWN"));
+	}
+	
+	/**
+	 * @see RequestContext#getParameter(String)
+	 * @verifies return the request parameter of given name if present in the request
+	 */
+	@Test
+	public void getParameter_shouldReturnTheRequestParameterOfGivenNameIfPresentInTheRequest() throws Exception {
+		
+		RequestContext requestContext = new RequestContext();
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("includeAll", "true");
+		requestContext.setRequest(request);
+		
+		assertThat(requestContext.getParameter("includeAll"), is("true"));
+	}
 }

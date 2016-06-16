@@ -3,15 +3,16 @@
  * Version 1.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
  * http://license.openmrs.org
- *
  * Software distributed under the License is distributed on an "AS IS"
  * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
  * License for the specific language governing rights and limitations
  * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS, LLC. All Rights Reserved.
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -20,9 +21,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Base implementation that converts the result list to the requested representation, and adds
@@ -39,7 +37,18 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	public abstract boolean hasMoreResults();
 	
 	/**
+	 * Return the total number of records available for the requested resource and the applied
+	 * request parameters.
+	 */
+	public Long getTotalCount() {
+		return null;
+	}
+	
+	/**
 	 * @see PageableResult#toSimpleObject(Converter)
+	 * @should add property totalCount if context contains parameter totalCount which is true
+	 * @should not add property totalCount if context contains parameter totalCount which is false
+	 * @should not add property totalCount if context does not contains parameter totalCount
 	 */
 	@Override
 	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
@@ -57,6 +66,9 @@ public abstract class BasePageableResult<T> implements PageableResult {
 			if (context.getStartIndex() > 0)
 				links.add(context.getPreviousLink());
 			ret.add("links", links);
+		}
+		if (Boolean.valueOf(context.getParameter("totalCount"))) {
+			ret.add("totalCount", getTotalCount());
 		}
 		return ret;
 	}

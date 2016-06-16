@@ -222,8 +222,15 @@ public class RequestContext {
 	 * 
 	 * @param name the request parameter name
 	 * @return the value
+	 * @should return the request parameter of given name if present in the request
+	 * @should return null if the wanted request parameter is not present in the request
+	 * @should return null if request is null
 	 */
 	public String getParameter(String name) {
+		
+		if (getRequest() == null) {
+			return null;
+		}
 		return getRequest().getParameter(name);
 	}
 	
