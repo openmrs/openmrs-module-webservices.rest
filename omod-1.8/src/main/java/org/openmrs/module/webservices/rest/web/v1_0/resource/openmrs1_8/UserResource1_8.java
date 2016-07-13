@@ -147,6 +147,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		User openmrsUser = new User();
 		String password = user.getPassword();
 		openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
+		Context.refreshAuthenticatedUser();
 		if (openmrsUser.getId() != null && StringUtils.isNotBlank(password)) {
 			Context.getUserService().changePassword(openmrsUser, password);
 		}
