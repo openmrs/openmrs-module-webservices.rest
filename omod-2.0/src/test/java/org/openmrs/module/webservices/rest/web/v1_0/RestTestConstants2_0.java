@@ -27,4 +27,6 @@ public class RestTestConstants2_0 {
 	public static final String CONCEPT_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
 	public static final String CONCEPT_UUID = "0cbe2ed3-cd5f-4f46-9459-26127c9265ab";
 	public static final String CONCEPT_ATTRIBUTE_UUID = "3a2bdb18-6faa-11e0-8414-001e378eb67f";
+	
+	public static final String DRUG_UUID = "05ec820a-d297-44e3-be6e-698531d9dd3f";
 }
