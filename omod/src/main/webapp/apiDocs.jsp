@@ -25,24 +25,23 @@
 
 <openmrs:require privilege="Manage RESTWS" otherwise="/login.htm" redirect="/module/webservices/rest/settings.form" />
   <script type="text/javascript">
-			jQuery(document).ready(function() {
-				jQuery("#content").addClass("swagger-section ");
-				var swaggerUi = new SwaggerUi({
-					  url:"${pageContext.request.contextPath}/module/webservices/rest/swagger.json",
-					  dom_id:"swaggerDocumentation",
-					  docExpansion: "none",
-                      apisSorter: "alpha",
-                      onFailure: function(data) {
-                          console.log("Unable to Load SwaggerUI");
-                          jQuery("#swaggerError").innerHTML = "Error Loading Swagger UI";
-                        }
-					});
-					swaggerUi.load();
-
-				});
-
+    jQuery(document).ready(function() {
+      jQuery("#content").addClass("swagger-section ");
+        var swaggerUi = new SwaggerUi({
+          url:"${pageContext.request.contextPath}/module/webservices/rest/swagger.json",
+          dom_id:"swaggerDocumentation",
+          docExpansion: "none",
+          apisSorter: "alpha",
+          onFailure: function(data) {
+            console.log("Unable to Load SwaggerUI");
+            jQuery("#swaggerError").innerHTML = "Error Loading Swagger UI";
+          },
+          validatorUrl: null
+        });
+      swaggerUi.load();
+    });
 </script>
 
 <div id="swaggerDocumentation" class="swagger-ui-wrap">
-	<img src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/inprogress.gif" style="display: block; margin-left: auto; margin-right: auto;"/>
+  <img src="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/inprogress.gif" style="display: block; margin-left: auto; margin-right: auto;"/>
 <div id="swaggerError" ></div>
