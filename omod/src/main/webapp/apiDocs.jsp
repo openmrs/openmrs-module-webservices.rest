@@ -1,6 +1,9 @@
-<% request.setAttribute("DO_NOT_INCLUDE_JQUERY", true); %>
 <%@ include file="/WEB-INF/template/include.jsp"%>
 <%@ include file="/WEB-INF/template/header.jsp"%>
+
+<script type="text/javascript">
+  var $ = jQuery; // required because the legacy UI uses jQuery.noConflict() and Swagger requires the $ variable
+</script>
 
 <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-32x32.png" sizes="32x32" />
 <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/images/favicon-16x16.png" sizes="16x16" />
@@ -8,7 +11,6 @@
 <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/reset.css" media="screen" rel="stylesheet" type="text/css"/>
 <link href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui/dist/css/screen.css" media="screen" rel="stylesheet" type="text/css"/>
 
-<openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery-1.8.0.min.js"/>
 <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.slideto.min.js"/>
 <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.wiggle.min.js"/>
 <openmrs:htmlInclude file="/moduleResources/webservices/rest/js/swagger-ui/dist/lib/jquery.ba-bbq.min.js"/>
