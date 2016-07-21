@@ -85,11 +85,11 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
         long before = getAllCount();
 
-        String yesPayload = "{\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\"," +
+        String yesPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," +
                 "\"value\":\"" + yesConceptUuid + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\"," +
                 "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
 
-        String noPayload = "{\"concept\":\"0dde1358-7fcf-4341-a330-f119241a46e8\"," +
+        String noPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," +
                 "\"value\":\"" + noConceptUuid + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\"," +
                 "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
 
