@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -106,7 +105,10 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			identifiers.iterator().next().setPreferred(true);
 		}
 		
-		instance.setIdentifiers(new TreeSet<PatientIdentifier>(identifiers));
+		instance.getIdentifiers().clear();
+		for (PatientIdentifier identifier : identifiers) {
+			instance.addIdentifier(identifier);
+		}
 	}
 	
 	/**
