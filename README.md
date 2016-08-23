@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/openmrs/openmrs-module-webservices.rest.svg?branch=master)](https://travis-ci.org/openmrs/openmrs-module-webservices.rest)
+
 <img src="https://talk.openmrs.org/uploads/default/original/2X/f/f1ec579b0398cb04c80a54c56da219b2440fe249.jpg" alt="OpenMRS"/>
 
 # OpenMRS REST Web Services Module
