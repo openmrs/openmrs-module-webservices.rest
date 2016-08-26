@@ -14,11 +14,6 @@
 
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
@@ -31,21 +26,22 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
-import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterTypeResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 import org.springframework.stereotype.Component;
 
+import java.util.*;
+
 @Component
 public class EncounterSearchHandler1_8 implements SearchHandler {
-	
-	private static final String DATE_FROM = "fromdate";
-	private static final String DATE_TO = "todate";
-	
+
+    private static final String DATE_FROM = "fromdate";
+    private static final String DATE_TO = "todate";
+
     private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"),
-            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)").withRequiredParameters("patient", "encounterType").withOptionalParameters(DATE_FROM, DATE_TO, "order").build()));
+            Arrays.asList(new SearchQuery.Builder("Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)").withRequiredParameters("encounterType").withOptionalParameters("patient", DATE_FROM, DATE_TO).build()));
 
     @Override
     public SearchConfig getSearchConfig() {
@@ -56,27 +52,32 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
     public PageableResult search(RequestContext context) throws ResponseException {
         String patientUuid = context.getRequest().getParameter("patient");
         String encounterTypeUuid = context.getRequest().getParameter("encounterType");
-        
+
         String dateFrom = context.getRequest().getParameter(DATE_FROM);
         String dateTo = context.getRequest().getParameter(DATE_TO);
-        
-        Date fromDate = dateFrom != null ? (Date)ConversionUtil.convert(dateFrom, Date.class) : null;
-        Date toDate = dateTo != null? (Date)ConversionUtil.convert(dateTo, Date.class) : null;
-        
-        Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-                Patient.class)).getByUniqueId(patientUuid);
-        EncounterType encounterType = ((EncounterTypeResource1_8)
-                Context.getService(RestService.class).getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
-        if (patient != null && encounterType != null) {
-            List<Encounter> encounters = Context.getEncounterService()
-                    .getEncounters(patient, null, fromDate, toDate, null, Arrays.asList(encounterType), null, false);
-            String order = context.getRequest().getParameter("order");
-            if ("desc".equals(order)) {
-            	Collections.reverse(encounters);
-            }
-            return new NeedsPaging<Encounter>(encounters, context);
+
+        Date fromDate = dateFrom != null ? (Date) ConversionUtil.convert(dateFrom, Date.class) : null;
+        Date toDate = dateTo != null ? (Date) ConversionUtil.convert(dateTo, Date.class) : null;
+
+        EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
+        Patient patient = null;
+
+        List<Encounter> encounters;
+
+        if (patientUuid != null) {
+            patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Patient.class)).getByUniqueId(patientUuid);
         }
-        return new EmptySearchResult();
+
+        if (patient != null) {
+            encounters = Context.getEncounterService().getEncounters(patient, null, fromDate, toDate, null, Arrays.asList(encounterType), null, false);
+        } else {
+            encounters = Context.getEncounterService().getEncounters(null, null, fromDate, toDate, null, Arrays.asList(encounterType), null, false);
+        }
+        String order = context.getRequest().getParameter("order");
+        if ("desc".equals(order)) {
+            Collections.reverse(encounters);
+        }
+        return new NeedsPaging<Encounter>(encounters, context);
     }
 
 }
