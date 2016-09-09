@@ -24,19 +24,23 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Allows you to find terms by source and code.
+ * Allows you to find terms by source and codeOrName or name.
  */
 @Component
 public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
@@ -50,8 +54,8 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	private static String SEARCH_TYPE_STARTS_WITH = "startsWith";
 
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/conceptreferenceterm",
-		Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"), new SearchQuery.Builder("Allows you to find terms by source, code and name")
-	                .withRequiredParameters("source").withOptionalParameters("code", "name", "searchType").build());
+		Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"), new SearchQuery.Builder("Allows you to find terms by source, codeOrName and name")
+	                .withRequiredParameters("source").withOptionalParameters("codeOrName", "searchType").build());
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.sresource.api.SearchHandler#getSearchConfig()
@@ -67,96 +71,103 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
 		String source = context.getParameter("source");
-		String code = context.getParameter("code");
-		String name = context.getParameter("name");
+		String codeOrName = context.getParameter("codeOrName");
 		String searchType = context.getParameter("searchType");
 
 		if(searchType!=null&&!SEARCH_TYPE_EQUALS.equals(searchType)&&!SEARCH_TYPE_STARTS_WITH.equals(searchType)){
 			throw new InvalidSearchException("Invalid searchType parameter");
 		}
 
-		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
-
-		if (conceptSource == null) {
-			conceptSource = conceptService.getConceptSourceByName(source);
+		if (searchType == null) {
+			searchType = "equals";
 		}
 
-		if (conceptSource == null) {
-			return new EmptySearchResult();
-		}
-
-		if (code != null || name != null) {
-			if(SEARCH_TYPE_STARTS_WITH.equals(searchType)){
-				return searchStartsWith(context, code, name, conceptSource);
-			} else {
-				return searchEquals(context, code, name, conceptSource);
+		if (searchType.equals(SEARCH_TYPE_EQUALS)) {
+			ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
+			if (conceptSource == null) {
+				conceptSource = conceptService.getConceptSourceByName(source);
+				if (conceptSource == null) {
+					return new EmptySearchResult();
+				}
 			}
-		} else {
-			List<ConceptReferenceTerm> terms = conceptService.getConceptReferenceTerms(null, conceptSource,
-					context.getStartIndex(), context.getLimit(), context.getIncludeAll());
-			int count = conceptService.getCountOfConceptReferenceTerms(null, conceptSource, context.getIncludeAll());
-			boolean hasMore = count > (context.getStartIndex() + context.getLimit());
-
-			return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore);
+			if (codeOrName != null) {
+				return searchEquals(context, codeOrName, conceptSource);
+			}
+			else {
+				List<ConceptReferenceTerm> terms = conceptService.getConceptReferenceTerms(null, conceptSource,
+						context.getStartIndex(), context.getLimit(), context.getIncludeAll());
+				int count = conceptService.getCountOfConceptReferenceTerms(null, conceptSource, context.getIncludeAll());
+				boolean hasMore = count > (context.getStartIndex() + context.getLimit());
+				return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore);
+			}
+		} else if (searchType.equals(SEARCH_TYPE_STARTS_WITH)) {
+			List<ConceptSource> conceptSources = new ArrayList<ConceptSource>();
+			ConceptSource singleConceptSource = conceptService.getConceptSourceByUuid(source);
+			if (singleConceptSource != null) {
+				conceptSources.add(singleConceptSource);
+			}
+			else {
+				List<ConceptSource> allConceptSources = conceptService.getAllConceptSources();
+				if (allConceptSources.isEmpty()) {
+					return new EmptySearchResult();
+				}
+				else {
+					for (ConceptSource conceptSource : allConceptSources) {
+						if (conceptSource.getName().startsWith(source)) {
+							conceptSources.add(conceptSource);
+						}
+					}
+				}
+			}
+			return searchStartsWith(context, codeOrName, conceptSources);
+		}
+		else {
+			throw new IllegalStateException("\"" + searchType + "\" doesn't fit searchType param requirements. Search type must be " + SEARCH_TYPE_EQUALS + " or " + SEARCH_TYPE_STARTS_WITH + ".");
 		}
 	}
 
-	private PageableResult searchStartsWith(RequestContext context, String code, String name, ConceptSource conceptSource){
+	private PageableResult searchStartsWith(RequestContext context, String codeOrName, List<ConceptSource> conceptSources){
 		/**
 		 * org.openmrs.api.ConceptService#getConceptReferenceTerms(java.lang.String, org.openmrs.ConceptSource, java.lang.Integer, java.lang.Integer, boolean)
 		 * returns all ConceptReferenceTerm objects which code or name match query, so results need to be filtered
 		 */
-		List<ConceptReferenceTerm> resultTerms = new ArrayList<ConceptReferenceTerm>();
-		if(code != null){
-			List<ConceptReferenceTerm> codeQueryTerms = conceptService.getConceptReferenceTerms(code, conceptSource, context.getStartIndex(),
-					context.getLimit(), context.getIncludeAll());
-			for(ConceptReferenceTerm term : codeQueryTerms){
-				if(termMatchesCodeAndName(term, code, name)){
-					resultTerms.add(term);
-				}
+		Set<ConceptReferenceTerm> resultTerms = new LinkedHashSet<ConceptReferenceTerm>();
+		int count = 0;
+
+		if (StringUtils.isNotEmpty(codeOrName)) {
+
+			for (ConceptSource conceptSource : conceptSources) {
+				resultTerms.addAll(conceptService.getConceptReferenceTerms(codeOrName, conceptSource, context.getStartIndex(), context.getLimit(), context.getIncludeAll()));
+				count += conceptService.getCountOfConceptReferenceTerms(codeOrName, conceptSource, context.getIncludeAll());
 			}
 		}
-		if(name != null){
-			List<ConceptReferenceTerm> nameQueryTerms = conceptService.getConceptReferenceTerms(name, conceptSource, context.getStartIndex(),
-					context.getLimit(), context.getIncludeAll());
-			for(ConceptReferenceTerm term : nameQueryTerms){
-				if(termMatchesCodeAndName(term, code, name)){
-					resultTerms.add(term);
-				}
+		else {
+			// Fetch all references by source
+			for (ConceptSource conceptSource : conceptSources) {
+				resultTerms.addAll(conceptService.getConceptReferenceTerms(null, conceptSource, context.getStartIndex(), context.getLimit(), context.getIncludeAll()));
+				count += conceptService.getCountOfConceptReferenceTerms(null, conceptSource, context.getIncludeAll());
 			}
 		}
 
-		if(resultTerms.isEmpty()){
+		if	(resultTerms.isEmpty()){
 			return new EmptySearchResult();
-		} else {
-			return new AlreadyPaged<ConceptReferenceTerm>(context, resultTerms, false);
+		}
+		else {
+			boolean hasMore = count > (context.getStartIndex() + context.getLimit());
+
+			List<ConceptReferenceTerm> listResult = new ArrayList<ConceptReferenceTerm>();
+			listResult.addAll(resultTerms);
+
+			return new AlreadyPaged<ConceptReferenceTerm>(context, listResult, hasMore);
 		}
 	}
 
-	private boolean termMatchesCodeAndName(ConceptReferenceTerm term, String code, String name){
-		//all terms match unspecified code/name, to allow searching by name/code only
-		boolean matchCode = true;
-		boolean matchName = true;
-		if(term == null) return false;
-		if(code != null){
-			matchCode = StringUtils.startsWithIgnoreCase(term.getCode(), code);
-		}
-		if(name != null){
-			matchName = StringUtils.startsWithIgnoreCase(term.getName(), name);
-
-		}
-		return matchCode&&matchName;
-	}
-
-	private PageableResult searchEquals(RequestContext context, String code, String name, ConceptSource conceptSource) {
+	private PageableResult searchEquals(RequestContext context, String code, ConceptSource conceptSource) {
 		ConceptReferenceTerm term = null;
 		if (code != null) {
 			term = conceptService.getConceptReferenceTermByCode(code, conceptSource);
-			if (name != null && !name.equals(term.getName())) {
-				term = null;
-			}
 		} else {
-			term = conceptService.getConceptReferenceTermByName(name, conceptSource);
+			return new EmptySearchResult();
 		}
 
 		if (term == null || (term.isRetired() && !context.getIncludeAll())) {
