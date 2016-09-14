@@ -329,14 +329,9 @@ public class RestServiceImpl implements RestService {
 	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters,
 	        Map<String, Set<SearchHandler>> tempSearchHandlersByResource, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
-			try {
-				ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
-				//If the OpenMRS version is supported then
+			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
 				addSupportedSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, searchHandler);
 				addSearchHandlerToResourceMap(tempSearchHandlersByResource, searchHandler);
-			}
-			catch (ModuleException e) {
-				//Not supported OpenMRS version
 			}
 		}
 	}
