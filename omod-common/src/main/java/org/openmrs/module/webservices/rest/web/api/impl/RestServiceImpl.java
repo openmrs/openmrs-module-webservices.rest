@@ -14,8 +14,6 @@
 package org.openmrs.module.webservices.rest.web.api.impl;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,13 +23,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleException;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -241,12 +236,10 @@ public class RestServiceImpl implements RestService {
 					boolean supported = false;
 					
 					for (String supportedVersion : supportedOpenmrsVersions) {
-						try {
-							ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+						if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
 							supported = true;
 							continue;
 						}
-						catch (Exception e) {}
 					}
 					
 					if (!supported) {
@@ -262,12 +255,10 @@ public class RestServiceImpl implements RestService {
 					boolean supported = false;
 					
 					for (String supportedVersion : supportedOpenmrsVersions) {
-						try {
-							ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
+						if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
 							supported = true;
 							continue;
 						}
-						catch (Exception e) {}
 					}
 					
 					if (!supported) {
