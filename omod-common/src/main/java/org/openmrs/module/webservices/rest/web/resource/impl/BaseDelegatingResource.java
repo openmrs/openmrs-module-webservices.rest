@@ -136,7 +136,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 				if (annotation != null) {
 					String[] supportedOpenmrsVersions = annotation.supportedOpenmrsVersions();
 					for (String version : supportedOpenmrsVersions) {
-						if (versionMatches(version)) {
+						if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, version)) {
 							tmpSubclassHandlers.add(handler);
 							break;
 						}
@@ -150,16 +150,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		}
 		
 		subclassHandlers = tmpSubclassHandlers;
-	}
-	
-	private boolean versionMatches(String supportedVersion) {
-		try {
-			ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion);
-		}
-		catch (Exception e) {
-			return false;
-		}
-		return true;
 	}
 	
 	/**

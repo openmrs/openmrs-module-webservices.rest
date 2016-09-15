@@ -77,12 +77,10 @@ public class OpenmrsProfileRule implements TestRule {
 		@Override
 		public void evaluate() throws Throwable {
 			for (String openmrsVersion : openmrsVersions) {
-				try {
-					ModuleUtil.checkRequiredVersion(OpenmrsConstants.OPENMRS_VERSION_SHORT, openmrsVersion);
+				if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, openmrsVersion)) {
 					base.evaluate();
 					return;
 				}
-				catch (Exception e) {}
 			}
 			System.out.println("Ignored " + description.getMethodName() + " (run only on OpenMRS "
 			        + StringUtils.join(openmrsVersions, ",") + ")");
