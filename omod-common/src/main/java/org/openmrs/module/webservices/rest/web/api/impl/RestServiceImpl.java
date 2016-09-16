@@ -26,11 +26,11 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
@@ -61,6 +61,16 @@ public class RestServiceImpl implements RestService {
 	
 	private volatile List<SearchHandler> allSearchHandlers;
 	
+	private RestHelperService restHelperService;
+
+	public RestHelperService getRestHelperService() {
+		return restHelperService;
+	}
+
+	public void setRestHelperService(RestHelperService restHelperService) {
+		this.restHelperService = restHelperService;
+	}
+
 	public RestServiceImpl() {
 	}
 	
@@ -168,22 +178,6 @@ public class RestServiceImpl implements RestService {
 			return true;
 		}
 		
-	}
-	
-	/**
-	 * It should be used in TESTS ONLY.
-	 * 
-	 * @param searchHandler
-	 */
-	void addSupportedSearchHandler(SearchHandler searchHandler) {
-		if (searchHandlersByIds == null) {
-			searchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
-		}
-		if (searchHandlersByParameter == null) {
-			searchHandlersByParameter = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
-		}
-		
-		addSupportedSearchHandler(searchHandlersByIds, searchHandlersByParameter, searchHandler);
 	}
 	
 	private void initializeResources() {
@@ -302,7 +296,7 @@ public class RestServiceImpl implements RestService {
 		Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
 		Map<String, Set<SearchHandler>> tempSearchHandlersByResource = new HashMap<String, Set<SearchHandler>>();
 		
-		List<SearchHandler> allSearchHandlers = Context.getRegisteredComponents(SearchHandler.class);
+		List<SearchHandler> allSearchHandlers = restHelperService.getRegisteredSearchHandlers();
 		for (SearchHandler searchHandler : allSearchHandlers) {
 			addSearchHandler(tempSearchHandlersByIds, tempSearchHandlersByParameters, tempSearchHandlersByResource,
 			    searchHandler);
@@ -553,11 +547,8 @@ public class RestServiceImpl implements RestService {
 			}
 		}
 		
-		@SuppressWarnings("rawtypes")
-		List<DelegatingSubclassHandler> subclassHandlers = Context.getRegisteredComponents(DelegatingSubclassHandler.class);
-		
-		for (@SuppressWarnings("rawtypes")
-		DelegatingSubclassHandler subclassHandler : subclassHandlers) {
+		List<DelegatingSubclassHandler> subclassHandlers = restHelperService.getRegisteredRegisteredSubclassHandlers();
+		for (DelegatingSubclassHandler subclassHandler : subclassHandlers) {
 			resourceHandlers.add(subclassHandler);
 		}
 		
