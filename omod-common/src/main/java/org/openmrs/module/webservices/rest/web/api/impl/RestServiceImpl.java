@@ -214,7 +214,6 @@ public class RestServiceImpl implements RestService {
 			}
 			
 			String name = null;
-			String[] supportedOpenmrsVersions = null;
 			Class<?> supportedClass = null;
 			int order = Integer.MAX_VALUE;
 			
@@ -230,40 +229,16 @@ public class RestServiceImpl implements RestService {
 					//Missing class
 					continue;
 				}
-				
-				supportedOpenmrsVersions = subresourceAnnotation.supportedOpenmrsVersions();
-				if (supportedOpenmrsVersions.length != 0) {
-					boolean supported = false;
-					
-					for (String supportedVersion : supportedOpenmrsVersions) {
-						if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
-							supported = true;
-							continue;
-						}
-					}
-					
-					if (!supported) {
-						continue;
-					}
+
+				if (!isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
+					continue;
 				}
 				name = parentResourceAnnotation.name() + "/" + subresourceAnnotation.path();
 				supportedClass = subresourceAnnotation.supportedClass();
 				order = subresourceAnnotation.order();
 			} else {
-				supportedOpenmrsVersions = resourceAnnotation.supportedOpenmrsVersions();
-				if (supportedOpenmrsVersions.length != 0) {
-					boolean supported = false;
-					
-					for (String supportedVersion : supportedOpenmrsVersions) {
-						if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
-							supported = true;
-							continue;
-						}
-					}
-					
-					if (!supported) {
-						continue;
-					}
+				if (!isOpenmrsVersionInVersions(resourceAnnotation.supportedOpenmrsVersions())) {
+					continue;
 				}
 				name = resourceAnnotation.name();
 				supportedClass = resourceAnnotation.supportedClass();
@@ -295,7 +270,29 @@ public class RestServiceImpl implements RestService {
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
-	
+
+	/**
+	 * Checks if OpenMRS version is in given array of versions.
+	 *
+	 * @param versions the array of versions to be checked for the openmrs version
+	 * @return true if the openmrs version is in versions and false otherwise
+	 */
+	private boolean isOpenmrsVersionInVersions(String[] versions) {
+
+		if (versions.length == 0) {
+			return false;
+		}
+
+		boolean result = false;
+		for (String version : versions) {
+			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, version)) {
+				result = true;
+				continue;
+			}
+		}
+		return result;
+	}
+
 	private void initializeSearchHandlers() {
 		if (searchHandlersByIds != null) {
 			return;
