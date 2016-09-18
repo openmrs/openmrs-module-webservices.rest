@@ -43,7 +43,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getConceptMapByUuid(java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByUuid(Class,
+	 *      String)
 	 */
 	@Override
 	@Transactional(readOnly = true)
@@ -77,8 +78,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(java.lang.Class,
-	 *      java.io.Serializable)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(Class,
+	 *      Serializable)
 	 */
 	@Override
 	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
@@ -86,8 +87,8 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByField(java.lang.Class,
-	 *      java.lang.String, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectsByFields(Class,
+	 *      Field...)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -101,6 +102,10 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		return criteria.list();
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getPatients(Collection)
+	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Patient> getPatients(Collection<Integer> patientIds) {
 		List<Patient> ret = new ArrayList<Patient>();
