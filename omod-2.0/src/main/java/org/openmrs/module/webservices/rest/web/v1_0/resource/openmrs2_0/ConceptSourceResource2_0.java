@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptS
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
 public class ConceptSourceResource2_0 extends ConceptSourceResource1_8 {
 	
 	/**

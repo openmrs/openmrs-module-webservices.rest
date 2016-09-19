@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  *
  */
-@Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
 public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
 
     @Override

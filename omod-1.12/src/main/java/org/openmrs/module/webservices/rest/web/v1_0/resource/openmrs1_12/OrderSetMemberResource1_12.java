@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * {@link Resource} for OrderSetMembers, supporting standard CRUD operations
  */
-@SubResource(parent = OrderSetResource1_12.class, path = "ordersetmember", supportedClass = OrderSetMember.class, supportedOpenmrsVersions = { "1.12.*", "2.0.*" })
+@SubResource(parent = OrderSetResource1_12.class, path = "ordersetmember", supportedClass = OrderSetMember.class, supportedOpenmrsVersions = { "1.12.*", "2.0.*", "2.1.*" })
 public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMember, OrderSet, OrderSetResource1_12> {
 
     @Override

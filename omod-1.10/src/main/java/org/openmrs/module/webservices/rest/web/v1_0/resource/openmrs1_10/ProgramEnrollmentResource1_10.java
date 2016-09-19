@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
 public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8{
 
     @Override

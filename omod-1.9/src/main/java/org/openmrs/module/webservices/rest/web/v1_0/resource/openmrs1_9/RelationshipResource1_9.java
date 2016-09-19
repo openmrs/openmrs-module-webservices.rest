@@ -13,7 +13,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Relation
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"})
+@Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
 public class RelationshipResource1_9 extends RelationshipResource1_8{
     /**
      * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
