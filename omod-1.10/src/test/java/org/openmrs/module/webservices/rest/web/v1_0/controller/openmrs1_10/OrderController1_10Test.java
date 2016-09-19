@@ -126,7 +126,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
-		
+		order.add("accessionNumber", "100");
+
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
@@ -141,6 +142,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
+		assertEquals("100", Util.getByPath(newOrder, "accessionNumber"));
 	}
 
     @Test

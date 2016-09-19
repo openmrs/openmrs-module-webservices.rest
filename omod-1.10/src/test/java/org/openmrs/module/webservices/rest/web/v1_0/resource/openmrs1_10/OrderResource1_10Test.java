@@ -29,6 +29,61 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
         executeDataSet(ORDER_ENTRY_DATASET_XML);
     }
 
+	/**
+	 * @see BaseDelegatingResourceTest#validateDefaultRepresentation()
+	 */
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
+		assertPropPresent("orderNumber");
+		assertPropPresent("accessionNumber");
+		assertPropPresent("patient");
+		assertPropPresent("concept");
+		assertPropPresent("action");
+		assertPropPresent("careSetting");
+		assertPropPresent("previousOrder");
+		assertPropPresent("dateActivated");
+		assertPropPresent("scheduledDate");
+		assertPropPresent("dateStopped");
+		assertPropPresent("autoExpireDate");
+		assertPropPresent("encounter");
+		assertPropPresent("orderer");
+		assertPropPresent("orderReason");
+		assertPropPresent("orderReasonNonCoded");
+		assertPropPresent("urgency");
+		assertPropPresent("instructions");
+		assertPropPresent("commentToFulfiller");
+		assertPropPresent("display");
+	}
+
+	/**
+	 * @see BaseDelegatingResourceTest#validateFullRepresentation()
+	 */
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
+		assertPropPresent("orderNumber");
+		assertPropPresent("accessionNumber");
+		assertPropPresent("patient");
+		assertPropPresent("concept");
+		assertPropPresent("action");
+		assertPropPresent("careSetting");
+		assertPropPresent("previousOrder");
+		assertPropPresent("dateActivated");
+		assertPropPresent("scheduledDate");
+		assertPropPresent("dateStopped");
+		assertPropPresent("autoExpireDate");
+		assertPropPresent("encounter");
+		assertPropPresent("orderer");
+		assertPropPresent("orderReason");
+		assertPropPresent("orderReasonNonCoded");
+		assertPropPresent("urgency");
+		assertPropPresent("instructions");
+		assertPropPresent("commentToFulfiller");
+		assertPropPresent("display");
+		assertPropPresent("auditInfo");
+	}
+
 	@Override
 	public Order newObject() {
 		return Context.getOrderService().getOrderByUuid(getUuidProperty());
