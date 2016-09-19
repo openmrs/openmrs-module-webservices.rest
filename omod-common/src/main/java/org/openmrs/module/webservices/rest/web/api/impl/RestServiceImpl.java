@@ -287,7 +287,7 @@ public class RestServiceImpl implements RestService {
 		for (String version : versions) {
 			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, version)) {
 				result = true;
-				continue;
+				break;
 			}
 		}
 		return result;
