@@ -17,8 +17,9 @@
 		</property>
 		<property name="target">
 			<bean
-				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl"
-				autowire="byType" />
+				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl">
+				<property name="restHelperService" ref="restHelperService"></property>
+			</bean>
 		</property>
 		<property name="preInterceptors">
 			<ref bean="serviceInterceptors" />

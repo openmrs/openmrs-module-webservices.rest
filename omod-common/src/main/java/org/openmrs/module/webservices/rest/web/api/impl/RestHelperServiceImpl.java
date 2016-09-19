@@ -25,9 +25,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.openmrs.api.context.Context.getRegisteredComponents;
 
 /**
  * REST helper service, which must not be used outside of the REST module.
@@ -122,5 +127,23 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		}
 		
 		return ret;
+	}
+
+	/**
+	 * @see RestHelperService#getRegisteredSearchHandlers()
+	 */
+	@Override
+	public List<SearchHandler> getRegisteredSearchHandlers() {
+		final List<SearchHandler> result = Context.getRegisteredComponents(SearchHandler.class);
+		return result != null ? result : new ArrayList<SearchHandler>();
+	}
+
+	/**
+	 * @see RestHelperService#getRegisteredRegisteredSubclassHandlers()
+	 */
+	@Override
+	public List<DelegatingSubclassHandler> getRegisteredRegisteredSubclassHandlers() {
+		final List<DelegatingSubclassHandler> result = getRegisteredComponents(DelegatingSubclassHandler.class);
+		return result != null ? result : new ArrayList<DelegatingSubclassHandler>();
 	}
 }
