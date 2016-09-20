@@ -51,7 +51,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#createUser(SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies create a new user
 	 */
 	@Test
@@ -78,7 +78,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#createUser(SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies create a new user
 	 */
 	@Test
@@ -110,7 +110,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#getUser(UserAndPassword1_8,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies get a default representation of a UserAndPassword
 	 */
 	@Test
@@ -133,7 +133,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see PatientController#getPatient(String,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies get a full representation of a patient
 	 */
 	@Test
@@ -153,7 +153,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#updateUser(UserAndPassword1_8,SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies change a property on a patient
 	 */
 	@Test
@@ -177,7 +177,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#retireUser(User,String,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies void a patient
 	 */
 	@Test
@@ -198,7 +198,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies return no results if there are no matching users
 	 */
 	@Test
@@ -216,7 +216,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	/**
 	 * @see UserController#findUsers(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies find matching users
 	 */
 	@Test
@@ -259,31 +259,31 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Util.log("Total users fetched: ", getAllCount());
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
-
-    @Test
-    public void updateUser_shouldUpdateTheUserPassword() throws Exception {
-        User user = service.getUserByUuid(getUuid());
-        assertNotNull(user);
-        assertNotEquals(user, Context.getAuthenticatedUser());
-        final String username = user.getUsername();
-        final String newPassword = "SomeOtherPassword123";
-
-        ContextAuthenticationException exception = null;
-        try {
-            Context.authenticate(username, newPassword);
-        }
-        catch (ContextAuthenticationException e) {
-            exception = e;
-        }
-        assertNotNull(exception);
-        assertEquals("Invalid username and/or password: " + username, exception.getMessage());
-
-        handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
-        Context.logout();
-
-        Context.authenticate(username, newPassword);
-        assertEquals(user, Context.getAuthenticatedUser());
-    }
+	
+	@Test
+	public void updateUser_shouldUpdateTheUserPassword() throws Exception {
+		User user = service.getUserByUuid(getUuid());
+		assertNotNull(user);
+		assertNotEquals(user, Context.getAuthenticatedUser());
+		final String username = user.getUsername();
+		final String newPassword = "SomeOtherPassword123";
+		
+		ContextAuthenticationException exception = null;
+		try {
+			Context.authenticate(username, newPassword);
+		}
+		catch (ContextAuthenticationException e) {
+			exception = e;
+		}
+		assertNotNull(exception);
+		assertEquals("Invalid username and/or password: " + username, exception.getMessage());
+		
+		handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
+		Context.logout();
+		
+		Context.authenticate(username, newPassword);
+		assertEquals(user, Context.getAuthenticatedUser());
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()

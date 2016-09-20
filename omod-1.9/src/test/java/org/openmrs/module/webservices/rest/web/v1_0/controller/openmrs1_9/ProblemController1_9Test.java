@@ -39,7 +39,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 public class ProblemController1_9Test extends MainResourceControllerTest {
 	
 	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
@@ -179,12 +178,11 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 		assertEquals(getUuid(), PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
 	
-    @Test
-    public void getProblem_shouldGetProblemByConceptMappings() throws Exception {
-        String json = "{\"person\":\""
-                + RestTestConstants1_8.PERSON_UUID +
-                "\", \"problem\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\"}";
-Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newObs, "problem"));
-    }
+	@Test
+	public void getProblem_shouldGetProblemByConceptMappings() throws Exception {
+		String json = "{\"person\":\"" + RestTestConstants1_8.PERSON_UUID
+		        + "\", \"problem\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\"}";
+		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(PropertyUtils.getProperty(newObs, "problem"));
+	}
 }

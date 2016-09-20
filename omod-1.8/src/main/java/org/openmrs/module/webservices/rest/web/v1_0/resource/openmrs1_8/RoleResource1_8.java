@@ -36,7 +36,8 @@ import java.util.Set;
 /**
  * {@link Resource} for Role, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/role", supportedClass = Role.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/role", supportedClass = Role.class, supportedOpenmrsVersions = { "1.8.*",
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**
@@ -64,7 +65,8 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(Role delegate, RequestContext context) throws ResponseException {
@@ -140,6 +142,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**
 	 * Retrieve the role name
+	 * 
 	 * @param role
 	 * @return
 	 */
@@ -161,6 +164,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**
 	 * Returns roles this role inherits from
+	 * 
 	 * @param role delegate object
 	 * @return A set of privileges associated with this role
 	 */
@@ -171,6 +175,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**
 	 * Returns roles this role inherits from
+	 * 
 	 * @param role delegate object
 	 * @return A set of privileges associated with this role
 	 */
@@ -184,6 +189,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	/**
 	 * Returns roles this role inherits from
+	 * 
 	 * @param role delegate object
 	 * @return A set of privileges associated with this role
 	 */

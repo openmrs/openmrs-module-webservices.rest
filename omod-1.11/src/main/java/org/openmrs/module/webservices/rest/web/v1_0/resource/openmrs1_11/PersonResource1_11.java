@@ -25,7 +25,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {
+        "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class PersonResource1_11 extends PersonResource1_8 {
 	
 	/**
@@ -52,18 +53,17 @@ public class PersonResource1_11 extends PersonResource1_8 {
 		return description;
 	}
 	
-	 /**
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     *
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-     */
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-    	DelegatingResourceDescription description = super.getUpdatableProperties();
+	/**
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("deathdateEstimated");
 		description.addProperty("birthtime");
 		return description;
-    }
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()

@@ -23,27 +23,27 @@ public class CustomDatatypeRepresentation {
 	
 	private List<CustomDatatypeHandlerRepresentation> handlers = new ArrayList<CustomDatatypeHandlerRepresentation>();
 	
-    public String getUuid() {
-	    return uuid;
-    }
-    
-    public String getTextToDisplay() {
-    	return prettifyClassname(datatypeClassname);
-    }
-
+	public String getUuid() {
+		return uuid;
+	}
+	
+	public String getTextToDisplay() {
+		return prettifyClassname(datatypeClassname);
+	}
+	
 	public static String prettifyClassname(String classname) {
-	    String display = "";
-    	if (classname != null && classname.lastIndexOf(".") != -1) {
-    		String prettyclassname = classname.substring(classname.lastIndexOf(".") + 1);
-    		String[] splittedClassname = StringUtils.splitByCharacterTypeCamelCase(prettyclassname);
-    		
-    		for (int i = 0; i < splittedClassname.length; i++) {
-    			splittedClassname[i] = StringUtils.capitalize(splittedClassname[i]);
-    		}
-    		display = StringUtils.join(splittedClassname, " ");
-    	}
-	    return display;
-    }
+		String display = "";
+		if (classname != null && classname.lastIndexOf(".") != -1) {
+			String prettyclassname = classname.substring(classname.lastIndexOf(".") + 1);
+			String[] splittedClassname = StringUtils.splitByCharacterTypeCamelCase(prettyclassname);
+			
+			for (int i = 0; i < splittedClassname.length; i++) {
+				splittedClassname[i] = StringUtils.capitalize(splittedClassname[i]);
+			}
+			display = StringUtils.join(splittedClassname, " ");
+		}
+		return display;
+	}
 	
 	public String getDatatypeClassname() {
 		return datatypeClassname;

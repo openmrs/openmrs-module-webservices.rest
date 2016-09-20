@@ -32,18 +32,19 @@ public class EncounterController2_0Test extends MainResourceControllerTest {
 	
 	public static final String currentTimezone = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
 	
-
-    @Test
-    public void shouldGetEncountersByEncounterTypeAndPatient() throws Exception {
-        executeDataSet("EncountersForDifferentTypesWithObservations.xml");
-
-        SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s","default"),new Parameter("patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType", "ff7397ea-c090-11e3-be87-005056821db0"))));
-
-        List<?> encounters = result.get("results");
-        Assert.assertEquals(1, encounters.size());
-        String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
-        Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
-    }
+	@Test
+	public void shouldGetEncountersByEncounterTypeAndPatient() throws Exception {
+		executeDataSet("EncountersForDifferentTypesWithObservations.xml");
+		
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter(
+		        "patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType",
+		        "ff7397ea-c090-11e3-be87-005056821db0"))));
+		
+		List<?> encounters = result.get("results");
+		Assert.assertEquals(1, encounters.size());
+		String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
+		Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()
@@ -75,14 +76,14 @@ public class EncounterController2_0Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-        Map<Integer, List<Encounter>> allPatientEncounters = Context.getEncounterService().getAllEncounters(null);
-        int totalEncounters = 0;
-        for (Integer integer : allPatientEncounters.keySet()) {
-            List<Encounter> encounters = allPatientEncounters.get(integer);
-            if (encounters != null) {
-                totalEncounters = totalEncounters + encounters.size();
-            }
-        }
-        return totalEncounters;
+		Map<Integer, List<Encounter>> allPatientEncounters = Context.getEncounterService().getAllEncounters(null);
+		int totalEncounters = 0;
+		for (Integer integer : allPatientEncounters.keySet()) {
+			List<Encounter> encounters = allPatientEncounters.get(integer);
+			if (encounters != null) {
+				totalEncounters = totalEncounters + encounters.size();
+			}
+		}
+		return totalEncounters;
 	}
 }

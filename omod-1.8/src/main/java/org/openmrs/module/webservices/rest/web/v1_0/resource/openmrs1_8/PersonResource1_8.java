@@ -44,7 +44,8 @@ import org.openmrs.util.OpenmrsUtil;
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/person", order = 2, supportedClass = Person.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/person", order = 2, supportedClass = Person.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	
@@ -113,29 +114,28 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		description.addProperty("attributes");
 		return description;
 	}
-
-    /**
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     *
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-     */
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addProperty("age");
-        description.addProperty("gender");
-        description.addProperty("birthdate");
-        description.addProperty("birthdateEstimated");
-        description.addProperty("preferredName");
-        description.addProperty("preferredAddress");
-        description.addProperty("addresses");
-        description.addProperty("attributes");
-        description.addRequiredProperty("names");
-        description.addRequiredProperty("causeOfDeath");
-        description.addRequiredProperty("dead");
-        description.addProperty("deathDate");
-        return description;
-    }
+	
+	/**
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("age");
+		description.addProperty("gender");
+		description.addProperty("birthdate");
+		description.addProperty("birthdateEstimated");
+		description.addProperty("preferredName");
+		description.addProperty("preferredAddress");
+		description.addProperty("addresses");
+		description.addProperty("attributes");
+		description.addRequiredProperty("names");
+		description.addRequiredProperty("causeOfDeath");
+		description.addRequiredProperty("dead");
+		description.addProperty("deathDate");
+		return description;
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
@@ -155,65 +155,66 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	public static Set<PersonName> getNames(Person instance) {
 		return RestUtil.removeVoidedData(instance.getNames());
 	}
-
-    /**
-     * Sets names and marks the first one as preferred if none is marked. It also makes sure that
-     * only one name is marked as preferred and changes the rest to non-preferred.
-     * <p/>
-     * It takes the list so that the order is preserved.
-     *
-     * @param instance
-     * @param names
-     */
-    @PropertySetter("names")
-    public static void setNames(Person instance, List<PersonName> names) {
-        for (PersonName existingName : instance.getNames()) {
-            existingName.setPreferred(false);
-        }
-        setFirstNameAsPreferred(names);
-        for (PersonName name : names) {
-            PersonName existingName = getMatchingName(name, instance.getNames());
-            if (existingName != null) {
-                copyNameFields(existingName, name);
-            } else {
-                instance.addName(name);
-            }
-        }
-    }
-
-    /**
-     * Returns non-voided attributes of a person
-     *
-     * @param instance
-     */
-    @PropertyGetter("attributes")
-    public static List<PersonAttribute> getAttributes(Person instance) {
-        return instance.getActiveAttributes();
-    }
 	
-    /**
-     * Sets attributes on the given person.
-     *
-     * @param instance
-     * @param attrs
-     */
-    @PropertySetter("attributes")
-    public static void setAttributes(Person instance, List<PersonAttribute> attrs) {
-        for (PersonAttribute attr : attrs) {
-            PersonAttribute existingAttribute = instance.getAttribute(Context.getPersonService().getPersonAttributeTypeByUuid(attr.getAttributeType().getUuid()));
-            if (existingAttribute != null) {
-                if (attr.getValue() == null) {
-                    instance.removeAttribute(existingAttribute);
-                } else {
-                    existingAttribute.setValue(attr.getValue());
-                }
-            } else {
-                instance.addAttribute(attr);
-            }
-        }
-    }
-
-    /**
+	/**
+	 * Sets names and marks the first one as preferred if none is marked. It also makes sure that
+	 * only one name is marked as preferred and changes the rest to non-preferred.
+	 * <p/>
+	 * It takes the list so that the order is preserved.
+	 * 
+	 * @param instance
+	 * @param names
+	 */
+	@PropertySetter("names")
+	public static void setNames(Person instance, List<PersonName> names) {
+		for (PersonName existingName : instance.getNames()) {
+			existingName.setPreferred(false);
+		}
+		setFirstNameAsPreferred(names);
+		for (PersonName name : names) {
+			PersonName existingName = getMatchingName(name, instance.getNames());
+			if (existingName != null) {
+				copyNameFields(existingName, name);
+			} else {
+				instance.addName(name);
+			}
+		}
+	}
+	
+	/**
+	 * Returns non-voided attributes of a person
+	 * 
+	 * @param instance
+	 */
+	@PropertyGetter("attributes")
+	public static List<PersonAttribute> getAttributes(Person instance) {
+		return instance.getActiveAttributes();
+	}
+	
+	/**
+	 * Sets attributes on the given person.
+	 * 
+	 * @param instance
+	 * @param attrs
+	 */
+	@PropertySetter("attributes")
+	public static void setAttributes(Person instance, List<PersonAttribute> attrs) {
+		for (PersonAttribute attr : attrs) {
+			PersonAttribute existingAttribute = instance.getAttribute(Context.getPersonService()
+			        .getPersonAttributeTypeByUuid(attr.getAttributeType().getUuid()));
+			if (existingAttribute != null) {
+				if (attr.getValue() == null) {
+					instance.removeAttribute(existingAttribute);
+				} else {
+					existingAttribute.setValue(attr.getValue());
+				}
+			} else {
+				instance.addAttribute(attr);
+			}
+		}
+	}
+	
+	/**
 	 * Returns non-voided addresses for a person
 	 * 
 	 * @param instance
@@ -223,31 +224,32 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	public static Set<PersonAddress> getAddresses(Person instance) {
 		return RestUtil.removeVoidedData(instance.getAddresses());
 	}
-
-    /**
-     * Sets addresses and marks the first one as preferred if none is marked. It also makes sure
-     * that only one address is marked as preferred and changes the rest to non-preferred.
-     * <p/>
-     * It takes the list so that the order is preserved.
-     *
-     * @param instance
-     * @param addresses
-     */
-    @PropertySetter("addresses")
-    public static void setAddresses(Person instance, List<PersonAddress> addresses) {
-        for (PersonAddress existingAddress : instance.getAddresses()) {
-            existingAddress.setPreferred(false);
-        }
-        setFirstAddressAsPreferred(addresses);
-        for (PersonAddress address : addresses) {
-            PersonAddress existingAddress = getMatchingAddress(address, instance.getAddresses());
-            if (existingAddress != null) {
-                copyAddressFields(existingAddress, address);
-            } else {
-                instance.addAddress(address);
-            }
-        }
-    }
+	
+	/**
+	 * Sets addresses and marks the first one as preferred if none is marked. It also makes sure
+	 * that only one address is marked as preferred and changes the rest to non-preferred.
+	 * <p/>
+	 * It takes the list so that the order is preserved.
+	 * 
+	 * @param instance
+	 * @param addresses
+	 */
+	@PropertySetter("addresses")
+	public static void setAddresses(Person instance, List<PersonAddress> addresses) {
+		for (PersonAddress existingAddress : instance.getAddresses()) {
+			existingAddress.setPreferred(false);
+		}
+		setFirstAddressAsPreferred(addresses);
+		for (PersonAddress address : addresses) {
+			PersonAddress existingAddress = getMatchingAddress(address, instance.getAddresses());
+			if (existingAddress != null) {
+				copyAddressFields(existingAddress, address);
+			} else {
+				instance.addAddress(address);
+			}
+		}
+	}
+	
 	/**
 	 * Sets the preferred name for a person. If no name exists new name is set as preferred.
 	 * 
@@ -269,11 +271,11 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		name.setPreferred(true);
 		instance.addName(name);
 	}
-
-    @PropertyGetter("preferredName")
-    public static PersonName getPreferredName(Person instance) {
-        return instance.getPersonName();
-    }
+	
+	@PropertyGetter("preferredName")
+	public static PersonName getPreferredName(Person instance) {
+		return instance.getPersonName();
+	}
 	
 	@PropertySetter("age")
 	public static void setAge(Person person, Integer age) throws ResourceDoesNotSupportOperationException {
@@ -306,12 +308,12 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		address.setPreferred(true);
 		
 	}
-
-    @PropertyGetter("preferredAddress")
-    public static PersonAddress getPreferredAddress(Person instance) {
-        return instance.getPersonAddress();
-    }
-
+	
+	@PropertyGetter("preferredAddress")
+	public static PersonAddress getPreferredAddress(Person instance) {
+		return instance.getPersonAddress();
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -374,107 +376,108 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 * @param person
 	 * @return fullname (for concise display purposes)
 	 */
-    @PropertyGetter("display")
+	@PropertyGetter("display")
 	public String getDisplayString(Person person) {
-        // TODO copy what is done in PatientResource to use configured name layout
+		// TODO copy what is done in PatientResource to use configured name layout
 		if (person.getPersonName() == null)
 			return "";
 		
 		return person.getPersonName().getFullName();
 	}
-
-    private static void copyNameFields(PersonName existingName, PersonName personName) {
-        existingName.setPreferred(personName.getPreferred());
-        existingName.setPrefix(personName.getPrefix());
-        existingName.setGivenName(personName.getGivenName());
-        existingName.setMiddleName(personName.getMiddleName());
-        existingName.setFamilyNamePrefix(personName.getFamilyNamePrefix());
-        existingName.setFamilyName(personName.getFamilyName());
-        existingName.setFamilyName2(personName.getFamilyName2());
-        existingName.setFamilyNameSuffix(personName.getFamilyNameSuffix());
-        existingName.setDegree(personName.getDegree());
-    }
-
-    private static void setFirstNameAsPreferred(List<PersonName> personNames) {
-        boolean hasPreferred = false;
-        for (PersonName name : personNames) {
-            if (name.isPreferred()) {
-                if (!hasPreferred) {
-                    hasPreferred = true;
-                } else {
-                    name.setPreferred(false);
-                }
-            }
-        }
-        if (!hasPreferred) {
-            personNames.iterator().next().setPreferred(true);
-        }
-    }
-
-    private static PersonName getMatchingName(PersonName personName, Set<PersonName> personNames) {
-        for (PersonName existingName : personNames) {
-            String uuid = personName.getUuid();
-            if (uuid != null && uuid.equals(existingName.getUuid())) {
-                return existingName;
-            }
-        }
-        return null;
-    }
-
-    private static PersonAddress getMatchingAddress(PersonAddress personAddress, Set<PersonAddress> personAddresses) {
-        for (PersonAddress existingAddress : personAddresses) {
-            if (personAddress.getUuid().equals(existingAddress.getUuid())) {
-                return existingAddress;
-            }
-        }
-        return null;
-    }
-
-    private static void copyAddressFields(PersonAddress existingAddress, PersonAddress address) {
-        existingAddress.setPreferred(address.getPreferred());
-        existingAddress.setAddress1(address.getAddress1());
-        existingAddress.setAddress2(address.getAddress2());
-        existingAddress.setAddress3(address.getAddress3());
-        existingAddress.setAddress4(address.getAddress4());
-        existingAddress.setAddress5(address.getAddress5());
-        existingAddress.setAddress6(address.getAddress6());
-        existingAddress.setCityVillage(address.getCityVillage());
-        existingAddress.setCountry(address.getCountry());
-        existingAddress.setStateProvince(address.getStateProvince());
-        existingAddress.setCountyDistrict(address.getCountyDistrict());
-        existingAddress.setPostalCode(address.getPostalCode());
-        existingAddress.setLatitude(address.getLatitude());
-        existingAddress.setLongitude(address.getLongitude());
-        existingAddress.setDateCreated(address.getDateCreated());
-    }
-
-    private static void setFirstAddressAsPreferred(List<PersonAddress> addresses) {
-        boolean hasPreferred = false;
-        for (PersonAddress address : addresses) {
-            if (address.isPreferred()) {
-                if (!hasPreferred) {
-                    hasPreferred = true;
-                } else {
-                    address.setPreferred(false);
-                }
-            }
-        }
-        if (!hasPreferred) {
-            addresses.iterator().next().setPreferred(true);
-        }
-    }
-
-    /**
-     * Overrides the base getAuditInfo(delegate) since the dateCreated for person should get personDateCreated attribute
-	 *
-     * @param person the delegate person
-     * @return audit information
-     * @throws Exception
-     */
-    @PropertyGetter("auditInfo")
-    public SimpleObject getAuditInfo(Person person) throws Exception {
-        SimpleObject ret = super.getAuditInfo(person);
-        ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
-        return ret;
-    }
+	
+	private static void copyNameFields(PersonName existingName, PersonName personName) {
+		existingName.setPreferred(personName.getPreferred());
+		existingName.setPrefix(personName.getPrefix());
+		existingName.setGivenName(personName.getGivenName());
+		existingName.setMiddleName(personName.getMiddleName());
+		existingName.setFamilyNamePrefix(personName.getFamilyNamePrefix());
+		existingName.setFamilyName(personName.getFamilyName());
+		existingName.setFamilyName2(personName.getFamilyName2());
+		existingName.setFamilyNameSuffix(personName.getFamilyNameSuffix());
+		existingName.setDegree(personName.getDegree());
+	}
+	
+	private static void setFirstNameAsPreferred(List<PersonName> personNames) {
+		boolean hasPreferred = false;
+		for (PersonName name : personNames) {
+			if (name.isPreferred()) {
+				if (!hasPreferred) {
+					hasPreferred = true;
+				} else {
+					name.setPreferred(false);
+				}
+			}
+		}
+		if (!hasPreferred) {
+			personNames.iterator().next().setPreferred(true);
+		}
+	}
+	
+	private static PersonName getMatchingName(PersonName personName, Set<PersonName> personNames) {
+		for (PersonName existingName : personNames) {
+			String uuid = personName.getUuid();
+			if (uuid != null && uuid.equals(existingName.getUuid())) {
+				return existingName;
+			}
+		}
+		return null;
+	}
+	
+	private static PersonAddress getMatchingAddress(PersonAddress personAddress, Set<PersonAddress> personAddresses) {
+		for (PersonAddress existingAddress : personAddresses) {
+			if (personAddress.getUuid().equals(existingAddress.getUuid())) {
+				return existingAddress;
+			}
+		}
+		return null;
+	}
+	
+	private static void copyAddressFields(PersonAddress existingAddress, PersonAddress address) {
+		existingAddress.setPreferred(address.getPreferred());
+		existingAddress.setAddress1(address.getAddress1());
+		existingAddress.setAddress2(address.getAddress2());
+		existingAddress.setAddress3(address.getAddress3());
+		existingAddress.setAddress4(address.getAddress4());
+		existingAddress.setAddress5(address.getAddress5());
+		existingAddress.setAddress6(address.getAddress6());
+		existingAddress.setCityVillage(address.getCityVillage());
+		existingAddress.setCountry(address.getCountry());
+		existingAddress.setStateProvince(address.getStateProvince());
+		existingAddress.setCountyDistrict(address.getCountyDistrict());
+		existingAddress.setPostalCode(address.getPostalCode());
+		existingAddress.setLatitude(address.getLatitude());
+		existingAddress.setLongitude(address.getLongitude());
+		existingAddress.setDateCreated(address.getDateCreated());
+	}
+	
+	private static void setFirstAddressAsPreferred(List<PersonAddress> addresses) {
+		boolean hasPreferred = false;
+		for (PersonAddress address : addresses) {
+			if (address.isPreferred()) {
+				if (!hasPreferred) {
+					hasPreferred = true;
+				} else {
+					address.setPreferred(false);
+				}
+			}
+		}
+		if (!hasPreferred) {
+			addresses.iterator().next().setPreferred(true);
+		}
+	}
+	
+	/**
+	 * Overrides the base getAuditInfo(delegate) since the dateCreated for person should get
+	 * personDateCreated attribute
+	 * 
+	 * @param person the delegate person
+	 * @return audit information
+	 * @throws Exception
+	 */
+	@PropertyGetter("auditInfo")
+	public SimpleObject getAuditInfo(Person person) throws Exception {
+		SimpleObject ret = super.getAuditInfo(person);
+		ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
+		return ret;
+	}
 }

@@ -1,6 +1,5 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -18,61 +17,62 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Map;
 
 public class ProgramResource1_10Test extends MainResourceControllerTest {
-
-    private ProgramWorkflowService service;
-
-    @Before
-    public void init() {
-        service = Context.getProgramWorkflowService();
-    }
-
-    @Override
-    public String getURI() {
-        return "program";
-    }
-
-    @Override
-    public String getUuid() {
-        return RestTestConstants1_8.PROGRAM_UUID;
-    }
-
-    @Override
-    public long getAllCount() {
-        return service.getAllPrograms(true).size();
-    }
-
-    @Test
-    public void shouldCreateAProgram() throws Exception {
-        long originalCount = getAllCount();
-
-        SimpleObject program = new SimpleObject();
-        program.add("name", "Program name");
-        program.add("description", "Program description");
-        program.add("concept", RestTestConstants1_8.CONCEPT_UUID);
-        program.add("outcomesConcept", RestTestConstants1_8.CONCEPT2_UUID );
-
-        String json = new ObjectMapper().writeValueAsString(program);
-
-        MockHttpServletRequest req = request(RequestMethod.POST, getURI());
-        req.setContent(json.getBytes());
-
-        SimpleObject newProgram = deserialize(handle(req));
-
-        Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-        Assert.assertEquals(RestTestConstants1_8.CONCEPT2_UUID, ((Map) PropertyUtils.getProperty(newProgram, "outcomesConcept")).get("uuid"));
-        Assert.assertEquals(originalCount + 1, getAllCount());
-    }
-
-    @Test
-    public void shouldGetAProgramByUuid() throws Exception {
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
-        SimpleObject result = deserialize(handle(req));
-
-        Program program = service.getProgramByUuid(getUuid());
-        Assert.assertNotNull(result);
-        Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
-        Assert.assertEquals(program.getOutcomesConcept(), PropertyUtils.getProperty(result, "outcomesConcept"));
-    }
-
+	
+	private ProgramWorkflowService service;
+	
+	@Before
+	public void init() {
+		service = Context.getProgramWorkflowService();
+	}
+	
+	@Override
+	public String getURI() {
+		return "program";
+	}
+	
+	@Override
+	public String getUuid() {
+		return RestTestConstants1_8.PROGRAM_UUID;
+	}
+	
+	@Override
+	public long getAllCount() {
+		return service.getAllPrograms(true).size();
+	}
+	
+	@Test
+	public void shouldCreateAProgram() throws Exception {
+		long originalCount = getAllCount();
+		
+		SimpleObject program = new SimpleObject();
+		program.add("name", "Program name");
+		program.add("description", "Program description");
+		program.add("concept", RestTestConstants1_8.CONCEPT_UUID);
+		program.add("outcomesConcept", RestTestConstants1_8.CONCEPT2_UUID);
+		
+		String json = new ObjectMapper().writeValueAsString(program);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newProgram = deserialize(handle(req));
+		
+		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
+		Assert.assertEquals(RestTestConstants1_8.CONCEPT2_UUID,
+		    ((Map) PropertyUtils.getProperty(newProgram, "outcomesConcept")).get("uuid"));
+		Assert.assertEquals(originalCount + 1, getAllCount());
+	}
+	
+	@Test
+	public void shouldGetAProgramByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		Program program = service.getProgramByUuid(getUuid());
+		Assert.assertNotNull(result);
+		Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
+		Assert.assertEquals(program.getOutcomesConcept(), PropertyUtils.getProperty(result, "outcomesConcept"));
+	}
+	
 }

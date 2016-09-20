@@ -31,43 +31,44 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomDatatypeRepresentation> {
-
+	
 	@Override
-    public CustomDatatypeRepresentation newDelegate() {
-	    return new CustomDatatypeRepresentation();
-    }
-
+	public CustomDatatypeRepresentation newDelegate() {
+		return new CustomDatatypeRepresentation();
+	}
+	
 	@Override
-    public CustomDatatypeRepresentation save(CustomDatatypeRepresentation delegate) {
+	public CustomDatatypeRepresentation save(CustomDatatypeRepresentation delegate) {
 		throw new ResourceDoesNotSupportOperationException();
-    }
-
+	}
+	
 	@Override
-    public CustomDatatypeRepresentation getByUniqueId(String uniqueId) {
+	public CustomDatatypeRepresentation getByUniqueId(String uniqueId) {
 		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();
 		for (CustomDatatypeRepresentation datatype : datatypes) {
-	        if (datatype.getUuid().equals(uniqueId)) {
-	        	return datatype;
-	        }
-        }
+			if (datatype.getUuid().equals(uniqueId)) {
+				return datatype;
+			}
+		}
 		return null;
-    }
-
+	}
+	
 	@Override
-    protected void delete(CustomDatatypeRepresentation delegate, String reason, RequestContext context)
-            throws ResponseException {
-	    throw new ResourceDoesNotSupportOperationException();
-    }
-
+	protected void delete(CustomDatatypeRepresentation delegate, String reason, RequestContext context)
+	        throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
 	@Override
-    public void purge(CustomDatatypeRepresentation delegate, RequestContext context) throws ResponseException {
-	    throw new ResourceDoesNotSupportOperationException();
-    }
-
+	public void purge(CustomDatatypeRepresentation delegate, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
 	@Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -94,44 +95,45 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 			return description;
 		}
 		return null;
-    }
+	}
 	
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();    
+		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();
 		
-	    return new NeedsPaging<CustomDatatypeRepresentation>(datatypes, context);
+		return new NeedsPaging<CustomDatatypeRepresentation>(datatypes, context);
 	}
-
+	
 	private List<CustomDatatypeRepresentation> getAllCustomDatatypes() {
-	    List<String> datatypeClassnames = CustomDatatypeUtil.getDatatypeClassnames();
+		List<String> datatypeClassnames = CustomDatatypeUtil.getDatatypeClassnames();
 		
 		List<CustomDatatypeRepresentation> datatypes = new ArrayList<CustomDatatypeRepresentation>();
 		
 		for (String datatypeClassname : datatypeClassnames) {
-	        CustomDatatypeRepresentation datatype = new CustomDatatypeRepresentation();
-	        datatypes.add(datatype);
-	        datatype.setDatatypeClassname(datatypeClassname);
-	        
-	        Class<CustomDatatype<?>> datatypeClass;
-	        try {
-	            datatypeClass = (Class<CustomDatatype<?>>) Context.loadClass(datatypeClassname);
-            }
-            catch (ClassNotFoundException e) {
-	            throw new ConversionException("Failed to load datatype class", e);
-            }
-	        
-	        List<Class<? extends CustomDatatypeHandler>> handlerClasses = Context.getDatatypeService().getHandlerClasses(datatypeClass);
-	        for (Class<? extends CustomDatatypeHandler> handlerClass : handlerClasses) {
-	            datatype.getHandlers().add(new CustomDatatypeHandlerRepresentation(datatype, handlerClass.getName()));
-            }
-        }
-	    return datatypes;
-    }
+			CustomDatatypeRepresentation datatype = new CustomDatatypeRepresentation();
+			datatypes.add(datatype);
+			datatype.setDatatypeClassname(datatypeClassname);
+			
+			Class<CustomDatatype<?>> datatypeClass;
+			try {
+				datatypeClass = (Class<CustomDatatype<?>>) Context.loadClass(datatypeClassname);
+			}
+			catch (ClassNotFoundException e) {
+				throw new ConversionException("Failed to load datatype class", e);
+			}
+			
+			List<Class<? extends CustomDatatypeHandler>> handlerClasses = Context.getDatatypeService().getHandlerClasses(
+			    datatypeClass);
+			for (Class<? extends CustomDatatypeHandler> handlerClass : handlerClasses) {
+				datatype.getHandlers().add(new CustomDatatypeHandlerRepresentation(datatype, handlerClass.getName()));
+			}
+		}
+		return datatypes;
+	}
 	
 	@Override
 	public String getResourceVersion() {
-	    return "1.9";
+		return "1.9";
 	}
 	
 }

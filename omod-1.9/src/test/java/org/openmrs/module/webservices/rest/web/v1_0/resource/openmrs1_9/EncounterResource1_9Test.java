@@ -43,7 +43,7 @@ public class EncounterResource1_9Test extends BaseDelegatingResourceTest<Encount
 		assertPropPresent("encounterType");
 		assertPropPresent("obs");
 		assertPropPresent("orders");
-        assertPropPresent("encounterProviders");
+		assertPropPresent("encounterProviders");
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("visit");
 		assertPropEquals("resourceVersion", "1.9");

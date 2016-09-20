@@ -35,14 +35,14 @@ import java.util.Map;
  * Tests functionality of Program CRUD by MainResourceController
  */
 public class ProgramController1_9Test extends MainResourceControllerTest {
-
+	
 	private ProgramWorkflowService service;
-
+	
 	@Before
 	public void init() {
 		service = Context.getProgramWorkflowService();
 	}
-
+	
 	/**
 	 * @see MainResourceControllerTest#getURI()
 	 */
@@ -50,7 +50,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	public String getURI() {
 		return "program";
 	}
-
+	
 	/**
 	 * @see MainResourceControllerTest#getAllCount()
 	 */
@@ -58,7 +58,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	public long getAllCount() {
 		return service.getAllPrograms(true).size();
 	}
-
+	
 	/**
 	 * @see MainResourceControllerTest#getUuid()
 	 */
@@ -66,7 +66,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	public String getUuid() {
 		return RestTestConstants1_8.PROGRAM_UUID;
 	}
-
+	
 	public String getName() {
 		return "MALARIA PROGRAM";
 	}
@@ -113,7 +113,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		program.add("name", "Program name");
 		program.add("description", "Program description");
 		program.add("concept", RestTestConstants1_8.CONCEPT_UUID);
-
+		
 		String json = new ObjectMapper().writeValueAsString(program);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
@@ -122,7 +122,8 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject newProgram = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID, ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
+		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID,
+		    ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
@@ -139,7 +140,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(editedProgram);
 		Assert.assertEquals(editedName, editedProgram.getName());
 	}
-
+	
 	@Test
 	public void shouldRetireAProgram() throws Exception {
 		
@@ -166,7 +167,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		Assert.assertNull(service.getProgram(3));
 	}
-
+	
 	@Test
 	public void shouldSearchAndReturnAListOfProgramsMatchingTheQueryString() throws Exception {
 		
@@ -178,5 +179,5 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getProgram(3).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
-
+	
 }

@@ -59,44 +59,45 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldAddConceptAttributeToPerson() throws Exception {
-        executeDataSet("personAttributeTypeWithConcept.xml");
-        
+		executeDataSet("personAttributeTypeWithConcept.xml");
+		
 		int before = service.getPersonByUuid(personUuid).getAttributes().size();
 		
-        String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
+		String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
 		handle(newPostRequest(getURI(), json));
-        
-        Set<PersonAttribute> attributes = service.getPersonByUuid(personUuid).getAttributes();
-        int after = attributes.size();
+		
+		Set<PersonAttribute> attributes = service.getPersonByUuid(personUuid).getAttributes();
+		int after = attributes.size();
 		assertThat(after, is(before + 1));
-
-        assertThat(getLastPersonAttribute(attributes).getValue(), is("102"));
+		
+		assertThat(getLastPersonAttribute(attributes).getValue(), is("102"));
 	}
 	
 	@Test
 	public void shouldRenderHydratedAttributable() throws Exception {
-        executeDataSet("personAttributeTypeWithConcept.xml");
-
-        String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
-        String postResponse = handle(newPostRequest(getURI(), json)).getContentAsString();
-        SimpleObject postResponseObject = new ObjectMapper().readValue(postResponse, SimpleObject.class);
-
-        String getResponse = handle(newGetRequest(getURI() + "/" + postResponseObject.get("uuid"), new Parameter("v", "full"))).getContentAsString();
-        SimpleObject getResponseObject = new ObjectMapper().readValue(getResponse, SimpleObject.class);
-
-        assertThat(getResponseObject.get("hydratedObject"), not(is(nullValue())));
+		executeDataSet("personAttributeTypeWithConcept.xml");
+		
+		String json = "{ \"hydratedObject\":\"f102c80f-1yz9-4da3-bb88-8122ce8868dd\", \"attributeType\":\"55e6ce9e-25bf-11e3-a013-3c0754156a5d\"}";
+		String postResponse = handle(newPostRequest(getURI(), json)).getContentAsString();
+		SimpleObject postResponseObject = new ObjectMapper().readValue(postResponse, SimpleObject.class);
+		
+		String getResponse = handle(
+		    newGetRequest(getURI() + "/" + postResponseObject.get("uuid"), new Parameter("v", "full"))).getContentAsString();
+		SimpleObject getResponseObject = new ObjectMapper().readValue(getResponse, SimpleObject.class);
+		
+		assertThat(getResponseObject.get("hydratedObject"), not(is(nullValue())));
 	}
-
-    private PersonAttribute getLastPersonAttribute(Set<PersonAttribute> attributes) {
-        PersonAttribute personAttribute = null;
-        Iterator<PersonAttribute> iterator = attributes.iterator();
-        while (iterator.hasNext()) {
-            personAttribute = iterator.next();
-        }
-        return personAttribute;
-    }
-
-    @Test
+	
+	private PersonAttribute getLastPersonAttribute(Set<PersonAttribute> attributes) {
+		PersonAttribute personAttribute = null;
+		Iterator<PersonAttribute> iterator = attributes.iterator();
+		while (iterator.hasNext()) {
+			personAttribute = iterator.next();
+		}
+		return personAttribute;
+	}
+	
+	@Test
 	public void shouldEditAttribute() throws Exception {
 		String json = "{ \"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }";
 		
@@ -127,19 +128,19 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 		
 		assertThat(service.getPersonAttributeByUuid(getUuid()), nullValue());
 	}
-
+	
 	@Test
 	public void shouldSupportLocationPersonAttribute() throws Exception {
 		String personAttributeTypeJson = "{\"name\": \"location\", \"description\": \"Points to a location\", \"format\": \"org.openmrs.Location\"}";
 		SimpleObject personAttributeType = deserialize(handle(newPostRequest("personattributetype", personAttributeTypeJson)));
 		String personAttributeTypeUuid = (String) personAttributeType.get("uuid");
 		assertThat(personAttributeTypeUuid, is(notNullValue()));
-
+		
 		String personAttributeJson = "{ \"attributeType\":\"" + personAttributeTypeUuid + "\", \"value\":\"1\"}"; //We should be able to pass UUID, see RESTWS-398
 		SimpleObject personAttribute = deserialize(handle(newPostRequest(getURI(), personAttributeJson)));
-
+		
 		Map<String, Object> value = (Map<String, Object>) personAttribute.get("value");
-
+		
 		assertThat(value.get("uuid"), is(notNullValue()));
 		assertThat((String) value.get("display"), is("Unknown Location"));
 		assertThat(value.get("links"), is(notNullValue()));

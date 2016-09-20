@@ -51,7 +51,7 @@ public class DrugIngredientResource1_11Test extends BaseDelegatingResourceTest<D
 	public String getUuidProperty() {
 		return "e322c90c-7cd9-4e25-bdff-f21d387759b6";
 	}
-
+	
 	@Override
 	public String getDisplayProperty() {
 		return "COUGH SYRUP";

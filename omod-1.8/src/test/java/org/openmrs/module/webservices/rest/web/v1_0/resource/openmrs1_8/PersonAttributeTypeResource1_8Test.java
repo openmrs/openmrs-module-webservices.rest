@@ -20,14 +20,14 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonAttributeTypeResource1_8Test extends BaseDelegatingResourceTest<PersonAttributeTypeResource1_8, PersonAttributeType> {
-
-    private static final String ACTIVE_LIST_INITIAL_XML = "personAttributeTypeWithConcept.xml";
-
-    @Before
-    public void init() throws Exception {
-        executeDataSet(ACTIVE_LIST_INITIAL_XML);
-    }
-
+	
+	private static final String ACTIVE_LIST_INITIAL_XML = "personAttributeTypeWithConcept.xml";
+	
+	@Before
+	public void init() throws Exception {
+		executeDataSet(ACTIVE_LIST_INITIAL_XML);
+	}
+	
 	@Override
 	public PersonAttributeType newObject() {
 		return Context.getPersonService().getPersonAttributeTypeByUuid(getUuidProperty());

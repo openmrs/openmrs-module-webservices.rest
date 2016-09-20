@@ -22,7 +22,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ObsResource1_9;
 
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 1, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 1, supportedClass = Obs.class, supportedOpenmrsVersions = {
+        "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class ObsResource1_11 extends ObsResource1_9 {
 	
 	/**
@@ -31,7 +32,7 @@ public class ObsResource1_11 extends ObsResource1_9 {
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-		if (description != null) {		
+		if (description != null) {
 			description.addProperty("formFieldPath");
 			description.addProperty("formFieldNamespace");
 		}
@@ -48,12 +49,12 @@ public class ObsResource1_11 extends ObsResource1_9 {
 		description.addProperty("formFieldNamespace");
 		return description;
 	}
-    
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
 	public String getResourceVersion() {
-	    return RestConstants1_11.RESOURCE_VERSION;
+		return RestConstants1_11.RESOURCE_VERSION;
 	}
 }

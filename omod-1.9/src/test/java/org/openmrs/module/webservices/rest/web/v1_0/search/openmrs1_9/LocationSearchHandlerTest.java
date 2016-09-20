@@ -30,70 +30,70 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 public class LocationSearchHandlerTest extends MainResourceControllerTest {
-
-    private LocationService service;
-
-    private static final String LOCATION_TAG_INITIAL_XML = "customLocationTagDataset.xml";
-
-    @Before
-    public void init() throws Exception {
-        service = Context.getLocationService();
-        executeDataSet(LOCATION_TAG_INITIAL_XML);
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
-     */
-    @Override
-    public String getURI() {
-        return "location";
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
-     */
-    @Override
-    public long getAllCount() {
-        return service.getAllLocations(false).size();
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
-     */
-    @Override
-    public String getUuid() {
-        return RestTestConstants1_8.LOCATION_UUID;
-    }
-
-    /**
-     * @verifies return location by tag uuid
-     * @see LocationSearchHandler#getSearchConfig()
-     */
-    @Test
-    public void getSearchConfig_shouldReturnLocationByTagUuid() throws Exception {
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("tag", "0940c6d4-47ed-11df-bc8b-001e378eb67e");
-
-        SimpleObject result = deserialize(handle(req));
-        List<Object> hits = (List<Object>) result.get("results");
-        Assert.assertEquals(2, hits.size());
-        List<Location> locations = service.getAllLocations();
-        Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
-        Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(1), "uuid"));
-    }
-
-    /**
-     * @verifies return location by tag name
-     * @see LocationSearchHandler#getSearchConfig()
-     */
-    @Test
-    public void getSearchConfig_shouldReturnLocationByTagName() throws Exception {
-        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-        req.addParameter("tag", "General Hospital");
-
-        SimpleObject result = deserialize(handle(req));
-        List<Object> hits = (List<Object>) result.get("results");
-        Assert.assertEquals(1, hits.size());
-        Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
-    }
+	
+	private LocationService service;
+	
+	private static final String LOCATION_TAG_INITIAL_XML = "customLocationTagDataset.xml";
+	
+	@Before
+	public void init() throws Exception {
+		service = Context.getLocationService();
+		executeDataSet(LOCATION_TAG_INITIAL_XML);
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "location";
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		return service.getAllLocations(false).size();
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return RestTestConstants1_8.LOCATION_UUID;
+	}
+	
+	/**
+	 * @verifies return location by tag uuid
+	 * @see LocationSearchHandler#getSearchConfig()
+	 */
+	@Test
+	public void getSearchConfig_shouldReturnLocationByTagUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("tag", "0940c6d4-47ed-11df-bc8b-001e378eb67e");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(2, hits.size());
+		List<Location> locations = service.getAllLocations();
+		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(1), "uuid"));
+	}
+	
+	/**
+	 * @verifies return location by tag name
+	 * @see LocationSearchHandler#getSearchConfig()
+	 */
+	@Test
+	public void getSearchConfig_shouldReturnLocationByTagName() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("tag", "General Hospital");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(1, hits.size());
+		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+	}
 }

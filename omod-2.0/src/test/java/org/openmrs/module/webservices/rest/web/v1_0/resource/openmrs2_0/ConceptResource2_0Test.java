@@ -24,18 +24,18 @@ public class ConceptResource2_0Test extends BaseDelegatingResourceTest<ConceptRe
 	public Concept newObject() {
 		return Context.getConceptService().getConceptByUuid(getUuidProperty());
 	}
-
+	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
 		assertPropPresent("attributes");
 	}
-
+	
 	@Override
 	public String getDisplayProperty() {
 		return "CD4 COUNT";
 	}
-
+	
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants1_8.CONCEPT_NUMERIC_UUID;

@@ -36,7 +36,8 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	
 	@Override
 	public UserAndPassword1_8 newObject() {
-		UserAndPassword1_8 userAndPassword = new UserAndPassword1_8(Context.getUserService().getUserByUuid(getUuidProperty()));
+		UserAndPassword1_8 userAndPassword = new UserAndPassword1_8(Context.getUserService()
+		        .getUserByUuid(getUuidProperty()));
 		userAndPassword.setPassword("topsecret");
 		return userAndPassword;
 	}
@@ -78,34 +79,35 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		return RestTestConstants1_8.USER_UUID;
 	}
 	
-    /**
-     * @see {@link https://issues.openmrs.org/browse/RESTWS-490}
-     * @throws Exception
-     */
-    @SuppressWarnings("unchecked")
+	/**
+	 * @see {@link https://issues.openmrs.org/browse/RESTWS-490}
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
 	@Test
-    public void testCorrectResourceForUser() throws Exception {
-    	// prepare
-        final MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter("q", ""); // query for all
-        final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
-
-        // search
-        final SimpleObject simple = getResource().search(context);
-        final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
-        
-        // verify
-        Assert.assertFalse("A non-empty list is expected.", results.isEmpty());
-        for (SimpleObject result : results) {
-            final String selfLink = findSelfLink(result);
-            Assert.assertTrue( "Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
-        }
-    }
-    
+	public void testCorrectResourceForUser() throws Exception {
+		// prepare
+		final MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("q", ""); // query for all
+		final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
+		
+		// search
+		final SimpleObject simple = getResource().search(context);
+		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
+		
+		// verify
+		Assert.assertFalse("A non-empty list is expected.", results.isEmpty());
+		for (SimpleObject result : results) {
+			final String selfLink = findSelfLink(result);
+			Assert.assertTrue("Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
+		}
+	}
+	
 	/**
 	 * Assert that a search with the given parameters returns an expected number of results.
+	 * 
 	 * @param userName The user name to search for.
-	 * @param roles The roles to search for. 
+	 * @param roles The roles to search for.
 	 * @param expectedResultCount The expected result count for the given search parameters.
 	 * @throws ResponseException
 	 */
@@ -126,13 +128,14 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
 		
 		// verify
-		final String errorMessage = "Number of results does not match for: userName=" + userName + ", roles=" + roles + ", Results="
-		        + results;
+		final String errorMessage = "Number of results does not match for: userName=" + userName + ", roles=" + roles
+		        + ", Results=" + results;
 		Assert.assertEquals(errorMessage, expectedResultCount, results.size());
-    }
-    
+	}
+	
 	/**
 	 * Test searching users by user name.
+	 * 
 	 * @see {@link https://issues.openmrs.org/browse/RESTWS-490}
 	 * @throws Exception
 	 */
@@ -140,7 +143,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	public void testSearchingByUser() {
 		// all users
 		assertSearch("", null, 3);
-
+		
 		// full name
 		assertSearch("admin", null, 1);
 		assertSearch("butch", null, 1);
@@ -154,6 +157,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	
 	/**
 	 * Test searching users by role.
+	 * 
 	 * @see {@link https://issues.openmrs.org/browse/RESTWS-490}
 	 * @throws Exception
 	 */
@@ -171,15 +175,16 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		assertSearch("", Arrays.asList("0e43640b-67d1-4458-b47f-b64fd8ce4b0d", "Provider"), 2);
 		
 		// no roles
-		assertSearch("", Arrays.<String>asList(), 0);
+		assertSearch("", Arrays.<String> asList(), 0);
 		assertSearch("", Arrays.asList("NoRole"), 0);
 		
 		// no prefix searching
-		assertSearch("", Arrays.asList("System"), 0); 
+		assertSearch("", Arrays.asList("System"), 0);
 	}
 	
 	/**
 	 * Test searching users by a combination of user name and role.
+	 * 
 	 * @see {@link https://issues.openmrs.org/browse/RESTWS-490}
 	 * @throws Exception
 	 */
@@ -187,11 +192,11 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	public void testSearchingByUserAndRole() {
 		// valid combination
 		assertSearch("admin", Arrays.asList("System Developer"), 1);
-
+		
 		// only name matches
 		assertSearch("admin", Arrays.asList("Provider"), 0);
 		assertSearch("admin", Arrays.asList("DoesNotExist"), 0);
-
+		
 		// only role matches
 		assertSearch("doesNotExist", Arrays.asList("System Developer"), 0);
 	}

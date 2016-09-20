@@ -23,13 +23,13 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 public class ActiveListTypeResource1_8Test extends BaseModuleWebContextSensitiveTest {
-
+	
 	@Autowired
 	private MainResourceController mainResourceController;
-
+	
 	@Mock
 	private OrderService orderService;
-
+	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void testResourceDoesNotSupportOperationException() {
 		MockHttpServletResponse response = new MockHttpServletResponse();

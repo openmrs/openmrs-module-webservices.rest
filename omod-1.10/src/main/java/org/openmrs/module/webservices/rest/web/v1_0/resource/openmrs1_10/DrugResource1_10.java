@@ -29,7 +29,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugReso
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Drug},
  * supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/drug", order = 3, supportedClass = Drug.class, supportedOpenmrsVersions = {"1.10.*"})
+@Resource(name = RestConstants.VERSION_1 + "/drug", order = 3, supportedClass = Drug.class, supportedOpenmrsVersions = { "1.10.*" })
 public class DrugResource1_10 extends DrugResource1_8 {
 	
 	/**
@@ -42,15 +42,14 @@ public class DrugResource1_10 extends DrugResource1_8 {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		 DelegatingResourceDescription repDesc = super.getRepresentationDescription(rep);
-		 if(rep instanceof DefaultRepresentation){
-			 repDesc.addProperty("strength");
-		 } else if(rep instanceof FullRepresentation){
-			 repDesc.addProperty("strength");
-		 }
-		 return repDesc;
+		DelegatingResourceDescription repDesc = super.getRepresentationDescription(rep);
+		if (rep instanceof DefaultRepresentation) {
+			repDesc.addProperty("strength");
+		} else if (rep instanceof FullRepresentation) {
+			repDesc.addProperty("strength");
+		}
+		return repDesc;
 	}
-	
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {

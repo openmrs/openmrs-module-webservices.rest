@@ -191,37 +191,36 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-     *
-     * A query string and/or a tag uuid can be passed in; if both are passed in, returns an intersection of the results; excludes retired locations
+	 *      A query string and/or a tag uuid can be passed in; if both are passed in, returns an
+	 *      intersection of the results; excludes retired locations
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
-
-        LocationService locationService = Context.getLocationService();
-
-        String tagUuid = context.getParameter("tag");
-        String query = context.getParameter("q");
-
-        List<Location> locationsByTag = null;
-        List<Location> locationsByQuery = null;
-
-        if (tagUuid != null) {
-            LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
-            locationsByTag = locationService.getLocationsByTag(locationTag);
-        }
-
-        if (query != null) {
-            locationsByQuery = locationService.getLocations(query);
-        }
-
-        if (locationsByTag == null) {
-            return new NeedsPaging<Location> (locationsByQuery, context);
-        }
-        else if (locationsByQuery == null) {
-            return new NeedsPaging<Location>(locationsByTag, context);
-        }
-        else {
-            return new NeedsPaging<Location>((List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
-        }
+		
+		LocationService locationService = Context.getLocationService();
+		
+		String tagUuid = context.getParameter("tag");
+		String query = context.getParameter("q");
+		
+		List<Location> locationsByTag = null;
+		List<Location> locationsByQuery = null;
+		
+		if (tagUuid != null) {
+			LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
+			locationsByTag = locationService.getLocationsByTag(locationTag);
+		}
+		
+		if (query != null) {
+			locationsByQuery = locationService.getLocations(query);
+		}
+		
+		if (locationsByTag == null) {
+			return new NeedsPaging<Location>(locationsByQuery, context);
+		} else if (locationsByQuery == null) {
+			return new NeedsPaging<Location>(locationsByTag, context);
+		} else {
+			return new NeedsPaging<Location>(
+			        (List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
+		}
 	}
 }

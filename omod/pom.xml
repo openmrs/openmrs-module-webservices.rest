@@ -106,10 +106,6 @@
 				<artifactId>maven-openmrs-plugin</artifactId>
 			</plugin>
             <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-            </plugin>
-            <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
 			</plugin>

@@ -41,7 +41,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.CohortMem
 /**
  * Sub-resource for cohort members
  */
-@SubResource(parent = CohortResource1_8.class, path = "member", supportedClass = CohortMember1_8.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@SubResource(parent = CohortResource1_8.class, path = "member", supportedClass = CohortMember1_8.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1_8, Cohort, CohortResource1_8> {
 	
 	/**
@@ -224,6 +225,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	
 	/**
 	 * Overridden here since the unique id is not on CohortMember directly
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUniqueId(java.lang.Object)
 	 */
 	@Override
@@ -250,14 +252,14 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 		ret.add(asRepresentation(member, rep));
 	return ret;
 	}*/
-
+	
 	/**
 	 * @param member the patient
 	 * @return string that contains cohort member's identifier and full name
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(CohortMember1_8 member) {
-
+		
 		if (member.getPatient().getPatientIdentifier() == null)
 			return "";
 		

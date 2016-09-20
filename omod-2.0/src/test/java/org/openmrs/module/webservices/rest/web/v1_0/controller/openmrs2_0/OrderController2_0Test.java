@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class OrderController2_0Test extends MainResourceControllerTest {
-
+	
 	protected static final String ORDER_ENTRY_DATASET_XML = "org/openmrs/api/include/OrderEntryIntegrationTest-other.xml";
 	
 	private final static String PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
@@ -57,16 +57,16 @@ public class OrderController2_0Test extends MainResourceControllerTest {
 	public String getURI() {
 		return "order";
 	}
-
+	
 	@Override
 	public String getUuid() {
 		return RestTestConstants1_10.ORDER_UUID;
 	}
-
+	
 	@Override
 	public long getAllCount() {
 		return 0;
-	}	
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#shouldGetAll()

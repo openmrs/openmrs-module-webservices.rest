@@ -55,10 +55,10 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	public long getAllCount() {
 		int count = 0;
 		for (VisitAttributeType type : service.getAllVisitAttributeTypes()) {
-	        if (!type.isRetired()) {
-	        	count++;
-	        }
-        }
+			if (!type.isRetired()) {
+				count++;
+			}
+		}
 		return count;
 	}
 	

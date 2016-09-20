@@ -31,12 +31,13 @@ import java.util.List;
 /**
  * {@link Resource} for ConceptAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = ConceptResource2_0.class, path = "attribute", supportedClass = ConceptAttribute.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@SubResource(parent = ConceptResource2_0.class, path = "attribute", supportedClass = ConceptAttribute.class, supportedOpenmrsVersions = {
+        "2.0.*", "2.1.*" })
 public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<ConceptAttribute, Concept, ConceptResource2_0> {
-
+	
 	/**
 	 * Sets attributeType on the given ConceptAttribute.
-	 *
+	 * 
 	 * @param instance
 	 * @param attr
 	 */
@@ -44,7 +45,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public static void setAttributeType(ConceptAttribute instance, ConceptAttributeType attr) {
 		instance.setAttributeType(attr);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(Object)
 	 */
@@ -52,7 +53,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public Concept getParent(ConceptAttribute instance) {
 		return instance.getConcept();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -60,7 +61,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public ConceptAttribute newDelegate() {
 		return new ConceptAttribute();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(Object,
 	 *      Object)
@@ -69,7 +70,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public void setParent(ConceptAttribute instance, Concept concept) {
 		instance.setConcept(concept);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(String)
 	 */
@@ -77,7 +78,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public ConceptAttribute getByUniqueId(String uniqueId) {
 		return Context.getConceptService().getConceptAttributeByUuid(uniqueId);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#doGetAll(Object,
 	 *      RequestContext)
@@ -86,7 +87,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public NeedsPaging<ConceptAttribute> doGetAll(Concept parent, RequestContext context) throws ResponseException {
 		return new NeedsPaging<ConceptAttribute>((List<ConceptAttribute>) parent.getActiveAttributes(), context);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(Object)
 	 */
@@ -106,7 +107,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 		Context.getConceptService().saveConcept(delegate.getConcept());
 		return delegate;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(Object,
 	 *      String, RequestContext)
@@ -117,7 +118,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 		delegate.setVoidReason(reason);
 		Context.getConceptService().saveConcept(delegate.getConcept());
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(Object,
 	 *      RequestContext)
@@ -126,7 +127,7 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public void purge(ConceptAttribute delegate, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("Cannot purge ConceptAttribute");
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -134,5 +135,5 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public String getResourceVersion() {
 		return "2.0";
 	}
-
+	
 }

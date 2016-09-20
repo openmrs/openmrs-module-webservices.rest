@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 public class DrugIngredientController1_11Test extends MainResourceControllerTest {
-
+	
 	String drugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
 	
 	String drugUuid2 = "05ec820a-d297-44e3-be6e-698531d9dd3f";
@@ -41,12 +41,12 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 	public String getURI() {
 		return "drug/" + drugUuid + "/ingredient";
 	}
-
+	
 	@Override
 	public String getUuid() {
 		return ingredientUuid;
 	}
-
+	
 	@Override
 	public long getAllCount() {
 		return service.getDrugByUuid(drugUuid).getIngredients().size();
@@ -77,7 +77,7 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 		Assert.assertEquals(1, resultsList.size());
 		List<Object> ingredients = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "ingredient"));
 		
-		Assert.assertEquals(((Map)ingredients.get(0)).get("display"), "ASPIRIN");
-		Assert.assertEquals(((Map)ingredients.get(0)).get("uuid"), "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		Assert.assertEquals(((Map) ingredients.get(0)).get("display"), "ASPIRIN");
+		Assert.assertEquals(((Map) ingredients.get(0)).get("uuid"), "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 	}
 }

@@ -37,7 +37,8 @@ import java.util.List;
 /**
  * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptreferenceterm", supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/conceptreferenceterm", supportedClass = ConceptReferenceTerm.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResource<ConceptReferenceTerm> {
 	
 	/**
@@ -99,7 +100,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		if (delegate.getConceptSource() == null) {
 			return "";
 		}
-		String display =  delegate.getConceptSource().getName() + ": " + delegate.getCode();
+		String display = delegate.getConceptSource().getName() + ": " + delegate.getCode();
 		
 		if (!StringUtils.isBlank(delegate.getName())) {
 			display += " (" + delegate.getName() + ")";

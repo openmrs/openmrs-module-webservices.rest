@@ -31,8 +31,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PatientA
 import java.util.LinkedHashMap;
 
 /**
- * An implementation of Converter to be able to create a representation from a AllergyReaction
- * when AllergyReaction is used in another resource. 
+ * An implementation of Converter to be able to create a representation from a AllergyReaction when
+ * AllergyReaction is used in another resource.
  */
 @Handler(supports = AllergyReaction.class, order = 0)
 public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<AllergyReaction> {
@@ -45,8 +45,7 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 	 * @return
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep)
-	{
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		if (rep instanceof DefaultRepresentation) {
 			description.addProperty("reaction", Representation.REF);
@@ -75,13 +74,15 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T, org.openmrs.module.webservices.rest.web.representation.Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T,
+	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public SimpleObject asRepresentation(AllergyReaction instance, Representation rep) throws ConversionException {
 		SimpleObject allergenReactionObject = new SimpleObject();
 		Concept reaction = instance.getReaction();
-		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class).getResourceBySupportedClass(Concept.class);
+		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Concept.class);
 		allergenReactionObject.add("reaction", conceptResource.asRepresentation(reaction, rep));
 		allergenReactionObject.add("reactionNonCoded", instance.getReactionNonCoded());
 		return allergenReactionObject;

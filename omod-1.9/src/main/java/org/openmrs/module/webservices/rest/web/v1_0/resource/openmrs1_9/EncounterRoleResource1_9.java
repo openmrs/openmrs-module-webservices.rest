@@ -26,10 +26,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link EncounterRole}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/encounterrole", supportedClass = EncounterRole.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
-
+@Resource(name = RestConstants.VERSION_1 + "/encounterrole", supportedClass = EncounterRole.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<EncounterRole> {
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -50,7 +50,7 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 	public EncounterRole newDelegate() {
 		return new EncounterRole();
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */

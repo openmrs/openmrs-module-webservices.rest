@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ObsResource1_11Test extends BaseDelegatingResourceTest<ObsResource1_11, Obs> {
-
+	
 	@Override
 	public Obs newObject() {
 		return Context.getObsService().getObsByUuid(getUuidProperty());

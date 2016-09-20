@@ -29,7 +29,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests functionality of {@link LocationTagController}. 
+ * Tests functionality of {@link LocationTagController}.
  */
 public class LocationTagController1_8Test extends MainResourceControllerTest {
 	

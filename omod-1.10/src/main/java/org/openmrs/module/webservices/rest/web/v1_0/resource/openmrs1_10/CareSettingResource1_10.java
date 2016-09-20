@@ -34,7 +34,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
  * {@link org.openmrs.CareSetting}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/caresetting", supportedClass = CareSetting.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/caresetting", supportedClass = CareSetting.class, supportedOpenmrsVersions = {
+        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<CareSetting> {
 	
 	/**

@@ -122,7 +122,6 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
-	
 	@Test
 	public void shouldIncludeStrengthInDefaultRepresentation() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);

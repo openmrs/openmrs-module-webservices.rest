@@ -115,9 +115,9 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	@Override
 	public Encounter newDelegate() {
 		Encounter enc = new Encounter();
-        // default to now(), so a web client can create a real-time encounter based on the server time
-        enc.setEncounterDatetime(new Date());
-        // As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
+		// default to now(), so a web client can create a real-time encounter based on the server time
+		enc.setEncounterDatetime(new Date());
+		// As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
 		enc.setOrders(new LinkedHashSet<Order>());
 		return enc;
 	}

@@ -28,13 +28,13 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientR
 @SubResource(parent = PatientResource1_9.class, path = "allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {
         "2.0.*", "2.1.*" })
 public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Patient, PatientResource1_9> {
-
+	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
-			description.addProperty("uuid"); 
+			description.addProperty("uuid");
 			description.addProperty("allergen", Representation.REF);
 			description.addProperty("severity", Representation.REF);
 			description.addProperty("comment");
@@ -46,7 +46,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
-			description.addProperty("uuid"); 
+			description.addProperty("uuid");
 			description.addProperty("allergen", Representation.DEFAULT);
 			description.addProperty("severity", Representation.DEFAULT);
 			description.addProperty("comment");
@@ -59,7 +59,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -72,7 +72,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		description.addProperty("reactions");
 		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -80,7 +80,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -88,7 +88,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public Patient getParent(Allergy instance) {
 		return instance.getPatient();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -97,13 +97,13 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public void setParent(Allergy instance, Patient patient) {
 		instance.setPatient(patient);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 *  @should return 404 status if Allergy Status is UNKNOWN
-	 *  @should return empty list if Allergy Status is NO_KNOWN_ALLERGIES
-	 *  @should throw new ResourceDoesNotSupportOperationException if patient is null
+	 * @should return 404 status if Allergy Status is UNKNOWN
+	 * @should return empty list if Allergy Status is NO_KNOWN_ALLERGIES
+	 * @should throw new ResourceDoesNotSupportOperationException if patient is null
 	 */
 	@Override
 	public NeedsPaging<Allergy> doGetAll(Patient parent, RequestContext context) throws ResponseException {
@@ -120,13 +120,12 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 				// return list
 				allergiesList.addAll(allergies);
 			}
-		}
-		else {
+		} else {
 			throw new ResourceDoesNotSupportOperationException();
 		}
 		return new NeedsPaging<Allergy>(allergiesList, context);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
@@ -134,7 +133,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public Allergy getByUniqueId(String uuid) {
 		return Context.getPatientService().getAllergyByUuid(uuid);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -143,13 +142,15 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public void delete(Allergy allergy, String reason, RequestContext context) throws ResponseException {
 		Context.getPatientService().voidAllergy(allergy, reason);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
-	 *      java.lang.String, java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
-	 *  DELETE /patient/UUID/allergy/ALLERGYUUID means to delete one allergy from patient
-	 *  DELETE /patient/UUID/allergy/ means to delete all allergies from patient, back to Unknown Allergies state
-	 */	
+	 *      java.lang.String, java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext) DELETE
+	 *      /patient/UUID/allergy/ALLERGYUUID means to delete one allergy from patient DELETE
+	 *      /patient/UUID/allergy/ means to delete all allergies from patient, back to Unknown
+	 *      Allergies state
+	 */
 	@Override
 	public void delete(String parentUniqueId, String uuid, String reason, RequestContext context) throws ResponseException {
 		if (parentUniqueId != null && uuid != null) {
@@ -195,7 +196,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		Context.getPatientService().saveAllergy(newAllergy);
 		return Context.getPatientService().getAllergyByUuid(newAllergy.getUuid());
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -203,10 +204,10 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public Allergy newDelegate() {
 		return new Allergy();
 	}
-
+	
 	/**
 	 * Gets the display string for a person name.
-	 *
+	 * 
 	 * @param Allergy the allergy object.
 	 * @return the display string.
 	 */
@@ -220,11 +221,12 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResourcep[ut(java.lang.String, SimpleObject, RequestContext)
-	 * PUT /patient/{patient_uuid}/allergy sets allergyStatus of patient to Allergies.NO_KNOWN_ALLERGIES
-	 *  @should throw new ObjectNotFoundException if patient does not exist
-	 *  @should throw new ResourceDoesNotSupportOperationException if post body is not empty
-	 *  @should throw new ResourceDoesNotSupportOperationException if patient has any allergies
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResourcep
+	 *      [ut(java.lang.String, SimpleObject, RequestContext) PUT /patient/{patient_uuid}/allergy
+	 *      sets allergyStatus of patient to Allergies.NO_KNOWN_ALLERGIES
+	 * @should throw new ObjectNotFoundException if patient does not exist
+	 * @should throw new ResourceDoesNotSupportOperationException if post body is not empty
+	 * @should throw new ResourceDoesNotSupportOperationException if patient has any allergies
 	 */
 	@Override
 	public void put(String parentUniqueId, SimpleObject post, RequestContext context) throws ResponseException {
@@ -233,7 +235,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			throw new ObjectNotFoundException();
 		}
 		
-		if (post.size() != 0)  {
+		if (post.size() != 0) {
 			// not allowed to actually post any data
 			throw new ResourceDoesNotSupportOperationException();
 		}
@@ -243,7 +245,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			// not allowed unless patient has no allergies
 			throw new ResourceDoesNotSupportOperationException();
 		}
-				
+		
 		allergies.confirmNoKnownAllergies(); // set allergyStatus to Allergies.NO_KNOWN_ALLERGIES
 		Context.getPatientService().setAllergies(patient, allergies);
 	}

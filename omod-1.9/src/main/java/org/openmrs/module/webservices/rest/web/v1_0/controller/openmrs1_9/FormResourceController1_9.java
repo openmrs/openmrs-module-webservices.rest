@@ -18,48 +18,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller("webservices.rest.formResourceController")
-@RequestMapping(value="/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")
 public class FormResourceController1_9 extends MainResourceController {
-    @Autowired
-    private ClobDatatypeStorageController clobDatatypeStorageController;
-
-    @Autowired
-    private FormService formService;
-
-    @RequestMapping(value="/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value",
-                    method = RequestMethod.POST, headers = {"Content-Type=multipart/form-data"})
-    @ResponseBody
-    public Object createResourceValue(@PathVariable("uuid") String formUuid,
-                                      @PathVariable("resourceUuid") String resourceUuid,
-                                      @RequestParam("value") MultipartFile file,
-                                      HttpServletRequest request, HttpServletResponse response) throws Exception{
-
-        //Get the resource
-        FormResource resource = formService.getFormResourceByUuid(resourceUuid);
-        if(resource == null) {
-            throw new IllegalArgumentException("No form resource with uuid " + resourceUuid + " found");
-        }
-
-        String clobUuid = clobDatatypeStorageController.create(file, request, response);
-
-        resource.setValueReferenceInternal(clobUuid);
-        formService.saveFormResource(resource);
-
-        return new FormResourceResource1_9().asDefaultRep(resource);
-    }
-
-    @RequestMapping(value="/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value",
-            method = RequestMethod.GET)
-    public void getResourceValue(@PathVariable("uuid") String formUuid,
-                                      @PathVariable("resourceUuid") String resourceUuid,
-                                      HttpServletRequest request, HttpServletResponse response) throws Exception{
-        //Get the resource
-        FormResource resource = formService.getFormResourceByUuid(resourceUuid);
-        if(resource == null) {
-            throw new IllegalArgumentException("No form resource with uuid " + resourceUuid + " found");
-        }
-        clobDatatypeStorageController.retrieve(resource.getValueReference(), request, response);
-
-        response.setHeader("Content-Disposition", "attachment;filename=\""+resource.getName()+"\"");
-    }
+	
+	@Autowired
+	private ClobDatatypeStorageController clobDatatypeStorageController;
+	
+	@Autowired
+	private FormService formService;
+	
+	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
+	@ResponseBody
+	public Object createResourceValue(@PathVariable("uuid") String formUuid,
+	        @PathVariable("resourceUuid") String resourceUuid, @RequestParam("value") MultipartFile file,
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		//Get the resource
+		FormResource resource = formService.getFormResourceByUuid(resourceUuid);
+		if (resource == null) {
+			throw new IllegalArgumentException("No form resource with uuid " + resourceUuid + " found");
+		}
+		
+		String clobUuid = clobDatatypeStorageController.create(file, request, response);
+		
+		resource.setValueReferenceInternal(clobUuid);
+		formService.saveFormResource(resource);
+		
+		return new FormResourceResource1_9().asDefaultRep(resource);
+	}
+	
+	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.GET)
+	public void getResourceValue(@PathVariable("uuid") String formUuid, @PathVariable("resourceUuid") String resourceUuid,
+	        HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//Get the resource
+		FormResource resource = formService.getFormResourceByUuid(resourceUuid);
+		if (resource == null) {
+			throw new IllegalArgumentException("No form resource with uuid " + resourceUuid + " found");
+		}
+		clobDatatypeStorageController.retrieve(resource.getValueReference(), request, response);
+		
+		response.setHeader("Content-Disposition", "attachment;filename=\"" + resource.getName() + "\"");
+	}
 }

@@ -37,8 +37,9 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_8 extends BaseRestController {
 	
-       @Autowired
-       RestService restService;
+	@Autowired
+	RestService restService;
+	
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
 	 * 
@@ -50,15 +51,15 @@ public class SessionController1_8 extends BaseRestController {
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public Object get(WebRequest request) {
-            boolean authenticated = Context.isAuthenticated();
-            SimpleObject session = new SimpleObject();
-            session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
-            if (authenticated) {
-                String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
-                Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
-                session.add("user",ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
-            }
-            return session;
+		boolean authenticated = Context.isAuthenticated();
+		SimpleObject session = new SimpleObject();
+		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
+		if (authenticated) {
+			String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
+			Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
+			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
+		}
+		return session;
 	}
 	
 	/**

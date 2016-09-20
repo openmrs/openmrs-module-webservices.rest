@@ -18,43 +18,42 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-
-public class PatientStateResource1_8Test extends BaseDelegatingResourceTest <PatientStateResource1_8,PatientState>{
-
-    @Override
-    public PatientState newObject() {
-        return Context.getProgramWorkflowService().getPatientStateByUuid(getUuidProperty());
-    }
-
-    @Override
-    public void validateRefRepresentation() throws Exception {
-        assertPropEquals("startDate",getObject().getStartDate());
-        assertPropEquals("endDate",getObject().getEndDate());
-        assertPropPresent("state");
-        assertPropEquals("uuid",getObject().getUuid());
-    }
-
-    @Override
-    public void validateDefaultRepresentation() throws Exception {
-        assertPropPresent("patientProgram");
-        validateRefRepresentation();
-    }
-
-    @Override
-    public void validateFullRepresentation() throws Exception {
-        validateRefRepresentation();
-        assertPropPresent("patientProgram");
-        assertPropEquals("voided",getObject().getVoided());
-        assertPropPresent("auditInfo");
-    }
-
-    @Override
-    public String getDisplayProperty() {
-        return getObject().getState().getConcept().getDisplayString();
-    }
-
-    @Override
-    public String getUuidProperty() {
-        return RestTestConstants1_8.PATIENT_STATE_UUID;
-    }
+public class PatientStateResource1_8Test extends BaseDelegatingResourceTest<PatientStateResource1_8, PatientState> {
+	
+	@Override
+	public PatientState newObject() {
+		return Context.getProgramWorkflowService().getPatientStateByUuid(getUuidProperty());
+	}
+	
+	@Override
+	public void validateRefRepresentation() throws Exception {
+		assertPropEquals("startDate", getObject().getStartDate());
+		assertPropEquals("endDate", getObject().getEndDate());
+		assertPropPresent("state");
+		assertPropEquals("uuid", getObject().getUuid());
+	}
+	
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		assertPropPresent("patientProgram");
+		validateRefRepresentation();
+	}
+	
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		validateRefRepresentation();
+		assertPropPresent("patientProgram");
+		assertPropEquals("voided", getObject().getVoided());
+		assertPropPresent("auditInfo");
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return getObject().getState().getConcept().getDisplayString();
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return RestTestConstants1_8.PATIENT_STATE_UUID;
+	}
 }

@@ -20,7 +20,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
 
-@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*"})
+@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {
+        "1.11.*", "1.12.*" })
 public class ConceptResource1_11 extends ConceptResource1_9 {
 	
 	/**
@@ -42,6 +43,6 @@ public class ConceptResource1_11 extends ConceptResource1_9 {
 	 */
 	@Override
 	public String getResourceVersion() {
-	    return RestConstants1_11.RESOURCE_VERSION;
+		return RestConstants1_11.RESOURCE_VERSION;
 	}
 }

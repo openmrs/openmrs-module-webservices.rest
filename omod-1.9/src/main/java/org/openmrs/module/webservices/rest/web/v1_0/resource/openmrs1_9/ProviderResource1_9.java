@@ -36,7 +36,8 @@ import java.util.Set;
 /**
  * {@link Resource} for Provider, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = { "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
+@Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider> {
 	
 	public ProviderResource1_9() {
@@ -168,8 +169,8 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 			return new EmptySearchResult();
 		}
 		
-		List<Provider> providers = Context.getProviderService().getProviders(query,
-		    context.getStartIndex(), context.getLimit(), null);
+		List<Provider> providers = Context.getProviderService().getProviders(query, context.getStartIndex(),
+		    context.getLimit(), null);
 		
 		int count = Context.getProviderService().getCountOfProviders(query);
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();

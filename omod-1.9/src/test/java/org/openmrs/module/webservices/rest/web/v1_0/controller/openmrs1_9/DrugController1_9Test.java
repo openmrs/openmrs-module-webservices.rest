@@ -30,8 +30,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests functionality of {@link DrugController}. This does not use @should
- * annotations because the controller inherits those methods from a subclass
+ * Tests functionality of {@link DrugController}. This does not use @should annotations because the
+ * controller inherits those methods from a subclass
  */
 public class DrugController1_9Test extends MainResourceControllerTest {
 	

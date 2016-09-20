@@ -26,8 +26,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserReso
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 
 /**
- * An implementation of Converter to be able to create a representation from a User
- * when User is used in another resource. Currently UserAndPassword doesn't convert User
+ * An implementation of Converter to be able to create a representation from a User when User is
+ * used in another resource. Currently UserAndPassword doesn't convert User
  */
 @Handler(supports = User.class, order = 0)
 public class UserConverter1_8 implements Converter<User> {
@@ -49,32 +49,38 @@ public class UserConverter1_8 implements Converter<User> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T, org.openmrs.module.webservices.rest.web.representation.Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T,
+	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public SimpleObject asRepresentation(User instance, Representation rep) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8(instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(
+		    RestConstants.VERSION_1 + "/user");
 		return userResource.asRepresentation(userPass, rep);
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(T, java.lang.String)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#getProperty(T,
+	 *      java.lang.String)
 	 */
 	@Override
 	public Object getProperty(User instance, String propertyName) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8(instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(
+		    RestConstants.VERSION_1 + "/user");
 		return userResource.getProperty(userPass, propertyName);
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object, java.lang.String, java.lang.Object)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#setProperty(java.lang.Object,
+	 *      java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
 		UserAndPassword1_8 userPass = new UserAndPassword1_8((User) instance);
-		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(RestConstants.VERSION_1 + "/user");
+		UserResource1_8 userResource = (UserResource1_8) Context.getService(RestService.class).getResourceByName(
+		    RestConstants.VERSION_1 + "/user");
 		userResource.setProperty(userPass, propertyName, value);
 	}
 }

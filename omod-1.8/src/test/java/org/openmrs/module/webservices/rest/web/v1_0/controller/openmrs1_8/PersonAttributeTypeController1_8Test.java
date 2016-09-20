@@ -42,7 +42,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#createPersonAttributeType(SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies create a new PersonAttributeType
 	 */
 	@Test
@@ -69,7 +69,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#getPersonAttributeType(PersonAttributeType,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies get a default representation of a person attribute type
 	 */
 	@Test
@@ -108,7 +108,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#updatePersonAttributeType(PersonAttributeType,SimpleObject,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies change a property on a person
 	 */
 	@Test
@@ -134,7 +134,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#retirePersonAttributeType(PersonAttributeType,String,WebRequest)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies void a person attribute type
 	 */
 	@Test
@@ -159,7 +159,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#findPersonAttributeTypes(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies return no results if there are no matching person(s)
 	 */
 	@Test
@@ -177,7 +177,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	
 	/**
 	 * @see PersonAttributeTypeController#findPersonAttributeTypes(String,WebRequest,HttpServletResponse)
-	 * @throws Exception 
+	 * @throws Exception
 	 * @verifies find matching person attribute types
 	 */
 	@Test

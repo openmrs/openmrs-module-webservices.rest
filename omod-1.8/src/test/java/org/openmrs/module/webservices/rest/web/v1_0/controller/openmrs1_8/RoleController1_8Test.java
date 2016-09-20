@@ -68,7 +68,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#create(SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#create(SimpleObject, javax.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
 	 * @verifies create a new Role
 	 */
 	@Test
@@ -124,7 +125,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#update(String, SimpleObject, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#update(String, SimpleObject, javax.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
 	 * @verifies change a property on a Role
 	 */
 	@Test
@@ -143,7 +145,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
 	 * @verifies void a Role
 	 */
 	@Test
@@ -164,7 +167,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
 	 * @verifies return no results if there are no matching Roles
 	 */
 	@Test
@@ -180,7 +184,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
 	 * @verifies find matching Roles
 	 */
 	@Test
@@ -193,8 +198,8 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(service.getRoleByUuid("3480cb6d-c291-46c8-8d3a-96dc33d199fb"), PropertyUtils.getProperty(hits
-		        .get(0), "uuid"));
+		Assert.assertEquals(service.getRoleByUuid("3480cb6d-c291-46c8-8d3a-96dc33d199fb"),
+		    PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	

@@ -23,7 +23,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptD
 /**
  * {@link Resource} for {@link ConceptDatatype}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptdatatype", supportedClass = ConceptDatatype.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/conceptdatatype", supportedClass = ConceptDatatype.class, supportedOpenmrsVersions = {
+        "2.0.*", "2.1.*" })
 public class ConceptDatatypeResource2_0 extends ConceptDatatypeResource1_8 {
 	
 	/**

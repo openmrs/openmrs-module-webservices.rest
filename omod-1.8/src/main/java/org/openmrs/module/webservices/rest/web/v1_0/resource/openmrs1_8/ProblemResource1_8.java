@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 /**
  * {@link Resource} for Problem, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = {"1.8.*"})
+@Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	
 	/**
@@ -94,16 +94,16 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	
 	/**
 	 * Annotated setter for Problem
-	 *
+	 * 
 	 * @param problem
 	 * @param value
 	 */
-
+	
 	@PropertySetter("problem")
 	public static void setProblem(Problem problem, Object value) {
 		problem.setProblem(Context.getConceptService().getConceptByUuid((String) value));
 	}
-
+	
 	/**
 	 * Gets problems for a given patient (paged according to context if necessary) only if a patient
 	 * parameter exists in the request set on the {@link RequestContext}

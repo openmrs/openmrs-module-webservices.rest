@@ -35,7 +35,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for DrugIngredient, supporting standard CRUD operations
  */
-@SubResource(parent = DrugResource1_11.class, path = "ingredient", supportedClass = DrugIngredient.class, supportedOpenmrsVersions = {"1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@SubResource(parent = DrugResource1_11.class, path = "ingredient", supportedClass = DrugIngredient.class, supportedOpenmrsVersions = {
+        "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngredient, Drug, DrugResource1_11> {
 	
 	@Override
@@ -62,7 +63,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -72,9 +73,9 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		description.addProperty("ingredient");
 		description.addProperty("strength");
 		description.addProperty("units");
-        return description;
+		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -82,7 +83,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */
@@ -90,7 +91,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public Drug getParent(DrugIngredient instance) {
 		return instance.getDrug();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#setParent(java.lang.Object,
 	 *      java.lang.Object)
@@ -99,7 +100,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public void setParent(DrugIngredient instance, Drug drug) {
 		instance.setDrug(drug);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -112,7 +113,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		}
 		return new NeedsPaging<DrugIngredient>(ingredients, context);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -124,7 +125,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		ingredient.setDrug(null);
 		Context.getConceptService().saveDrug(drug);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
@@ -145,7 +146,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		Context.getConceptService().saveDrug(newIngredient.getDrug());
 		return newIngredient;
 	}
-
+	
 	/**
 	 * Gets the display string for a concept name.
 	 * 
@@ -164,12 +165,12 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public DrugIngredient newDelegate() {
 		return new DrugIngredient();
 	}
-
+	
 	@Override
 	public DrugIngredient getByUniqueId(String uniqueId) {
 		return Context.getConceptService().getDrugIngredientByUuid(uniqueId);
 	}
-
+	
 	@Override
 	protected void delete(DrugIngredient delegate, String reason, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("Cannot void DrugIngredient. Use purge.");

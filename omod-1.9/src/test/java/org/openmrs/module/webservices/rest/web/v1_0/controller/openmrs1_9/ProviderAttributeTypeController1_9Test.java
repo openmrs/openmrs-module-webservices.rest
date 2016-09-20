@@ -105,8 +105,8 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		SimpleObject response = deserialize(handle(request));
 		Assert.assertEquals(1, Util.getResultsSize(response));
 		
-        List<Object> results = Util.getResultsList(response);
-        Object result = results.get(0);
+		List<Object> results = Util.getResultsList(response);
+		Object result = results.get(0);
 		
 		Assert.assertEquals(RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));

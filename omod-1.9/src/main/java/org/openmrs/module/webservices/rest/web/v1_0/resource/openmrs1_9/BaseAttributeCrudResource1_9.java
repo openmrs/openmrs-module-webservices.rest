@@ -53,22 +53,24 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 		if (StringUtils.isNotEmpty(value)) // check empty instead of blank, because " " is meaningful
 			instance.setValue(datatype.fromReferenceString(value));
 	}
-
-    /**
-     * Gets an attribute value, catching any {@link NotYetPersistedException} and returning null in that case
-     * @param instance
-     * @return
-     */
-    @PropertyGetter("value")
-    public static Object getValue(Attribute<?, ?> instance) {
-        try {
-            return instance.getValue();
-        }
-        catch (NotYetPersistedException ex) {
-            return null;
-        }
-    }
-
+	
+	/**
+	 * Gets an attribute value, catching any {@link NotYetPersistedException} and returning null in
+	 * that case
+	 * 
+	 * @param instance
+	 * @return
+	 */
+	@PropertyGetter("value")
+	public static Object getValue(Attribute<?, ?> instance) {
+		try {
+			return instance.getValue();
+		}
+		catch (NotYetPersistedException ex) {
+			return null;
+		}
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

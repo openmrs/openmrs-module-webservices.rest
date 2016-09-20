@@ -13,7 +13,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-
 /**
  * {@link org.openmrs.module.webservices.rest.web.RestConstants} for 2.0 resources.
  */

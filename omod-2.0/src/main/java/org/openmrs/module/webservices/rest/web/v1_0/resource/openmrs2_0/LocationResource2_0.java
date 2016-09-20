@@ -25,7 +25,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.Location
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = {
+        "2.0.*", "2.1.*" })
 public class LocationResource2_0 extends LocationResource1_9 {
 	
 	/**

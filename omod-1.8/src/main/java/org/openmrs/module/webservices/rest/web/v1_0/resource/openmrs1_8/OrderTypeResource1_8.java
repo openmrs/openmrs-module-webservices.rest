@@ -25,7 +25,8 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  *
  */
-@Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*" })
 public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderType> {
 	
 	/**
@@ -53,7 +54,8 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object, org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public void purge(OrderType delegate, RequestContext context) throws ResponseException {

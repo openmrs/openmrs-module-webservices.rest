@@ -109,8 +109,8 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		//create an ADT_A28 hl7 message
 		SimpleObject hl7Message = new SimpleObject();
 		String hl7Data = "MSH|^~\\&|REST|LOCAL|HL7HANDLER|OPENMRS|20140331101300^0|HUP|ADT^A28^ADT_A05|ADD PERSON INFO|P|2.5|1|||AL||ASCII\r"
-			+"EVN|A28|20140331101300|||1\r"
-			+"PID|||1991^^^Old Identification Number||Rest^Created^Patient||20011114000000|M|||20371^02^2400^724||||||724^Y||||||02|||11|20371|724^DEUT^N||N";
+		        + "EVN|A28|20140331101300|||1\r"
+		        + "PID|||1991^^^Old Identification Number||Rest^Created^Patient||20011114000000|M|||20371^02^2400^724||||||724^Y||||||02|||11|20371|724^DEUT^N||N";
 		hl7Message.add("hl7", hl7Data);
 		
 		//post the hl7 message

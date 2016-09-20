@@ -38,8 +38,8 @@ import java.util.List;
 public class ProviderSearchHandler1_9 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/provider",
-	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder("Allows you to find providers by user uuid")
-	                .withRequiredParameters("user").build());
+	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder(
+	                "Allows you to find providers by user uuid").withRequiredParameters("user").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

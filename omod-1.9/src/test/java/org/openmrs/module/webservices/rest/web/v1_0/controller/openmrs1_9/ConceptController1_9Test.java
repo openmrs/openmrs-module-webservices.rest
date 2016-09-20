@@ -32,54 +32,53 @@ import static org.hamcrest.Matchers.is;
  * the controller inherits those methods from a subclass
  */
 public class ConceptController1_9Test extends MainResourceControllerTest {
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
 	@Override
-		public String getURI() {
-			return "concept";
-		}
-
+	public String getURI() {
+		return "concept";
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
 	 */
 	@Override
-		public String getUuid() {
-			return RestTestConstants1_9.CONCEPT_UUID;
-		}
-
+	public String getUuid() {
+		return RestTestConstants1_9.CONCEPT_UUID;
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
 	 */
 	@Override
-		public long getAllCount() {
-			return 24;
-		}
-
-
+	public long getAllCount() {
+		return 24;
+	}
+	
 	@Test
-		public void shouldFindConceptsBySourceUuid() throws Exception {
-			SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("term",
-								"SSTRM-WGT234"))));
-			List<Object> results = Util.getResultsList(response);
-
-			Assert.assertEquals(results.size(), 1);
-			Object next = results.iterator().next();
-			Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
-		}
-
-    @Test
-    public void shouldFindNumericConceptsByQueryString() throws Exception {
-        executeDataSet("numericConcept.xml");
-        SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "HEIGHT"), new Parameter("v", "full"))));
-        List<Object> results = Util.getResultsList(response);
-
-        Assert.assertEquals(results.size(), 1);
-        Object next = results.iterator().next();
-        Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
-    }
-    
+	public void shouldFindConceptsBySourceUuid() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("term", "SSTRM-WGT234"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Assert.assertEquals(results.size(), 1);
+		Object next = results.iterator().next();
+		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+	}
+	
+	@Test
+	public void shouldFindNumericConceptsByQueryString() throws Exception {
+		executeDataSet("numericConcept.xml");
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "HEIGHT"), new Parameter("v",
+		        "full"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Assert.assertEquals(results.size(), 1);
+		Object next = results.iterator().next();
+		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
+	}
+	
 	@Test
 	public void shouldFindConceptByReferenceTerm() throws Exception {
 		executeDataSet("customConceptDataset1_9.xml");
