@@ -36,9 +36,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Tests CRUD operations for {@link GlobalProperty}s via web service calls
  */
 public class SystemSettingController1_9Test extends MainResourceControllerTest {
-    
-    private AdministrationService service;
-        
+	
+	private AdministrationService service;
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
@@ -54,15 +54,15 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	public String getUuid() {
 		return RestTestConstants1_9.GLOBAL_PROPERTY_UUID;
 	}
-        
-    @Override
-    public long getAllCount() {
-        return 4;
-    }
-        
-    @Before
+	
+	@Override
+	public long getAllCount() {
+		return 4;
+	}
+	
+	@Before
 	public void before() throws Exception {
-        this.service = Context.getAdministrationService();
+		this.service = Context.getAdministrationService();
 	}
 	
 	/**
@@ -72,59 +72,61 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
 	}
-        
+	
 	@Test
 	public void shouldSaveSystemSettingWithCustomDatatype() throws Exception {
 		SimpleObject property = new SimpleObject();
 		property.add("property", "a.property.test");
 		property.add("description", "Testing post operation of global property");
 		property.add("datatypeClassname", "org.openmrs.customdatatype.datatype.BooleanDatatype");
-        property.add("value", "true");
+		property.add("value", "true");
 		String json = new ObjectMapper().writeValueAsString(property);
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
-                
+		
 		SimpleObject newlyCreatedSetting = deserialize(handle(req));
 		String uuid = (String) PropertyUtils.getProperty(newlyCreatedSetting, "uuid");
-        
-        MockHttpServletRequest getReq = request(RequestMethod.GET, getURI() + "/"+uuid);
-        getReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
-        SimpleObject result = deserialize(handle(getReq));
-        assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
-        assertEquals("Testing post operation of global property", PropertyUtils.getProperty(newlyCreatedSetting, "description"));
-        assertEquals("true", PropertyUtils.getProperty(result, "value"));
-        assertEquals("org.openmrs.customdatatype.datatype.BooleanDatatype", PropertyUtils.getProperty(result, "datatypeClassname"));
-        assertNull(PropertyUtils.getProperty(result, "datatypeConfig"));
+		
+		MockHttpServletRequest getReq = request(RequestMethod.GET, getURI() + "/" + uuid);
+		getReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(getReq));
+		assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
+		assertEquals("Testing post operation of global property",
+		    PropertyUtils.getProperty(newlyCreatedSetting, "description"));
+		assertEquals("true", PropertyUtils.getProperty(result, "value"));
+		assertEquals("org.openmrs.customdatatype.datatype.BooleanDatatype",
+		    PropertyUtils.getProperty(result, "datatypeClassname"));
+		assertNull(PropertyUtils.getProperty(result, "datatypeConfig"));
 	}
-        
+	
 	@Test
 	public void shouldSaveSystemSettingWithoutCustomDatatype() throws Exception {
 		SimpleObject property = new SimpleObject();
 		property.add("property", "a.property.test");
 		property.add("description", "Testing post operation of global property");
-        property.add("value", "Saving property value without custome datatype");
+		property.add("value", "Saving property value without custome datatype");
 		String json = new ObjectMapper().writeValueAsString(property);
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
-                
-		SimpleObject result = deserialize(handle(req));
-        assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
-        assertEquals("Testing post operation of global property", PropertyUtils.getProperty(result, "description"));
-        assertEquals("Saving property value without custome datatype", PropertyUtils.getProperty(result, "value"));
-	}
-        
-    @Test
-	public void shouldFindASystemSettingWithUUID() throws Exception {
-    	SimpleObject property = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
 		
-        GlobalProperty expectedProperty = service.getGlobalPropertyByUuid(getUuid());
-		assertNotNull(property);
-        assertEquals(expectedProperty.getUuid(), PropertyUtils.getProperty(property, "uuid"));
-		assertEquals(expectedProperty.getProperty(), PropertyUtils.getProperty(property, "property"));
-        assertEquals(expectedProperty.getValue(), PropertyUtils.getProperty(property, "value"));
+		SimpleObject result = deserialize(handle(req));
+		assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
+		assertEquals("Testing post operation of global property", PropertyUtils.getProperty(result, "description"));
+		assertEquals("Saving property value without custome datatype", PropertyUtils.getProperty(result, "value"));
 	}
-    
-    @Test
+	
+	@Test
+	public void shouldFindASystemSettingWithUUID() throws Exception {
+		SimpleObject property = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
+		
+		GlobalProperty expectedProperty = service.getGlobalPropertyByUuid(getUuid());
+		assertNotNull(property);
+		assertEquals(expectedProperty.getUuid(), PropertyUtils.getProperty(property, "uuid"));
+		assertEquals(expectedProperty.getProperty(), PropertyUtils.getProperty(property, "property"));
+		assertEquals(expectedProperty.getValue(), PropertyUtils.getProperty(property, "value"));
+	}
+	
+	@Test
 	public void shouldGetASystemSettingByName() throws Exception {
 		final String name = service.getAllGlobalProperties().get(0).getProperty();
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
@@ -136,19 +138,19 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		assertEquals(gp.getDescription(), PropertyUtils.getProperty(result, "description"));
 		assertEquals(gp.getValue(), PropertyUtils.getProperty(result, "value"));
 	}
-        
-    @Test
+	
+	@Test
 	public void shouldEditASystemSetting() throws Exception {
 		final String newValue = "Adding description by editing property";
 		GlobalProperty expectedProperty = service.getGlobalPropertyByUuid(getUuid());
-        assertNull(expectedProperty.getDescription());
-		String json = "{ \"description\":\""+newValue+"\" }";
-                
+		assertNull(expectedProperty.getDescription());
+		String json = "{ \"description\":\"" + newValue + "\" }";
+		
 		SimpleObject updatedProperty = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		assertTrue(newValue.equals(PropertyUtils.getProperty(updatedProperty, "description")));
 	}
-        
-    @Test
+	
+	@Test
 	public void shouldPurgeASystemSetting() throws Exception {
 		assertNotNull(service.getGlobalPropertyByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
@@ -156,8 +158,8 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		assertNull(service.getGlobalPropertyByUuid(getUuid()));
 	}
-        
-    @Test
+	
+	@Test
 	public void shouldDeleteASystemSetting() throws Exception {
 		assertNotNull(service.getGlobalPropertyByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());

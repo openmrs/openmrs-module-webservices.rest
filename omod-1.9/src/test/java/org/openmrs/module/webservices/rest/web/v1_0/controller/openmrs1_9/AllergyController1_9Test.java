@@ -35,8 +35,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class AllergyController1_9Test extends MainResourceControllerTest {
-
-private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
+	
+	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
 	
 	@Before
 	public void init() throws Exception {
@@ -140,15 +140,13 @@ private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml"
 		super.shouldGetAll();
 	}
 	
-    @Test
-    public void getAllergen_shouldGetAllergenByConceptMappings() throws Exception {
-        String json = "{\"person\":\""
-                + RestTestConstants1_8.PERSON_UUID +
-                "\", \"allergen\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\", \"allergyType\":\""
-                + AllergyType.DRUG +"\"}";
-Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newObs, "allergen"));
-    }
-
-
+	@Test
+	public void getAllergen_shouldGetAllergenByConceptMappings() throws Exception {
+		String json = "{\"person\":\"" + RestTestConstants1_8.PERSON_UUID
+		        + "\", \"allergen\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\", \"allergyType\":\""
+		        + AllergyType.DRUG + "\"}";
+		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(PropertyUtils.getProperty(newObs, "allergen"));
+	}
+	
 }

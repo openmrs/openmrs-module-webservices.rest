@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Returns concepts which map to term (uuid)
  */
-@Component	
+@Component
 public class ConceptSearchHandler1_9 implements SearchHandler {
 	
 	@Autowired
@@ -50,8 +50,10 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 	@Qualifier("restHelperService")
 	RestHelperService restHelperService;
 	
-	private final SearchConfig searchConfig = new SearchConfig("byTerm", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"),
-	        new SearchQuery.Builder("Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters("term").build());
+	private final SearchConfig searchConfig = new SearchConfig("byTerm", RestConstants.VERSION_1 + "/concept",
+	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder(
+	                "Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters(
+	            "term").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -75,7 +77,8 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 		
 		else {
 			List<ConceptMap> conceptMaps = new ArrayList<ConceptMap>();
-			conceptMaps.addAll(restHelperService.getObjectsByFields(ConceptMap.class, new Field("conceptReferenceTerm", conceptReferenceTerm)));				
+			conceptMaps.addAll(restHelperService.getObjectsByFields(ConceptMap.class, new Field("conceptReferenceTerm",
+			        conceptReferenceTerm)));
 			List<Concept> concepts = new ArrayList<Concept>();
 			for (ConceptMap conceptMap : conceptMaps) {
 				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
@@ -84,7 +87,7 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 				}
 			}
 			return new NeedsPaging<Concept>(concepts, context);
-		}		
+		}
 	}
 	
 }

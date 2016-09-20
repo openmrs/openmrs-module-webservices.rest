@@ -77,7 +77,8 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 	}
 	
 	/**
-	 * Tests {@link BaseDelegatingResource#setConvertedProperties(Object, java.util.Map, DelegatingResourceDescription, boolean)}
+	 * Tests
+	 * {@link BaseDelegatingResource#setConvertedProperties(Object, java.util.Map, DelegatingResourceDescription, boolean)}
 	 */
 	@Test
 	public void setConvertedProperties_shouldAllowSettingANullValue() {
@@ -89,6 +90,5 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 		resource.setConvertedProperties(drug, propertyMap, resource.getUpdatableProperties(), false);
 		Assert.isNull(drug.getRoute());
 	}
-
 	
 }

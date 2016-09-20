@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrd
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "2.0.*", "2.1.*" })
 public class DrugOrderSubclassHandler2_0 extends DrugOrderSubclassHandler1_10 {
 	
 	/**

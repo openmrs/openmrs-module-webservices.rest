@@ -33,7 +33,8 @@ import java.util.List;
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = { "1.8.*",
+        "1.9.*" })
 public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	
 	/**
@@ -144,28 +145,29 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	protected NeedsPaging<Drug> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<Drug>(Context.getConceptService().getAllDrugs(context.getIncludeAll()), context);
 	}
-
-    /**
-     * Drug searches support the following query parameters:
-     * <ul>
-     * <li>q=(name): searches drug with name containing the query string
-     * </li>
-     * </ul>
-     *
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
-     */
-    @Override
-    protected PageableResult doSearch(RequestContext ctx) {
-        boolean searchOnPhrase = true;
-        boolean searchDrugConceptNames = false;
-        boolean includeRetired = ctx.getIncludeAll();
-        Integer startIndex = ctx.getStartIndex();
-        Integer limit = ctx.getLimit();
-        String drugName = ctx.getParameter("q");
-
-        Integer countOfDrugs = Context.getConceptService().getCountOfDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired);
-        List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames, includeRetired, startIndex, limit);
-        boolean hasMore = countOfDrugs > startIndex + limit;
-        return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
-    }
+	
+	/**
+	 * Drug searches support the following query parameters:
+	 * <ul>
+	 * <li>q=(name): searches drug with name containing the query string</li>
+	 * </ul>
+	 * 
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
+	 */
+	@Override
+	protected PageableResult doSearch(RequestContext ctx) {
+		boolean searchOnPhrase = true;
+		boolean searchDrugConceptNames = false;
+		boolean includeRetired = ctx.getIncludeAll();
+		Integer startIndex = ctx.getStartIndex();
+		Integer limit = ctx.getLimit();
+		String drugName = ctx.getParameter("q");
+		
+		Integer countOfDrugs = Context.getConceptService().getCountOfDrugs(drugName, null, searchOnPhrase,
+		    searchDrugConceptNames, includeRetired);
+		List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames,
+		    includeRetired, startIndex, limit);
+		boolean hasMore = countOfDrugs > startIndex + limit;
+		return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
+	}
 }

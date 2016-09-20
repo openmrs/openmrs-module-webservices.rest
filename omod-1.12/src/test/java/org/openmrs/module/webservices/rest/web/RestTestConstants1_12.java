@@ -13,11 +13,11 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-
 public class RestTestConstants1_12 {
-    public final static String TEST_DATA_SET = "customTestDataset1_12.xml";
-
-    public final static String ORDER_SET_UUID = "order_set_uuid1";
-
-    public final static String ORDER_SET_MEMBER_UUID = "order_set_member_uuid1";
+	
+	public final static String TEST_DATA_SET = "customTestDataset1_12.xml";
+	
+	public final static String ORDER_SET_UUID = "order_set_uuid1";
+	
+	public final static String ORDER_SET_MEMBER_UUID = "order_set_member_uuid1";
 }

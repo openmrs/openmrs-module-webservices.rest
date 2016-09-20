@@ -19,30 +19,30 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class OrderEntryConfigResource1_10Test extends BaseModuleWebContextSensitiveTest {
-
-    @Autowired
-    private MainResourceController mainResourceController;
-
-    @Mock
-    private OrderService orderService;
-
-    @Test
-    public void testGetAll() throws Exception {
-        Concept route = new Concept();
-        when(orderService.getDrugRoutes()).thenReturn(Arrays.asList(route));
-        Concept dosingUnit = new Concept();
-        when(orderService.getDrugDosingUnits()).thenReturn(Arrays.asList(dosingUnit));
-
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        SimpleObject config = mainResourceController.get("orderentryconfig", new MockHttpServletRequest(), response);
-
-        List<SimpleObject> temp = (List<SimpleObject>) config.get("drugRoutes");
-        assertThat(temp.size(), is(1));
-        assertThat((String) temp.get(0).get("uuid"), is(route.getUuid()));
-
-        temp = (List<SimpleObject>) config.get("drugDosingUnits");
-        assertThat(temp.size(), is(1));
-        assertThat((String) temp.get(0).get("uuid"), is(dosingUnit.getUuid()));
-    }
-
+	
+	@Autowired
+	private MainResourceController mainResourceController;
+	
+	@Mock
+	private OrderService orderService;
+	
+	@Test
+	public void testGetAll() throws Exception {
+		Concept route = new Concept();
+		when(orderService.getDrugRoutes()).thenReturn(Arrays.asList(route));
+		Concept dosingUnit = new Concept();
+		when(orderService.getDrugDosingUnits()).thenReturn(Arrays.asList(dosingUnit));
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		SimpleObject config = mainResourceController.get("orderentryconfig", new MockHttpServletRequest(), response);
+		
+		List<SimpleObject> temp = (List<SimpleObject>) config.get("drugRoutes");
+		assertThat(temp.size(), is(1));
+		assertThat((String) temp.get(0).get("uuid"), is(route.getUuid()));
+		
+		temp = (List<SimpleObject>) config.get("drugDosingUnits");
+		assertThat(temp.size(), is(1));
+		assertThat((String) temp.get(0).get("uuid"), is(dosingUnit.getUuid()));
+	}
+	
 }

@@ -33,8 +33,8 @@ import org.apache.commons.lang.StringUtils;
 import java.util.LinkedHashMap;
 
 /**
- * An implementation of Converter to be able to create a representation from a Allergen
- * when Allergen is used in another resource. 
+ * An implementation of Converter to be able to create a representation from a Allergen when
+ * Allergen is used in another resource.
  */
 @Handler(supports = Allergen.class, order = 0)
 public class AllergenConverter2_0 extends BaseDelegatingConverter<Allergen> {
@@ -47,8 +47,7 @@ public class AllergenConverter2_0 extends BaseDelegatingConverter<Allergen> {
 	 * @return
 	 */
 	@Override
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep)
-	{
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		if (rep instanceof DefaultRepresentation) {
 			description.addProperty("allergenType", Representation.REF);
@@ -79,15 +78,17 @@ public class AllergenConverter2_0 extends BaseDelegatingConverter<Allergen> {
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T, org.openmrs.module.webservices.rest.web.representation.Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T,
+	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
 	public SimpleObject asRepresentation(Allergen instance, Representation rep) throws ConversionException {
 		SimpleObject allergenObject = new SimpleObject();
 		allergenObject.add("allergenType", instance.getAllergenType());
-		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class).getResourceBySupportedClass(Concept.class);
+		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Concept.class);
 		allergenObject.add("codedAllergen", conceptResource.asRepresentation(instance.getCodedAllergen(), rep));
 		allergenObject.add("nonCodedAllergen", instance.getNonCodedAllergen());
 		return allergenObject;
-	}	
+	}
 }

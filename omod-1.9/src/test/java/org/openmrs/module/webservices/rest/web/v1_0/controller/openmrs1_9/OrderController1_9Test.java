@@ -243,23 +243,24 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		DrugOrder order = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
 		Assert.assertEquals(Double.valueOf("500"), order.getDose());
 	}
-
-    /**
-     * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't been updated
-     */
-    @Test
-    public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
-        MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + DRUG_ORDER_UUID);
-        SimpleObject drugOrder = deserialize(handle(get));
-        // doing this will no longer be allowed in OpenMRS 1.10, but it's fine as a test case against 1.8 code
-        drugOrder.put("dose", "500");
-
-        MockHttpServletRequest post = newPostRequest(getURI() + "/" + DRUG_ORDER_UUID, drugOrder);
-        handle(post);
-
-        DrugOrder updatedOrder = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
-        assertThat(updatedOrder.getDose(), is(500d));
-    }
+	
+	/**
+	 * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't
+	 * been updated
+	 */
+	@Test
+	public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
+		MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + DRUG_ORDER_UUID);
+		SimpleObject drugOrder = deserialize(handle(get));
+		// doing this will no longer be allowed in OpenMRS 1.10, but it's fine as a test case against 1.8 code
+		drugOrder.put("dose", "500");
+		
+		MockHttpServletRequest post = newPostRequest(getURI() + "/" + DRUG_ORDER_UUID, drugOrder);
+		handle(post);
+		
+		DrugOrder updatedOrder = (DrugOrder) service.getOrderByUuid(DRUG_ORDER_UUID);
+		assertThat(updatedOrder.getDose(), is(500d));
+	}
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailToChangeOrderType() throws Exception {

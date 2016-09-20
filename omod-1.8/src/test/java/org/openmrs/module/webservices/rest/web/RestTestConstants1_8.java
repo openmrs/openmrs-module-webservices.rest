@@ -84,23 +84,23 @@ public class RestTestConstants1_8 {
 	public static final String CONCEPT_SOURCE_UUID = "75f5b378-5065-11de-80cb-001e378eb67e";
 	
 	public static final String PRIVILEGE_UUID = "d979d066-15e6-467c-9d4b-cb575ef97f0f";
-
-    public static final String RELATIONSHIP_UUID = "c18717dd-5d78-4a0e-84fc-ee62c5f0676a";
-
-    public static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
-
-    public static final String PROGRAM_UUID = "f386c3d2-dd75-441f-a582-2237824edfb0";
-
+	
+	public static final String RELATIONSHIP_UUID = "c18717dd-5d78-4a0e-84fc-ee62c5f0676a";
+	
+	public static final String RELATIONSHIP_TYPE_UUID = "6d9002ea-a96b-4889-af78-82d48c57a110";
+	
+	public static final String PROGRAM_UUID = "f386c3d2-dd75-441f-a582-2237824edfb0";
+	
 	public static final String WORKFLOW_UUID = "84f0effa-dd73-46cb-b931-7cd6be6c5f81";
-
-    public static final String PATIENT_PROGRAM_UUID = "b75462a0-4c92-451e-b8bc-e98b38b76534";
-
-    public static final String PATIENT_IN_A_PROGRAM_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-
+	
+	public static final String PATIENT_PROGRAM_UUID = "b75462a0-4c92-451e-b8bc-e98b38b76534";
+	
+	public static final String PATIENT_IN_A_PROGRAM_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+	
 	public static final String STATE_UUID = "92584cdc-6a20-4c84-a659-e035e45d36b0";
-
+	
 	public static final String PATIENT_STATE_UUID = "ea89deaa-23cc-4840-92fe-63d199c37e4c";
-
+	
 	public static final String MODULE_UUID = "91f56c57-bdd3-360e-a530-0bca59095eae";
-
+	
 }

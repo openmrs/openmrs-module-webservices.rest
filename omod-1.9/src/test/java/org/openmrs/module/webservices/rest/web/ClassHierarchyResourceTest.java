@@ -57,13 +57,14 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	}
 	
 	private SimpleObject buildSuperclass() {
-		return new SimpleObject().add(RestConstants.PROPERTY_FOR_TYPE, "order").add("startDate", "2011-02-03").add(
-		    "patient", PATIENT_UUID).add("concept", ASPIRIN_CONCEPT_UUID).add("orderType", LUNCH_ORDER_TYPE_UUID);
+		return new SimpleObject().add(RestConstants.PROPERTY_FOR_TYPE, "order").add("startDate", "2011-02-03")
+		        .add("patient", PATIENT_UUID).add("concept", ASPIRIN_CONCEPT_UUID).add("orderType", LUNCH_ORDER_TYPE_UUID);
 	}
 	
 	private SimpleObject buildSubclass() {
-		return buildSuperclass().removeProperty("orderType").add(RestConstants.PROPERTY_FOR_TYPE, "drugorder").add("dose",
-		    "100").add("units", "mg").add("prn", "true").add("complex", "false").add("drug", ASPIRIN_DRUG_UUID);
+		return buildSuperclass().removeProperty("orderType").add(RestConstants.PROPERTY_FOR_TYPE, "drugorder")
+		        .add("dose", "100").add("units", "mg").add("prn", "true").add("complex", "false")
+		        .add("drug", ASPIRIN_DRUG_UUID);
 	}
 	
 	@Test

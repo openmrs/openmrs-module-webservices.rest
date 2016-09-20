@@ -45,6 +45,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+
 /**
  * Integration tests for the Order resource
  */
@@ -127,7 +128,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		order.add("accessionNumber", "100");
-
+		
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
@@ -144,115 +145,115 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
 		assertEquals("100", Util.getByPath(newOrder, "accessionNumber"));
 	}
-
-    @Test
-    public void shouldPlaceANewDrugOrder() throws Exception {
-        executeDataSet(ORDER_ENTRY_DATASET_XML);
-        executeDataSet("OrderController1_10Test-conceptMappings.xml");
-        CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
-        Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-        OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
-        if (drugOrderType.getConceptClasses().isEmpty()) {
-            ConceptClass drugClass = Context.getConceptService().getConceptClassByName("Drug");
-            assertNotNull(drugClass);
-            drugOrderType.getConceptClasses().add(drugClass);
-        }
-        int originalActiveDrugOrderCount = orderService.getActiveOrders(patient, drugOrderType, outPatient, null).size();
-        SimpleObject order = new SimpleObject();
-        order.add("type", "drugorder");
-        order.add("patient", PATIENT_UUID);
-        order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
-        order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
-        order.add("drug", "3cfcf118-931c-46f7-8ff6-7b876f0d4202");
-        order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
-        order.add("dosingType", "org.openmrs.SimpleDosingInstructions");
-        order.add("dose", "300.0");
-        order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
-        order.add("quantity", "20.0");
-        order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
-        order.add("duration", "20");
-        order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
-        order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
-        order.add("numRefills", "2");
-        order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
-        order.add("brandName", "Some brand name");
-        order.add("dispenseAsWritten", true);
-
-        MockHttpServletRequest req = newPostRequest(getURI(), order);
-        SimpleObject newOrder = deserialize(handle(req));
-
-        List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-                outPatient, null);
-        assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
-
-        assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
-        assertEquals("NEW", Util.getByPath(newOrder, "action"));
-        assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
-        final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString())
-                .getConcept().getUuid();
-        assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
-        assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
-        assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
-        assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
-        assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
-        assertEquals("(NEW) Triomune-30: 300.0 mg UNKNOWN Once 20 day", Util.getByPath(newOrder, "display"));
-        assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
-        assertEquals(order.get("dosingType"), Util.getByPath(newOrder, "dosingType"));
-        assertEquals(order.get("dose"), Util.getByPath(newOrder, "dose").toString());
-        assertEquals(order.get("doseUnits"), Util.getByPath(newOrder, "doseUnits/uuid"));
-        assertEquals(order.get("quantity"), Util.getByPath(newOrder, "quantity").toString());
-        assertEquals(order.get("quantityUnits"), Util.getByPath(newOrder, "quantityUnits/uuid"));
-        assertEquals(order.get("duration"), Util.getByPath(newOrder, "duration").toString());
-        assertEquals(order.get("durationUnits"), Util.getByPath(newOrder, "durationUnits/uuid"));
-        assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
-        assertEquals(order.get("brandName"), Util.getByPath(newOrder, "brandName"));
-        assertEquals(order.get("dispenseAsWritten"), Util.getByPath(newOrder, "dispenseAsWritten"));
-    }
-
-    @Test
-    public void shouldSetDrugOrderDisplayWithoutDrug() throws Exception {
-        executeDataSet(ORDER_ENTRY_DATASET_XML);
-        executeDataSet("OrderController1_10Test-conceptMappings.xml");
-        CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
-        Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-        OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
-        if (drugOrderType.getConceptClasses().isEmpty()) {
-            ConceptClass drugClass = Context.getConceptService().getConceptClassByName("Drug");
-            assertNotNull(drugClass);
-            drugOrderType.getConceptClasses().add(drugClass);
-        }
-        int originalActiveDrugOrderCount = orderService.getActiveOrders(patient, drugOrderType, outPatient, null).size();
-        SimpleObject order = new SimpleObject();
-        order.add("type", "drugorder");
-        order.add("patient", PATIENT_UUID);
-        order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
-        order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
-        order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
-        order.add("concept", "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
-        order.add("dosingType", "org.openmrs.FreeTextDosingInstructions");
-        order.add("dosingInstructions", "Follow these instructions closely");
-        order.add("dose", "300.0");
-        order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
-        order.add("quantity", "20.0");
-        order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
-        order.add("duration", "20");
-        order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
-        order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
-        order.add("numRefills", "2");
-        order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
-        order.add("brandName", "Some brand name");
-        order.add("dispenseAsWritten", true);
-
-        MockHttpServletRequest req = newPostRequest(getURI(), order);
-        SimpleObject newOrder = deserialize(handle(req));
-
-        List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-                outPatient, null);
-        assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
-
-        assertEquals("(NEW) ASPIRIN: Follow these instructions closely", Util.getByPath(newOrder, "display"));
-    }
-
+	
+	@Test
+	public void shouldPlaceANewDrugOrder() throws Exception {
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		executeDataSet("OrderController1_10Test-conceptMappings.xml");
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
+		OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
+		if (drugOrderType.getConceptClasses().isEmpty()) {
+			ConceptClass drugClass = Context.getConceptService().getConceptClassByName("Drug");
+			assertNotNull(drugClass);
+			drugOrderType.getConceptClasses().add(drugClass);
+		}
+		int originalActiveDrugOrderCount = orderService.getActiveOrders(patient, drugOrderType, outPatient, null).size();
+		SimpleObject order = new SimpleObject();
+		order.add("type", "drugorder");
+		order.add("patient", PATIENT_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("drug", "3cfcf118-931c-46f7-8ff6-7b876f0d4202");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		order.add("dosingType", "org.openmrs.SimpleDosingInstructions");
+		order.add("dose", "300.0");
+		order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
+		order.add("quantity", "20.0");
+		order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
+		order.add("duration", "20");
+		order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
+		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
+		order.add("numRefills", "2");
+		order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
+		order.add("brandName", "Some brand name");
+		order.add("dispenseAsWritten", true);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), order);
+		SimpleObject newOrder = deserialize(handle(req));
+		
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+		    outPatient, null);
+		assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
+		
+		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
+		assertEquals("NEW", Util.getByPath(newOrder, "action"));
+		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
+		final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString())
+		        .getConcept().getUuid();
+		assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
+		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
+		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
+		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));
+		assertEquals(order.get("orderer"), Util.getByPath(newOrder, "orderer/uuid"));
+		assertEquals("(NEW) Triomune-30: 300.0 mg UNKNOWN Once 20 day", Util.getByPath(newOrder, "display"));
+		assertEquals(order.get("drug"), Util.getByPath(newOrder, "drug/uuid"));
+		assertEquals(order.get("dosingType"), Util.getByPath(newOrder, "dosingType"));
+		assertEquals(order.get("dose"), Util.getByPath(newOrder, "dose").toString());
+		assertEquals(order.get("doseUnits"), Util.getByPath(newOrder, "doseUnits/uuid"));
+		assertEquals(order.get("quantity"), Util.getByPath(newOrder, "quantity").toString());
+		assertEquals(order.get("quantityUnits"), Util.getByPath(newOrder, "quantityUnits/uuid"));
+		assertEquals(order.get("duration"), Util.getByPath(newOrder, "duration").toString());
+		assertEquals(order.get("durationUnits"), Util.getByPath(newOrder, "durationUnits/uuid"));
+		assertEquals(order.get("frequency"), Util.getByPath(newOrder, "frequency/uuid"));
+		assertEquals(order.get("brandName"), Util.getByPath(newOrder, "brandName"));
+		assertEquals(order.get("dispenseAsWritten"), Util.getByPath(newOrder, "dispenseAsWritten"));
+	}
+	
+	@Test
+	public void shouldSetDrugOrderDisplayWithoutDrug() throws Exception {
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		executeDataSet("OrderController1_10Test-conceptMappings.xml");
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
+		OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
+		if (drugOrderType.getConceptClasses().isEmpty()) {
+			ConceptClass drugClass = Context.getConceptService().getConceptClassByName("Drug");
+			assertNotNull(drugClass);
+			drugOrderType.getConceptClasses().add(drugClass);
+		}
+		int originalActiveDrugOrderCount = orderService.getActiveOrders(patient, drugOrderType, outPatient, null).size();
+		SimpleObject order = new SimpleObject();
+		order.add("type", "drugorder");
+		order.add("patient", PATIENT_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		order.add("concept", "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		order.add("dosingType", "org.openmrs.FreeTextDosingInstructions");
+		order.add("dosingInstructions", "Follow these instructions closely");
+		order.add("dose", "300.0");
+		order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
+		order.add("quantity", "20.0");
+		order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
+		order.add("duration", "20");
+		order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
+		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
+		order.add("numRefills", "2");
+		order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
+		order.add("brandName", "Some brand name");
+		order.add("dispenseAsWritten", true);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), order);
+		SimpleObject newOrder = deserialize(handle(req));
+		
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+		    outPatient, null);
+		assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
+		
+		assertEquals("(NEW) ASPIRIN: Follow these instructions closely", Util.getByPath(newOrder, "display"));
+	}
+	
 	@Test
 	public void shouldPlaceANewTestOrder() throws Exception {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);

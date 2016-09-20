@@ -30,7 +30,8 @@ import java.util.List;
 /**
  * {@link Resource} for VisitAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = VisitResource1_9.class, path = "attribute", supportedClass = VisitAttribute.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@SubResource(parent = VisitResource1_9.class, path = "attribute", supportedClass = VisitAttribute.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class VisitAttributeResource1_9 extends BaseAttributeCrudResource1_9<VisitAttribute, Visit, VisitResource1_9> {
 	
 	/**
@@ -101,8 +102,7 @@ public class VisitAttributeResource1_9 extends BaseAttributeCrudResource1_9<Visi
 		if (delegate.getAttributeType().getMaxOccurs() == 1) {
 			// there is a convencience method for this case, that avoids the client having to make two calls (to void and create)
 			delegate.getVisit().setAttribute(delegate);
-		}
-		else {
+		} else {
 			// make sure it has not already been added to the visit
 			boolean needToAdd = true;
 			for (VisitAttribute pa : delegate.getVisit().getActiveAttributes()) {

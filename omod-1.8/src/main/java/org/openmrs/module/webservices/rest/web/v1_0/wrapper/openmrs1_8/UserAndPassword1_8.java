@@ -19,11 +19,10 @@ import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.User;
 
 /**
- * This class is a wrapper for org.openmrs.User and password 
- * that needs to be sent for creating a new User by a webservice call.
- * 
- * Requires extending BaseOpenmrsMetadata to be able to interact with
+ * This class is a wrapper for org.openmrs.User and password that needs to be sent for creating a
+ * new User by a webservice call. Requires extending BaseOpenmrsMetadata to be able to interact with
  * MetadataDelegatingCrudResource and making instance of metadata type
+ * 
  * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource
  */
 public class UserAndPassword1_8 extends BaseOpenmrsMetadata implements Serializable {
@@ -49,28 +48,28 @@ public class UserAndPassword1_8 extends BaseOpenmrsMetadata implements Serializa
 	}
 	
 	/**
-	 * @return password 
+	 * @return password
 	 */
 	public String getPassword() {
 		return password;
 	}
 	
 	/**
-	 * @param password the password to set 
+	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 	
 	/**
-	 * @return user the User property 
+	 * @return user the User property
 	 */
 	public User getUser() {
 		return user;
 	}
 	
 	/**
-	 * @param user the user to set 
+	 * @param user the user to set
 	 */
 	public void setUser(User user) {
 		this.user = user;

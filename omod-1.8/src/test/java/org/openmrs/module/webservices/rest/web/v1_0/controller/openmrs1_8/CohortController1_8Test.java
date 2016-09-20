@@ -105,7 +105,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	@Test
 	public void getCohort_shouldGetADefaultRepresentationInXML() throws Exception {
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addHeader("Accept", "application/xml");
 		MockHttpServletResponse result = handle(req);
 		

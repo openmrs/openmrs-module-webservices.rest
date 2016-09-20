@@ -22,24 +22,24 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonAttributeTypeResourceWithConcept1_8Test extends BaseDelegatingResourceTest<PersonAttributeTypeResource1_8, PersonAttributeType> {
-
-    private static final String ACTIVE_LIST_INITIAL_XML = "personAttributeTypeWithConcept.xml";
-
-    @Before
-    public void init() throws Exception {
-        executeDataSet(ACTIVE_LIST_INITIAL_XML);
-    }
-
-    @Override
+	
+	private static final String ACTIVE_LIST_INITIAL_XML = "personAttributeTypeWithConcept.xml";
+	
+	@Before
+	public void init() throws Exception {
+		executeDataSet(ACTIVE_LIST_INITIAL_XML);
+	}
+	
+	@Override
 	public PersonAttributeType newObject() {
 		return Context.getPersonService().getPersonAttributeTypeByUuid(getUuidProperty());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
-        Concept concept = (Concept) getRepresentation().get("concept");
-        assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.getUuid());
-    }
+		Concept concept = (Concept) getRepresentation().get("concept");
+		assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.getUuid());
+	}
 	
 	@Override
 	public String getDisplayProperty() {

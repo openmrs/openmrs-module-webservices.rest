@@ -32,7 +32,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptR
 /**
  * {@link Resource} for {@link OrderFrequency}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/orderfrequency", supportedClass = OrderFrequency.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/orderfrequency", supportedClass = OrderFrequency.class, supportedOpenmrsVersions = {
+        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<OrderFrequency> {
 	
 	/**
@@ -43,7 +44,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-            description.addProperty("display");
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("retired");
@@ -54,7 +55,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
-            description.addProperty("display");
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("frequencyPerDay");
 			description.addProperty("concept", Representation.DEFAULT);
@@ -63,10 +64,10 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 			description.addProperty("auditInfo");
 			return description;
 		} else if (rep.getRepresentation().equals("fullconcept")) {
-            DelegatingResourceDescription description = getRepresentationDescription(Representation.FULL);
-            description.addProperty("concept", Representation.FULL);
-            return description;
-        }
+			DelegatingResourceDescription description = getRepresentationDescription(Representation.FULL);
+			description.addProperty("concept", Representation.FULL);
+			return description;
+		}
 		return null;
 	}
 	
@@ -87,22 +88,22 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 	}
 	
 	/**
-	 * Fetches a orderFrequency by uuid, or by the uuid or reference term of its concept.
-     * (E.g. supports specifying as "SNOMED CT:307486002")
+	 * Fetches a orderFrequency by uuid, or by the uuid or reference term of its concept. (E.g.
+	 * supports specifying as "SNOMED CT:307486002")
 	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public OrderFrequency getByUniqueId(String uuid) {
-        OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(uuid);
-        if (frequency == null) {
-            // concept resource handles things like "SNOMED CT:307486002" in addition to UUIDs
-            Concept concept = new ConceptResource1_9().getByUniqueId(uuid);
-            if (concept != null) {
-                frequency = Context.getOrderService().getOrderFrequencyByConcept(concept);
-            }
-        }
-        return frequency;
+		OrderFrequency frequency = Context.getOrderService().getOrderFrequencyByUuid(uuid);
+		if (frequency == null) {
+			// concept resource handles things like "SNOMED CT:307486002" in addition to UUIDs
+			Concept concept = new ConceptResource1_9().getByUniqueId(uuid);
+			if (concept != null) {
+				frequency = Context.getOrderService().getOrderFrequencyByConcept(concept);
+			}
+		}
+		return frequency;
 	}
 	
 	/**

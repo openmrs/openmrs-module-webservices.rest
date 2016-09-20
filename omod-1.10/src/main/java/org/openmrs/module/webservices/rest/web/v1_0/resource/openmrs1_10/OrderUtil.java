@@ -42,7 +42,7 @@ public class OrderUtil {
 	 * @return
 	 */
 	public static List<Order> getOrders(Patient patient, CareSetting careSetting, OrderType orderType, String status,
-	                                    Date asOfDate, boolean includeVoided) {
+	        Date asOfDate, boolean includeVoided) {
 		
 		OrderService os = Context.getOrderService();
 		if (!INACTIVE.equals(status) && !ANY.equals(status)) {

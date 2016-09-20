@@ -37,7 +37,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * Exposes the {@link DrugOrder} subclass as a type in {@link OrderResource1_8}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*"})
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*" })
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
 	
 	/**
@@ -73,8 +73,8 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Order.class);
+			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
+			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("dose");
 			d.addProperty("units");
@@ -85,8 +85,8 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 			d.addProperty("drug", Representation.REF);
 			return d;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Order.class);
+			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
+			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("dose");
 			d.addProperty("units");
@@ -105,8 +105,8 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-		    Order.class);
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Order.class);
 		DelegatingResourceDescription d = orderResource.getCreatableProperties();
 		d.addProperty("dose");
 		d.addProperty("units");

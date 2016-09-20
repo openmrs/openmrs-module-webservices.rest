@@ -45,7 +45,7 @@ import org.springframework.util.ReflectionUtils;
  */
 @Ignore
 public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTest {
-
+	
 	/**
 	 * This test looks at all subclasses of DelegatingCrudResource, and test all {@link RepHandler}
 	 * methods to make sure they are all capable of running without exceptions. It also checks that
@@ -99,8 +99,8 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 								//TODO replace this hacky way that we are using to check if there is a get method for a 
 								//collection that has no actual getter e.g activeIdentifers and activeAttributes for Patient
 								if (!hasFieldOrPropertySetter) {
-									hasFieldOrPropertySetter = (ReflectionUtils.findMethod(openmrsClass, "get"
-									        + StringUtils.capitalize(key)) != null);
+									hasFieldOrPropertySetter = (ReflectionUtils.findMethod(openmrsClass,
+									    "get" + StringUtils.capitalize(key)) != null);
 									if (!hasFieldOrPropertySetter && isUserResource)
 										hasFieldOrPropertySetter = (ReflectionUtils.findMethod(User.class, "get"
 										        + StringUtils.capitalize(key)) != null);

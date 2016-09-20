@@ -31,7 +31,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * This is a contrived example for testing purposes
  */
-@SubClassHandler(supportedClass = HivDrugOrder.class, supportedOpenmrsVersions = {"1.8.*"})
+@SubClassHandler(supportedClass = HivDrugOrder.class, supportedOpenmrsVersions = { "1.8.*" })
 public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<Order, HivDrugOrder> implements DelegatingSubclassHandler<Order, HivDrugOrder> {
 	
 	/**

@@ -39,7 +39,8 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link FieldAnswer}, supporting standard CRUD operations
  */
-@SubResource(parent = FieldResource1_8.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@SubResource(parent = FieldResource1_8.class, path = "answer", supportedClass = FieldAnswer.class, supportedOpenmrsVersions = {
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, Field, FieldResource1_8> {
 	
 	@Override
@@ -139,8 +140,9 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 			return null;
 		
 		return new StringBuilder().append(delegate.getField() == null ? "Null Field" : delegate.getField().getName())
-		        .append(" - ").append(
-		            delegate.getConcept() == null ? "Null Concept" : delegate.getConcept().getName().toString()).toString();
+		        .append(" - ")
+		        .append(delegate.getConcept() == null ? "Null Concept" : delegate.getConcept().getName().toString())
+		        .toString();
 	}
 	
 	/**

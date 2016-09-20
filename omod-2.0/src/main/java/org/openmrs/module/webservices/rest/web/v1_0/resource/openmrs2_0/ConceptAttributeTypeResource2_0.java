@@ -24,16 +24,17 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
 /**
  * Allows standard CRUD for the {@link ConceptAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptattributetype", supportedClass = ConceptAttributeType.class, supportedOpenmrsVersions = { "2.0.*", "2.1.*" })
+@Resource(name = RestConstants.VERSION_1 + "/conceptattributetype", supportedClass = ConceptAttributeType.class, supportedOpenmrsVersions = {
+        "2.0.*", "2.1.*" })
 public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResource1_9<ConceptAttributeType> {
-
+	
 	public ConceptAttributeTypeResource2_0() {
 	}
-
+	
 	private ConceptService service() {
 		return Context.getConceptService();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(String)
 	 */
@@ -41,7 +42,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	public ConceptAttributeType getByUniqueId(String uniqueId) {
 		return service().getConceptAttributeTypeByUuid(uniqueId);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(RequestContext)
 	 */
@@ -49,7 +50,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	protected NeedsPaging<ConceptAttributeType> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<ConceptAttributeType>(service().getAllConceptAttributeTypes(), context);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
@@ -57,7 +58,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	public ConceptAttributeType newDelegate() {
 		return new ConceptAttributeType();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(Object)
 	 */
@@ -65,7 +66,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	public ConceptAttributeType save(ConceptAttributeType delegate) {
 		return service().saveConceptAttributeType(delegate);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(Object,
 	 *      RequestContext)
@@ -74,7 +75,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	public void purge(ConceptAttributeType delegate, RequestContext context) throws ResponseException {
 		service().purgeConceptAttributeType(delegate);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(RequestContext)
 	 */
@@ -82,7 +83,7 @@ public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResour
 	protected NeedsPaging<ConceptAttributeType> doSearch(RequestContext context) {
 		return new NeedsPaging<ConceptAttributeType>(service().getConceptAttributeTypes(context.getParameter("q")), context);
 	}
-
+	
 	@Override
 	public String getResourceVersion() {
 		return "2.0";

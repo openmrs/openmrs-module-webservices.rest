@@ -6,9 +6,9 @@ import org.openmrs.test.Verifies;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
-
-    // this is only enabled in OpenMRS 1.9 and 1.10, so we include it in the tests for these specific versions
-
+	
+	// this is only enabled in OpenMRS 1.9 and 1.10, so we include it in the tests for these specific versions
+	
 	/**
 	 * @see {@link org.openmrs.validator.ValidateUtil#validate(Object)}
 	 */

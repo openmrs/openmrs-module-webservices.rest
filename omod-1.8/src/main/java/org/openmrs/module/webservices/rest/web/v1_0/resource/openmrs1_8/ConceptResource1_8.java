@@ -83,33 +83,35 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
 	@RepHandler(FullRepresentation.class)
 	public SimpleObject asFull(Concept delegate) throws ConversionException {
-        DelegatingResourceDescription description = fullRepresentationDescription(delegate);
+		DelegatingResourceDescription description = fullRepresentationDescription(delegate);
 		return convertDelegateToRepresentation(delegate, description);
 	}
-
-    @RepHandler(value = NamedRepresentation.class, name = "fullchildren")
-    public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
+	
+	@RepHandler(value = NamedRepresentation.class, name = "fullchildren")
+	public SimpleObject asFullChildren(Concept delegate) throws ConversionException {
 		Set<String> path = new HashSet<String>();
 		path.add(delegate.getUuid());
 		assertNoCycles(delegate, path);
-
-        return asFullChildrenInternal(delegate);
-    }
-
+		
+		return asFullChildrenInternal(delegate);
+	}
+	
 	protected void assertNoCycles(Concept delegate, Set<String> path) throws ConversionException {
-		for (Concept member: delegate.getSetMembers()) {
+		for (Concept member : delegate.getSetMembers()) {
 			if (path.add(member.getUuid())) {
 				assertNoCycles(member, path);
 			} else {
-				throw new ConversionException("Cycles in children are not supported. Concept with uuid " + delegate.getUuid() + " repeats in a set.");
+				throw new ConversionException("Cycles in children are not supported. Concept with uuid "
+				        + delegate.getUuid() + " repeats in a set.");
 			}
 			path.remove(member.getUuid());
 		}
 	}
-
+	
 	/**
-	 * It is used internally for the fullchildren representation. Contrary to the fullchildren handler it does not check for cycles.
-	 *
+	 * It is used internally for the fullchildren representation. Contrary to the fullchildren
+	 * handler it does not check for cycles.
+	 * 
 	 * @param delegate
 	 * @return
 	 * @throws ConversionException
@@ -123,48 +125,48 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		description.addProperty("answers", Representation.FULL);
 		return convertDelegateToRepresentation(delegate, description);
 	}
-
+	
 	@Override
-    public List<Representation> getAvailableRepresentations() {
-        List<Representation> availableRepresentations = super.getAvailableRepresentations();
-        availableRepresentations.add(new NamedRepresentation("fullchildren"));
-        return availableRepresentations;
-    }
-
-    protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addProperty("uuid");
-        description.addProperty("display");
-        description.addProperty("name", Representation.DEFAULT);
-        description.addProperty("datatype", Representation.DEFAULT);
-        description.addProperty("conceptClass", Representation.DEFAULT);
-        description.addProperty("set");
-        description.addProperty("version");
-        description.addProperty("retired");
-
-        description.addProperty("names", Representation.DEFAULT);
-        description.addProperty("descriptions", Representation.DEFAULT);
-
-        description.addProperty("mappings", Representation.DEFAULT);
-
-        description.addProperty("answers", Representation.DEFAULT);
-        description.addProperty("setMembers", Representation.DEFAULT);
-        description.addProperty("auditInfo");
-        description.addSelfLink();
-        if (delegate.isNumeric()) {
-            description.addProperty("hiNormal");
-            description.addProperty("hiAbsolute");
-            description.addProperty("hiCritical");
-            description.addProperty("lowNormal");
-            description.addProperty("lowAbsolute");
-            description.addProperty("lowCritical");
-            description.addProperty("units");
-            description.addProperty("precise");
-        }
-        return description;
-    }
-
-    /**
+	public List<Representation> getAvailableRepresentations() {
+		List<Representation> availableRepresentations = super.getAvailableRepresentations();
+		availableRepresentations.add(new NamedRepresentation("fullchildren"));
+		return availableRepresentations;
+	}
+	
+	protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display");
+		description.addProperty("name", Representation.DEFAULT);
+		description.addProperty("datatype", Representation.DEFAULT);
+		description.addProperty("conceptClass", Representation.DEFAULT);
+		description.addProperty("set");
+		description.addProperty("version");
+		description.addProperty("retired");
+		
+		description.addProperty("names", Representation.DEFAULT);
+		description.addProperty("descriptions", Representation.DEFAULT);
+		
+		description.addProperty("mappings", Representation.DEFAULT);
+		
+		description.addProperty("answers", Representation.DEFAULT);
+		description.addProperty("setMembers", Representation.DEFAULT);
+		description.addProperty("auditInfo");
+		description.addSelfLink();
+		if (delegate.isNumeric()) {
+			description.addProperty("hiNormal");
+			description.addProperty("hiAbsolute");
+			description.addProperty("hiCritical");
+			description.addProperty("lowNormal");
+			description.addProperty("lowAbsolute");
+			description.addProperty("lowCritical");
+			description.addProperty("units");
+			description.addProperty("precise");
+		}
+		return description;
+	}
+	
+	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
@@ -215,12 +217,12 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		
 		//ConceptNumeric properties
 		description.addProperty("hiNormal");
-        description.addProperty("hiAbsolute");
-        description.addProperty("hiCritical");
-        description.addProperty("lowNormal");
-        description.addProperty("lowAbsolute");
-        description.addProperty("lowCritical");
-        description.addProperty("units");
+		description.addProperty("hiAbsolute");
+		description.addProperty("hiCritical");
+		description.addProperty("lowNormal");
+		description.addProperty("lowAbsolute");
+		description.addProperty("lowCritical");
+		description.addProperty("units");
 		description.addProperty("allowDecimal");
 		description.addProperty("displayPrecision");
 		return description;
@@ -262,43 +264,43 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
 	/**
 	 * It's needed, because of ConversionException: Don't know how to handle collection class:
-	 * interface java.util.Collection
-	 *
-	 * If request to update Concept updates ConceptName, adequate resource takes care of it,
-	 * so this method just adds new and removes deleted names.
-	 *
+	 * interface java.util.Collection If request to update Concept updates ConceptName, adequate
+	 * resource takes care of it, so this method just adds new and removes deleted names.
+	 * 
 	 * @param instance
 	 * @param names
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 */
 	@PropertySetter("names")
-	public static void setNames(Concept instance, List<ConceptName> names)
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
-		new HibernateCollectionHelper<Concept, ConceptName>(instance) {
+	public static void setNames(Concept instance, List<ConceptName> names) throws IllegalAccessException,
+	        InvocationTargetException, NoSuchMethodException {
+		
+		new HibernateCollectionHelper<Concept, ConceptName>(
+		                                                    instance) {
+			
 			@Override
 			public int compare(ConceptName left, ConceptName right) {
-				if(Objects.equals(left.getUuid(), right.getUuid())){
+				if (Objects.equals(left.getUuid(), right.getUuid())) {
 					return 0;
 				}
 				boolean areEqual = (Objects.equals(left.getName(), right.getName())
-						&& Objects.equals(left.getConceptNameType(), right.getConceptNameType())
-						&& Objects.equals(left.getLocale(), right.getLocale()));
+				        && Objects.equals(left.getConceptNameType(), right.getConceptNameType()) && Objects.equals(
+				    left.getLocale(), right.getLocale()));
 				return areEqual ? 0 : 1;
 			}
-
+			
 			@Override
 			public Collection<ConceptName> getAll() {
 				return instance.getNames();
 			}
-
+			
 			@Override
 			public void add(ConceptName item) {
 				instance.addName(item);
 			}
-
+			
 			@Override
 			public void remove(ConceptName item) {
 				instance.removeName(item);
@@ -312,49 +314,51 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * 
 	 * @param instance
 	 * @param descriptions
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	 * @throws NoSuchMethodException
+	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException
 	 */
 	@PropertySetter("descriptions")
-	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
-		new HibernateCollectionHelper<Concept, ConceptDescription>(instance) {
+	public static void setDescriptions(Concept instance, List<ConceptDescription> descriptions)
+	        throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		
+		new HibernateCollectionHelper<Concept, ConceptDescription>(
+		                                                           instance) {
+			
 			@Override
 			public int compare(ConceptDescription left, ConceptDescription right) {
-				if(Objects.equals(left.getUuid(), right.getUuid())){
+				if (Objects.equals(left.getUuid(), right.getUuid())) {
 					return 0;
 				}
-				boolean areEqual = (Objects.equals(left.getDescription(), right.getDescription())
-						&& Objects.equals(left.getLocale(), right.getLocale()));
+				boolean areEqual = (Objects.equals(left.getDescription(), right.getDescription()) && Objects.equals(
+				    left.getLocale(), right.getLocale()));
 				return areEqual ? 0 : 1;
 			}
-
+			
 			@Override
 			public Collection<ConceptDescription> getAll() {
 				return instance.getDescriptions();
 			}
-
+			
 			@Override
 			public void add(ConceptDescription item) {
 				instance.addDescription(item);
 			}
-
+			
 			@Override
 			public void remove(ConceptDescription item) {
 				instance.removeDescription(item);
 			}
 		}.set(descriptions);
 	}
-
+	
 	/**
-	* It's needed, because of ConversionException: Don't know how to handle collection class:
-	* interface java.util.Collection
-	*
-	* @param instance
-	* @param mappings
-	*/
+	 * It's needed, because of ConversionException: Don't know how to handle collection class:
+	 * interface java.util.Collection
+	 * 
+	 * @param instance
+	 * @param mappings
+	 */
 	@PropertySetter("mappings")
 	public static void setMappings(Concept instance, List<ConceptMap> mappings) {
 		instance.getConceptMappings().clear();
@@ -362,15 +366,15 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			instance.addConceptMapping(map);
 		}
 	}
-
+	
 	@PropertyGetter("mappings")
 	public static List<ConceptMap> getMappings(Concept instance) {
 		return new ArrayList<ConceptMap>(instance.getConceptMappings());
 	}
-
+	
 	/**
 	 * Gets the display name of the Concept delegate
-	 *
+	 * 
 	 * @param instance the delegate instance to get the display name off
 	 */
 	@PropertyGetter("display")
@@ -501,9 +505,9 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		
 		PageableResult result = null;
 		if (canPage) {
-			Integer count = service.getCountOfConcepts(context.getParameter("q"), locales, false, Collections
-			        .<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(), Collections
-			        .<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
+			Integer count = service.getCountOfConcepts(context.getParameter("q"), locales, false,
+			    Collections.<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(),
+			    Collections.<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
 			boolean hasMore = count > startIndex + limit;
 			result = new AlreadyPaged<Concept>(context, results, hasMore);
 		} else {

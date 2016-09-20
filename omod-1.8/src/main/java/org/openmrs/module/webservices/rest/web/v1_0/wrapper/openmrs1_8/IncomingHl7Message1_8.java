@@ -34,7 +34,7 @@ public class IncomingHl7Message1_8 extends BaseOpenmrsData implements Serializab
 	
 	private String data;
 	
-	/** Status of hl7 message*/
+	/** Status of hl7 message */
 	private Integer messageState;
 	
 	/**

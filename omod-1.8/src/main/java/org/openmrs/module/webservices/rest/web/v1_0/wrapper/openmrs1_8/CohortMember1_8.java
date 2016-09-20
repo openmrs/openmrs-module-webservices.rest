@@ -21,8 +21,8 @@ import org.openmrs.Cohort;
 import org.openmrs.Patient;
 
 /**
- * This class is a wrapper for {@link org.openmrs.Cohort} and {@link org.openmrs.Patient} that needs 
- * to be sent for adding/removing members from a cohort.  
+ * This class is a wrapper for {@link org.openmrs.Cohort} and {@link org.openmrs.Patient} that needs
+ * to be sent for adding/removing members from a cohort.
  */
 public class CohortMember1_8 implements Serializable {
 	
@@ -30,10 +30,10 @@ public class CohortMember1_8 implements Serializable {
 	
 	private static final Log log = LogFactory.getLog(UserAndPassword1_8.class);
 	
-	/** Patient, who exists in cohort*/
+	/** Patient, who exists in cohort */
 	private Patient patient;
 	
-	/** Parent cohort*/
+	/** Parent cohort */
 	private Cohort cohort;
 	
 	/**
@@ -45,7 +45,8 @@ public class CohortMember1_8 implements Serializable {
 	}
 	
 	/**
-	 * Copier constructor to set fields 
+	 * Copier constructor to set fields
+	 * 
 	 * @param patient
 	 * @param cohort
 	 */

@@ -16,43 +16,44 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormReso
 
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, order = 10,
-        supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
-public class FormResource1_9 extends FormResource1_8{
-    // TODO: Find out why autowiring is failing, in the mean time use Context.getService
-//    @Autowired
-//    private FormService formService;
-
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-        if (rep instanceof DefaultRepresentation) {
-            description.addProperty("resources", Representation.REF);
-            return description;
-        } else if (rep instanceof FullRepresentation) {
-            description.removeProperty("xslt");
-            description.removeProperty("template");
-            description.addProperty("resources");
-            return description;
-        }
-        return null;
-    }
-
-    @PropertyGetter("resources")
-    public List<FormResource> getFormResources(Form form) {
-        FormService formService = Context.getFormService();
-        return (List<FormResource>)formService.getFormResourcesForForm(form);
-    }
-
-    @PropertySetter("resources")
-    public  void setFormResources(Form form, List<FormResource> resources) {
-        for(FormResource resource: resources) {
-            resource.setForm(form);
-        }
-    }
-
-    @Override
-    public String getResourceVersion() {
-        return RestConstants1_9.RESOURCE_VERSION;
-    }
+@Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, order = 10, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
+public class FormResource1_9 extends FormResource1_8 {
+	
+	// TODO: Find out why autowiring is failing, in the mean time use Context.getService
+	//    @Autowired
+	//    private FormService formService;
+	
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+		if (rep instanceof DefaultRepresentation) {
+			description.addProperty("resources", Representation.REF);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			description.removeProperty("xslt");
+			description.removeProperty("template");
+			description.addProperty("resources");
+			return description;
+		}
+		return null;
+	}
+	
+	@PropertyGetter("resources")
+	public List<FormResource> getFormResources(Form form) {
+		FormService formService = Context.getFormService();
+		return (List<FormResource>) formService.getFormResourcesForForm(form);
+	}
+	
+	@PropertySetter("resources")
+	public void setFormResources(Form form, List<FormResource> resources) {
+		for (FormResource resource : resources) {
+			resource.setForm(form);
+		}
+	}
+	
+	@Override
+	public String getResourceVersion() {
+		return RestConstants1_9.RESOURCE_VERSION;
+	}
 }

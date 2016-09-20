@@ -29,13 +29,13 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.Concept
 import java.util.Arrays;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = { "2.0.*",
+        "2.1.*" })
 public class ConceptResource2_0 extends ConceptResource1_11 {
-
-
+	
 	/**
 	 * Sets attributes on the given Concept.
-	 *
+	 * 
 	 * @param instance
 	 * @param attrs
 	 */
@@ -45,7 +45,7 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 			instance.addAttribute(attr);
 		}
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#fullRepresentationDescription(Concept)
 	 */
@@ -55,7 +55,7 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 		description.addProperty("attributes", "activeAttributes", Representation.DEFAULT);
 		return description;
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
@@ -68,7 +68,7 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -78,7 +78,7 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 		description.addProperty("attributes");
 		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -88,7 +88,7 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 		description.addProperty("attributes");
 		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
 	 */
@@ -96,12 +96,12 @@ public class ConceptResource2_0 extends ConceptResource1_11 {
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("attributes");
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
 	public String getResourceVersion() {
-	    return RestConstants2_0.RESOURCE_VERSION;
+		return RestConstants2_0.RESOURCE_VERSION;
 	}
 }

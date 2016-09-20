@@ -45,7 +45,7 @@ public class OrderResource1_8Test extends BaseDelegatingResourceTest<OrderResour
 	 * @see OrderResource1_8#doGetAll(RequestContext)
 	 * @verifies return all Orders (including retired) if context.includeAll is set
 	 */
-	@SuppressWarnings( { "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void doGetAll_shouldReturnAllOrdersIncludingRetiredIfContextincludeAllIsSet() throws Exception {
 		OrderResource1_8 or = getResource();

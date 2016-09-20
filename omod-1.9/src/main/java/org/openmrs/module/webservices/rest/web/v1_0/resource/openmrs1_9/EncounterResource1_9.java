@@ -32,77 +32,78 @@ import java.util.Set;
 /**
  * {@link Resource} for {@link EncounterResource1_9}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8 {
-
-    /**
-     * @see DelegatingCrudResource#getRepresentationDescription(Representation)
-     */
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        if (rep instanceof DefaultRepresentation) {
-            DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-            description.addProperty("visit", Representation.REF);
-            description.removeProperty("provider");
-            description.addProperty("encounterProviders", Representation.REF);
-            return description;
-        } else if (rep instanceof FullRepresentation) {
-            DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-            description.addProperty("visit", Representation.DEFAULT);
-            description.removeProperty("provider");
-            description.addProperty("encounterProviders", Representation.DEFAULT);
-            return description;
-        }
-        return null;
-    }
-
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-        DelegatingResourceDescription description = super.getUpdatableProperties();
-        description.addProperty("encounterProviders");
-        return description;
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-     */
-    @Override
-    public DelegatingResourceDescription getCreatableProperties() {
-        DelegatingResourceDescription description = super.getCreatableProperties();
-        description.addProperty("visit");
-        description.addProperty("encounterProviders");
-        return description;
-    }
-
-    @Override
-    public Encounter save(Encounter delegate) {
-        //This is a hack to save encounterProviders correctly. Without this they are created without encounter_id in
-        //the database.
-        for (EncounterProvider ep : delegate.getEncounterProviders()) {
-            ep.setEncounter(delegate);
-        }
-        Context.getEncounterService().saveEncounter(delegate);
-        return delegate;
-    }
-
-    @PropertyGetter("encounterProviders")
-    public static Set<EncounterProvider> getActiveEncounterProviders(Encounter instance) {
-    	Set<EncounterProvider> encounterProviders = instance.getEncounterProviders();
-    	Set<EncounterProvider> providers = new LinkedHashSet<EncounterProvider>();
-    	for (EncounterProvider encounterProvider : encounterProviders) {
-    		if (!encounterProvider.isVoided()) {
-    			providers.add(encounterProvider);
-	        }
-        }
-        return providers;
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
-     */
-    @Override
-    public String getResourceVersion() {
-        return RestConstants1_9.RESOURCE_VERSION;
-    }
-
+	
+	/**
+	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
+	 */
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		if (rep instanceof DefaultRepresentation) {
+			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			description.addProperty("visit", Representation.REF);
+			description.removeProperty("provider");
+			description.addProperty("encounterProviders", Representation.REF);
+			return description;
+		} else if (rep instanceof FullRepresentation) {
+			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+			description.addProperty("visit", Representation.DEFAULT);
+			description.removeProperty("provider");
+			description.addProperty("encounterProviders", Representation.DEFAULT);
+			return description;
+		}
+		return null;
+	}
+	
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.addProperty("encounterProviders");
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("visit");
+		description.addProperty("encounterProviders");
+		return description;
+	}
+	
+	@Override
+	public Encounter save(Encounter delegate) {
+		//This is a hack to save encounterProviders correctly. Without this they are created without encounter_id in
+		//the database.
+		for (EncounterProvider ep : delegate.getEncounterProviders()) {
+			ep.setEncounter(delegate);
+		}
+		Context.getEncounterService().saveEncounter(delegate);
+		return delegate;
+	}
+	
+	@PropertyGetter("encounterProviders")
+	public static Set<EncounterProvider> getActiveEncounterProviders(Encounter instance) {
+		Set<EncounterProvider> encounterProviders = instance.getEncounterProviders();
+		Set<EncounterProvider> providers = new LinkedHashSet<EncounterProvider>();
+		for (EncounterProvider encounterProvider : encounterProviders) {
+			if (!encounterProvider.isVoided()) {
+				providers.add(encounterProvider);
+			}
+		}
+		return providers;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return RestConstants1_9.RESOURCE_VERSION;
+	}
+	
 }

@@ -52,7 +52,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {"1.8.*"})
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
@@ -182,7 +182,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
 	 * Display string for Obs
-	 *
+	 * 
 	 * @param obs
 	 * @return String ConceptName = value
 	 */
@@ -196,7 +196,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	
 	/**
 	 * Retrives the Obs Value as string
-	 *
+	 * 
 	 * @param obs
 	 * @return
 	 */
@@ -206,46 +206,45 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 			return null;
 		
 		if (obs.getValueDatetime() != null) {
-            return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
-        }
-
+			return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
+		}
+		
 		if (obs.getValueDrug() != null) {
 			return obs.getValueDrug();
 		}
-
+		
 		if (obs.getValueCoded() != null) {
-            return obs.getValueCoded();
-        }
+			return obs.getValueCoded();
+		}
 		
 		if (obs.getValueComplex() != null) {
-            return obs.getValueComplex();
-        }
+			return obs.getValueComplex();
+		}
 		
 		if (obs.getValueText() != null) {
-            if ("org.openmrs.Location".equals(obs.getComment())) {  // string first to make it null-safe
-                try {
-                   return Context.getLocationService().getLocation(new Integer(obs.getValueText()));
-                }
-                catch (NumberFormatException e) {
-                    return Context.getLocationService().getLocationByUuid(obs.getValueText());
-                }
-            }
-            else {
-                return obs.getValueText();
-            }
-
-        }
+			if ("org.openmrs.Location".equals(obs.getComment())) { // string first to make it null-safe
+				try {
+					return Context.getLocationService().getLocation(new Integer(obs.getValueText()));
+				}
+				catch (NumberFormatException e) {
+					return Context.getLocationService().getLocationByUuid(obs.getValueText());
+				}
+			} else {
+				return obs.getValueText();
+			}
+			
+		}
 		
 		if (obs.getValueNumeric() != null) {
-            return obs.getValueNumeric();
-        }
+			return obs.getValueNumeric();
+		}
 		
 		return null;
 	}
-
+	
 	/**
 	 * Sets the members of an obs group
-	 *
+	 * 
 	 * @param obsGroup the obs group whose members to set
 	 * @param members the members to set
 	 */
@@ -253,15 +252,15 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
 		for (Obs member : members) {
 			member.setObsGroup(obsGroup);
-			member.setGroupMembers(Collections.<Obs>emptySet());
+			member.setGroupMembers(Collections.<Obs> emptySet());
 		}
 		obsGroup.setGroupMembers(members);
 	}
-
+	
 	/**
 	 * Checks if there are more than one obs in GroupMembers and converts into a DEFAULT
 	 * representation
-	 *
+	 * 
 	 * @param obs
 	 * @return Object
 	 * @throws ConversionException
@@ -273,10 +272,10 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Annotated setter for Concept
-	 *
+	 * 
 	 * @param obs
 	 * @param value
 	 */
@@ -284,10 +283,10 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	public static void setConcept(Obs obs, Object value) {
 		obs.setConcept(Context.getConceptService().getConceptByUuid((String) value));
 	}
-
+	
 	/**
 	 * Annotated setter for ConceptValue
-	 *
+	 * 
 	 * @param obs
 	 * @param value
 	 * @throws ParseException
@@ -297,7 +296,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	 * @should throw exception on unexpected value
 	 * @should return uuid for primitive true
 	 * @should return uuid for primitive false
-	 *
 	 */
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException {
@@ -314,11 +312,11 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 					} else {
 						throw new ObjectNotFoundException();
 					}
-
-				} else  {
+					
+				} else {
 					obs.setValueCoded(valueCoded);
 				}
-
+				
 			} else {
 				if (obs.getConcept().isNumeric()) {
 					//get the actual persistent object rather than the hibernate proxy
@@ -339,31 +337,30 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 						}
 					}
 				} else if (obs.getConcept().getDatatype().isBoolean()) {
-                    if (value instanceof Concept) {
-                        value = ((Concept)value).getUuid();
-                    }
-                    if(value.equals(Context.getConceptService().getTrueConcept().getUuid())) {
-                        value = true;
-                    } else if(value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
-                        value = false;
-                    } else if(!value.getClass().isAssignableFrom(Boolean.class)) {
-                    	List<String> trueValues = Arrays.asList("true", "1", "on", "yes");
-                    	List<String> falseValues = Arrays.asList("false", "0", "off", "no");
-                    	
-                    	String val = value.toString().trim().toLowerCase();
-                    	if (trueValues.contains(val)) {
-                    		value = Boolean.TRUE;
-                    	}
-                    	else if (falseValues.contains(val)) {
-                    		value = Boolean.FALSE;
-                    	}
-                    	
-                    	if (!(Boolean.TRUE.equals(value) || Boolean.FALSE.equals(value))) {
-	                        throw new ConversionException("Unexpected value: " + value +
-	                                " set as the value of boolean. " + trueValues + falseValues + ", ConceptService.getTrueConcept or " +
-	                                ", ConceptService.getFalseConcept expected");
-                    	}
-                    }
+					if (value instanceof Concept) {
+						value = ((Concept) value).getUuid();
+					}
+					if (value.equals(Context.getConceptService().getTrueConcept().getUuid())) {
+						value = true;
+					} else if (value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
+						value = false;
+					} else if (!value.getClass().isAssignableFrom(Boolean.class)) {
+						List<String> trueValues = Arrays.asList("true", "1", "on", "yes");
+						List<String> falseValues = Arrays.asList("false", "0", "off", "no");
+						
+						String val = value.toString().trim().toLowerCase();
+						if (trueValues.contains(val)) {
+							value = Boolean.TRUE;
+						} else if (falseValues.contains(val)) {
+							value = Boolean.FALSE;
+						}
+						
+						if (!(Boolean.TRUE.equals(value) || Boolean.FALSE.equals(value))) {
+							throw new ConversionException("Unexpected value: " + value + " set as the value of boolean. "
+							        + trueValues + falseValues + ", ConceptService.getTrueConcept or "
+							        + ", ConceptService.getFalseConcept expected");
+						}
+					}
 				}
 				obs.setValueAsString(value.toString());
 			}
@@ -375,7 +372,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 	 * Gets obs by patient or encounter (paged according to context if necessary) only if a patient
 	 * or encounter parameter exists respectively in the request set on the {@link RequestContext}
 	 * otherwise searches for obs that match the specified query
-	 *
+	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -384,7 +381,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-					Patient.class)).getByUniqueId(patientUuid);
+			    Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
 			List<Obs> obs = Context.getObsService().getObservationsByPerson(patient);
@@ -394,7 +391,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		String encounterUuid = context.getRequest().getParameter("encounter");
 		if (encounterUuid != null) {
 			Encounter enc = ((EncounterResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-					Encounter.class)).getByUniqueId(encounterUuid);
+			    Encounter.class)).getByUniqueId(encounterUuid);
 			if (enc == null)
 				return new EmptySearchResult();
 			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
@@ -403,5 +400,5 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> {
 		
 		return new NeedsPaging<Obs>(Context.getObsService().getObservations(context.getParameter("q")), context);
 	}
-
+	
 }

@@ -41,7 +41,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugOrde
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"})
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.10.*", "1.11.*", "1.12.*" })
 public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	
 	/**
@@ -70,7 +70,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-            d.addProperty("display");
+			d.addProperty("display");
 			d.addProperty("drug", Representation.REF);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
@@ -186,11 +186,13 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		} else {
 			ret.append(delegate.getConcept().getDisplayString());
 		}
-        if (Order.Action.DISCONTINUE != delegate.getAction() && delegate.getDosingType() != null && delegate.getDosingInstructionsInstance() != null) {
-            String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
-            ret.append(": ");
-            ret.append(dosingInstructionsAsString);
-        }
+		if (Order.Action.DISCONTINUE != delegate.getAction() && delegate.getDosingType() != null
+		        && delegate.getDosingInstructionsInstance() != null) {
+			String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(
+			    Context.getLocale());
+			ret.append(": ");
+			ret.append(dosingInstructionsAsString);
+		}
 		
 		return ret.toString();
 	}

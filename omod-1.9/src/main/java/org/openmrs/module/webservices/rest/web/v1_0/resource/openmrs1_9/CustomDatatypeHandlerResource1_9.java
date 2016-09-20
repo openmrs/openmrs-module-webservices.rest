@@ -20,12 +20,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@SubResource(parent = CustomDatatypeResource1_9.class, path = "handlers", supportedClass = CustomDatatypeHandlerRepresentation.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"})
+@SubResource(parent = CustomDatatypeResource1_9.class, path = "handlers", supportedClass = CustomDatatypeHandlerRepresentation.class, supportedOpenmrsVersions = {
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<CustomDatatypeHandlerRepresentation, CustomDatatypeRepresentation, CustomDatatypeResource1_9> {
 	
-
 	@Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
 		description.addProperty("handlerClassname");
@@ -33,47 +33,47 @@ public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<Cust
 		description.addSelfLink();
 		description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 		return description;
-    }
-
+	}
+	
 	@Override
-    public CustomDatatypeHandlerRepresentation newDelegate() {
-	    return new CustomDatatypeHandlerRepresentation();
-    }
-
+	public CustomDatatypeHandlerRepresentation newDelegate() {
+		return new CustomDatatypeHandlerRepresentation();
+	}
+	
 	@Override
-    public CustomDatatypeHandlerRepresentation save(CustomDatatypeHandlerRepresentation delegate) {
+	public CustomDatatypeHandlerRepresentation save(CustomDatatypeHandlerRepresentation delegate) {
 		throw new ResourceDoesNotSupportOperationException();
-    }
-
+	}
+	
 	@Override
-    public CustomDatatypeRepresentation getParent(CustomDatatypeHandlerRepresentation instance) {
-	    return instance.getParent();
-    }
-
+	public CustomDatatypeRepresentation getParent(CustomDatatypeHandlerRepresentation instance) {
+		return instance.getParent();
+	}
+	
 	@Override
-    public void setParent(CustomDatatypeHandlerRepresentation instance, CustomDatatypeRepresentation parent) {
+	public void setParent(CustomDatatypeHandlerRepresentation instance, CustomDatatypeRepresentation parent) {
 		throw new ResourceDoesNotSupportOperationException();
-    }
-
+	}
+	
 	@Override
-    public PageableResult doGetAll(CustomDatatypeRepresentation parent, RequestContext context) throws ResponseException {
-	    return new NeedsPaging<CustomDatatypeHandlerRepresentation>(parent.getHandlers(), context);
-    }
-
+	public PageableResult doGetAll(CustomDatatypeRepresentation parent, RequestContext context) throws ResponseException {
+		return new NeedsPaging<CustomDatatypeHandlerRepresentation>(parent.getHandlers(), context);
+	}
+	
 	@Override
-    public CustomDatatypeHandlerRepresentation getByUniqueId(String uniqueId) {
+	public CustomDatatypeHandlerRepresentation getByUniqueId(String uniqueId) {
 		throw new ResourceDoesNotSupportOperationException();
-    }
-
+	}
+	
 	@Override
-    protected void delete(CustomDatatypeHandlerRepresentation delegate, String reason, RequestContext context)
-            throws ResponseException {
+	protected void delete(CustomDatatypeHandlerRepresentation delegate, String reason, RequestContext context)
+	        throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
-    }
-
+	}
+	
 	@Override
-    public void purge(CustomDatatypeHandlerRepresentation delegate, RequestContext context) throws ResponseException {
+	public void purge(CustomDatatypeHandlerRepresentation delegate, RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
-    }
+	}
 	
 }

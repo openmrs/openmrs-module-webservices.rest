@@ -78,27 +78,29 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	public void shouldGetAPersonByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-
+		
 		Person person = service.getPersonByUuid(getUuid());
 		assertEquals(person.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertNotNull(PropertyUtils.getProperty(result, "preferredName"));
 		assertEquals(person.getGender(), PropertyUtils.getProperty(result, "gender"));
 		assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-
+	
 	@Test
 	public void shouldGetPersonDateCreated() throws Exception {
 		Person person = service.getPersonByUuid(getUuid());
 		Date personDateCreated = new Date();
 		person.setPersonDateCreated(personDateCreated);
 		service.savePerson(person);
-
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", RestConstants.REPRESENTATION_FULL));
+		
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter("v",
+		        RestConstants.REPRESENTATION_FULL));
 		SimpleObject result = deserialize(handle(req));
-
+		
 		Map<String, String> auditInfo = (Map<String, String>) PropertyUtils.getProperty(result, "auditInfo");
-
-		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL), auditInfo.get("dateCreated"));
+		
+		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL),
+		    auditInfo.get("dateCreated"));
 	}
 	
 	@Test
@@ -149,11 +151,11 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		assertFalse(person.isDead());
 		assertNull(person.getCauseOfDeath());
 		String json = "{\"gender\":\"F\",\"dead\":true, \"causeOfDeath\":\"15f83cd6-64e9-4e06-a5f9-364d3b14a43d\"}";
-        SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
-        assertNotNull(response);
-        Object responsePersonContents=PropertyUtils.getProperty(response, "person");
-        assertNotNull(responsePersonContents);
-        assertTrue("F".equals(PropertyUtils.getProperty(responsePersonContents,"gender").toString()));
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		assertNotNull(response);
+		Object responsePersonContents = PropertyUtils.getProperty(response, "person");
+		assertNotNull(responsePersonContents);
+		assertTrue("F".equals(PropertyUtils.getProperty(responsePersonContents, "gender").toString()));
 		assertEquals("F", person.getGender());
 		assertTrue(person.isDead());
 		assertNotNull(person.getCauseOfDeath());
@@ -322,8 +324,8 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		
 		List<SimpleObject> attributes = (List<SimpleObject>) PropertyUtils.getProperty(result, "attributes");
 		assertEquals(2, attributes.size());
-		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(attributes.get(0), "uuid"), PropertyUtils.getProperty(
-		    attributes.get(1), "uuid"));
+		List<Object> uuids = Arrays.asList(PropertyUtils.getProperty(attributes.get(0), "uuid"),
+		    PropertyUtils.getProperty(attributes.get(1), "uuid"));
 		assertFalse(uuids.contains(attributeToVoidUuid));
 	}
 	
@@ -346,7 +348,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		int restCount = Util.getResultsSize(results);
 		assertEquals(fullCount, firstCount + restCount);
 	}
-
+	
 	@Test
 	public void shouldCreateAPersonWithBooleanAttributeWithoutQuotes() throws Exception {
 		executeDataSet("personAttributeTypeWithConcept.xml");
@@ -354,9 +356,8 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		String givenName = "TestName1";
 		String attributeUuid = "55e6ce9e-25bf-11e3-a013-3c0754156a5f";
 		int attributeId = 10;
-		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":true,\"attributeType\":" +
-				"\""+ attributeUuid +"\"}],"+"\"names\": [{\"givenName\":\"" +
-				givenName +"\", \"familyName\":\"TestFamily\"}]}";
+		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":true,\"attributeType\":" + "\"" + attributeUuid
+		        + "\"}]," + "\"names\": [{\"givenName\":\"" + givenName + "\", \"familyName\":\"TestFamily\"}]}";
 		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
 		String uuid = PropertyUtils.getProperty(newPerson, "uuid").toString();
 		Person person = Context.getPersonService().getPersonByUuid(uuid);
@@ -364,7 +365,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		assertEquals(givenName, person.getGivenName());
 		assertEquals("true", person.getAttribute(attributeId).getValue());
 	}
-
+	
 	@Test
 	public void shouldCreateAPersonWithBooleanAttributeWithQuotes() throws Exception {
 		executeDataSet("personAttributeTypeWithConcept.xml");
@@ -372,9 +373,8 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		String givenName = "TestName2";
 		int attributeId = 10;
 		String attributeUuid = "55e6ce9e-25bf-11e3-a013-3c0754156a5f";
-		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":\"true\",\"attributeType\":" +
-				"\""+ attributeUuid +"\"}],"+"\"names\": [{\"givenName\":\"" +
-				givenName +"\", \"familyName\":\"TestFamily\"}]}";
+		String json = "{\"gender\": \"M\", \"attributes\":[{\"value\":\"true\",\"attributeType\":" + "\"" + attributeUuid
+		        + "\"}]," + "\"names\": [{\"givenName\":\"" + givenName + "\", \"familyName\":\"TestFamily\"}]}";
 		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
 		String uuid = PropertyUtils.getProperty(newPerson, "uuid").toString();
 		Person person = Context.getPersonService().getPersonByUuid(uuid);

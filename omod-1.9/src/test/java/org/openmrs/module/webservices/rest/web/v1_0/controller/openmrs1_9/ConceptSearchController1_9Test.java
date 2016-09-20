@@ -86,7 +86,10 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"), isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
+		assertThat(
+		    hits,
+		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
 	@Test
@@ -106,27 +109,32 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		result = deserialize(handle(req));
 		
 		hits = (List<Object>) result.get("results");
-		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"), isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
+		assertThat(
+		    hits,
+		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
 	private Matcher<? super Object> isConceptWithUuid(final String uuid) {
-	    return new TypeSafeMatcher<Object>(Object.class) {
-
+		return new TypeSafeMatcher<Object>(
+		                                   Object.class) {
+			
 			@Override
-            public void describeTo(Description description) {
-            }
-
+			public void describeTo(Description description) {
+			}
+			
 			@Override
-            protected boolean matchesSafely(Object item) {
+			protected boolean matchesSafely(Object item) {
 				@SuppressWarnings("unchecked")
-                Map<String, Object> safeItem = (Map<String, Object>) item;
+				Map<String, Object> safeItem = (Map<String, Object>) item;
 				@SuppressWarnings("unchecked")
-                Map<String, Object> concept = (Map<String, Object>) safeItem.get("concept");
+				Map<String, Object> concept = (Map<String, Object>) safeItem.get("concept");
 				
-	            return uuid.equals(concept.get("uuid"));
-            }};
-    }
-
+				return uuid.equals(concept.get("uuid"));
+			}
+		};
+	}
+	
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {

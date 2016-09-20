@@ -21,14 +21,14 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10;
 
 public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResource1_10, Order> {
-
-    protected static final String ORDER_ENTRY_DATASET_XML = "org/openmrs/api/include/OrderEntryIntegrationTest-other.xml";
-
-    @Before
-    public void before() throws Exception {
-        executeDataSet(ORDER_ENTRY_DATASET_XML);
-    }
-
+	
+	protected static final String ORDER_ENTRY_DATASET_XML = "org/openmrs/api/include/OrderEntryIntegrationTest-other.xml";
+	
+	@Before
+	public void before() throws Exception {
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
+	}
+	
 	/**
 	 * @see BaseDelegatingResourceTest#validateDefaultRepresentation()
 	 */
@@ -55,7 +55,7 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 		assertPropPresent("commentToFulfiller");
 		assertPropPresent("display");
 	}
-
+	
 	/**
 	 * @see BaseDelegatingResourceTest#validateFullRepresentation()
 	 */
@@ -83,7 +83,7 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 		assertPropPresent("display");
 		assertPropPresent("auditInfo");
 	}
-
+	
 	@Override
 	public Order newObject() {
 		return Context.getOrderService().getOrderByUuid(getUuidProperty());

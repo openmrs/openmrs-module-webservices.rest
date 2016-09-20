@@ -23,7 +23,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientI
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/patientidentifiertype", supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {"2.0.*", "2.1.*"})
+@Resource(name = RestConstants.VERSION_1 + "/patientidentifiertype", supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {
+        "2.0.*", "2.1.*" })
 public class PatientIdentifierTypeResource2_0 extends PatientIdentifierTypeResource1_8 {
 	
 	/**

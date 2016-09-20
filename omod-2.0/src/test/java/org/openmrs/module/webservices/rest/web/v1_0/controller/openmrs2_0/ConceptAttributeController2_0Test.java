@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Tests functionality of {@link ConceptAttributeController}.
  */
 public class ConceptAttributeController2_0Test extends MainResourceControllerTest {
-
+	
 	private ConceptService service;
-
+	
 	/**
 	 * @see MainResourceControllerTest#getURI()
 	 */
@@ -37,7 +37,7 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 	public String getURI() {
 		return "concept/" + RestTestConstants2_0.CONCEPT_UUID + "/attribute";
 	}
-
+	
 	/**
 	 * @see MainResourceControllerTest#getUuid()
 	 */
@@ -45,7 +45,7 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 	public String getUuid() {
 		return RestTestConstants2_0.CONCEPT_ATTRIBUTE_UUID;
 	}
-
+	
 	/**
 	 * @see MainResourceControllerTest#getAllCount()
 	 */
@@ -63,7 +63,8 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 	@Test
 	public void shouldAddAttributeToConcept() throws Exception {
 		int before = service.getConceptByUuid(RestTestConstants2_0.CONCEPT_UUID).getAttributes().size();
-		String json = "{\"attributeType\":\"" + RestTestConstants2_0.CONCEPT_ATTRIBUTE_TYPE_UUID+"\", \"value\":\"2012-05-05\"}";
+		String json = "{\"attributeType\":\"" + RestTestConstants2_0.CONCEPT_ATTRIBUTE_TYPE_UUID
+		        + "\", \"value\":\"2012-05-05\"}";
 		handle(newPostRequest(getURI(), json));
 		int after = service.getConceptByUuid(RestTestConstants2_0.CONCEPT_UUID).getAttributes().size();
 		Assert.assertEquals(before + 1, after);
@@ -71,7 +72,8 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 	
 	@Test
 	public void shouldEditConceptAttribute() throws Exception {
-		String json = "{ \"attributeType\":\"" + RestTestConstants2_0.CONCEPT_ATTRIBUTE_TYPE_UUID +"\", \"value\": \"2015-04-12\" }";
+		String json = "{ \"attributeType\":\"" + RestTestConstants2_0.CONCEPT_ATTRIBUTE_TYPE_UUID
+		        + "\", \"value\": \"2015-04-12\" }";
 		
 		ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
 		Assert.assertEquals("2011-04-25", conceptAttribute.getValueReference());

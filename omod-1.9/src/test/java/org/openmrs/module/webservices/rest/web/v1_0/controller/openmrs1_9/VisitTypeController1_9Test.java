@@ -33,37 +33,37 @@ import java.util.List;
 public class VisitTypeController1_9Test extends MainResourceControllerTest {
 	
 	private VisitService service;
-
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
-     */
-    @Override
-    public String getURI() {
-	    return "visittype";
-    }
-
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
+	 */
+	@Override
+	public String getURI() {
+		return "visittype";
+	}
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
-     */
-    @Override
-    public String getUuid() {
-	    return RestTestConstants1_9.VISIT_TYPE_UUID;
-    }
-
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return RestTestConstants1_9.VISIT_TYPE_UUID;
+	}
+	
 	/**
-     * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
-     */
-    @Override
-    public long getAllCount() {
-    	int count = 0;
-    	for (VisitType type : service.getAllVisitTypes()) {
-	        if (!type.isRetired()) {
-	        	count++;
-	        }
-        }
-    	
-	    return count;
-    }
+	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getAllCount()
+	 */
+	@Override
+	public long getAllCount() {
+		int count = 0;
+		for (VisitType type : service.getAllVisitTypes()) {
+			if (!type.isRetired()) {
+				count++;
+			}
+		}
+		
+		return count;
+	}
 	
 	@Before
 	public void before() {
@@ -71,13 +71,12 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetAVisitTypeByName() throws Exception {		
+	public void shouldGetAVisitTypeByName() throws Exception {
 		Object result = deserialize(handle(newGetRequest(getURI() + "/Return TB Clinic Visit")));
 		Assert.assertNotNull(result);
 		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
 	}
-	
 	
 	@Test
 	public void shouldCreateAVisitType() throws Exception {
@@ -138,5 +137,5 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(0, hits.size());
 		
 	}
-
+	
 }

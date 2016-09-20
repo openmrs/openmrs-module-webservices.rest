@@ -98,7 +98,7 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	}
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
-	public void shouldCreateAConceptDatatype() throws Exception {	
+	public void shouldCreateAConceptDatatype() throws Exception {
 		SimpleObject conceptDataType = new SimpleObject();
 		conceptDataType.add("name", "test name");
 		conceptDataType.add("description", "test description");

@@ -185,127 +185,106 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 	
 	@Test
 	public void shouldFindBySourceAndCodeOrName() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "WGT234"),
-				new Parameter("v", "full"))));
-
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT234"), new Parameter("v", "full"))));
+		
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, contains((Matcher) hasEntry("code", "WGT234")));
 	}
-
+	
 	@Test
 	public void shouldFindBySourceAndCodeOrNameAlike() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "WGT"),
-				new Parameter("searchType", "alike"),
-				new Parameter("v", "full"))));
-
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT"), new Parameter("searchType", "alike"),
+		    new Parameter("v", "full"))));
+		
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, contains((Matcher) hasEntry("code", "WGT234")));
 	}
-
+	
 	@Test
 	public void shouldFindByCodeOrNameAlikeName() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("codeOrName", "no term name"),
-				new Parameter("searchType", "alike"),
-				new Parameter("v", "full"))));
-
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("codeOrName", "no term name"),
+		    new Parameter("searchType", "alike"), new Parameter("v", "full"))));
+		
 		List<Object> results = Util.getResultsList(result);
-		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "no term name"),
-				hasEntry("name", "no term name2"), hasEntry("name", "no term name3")));
+		assertThat(
+		    results,
+		    containsInAnyOrder((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+		        hasEntry("name", "no term name3")));
 	}
-
+	
 	@Test
 	public void shouldFindBySourceAndCodeOrNameAlikeName() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "no term name"),
-				new Parameter("searchType", "alike"),
-				new Parameter("v", "full"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "no term name"), new Parameter("searchType",
+		        "alike"), new Parameter("v", "full"))));
 		assertThat(Util.getResultsSize(result), is(3));
 		List<Object> results = Util.getResultsList(result);
-		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "no term name"),
-				hasEntry("name", "no term name2"), hasEntry("name", "no term name3")));
+		assertThat(
+		    results,
+		    containsInAnyOrder((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+		        hasEntry("name", "no term name3")));
 	}
-
+	
 	@Test
 	public void shouldFindBySourceAndCodeOrNameAlikeNameWithPaging() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "no term name"),
-				new Parameter("searchType", "alike"),
-				new Parameter("v", "full"),
-				new Parameter("limit", "2"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "no term name"), new Parameter("searchType",
+		        "alike"), new Parameter("v", "full"), new Parameter("limit", "2"))));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, hasSize(2));
-
-		result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "no term name"),
-				new Parameter("searchType", "alike"),
-				new Parameter("v", "full"),
-				new Parameter("limit", "10"),
-				new Parameter("startIndex", "2"))));
+		
+		result = deserialize(handle(newGetRequest(getURI(), new Parameter("source", "Some Standardized Terminology"),
+		    new Parameter("codeOrName", "no term name"), new Parameter("searchType", "alike"), new Parameter("v", "full"),
+		    new Parameter("limit", "10"), new Parameter("startIndex", "2"))));
 		List<Object> resultsSecondPage = Util.getResultsList(result);
 		assertThat(resultsSecondPage, hasSize(1));
-
+		
 		results.addAll(resultsSecondPage);
-		assertThat(results, hasItems((Matcher) hasEntry("name", "no term name"),
-				hasEntry("name", "no term name2"), hasEntry("name", "no term name3")));
+		assertThat(
+		    results,
+		    hasItems((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+		        hasEntry("name", "no term name3")));
 	}
-
+	
 	@Test
 	public void shouldFindBySourceAndCodeOrNameEqualName() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "no term name"),
-				new Parameter("searchType", "equal"),
-				new Parameter("v", "full"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "no term name"), new Parameter("searchType",
+		        "equal"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, contains((Matcher) hasEntry("name", "no term name")));
 	}
-
+	
 	@Test
 	public void shouldFindByCodeOrNameEqualCode() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("codeOrName", "127689"),
-				new Parameter("searchType", "equal"),
-				new Parameter("v", "full"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("codeOrName", "127689"),
+		    new Parameter("searchType", "equal"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "died term"), hasEntry("name", "married term")));
 	}
-
+	
 	@Test
 	public void shouldFindByCodeOrNameEqualCodeWithLimit() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("codeOrName", "127689"),
-				new Parameter("searchType", "equal"),
-				new Parameter("limit", "1"),
-				new Parameter("v", "full"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("codeOrName", "127689"),
+		    new Parameter("searchType", "equal"), new Parameter("limit", "1"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(result);
 		assertThat(results, hasSize(1));
-
-		result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("codeOrName", "127689"),
-				new Parameter("searchType", "equal"),
-				new Parameter("limit", "5"),
-				new Parameter("startIndex", "1"),
-				new Parameter("v", "full"))));
+		
+		result = deserialize(handle(newGetRequest(getURI(), new Parameter("codeOrName", "127689"), new Parameter(
+		        "searchType", "equal"), new Parameter("limit", "5"), new Parameter("startIndex", "1"), new Parameter("v",
+		        "full"))));
 		List<Object> resultsSecondPage = Util.getResultsList(result);
 		assertThat(resultsSecondPage, hasSize(1));
-
+		
 		results.addAll(resultsSecondPage);
 		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "died term"), hasEntry("name", "married term")));
 	}
-
+	
 	@Test(expected = InvalidSearchException.class)
 	public void shouldThrowExceptionWhenSearchTypeIsInvalid() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
-				new Parameter("source", "Some Standardized Terminology"),
-				new Parameter("codeOrName", "WGT"),
-				new Parameter("searchType", "invalid"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+		        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT"), new Parameter("searchType", "invalid"))));
 	}
 }

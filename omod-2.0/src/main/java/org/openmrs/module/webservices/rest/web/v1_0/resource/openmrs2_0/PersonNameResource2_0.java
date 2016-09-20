@@ -12,23 +12,23 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonNa
 @SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {
         "2.0.*", "2.1.*" })
 public class PersonNameResource2_0 extends PersonNameResource1_8 {
-
+	
 	@Override
 	public String getDisplayString(PersonName personName) {
 		try {
-            NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
-
-            if (nameTemplate!= null) {
-                // need to use reflection since the format method was not added until later versions of openmrs
-                Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
-                return (String) format.invoke(nameTemplate, personName);
-            }
-        }
-        catch (Exception e) {
-            // fall through to just returning full name if no format method found or format fails
-        }
-
-        // otherwise, just return full name
-        return personName.getFullName();
+			NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
+			
+			if (nameTemplate != null) {
+				// need to use reflection since the format method was not added until later versions of openmrs
+				Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
+				return (String) format.invoke(nameTemplate, personName);
+			}
+		}
+		catch (Exception e) {
+			// fall through to just returning full name if no format method found or format fails
+		}
+		
+		// otherwise, just return full name
+		return personName.getFullName();
 	}
 }
