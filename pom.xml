@@ -329,7 +329,6 @@
 						<compilerTargetPlatform>${javaCompilerVersion}</compilerTargetPlatform>
 						<configFile>../OpenMRSFormatter.xml</configFile>
 						<overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
-						<lineEnding>CRLF</lineEnding>
 					</configuration>
 					<executions>
 						<execution>
