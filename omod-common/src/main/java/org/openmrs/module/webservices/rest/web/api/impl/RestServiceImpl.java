@@ -62,15 +62,15 @@ public class RestServiceImpl implements RestService {
 	private volatile List<SearchHandler> allSearchHandlers;
 	
 	private RestHelperService restHelperService;
-
+	
 	public RestHelperService getRestHelperService() {
 		return restHelperService;
 	}
-
+	
 	public void setRestHelperService(RestHelperService restHelperService) {
 		this.restHelperService = restHelperService;
 	}
-
+	
 	public RestServiceImpl() {
 	}
 	
@@ -223,7 +223,7 @@ public class RestServiceImpl implements RestService {
 					//Missing class
 					continue;
 				}
-
+				
 				if (!isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
 					continue;
 				}
@@ -264,19 +264,19 @@ public class RestServiceImpl implements RestService {
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}
-
+	
 	/**
 	 * Checks if OpenMRS version is in given array of versions.
-	 *
+	 * 
 	 * @param versions the array of versions to be checked for the openmrs version
 	 * @return true if the openmrs version is in versions and false otherwise
 	 */
 	private boolean isOpenmrsVersionInVersions(String[] versions) {
-
+		
 		if (versions.length == 0) {
 			return false;
 		}
-
+		
 		boolean result = false;
 		for (String version : versions) {
 			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, version)) {
@@ -286,7 +286,7 @@ public class RestServiceImpl implements RestService {
 		}
 		return result;
 	}
-
+	
 	private void initializeSearchHandlers() {
 		if (searchHandlersByIds != null) {
 			return;

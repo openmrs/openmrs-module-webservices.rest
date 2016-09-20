@@ -128,7 +128,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		
 		return ret;
 	}
-
+	
 	/**
 	 * @see RestHelperService#getRegisteredSearchHandlers()
 	 */
@@ -137,7 +137,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		final List<SearchHandler> result = Context.getRegisteredComponents(SearchHandler.class);
 		return result != null ? result : new ArrayList<SearchHandler>();
 	}
-
+	
 	/**
 	 * @see RestHelperService#getRegisteredRegisteredSubclassHandlers()
 	 */
