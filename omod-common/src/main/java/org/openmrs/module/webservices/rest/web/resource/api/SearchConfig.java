@@ -30,49 +30,127 @@ public class SearchConfig {
 	
 	private final Set<SearchQuery> searchQueries;
 	
+	/**
+	 * Creates an instance of SearchConfig.
+	 * 
+	 * @param id the id of the search config
+	 * @param supportedResource the supported resource
+	 * @param supportedOpenmrsVersions the supported openmrs versions
+	 * @param searchQueries the search queries
+	 * @should create an instance of search config
+	 * @should fail if given id is null
+	 * @should fail if given id is empty
+	 * @should fail if given supported resource is null
+	 * @should fail if given supported resource is empty
+	 * @should fail if given supported openmrs versions is null
+	 * @should fail if given supported openmrs versions is empty
+	 * @should fail if given search queries is null
+	 * @should fail if given search queries is empty
+	 */
 	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
 	    Collection<SearchQuery> searchQueries) {
+		Validate.notEmpty(id, "id must not be empty");
+		Validate.notEmpty(supportedResource, "supportedResource must not be empty");
+		Validate.notEmpty(supportedOpenmrsVersions, "supportedOpenmrsVersions must not be empty");
+		Validate.notEmpty(searchQueries, "searchQueries must not be empty");
+		
 		this.id = id;
 		this.supportedResource = supportedResource;
 		this.supportedOpenmrsVersions = Collections.unmodifiableSet(new HashSet<String>(supportedOpenmrsVersions));
 		this.searchQueries = Collections.unmodifiableSet(new HashSet<SearchQuery>(searchQueries));
-		
-		Validate.notEmpty(this.id, "id must not be empty");
-		Validate.notEmpty(this.supportedResource, "supportedResource must not be empty");
-		Validate.notEmpty(this.supportedOpenmrsVersions, "supportedOpenmrsVersions must not be empty");
-		Validate.notEmpty(this.searchQueries, "searchQueries must not be empty");
 	}
 	
+	/**
+	 * Creates an instance of SearchConfig.
+	 * <p>
+	 * Delegates to {@link SearchConfig#SearchConfig(String, String, Collection, Collection)}.
+	 * </p>
+	 * 
+	 * @param id the id of the search config
+	 * @param supportedResource the supported resource
+	 * @param supportedOpenmrsVersion the supported openmrs version
+	 * @param searchQuery the search query
+	 * @should create an instance of search config
+	 */
 	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion, SearchQuery searchQuery) {
 		this(id, supportedResource, Arrays.asList(supportedOpenmrsVersion), Arrays.asList(searchQuery));
 	}
 	
+	/**
+	 * Creates an instance of SearchConfig.
+	 * <p>
+	 * Delegates to {@link SearchConfig#SearchConfig(String, String, Collection, Collection)}.
+	 * </p>
+	 * 
+	 * @param id the id of the search config
+	 * @param supportedResource the supported resource
+	 * @param supportedOpenmrsVersions the supported openmrs versions
+	 * @param searchQuery the search query
+	 * @should create an instance of search config
+	 */
 	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
 	    SearchQuery searchQuery) {
 		this(id, supportedResource, supportedOpenmrsVersions, Arrays.asList(searchQuery));
 	}
 	
+	/**
+	 * Creates an instance of SearchConfig.
+	 * <p>
+	 * Delegates to {@link SearchConfig#SearchConfig(String, String, Collection, Collection)}.
+	 * </p>
+	 * 
+	 * @param id the id of the search config
+	 * @param supportedResource the supported resource
+	 * @param supportedOpenmrsVersion the supported openmrs version
+	 * @param searchQueries the search queries
+	 * @should create an instance of search config
+	 */
 	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion,
 	    Collection<SearchQuery> searchQueries) {
 		this(id, supportedResource, Arrays.asList(supportedOpenmrsVersion), searchQueries);
 	}
 	
+	/**
+	 * Get this id.
+	 * 
+	 * @return this id
+	 */
 	public String getId() {
 		return id;
 	}
 	
+	/**
+	 * Get this {@code supportedResource}.
+	 * 
+	 * @return this supported resource
+	 */
 	public String getSupportedResource() {
 		return supportedResource;
 	}
 	
+	/**
+	 * Get this {@code supportedOpenmrsVersions}.
+	 * 
+	 * @return this supported openmrs versions
+	 */
 	public Set<String> getSupportedOpenmrsVersions() {
 		return supportedOpenmrsVersions;
 	}
 	
+	/**
+	 * Get this {@code searchQueries}.
+	 * 
+	 * @return this search queries
+	 */
 	public Set<SearchQuery> getSearchQueries() {
 		return searchQueries;
 	}
 	
+	/**
+	 * @see Object#hashCode()
+	 * @return the hash code
+	 * @should return same hashcode for equal search configs
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,30 +161,39 @@ public class SearchConfig {
 		return result;
 	}
 	
+	/**
+	 * @see Object#equals(Object)
+	 * @param obj the object to test for if equal to this
+	 * @return true if obj is equal to this otherwise false
+	 * @should return true if given this
+	 * @should return true if this id and supported openmrs version and supported resource are equal
+	 *         to given search configs
+	 * @should be symmetric
+	 * @should be transitive
+	 * @should return false if given null
+	 * @should return false if given an object which is not an instanceof this class
+	 * @should return false if this id is not equal to the given search configs id
+	 * @should return false if this supported openmrs version is not equal to given search configs
+	 *         supported openmrs version
+	 * @should return false if this supported resource is not equal to given search configs
+	 *         supported resource
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof SearchConfig))
 			return false;
 		SearchConfig other = (SearchConfig) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
+		if (!id.equals(other.id)) {
 			return false;
-		if (supportedOpenmrsVersions == null) {
-			if (other.supportedOpenmrsVersions != null)
-				return false;
-		} else if (!supportedOpenmrsVersions.equals(other.supportedOpenmrsVersions))
+		}
+		if (!supportedOpenmrsVersions.equals(other.supportedOpenmrsVersions)) {
 			return false;
-		if (supportedResource == null) {
-			if (other.supportedResource != null)
-				return false;
-		} else if (!supportedResource.equals(other.supportedResource))
+		}
+		if (!supportedResource.equals(other.supportedResource)) {
 			return false;
+		}
 		return true;
 	}
 }
