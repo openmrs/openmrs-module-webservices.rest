@@ -15,10 +15,17 @@ import org.junit.Test;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Tests functionality of {@link LocationAttributeController}.
@@ -91,5 +98,31 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		locationAttribute = service.getLocationAttributeByUuid(getUuid());
 		Assert.assertTrue(locationAttribute.isVoided());
 		Assert.assertEquals("unit test", locationAttribute.getVoidReason());
+	}
+	
+	@Test
+	public void shouldReturnOnlyAttributesOfGivenTypeWhenSearch() throws Exception {
+		String attributeTypeUuid = "9516cc50-6f9f-11e0-8414-001e378eb67e";
+		searchForAttributeOfGivenType_AndCheckIfTypeMatches(attributeTypeUuid);
+		
+		String anotherAttributeTypUuid = "9516cc50-6f9f-132r-6556-001e378eb67f";
+		searchForAttributeOfGivenType_AndCheckIfTypeMatches(anotherAttributeTypUuid);
+	}
+	
+	/**
+	 * sends search request for attributes with given type, checks if all result attributes are of
+	 * this type
+	 * 
+	 * @param attributeTypeUuid
+	 * @throws Exception
+	 */
+	private void searchForAttributeOfGivenType_AndCheckIfTypeMatches(String attributeTypeUuid) throws Exception {
+		SimpleObject response2 = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("attributeType", attributeTypeUuid))));
+		assertThat(Util.getResultsList(response2), is(not(empty())));
+		for (Object result : Util.getResultsList(response2)) {
+			Object resultAttributeTypeUuid = Util.getByPath(Util.getByPath(result, "attributeType"), "uuid");
+			Assert.assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
+		}
 	}
 }
