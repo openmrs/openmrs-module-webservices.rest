@@ -36,7 +36,9 @@ import java.util.Set;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -268,4 +270,111 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	}
 	
 	public static class ChildPatient extends Patient {};
+	
+	/**
+	 * @verifies return same hashcode for equal composite keys
+	 * @see CompositeSearchHandlerKey#hashCode()
+	 */
+	@Test
+	public void hashCode_shouldReturnSameHashcodeForEqualCompositeKeys() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey2 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertTrue(compositeKey1.equals(compositeKey2));
+		
+		assertThat(compositeKey1.hashCode(), is(compositeKey2.hashCode()));
+	}
+	
+	/**
+	 * @verifies return true if given this
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldReturnTrueIfGivenThis() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertTrue(compositeKey.equals(compositeKey));
+	}
+	
+	/**
+	 * @verifies be symmetric
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldBeSymmetric() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey2 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertTrue(compositeKey1.equals(compositeKey2));
+		assertTrue(compositeKey2.equals(compositeKey1));
+	}
+	
+	/**
+	 * @verifies be transitive
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldBeTransitive() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey2 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey3 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertTrue(compositeKey1.equals(compositeKey2));
+		assertTrue(compositeKey2.equals(compositeKey3));
+		assertTrue(compositeKey1.equals(compositeKey3));
+	}
+	
+	/**
+	 * @verifies return false if given null
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldReturnFalseIfGivenNull() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertFalse(compositeKey1.equals(null));
+	}
+	
+	/**
+	 * @verifies return false if given a composite key with different supported resource
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldReturnFalseIfGivenACompositeKeyWithDifferentSupportedResource() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey2 = new RestServiceImpl.CompositeSearchHandlerKey("v2/order",
+		        "default");
+		assertFalse(compositeKey1.equals(compositeKey2));
+		assertFalse(compositeKey2.equals(compositeKey1));
+	}
+	
+	/**
+	 * @verifies return false if given a composite key with different additional key
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldReturnFalseIfGivenACompositeKeyWithDifferentAdditionalKey() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey2 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "custom");
+		assertFalse(compositeKey1.equals(compositeKey2));
+		assertFalse(compositeKey2.equals(compositeKey1));
+	}
+	
+	/**
+	 * @verifies return false if given an object which is not an instanceof this class
+	 * @see CompositeSearchHandlerKey#equals(Object)
+	 */
+	@Test
+	public void equals_shouldReturnFalseIfGivenAnObjectWhichIsNotAnInstanceofThisClass() throws Exception {
+		RestServiceImpl.CompositeSearchHandlerKey compositeKey1 = new RestServiceImpl.CompositeSearchHandlerKey("v1/order",
+		        "default");
+		assertFalse(compositeKey1.equals("otherClass"));
+	}
 }
