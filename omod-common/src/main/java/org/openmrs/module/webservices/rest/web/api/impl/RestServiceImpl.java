@@ -49,9 +49,9 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
+	private volatile Map<CompositeSearchHandlerKey, Set<SearchHandler>> searchHandlersByParameter;
 	
-	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
+	private volatile Map<CompositeSearchHandlerKey, SearchHandler> searchHandlersByIds;
 	
 	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
 	
@@ -83,39 +83,54 @@ public class RestServiceImpl implements RestService {
 		
 	}
 	
-	private static class SearchHandlerParameterKey {
+	public static class CompositeSearchHandlerKey {
 		
-		public String supportedResource;
+		final public String supportedResource;
 		
-		public String parameter;
+		final public String additionalKeyProperty;
 		
-		public SearchHandlerParameterKey(String supportedResource, String parameter) {
+		public CompositeSearchHandlerKey(String supportedResource, String additionalKeyProperty) {
 			this.supportedResource = supportedResource;
-			this.parameter = parameter;
+			this.additionalKeyProperty = additionalKeyProperty;
 		}
 		
+		/**
+		 * @see Object#hashCode()
+		 * @return the has code
+		 * @should return same hashcode for equal composite keys
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
+			result = prime * result + ((additionalKeyProperty == null) ? 0 : additionalKeyProperty.hashCode());
 			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
 			return result;
 		}
 		
+		/**
+		 * @see Object#equals(Object)
+		 * @param obj the object to test for if equal to this
+		 * @return true if obj is equal to this otherwise false
+		 * @should return true if given this
+		 * @should be symmetric
+		 * @should be transitive
+		 * @should return false if given null
+		 * @should return false if given an object which is not an instanceof this class
+		 * @should return false if given a composite key with different supported resource
+		 * @should return false if given a composite key with different additional key
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (obj == null)
+			if (!(obj instanceof CompositeSearchHandlerKey))
 				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			SearchHandlerParameterKey other = (SearchHandlerParameterKey) obj;
-			if (parameter == null) {
-				if (other.parameter != null)
+			CompositeSearchHandlerKey other = (CompositeSearchHandlerKey) obj;
+			if (additionalKeyProperty == null) {
+				if (other.additionalKeyProperty != null)
 					return false;
-			} else if (!parameter.equals(other.parameter))
+			} else if (!additionalKeyProperty.equals(other.additionalKeyProperty))
 				return false;
 			if (supportedResource == null) {
 				if (other.supportedResource != null)
@@ -124,56 +139,6 @@ public class RestServiceImpl implements RestService {
 				return false;
 			return true;
 		}
-		
-	}
-	
-	private static class SearchHandlerIdKey {
-		
-		public String supportedResource;
-		
-		public String id;
-		
-		public SearchHandlerIdKey(String supportedResource, String id) {
-			this.supportedResource = supportedResource;
-			this.id = id;
-		}
-		
-		public SearchHandlerIdKey(SearchHandler searchHandler) {
-			this.supportedResource = searchHandler.getSearchConfig().getSupportedResource();
-			this.id = searchHandler.getSearchConfig().getId();
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((id == null) ? 0 : id.hashCode());
-			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
-			return result;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			SearchHandlerIdKey other = (SearchHandlerIdKey) obj;
-			if (id == null) {
-				if (other.id != null)
-					return false;
-			} else if (!id.equals(other.id))
-				return false;
-			if (supportedResource == null) {
-				if (other.supportedResource != null)
-					return false;
-			} else if (!supportedResource.equals(other.supportedResource))
-				return false;
-			return true;
-		}
-		
 	}
 	
 	private void initializeResources() {
@@ -193,72 +158,123 @@ public class RestServiceImpl implements RestService {
 		}
 		
 		for (Class<? extends Resource> resource : resources) {
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
-			try {
-				resourceAnnotation = resource
-				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-			}
-			catch (Exception e) {
-				//Missing class
+			ResourceMetadata resourceMetadata = getResourceMetadata(resource);
+			if (resourceMetadata == null)
 				continue;
-			}
 			
-			String name = null;
-			Class<?> supportedClass = null;
-			int order = Integer.MAX_VALUE;
-			
-			if (resourceAnnotation == null) {
-				SubResource subresourceAnnotation = null;
-				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = null;
-				try {
-					subresourceAnnotation = resource.getAnnotation(SubResource.class);
-					parentResourceAnnotation = subresourceAnnotation.parent().getAnnotation(
-					    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-				}
-				catch (Exception e) {
-					//Missing class
-					continue;
-				}
-				
-				if (!isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
-					continue;
-				}
-				name = parentResourceAnnotation.name() + "/" + subresourceAnnotation.path();
-				supportedClass = subresourceAnnotation.supportedClass();
-				order = subresourceAnnotation.order();
-			} else {
-				if (!isOpenmrsVersionInVersions(resourceAnnotation.supportedOpenmrsVersions())) {
-					continue;
-				}
-				name = resourceAnnotation.name();
-				supportedClass = resourceAnnotation.supportedClass();
-				order = resourceAnnotation.order();
-			}
-			
-			ResourceDefinition existingResourceDef = tempResourceDefinitionsByNames.get(name);
-			
-			boolean addResource = true;
-			
-			if (existingResourceDef != null) {
-				if (existingResourceDef.order == order) {
-					throw new IllegalStateException("Two resources with the same name (" + name
-					        + ") must not have the same order");
-				} else if (existingResourceDef.order < order) {
-					addResource = false;
-				}
-			}
-			
-			if (addResource) {
+			if (isResourceToBeAdded(resourceMetadata, tempResourceDefinitionsByNames.get(resourceMetadata.getName()))) {
 				Resource newResource = newResource(resource);
 				
-				tempResourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
-				tempResourcesBySupportedClasses.put(supportedClass, newResource);
+				tempResourceDefinitionsByNames.put(resourceMetadata.getName(), new ResourceDefinition(newResource,
+				        resourceMetadata.getOrder()));
+				tempResourcesBySupportedClasses.put(resourceMetadata.getSupportedClass(), newResource);
 			}
-			
 		}
 		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
+	}
+	
+	/**
+	 * Determines whether a {@code Resource} should be added to the cache.
+	 * 
+	 * @param resourceMetadata the resource metadata of the resource to be added
+	 * @param existingResourceDefinition the resource definition of resource
+	 * @return true if the resource should be added and false otherwise
+	 * @should return true if existing resource definition is null
+	 * @should fail if two resources with same name and same order exist
+	 * @should return false if resource in metadata has a greater order than the existing resource
+	 * @should return true if resource with name and order does not yet exist
+	 */
+	private boolean isResourceToBeAdded(ResourceMetadata resourceMetadata, ResourceDefinition existingResourceDefinition) {
+		
+		if (existingResourceDefinition == null) {
+			return true;
+		}
+		if (existingResourceDefinition.order == resourceMetadata.getOrder()) {
+			throw new IllegalStateException("Two resources with the same name (" + resourceMetadata.getName()
+			        + ") must not have the same order");
+		}
+		
+		if (existingResourceDefinition.order < resourceMetadata.getOrder()) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Gets {@code ResourceMetadata} from a {@code Resource} classes annotations.
+	 * <p>
+	 * </p>
+	 * 
+	 * @param resource the resource to get the metadata from
+	 * @return the metadata of a resource
+	 * @should return metadata if resource class has a resource annotation and is supported by the
+	 *         current openmrs version
+	 * @should return null if resource class has a resource annotation and is not supported by the
+	 *         current openmrs version
+	 * @should return null if resource class has no resource and no subresource annotation
+	 * @should return null if resource class has no resource but a subresource annotation and is not
+	 *         supported by the current openmrs version
+	 * @should return null if resource class has no resource but a subresource annotation and its
+	 *         parent has no resource annotation
+	 * @should return metadata if resource class has no resource but a subresource annotation and
+	 *         its parent has a resource annotation and the subresource is supported by the current
+	 *         openmrs version
+	 */
+	private ResourceMetadata getResourceMetadata(Class<? extends Resource> resource) {
+		ResourceMetadata resourceMetadata;
+		
+		org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = resource
+		        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+		if (resourceAnnotation == null) {
+			SubResource subresourceAnnotation = resource.getAnnotation(SubResource.class);
+			if (subresourceAnnotation == null
+			        || !isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
+				return null;
+			}
+			org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = subresourceAnnotation
+			        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			if (parentResourceAnnotation == null) {
+				return null;
+			}
+			resourceMetadata = new ResourceMetadata(parentResourceAnnotation.name() + "/" + subresourceAnnotation.path(),
+			        subresourceAnnotation.supportedClass(), subresourceAnnotation.order());
+		} else {
+			if (!isOpenmrsVersionInVersions(resourceAnnotation.supportedOpenmrsVersions())) {
+				return null;
+			}
+			resourceMetadata = new ResourceMetadata(resourceAnnotation.name(), resourceAnnotation.supportedClass(),
+			        resourceAnnotation.order());
+		}
+		return resourceMetadata;
+	}
+	
+	private static class ResourceMetadata {
+		
+		final String name;
+		
+		final Class<?> supportedClass;
+		
+		final int order;
+		
+		public ResourceMetadata(String name, Class<?> supportedClass, int order) {
+			this.name = name;
+			this.supportedClass = supportedClass;
+			this.order = order;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public Class<?> getSupportedClass() {
+			return supportedClass;
+		}
+		
+		public int getOrder() {
+			return order;
+		}
 	}
 	
 	/**
@@ -288,8 +304,8 @@ public class RestServiceImpl implements RestService {
 			return;
 		}
 		
-		Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
-		Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
+		Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.CompositeSearchHandlerKey, SearchHandler>();
+		Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<CompositeSearchHandlerKey, Set<SearchHandler>>();
 		Map<String, Set<SearchHandler>> tempSearchHandlersByResource = new HashMap<String, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = restHelperService.getRegisteredSearchHandlers();
@@ -303,8 +319,8 @@ public class RestServiceImpl implements RestService {
 		searchHandlersByResource = tempSearchHandlersByResource;
 	}
 	
-	private void addSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters,
+	private void addSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters,
 	        Map<String, Set<SearchHandler>> tempSearchHandlersByResource, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
 			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
@@ -314,9 +330,10 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 	
-	private void addSupportedSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		SearchHandlerIdKey searchHanlderIdKey = new SearchHandlerIdKey(searchHandler);
+	private void addSupportedSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+		CompositeSearchHandlerKey searchHanlderIdKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
+		        .getSupportedResource(), searchHandler.getSearchConfig().getId());
 		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
 		if (previousSearchHandler != null) {
 			SearchConfig config = searchHandler.getSearchConfig();
@@ -329,13 +346,13 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	private void addSearchHandlerToParametersMap(
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
 		for (SearchQuery searchQueries : searchHandler.getSearchConfig().getSearchQueries()) {
 			Set<String> parameters = new HashSet<String>(searchQueries.getRequiredParameters());
 			parameters.addAll(searchQueries.getOptionalParameters());
 			
 			for (String parameter : parameters) {
-				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSearchConfig()
+				CompositeSearchHandlerKey parameterKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
 				        .getSupportedResource(), parameter);
 				Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
 				if (list == null) {
@@ -452,7 +469,7 @@ public class RestServiceImpl implements RestService {
 		
 		String[] searchIds = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
 		if (searchIds != null && searchIds.length > 0) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchIds[0]));
+			SearchHandler searchHandler = searchHandlersByIds.get(new CompositeSearchHandlerKey(resourceName, searchIds[0]));
 			if (searchHandler == null) {
 				throw new InvalidSearchException("The search with id '" + searchIds[0] + "' for '" + resourceName
 				        + "' resource is not recognized");
@@ -466,7 +483,7 @@ public class RestServiceImpl implements RestService {
 		
 		Set<SearchHandler> candidateSearchHandlers = null;
 		for (String searchParameter : searchParameters) {
-			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new SearchHandlerParameterKey(resourceName,
+			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new CompositeSearchHandlerKey(resourceName,
 			        searchParameter));
 			if (searchHandlers == null) {
 				return null; //Missing parameter so there's no handler.
