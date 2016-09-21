@@ -49,9 +49,9 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	private volatile Map<SearchHandlerParameterKey, Set<SearchHandler>> searchHandlersByParameter;
+	private volatile Map<CompositeSearchHandlerKey, Set<SearchHandler>> searchHandlersByParameter;
 	
-	private volatile Map<SearchHandlerIdKey, SearchHandler> searchHandlersByIds;
+	private volatile Map<CompositeSearchHandlerKey, SearchHandler> searchHandlersByIds;
 	
 	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
 	
@@ -83,39 +83,59 @@ public class RestServiceImpl implements RestService {
 		
 	}
 	
-	private static class SearchHandlerParameterKey {
+	/**
+	 * Wraps {@code Resource} name and an additional string-based key into a composite key.
+	 */
+	private static class CompositeSearchHandlerKey {
 		
-		public String supportedResource;
+		public final String supportedResource;
 		
-		public String parameter;
+		public final String additionalKeyProperty;
 		
-		public SearchHandlerParameterKey(String supportedResource, String parameter) {
+		public CompositeSearchHandlerKey(String supportedResource, String additionalKeyProperty) {
 			this.supportedResource = supportedResource;
-			this.parameter = parameter;
+			this.additionalKeyProperty = additionalKeyProperty;
 		}
 		
+		/**
+		 * @see Object#hashCode()
+		 * @return the hash code
+		 * @should return same hashcode for equal composite keys
+		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
+			result = prime * result + ((additionalKeyProperty == null) ? 0 : additionalKeyProperty.hashCode());
 			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
 			return result;
 		}
 		
+		/**
+		 * @see Object#equals(Object)
+		 * @param obj the object to test for if equal to this
+		 * @return true if obj is equal to this otherwise false
+		 * @should return true if given this
+		 * @should be symmetric
+		 * @should be transitive
+		 * @should return false if given null
+		 * @should return false if given an object which is not an instanceof this class
+		 * @should return false if given a composite key with different supported resource
+		 * @should return false if given a composite key with different additional key
+		 * @should return false if given a composite key with null as additional key
+		 * @should return false if given a composite key with null as supported resource
+		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
 				return true;
-			if (obj == null)
+			if (!(obj instanceof CompositeSearchHandlerKey))
 				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			SearchHandlerParameterKey other = (SearchHandlerParameterKey) obj;
-			if (parameter == null) {
-				if (other.parameter != null)
+			CompositeSearchHandlerKey other = (CompositeSearchHandlerKey) obj;
+			if (additionalKeyProperty == null) {
+				if (other.additionalKeyProperty != null)
 					return false;
-			} else if (!parameter.equals(other.parameter))
+			} else if (!additionalKeyProperty.equals(other.additionalKeyProperty))
 				return false;
 			if (supportedResource == null) {
 				if (other.supportedResource != null)
@@ -124,56 +144,6 @@ public class RestServiceImpl implements RestService {
 				return false;
 			return true;
 		}
-		
-	}
-	
-	private static class SearchHandlerIdKey {
-		
-		public String supportedResource;
-		
-		public String id;
-		
-		public SearchHandlerIdKey(String supportedResource, String id) {
-			this.supportedResource = supportedResource;
-			this.id = id;
-		}
-		
-		public SearchHandlerIdKey(SearchHandler searchHandler) {
-			this.supportedResource = searchHandler.getSearchConfig().getSupportedResource();
-			this.id = searchHandler.getSearchConfig().getId();
-		}
-		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((id == null) ? 0 : id.hashCode());
-			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
-			return result;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			SearchHandlerIdKey other = (SearchHandlerIdKey) obj;
-			if (id == null) {
-				if (other.id != null)
-					return false;
-			} else if (!id.equals(other.id))
-				return false;
-			if (supportedResource == null) {
-				if (other.supportedResource != null)
-					return false;
-			} else if (!supportedResource.equals(other.supportedResource))
-				return false;
-			return true;
-		}
-		
 	}
 	
 	private void initializeResources() {
@@ -288,8 +258,8 @@ public class RestServiceImpl implements RestService {
 			return;
 		}
 		
-		Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.SearchHandlerIdKey, SearchHandler>();
-		Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<SearchHandlerParameterKey, Set<SearchHandler>>();
+		Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.CompositeSearchHandlerKey, SearchHandler>();
+		Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<CompositeSearchHandlerKey, Set<SearchHandler>>();
 		Map<String, Set<SearchHandler>> tempSearchHandlersByResource = new HashMap<String, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = restHelperService.getRegisteredSearchHandlers();
@@ -303,8 +273,8 @@ public class RestServiceImpl implements RestService {
 		searchHandlersByResource = tempSearchHandlersByResource;
 	}
 	
-	private void addSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters,
+	private void addSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters,
 	        Map<String, Set<SearchHandler>> tempSearchHandlersByResource, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
 			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
@@ -314,9 +284,10 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 	
-	private void addSupportedSearchHandler(Map<SearchHandlerIdKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		SearchHandlerIdKey searchHanlderIdKey = new SearchHandlerIdKey(searchHandler);
+	private void addSupportedSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+		CompositeSearchHandlerKey searchHanlderIdKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
+		        .getSupportedResource(), searchHandler.getSearchConfig().getId());
 		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
 		if (previousSearchHandler != null) {
 			SearchConfig config = searchHandler.getSearchConfig();
@@ -329,13 +300,13 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	private void addSearchHandlerToParametersMap(
-	        Map<SearchHandlerParameterKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
 		for (SearchQuery searchQueries : searchHandler.getSearchConfig().getSearchQueries()) {
 			Set<String> parameters = new HashSet<String>(searchQueries.getRequiredParameters());
 			parameters.addAll(searchQueries.getOptionalParameters());
 			
 			for (String parameter : parameters) {
-				SearchHandlerParameterKey parameterKey = new SearchHandlerParameterKey(searchHandler.getSearchConfig()
+				CompositeSearchHandlerKey parameterKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
 				        .getSupportedResource(), parameter);
 				Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
 				if (list == null) {
@@ -452,7 +423,7 @@ public class RestServiceImpl implements RestService {
 		
 		String[] searchIds = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
 		if (searchIds != null && searchIds.length > 0) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new SearchHandlerIdKey(resourceName, searchIds[0]));
+			SearchHandler searchHandler = searchHandlersByIds.get(new CompositeSearchHandlerKey(resourceName, searchIds[0]));
 			if (searchHandler == null) {
 				throw new InvalidSearchException("The search with id '" + searchIds[0] + "' for '" + resourceName
 				        + "' resource is not recognized");
@@ -466,7 +437,7 @@ public class RestServiceImpl implements RestService {
 		
 		Set<SearchHandler> candidateSearchHandlers = null;
 		for (String searchParameter : searchParameters) {
-			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new SearchHandlerParameterKey(resourceName,
+			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new CompositeSearchHandlerKey(resourceName,
 			        searchParameter));
 			if (searchHandlers == null) {
 				return null; //Missing parameter so there's no handler.
