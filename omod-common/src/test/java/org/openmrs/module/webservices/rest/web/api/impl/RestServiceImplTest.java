@@ -19,6 +19,9 @@ import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
@@ -34,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -53,6 +57,94 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
+	
+	/**
+	 * @verifies return default representation if given null
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnDefaultRepresentationIfGivenNull() throws Exception {
+		
+		assertThat(restService.getRepresentation(null), is(Representation.DEFAULT));
+	}
+	
+	/**
+	 * @verifies return default representation if given string is empty
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnDefaultRepresentationIfGivenStringIsEmpty() throws Exception {
+		
+		assertThat(restService.getRepresentation(""), is(Representation.DEFAULT));
+	}
+	
+	/**
+	 * @verifies return reference representation if given string matches the ref representation
+	 *           constant
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnReferenceRepresentationIfGivenStringMatchesTheRefRepresentationConstant()
+	        throws Exception {
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		assertThat(restService.getRepresentation("ref"), is(Representation.REF));
+	}
+	
+	/**
+	 * @verifies return default representation if given string matches the default representation
+	 *           constant
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnDefaultRepresentationIfGivenStringMatchesTheDefaultRepresentationConstant()
+	        throws Exception {
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		assertThat(restService.getRepresentation("default"), is(Representation.DEFAULT));
+	}
+	
+	/**
+	 * @verifies return full representation if given string matches the full representation constant
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnFullRepresentationIfGivenStringMatchesTheFullRepresentationConstant()
+	        throws Exception {
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		assertThat(restService.getRepresentation("full"), is(Representation.FULL));
+	}
+	
+	/**
+	 * @verifies return an instance of custom representation if given string starts with the custom
+	 *           representation prefix
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnAnInstanceOfCustomRepresentationIfGivenStringStartsWithTheCustomRepresentationPrefix()
+	        throws Exception {
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		Representation representation = restService.getRepresentation("custom:datatableslist");
+		assertThat(representation, instanceOf(CustomRepresentation.class));
+		assertThat(representation.getRepresentation(), is("datatableslist"));
+	}
+	
+	/**
+	 * @verifies return an instance of named representation for given string if it is not empty and
+	 *           does not match any other case
+	 * @see RestServiceImpl#getRepresentation(String)
+	 */
+	@Test
+	public void getRepresentation_shouldReturnAnInstanceOfNamedRepresentationForGivenStringIfItIsNotEmptyAndDoesNotMatchAnyOtherCase()
+	        throws Exception {
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		Representation representation = restService.getRepresentation("UNKNOWNREPRESENTATION");
+		assertThat(representation, instanceOf(NamedRepresentation.class));
+		assertThat(representation.getRepresentation(), is("UNKNOWNREPRESENTATION"));
+	}
 	
 	/**
 	 * @see RestServiceImpl#getSearchHandler(String,Map)
