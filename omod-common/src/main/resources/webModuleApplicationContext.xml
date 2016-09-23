@@ -10,6 +10,11 @@
   		    http://www.springframework.org/schema/context
   		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+	<bean id="openmrsClassScanner"
+		  class="org.openmrs.module.webservices.rest.web.OpenmrsClassScanner"
+		factory-method="getInstance" >
+	</bean>
+
 	<bean id="restService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager">
@@ -19,6 +24,7 @@
 			<bean
 				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl">
 				<property name="restHelperService" ref="restHelperService"></property>
+				<property name="openmrsClassScanner" ref="openmrsClassScanner"></property>
 			</bean>
 		</property>
 		<property name="preInterceptors">

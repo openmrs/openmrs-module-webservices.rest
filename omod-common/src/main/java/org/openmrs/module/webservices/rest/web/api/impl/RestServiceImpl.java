@@ -59,12 +59,22 @@ public class RestServiceImpl implements RestService {
 	
 	private RestHelperService restHelperService;
 	
+	private OpenmrsClassScanner openmrsClassScanner;
+	
 	public RestHelperService getRestHelperService() {
 		return restHelperService;
 	}
 	
 	public void setRestHelperService(RestHelperService restHelperService) {
 		this.restHelperService = restHelperService;
+	}
+	
+	public OpenmrsClassScanner getOpenmrsClassScanner() {
+		return openmrsClassScanner;
+	}
+	
+	public void setOpenmrsClassScanner(OpenmrsClassScanner openmrsClassScanner) {
+		this.openmrsClassScanner = openmrsClassScanner;
 	}
 	
 	public RestServiceImpl() {
@@ -186,7 +196,7 @@ public class RestServiceImpl implements RestService {
 		
 		List<Class<? extends Resource>> resources;
 		try {
-			resources = OpenmrsClassScanner.getInstance().getClasses(Resource.class, true);
+			resources = openmrsClassScanner.getClasses(Resource.class, true);
 		}
 		catch (IOException e) {
 			throw new APIException("Cannot access REST resources", e);
@@ -391,6 +401,19 @@ public class RestServiceImpl implements RestService {
 		return new NamedRepresentation(requested);
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceByName(String)
+	 * @should return resource for given name
+	 * @should return resource for given name and ignore unannotated resources
+	 * @should fail if failed to get resource classes
+	 * @should fail if resource for given name cannot be found
+	 * @should fail if resource for given name does not support the current openmrs version
+	 * @should return subresource for given name
+	 * @should fail if subresource for given name does not support the current openmrs version
+	 * @should fail if two resources with same name and order are found for given name
+	 * @should return resource with lower order value if two resources with the same name are found
+	 *         for given name
+	 */
 	@Override
 	public Resource getResourceByName(String name) throws APIException {
 		initializeResources();

@@ -9,13 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import org.mockingbird.test.rest.resource.DuplicateNameAndOrderMockingBirdFantasyResource;
+import org.mockingbird.test.rest.resource.DuplicateNameMockingBirdFantasyResource;
+import org.mockingbird.test.rest.resource.MockingBirdFantasyNameResource;
+import org.mockingbird.test.rest.resource.MockingBirdFantasyResource;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockingbird.test.rest.resource.UnannotatedMockingBirdFantasyResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.api.APIException;
+import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -30,10 +37,15 @@ import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.test.BaseContextMockTest;
 import org.openmrs.util.OpenmrsConstants;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,8 +61,15 @@ import static org.mockito.Mockito.when;
  */
 public class RestServiceImplTest extends BaseContextMockTest {
 	
+	private static final String EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION = "1.9.10";
+	
+	private static final String EXISTING_RESOURCE_NON_SUPPORTED_OPENMRS_VERSION = "1.12.0";
+	
 	@Mock
 	RestHelperService restHelperService;
+	
+	@Mock
+	OpenmrsClassScanner openmrsClassScanner;
 	
 	@InjectMocks
 	RestService restService = new RestServiceImpl();
@@ -144,6 +163,178 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		Representation representation = restService.getRepresentation("UNKNOWNREPRESENTATION");
 		assertThat(representation, instanceOf(NamedRepresentation.class));
 		assertThat(representation.getRepresentation(), is("UNKNOWNREPRESENTATION"));
+	}
+	
+	/**
+	 * @verifies return resource for given name
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldReturnResourceForGivenName() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION);
+		
+		assertThat(restService.getResourceByName("v1/mockingbirdfantasy"), instanceOf(MockingBirdFantasyResource.class));
+	}
+	
+	/**
+	 * @verifies return resource for given name and ignore unannotated resources
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldReturnResourceForGivenNameAndIgnoreUnannotatedResources() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyResource.class);
+		resources.add(UnannotatedMockingBirdFantasyResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION);
+		
+		assertThat(restService.getResourceByName("v1/mockingbirdfantasy"), instanceOf(MockingBirdFantasyResource.class));
+	}
+	
+	/**
+	 * Helper method to set the current OpenMRS version for tests.
+	 * 
+	 * @param currentOpenmrsVersion the openmrs version to set the current version to
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 */
+	private void setCurrentOpenmrsVersion(final String currentOpenmrsVersion) throws NoSuchFieldException,
+	        IllegalAccessException {
+		
+		Field versionField = OpenmrsConstants.class.getDeclaredField("OPENMRS_VERSION_SHORT");
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(versionField, versionField.getModifiers() & ~Modifier.FINAL);
+		versionField.set(null, currentOpenmrsVersion);
+	}
+	
+	/**
+	 * @verifies fail if failed to get resource classes
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldFailIfFailedToGetResourceClasses() throws Exception {
+		
+		IOException ioException = new IOException("some");
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Cannot access REST resources");
+		expectedException.expectCause(is(ioException));
+		restService.getResourceByName("obs");
+	}
+	
+	/**
+	 * @verifies fail if resource for given name cannot be found
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldFailIfResourceForGivenNameCannotBeFound() throws Exception {
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Unknown resource: UNKNOWNRESOURCENAME");
+		restService.getResourceByName("UNKNOWNRESOURCENAME");
+	}
+	
+	/**
+	 * @verifies fail if resource for given name does not support the current openmrs version
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldFailIfResourceForGivenNameDoesNotSupportTheCurrentOpenmrsVersion() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_NON_SUPPORTED_OPENMRS_VERSION);
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Unknown resource: v1/mockingbirdfantasy");
+		restService.getResourceByName("v1/mockingbirdfantasy");
+	}
+	
+	/**
+	 * @verifies return subresource for given name
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldReturnSubresourceForGivenName() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyNameResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION);
+		
+		assertThat(restService.getResourceByName("v1/mockingbirdfantasy/name"),
+		    instanceOf(MockingBirdFantasyNameResource.class));
+	}
+	
+	/**
+	 * @verifies fail if subresource for given name does not support the current openmrs version
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldFailIfSubresourceForGivenNameDoesNotSupportTheCurrentOpenmrsVersion()
+	        throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyNameResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_NON_SUPPORTED_OPENMRS_VERSION);
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Unknown resource: v1/mockingbirdfantasy/name");
+		restService.getResourceByName("v1/mockingbirdfantasy/name");
+	}
+	
+	/**
+	 * @verifies fail if two resources with same name and order are found for given name
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldFailIfTwoResourcesWithSameNameAndOrderAreFoundForGivenName() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyResource.class);
+		resources.add(DuplicateNameAndOrderMockingBirdFantasyResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION);
+		
+		expectedException.expect(IllegalStateException.class);
+		expectedException
+		        .expectMessage("Two resources with the same name (v1/mockingbirdfantasy) must not have the same order");
+		restService.getResourceByName("v1/mockingbirdfantasy");
+	}
+	
+	/**
+	 * @verifies return resource with lower order value if two resources with the same name are
+	 *           found for given name
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldReturnResourceWithLowerOrderValueIfTwoResourcesWithTheSameNameAreFoundForGivenName()
+	        throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(MockingBirdFantasyResource.class);
+		resources.add(DuplicateNameMockingBirdFantasyResource.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion(EXISTING_RESOURCE_SUPPORTED_OPENMRS_VERSION);
+		
+		assertThat(restService.getResourceByName("v1/mockingbirdfantasy"), instanceOf(MockingBirdFantasyResource.class));
 	}
 	
 	/**
