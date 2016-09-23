@@ -360,22 +360,34 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getRepresentation(java.lang.String)
+	 * @should return default representation if given null
+	 * @should return default representation if given string is empty
+	 * @should return reference representation if given string matches the ref representation
+	 *         constant
+	 * @should return default representation if given string matches the default representation
+	 *         constant
+	 * @should return full representation if given string matches the full representation constant
+	 * @should return an instance of custom representation if given string starts with the custom
+	 *         representation prefix
+	 * @should return an instance of named representation for given string if it is not empty and
+	 *         does not match any other case
 	 */
 	@Override
 	public Representation getRepresentation(String requested) {
 		if (StringUtils.isEmpty(requested)) {
 			return Representation.DEFAULT;
-		} else {
-			if (RestConstants.REPRESENTATION_REF.equals(requested)) {
-				return Representation.REF;
-			} else if (RestConstants.REPRESENTATION_DEFAULT.equals(requested)) {
-				return Representation.DEFAULT;
-			} else if (RestConstants.REPRESENTATION_FULL.equals(requested)) {
-				return Representation.FULL;
-			} else if (requested.startsWith(RestConstants.REPRESENTATION_CUSTOM_PREFIX)) {
-				return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
-			}
 		}
+		
+		if (RestConstants.REPRESENTATION_REF.equals(requested)) {
+			return Representation.REF;
+		} else if (RestConstants.REPRESENTATION_DEFAULT.equals(requested)) {
+			return Representation.DEFAULT;
+		} else if (RestConstants.REPRESENTATION_FULL.equals(requested)) {
+			return Representation.FULL;
+		} else if (requested.startsWith(RestConstants.REPRESENTATION_CUSTOM_PREFIX)) {
+			return new CustomRepresentation(requested.replace(RestConstants.REPRESENTATION_CUSTOM_PREFIX, ""));
+		}
+		
 		return new NamedRepresentation(requested);
 	}
 	
