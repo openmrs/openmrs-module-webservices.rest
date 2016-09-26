@@ -7,21 +7,26 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.mockingbird.test.rest.resource;
+package org.mockingbird.test;
 
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 
 /**
- * Fake {@code Resource} used in tests at
+ * Fake used in tests at
  * {@link org.openmrs.module.webservices.rest.web.api.impl.RestServiceImplTest}. Located in a fake
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.SubResource(parent = MockingBirdFantasyResource.class, supportedClass = String.class, path = "name", supportedOpenmrsVersions = { "1.9.*" })
-public class MockingBirdFantasyNameResource implements Resource {
+public class HibernateProxyMockingBird extends MockingBird implements HibernateProxy {
 	
 	@Override
-	public String getUri(Object instance) {
-		return "name";
+	public Object writeReplace() {
+		return null;
+	}
+	
+	@Override
+	public LazyInitializer getHibernateLazyInitializer() {
+		return null;
 	}
 }
