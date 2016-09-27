@@ -17,7 +17,11 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
+import org.openmrs.module.webservices.rest.web.resource.api.SubResourceSearchHandler;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Enumeration;
 
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
@@ -71,12 +77,32 @@ public class MainSubResourceController extends BaseRestController {
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject getAll(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	public SimpleObject get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		baseUriSetup.setup(request);
-		RequestContext context = RestUtil.getRequestContext(request, response);
 		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Converter conv = res instanceof Converter ? (Converter) res : null;
+		
+		@SuppressWarnings("unchecked")
+		SubResourceSearchHandler searchHandler = (SubResourceSearchHandler) restService.getSearchHandler(
+		    buildResourceName(resource) + "/" + subResource, request.getParameterMap());
+		if (searchHandler != null) {
+			return searchHandler.search(parentUuid, context).toSimpleObject(conv);
+		}
+		
+		Enumeration parameters = request.getParameterNames();
+		while (parameters.hasMoreElements()) {
+			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
+				if (res instanceof Searchable) {
+					return ((Searchable) res).search(context);
+				} else {
+					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
+				}
+			}
+		}
+		
 		return res.getAll(parentUuid, context);
 	}
 	

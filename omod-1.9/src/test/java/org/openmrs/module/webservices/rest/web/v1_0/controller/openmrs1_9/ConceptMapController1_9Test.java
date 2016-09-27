@@ -94,12 +94,4 @@ public class ConceptMapController1_9Test extends MainResourceControllerTest {
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		assertNull(restHelperService.getObjectByUuid(ConceptMap.class, getUuid()));
 	}
-	
-	@Test
-	public void shouldSearchAndReturnAListOfConceptMapTypesMatchingTheQueryString() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("q", "is");
-		SimpleObject result = deserialize(handle(req));
-		assertEquals(2, Util.getResultsSize(result));
-	}
 }
