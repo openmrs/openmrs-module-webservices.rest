@@ -426,6 +426,22 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceBySupportedClass(Class)
+	 * @should return resource supporting given class and current openmrs version
+	 * @should fail if no resource supporting given class and current openmrs version was found
+	 * @should fail if no resource supporting given class was found
+	 * @should return resource supporting superclass of given class if given class is a hibernate
+	 *         proxy
+	 * @should return resource supporting superclass of given class if no resource supporting given
+	 *         class was found
+	 * @should return resource supporting direct superclass of given class if no resource supporting
+	 *         given class was found but multiple resources supporting multiple superclasses exist
+	 * @should fail if failed to get resource classes
+	 * @should fail if two resources with same name and order are found for given class
+	 * @should return resource with lower order value if two resources with the same name are found
+	 *         for given class
+	 */
 	@Override
 	public Resource getResourceBySupportedClass(Class<?> resourceClass) throws APIException {
 		initializeResources();

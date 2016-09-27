@@ -9,6 +9,7 @@
  */
 package org.mockingbird.test.rest.resource;
 
+import org.mockingbird.test.MockingBird;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
@@ -18,11 +19,11 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/mockingbirdfantasy", order = 1, supportedClass = String.class, supportedOpenmrsVersions = { "1.9.*" })
-public class MockingBirdFantasyResource implements Resource {
+@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/mockingbird", order = 1, supportedClass = MockingBird.class, supportedOpenmrsVersions = { "1.9.*" })
+public class DuplicateNameAndOrderMockingBirdResource_1_9 implements Resource {
 	
 	@Override
 	public String getUri(Object instance) {
-		return "v1/mockingbirdfantasy";
+		return "v1/mockingbird";
 	}
 }
