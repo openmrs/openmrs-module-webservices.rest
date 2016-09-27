@@ -490,12 +490,40 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	/**
+	 * Returns a search handler, which supports the given resource and the map of parameters and
+	 * values.
+	 * <p>
+	 * A {@code SearchHandler} is selected according to following steps (in this order):
+	 * <ul>
+	 * <li>Lookup a {@code SearchHandler} based on its {@code id} ({@code SearchConfig#id}) if
+	 * specified in given {@code parameters}. This lookup can fail if no or two
+	 * {@code SearchHandler}'s is/are found for given {@code id} and {@code resourceName}.</li>
+	 * <li>Lookup a {@code SearchHandler} based on given {@code parameters} if no {@code id} is
+	 * specified. The lookup returns the {@code SearcHandler} supporting all requested
+	 * {@code parameters} and with {@code parameters} satisfying the {@code SearchHandler}'s
+	 * {@code SearchConfig}'s required parameters. This lookup can fail if more than 1
+	 * {@code SearchHandler} satisfies the requirements mentioned before.</li>
+	 * </ul>
+	 * If no {@code SearchHandler} is found, {@code NULL} is returned.
+	 * </p>
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandler(java.lang.String,
 	 *      java.util.Map)
-	 * @should throw exception if no handler with id
-	 * @should return handler by id if exists
-	 * @should throw ambiguous exception if case 1
-	 * @should return handler if case 2
+	 * @should return search handler matching id set in given parameters
+	 * @should fail if parameters contain a search handler id which cannot be found
+	 * @should fail if two search handlers for the same resource have the same id
+	 * @should return null if parameters do not contain a search handler id and no other non special
+	 *         request parameters
+	 * @should return search handler providing all request parameters and parameters satisfying its
+	 *         required parameters
+	 * @should return null if given parameters are missing a parameter required by search handlers
+	 *         eligible for given resource name and parameters
+	 * @should fail if two search handlers match given resource and parameters and no search handler
+	 *         id is specified
+	 * @should return null if a non special request parameter in given parameters cannot be found in
+	 *         any search handler
+	 * @should return null if no search handler is found for given resource name
+	 * @should return null if no search handler is found for current openmrs version
 	 */
 	@Override
 	public SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException {
@@ -552,10 +580,12 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	/**
-	 * Eliminate search handlers with missing required parameters.
+	 * Eliminate search handlers with at least one required parameter that is not provided in
+	 * {@code searchParameters}.
 	 * 
-	 * @param candidateSearchHandlers
-	 * @param searchParameters
+	 * @param candidateSearchHandlers the search handlers to filter for required parameters
+	 * @param searchParameters the search parameters to be checked against search handlers required
+	 *            parameters
 	 */
 	private void eliminateCandidateSearchHandlersWithMissingRequiredParameters(Set<SearchHandler> candidateSearchHandlers,
 	        Set<String> searchParameters) {
