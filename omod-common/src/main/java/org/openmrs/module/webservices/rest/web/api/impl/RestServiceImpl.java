@@ -632,16 +632,23 @@ public class RestServiceImpl implements RestService {
 		return resourceHandlers;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandlers(java.lang.String)
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getAllSearchHandlers()
+	 * @should return all search handlers if search handlers have been initialized
+	 * @should return null if search handlers have not been initialized
 	 */
 	public List<SearchHandler> getAllSearchHandlers() {
 		
 		return allSearchHandlers;
 	}
 	
-	/* (non-Javadoc)
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandlers(java.lang.String)
+	 * @should return search handlers for given resource name
+	 * @should return null if no search handler is found for given resource name
+	 * @should return null if no search handler is found for current openmrs version
+	 * @should return null given null
+	 * @should fail if two search handlers for the same resource have the same id
 	 */
 	@Override
 	public Set<SearchHandler> getSearchHandlers(String resourceName) {

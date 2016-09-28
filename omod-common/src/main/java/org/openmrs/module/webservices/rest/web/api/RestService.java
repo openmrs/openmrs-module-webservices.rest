@@ -81,6 +81,10 @@ public interface RestService {
 	 */
 	public void initialize();
 	
+	/**
+	 * Returns all search handlers.
+	 * 
+	 * @return all search handlers or <code>null</code> if none registered
+	 */
 	public List<SearchHandler> getAllSearchHandlers();
-	
 }

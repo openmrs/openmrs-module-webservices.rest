@@ -50,8 +50,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -568,13 +570,17 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandler_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "concept", OpenmrsConstants.OPENMRS_VERSION_SHORT,
-		        new SearchQuery.Builder("Fuzzy search").withRequiredParameters("q").build());
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "concept", OpenmrsConstants.OPENMRS_VERSION_SHORT,
-		        new SearchQuery.Builder("Fuzzy search").withRequiredParameters("q").build());
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(Arrays.asList(searchHandler1, searchHandler2));
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -585,8 +591,8 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		expectedException.expect(IllegalStateException.class);
 		expectedException.expectMessage(startsWith("Two search handlers ("));
 		expectedException
-		        .expectMessage(endsWith("for the same resource (concept) must not have the same ID (conceptByMapping)"));
-		restService.getSearchHandler("concept", parameters);
+		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
+		restService.getSearchHandlers("v1/concept");
 	}
 	
 	/**
@@ -788,5 +794,180 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		parameters.put("source", new String[] { "some source" });
 		
 		assertThat(restService.getSearchHandler("v1/concept", parameters), is(nullValue()));
+	}
+	
+	/**
+	 * @verifies return all search handlers if search handlers have been initialized
+	 * @see RestServiceImpl#getAllSearchHandlers()
+	 */
+	@Test
+	public void getAllSearchHandlers_shouldReturnAllSearchHandlersIfSearchHandlersHaveBeenInitialized() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		
+		SearchHandler searchHandler3 = mock(SearchHandler.class);
+		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "1.11.*",
+		        new SearchQuery.Builder("description").withRequiredParameters("patient").build());
+		when(searchHandler3.getSearchConfig()).thenReturn(searchConfig3);
+		
+		SearchHandler searchHandler4 = mock(SearchHandler.class);
+		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").build());
+		when(searchHandler4.getSearchConfig()).thenReturn(searchConfig4);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(
+		    Arrays.asList(searchHandler1, searchHandler2, searchHandler3, searchHandler4));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		restService.initialize();
+		List<SearchHandler> searchHandlers = restService.getAllSearchHandlers();
+		assertThat(searchHandlers.size(), is(4));
+		assertThat(searchHandlers, hasItem(searchHandler1));
+		assertThat(searchHandlers, hasItem(searchHandler2));
+		assertThat(searchHandlers, hasItem(searchHandler3));
+		assertThat(searchHandlers, hasItem(searchHandler4));
+	}
+	
+	/**
+	 * @verifies return null if search handlers have not been initialized
+	 * @see RestServiceImpl#getAllSearchHandlers()
+	 */
+	@Test
+	public void getAllSearchHandlers_shouldReturnNullIfSearchHandlersHaveNotBeenInitialized() throws Exception {
+		
+		assertThat(restService.getAllSearchHandlers(), is(nullValue()));
+	}
+	
+	/**
+	 * @verifies return search handlers for given resource name
+	 * @see RestServiceImpl#getSearchHandlers(String)
+	 */
+	@Test
+	public void getSearchHandlers_shouldReturnSearchHandlersForGivenResourceName() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		
+		SearchHandler searchHandler3 = mock(SearchHandler.class);
+		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "1.8.*", new SearchQuery.Builder("description")
+		        .withRequiredParameters("patient").build());
+		when(searchHandler3.getSearchConfig()).thenReturn(searchConfig3);
+		
+		SearchHandler searchHandler4 = mock(SearchHandler.class);
+		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").build());
+		when(searchHandler4.getSearchConfig()).thenReturn(searchConfig4);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(
+		    Arrays.asList(searchHandler1, searchHandler2, searchHandler3, searchHandler4));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		Set<SearchHandler> searchHandlers = restService.getSearchHandlers("v1/concept");
+		assertThat(searchHandlers.size(), is(2));
+		assertThat(searchHandlers, hasItem(searchHandler1));
+		assertThat(searchHandlers, hasItem(searchHandler2));
+	}
+	
+	/**
+	 * @verifies return null if no search handler is found for given resource name
+	 * @see RestServiceImpl#getSearchHandlers(String)
+	 */
+	@Test
+	public void getSearchHandlers_shouldReturnNullIfNoSearchHandlerIsFoundForGivenResourceName() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(Arrays.asList(searchHandler1));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		assertThat(restService.getSearchHandlers("v1/order"), is(nullValue()));
+	}
+	
+	/**
+	 * @verifies return null if no search handler is found for current openmrs version
+	 * @see RestServiceImpl#getSearchHandlers(String)
+	 */
+	@Test
+	public void getSearchHandlers_shouldReturnNullIfNoSearchHandlerIsFoundForCurrentOpenmrsVersion() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		setCurrentOpenmrsVersion("1.12.0");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(Arrays.asList(searchHandler1));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		assertThat(restService.getSearchHandlers("v1/concept"), is(nullValue()));
+	}
+	
+	/**
+	 * @verifies return null given null
+	 * @see RestServiceImpl#getSearchHandlers(String)
+	 */
+	@Test
+	public void getSearchHandlers_shouldReturnNullGivenNull() throws Exception {
+		
+		assertThat(restService.getSearchHandlers(null), is(nullValue()));
+	}
+	
+	/**
+	 * @verifies fail if two search handlers for the same resource have the same id
+	 * @see RestServiceImpl#getSearchHandlers(String)
+	 */
+	@Test
+	public void getSearchHandlers_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(Arrays.asList(searchHandler1, searchHandler2));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		expectedException.expect(IllegalStateException.class);
+		expectedException.expectMessage(startsWith("Two search handlers ("));
+		expectedException
+		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
+		restService.getSearchHandlers("v1/concept");
 	}
 }
