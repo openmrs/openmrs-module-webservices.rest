@@ -7,23 +7,14 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.mockingbird.test.rest.resource;
-
-import org.mockingbird.test.MockingBird;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+package org.mockingbird.test;
 
 /**
- * Fake {@code Resource} used in tests at
+ * Fake used in tests at
  * {@link org.openmrs.module.webservices.rest.web.api.impl.RestServiceImplTest}. Located in a fake
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/mockingbird", order = 1, supportedClass = MockingBird.class, supportedOpenmrsVersions = { "1.9.*" })
-public class MockingBirdResource_1_9 implements Resource {
+public class Country {
 	
-	@Override
-	public String getUri(Object instance) {
-		return "v1/mockingbird";
-	}
 }

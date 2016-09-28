@@ -18,7 +18,7 @@ import org.hibernate.proxy.LazyInitializer;
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-public class HibernateProxyMockingBird extends MockingBird implements HibernateProxy {
+public class HibernateProxyAnimal extends Animal implements HibernateProxy {
 	
 	@Override
 	public Object writeReplace() {

@@ -10,9 +10,14 @@
 package org.mockingbird.test.rest.resource;
 
 import org.mockingbird.test.Bird;
-import org.mockingbird.test.MockingBird;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Fake {@code Resource} used in tests at
@@ -21,10 +26,61 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
 @org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/bird", order = 1, supportedClass = Bird.class, supportedOpenmrsVersions = { "1.9.*" })
-public class BirdResource_1_9 implements Resource {
+public class BirdResource_1_9 extends DelegatingCrudResource<Bird> {
 	
+	/**
+	 * @see DelegatingResourceHandler#getResourceVersion()
+	 */
 	@Override
-	public String getUri(Object instance) {
-		return "v1/bird";
+	public String getResourceVersion() {
+		return "1.9";
+	}
+	
+	/**
+	 * @see DelegatingResourceHandler#newDelegate()
+	 */
+	@Override
+	public Bird newDelegate() {
+		return new Bird();
+	}
+	
+	/**
+	 * @see DelegatingResourceHandler#save(Object)
+	 */
+	@Override
+	public Bird save(Bird delegate) {
+		return null;
+	}
+	
+	/**
+	 * @see DelegatingResourceHandler#getRepresentationDescription(Representation)
+	 */
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		return null;
+	}
+	
+	/**
+	 * @see DelegatingCrudResource#getByUniqueId(String)
+	 */
+	@Override
+	public Bird getByUniqueId(String uniqueId) {
+		return null;
+	}
+	
+	/**
+	 * @see DelegatingCrudResource#delete(Object, String, RequestContext)
+	 */
+	@Override
+	protected void delete(Bird delegate, String reason, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
+	
+	/**
+	 * @see DelegatingCrudResource#purge(Object, RequestContext)
+	 */
+	@Override
+	public void purge(Bird delegate, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
 	}
 }

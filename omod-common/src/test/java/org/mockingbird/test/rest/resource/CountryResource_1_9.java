@@ -9,7 +9,7 @@
  */
 package org.mockingbird.test.rest.resource;
 
-import org.mockingbird.test.Cat;
+import org.mockingbird.test.Country;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 
@@ -19,11 +19,11 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/cat", order = 1, supportedClass = Cat.class, supportedOpenmrsVersions = { "1.9.*" })
-public class CatResource_1_9 implements Resource {
+@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/country", order = 1, supportedClass = Country.class, supportedOpenmrsVersions = { "1.9.*" })
+public class CountryResource_1_9 implements Resource {
 	
 	@Override
 	public String getUri(Object instance) {
-		return "v1/cat";
+		return "v1/country";
 	}
 }

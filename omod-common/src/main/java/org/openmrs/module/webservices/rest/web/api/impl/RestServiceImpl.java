@@ -611,6 +611,11 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceHandlers()
+	 * @should return list of delegating resource handlers including subclass handlers
+	 * @should return list with delegating resource with lower order value if two resources with the
+	 *         same name are found for given name
+	 * @should fail if failed to get resource classes
+	 * @should fail if two resources with same name and order are found for a class
 	 */
 	@Override
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException {
