@@ -663,6 +663,15 @@ public class RestServiceImpl implements RestService {
 		return searchHandlersByResource.get(resourceName);
 	}
 	
+	/**
+	 * @see RestService#initialize()
+	 * @should initialize resources and search handlers
+	 * @should clear cached resources and search handlers and reinitialize them
+	 * @should fail if failed to get resource classes
+	 * @should fail if failed to instantiate a resource
+	 * @should fail if two resources with same name and order are found
+	 * @should fail if two search handlers for the same resource have the same id
+	 */
 	@Override
 	public void initialize() {
 		
