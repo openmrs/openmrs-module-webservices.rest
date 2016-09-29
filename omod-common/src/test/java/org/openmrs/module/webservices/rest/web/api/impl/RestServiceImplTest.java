@@ -25,6 +25,7 @@ import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -1059,5 +1060,159 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		expectedException
 		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
 		restService.getSearchHandlers("v1/concept");
+	}
+	
+	/**
+	 * @verifies initialize resources and search handlers
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldInitializeResourcesAndSearchHandlers() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_1_9.class);
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		        "Search for concepts").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
+		
+		setCurrentOpenmrsVersion("1.9.10");
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		restService.initialize();
+		assertThat(restService.getSearchHandlers("v1/concept").size(), is(1));
+		assertThat(restService.getSearchHandlers("v1/concept").iterator().next(), is(searchHandler1));
+		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
+	}
+	
+	/**
+	 * @verifies clear cached resources and search handlers and reinitialize them
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldClearCachedResourcesAndSearchHandlersAndReinitializeThem() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_1_9.class);
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		        "Search for concepts").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
+		
+		setCurrentOpenmrsVersion("1.9.10");
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		restService.initialize();
+		assertThat(restService.getAllSearchHandlers().size(), is(1));
+		assertThat(restService.getAllSearchHandlers(), hasItem(searchHandler1));
+		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
+		
+		// add new resources and search handlers to show cache was cleared and updated
+		resources.add(CountryResource_1_9.class);
+		
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("default", "v1/order", "1.9.*", new SearchQuery.Builder(
+		        "Search for orders by patient").withRequiredParameters("patient").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
+		
+		restService.initialize();
+		assertThat(restService.getAllSearchHandlers().size(), is(2));
+		assertThat(restService.getAllSearchHandlers(), hasItem(searchHandler1));
+		assertThat(restService.getAllSearchHandlers(), hasItem(searchHandler2));
+		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
+		assertThat(restService.getResourceByName("v1/country"), instanceOf(CountryResource_1_9.class));
+	}
+	
+	/**
+	 * @verifies fail if failed to get resource classes
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldFailIfFailedToGetResourceClasses() throws Exception {
+		
+		IOException ioException = new IOException("some");
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Cannot access REST resources");
+		expectedException.expectCause(is(ioException));
+		restService.initialize();
+	}
+	
+	/**
+	 * @verifies fail if failed to instantiate a resource
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldFailIfFailedToInstantiateAResource() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(InstantiateExceptionAnimalResource_1_9.class);
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		
+		setCurrentOpenmrsVersion("1.9.10");
+		
+		expectedException.expect(APIException.class);
+		expectedException.expectMessage("Failed to instantiate " + InstantiateExceptionAnimalResource_1_9.class.toString());
+		restService.initialize();
+	}
+	
+	/**
+	 * @verifies fail if two resources with same name and order are found
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldFailIfTwoResourcesWithSameNameAndOrderAreFound() throws Exception {
+		
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_1_9.class);
+		resources.add(DuplicateNameAndOrderAnimalResource_1_9.class);
+		
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion("1.9.10");
+		
+		expectedException.expect(IllegalStateException.class);
+		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
+		restService.initialize();
+	}
+	
+	/**
+	 * @verifies fail if two search handlers for the same resource have the same id
+	 * @see RestServiceImpl#initialize()
+	 */
+	@Test
+	public void initialize_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
+		
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+		
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+		
+		setCurrentOpenmrsVersion("1.8.10");
+		
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
+		
+		RestUtil.disableContext(); //to avoid a Context call
+		
+		expectedException.expect(IllegalStateException.class);
+		expectedException.expectMessage(startsWith("Two search handlers ("));
+		expectedException
+		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
+		restService.initialize();
 	}
 }
