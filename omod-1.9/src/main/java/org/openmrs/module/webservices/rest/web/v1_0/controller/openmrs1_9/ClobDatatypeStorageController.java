@@ -51,18 +51,21 @@ public class ClobDatatypeStorageController {
 	        throws Exception {
 		ClobDatatypeStorage clobData = datatypeService.getClobDatatypeStorageByUuid(uuid);
 		
-		PrintWriter writer = null;
-		try {
-			writer = response.getWriter();
-			writer.print(clobData.getValue());
-			writer.flush();
-		}
-		finally {
-			if (writer != null) {
-				writer.close();
+		if (clobData == null) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} else {
+			PrintWriter writer = null;
+			try {
+				writer = response.getWriter();
+				writer.print(clobData.getValue());
+				writer.flush();
+			}
+			finally {
+				if (writer != null) {
+					writer.close();
+				}
 			}
 		}
-		
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")
