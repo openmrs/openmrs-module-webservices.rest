@@ -163,72 +163,105 @@ public class RestServiceImpl implements RestService {
 		}
 		
 		for (Class<? extends Resource> resource : resources) {
-			org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = null;
-			try {
-				resourceAnnotation = resource
-				        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-			}
-			catch (Exception e) {
-				//Missing class
+			ResourceMetadata resourceMetadata = getResourceMetadata(resource);
+			if (resourceMetadata == null)
 				continue;
-			}
 			
-			String name = null;
-			Class<?> supportedClass = null;
-			int order = Integer.MAX_VALUE;
-			
-			if (resourceAnnotation == null) {
-				SubResource subresourceAnnotation = null;
-				org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = null;
-				try {
-					subresourceAnnotation = resource.getAnnotation(SubResource.class);
-					parentResourceAnnotation = subresourceAnnotation.parent().getAnnotation(
-					    org.openmrs.module.webservices.rest.web.annotation.Resource.class);
-				}
-				catch (Exception e) {
-					//Missing class
-					continue;
-				}
-				
-				if (!isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
-					continue;
-				}
-				name = parentResourceAnnotation.name() + "/" + subresourceAnnotation.path();
-				supportedClass = subresourceAnnotation.supportedClass();
-				order = subresourceAnnotation.order();
-			} else {
-				if (!isOpenmrsVersionInVersions(resourceAnnotation.supportedOpenmrsVersions())) {
-					continue;
-				}
-				name = resourceAnnotation.name();
-				supportedClass = resourceAnnotation.supportedClass();
-				order = resourceAnnotation.order();
-			}
-			
-			ResourceDefinition existingResourceDef = tempResourceDefinitionsByNames.get(name);
-			
-			boolean addResource = true;
-			
-			if (existingResourceDef != null) {
-				if (existingResourceDef.order == order) {
-					throw new IllegalStateException("Two resources with the same name (" + name
-					        + ") must not have the same order");
-				} else if (existingResourceDef.order < order) {
-					addResource = false;
-				}
-			}
-			
-			if (addResource) {
+			if (isResourceToBeAdded(resourceMetadata, tempResourceDefinitionsByNames.get(resourceMetadata.getName()))) {
 				Resource newResource = newResource(resource);
 				
-				tempResourceDefinitionsByNames.put(name, new ResourceDefinition(newResource, order));
-				tempResourcesBySupportedClasses.put(supportedClass, newResource);
+				tempResourceDefinitionsByNames.put(resourceMetadata.getName(), new ResourceDefinition(newResource,
+				        resourceMetadata.getOrder()));
+				tempResourcesBySupportedClasses.put(resourceMetadata.getSupportedClass(), newResource);
 			}
-			
 		}
 		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
+	}
+	
+	/**
+	 * Determines whether a {@code Resource} should be added to the cache.
+	 * 
+	 * @param resourceMetadata the resource metadata of the resource to be added
+	 * @param existingResourceDefinition the resource definition of resource
+	 * @return true if the resource should be added and false otherwise
+	 */
+	private boolean isResourceToBeAdded(ResourceMetadata resourceMetadata, ResourceDefinition existingResourceDefinition) {
+		
+		if (existingResourceDefinition == null) {
+			return true;
+		}
+		if (existingResourceDefinition.order == resourceMetadata.getOrder()) {
+			throw new IllegalStateException("Two resources with the same name (" + resourceMetadata.getName()
+			        + ") must not have the same order");
+		}
+		
+		if (existingResourceDefinition.order < resourceMetadata.getOrder()) {
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Gets {@code ResourceMetadata} from a {@code Resource} classes annotations.
+	 * 
+	 * @param resource the resource to get the metadata from
+	 * @return the metadata of a resource
+	 */
+	private ResourceMetadata getResourceMetadata(Class<? extends Resource> resource) {
+		ResourceMetadata resourceMetadata;
+		
+		org.openmrs.module.webservices.rest.web.annotation.Resource resourceAnnotation = resource
+		        .getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+		if (resourceAnnotation == null) {
+			SubResource subresourceAnnotation = resource.getAnnotation(SubResource.class);
+			if (subresourceAnnotation == null
+			        || !isOpenmrsVersionInVersions(subresourceAnnotation.supportedOpenmrsVersions())) {
+				return null;
+			}
+			org.openmrs.module.webservices.rest.web.annotation.Resource parentResourceAnnotation = subresourceAnnotation
+			        .parent().getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class);
+			if (parentResourceAnnotation == null) {
+				return null;
+			}
+			resourceMetadata = new ResourceMetadata(parentResourceAnnotation.name() + "/" + subresourceAnnotation.path(),
+			        subresourceAnnotation.supportedClass(), subresourceAnnotation.order());
+		} else {
+			if (!isOpenmrsVersionInVersions(resourceAnnotation.supportedOpenmrsVersions())) {
+				return null;
+			}
+			resourceMetadata = new ResourceMetadata(resourceAnnotation.name(), resourceAnnotation.supportedClass(),
+			        resourceAnnotation.order());
+		}
+		return resourceMetadata;
+	}
+	
+	private static class ResourceMetadata {
+		
+		private final String name;
+		
+		private final Class<?> supportedClass;
+		
+		private final int order;
+		
+		public ResourceMetadata(String name, Class<?> supportedClass, int order) {
+			this.name = name;
+			this.supportedClass = supportedClass;
+			this.order = order;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public Class<?> getSupportedClass() {
+			return supportedClass;
+		}
+		
+		public int getOrder() {
+			return order;
+		}
 	}
 	
 	/**
