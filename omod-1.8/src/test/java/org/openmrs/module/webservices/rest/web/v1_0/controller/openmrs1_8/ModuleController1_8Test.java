@@ -10,30 +10,56 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 /**
  *
  */
 public class ModuleController1_8Test extends MainResourceControllerTest {
 	
-	@BeforeClass
-	public static void init() throws Exception {
-		ModuleFactory.loadModule(new Module("Atlas Module", "atlas", "name", "author", "description", "version"), true);
-		ModuleFactory.loadModule(new Module("Open Concept Lab Module", "openconceptlab", "name", "author", "description",
-		        "version"), true);
+	@Autowired
+	RestService restService;
+	
+	private Module atlasModule = new Module("Atlas Module", "atlas", "name", "author", "description", "version");
+	
+	private Module conceptLabModule = new Module("Open Concept Lab Module", "openconceptlab", "name", "author",
+	        "description", "version");
+	
+	private Module mockModuleToLoad = new Module("MockModule", "mockModule", "name", "author", "description", "version");
+	
+	MockModuleFactoryWrapper mockModuleFactory = new MockModuleFactoryWrapper();
+	
+	@Before
+	public void setUp() throws Exception {
+		mockModuleFactory.loadedModules.add(atlasModule);
+		mockModuleFactory.loadedModules.add(conceptLabModule);
+		
+		ModuleResource1_8 resource = (ModuleResource1_8) restService.getResourceBySupportedClass(Module.class);
+		resource.setModuleFactoryWrapper(mockModuleFactory);
 	}
 	
 	@Test
@@ -55,12 +81,38 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldIncludeIfModuleIsStarted() throws Exception {
+		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI() + "/" + getUuid())));
+		Assert.assertThat((Boolean) PropertyUtils.getProperty(result, "started"), is(false));
+	}
+	
+	@Test
 	public void shouldIncludeAuthorToFullRepresentation() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "full");
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "author"));
+	}
+	
+	@Test
+	public void shouldUploadModule() throws Exception {
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("mockModule.omod"));
+		
+		MockMultipartFile toUpload = new MockMultipartFile("file", "mockModule.omod", "archive/zip", fileData);
+		
+		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+		request.setRequestURI(getBaseRestURI() + getURI());
+		request.setMethod(RequestMethod.POST.name());
+		request.addHeader("Content-Type", "multipart/form-data");
+		
+		request.addFile(toUpload);
+		
+		mockModuleFactory.loadModuleMock = mockModuleToLoad;
+		
+		MockHttpServletResponse response = handle(request);
+		assertThat(mockModuleFactory.loadedModules, hasItem(mockModuleToLoad));
+		assertThat(mockModuleFactory.startedModules, hasItem(mockModuleToLoad));
 	}
 	
 	@Override
@@ -75,6 +127,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	@Override
 	public long getAllCount() {
-		return ModuleFactory.getLoadedModulesMap().size();
+		return mockModuleFactory.loadedModules.size();
 	}
+	
 }

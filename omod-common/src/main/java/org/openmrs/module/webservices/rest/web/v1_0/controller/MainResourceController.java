@@ -21,13 +21,16 @@ import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Deletable;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.Purgeable;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.Retrievable;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.api.Updatable;
+import org.openmrs.module.webservices.rest.web.resource.api.Uploadable;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +38,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Enumeration;
 
 /**
@@ -86,6 +91,21 @@ public class MainResourceController extends BaseRestController {
 		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
+	}
+	
+	@RequestMapping(value = "/{resource}", method = RequestMethod.POST, headers = "Content-Type=multipart/form-data")
+	@ResponseBody
+	public Object upload(@PathVariable("resource") String resource, @RequestParam("file") MultipartFile file,
+	        HttpServletRequest request, HttpServletResponse response) throws IOException, ResponseException {
+		baseUriSetup.setup(request);
+		RequestContext context = RestUtil.getRequestContext(request, response);
+		Resource res = restService.getResourceByName(buildResourceName(resource));
+		if (res instanceof Uploadable) {
+			Object updated = ((Uploadable) res).upload(file, context);
+			return RestUtil.created(response, updated);
+		} else {
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + "is not uploadable");
+		}
 	}
 	
 	/**

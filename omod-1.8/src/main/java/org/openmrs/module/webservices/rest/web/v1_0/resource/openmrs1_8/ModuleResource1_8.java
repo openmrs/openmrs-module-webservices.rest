@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import org.openmrs.api.context.Context;
+import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -20,25 +20,36 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Uploadable;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingReadableResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.web.WebUtil;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- *
- */
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
-public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
+public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> implements Uploadable {
+	
+	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();
+	
+	private String moduleActionLink = ModuleActionResource1_8.class.getAnnotation(Resource.class).name();
+	
+	public void setModuleFactoryWrapper(ModuleFactoryWrapper moduleFactoryWrapper) {
+		this.moduleFactoryWrapper = moduleFactoryWrapper;
+	}
 	
 	@Override
 	public Module getByUniqueId(String uniqueId) {
-		for (Module module : ModuleFactory.getLoadedModules()) {
+		for (Module module : moduleFactoryWrapper.getLoadedModules()) {
 			if (uniqueId.equals(getUuid(module))) {
 				return module;
 			}
@@ -62,7 +73,13 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
 			description.addProperty("packageName");
 			description.addProperty("author");
 			description.addProperty("version");
+			description.addProperty("started");
+			description.addProperty("startupErrorMessage");
+			description.addProperty("requireOpenmrsVersion");
+			description.addProperty("awareOfModules");
+			description.addProperty("requiredModules");
 			description.addLink("ref", ".?v=" + RestConstants.REPRESENTATION_REF);
+			description.addLink("action", RestConstants.URI_PREFIX + moduleActionLink);
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof DefaultRepresentation) {
@@ -71,8 +88,11 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("started");
+			description.addProperty("startupErrorMessage");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			description.addLink("ref", ".?v=" + RestConstants.REPRESENTATION_REF);
+			description.addLink("action", RestConstants.URI_PREFIX + moduleActionLink);
 			description.addSelfLink();
 			return description;
 		} else if (rep instanceof RefRepresentation) {
@@ -90,7 +110,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
 	 */
 	@Override
 	public NeedsPaging<Module> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Module>(new ArrayList<Module>(ModuleFactory.getLoadedModules()), context);
+		return new NeedsPaging<Module>(new ArrayList<Module>(moduleFactoryWrapper.getLoadedModules()), context);
 	}
 	
 	@PropertyGetter("uuid")
@@ -103,4 +123,43 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> {
 		return instance.getName();
 	}
 	
+	@Override
+	public Object upload(MultipartFile file, RequestContext context) throws ResponseException, IOException {
+		moduleFactoryWrapper.checkPrivilege();
+		
+		File moduleFile = null;
+		Module module = null;
+		
+		try {
+			if (file == null || file.isEmpty()) {
+				throw new IllegalArgumentException("Uploaded OMOD file cannot be empty");
+			} else {
+				String filename = WebUtil.stripFilename(file.getOriginalFilename());
+				Module tmpModule = moduleFactoryWrapper.parseModuleFile(file);
+				Module existingModule = moduleFactoryWrapper.getModuleById(tmpModule.getModuleId());
+				ServletContext servletContext = context.getRequest().getSession().getServletContext();
+				
+				if (existingModule != null) {
+					List<Module> dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
+					
+					for (Module depMod : dependentModulesStopped) {
+						moduleFactoryWrapper.stopModuleSkipRefresh(depMod, servletContext);
+					}
+					
+					moduleFactoryWrapper.stopModuleSkipRefresh(existingModule, servletContext);
+					moduleFactoryWrapper.unloadModule(existingModule);
+				}
+				
+				moduleFile = moduleFactoryWrapper.insertModuleFile(tmpModule, filename);
+				module = moduleFactoryWrapper.loadModule(moduleFile);
+				moduleFactoryWrapper.startModule(module, servletContext);
+				return getByUniqueId(tmpModule.getModuleId());
+			}
+		}
+		finally {
+			if (module == null && moduleFile != null) {
+				FileUtils.deleteQuietly(moduleFile);
+			}
+		}
+	}
 }
