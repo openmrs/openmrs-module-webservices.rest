@@ -90,6 +90,12 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 	}
 	
+	@Test
+	public void shouldReturnHTTP404ForNonExistenceClobdata() throws Exception {
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/non-existence-uuid"));
+		Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+	}
+	
 	@Override
 	public String getURI() {
 		return "clobdata";
