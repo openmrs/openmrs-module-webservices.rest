@@ -252,7 +252,7 @@ public class ConversionUtil {
 			} else if (toClass.isAssignableFrom(Locale.class)) {
 				return LocaleUtility.fromSpecification(object.toString());
 			} else if (toClass.isEnum()) {
-				return Enum.valueOf((Class<? extends Enum>) toClass, object.toString());
+				return Enum.valueOf((Class<? extends Enum>) toClass, object.toString().toUpperCase());
 			} else if (toClass.isAssignableFrom(Class.class)) {
 				try {
 					return Context.loadClass((String) object);
