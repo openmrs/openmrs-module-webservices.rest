@@ -100,6 +100,22 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldCreatePersonAndPatient() throws Exception {
+		long originalCount = service.getAllPatients().size();
+		String json = "{ \"identifiers\": [{ \"identifier\":\"abc123ez\", "
+		        + "\"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", "
+		        + "\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", " + "\"preferred\": true }], " + "\"person\": { "
+		        + "\"gender\": \"M\", " + "\"age\": 47, " + "\"birthdate\": \"1970-01-01T00:00:00.000+0100\", "
+		        + "\"birthdateEstimated\": false, " + "\"dead\": false, " + "\"deathDate\": null, "
+		        + "\"causeOfDeath\": null, " + "\"names\": [{\"givenName\": \"Thomas\", \"familyName\": \"Smith\"}] " + "}}";
+		
+		SimpleObject newPatient = deserialize(handle(newPostRequest(getURI(), json)));
+		
+		assertNotNull(PropertyUtils.getProperty(newPatient, "uuid"));
+		assertEquals(originalCount + 1, service.getAllPatients().size());
+	}
+	
+	@Test
 	public void shouldVoidAPatient() throws Exception {
 		Patient patient = service.getPatientByUuid(getUuid());
 		final String reason = "some random reason";
