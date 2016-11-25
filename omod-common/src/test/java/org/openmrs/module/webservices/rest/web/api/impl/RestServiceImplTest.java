@@ -9,10 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockingbird.test.Animal;
 import org.mockingbird.test.Cat;
 import org.mockingbird.test.HibernateProxyAnimal;
 import org.mockingbird.test.MockingBird;
+import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.mockingbird.test.rest.resource.AnimalResource_1_11;
 import org.mockingbird.test.rest.resource.AnimalResource_1_9;
 import org.mockingbird.test.rest.resource.BirdResource_1_9;
@@ -21,10 +25,6 @@ import org.mockingbird.test.rest.resource.CatSubclassHandler_1_9;
 import org.mockingbird.test.rest.resource.CountryResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAndOrderAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAnimalResource_1_9;
-import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
@@ -44,6 +44,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
+import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
 import org.openmrs.test.BaseContextMockTest;
 import org.openmrs.util.OpenmrsConstants;
 
@@ -250,7 +251,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	@Test
 	public void getResourceByName_shouldFailIfResourceForGivenNameCannotBeFound() throws Exception {
 		
-		expectedException.expect(APIException.class);
+		expectedException.expect(UnknownResourceException.class);
 		expectedException.expectMessage("Unknown resource: UNKNOWNRESOURCENAME");
 		restService.getResourceByName("UNKNOWNRESOURCENAME");
 	}
@@ -269,7 +270,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		setCurrentOpenmrsVersion("1.12.0");
 		
-		expectedException.expect(APIException.class);
+		expectedException.expect(UnknownResourceException.class);
 		expectedException.expectMessage("Unknown resource: v1/animal");
 		restService.getResourceByName("v1/animal");
 	}
@@ -308,7 +309,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		setCurrentOpenmrsVersion("1.12.0");
 		
-		expectedException.expect(APIException.class);
+		expectedException.expect(UnknownResourceException.class);
 		expectedException.expectMessage("Unknown resource: v1/animal/class");
 		restService.getResourceByName("v1/animal/class");
 	}

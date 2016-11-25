@@ -38,6 +38,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
+import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
 import org.openmrs.util.OpenmrsConstants;
 
 /**
@@ -414,7 +415,7 @@ public class RestServiceImpl implements RestService {
 		
 		ResourceDefinition resourceDefinition = resourceDefinitionsByNames.get(name);
 		if (resourceDefinition == null) {
-			throw new APIException("Unknown resource: " + name);
+			throw new UnknownResourceException("Unknown resource: " + name);
 		} else {
 			return resourceDefinition.resource;
 		}
