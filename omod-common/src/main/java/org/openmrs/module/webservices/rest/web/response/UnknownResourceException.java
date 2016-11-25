@@ -19,4 +19,16 @@ public class UnknownResourceException extends ResponseException {
 	
 	public UnknownResourceException() {
 	}
+	
+	public UnknownResourceException(String message) {
+		super(message);
+	}
+	
+	public UnknownResourceException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	public UnknownResourceException(Throwable cause) {
+		super(cause);
+	}
 }
