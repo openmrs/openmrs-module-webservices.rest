@@ -503,6 +503,7 @@
                 <module>omod-1.11</module>
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
+				<module>omod-2.1</module>
                 <module>omod</module>
             </modules>
         </profile>
@@ -570,6 +571,7 @@
                 <module>omod-1.11</module>
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
+				<module>omod-2.1</module>
                 <module>omod</module>
             </modules>
 
