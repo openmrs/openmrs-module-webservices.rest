@@ -65,7 +65,7 @@ public class MainResourceController extends BaseRestController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{resource}/{uuid:.*}", method = RequestMethod.GET)
 	@ResponseBody
 	public Object retrieve(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
