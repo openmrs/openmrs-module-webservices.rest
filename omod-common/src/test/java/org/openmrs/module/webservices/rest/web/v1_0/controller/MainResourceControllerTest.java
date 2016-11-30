@@ -29,6 +29,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -52,6 +53,8 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	
 	@Autowired
 	private List<DefaultAnnotationHandlerMapping> handlerMappings;
+	
+	private OpenmrsPathMatcher pathMatcher = new OpenmrsPathMatcher();
 	
 	/**
 	 * Creates a request from the given parameters.
@@ -162,6 +165,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		
 		HandlerExecutionChain handlerExecutionChain = null;
 		for (DefaultAnnotationHandlerMapping handlerMapping : handlerMappings) {
+			handlerMapping.setPathMatcher(pathMatcher);
 			handlerExecutionChain = handlerMapping.getHandler(request);
 			if (handlerExecutionChain != null) {
 				break;
@@ -169,6 +173,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		}
 		Assert.assertNotNull("The request URI does not exist", handlerExecutionChain);
 		
+		handlerAdapter.setPathMatcher(pathMatcher);
 		handlerAdapter.handle(request, response, handlerExecutionChain.getHandler());
 		
 		return response;
