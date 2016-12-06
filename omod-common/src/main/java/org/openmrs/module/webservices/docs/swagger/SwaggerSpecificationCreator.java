@@ -42,6 +42,7 @@ import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
@@ -671,7 +672,7 @@ public class SwaggerSpecificationCreator {
 		}
 	}
 	
-	private String buildSearchParameterDependencyString(Set<String> dependencies) {
+	private String buildSearchParameterDependencyString(Set<SearchParameter> dependencies) {
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append("Must be used with ");
@@ -742,19 +743,19 @@ public class SwaggerSpecificationCreator {
 				if (resourceName.equals(supportedResource)) {
 					for (SearchQuery searchQuery : searchHandler.getSearchConfig().getSearchQueries()) {
 						// parameters with no dependencies
-						for (String requiredParameter : searchQuery.getRequiredParameters()) {
+						for (SearchParameter requiredParameter : searchQuery.getRequiredParameters()) {
 							Parameter p = new Parameter();
-							p.setName(requiredParameter);
+							p.setName(requiredParameter.getName());
 							p.setIn("query");
-							parameterMap.put(requiredParameter, p);
+							parameterMap.put(requiredParameter.getName(), p);
 						}
 						// parameters with dependencies
-						for (String requiredParameter : searchQuery.getOptionalParameters()) {
+						for (SearchParameter requiredParameter : searchQuery.getOptionalParameters()) {
 							Parameter p = new Parameter();
-							p.setName(requiredParameter);
+							p.setName(requiredParameter.getName());
 							p.setDescription(buildSearchParameterDependencyString(searchQuery.getRequiredParameters()));
 							p.setIn("query");
-							parameterMap.put(requiredParameter, p);
+							parameterMap.put(requiredParameter.getName(), p);
 						}
 					}
 				}
@@ -955,17 +956,17 @@ public class SwaggerSpecificationCreator {
 		for (SearchHandlerDoc searchDoc : searchHandlerDocs) {
 			if (searchDoc.getSearchHandlerId().equals(searchHandlerId) && searchDoc.getResourceURL().equals(resourceURL)) {
 				SearchQueryDoc queryDoc = searchDoc.getSearchQueriesDoc().get(queryIndex);
-				for (String requiredParameter : queryDoc.getRequiredParameters()) {
+				for (SearchParameter requiredParameter : queryDoc.getRequiredParameters()) {
 					Parameter parameter = new Parameter();
-					parameter.setName(requiredParameter);
+					parameter.setName(requiredParameter.getName());
 					parameter.setIn("query");
 					parameter.setDescription("");
 					parameter.setRequired(true);
 					parameters.add(parameter);
 				}
-				for (String optionalParameter : queryDoc.getOptionalParameters()) {
+				for (SearchParameter optionalParameter : queryDoc.getOptionalParameters()) {
 					Parameter parameter = new Parameter();
-					parameter.setName(optionalParameter);
+					parameter.setName(optionalParameter.getName());
 					parameter.setIn("query");
 					parameter.setDescription("");
 					parameter.setRequired(false);

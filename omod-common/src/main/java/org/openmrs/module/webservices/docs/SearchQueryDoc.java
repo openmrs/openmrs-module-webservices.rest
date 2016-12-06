@@ -25,20 +25,21 @@ package org.openmrs.module.webservices.docs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 
 public class SearchQueryDoc {
 	
 	private String description;
 	
-	private List<String> requiredParameters;
+	private List<SearchParameter> requiredParameters;
 	
-	private List<String> optionalParameters;
+	private List<SearchParameter> optionalParameters;
 	
 	public SearchQueryDoc(SearchQuery searchQuery) {
 		this.description = searchQuery.getDescription();
-		this.requiredParameters = new ArrayList<String>(searchQuery.getRequiredParameters());
-		this.optionalParameters = new ArrayList<String>(searchQuery.getOptionalParameters());
+		this.requiredParameters = new ArrayList<SearchParameter>(searchQuery.getRequiredParameters());
+		this.optionalParameters = new ArrayList<SearchParameter>(searchQuery.getOptionalParameters());
 	}
 	
 	/**
@@ -58,28 +59,28 @@ public class SearchQueryDoc {
 	/**
 	 * @return the requiredParameters
 	 */
-	public List<String> getRequiredParameters() {
+	public List<SearchParameter> getRequiredParameters() {
 		return requiredParameters;
 	}
 	
 	/**
 	 * @param requiredParameters the requiredParameters to set
 	 */
-	public void setRequiredParameters(List<String> requiredParameters) {
+	public void setRequiredParameters(List<SearchParameter> requiredParameters) {
 		this.requiredParameters = requiredParameters;
 	}
 	
 	/**
 	 * @return the optionalParameters
 	 */
-	public List<String> getOptionalParameters() {
+	public List<SearchParameter> getOptionalParameters() {
 		return optionalParameters;
 	}
 	
 	/**
 	 * @param optionalParameters the optionalParameters to set
 	 */
-	public void setOptionalParameters(List<String> optionalParameters) {
+	public void setOptionalParameters(List<SearchParameter> optionalParameters) {
 		this.optionalParameters = optionalParameters;
 	}
 	

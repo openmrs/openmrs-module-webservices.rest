@@ -32,9 +32,9 @@ import org.apache.commons.lang.Validate;
  */
 public class SearchQuery {
 	
-	private Set<String> requiredParameters;
+	private Set<SearchParameter> requiredParameters;
 	
-	private Set<String> optionalParameters;
+	private Set<SearchParameter> optionalParameters;
 	
 	private String description;
 	
@@ -57,7 +57,7 @@ public class SearchQuery {
 		/**
 		 * Set the {@code requiredParameters}.
 		 * 
-		 * @param requiredParameters the required parameters to be set
+		 * @param requiredParameters the required empty parameters to be set
 		 * @return this builder instance
 		 * @should fail if required parameters are already set
 		 */
@@ -66,8 +66,31 @@ public class SearchQuery {
 				throw new IllegalStateException("withRequiredParameters() must not be called twice");
 			}
 			
-			searchQuery.requiredParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
+			Set parameters = new HashSet<SearchParameter>();
+			
+			for (String parameter : requiredParameters) {
+				parameters.add(new SearchParameter(parameter));
+			}
+			
+			searchQuery.requiredParameters = Collections.unmodifiableSet(parameters);
+			
+			return this;
+		}
+		
+		/**
+		 * Set the {@code requiredParameters}.
+		 * 
+		 * @param requiredParameters the required parameters
+		 * @return this builder instance
+		 */
+		public Builder withRequiredParameters(SearchParameter... requiredParameters) {
+			if (searchQuery.requiredParameters != null) {
+				throw new IllegalStateException("withRequiredParameters() must not be called twice");
+			}
+			
+			searchQuery.requiredParameters = Collections.unmodifiableSet(new HashSet<SearchParameter>(Arrays
 			        .asList(requiredParameters)));
+			
 			return this;
 		}
 		
@@ -83,7 +106,28 @@ public class SearchQuery {
 				throw new IllegalStateException("withOptionalParameters() must not be called twice");
 			}
 			
-			searchQuery.optionalParameters = Collections.unmodifiableSet(new HashSet<String>(Arrays
+			Set parameters = new HashSet<SearchParameter>();
+			
+			for (String parameter : optionalParameters) {
+				parameters.add(new SearchParameter(parameter));
+			}
+			
+			searchQuery.optionalParameters = Collections.unmodifiableSet(parameters);
+			return this;
+		}
+		
+		/**
+		 * Set the {@code optionalParameters}.
+		 * 
+		 * @param optionalParameters the optional parameters
+		 * @return this builder instance
+		 */
+		public Builder withOptionalParameters(SearchParameter... optionalParameters) {
+			if (searchQuery.optionalParameters != null) {
+				throw new IllegalStateException("withOptionalParameters() must not be called twice");
+			}
+			
+			searchQuery.optionalParameters = Collections.unmodifiableSet(new HashSet<SearchParameter>(Arrays
 			        .asList(optionalParameters)));
 			return this;
 		}
@@ -119,7 +163,7 @@ public class SearchQuery {
 	 * 
 	 * @return this required parameters
 	 */
-	public Set<String> getRequiredParameters() {
+	public Set<SearchParameter> getRequiredParameters() {
 		return requiredParameters;
 	}
 	
@@ -128,7 +172,7 @@ public class SearchQuery {
 	 * 
 	 * @return this optional parameters
 	 */
-	public Set<String> getOptionalParameters() {
+	public Set<SearchParameter> getOptionalParameters() {
 		return optionalParameters;
 	}
 	
