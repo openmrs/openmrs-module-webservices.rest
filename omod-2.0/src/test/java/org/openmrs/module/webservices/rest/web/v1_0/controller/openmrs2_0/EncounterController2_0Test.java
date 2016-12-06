@@ -16,22 +16,31 @@ import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.junit.Assert.assertEquals;
 
 public class EncounterController2_0Test extends MainResourceControllerTest {
 	
 	public static final String currentTimezone = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
-	
+
+	@Before
+	public void setup() throws Exception {
+		executeDataSet("EncountersForDifferentTypesWithObservations.xml");
+	}
+
 	@Test
 	public void shouldGetEncountersByEncounterTypeAndPatient() throws Exception {
-		executeDataSet("EncountersForDifferentTypesWithObservations.xml");
-		
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter(
 		        "patient", "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("encounterType",
 		        "ff7397ea-c090-11e3-be87-005056821db0"))));
@@ -49,6 +58,29 @@ public class EncounterController2_0Test extends MainResourceControllerTest {
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
+	}
+	
+	@Test
+	public void shouldReturnEncounterAsComplexCustomRepresentation() throws Exception {
+		final String customRep = "custom:(uuid,display,patient:(uuid,display),location:(name,tags:(display)))";
+
+		final String encounterUuid = "62967e68-96bb-11e0-8d6b-9b9415a91465";
+		final String encounterDisplay = "sample encounter a 01/08/2008";
+		final String patientUuid = "41c6b35e-c093-11e3-be87-005056821db0";
+		final String patientDisplay = "";
+		final String locationName = "Unknown Location";
+
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("patient", "41c6b35e-c093-11e3-be87-005056821db0"),
+				new Parameter("v", customRep))));
+
+		assertEquals(2, Util.getResultsSize(result));
+		List<?> encounters = result.get("results");
+		assertEquals(encounterUuid, PropertyUtils.getProperty(encounters.get(0), "uuid"));
+		assertEquals(encounterDisplay, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "display"));
+		assertEquals(patientUuid, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.uuid"));
+		assertEquals(patientDisplay, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.display"));
+		assertEquals(locationName, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "location.name"));
 	}
 	
 	/**

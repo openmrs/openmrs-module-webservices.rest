@@ -363,7 +363,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		DelegatingResourceDescription desc = new DelegatingResourceDescription();
 		
 		String def = representation.getRepresentation();
-		def = def.substring(1, def.length() - 1); //remove '(' and ')'
+		def = def.startsWith("(") ? def.substring(1) : def;
+		def = def.endsWith(")") ? def.substring(0, def.length() - 1) : def;
 		String[] fragments = def.split(",");
 		for (int i = 0; i < fragments.length; i++) {
 			String[] field = fragments[i].split(":"); //split into field and representation
@@ -382,21 +383,26 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 				if (rep.startsWith("(")) {
 					StringBuilder customRep = new StringBuilder();
 					customRep.append(rep);
-					int open = 1;
-					for (i = i + 1; i < fragments.length; i++) {
-						for (char fragment : fragments[i].toCharArray()) {
-							if (fragment == '(') {
-								open++;
-							} else if (fragment == ')') {
-								open--;
-							}
+					if (!rep.endsWith(")")) {
+						for (int j = 2; j < field.length; j++) {
+							customRep.append(":").append(field[j]);
 						}
-						
-						customRep.append(",");
-						customRep.append(fragments[i]);
-						
-						if (open == 0) {
-							break;
+						int open = 1;
+						for (i = i + 1; i < fragments.length; i++) {
+							for (char fragment : fragments[i].toCharArray()) {
+								if (fragment == '(') {
+									open++;
+								} else if (fragment == ')') {
+									open--;
+								}
+							}
+							
+							customRep.append(",");
+							customRep.append(fragments[i]);
+							
+							if (open == 0) {
+								break;
+							}
 						}
 					}
 					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
