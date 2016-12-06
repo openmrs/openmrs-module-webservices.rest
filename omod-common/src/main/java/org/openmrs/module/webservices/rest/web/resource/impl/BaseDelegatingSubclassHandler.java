@@ -26,10 +26,22 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Helpful base implementation of {@link DelegatingSubclassHandler}
  */
 public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends Superclass> implements DelegatingSubclassHandler<Superclass, Subclass> {
+	
+	/**
+	 * Properties that should silently be ignored if you try to get them. Implementations should
+	 * generally configure this property with a list of properties that were added to their
+	 * underlying domain object after the minimum OpenMRS version required by this module. For
+	 * example PatientIdentifierTypeResource will allow "locationBehavior" to be missing, since it
+	 * wasn't added to PatientIdentifierType until OpenMRS 1.9. delegate class
+	 */
+	protected Set<String> allowedMissingProperties = new HashSet<String>();
 	
 	/**
 	 * Uses introspection into the generic interface to determine the superclass plugged into by

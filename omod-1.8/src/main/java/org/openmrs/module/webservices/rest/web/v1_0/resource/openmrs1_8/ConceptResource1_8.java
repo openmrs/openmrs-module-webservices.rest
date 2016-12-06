@@ -65,6 +65,21 @@ import java.util.Set;
 @Resource(name = RestConstants.VERSION_1 + "/concept", order = 2, supportedClass = Concept.class, supportedOpenmrsVersions = "1.8.*")
 public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
+	public ConceptResource1_8() {
+		//RESTWS-439
+		//Concept numeric fields
+		allowedMissingProperties.add("hiNormal");
+		allowedMissingProperties.add("hiAbsolute");
+		allowedMissingProperties.add("hiCritical");
+		allowedMissingProperties.add("lowNormal");
+		allowedMissingProperties.add("lowAbsolute");
+		allowedMissingProperties.add("lowCritical");
+		allowedMissingProperties.add("units");
+		allowedMissingProperties.add("precise");
+		allowedMissingProperties.add("allowDecimal");
+		allowedMissingProperties.add("displayPrecision");
+	}
+	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject asRef(Concept delegate) throws ConversionException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();

@@ -36,6 +36,18 @@ import org.openmrs.util.OpenmrsConstants;
 @SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*" })
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
 	
+	public DrugOrderSubclassHandler1_8() {
+		//RESTWS-439
+		//Order subclass fields
+		allowedMissingProperties.add("dose");
+		allowedMissingProperties.add("units");
+		allowedMissingProperties.add("frequency");
+		allowedMissingProperties.add("prn");
+		allowedMissingProperties.add("complex");
+		allowedMissingProperties.add("quantity");
+		allowedMissingProperties.add("drug");
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler#getTypeName()
 	 */
