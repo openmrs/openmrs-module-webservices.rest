@@ -37,6 +37,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
@@ -69,6 +70,13 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + getNamespace() + "/"
 		        + requestURI);
 		request.addHeader("content-type", "application/json");
+		return request;
+	}
+
+	public MockMultipartHttpServletRequest newUploadRequest(String requestURI) {
+		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+		request.addHeader("Content-Type", "multipart/form-data");
+		request.setRequestURI(getBaseRestURI() + requestURI);
 		return request;
 	}
 	
@@ -277,4 +285,6 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	public String getBaseRestURI() {
 		return "/rest/" + getNamespace() + "/";
 	}
+
+
 }

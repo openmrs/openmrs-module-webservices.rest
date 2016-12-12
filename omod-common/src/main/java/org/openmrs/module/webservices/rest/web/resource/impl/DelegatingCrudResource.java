@@ -73,20 +73,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
-		DelegatingResourceHandler<? extends T> handler;
-		if (hasTypesDefined()) {
-			String type = (String) propertiesToCreate.remove(RestConstants.PROPERTY_FOR_TYPE);
-			if (type == null)
-				throw new IllegalArgumentException(
-				        "When creating a resource that supports subclasses, you must indicate the particular subclass with a "
-				                + RestConstants.PROPERTY_FOR_TYPE + " property");
-			handler = getResourceHandler(type);
-		} else {
-			handler = this;
-		}
-		
-		T delegate = handler.newDelegate(propertiesToCreate);
-		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
+		T delegate = convert(propertiesToCreate);
 		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
@@ -98,7 +85,25 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		return ret;
 	}
-	
+
+	public T convert(SimpleObject propertiesToCreate) {
+		DelegatingResourceHandler<? extends T> handler;
+		if (hasTypesDefined()) {
+			String type = (String) propertiesToCreate.remove(RestConstants.PROPERTY_FOR_TYPE);
+			if (type == null)
+				throw new IllegalArgumentException(
+				        "When creating a resource that supports subclasses, you must indicate the particular subclass with a "
+				                + RestConstants.PROPERTY_FOR_TYPE + " property");
+			handler = getResourceHandler(type);
+		} else {
+			handler = this;
+		}
+
+		T delegate = handler.newDelegate(propertiesToCreate);
+		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
+		return delegate;
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.SimpleObject)
