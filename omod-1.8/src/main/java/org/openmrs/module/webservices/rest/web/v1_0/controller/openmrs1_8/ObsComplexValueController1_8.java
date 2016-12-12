@@ -12,15 +12,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.ConceptComplex;
 import org.openmrs.Obs;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.obs.ComplexData;
-import org.openmrs.obs.ComplexObsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,20 +34,13 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 	@Autowired
 	ObsService obsService;
 
-	@Autowired
-	ConceptService conceptService;
-
 	@RequestMapping(value = "/{uuid}/value", method = RequestMethod.GET)
 	public void getFile(@PathVariable("uuid") String uuid, HttpServletResponse response) throws Exception {
 		Obs obs = obsService.getObsByUuid(uuid);
 		if (!obs.isComplex()) {
 			throw new IllegalRequestException("It is not a complex obs, thus have no data.");
 		}
-
-		ConceptComplex concept = conceptService.getConceptComplex(obs.getConcept().getConceptId());
-		ComplexObsHandler handler = obsService.getHandler(concept.getHandler());
-
-		obs = handler.getObs(obs, "RAW_VIEW");
+		obs = obsService.getComplexObs(obs.getId(), "RAW_VIEW");
 		ComplexData complexData = obs.getComplexData();
 
 		String mimeType;
