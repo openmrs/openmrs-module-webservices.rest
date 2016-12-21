@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -69,11 +68,11 @@ public class SearchQueryTest {
 		
 		assertThat(searchQuery.getDescription(), is("Enables search for patient"));
 		assertThat(searchQuery.getRequiredParameters().size(), is(2));
-		assertThat(searchQuery.getRequiredParameters(), hasItem("patient"));
-		assertThat(searchQuery.getRequiredParameters(), hasItem("visit"));
+		assertThat(searchQuery.getRequiredParameters(), hasItem(new SearchParameter("patient")));
+		assertThat(searchQuery.getRequiredParameters(), hasItem(new SearchParameter("visit")));
 		assertThat(searchQuery.getOptionalParameters().size(), is(2));
-		assertThat(searchQuery.getOptionalParameters(), hasItem("encounter"));
-		assertThat(searchQuery.getOptionalParameters(), hasItem("date"));
+		assertThat(searchQuery.getOptionalParameters(), hasItem(new SearchParameter("encounter")));
+		assertThat(searchQuery.getOptionalParameters(), hasItem(new SearchParameter("date")));
 	}
 	
 	/**
@@ -89,8 +88,8 @@ public class SearchQueryTest {
 		assertThat(searchQuery.getDescription(), is("Enables search for patient"));
 		assertThat(searchQuery.getRequiredParameters(), is(empty()));
 		assertThat(searchQuery.getOptionalParameters().size(), is(2));
-		assertThat(searchQuery.getOptionalParameters(), hasItem("encounter"));
-		assertThat(searchQuery.getOptionalParameters(), hasItem("date"));
+		assertThat(searchQuery.getOptionalParameters(), hasItem(new SearchParameter("encounter")));
+		assertThat(searchQuery.getOptionalParameters(), hasItem(new SearchParameter("date")));
 	}
 	
 	/**
@@ -105,8 +104,8 @@ public class SearchQueryTest {
 		
 		assertThat(searchQuery.getDescription(), is("Enables search for patient"));
 		assertThat(searchQuery.getRequiredParameters().size(), is(2));
-		assertThat(searchQuery.getRequiredParameters(), hasItem("patient"));
-		assertThat(searchQuery.getRequiredParameters(), hasItem("visit"));
+		assertThat(searchQuery.getRequiredParameters(), hasItem(new SearchParameter("patient")));
+		assertThat(searchQuery.getRequiredParameters(), hasItem(new SearchParameter("visit")));
 		assertThat(searchQuery.getOptionalParameters(), is(empty()));
 	}
 	

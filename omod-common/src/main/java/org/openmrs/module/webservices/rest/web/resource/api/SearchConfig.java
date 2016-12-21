@@ -64,7 +64,7 @@ public class SearchConfig {
 	 * Creates an instance of SearchConfig.
 	 * <p>
 	 * Delegates to {@link SearchConfig#SearchConfig(String, String, Collection, Collection)}.
-	 * </p>
+	 * </p
 	 * 
 	 * @param id the id of the search config
 	 * @param supportedResource the supported resource

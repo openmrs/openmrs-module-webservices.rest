@@ -12,7 +12,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,21 +31,113 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
 public class UserController1_8Test extends MainResourceControllerTest {
+	
+	public static final String MOCKED_USER_NAME_FOR_FIRST_COMPONENT = "FirstComponent";
+	
+	public static final String MOCKED_USER_NAME_FOR_SECOND_COMPONENT = "SecondComponent";
+	
+	public static final String MOCKED_USER_NAME_FOR_THRID_COMPONENT = "ThirdComponent";
 	
 	private UserService service;
 	
 	@Before
 	public void init() {
 		service = Context.getUserService();
+	}
+	
+	@Component
+	public static class UserSearchHandlerWithRequiredUsernameAndOptionalLocalesParams implements SearchHandler {
+		
+		@Autowired
+		@Qualifier("userService")
+		UserService userService;
+		
+		@Override
+		public SearchConfig getSearchConfig() {
+			return new SearchConfig("config-for-first-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder(
+			        "Allows you to find users by username").withRequiredParameters(new SearchParameter("username", "admin"))
+			        .withOptionalParameters("preferredLocales").build());
+		}
+		
+		@Override
+		public PageableResult search(RequestContext context) throws ResponseException {
+			User user = new User();
+			user.setUsername(MOCKED_USER_NAME_FOR_FIRST_COMPONENT);
+			List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
+			users.add(new UserAndPassword1_8(user));
+			return new NeedsPaging<UserAndPassword1_8>(users, context);
+		}
+	}
+	
+	@Component
+	public static class UserSearchHandlerWithRequiredIdAndOptionalUsernameParams implements SearchHandler {
+		
+		@Autowired
+		@Qualifier("userService")
+		UserService userService;
+		
+		@Override
+		public SearchConfig getSearchConfig() {
+			return new SearchConfig("config-for-second-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder(
+			        "Allows you to find users by username").withRequiredParameters(new SearchParameter("systemId"))
+			        .withOptionalParameters(new SearchParameter("username", "bruno")).build());
+		}
+		
+		@Override
+		public PageableResult search(RequestContext context) throws ResponseException {
+			User user = new User();
+			user.setUsername(MOCKED_USER_NAME_FOR_SECOND_COMPONENT);
+			List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
+			users.add(new UserAndPassword1_8(user));
+			return new NeedsPaging<UserAndPassword1_8>(users, context);
+		}
+	}
+	
+	@Component
+	public static class UserSearchHandlerWithOptionalParam implements SearchHandler {
+		
+		@Autowired
+		@Qualifier("userService")
+		UserService userService;
+		
+		@Override
+		public SearchConfig getSearchConfig() {
+			return new SearchConfig("config-for-third-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*"), new SearchQuery.Builder(
+			        "Allows you to find users by username").withOptionalParameters(new SearchParameter("username", "bruno"))
+			        .build());
+		}
+		
+		@Override
+		public PageableResult search(RequestContext context) throws ResponseException {
+			User user = new User();
+			user.setUsername(MOCKED_USER_NAME_FOR_THRID_COMPONENT);
+			List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
+			users.add(new UserAndPassword1_8(user));
+			return new NeedsPaging<UserAndPassword1_8>(users, context);
+		}
 	}
 	
 	/**
@@ -101,7 +196,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		User createdUser = service.getUserByUuid(getUuid());
 		Assert.assertNotNull(createdUser);
-		Assert.assertTrue(createdUser.hasRole("Provider"));
+		assertTrue(createdUser.hasRole("Provider"));
 	}
 	
 	/**
@@ -189,7 +284,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		User retiredUser = service.getUserByUuid(getUuid());
-		Assert.assertTrue(retiredUser.isRetired());
+		assertTrue(retiredUser.isRetired());
 		assertEquals("unit test", retiredUser.getRetireReason());
 	}
 	
@@ -242,6 +337,86 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		Util.log("Found " + results.size() + " user(s) by username", response);
 		assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
+	}
+	
+	@Test
+	public void shouldFindUserByUsernameUsingRequiredSearchParameterForMockedHandler() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "admin"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertEquals(1, results.size());
+		assertEquals(MOCKED_USER_NAME_FOR_FIRST_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldFindUserByUsernameUsingRequiredAndOptionalSearchParametersForMockedHandler() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "admin"),
+		    new Parameter("preferredLocales", "en"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertEquals(1, results.size());
+		assertEquals(MOCKED_USER_NAME_FOR_FIRST_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldFindUserByRequiredSystemIdAndOptionalUsernameSearchParametersForMockedHandler() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("systemId", "bruno"),
+		    new Parameter("username", "bruno"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertEquals(1, results.size());
+		assertEquals(MOCKED_USER_NAME_FOR_SECOND_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldNotFindUserByRequiredSystemIdAndWrongOptionalUsernameSearchParametersForMockedHandler()
+	        throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("systemId", "bruno"),
+		    new Parameter("username", "james"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertNotEquals(1, results.size());
+		assertNotEquals(MOCKED_USER_NAME_FOR_SECOND_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldNotFindUserByUsernameUsingWrongRequiredAndCorrectOptionalSearchParametersForMockedHandler()
+	        throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "bruno"),
+		    new Parameter("preferredLocales", "en"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertNotEquals(1, results.size());
+		assertNotEquals(MOCKED_USER_NAME_FOR_THRID_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldFindUserByUsernameUsingOptionalSearchParameterForMockedHandler() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "bruno"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Object next = results.iterator().next();
+		
+		assertEquals(1, results.size());
+		assertEquals(MOCKED_USER_NAME_FOR_THRID_COMPONENT, PropertyUtils.getProperty(next, "display"));
+	}
+	
+	@Test
+	public void shouldNotFindUserByUsernameUsingWrongOptionalSearchParameterForMockedHandler() throws Exception {
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "james"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		assertEquals(0, results.size());
 	}
 	
 	@Test

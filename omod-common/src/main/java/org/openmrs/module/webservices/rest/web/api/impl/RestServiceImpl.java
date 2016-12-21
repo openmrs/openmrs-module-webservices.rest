@@ -34,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
@@ -50,9 +51,9 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
-	private volatile Map<CompositeSearchHandlerKey, Set<SearchHandler>> searchHandlersByParameter;
+	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
 	
-	private volatile Map<CompositeSearchHandlerKey, SearchHandler> searchHandlersByIds;
+	private volatile Map<CompositeSearchHandlerKeyValue, SearchHandler> searchHandlersByIds;
 	
 	private volatile Map<String, Set<SearchHandler>> searchHandlersByResource;
 	
@@ -97,53 +98,50 @@ public class RestServiceImpl implements RestService {
 	/**
 	 * Wraps {@code Resource} name and an additional string-based key into a composite key.
 	 */
-	private static class CompositeSearchHandlerKey {
+	private static class CompositeSearchHandlerKeyValue {
 		
 		public final String supportedResource;
 		
 		public final String secondKey;
 		
-		public CompositeSearchHandlerKey(String supportedResource, String additionalKeyProperty) {
+		public final String secondKeyValue;
+		
+		public CompositeSearchHandlerKeyValue(String supportedResource, String additionalKeyProperty) {
 			this.supportedResource = supportedResource;
 			this.secondKey = additionalKeyProperty;
+			this.secondKeyValue = null;
 		}
 		
-		/**
-		 * @see Object#hashCode()
-		 * @return the hash code
-		 */
+		public CompositeSearchHandlerKeyValue(String supportedResource, String additionalKeyProperty,
+		    String additionalKeyPropertyValue) {
+			this.supportedResource = supportedResource;
+			this.secondKey = additionalKeyProperty;
+			this.secondKeyValue = additionalKeyPropertyValue;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			
+			CompositeSearchHandlerKeyValue that = (CompositeSearchHandlerKeyValue) o;
+			
+			if (!supportedResource.equals(that.supportedResource))
+				return false;
+			if (!secondKey.equals(that.secondKey))
+				return false;
+			return secondKeyValue != null ? secondKeyValue.equals(that.secondKeyValue) : that.secondKeyValue == null;
+			
+		}
+		
 		@Override
 		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((secondKey == null) ? 0 : secondKey.hashCode());
-			result = prime * result + ((supportedResource == null) ? 0 : supportedResource.hashCode());
+			int result = supportedResource.hashCode();
+			result = 31 * result + secondKey.hashCode();
+			result = 31 * result + (secondKeyValue != null ? secondKeyValue.hashCode() : 0);
 			return result;
-		}
-		
-		/**
-		 * @see Object#equals(Object)
-		 * @param obj the object to test for if equal to this
-		 * @return true if obj is equal to this otherwise false
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (!(obj instanceof CompositeSearchHandlerKey))
-				return false;
-			CompositeSearchHandlerKey other = (CompositeSearchHandlerKey) obj;
-			if (secondKey == null) {
-				if (other.secondKey != null)
-					return false;
-			} else if (!secondKey.equals(other.secondKey))
-				return false;
-			if (supportedResource == null) {
-				if (other.supportedResource != null)
-					return false;
-			} else if (!supportedResource.equals(other.supportedResource))
-				return false;
-			return true;
 		}
 	}
 	
@@ -292,8 +290,8 @@ public class RestServiceImpl implements RestService {
 			return;
 		}
 		
-		Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds = new HashMap<RestServiceImpl.CompositeSearchHandlerKey, SearchHandler>();
-		Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<CompositeSearchHandlerKey, Set<SearchHandler>>();
+		Map<CompositeSearchHandlerKeyValue, SearchHandler> tempSearchHandlersByIds = new HashMap<CompositeSearchHandlerKeyValue, SearchHandler>();
+		Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> tempSearchHandlersByParameters = new HashMap<CompositeSearchHandlerKeyValue, Set<SearchHandler>>();
 		Map<String, Set<SearchHandler>> tempSearchHandlersByResource = new HashMap<String, Set<SearchHandler>>();
 		
 		List<SearchHandler> allSearchHandlers = restHelperService.getRegisteredSearchHandlers();
@@ -307,8 +305,8 @@ public class RestServiceImpl implements RestService {
 		searchHandlersByResource = tempSearchHandlersByResource;
 	}
 	
-	private void addSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters,
+	private void addSearchHandler(Map<CompositeSearchHandlerKeyValue, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> tempSearchHandlersByParameters,
 	        Map<String, Set<SearchHandler>> tempSearchHandlersByResource, SearchHandler searchHandler) {
 		for (String supportedVersion : searchHandler.getSearchConfig().getSupportedOpenmrsVersions()) {
 			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, supportedVersion)) {
@@ -318,10 +316,11 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 	
-	private void addSupportedSearchHandler(Map<CompositeSearchHandlerKey, SearchHandler> tempSearchHandlersByIds,
-	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
-		CompositeSearchHandlerKey searchHanlderIdKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
-		        .getSupportedResource(), searchHandler.getSearchConfig().getId());
+	private void addSupportedSearchHandler(Map<CompositeSearchHandlerKeyValue, SearchHandler> tempSearchHandlersByIds,
+	        Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> tempSearchHandlersByParameters,
+	        SearchHandler searchHandler) {
+		CompositeSearchHandlerKeyValue searchHanlderIdKey = new CompositeSearchHandlerKeyValue(searchHandler
+		        .getSearchConfig().getSupportedResource(), searchHandler.getSearchConfig().getId());
 		SearchHandler previousSearchHandler = tempSearchHandlersByIds.put(searchHanlderIdKey, searchHandler);
 		if (previousSearchHandler != null) {
 			SearchConfig config = searchHandler.getSearchConfig();
@@ -334,14 +333,16 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	private void addSearchHandlerToParametersMap(
-	        Map<CompositeSearchHandlerKey, Set<SearchHandler>> tempSearchHandlersByParameters, SearchHandler searchHandler) {
+	        Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> tempSearchHandlersByParameters,
+	        SearchHandler searchHandler) {
+		
 		for (SearchQuery searchQueries : searchHandler.getSearchConfig().getSearchQueries()) {
-			Set<String> parameters = new HashSet<String>(searchQueries.getRequiredParameters());
+			Set<SearchParameter> parameters = new HashSet<SearchParameter>(searchQueries.getRequiredParameters());
 			parameters.addAll(searchQueries.getOptionalParameters());
 			
-			for (String parameter : parameters) {
-				CompositeSearchHandlerKey parameterKey = new CompositeSearchHandlerKey(searchHandler.getSearchConfig()
-				        .getSupportedResource(), parameter);
+			for (SearchParameter parameter : parameters) {
+				CompositeSearchHandlerKeyValue parameterKey = new CompositeSearchHandlerKeyValue(searchHandler
+				        .getSearchConfig().getSupportedResource(), parameter.getName(), parameter.getValue());
 				Set<SearchHandler> list = tempSearchHandlersByParameters.get(parameterKey);
 				if (list == null) {
 					list = new HashSet<SearchHandler>();
@@ -524,9 +525,19 @@ public class RestServiceImpl implements RestService {
 	public SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException {
 		initializeSearchHandlers();
 		
+		Set<SearchParameter> searchParameters = new HashSet<SearchParameter>();
+		
+		for (Map.Entry<String, String[]> parameter : parameters.entrySet()) {
+			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameter.getKey())
+			        || RestConstants.REQUEST_PROPERTY_FOR_TYPE.equals(parameter.getKey())) {
+				searchParameters.add(new SearchParameter(parameter.getKey(), parameter.getValue()[0]));
+			}
+		}
+		
 		String[] searchIds = parameters.get(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID);
 		if (searchIds != null && searchIds.length > 0) {
-			SearchHandler searchHandler = searchHandlersByIds.get(new CompositeSearchHandlerKey(resourceName, searchIds[0]));
+			SearchHandler searchHandler = searchHandlersByIds.get(new CompositeSearchHandlerKeyValue(resourceName,
+			        searchIds[0]));
 			if (searchHandler == null) {
 				throw new InvalidSearchException("The search with id '" + searchIds[0] + "' for '" + resourceName
 				        + "' resource is not recognized");
@@ -535,16 +546,17 @@ public class RestServiceImpl implements RestService {
 			}
 		}
 		
-		Set<String> searchParameters = new HashSet<String>(parameters.keySet());
-		searchParameters.removeAll(RestConstants.SPECIAL_REQUEST_PARAMETERS);
-		
 		Set<SearchHandler> candidateSearchHandlers = null;
-		for (String searchParameter : searchParameters) {
-			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new CompositeSearchHandlerKey(resourceName,
-			        searchParameter));
+		for (SearchParameter param : searchParameters) {
+			Set<SearchHandler> searchHandlers = searchHandlersByParameter.get(new CompositeSearchHandlerKeyValue(
+			        resourceName, param.getName(), param.getValue()));
 			if (searchHandlers == null) {
-				return null; //Missing parameter so there's no handler.
-			} else if (candidateSearchHandlers == null) {
+				searchHandlers = searchHandlersByParameter.get(new CompositeSearchHandlerKeyValue(resourceName, param
+				        .getName()));
+				if (searchHandlers == null)
+					return null; //Missing parameter so there's no handler.
+			}
+			if (candidateSearchHandlers == null) {
 				candidateSearchHandlers = new HashSet<SearchHandler>();
 				candidateSearchHandlers.addAll(searchHandlers);
 			} else {
@@ -583,15 +595,31 @@ public class RestServiceImpl implements RestService {
 	 *            parameters
 	 */
 	private void eliminateCandidateSearchHandlersWithMissingRequiredParameters(Set<SearchHandler> candidateSearchHandlers,
-	        Set<String> searchParameters) {
+	        Set<SearchParameter> searchParameters) {
 		Iterator<SearchHandler> it = candidateSearchHandlers.iterator();
 		while (it.hasNext()) {
 			SearchHandler candidateSearchHandler = it.next();
 			boolean remove = true;
 			
 			for (SearchQuery candidateSearchQueries : candidateSearchHandler.getSearchConfig().getSearchQueries()) {
-				Set<String> requiredParameters = new HashSet<String>(candidateSearchQueries.getRequiredParameters());
-				requiredParameters.removeAll(searchParameters);
+				Set<SearchParameter> requiredParameters = new HashSet<SearchParameter>(
+				        candidateSearchQueries.getRequiredParameters());
+				
+				Iterator<SearchParameter> iterator = requiredParameters.iterator();
+				while (iterator.hasNext()) {
+					SearchParameter requiredParameter = iterator.next();
+					for (SearchParameter param : searchParameters) {
+						if (requiredParameter.getValue() == null) {
+							if (requiredParameter.getName().equals(param.getName())) {
+								iterator.remove();
+							}
+						} else {
+							if (requiredParameter.equals(param)) {
+								iterator.remove();
+							}
+						}
+					}
+				}
 				if (requiredParameters.isEmpty()) {
 					remove = false;
 					break;
