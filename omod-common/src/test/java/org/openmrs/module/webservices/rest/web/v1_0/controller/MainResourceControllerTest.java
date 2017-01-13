@@ -72,7 +72,7 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 		request.addHeader("content-type", "application/json");
 		return request;
 	}
-
+	
 	public MockMultipartHttpServletRequest newUploadRequest(String requestURI) {
 		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
 		request.addHeader("Content-Type", "multipart/form-data");
@@ -285,6 +285,5 @@ public abstract class MainResourceControllerTest extends BaseModuleWebContextSen
 	public String getBaseRestURI() {
 		return "/rest/" + getNamespace() + "/";
 	}
-
-
+	
 }

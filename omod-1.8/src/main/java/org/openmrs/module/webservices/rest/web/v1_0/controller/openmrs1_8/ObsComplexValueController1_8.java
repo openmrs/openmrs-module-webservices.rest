@@ -35,10 +35,10 @@ import java.io.InputStream;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/obs")
 public class ObsComplexValueController1_8 extends BaseRestController {
-
+	
 	@Autowired
 	ObsService obsService;
-
+	
 	@RequestMapping(value = "/{uuid}/value", method = RequestMethod.GET)
 	public void getFile(@PathVariable("uuid") String uuid, HttpServletResponse response) throws Exception {
 		Obs obs = obsService.getObsByUuid(uuid);
@@ -47,14 +47,15 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 		}
 		obs = obsService.getComplexObs(obs.getId(), "RAW_VIEW");
 		ComplexData complexData = obs.getComplexData();
-
+		
 		String mimeType;
 		try {
 			mimeType = BeanUtils.getProperty(complexData, "mimeType");
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			mimeType = "application/force-download"; //no mimeType for openmrs-api 1.11 and below
 		}
-
+		
 		response.setContentType(mimeType);
 		if (StringUtils.isNotBlank(complexData.getTitle())) {
 			response.setHeader("Content-Disposition", "attachment; filename=" + complexData.getTitle());
@@ -74,7 +75,7 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 			}
 			ImageIO.write(image, type, response.getOutputStream());
 		}
-
+		
 		response.flushBuffer();
 	}
 }

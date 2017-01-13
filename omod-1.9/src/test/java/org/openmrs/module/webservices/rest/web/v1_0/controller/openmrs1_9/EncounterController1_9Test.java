@@ -141,6 +141,66 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void createEncounter_shouldCreateEncounterWithNestedObs() throws Exception {
+		long before = getAllCount();
+		
+		List<SimpleObject> obs = new ArrayList<SimpleObject>();
+		List<SimpleObject> parentGroupMembers = new ArrayList<SimpleObject>();
+		List<SimpleObject> child1GroupMembers = new ArrayList<SimpleObject>();
+		
+		SimpleObject child1child1 = new SimpleObject();
+		child1child1.put("value", 1);
+		child1child1.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		child1GroupMembers.add(child1child1);
+		
+		SimpleObject child1child2 = new SimpleObject();
+		child1child2.put("value", 2);
+		child1child2.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		child1GroupMembers.add(child1child2);
+		
+		SimpleObject child1 = new SimpleObject();
+		child1.put("groupMembers", child1GroupMembers);
+		parentGroupMembers.add(child1);
+		
+		SimpleObject child2 = new SimpleObject();
+		child2.put("value", 3);
+		child2.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		parentGroupMembers.add(child2);
+		
+		SimpleObject child3 = new SimpleObject();
+		child3.put("value", 4);
+		child3.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		parentGroupMembers.add(child3);
+		
+		SimpleObject parent = new SimpleObject();
+		parent.put("groupMembers", parentGroupMembers);
+		obs.add(parent);
+		
+		SimpleObject encounter = new SimpleObject();
+		encounter.put("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
+		encounter.put("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
+		encounter.put("encounterDatetime", "2011-01-15");
+		encounter.put("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		encounter.put("provider", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
+		encounter.put("obs", obs);
+		
+		MockHttpServletResponse response = handle(newPostRequest(getURI(), encounter));
+		SimpleObject newEncounter = deserialize(response);
+		
+		Assert.assertNotNull(newEncounter);
+		Assert.assertEquals(before + 1, getAllCount());
+		
+		List<Map<String, String>> result = (List<Map<String, String>>) newEncounter.get("obs");
+		
+		Assert.assertEquals(1, result.size());
+		Set<String> obsDisplayValues = new HashSet<String>();
+		for (Map<String, String> o : result) {
+			obsDisplayValues.add(o.get("display"));
+		}
+		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 1,2,3,4"));
+	}
+	
+	@Test
 	public void createEncounter_shouldCreateANewEncounterWithObs() throws Exception {
 		long before = getAllCount();
 		Util.log("before = ", before);
