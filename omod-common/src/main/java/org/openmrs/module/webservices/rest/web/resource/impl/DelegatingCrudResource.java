@@ -85,7 +85,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		
 		return ret;
 	}
-
+	
 	public T convert(SimpleObject propertiesToCreate) {
 		DelegatingResourceHandler<? extends T> handler;
 		if (hasTypesDefined()) {
@@ -98,12 +98,12 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		} else {
 			handler = this;
 		}
-
+		
 		T delegate = handler.newDelegate(propertiesToCreate);
 		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
 		return delegate;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Updatable#update(java.lang.String,
 	 *      org.openmrs.module.webservices.rest.SimpleObject)
