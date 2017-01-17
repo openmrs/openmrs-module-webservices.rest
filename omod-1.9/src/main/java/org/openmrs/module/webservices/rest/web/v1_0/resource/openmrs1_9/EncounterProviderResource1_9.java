@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -95,6 +96,13 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	@Override
 	public PageableResult doGetAll(Encounter parent, RequestContext context) throws ResponseException {
 		List<EncounterProvider> encounterProviders = new ArrayList<EncounterProvider>(parent.getEncounterProviders());
+		if (!context.getIncludeAll()) {
+			for (Iterator<EncounterProvider> i = encounterProviders.iterator(); i.hasNext();) {
+				if (i.next().getVoided()) {
+					i.remove();
+				}
+			}
+		}
 		return new NeedsPaging<EncounterProvider>(encounterProviders, context);
 	}
 	
@@ -106,6 +114,7 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	@Override
 	protected void delete(EncounterProvider delegate, String reason, RequestContext context) throws ResponseException {
 		delegate.getEncounter().removeProvider(delegate.getEncounterRole(), delegate.getProvider());
+		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 	}
 	
 	@Override
@@ -115,7 +124,8 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	public EncounterProvider save(EncounterProvider delegate) {
-		delegate.getEncounter().getEncounterProviders().add(delegate);
+		delegate.getEncounter().addProvider(delegate.getEncounterRole(), delegate.getProvider());
+		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 		return delegate;
 	}
 	
