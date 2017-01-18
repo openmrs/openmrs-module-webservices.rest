@@ -267,7 +267,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
 		for (Obs member : members) {
 			member.setObsGroup(obsGroup);
-			//member.setGroupMembers(Collections.<Obs> emptySet());
 		}
 		obsGroup.setGroupMembers(members);
 	}
