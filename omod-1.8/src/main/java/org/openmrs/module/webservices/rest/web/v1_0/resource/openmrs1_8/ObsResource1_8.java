@@ -9,26 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
-import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptNumeric;
+import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
-import org.openmrs.Drug;
 import org.openmrs.api.APIException;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -53,10 +41,17 @@ import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.obs.ComplexData;
-import org.openmrs.obs.ComplexObsHandler;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -272,7 +267,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public static void setGroupMembers(Obs obsGroup, Set<Obs> members) {
 		for (Obs member : members) {
 			member.setObsGroup(obsGroup);
-			member.setGroupMembers(Collections.<Obs> emptySet());
 		}
 		obsGroup.setGroupMembers(members);
 	}
