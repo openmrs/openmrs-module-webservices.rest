@@ -124,7 +124,7 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	public EncounterProvider save(EncounterProvider delegate) {
-		delegate.getEncounter().addProvider(delegate.getEncounterRole(), delegate.getProvider());
+		delegate.getEncounter().getEncounterProviders().add(delegate);
 		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 		return delegate;
 	}

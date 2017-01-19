@@ -9,15 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.openmrs.module.webservices.rest.test.Util.getByPath;
-import static org.openmrs.module.webservices.rest.test.Util.getResultsList;
-import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
-
-import java.util.List;
-import java.util.Locale;
-
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
@@ -30,6 +21,15 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Locale;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.webservices.rest.test.Util.getByPath;
+import static org.openmrs.module.webservices.rest.test.Util.getResultsList;
+import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
 
 public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest<EncounterProviderResource1_9, EncounterProvider> {
 	
@@ -120,14 +120,16 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 		EncounterProviderResource1_9 resource = getResource();
 		SimpleObject post = new SimpleObject().add("provider", "c2299800-cca9-11e0-9572-0800200c9a66").add("encounterRole",
 		    newRole.getUuid());
-		
+
+
 		Object created = resource.create(encounter.getUuid(), post, new RequestContext());
 		assertThat((String) getByPath(created, "provider.uuid"), is("c2299800-cca9-11e0-9572-0800200c9a66"));
 		assertThat((String) getByPath(created, "encounterRole.uuid"), is(newRole.getUuid()));
-		
+
 		assertThat(getEncounterProviderCountWithoutFlushing(), is(2));
+		assertThat(getEncounterProviderCountWithoutFlushingByUuid(getByPath(created, "uuid").toString()), is(1));
 	}
-	
+
 	@Test
 	public void testDelete() throws Exception {
 		Encounter encounter = encounterService.getEncounter(3);
@@ -147,7 +149,14 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 		    "select count(*) from encounter_provider where encounter_id = 3", true);
 		return ((Number) temp.get(0).get(0)).intValue();
 	}
-	
+
+
+	private int getEncounterProviderCountWithoutFlushingByUuid(String uuid) {
+		List<List<Object>> temp = Context.getAdministrationService().executeSQL(
+				"select count(*) from encounter_provider where uuid ='" + uuid + "'", true);
+		return ((Number) temp.get(0).get(0)).intValue();
+	}
+
 	private int getNonVoidedEncounterProviderCountWithoutFlushing() {
 		List<List<Object>> temp = Context.getAdministrationService().executeSQL(
 		    "select count(*) from encounter_provider where encounter_id = 3 and voided = 0", true);
