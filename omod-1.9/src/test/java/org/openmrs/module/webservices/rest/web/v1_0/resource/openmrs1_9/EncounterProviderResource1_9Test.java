@@ -34,7 +34,11 @@ import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
 public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest<EncounterProviderResource1_9, EncounterProvider> {
 	
 	public static final String EXISTING_ENCOUNTER_PROVIDER_UUID = "19e0aae8-20ee-46b7-ade6-9e68f897b7a9";
-	
+
+	public static final String EXISTING_ENCOUNTER_PROVIDER_PROVIDER_UUID = "c2299800-cca9-11e0-9572-0800200c9a66";
+
+	public static final String EXISTING_ENCOUNTER_PROVIDER_ENCOUNTER_ROLE_UUID ="a0b03050-c99b-11e0-9572-0800200c9a66";
+
 	@Autowired
 	private EncounterService encounterService;
 	
@@ -131,19 +135,64 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 	}
 
 	@Test
+	public void testAddingDuplicateDoesNotCreateNewRecord() throws Exception {
+		// If we don't explicitly set a locale, then a Context.getLocale() call nested somewhere below will trigger a
+		// premature hibernate flush because it looks up the global property for default locale
+		Context.setLocale(Locale.UK);
+
+		// now add a provider *with the same provider and role* as the existing one
+		Encounter encounter = encounterService.getEncounter(3);
+		EncounterProviderResource1_9 resource = getResource();
+		SimpleObject post = new SimpleObject().add("provider",  EXISTING_ENCOUNTER_PROVIDER_PROVIDER_UUID).add("encounterRole",
+				EXISTING_ENCOUNTER_PROVIDER_ENCOUNTER_ROLE_UUID);
+		Object created = resource.create(encounter.getUuid(), post, new RequestContext());
+
+		// should return uuid of *existing* encounter provider
+		assertThat((String) getByPath(created, "uuid"), is(EXISTING_ENCOUNTER_PROVIDER_UUID));
+		Context.flushSession();
+
+		// there should still only be one provider
+		assertThat(getEncounterProviderCountWithoutFlushing(), is(1));
+	}
+
+	@Test
 	public void testDelete() throws Exception {
 		Encounter encounter = encounterService.getEncounter(3);
 		EncounterProviderResource1_9 resource = getResource();
-		
 		resource.delete(encounter.getUuid(), EXISTING_ENCOUNTER_PROVIDER_UUID, "reason", new RequestContext());
-		
-		// Ideally I'd test this way, but in a unit test context this hasn't flushed yet
-		// assertThat(getNonVoidedEncounterProviderCountWithoutFlushing(), is(0));
-		
-		// this test is no good, because it also passes before I added a svc.saveEncounter to the resource
-		assertThat(encounter.getEncounterProviders().iterator().next().getVoided(), is(true));
+
+		Context.flushSession();
+		assertThat(getNonVoidedEncounterProviderCount(), is(0));
 	}
-	
+
+	@Test
+	public void testDeleteAndAddAndDelete() throws Exception {
+		// delete existing provider
+		Encounter encounter = encounterService.getEncounter(3);
+		EncounterProviderResource1_9 resource = getResource();
+		resource.delete(encounter.getUuid(), EXISTING_ENCOUNTER_PROVIDER_UUID, "reason", new RequestContext());
+
+		Context.flushSession();
+		assertThat(getNonVoidedEncounterProviderCount(), is(0));
+
+		// now add a provider *with the same provider and role as the one just deleted*
+		SimpleObject post = new SimpleObject().add("provider",  EXISTING_ENCOUNTER_PROVIDER_PROVIDER_UUID).add("encounterRole",
+				EXISTING_ENCOUNTER_PROVIDER_ENCOUNTER_ROLE_UUID);
+		resource.create(encounter.getUuid(), post, new RequestContext());
+
+		// should now we 1 non voided provider
+		Context.flushSession();
+		assertThat(getNonVoidedEncounterProviderCount(), is(1));
+
+		// now delete again
+		resource.delete(encounter.getUuid(), EXISTING_ENCOUNTER_PROVIDER_UUID, "reason", new RequestContext());
+
+		// should be back down to zero again (this was failing previously)
+		Context.flushSession();
+		assertThat(getNonVoidedEncounterProviderCount(), is(0));
+	}
+
+
 	private int getEncounterProviderCountWithoutFlushing() {
 		List<List<Object>> temp = Context.getAdministrationService().executeSQL(
 		    "select count(*) from encounter_provider where encounter_id = 3", true);
@@ -157,7 +206,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 		return ((Number) temp.get(0).get(0)).intValue();
 	}
 
-	private int getNonVoidedEncounterProviderCountWithoutFlushing() {
+	private int getNonVoidedEncounterProviderCount() {
 		List<List<Object>> temp = Context.getAdministrationService().executeSQL(
 		    "select count(*) from encounter_provider where encounter_id = 3 and voided = 0", true);
 		return ((Number) temp.get(0).get(0)).intValue();
