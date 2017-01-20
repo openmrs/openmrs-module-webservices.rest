@@ -180,7 +180,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 				EXISTING_ENCOUNTER_PROVIDER_ENCOUNTER_ROLE_UUID);
 		resource.create(encounter.getUuid(), post, new RequestContext());
 
-		// should now we 1 non voided provider
+		// should now have 1 non-voided provider
 		Context.flushSession();
 		assertThat(getNonVoidedEncounterProviderCount(), is(1));
 
