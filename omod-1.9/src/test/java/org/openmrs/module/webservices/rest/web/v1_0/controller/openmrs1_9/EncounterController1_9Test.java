@@ -175,26 +175,26 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		MockHttpServletResponse response = handle(newPostRequest(getURI(), encounter));
 		String newEncounterUuid = deserialize(response).get("uuid").toString();
-
+		
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(newEncounterUuid);
 		Set<Obs> encounterObs = newEncounter.getAllObs();
 		Assert.assertThat(encounterObs.size(), is(1));
-
+		
 		Obs parentObs = encounterObs.iterator().next();
 		Assert.assertTrue(parentObs.hasGroupMembers());
-
+		
 		Set<Obs> parentGroupMembers = parentObs.getGroupMembers();
 		Assert.assertThat(parentGroupMembers.size(), is(1));
-
+		
 		Obs childObs = parentGroupMembers.iterator().next();
 		Assert.assertTrue(childObs.hasGroupMembers());
-
+		
 		Set<Obs> childGroupMembers = childObs.getGroupMembers();
 		Assert.assertThat(childGroupMembers.size(), is(1));
-
+		
 		Obs grandchildObs = childGroupMembers.iterator().next();
 		Assert.assertThat(grandchildObs.getValueNumeric(), is(1.0));
-
+		
 		System.out.println("");
 	}
 	

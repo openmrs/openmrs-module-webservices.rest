@@ -118,15 +118,13 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		// workaround for removing providers until TRUNK-5017 is fixed
 		for (EncounterProvider encounterProvider : delegate.getEncounter().getEncounterProviders()) {
 			if (encounterProvider.getEncounterRole().equals(delegate.getEncounterRole())
-					&& encounterProvider.getProvider().equals(delegate.getProvider())
-					&& !encounterProvider.isVoided()) {
+			        && encounterProvider.getProvider().equals(delegate.getProvider()) && !encounterProvider.isVoided()) {
 				encounterProvider.setVoided(true);
 				encounterProvider.setDateVoided(new Date());
 				encounterProvider.setVoidedBy(Context.getAuthenticatedUser());
-				return;
 			}
 		}
-
+		
 		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 	}
 	
@@ -137,21 +135,20 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	public EncounterProvider save(EncounterProvider delegate) {
-
+		
 		delegate.getEncounter().addProvider(delegate.getEncounterRole(), delegate.getProvider());
 		Context.getEncounterService().saveEncounter(delegate.getEncounter());
-
+		
 		// bit of a hack, but since addProvider does not return the provider added, we need to fetch it
 		// so that the returned delegate has the proper persisted uuid
 		// see: https://issues.openmrs.org/browse/RESTWS-638
 		for (EncounterProvider encounterProvider : delegate.getEncounter().getEncounterProviders()) {
-			if (encounterProvider.getEncounterRole().equals(delegate.getEncounterRole()) &&
-					encounterProvider.getProvider().equals(delegate.getProvider()) &&
-					!encounterProvider.isVoided()) {
+			if (encounterProvider.getEncounterRole().equals(delegate.getEncounterRole())
+			        && encounterProvider.getProvider().equals(delegate.getProvider()) && !encounterProvider.isVoided()) {
 				return encounterProvider;
 			}
 		}
-
+		
 		// should never get here, hopefully!
 		throw new APIException("Encounter Provider not properly saved");
 	}
