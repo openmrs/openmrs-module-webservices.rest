@@ -9,14 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.api;
 
+import org.openmrs.ConceptMap;
+import org.openmrs.Patient;
+import org.openmrs.annotation.Authorized;
+import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-
-import org.openmrs.ConceptMap;
-import org.openmrs.Patient;
-import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 
 /**
  * It is provided as a workaround for missing API methods to fetch {@link ConceptMap}, etc.
@@ -30,6 +31,9 @@ public interface RestHelperService {
 	<T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields);
 	
 	List<Patient> getPatients(Collection<Integer> patientIds);
+	
+	@Authorized({ "View Patients" })
+	List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll);
 	
 	List<SearchHandler> getRegisteredSearchHandlers();
 	
