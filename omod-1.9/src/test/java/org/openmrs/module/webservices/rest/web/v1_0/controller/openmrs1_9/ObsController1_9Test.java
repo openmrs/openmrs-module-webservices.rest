@@ -37,13 +37,13 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
-
+	
 	@Autowired
 	ConceptService conceptService;
-
+	
 	@Autowired
 	AdministrationService adminService;
-
+	
 	@Test
 	public void getObs_shouldGetObsConceptByConceptMappings() throws Exception {
 		String json = "{ \"value\":\"" + 10.0 + "\", \"person\":\"" + RestTestConstants1_8.PERSON_UUID
@@ -115,55 +115,56 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(yesConceptUuid, PropertyUtils.getProperty(yesValue, "uuid"));
 		Assert.assertEquals(noConceptUuid, PropertyUtils.getProperty(noValue, "uuid"));
 	}
-
+	
 	@Test
 	public void shouldPostValueInJsonAndFetchComplexObs() throws Exception {
 		ConceptComplex conceptComplex = newConceptComplex();
-
+		
 		InputStream in = getClass().getClassLoader().getResourceAsStream("customTestDataset.xml");
-
+		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		IOUtils.copy(in, out);
-
+		
 		String value = DatatypeConverter.printBase64Binary(out.toByteArray());
-
+		
 		String json = "{\"concept\":\"" + conceptComplex.getUuid() + "\"," + "\"value\":\"" + value
-				+ "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
-				+ "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
-
+		        + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
+		        + "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
+		
 		SimpleObject response = deserialize(handle(newPostRequest(getURI(), json)));
-
+		
 		MockHttpServletResponse rawResponse = handle(newGetRequest(getURI() + "/" + response.get("uuid") + "/value"));
-
+		
 		assertThat(out.toByteArray(), is(equalTo(rawResponse.getContentAsByteArray())));
 	}
-
+	
 	@Test
 	public void shouldUploadFileAndFetchComplexObs() throws Exception {
 		ConceptComplex conceptComplex = newConceptComplex();
-
+		
 		InputStream in = getClass().getClassLoader().getResourceAsStream("customTestDataset.xml");
-
+		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		IOUtils.copy(in, out);
-
-		String json = "{\"concept\":\"" + conceptComplex.getUuid() + "\", \"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
-				+ "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
-
+		
+		String json = "{\"concept\":\"" + conceptComplex.getUuid()
+		        + "\", \"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
+		        + "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
+		
 		MockMultipartHttpServletRequest request = newUploadRequest(getURI());
 		request.addFile(new MockMultipartFile("file", "customTestDataset.xml", null, out.toByteArray()));
 		request.addParameter("json", json);
-
+		
 		SimpleObject response = deserialize(handle(request));
-
+		
 		MockHttpServletResponse rawResponse = handle(newGetRequest(getURI() + "/" + response.get("uuid") + "/value"));
-
+		
 		assertThat(out.toByteArray(), is(equalTo(rawResponse.getContentAsByteArray())));
 	}
-
+	
 	private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
-
+		
 		ConceptComplex conceptComplex = new ConceptComplex();
 		conceptComplex.setHandler("BinaryDataHandler");
 		conceptComplex.addName(new ConceptName("Xml Test Data", Locale.ENGLISH));
@@ -172,7 +173,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		conceptService.saveConcept(conceptComplex);
 		return conceptComplex;
 	}
-
+	
 	private void setupBinaryDataHandler() {
 		adminService.saveGlobalProperty(new GlobalProperty("obs.complex_obs_dir", "complexObsDir"));
 	}

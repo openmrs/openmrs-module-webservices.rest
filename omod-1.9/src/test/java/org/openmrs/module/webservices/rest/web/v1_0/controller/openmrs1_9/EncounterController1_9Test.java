@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
+import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -36,11 +37,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Calendar;
+
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Contains tests for the 19 ext {@link EncounterController} Overrides the failing test methods from
@@ -138,6 +143,59 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
 		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
 		
+	}
+	
+	@Test
+	public void createEncounter_shouldCreateEncounterWithNestedObs() throws Exception {
+		List<SimpleObject> obsObject = new ArrayList<SimpleObject>();
+		List<SimpleObject> parentGroupMembersObject = new ArrayList<SimpleObject>();
+		List<SimpleObject> child1GroupMembersObject = new ArrayList<SimpleObject>();
+		
+		SimpleObject grandchild = new SimpleObject();
+		grandchild.put("value", 1);
+		grandchild.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		child1GroupMembersObject.add(grandchild);
+		
+		SimpleObject child = new SimpleObject();
+		child.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		child.put("groupMembers", child1GroupMembersObject);
+		parentGroupMembersObject.add(child);
+		
+		SimpleObject parent = new SimpleObject();
+		parent.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		parent.put("groupMembers", parentGroupMembersObject);
+		obsObject.add(parent);
+		
+		SimpleObject encounter = new SimpleObject();
+		encounter.put("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8");
+		encounter.put("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
+		encounter.put("encounterDatetime", "2011-01-15");
+		encounter.put("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		encounter.put("obs", obsObject);
+		
+		MockHttpServletResponse response = handle(newPostRequest(getURI(), encounter));
+		String newEncounterUuid = deserialize(response).get("uuid").toString();
+		
+		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(newEncounterUuid);
+		Set<Obs> encounterObs = newEncounter.getAllObs();
+		Assert.assertThat(encounterObs.size(), is(1));
+		
+		Obs parentObs = encounterObs.iterator().next();
+		Assert.assertTrue(parentObs.hasGroupMembers());
+		
+		Set<Obs> parentGroupMembers = parentObs.getGroupMembers();
+		Assert.assertThat(parentGroupMembers.size(), is(1));
+		
+		Obs childObs = parentGroupMembers.iterator().next();
+		Assert.assertTrue(childObs.hasGroupMembers());
+		
+		Set<Obs> childGroupMembers = childObs.getGroupMembers();
+		Assert.assertThat(childGroupMembers.size(), is(1));
+		
+		Obs grandchildObs = childGroupMembers.iterator().next();
+		Assert.assertThat(grandchildObs.getValueNumeric(), is(1.0));
+		
+		System.out.println("");
 	}
 	
 	@Test

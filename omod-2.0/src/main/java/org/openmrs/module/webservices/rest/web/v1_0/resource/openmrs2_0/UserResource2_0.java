@@ -49,9 +49,6 @@ public class UserResource2_0 extends UserResource1_8 {
 		} else {
 			openmrsUser = Context.getUserService().saveUser(user.getUser());
 			Context.refreshAuthenticatedUser();
-			if (openmrsUser.getId() != null && StringUtils.isNotBlank(user.getPassword())) {
-				Context.getUserService().changePassword(openmrsUser, user.getPassword());
-			}
 		}
 		
 		return new UserAndPassword1_8(openmrsUser);

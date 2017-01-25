@@ -13,6 +13,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
 import org.openmrs.Provider;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,6 +31,8 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -95,6 +98,13 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	@Override
 	public PageableResult doGetAll(Encounter parent, RequestContext context) throws ResponseException {
 		List<EncounterProvider> encounterProviders = new ArrayList<EncounterProvider>(parent.getEncounterProviders());
+		if (!context.getIncludeAll()) {
+			for (Iterator<EncounterProvider> i = encounterProviders.iterator(); i.hasNext();) {
+				if (i.next().getVoided()) {
+					i.remove();
+				}
+			}
+		}
 		return new NeedsPaging<EncounterProvider>(encounterProviders, context);
 	}
 	
@@ -105,7 +115,17 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	protected void delete(EncounterProvider delegate, String reason, RequestContext context) throws ResponseException {
-		delegate.getEncounter().removeProvider(delegate.getEncounterRole(), delegate.getProvider());
+		// workaround for removing providers until TRUNK-5017 is fixed
+		for (EncounterProvider encounterProvider : delegate.getEncounter().getEncounterProviders()) {
+			if (encounterProvider.getEncounterRole().equals(delegate.getEncounterRole())
+			        && encounterProvider.getProvider().equals(delegate.getProvider()) && !encounterProvider.isVoided()) {
+				encounterProvider.setVoided(true);
+				encounterProvider.setDateVoided(new Date());
+				encounterProvider.setVoidedBy(Context.getAuthenticatedUser());
+			}
+		}
+		
+		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 	}
 	
 	@Override
@@ -115,8 +135,22 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	public EncounterProvider save(EncounterProvider delegate) {
-		delegate.getEncounter().getEncounterProviders().add(delegate);
-		return delegate;
+		
+		delegate.getEncounter().addProvider(delegate.getEncounterRole(), delegate.getProvider());
+		Context.getEncounterService().saveEncounter(delegate.getEncounter());
+		
+		// bit of a hack, but since addProvider does not return the provider added, we need to fetch it
+		// so that the returned delegate has the proper persisted uuid
+		// see: https://issues.openmrs.org/browse/RESTWS-638
+		for (EncounterProvider encounterProvider : delegate.getEncounter().getEncounterProviders()) {
+			if (encounterProvider.getEncounterRole().equals(delegate.getEncounterRole())
+			        && encounterProvider.getProvider().equals(delegate.getProvider()) && !encounterProvider.isVoided()) {
+				return encounterProvider;
+			}
+		}
+		
+		// should never get here, hopefully!
+		throw new APIException("Encounter Provider not properly saved");
 	}
 	
 	@Override
