@@ -256,31 +256,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 	
-	@Test
-	public void updateUser_shouldUpdateTheUserPassword() throws Exception {
-		User user = service.getUserByUuid(getUuid());
-		assertNotNull(user);
-		assertNotEquals(user, Context.getAuthenticatedUser());
-		final String username = user.getUsername();
-		final String newPassword = "SomeOtherPassword123";
-		
-		ContextAuthenticationException exception = null;
-		try {
-			Context.authenticate(username, newPassword);
-		}
-		catch (ContextAuthenticationException e) {
-			exception = e;
-		}
-		assertNotNull(exception);
-		assertEquals("Invalid username and/or password: " + username, exception.getMessage());
-		
-		handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
-		Context.logout();
-		
-		Context.authenticate(username, newPassword);
-		assertEquals(user, Context.getAuthenticatedUser());
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
