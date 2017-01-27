@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -49,9 +48,6 @@ public class UserResource2_0 extends UserResource1_8 {
 		} else {
 			openmrsUser = Context.getUserService().saveUser(user.getUser());
 			Context.refreshAuthenticatedUser();
-			if (openmrsUser.getId() != null && StringUtils.isNotBlank(user.getPassword())) {
-				Context.getUserService().changePassword(openmrsUser, user.getPassword());
-			}
 		}
 		
 		return new UserAndPassword1_8(openmrsUser);
