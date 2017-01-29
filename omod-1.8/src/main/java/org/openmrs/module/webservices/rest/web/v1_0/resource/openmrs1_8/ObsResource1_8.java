@@ -436,7 +436,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		ObsService obsService = Context.getObsService();
 		
-		ComplexData complexData = new ComplexData(file.getName(), new ByteArrayInputStream(file.getBytes()));
+		ComplexData complexData = new ComplexData(file.getOriginalFilename(), new ByteArrayInputStream(file.getBytes()));
 		obs.setComplexData(complexData);
 		
 		obs = obsService.saveObs(obs, null);
