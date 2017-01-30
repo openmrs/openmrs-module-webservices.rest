@@ -9,24 +9,25 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.DbSession;
+import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.openmrs.api.context.Context.getRegisteredComponents;
 
@@ -35,11 +36,11 @@ import static org.openmrs.api.context.Context.getRegisteredComponents;
  */
 public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHelperService {
 	
-	SessionFactory sessionFactory;
+	DbSessionFactory sessionFactory;
 	
 	Method method;
 	
-	public void setSessionFactory(SessionFactory sessionFactory) {
+	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
@@ -53,7 +54,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		return type.cast(getSession().createCriteria(type).add(Restrictions.eq("uuid", uuid)).uniqueResult());
 	}
 	
-	private Session getSession() {
+	private DbSession getSession() {
 		if (method == null) {
 			try {
 				return sessionFactory.getCurrentSession();
@@ -62,7 +63,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 				//Supports Hibernate 3 by casting org.hibernate.classic.Session to org.hibernate.Session
 				try {
 					method = sessionFactory.getClass().getMethod("getCurrentSession");
-					return (Session) method.invoke(sessionFactory);
+					return (DbSession) method.invoke(sessionFactory);
 				}
 				catch (Exception e) {
 					throw new IllegalStateException(e);
@@ -70,7 +71,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 			}
 		} else {
 			try {
-				return (Session) method.invoke(sessionFactory);
+				return (DbSession) method.invoke(sessionFactory);
 			}
 			catch (Exception e) {
 				throw new IllegalStateException(e);
@@ -123,6 +124,18 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		}
 		
 		return ret;
+	}
+	
+	@Override
+	public List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll) {
+		Criteria criteria = getSession().createCriteria(Patient.class);
+		criteria.createAlias("identifiers", "identifiers");
+		criteria.add(Restrictions.like("identifiers.identifier", identifier, MatchMode.START));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		if (!includeAll) {
+			criteria.add(Restrictions.eq("voided", false));
+		}
+		return criteria.list();
 	}
 	
 	/**

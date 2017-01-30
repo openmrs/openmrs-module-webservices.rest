@@ -102,7 +102,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugsByMapping"), new Parameter("code",
 		        "CD41003"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes", mapTypeUuids))));
 		
-		assertEquals(expectedDrugUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
+		assertEquals(expectedDrugUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(1), "uuid"));
 	}
 	
 	/**
