@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 
@@ -53,7 +52,7 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 			mimeType = BeanUtils.getProperty(complexData, "mimeType");
 		}
 		catch (Exception e) {
-			mimeType = "application/force-download"; //no mimeType for openmrs-api 1.11 and below
+			mimeType = "application/force-download"; //no mimeType below openmrs-api 2.0
 		}
 		
 		response.setContentType(mimeType);
