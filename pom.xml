@@ -503,9 +503,7 @@
                 <module>omod-1.11</module>
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
-				<!-- So we can release without a snapshot dependency on openmrs-core
 				<module>omod-2.1</module>
-				-->
                 <module>omod</module>
             </modules>
         </profile>
@@ -573,9 +571,7 @@
                 <module>omod-1.11</module>
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
-				<!-- So we can release without a snapshot dependency on openmrs-core
 				<module>omod-2.1</module>
-				-->
                 <module>omod</module>
             </modules>
 
