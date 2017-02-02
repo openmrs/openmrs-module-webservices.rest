@@ -41,9 +41,9 @@ public class OpenmrsPathMatcher implements PathMatcher {
 	
 	@Override
 	public Map<String, String> extractUriTemplateVariables(String pattern, String path) {
-		//see RESTWS-606 
+		//see RESTWS-606
 		if (path != null && pattern != null) {
-			if (path.contains("/systemsetting/") && path.contains(".") && !path.endsWith("/") && pattern.endsWith(".*")) {
+			if (path.startsWith("/rest/") && path.contains(".") && !path.endsWith("/") && pattern.endsWith(".*")) {
 				//a pattern like /rest/v1/{resource}/{uuid}.* needs to be replaced with /rest/v1/{resource}/{uuid}
 				//in order to match a path like /rest/v1/systemsetting/concept.defaultConceptMapType
 				pattern = pattern.replace(".*", "");

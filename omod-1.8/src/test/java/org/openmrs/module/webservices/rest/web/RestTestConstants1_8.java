@@ -97,6 +97,4 @@ public class RestTestConstants1_8 {
 	
 	public static final String PATIENT_STATE_UUID = "ea89deaa-23cc-4840-92fe-63d199c37e4c";
 	
-	public static final String MODULE_UUID = "91f56c57-bdd3-360e-a530-0bca59095eae";
-	
 }

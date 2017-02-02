@@ -20,7 +20,7 @@ public class ModuleResource1_8Test extends BaseDelegatingResourceTest<ModuleReso
 	
 	@Override
 	public Module newObject() {
-		return new Module("Atlas Module", getUuidProperty(), "name", "author", "description", "version");
+		return new Module("Atlas Module", "atlas", "name", "author", "description", "version");
 	}
 	
 	@Override
@@ -30,6 +30,6 @@ public class ModuleResource1_8Test extends BaseDelegatingResourceTest<ModuleReso
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.MODULE_UUID;
+		return "atlas";
 	}
 }

@@ -122,7 +122,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.MODULE_UUID;
+		return "atlas";
 	}
 	
 	@Override

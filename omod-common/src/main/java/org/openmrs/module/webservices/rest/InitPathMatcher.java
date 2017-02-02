@@ -19,6 +19,9 @@ import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
 
+/**
+ * We should not need to apply this fix in versions where TRUNK-5022 is fixed.
+ */
 @Component
 public class InitPathMatcher implements ServletContextAware {
 	

@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
@@ -49,12 +48,8 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	
 	@Override
 	public Module getByUniqueId(String uniqueId) {
-		for (Module module : moduleFactoryWrapper.getLoadedModules()) {
-			if (uniqueId.equals(getUuid(module))) {
-				return module;
-			}
-		}
-		return null;
+		moduleFactoryWrapper.checkPrivilege();
+		return moduleFactoryWrapper.getModuleById(uniqueId);
 	}
 	
 	@Override
@@ -110,12 +105,13 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	 */
 	@Override
 	public NeedsPaging<Module> doGetAll(RequestContext context) throws ResponseException {
+		moduleFactoryWrapper.checkPrivilege();
 		return new NeedsPaging<Module>(new ArrayList<Module>(moduleFactoryWrapper.getLoadedModules()), context);
 	}
 	
 	@PropertyGetter("uuid")
 	public static String getUuid(Module instance) {
-		return UUID.nameUUIDFromBytes(instance.getName().getBytes()).toString();
+		return instance.getModuleId();
 	}
 	
 	@PropertyGetter("display")

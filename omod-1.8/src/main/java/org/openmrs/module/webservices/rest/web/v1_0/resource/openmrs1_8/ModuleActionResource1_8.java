@@ -69,9 +69,22 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		if (modules == null || modules.isEmpty()) {
 			throw new IllegalRequestException("Cannot execute action " + action.getAction() + " on empty set of modules.");
 		} else {
-			//rest module cannot be stopped/unloaded during handling request
-			Module restModule = moduleFactoryWrapper.getModuleById(RestConstants.MODULE_ID);
-			modules.remove(restModule);
+			if (action.isAllModules() == null || !action.isAllModules()) {
+				// ensure all specified modules exist
+				// ensure they're not trying to modify the REST module
+				for (Module module : modules) {
+					// if they specified a module that's not loaded, it will show up here as null
+					if (module == null) {
+						throw new IllegalRequestException(
+						        "One or more of the modules you specified are not loaded on this server");
+					}
+					if (module.getModuleId().equals(RestConstants.MODULE_ID)) {
+						throw new IllegalRequestException("You are not allowed to modify " + module.getModuleId()
+						        + " via this REST call");
+					}
+				}
+			}
+			
 			switch (action.getAction()) {
 				case START:
 					startModules(modules, servletContext);

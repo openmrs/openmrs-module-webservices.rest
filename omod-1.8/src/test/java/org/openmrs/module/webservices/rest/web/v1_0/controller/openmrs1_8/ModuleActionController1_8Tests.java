@@ -18,16 +18,20 @@ import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.core.IsNot.not;
 
@@ -145,6 +149,21 @@ public class ModuleActionController1_8Tests extends MainResourceControllerTest {
 		assertThat(mockModuleFactory.startedModules, hasItem(webservicesRestModule));
 	}
 	
+	@Test
+	public void shouldFailIfTryingToStopNonExistentModule() throws Exception {
+		mockModuleFactory.startedModules.add(atlasModule);
+		Exception exception = null;
+		try {
+			handle(newPostRequest(getURI(), "{\"action\":\"stop\", \"modules\":[\"atlas\", \"does.not.exist\"]}"));
+		}
+		catch (Exception ex) {
+			exception = ex;
+		}
+		assertThat(exception, notNullValue());
+		assertThat(exception, instanceOf(IllegalRequestException.class));
+		assertThat(mockModuleFactory.startedModules, hasItem(atlasModule));
+	}
+	
 	//ModuleAction resource does not support these operations
 	@Override
 	@Test(expected = Exception.class)
@@ -177,7 +196,7 @@ public class ModuleActionController1_8Tests extends MainResourceControllerTest {
 	
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.MODULE_UUID;
+		return null;
 	}
 	
 	@Override
