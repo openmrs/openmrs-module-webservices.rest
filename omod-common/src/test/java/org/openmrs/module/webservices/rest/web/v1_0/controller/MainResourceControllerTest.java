@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Facilitates testing controllers.
  */
 public abstract class MainResourceControllerTest extends RestControllerTestUtils {
-
+	
 	public static class Parameter {
 		
 		public String name;
