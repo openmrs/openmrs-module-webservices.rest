@@ -11,7 +11,7 @@
 	<description>OpenMRS module project for Rest Web Services</description>
 
 	<properties>
-		<openmrs.version.2.1>[2.1.0,2.2.0)</openmrs.version.2.1>
+		<openmrs.version.2.1>2.1.0-SNAPSHOT</openmrs.version.2.1>
 	</properties>
 
 	<dependencies>
