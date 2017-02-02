@@ -85,6 +85,10 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 				}
 			}
 			
+			// even if they said allModule=true, don't touch the REST module
+			Module restModule = moduleFactoryWrapper.getModuleById(RestConstants.MODULE_ID);
+			modules.remove(restModule);
+			
 			switch (action.getAction()) {
 				case START:
 					startModules(modules, servletContext);
