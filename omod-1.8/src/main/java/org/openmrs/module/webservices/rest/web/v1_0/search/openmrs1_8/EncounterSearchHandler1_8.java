@@ -43,7 +43,7 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter",
 	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"), Arrays.asList(new SearchQuery.Builder(
 	                "Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
-	                .withRequiredParameters("patient", "encounterType").withOptionalParameters(DATE_FROM, DATE_TO, "order")
+	                .withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
 	                .build()));
 	
 	@Override
@@ -66,9 +66,9 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 		    Patient.class)).getByUniqueId(patientUuid);
 		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
-		if (patient != null && encounterType != null) {
+		if (patient != null) {
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, fromDate, toDate, null,
-			    Arrays.asList(encounterType), null, false);
+			    encounterType != null ? Arrays.asList(encounterType) : null, null, false);
 			String order = context.getRequest().getParameter("order");
 			if ("desc".equals(order)) {
 				Collections.reverse(encounters);
