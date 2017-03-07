@@ -14,6 +14,7 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -224,18 +225,21 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public SimpleObject search(RequestContext context) throws ResponseException {
 		String patientParameter = context.getRequest().getParameter("patient");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
+		String fromStartDate = context.getRequest().getParameter("fromStartDate");
 		if (patientParameter != null || includeInactiveParameter != null) {
-			return getVisits(context, patientParameter, includeInactiveParameter);
+			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate);
 		} else {
 			return super.search(context);
 		}
 	}
 	
-	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter) {
+	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
+	        Date minStartDate) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
-		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, null, null, null,
-		    null, null, includeInactive, false), context).toSimpleObject(this);
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, minStartDate, null,
+		    null, null, null, includeInactive, false), context).toSimpleObject(this);
 	}
 	
 	/**
