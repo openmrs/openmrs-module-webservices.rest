@@ -9,18 +9,30 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
-public class SecurityDefinitions {
+public class SecurityScheme {
 	
-	private SecurityScheme basic_auth;
+	private String type;
 	
-	public SecurityDefinitions() {
+	private String description;
+	
+	public SecurityScheme(String type, String description) {
+		this.type = type;
+		this.description = description;
 	}
 	
-	public SecurityScheme getBasicAuth() {
-		return basic_auth;
+	public String getType() {
+		return type;
 	}
 	
-	public void setBasicAuth(SecurityScheme basic_auth) {
-		this.basic_auth = basic_auth;
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
