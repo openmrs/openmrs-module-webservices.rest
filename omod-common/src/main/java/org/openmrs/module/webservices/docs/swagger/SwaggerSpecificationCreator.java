@@ -166,8 +166,9 @@ public class SwaggerSpecificationCreator {
 		info.setVersions(new Versions(OpenmrsConstants.OPENMRS_VERSION, getModuleVersions()));
 		swaggerSpecification.setInfo(info);
 		// security definitions
-		swaggerSpecification.setSecurityDefinitions(new SecurityDefinitions("basic",
-		        "HTTP basic access authentication using OpenMRS username and password"));
+		SecurityDefinitions sd = new SecurityDefinitions();
+		sd.setBasicAuth(new SecurityScheme("basic", "HTTP basic access authentication using OpenMRS username and password"));
+		swaggerSpecification.setSecurityDefinitions(sd);
 		List<String> produces = new ArrayList<String>();
 		produces.add("application/json");
 		produces.add("application/xml");
