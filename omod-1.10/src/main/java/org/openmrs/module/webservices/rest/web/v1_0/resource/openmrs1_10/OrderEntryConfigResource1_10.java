@@ -19,7 +19,8 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/orderentryconfig", supportedClass = Object.class, supportedOpenmrsVersions = {
+// the framework requires we specify a supportedClass, even though this shouldn't have one
+@Resource(name = RestConstants.VERSION_1 + "/orderentryconfig", supportedClass = OrderService.class, supportedOpenmrsVersions = {
         "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
 public class OrderEntryConfigResource1_10 implements Listable {
 	
