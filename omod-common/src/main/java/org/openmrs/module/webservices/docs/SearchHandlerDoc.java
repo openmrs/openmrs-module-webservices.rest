@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 
@@ -92,11 +90,6 @@ public class SearchHandlerDoc implements Comparable<SearchHandlerDoc> {
 	 */
 	public void setSearchQueriesDoc(List<SearchQueryDoc> searchQueriesDoc) {
 		this.searchQueriesDoc = searchQueriesDoc;
-	}
-	
-	private String extractResourceName(String supportedResourceUrl) {
-		String resourceName = supportedResourceUrl.replace(RestConstants.VERSION_1 + "/", "");
-		return StringUtils.capitalize(resourceName);
 	}
 	
 	private List<SearchQueryDoc> getSearchQueryDocList(Set<SearchQuery> searchQuerySet) {
