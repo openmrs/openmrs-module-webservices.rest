@@ -51,4 +51,9 @@ public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 		description.addProperty("uniqueId");
 		return description;
 	}
+	
+	@Override
+	public String getResourceVersion() {
+		return RestConstants2_1.RESOURCE_VERSION;
+	}
 }

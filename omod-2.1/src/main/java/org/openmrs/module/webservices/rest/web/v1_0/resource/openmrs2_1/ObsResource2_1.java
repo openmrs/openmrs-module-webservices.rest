@@ -7,50 +7,42 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ObsResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ObsResource1_11;
 
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 1, supportedClass = Obs.class, supportedOpenmrsVersions = {
-        "1.11.*", "1.12.*", "2.0.*" })
-public class ObsResource1_11 extends ObsResource1_9 {
+/**
+ * Resource for `obs`, supporting the new properties added in openmrs-core 2.1 (status and
+ * interpretation)
+ */
+@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.1.*" })
+public class ObsResource2_1 extends ObsResource1_11 {
 	
-	/**
-	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
-	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 		if (description != null) {
-			description.addProperty("formFieldPath");
-			description.addProperty("formFieldNamespace");
+			description.addProperty("status");
+			description.addProperty("interpretation");
 		}
 		return description;
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
-		description.addProperty("formFieldPath");
-		description.addProperty("formFieldNamespace");
+		description.addProperty("status");
+		description.addProperty("interpretation");
 		return description;
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
-	 */
 	@Override
 	public String getResourceVersion() {
-		return RestConstants1_11.RESOURCE_VERSION;
+		return RestConstants2_1.RESOURCE_VERSION;
 	}
 }
