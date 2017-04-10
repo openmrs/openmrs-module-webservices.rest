@@ -24,11 +24,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 
@@ -40,12 +40,14 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 	ObsService obsService;
 	
 	@RequestMapping(value = "/{uuid}/value", method = RequestMethod.GET)
-	public void getFile(@PathVariable("uuid") String uuid, HttpServletResponse response) throws Exception {
+	public void getFile(@PathVariable("uuid") String uuid,
+			@RequestParam(required = false, defaultValue = "RAW_VIEW") String view,
+			HttpServletResponse response) throws Exception {
 		Obs obs = obsService.getObsByUuid(uuid);
 		if (!obs.isComplex()) {
 			throw new IllegalRequestException("It is not a complex obs, thus have no data.");
 		}
-		obs = obsService.getComplexObs(obs.getId(), "RAW_VIEW");
+		obs = obsService.getComplexObs(obs.getId(), view);
 		ComplexData complexData = obs.getComplexData();
 		
 		String mimeType;
