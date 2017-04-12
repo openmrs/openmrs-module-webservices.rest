@@ -18,11 +18,13 @@ public enum OperationEnum {
 	
 	getWithSearchHandler,
 	
+	getWithDoSearch,
+	
 	postCreate, postSubresource,
 	
 	postUpdate, postUpdateSubresouce,
 	
 	delete, deleteSubresource,
 	
-	purge, purgeSubresource
+	purge, purgeSubresource,
 }
