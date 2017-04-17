@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -315,9 +316,30 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException, IOException {
 		if (value != null) {
 			if (obs.isComplex()) {
-				byte[] bytes = DatatypeConverter.parseBase64Binary(value.toString());
+				
+				String stringValue = value.toString();
+
+				// its OK to split data URI (RFC 2397) by comma, since Base64 encoding doesn't have it in its index
+				// also, MIME Types are not allowed to contain commas in Content-Type (RFC 2045 - 5.1)
+				String[] uriParams = stringValue.split(",");
+				
+				String mimeType = null;
+				if (uriParams.length == 2) {
+					String uriMetadata = uriParams[0];
+					mimeType = uriMetadata.substring(0, uriMetadata.indexOf(";")).replace("data:", "");
+				}
+				
+				// Data is allways at the end of value
+				String data = uriParams[uriParams.length - 1];
+				byte[] bytes = DatatypeConverter.parseBase64Binary(data);
 				
 				ComplexData complexData = new ComplexData(obs.getUuid() + ".raw", new ByteArrayInputStream(bytes));
+				try {
+					BeanUtils.setProperty(complexData, "mimeType", mimeType);
+				}
+				catch (Exception e) {
+					//no mimeType below openmrs-api 2.0
+				}
 				obs.setComplexData(complexData);
 			} else if (obs.getConcept().getDatatype().isCoded()) {
 				// setValueAsString is not implemented for coded obs (in core)
@@ -437,12 +459,16 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		ObsService obsService = Context.getObsService();
 		
 		ComplexData complexData = new ComplexData(file.getOriginalFilename(), new ByteArrayInputStream(file.getBytes()));
+		try {
+			BeanUtils.setProperty(complexData, "mimeType", file.getContentType());
+		}
+		catch (Exception e) {
+			//no mimeType below openmrs-api 2.0
+		}
 		obs.setComplexData(complexData);
 		
 		obs = obsService.saveObs(obs, null);
-		
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
-		return ret;
+		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
 	}
 	
 }
