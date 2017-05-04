@@ -228,6 +228,16 @@ public class SwaggerSpecificationCreator {
 					}
 					
 					break;
+				case getWithDoSearch:
+					method = ReflectionUtils.findMethod(resourceHandler.getClass(), "search", RequestContext.class);
+					
+					if (method == null) {
+						return false;
+					} else {
+						method.invoke(resourceHandler, new RequestContext());
+					}
+					
+					break;
 				case postCreate:
 					method = ReflectionUtils.findMethod(resourceHandler.getClass(), "create", SimpleObject.class,
 					    RequestContext.class);
@@ -691,10 +701,15 @@ public class SwaggerSpecificationCreator {
 	
 	private void addSearchOperations(DelegatingResourceHandler<?> resourceHandler, String resourceName,
 	        String resourceParentName, Path getAllPath, Map<String, Path> pathMap) {
+		if (resourceName == null) {
+			return;
+		}
+		boolean hasDoSearch = testOperationImplemented(OperationEnum.getWithDoSearch, resourceHandler);
+		boolean hasSearchHandler = hasSearchHandler(resourceName);
 		boolean wasNew = false;
 		
-		if (resourceName != null && hasSearchHandler(resourceName)) {
-			// if the path has no operations, add a note that search parameters are mandatory
+		if (hasSearchHandler || hasDoSearch) {
+			// if the path has no operations, add a note that at least one search parameter must be specified
 			Operation get;
 			if (getAllPath.getOperations().isEmpty() || getAllPath.getOperations().get("get") == null) {
 				// create search-only operation
@@ -724,6 +739,7 @@ public class SwaggerSpecificationCreator {
 				responses.put("200", statusOKResponse);
 				get.setResponses(responses);
 				
+				// if path has no existing get operations then it is considered new
 				wasNew = true;
 			} else {
 				get = getAllPath.getOperations().get("get");
@@ -733,30 +749,32 @@ public class SwaggerSpecificationCreator {
 			
 			Map<String, Parameter> parameterMap = new HashMap<String, Parameter>();
 			
-			// FIXME: this isn't perfect, it doesn't cover the case where multiple parameters are required together
-			// FIXME: See https://github.com/OAI/OpenAPI-Specification/issues/256
-			for (SearchHandler searchHandler : Context.getService(RestService.class).getAllSearchHandlers()) {
-				
-				String supportedResourceWithVersion = searchHandler.getSearchConfig().getSupportedResource();
-				String supportedResource = supportedResourceWithVersion
-				        .substring(supportedResourceWithVersion.indexOf('/') + 1);
-				
-				if (resourceName.equals(supportedResource)) {
-					for (SearchQuery searchQuery : searchHandler.getSearchConfig().getSearchQueries()) {
-						// parameters with no dependencies
-						for (SearchParameter requiredParameter : searchQuery.getRequiredParameters()) {
-							Parameter p = new Parameter();
-							p.setName(requiredParameter.getName());
-							p.setIn("query");
-							parameterMap.put(requiredParameter.getName(), p);
-						}
-						// parameters with dependencies
-						for (SearchParameter requiredParameter : searchQuery.getOptionalParameters()) {
-							Parameter p = new Parameter();
-							p.setName(requiredParameter.getName());
-							p.setDescription(buildSearchParameterDependencyString(searchQuery.getRequiredParameters()));
-							p.setIn("query");
-							parameterMap.put(requiredParameter.getName(), p);
+			if (hasSearchHandler) {
+				// FIXME: this isn't perfect, it doesn't cover the case where multiple parameters are required together
+				// FIXME: See https://github.com/OAI/OpenAPI-Specification/issues/256
+				for (SearchHandler searchHandler : Context.getService(RestService.class).getAllSearchHandlers()) {
+					
+					String supportedResourceWithVersion = searchHandler.getSearchConfig().getSupportedResource();
+					String supportedResource = supportedResourceWithVersion.substring(supportedResourceWithVersion
+					        .indexOf('/') + 1);
+					
+					if (resourceName.equals(supportedResource)) {
+						for (SearchQuery searchQuery : searchHandler.getSearchConfig().getSearchQueries()) {
+							// parameters with no dependencies
+							for (SearchParameter requiredParameter : searchQuery.getRequiredParameters()) {
+								Parameter p = new Parameter();
+								p.setName(requiredParameter.getName());
+								p.setIn("query");
+								parameterMap.put(requiredParameter.getName(), p);
+							}
+							// parameters with dependencies
+							for (SearchParameter requiredParameter : searchQuery.getOptionalParameters()) {
+								Parameter p = new Parameter();
+								p.setName(requiredParameter.getName());
+								p.setDescription(buildSearchParameterDependencyString(searchQuery.getRequiredParameters()));
+								p.setIn("query");
+								parameterMap.put(requiredParameter.getName(), p);
+							}
 						}
 					}
 				}
@@ -776,6 +794,12 @@ public class SwaggerSpecificationCreator {
 			q.setDescription("The search query");
 			q.setIn("query");
 			q.setType("string");
+			if (wasNew && !hasSearchHandler) {
+				// This implies that the resource has no custom SearchHandler or doGetAll, but has doSearch implemented
+				// As there is only one query param 'q', mark it as required
+				q.setRequired(true);
+			}
+			
 			parameterMap.put("q", q);
 			
 			get.setParameters(new ArrayList(parameterMap.values()));
