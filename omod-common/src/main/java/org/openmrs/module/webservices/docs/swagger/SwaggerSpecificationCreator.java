@@ -768,12 +768,12 @@ public class SwaggerSpecificationCreator {
 								parameterMap.put(requiredParameter.getName(), p);
 							}
 							// parameters with dependencies
-							for (SearchParameter requiredParameter : searchQuery.getOptionalParameters()) {
+							for (SearchParameter optionalParameter : searchQuery.getOptionalParameters()) {
 								Parameter p = new Parameter();
-								p.setName(requiredParameter.getName());
+								p.setName(optionalParameter.getName());
 								p.setDescription(buildSearchParameterDependencyString(searchQuery.getRequiredParameters()));
 								p.setIn("query");
-								parameterMap.put(requiredParameter.getName(), p);
+								parameterMap.put(optionalParameter.getName(), p);
 							}
 						}
 					}
