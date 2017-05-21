@@ -9,16 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.util.ReflectionUtil;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.Hyperlink;
-import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -26,6 +16,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.util.ReflectionUtil;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.Hyperlink;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 
 /**
  * A base implementation of a converter that can transform something that is _not_ a full resource
@@ -146,6 +147,8 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 		for (Hyperlink link : rep.getLinks()) {
 			if (link.getUri().startsWith(".")) {
 				link = new Hyperlink(link.getRel(), getUri(delegate) + link.getUri().substring(1));
+			} else if (link.getUri().startsWith("/")) {
+				link = new Hyperlink(link.getRel(), RestConstants.URI_PREFIX + link.getUri().substring(1));
 			}
 			
 			org.openmrs.module.webservices.rest.web.annotation.Resource res = getClass().getAnnotation(
@@ -162,11 +165,32 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 					link.setResourceAlias(sub.path());
 				}
 			}
+			if (link.getUri().contains("{")) {
+				link.setUri(applyTemplate(link.getUri(), ret));
+			}
 			links.add(link);
 		}
 		if (links.size() > 0)
 			ret.put("links", links);
 		return ret;
+	}
+	
+	/**
+	 * Currently this is a quick-hack implementation. TODO implement using a real templating library
+	 */
+	private String applyTemplate(String uriTemplate, SimpleObject object) {
+		StringBuilder sb = new StringBuilder(uriTemplate);
+		while (sb.indexOf("{") >= 0) {
+			int startIndex = sb.indexOf("{");
+			int endIndex = sb.indexOf("}", startIndex + 1);
+			if (endIndex < 0) {
+				throw new IllegalArgumentException("Cannot find matching } in " + uriTemplate);
+			}
+			String varName = sb.substring(startIndex + 1, endIndex);
+			String replaceWithValue = (String) ConversionUtil.convert(object.get(varName), String.class);
+			sb.replace(startIndex, endIndex + 1, replaceWithValue);
+		}
+		return sb.toString();
 	}
 	
 	/**
