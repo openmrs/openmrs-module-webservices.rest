@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.List;
+
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -23,13 +25,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.List;
-
 /**
  * {@link Resource} for Cohorts, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
 public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	
 	/**

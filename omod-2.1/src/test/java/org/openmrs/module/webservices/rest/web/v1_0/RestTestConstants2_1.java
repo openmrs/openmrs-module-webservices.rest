@@ -13,4 +13,8 @@ public class RestTestConstants2_1 {
 	
 	public static final String CONCEPT_SOURCE_UUID = "75f5b378-5065-11de-80cb-001e378eb67e";
 	
+	public static final String COHORT_UUID = "48fb72bb-3bcb-45a7-b2b0-cbb03b50bc97";
+	
+	public static final String COHORT_MEMBERSHIP_UUID = "45587b72-971e-4489-9688-a998b565d614";
+	
 }
