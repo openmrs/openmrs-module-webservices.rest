@@ -58,7 +58,7 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 			description.addProperty("endDate");
 			description.addProperty("patientUuid");
 			description.addSelfLink();
-			description.addLink("patient", "/v1/patient/{patientUuid}");
+			description.addLink("patient", "/" + RestConstants.VERSION_1 + "/patient/{patientUuid}");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		} else if (rep instanceof FullRepresentation) {
@@ -70,7 +70,7 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 			description.addProperty("patientUuid");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
-			description.addLink("patient", "/v1/patient/{patientUuid}");
+			description.addLink("patient", "/" + RestConstants.VERSION_1 + "/patient/{patientUuid}");
 			return description;
 		}
 		return null;
