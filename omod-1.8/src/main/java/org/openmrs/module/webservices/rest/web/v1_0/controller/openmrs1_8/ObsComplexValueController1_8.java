@@ -41,8 +41,8 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 	
 	@RequestMapping(value = "/{uuid}/value", method = RequestMethod.GET)
 	public void getFile(@PathVariable("uuid") String uuid,
-			@RequestParam(required = false, defaultValue = "RAW_VIEW") String view,
-			HttpServletResponse response) throws Exception {
+	        @RequestParam(required = false, defaultValue = "RAW_VIEW") String view, HttpServletResponse response)
+	        throws Exception {
 		Obs obs = obsService.getObsByUuid(uuid);
 		if (!obs.isComplex()) {
 			throw new IllegalRequestException("It is not a complex obs, thus have no data.");
