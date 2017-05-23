@@ -687,13 +687,18 @@ public class SwaggerSpecificationCreator {
 		StringBuffer sb = new StringBuffer();
 		
 		sb.append("Must be used with ");
-		sb.append(StringUtils.join(dependencies, ", "));
+		
+		List<String> searchParameterNames = new ArrayList<String>();
+		for (SearchParameter dependency : dependencies) {
+			searchParameterNames.add(dependency.getName());
+		}
+		sb.append(StringUtils.join(searchParameterNames, ", "));
 		
 		String ret = sb.toString();
 		int ind = ret.lastIndexOf(", ");
 		
 		if (ind > -1) {
-			ret = new StringBuilder(ret).replace(ind, ind + 2, " or ").toString();
+			ret = new StringBuilder(ret).replace(ind, ind + 2, " and ").toString();
 		}
 		
 		return ret;
