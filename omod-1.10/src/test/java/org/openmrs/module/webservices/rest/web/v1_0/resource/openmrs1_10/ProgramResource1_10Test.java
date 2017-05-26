@@ -46,7 +46,7 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 	
 	@Override
 	public long getAllCount() {
-		return service.getAllPrograms(true).size();
+		return service.getAllPrograms(false).size();
 	}
 	
 	@Test

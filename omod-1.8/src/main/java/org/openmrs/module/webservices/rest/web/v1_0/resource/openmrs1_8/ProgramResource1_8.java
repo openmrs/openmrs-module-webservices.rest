@@ -57,7 +57,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 	
 	@Override
 	protected NeedsPaging<Program> doGetAll(RequestContext context) {
-		return new NeedsPaging<Program>(Context.getProgramWorkflowService().getAllPrograms(), context);
+		return new NeedsPaging<Program>(Context.getProgramWorkflowService().getAllPrograms(false), context);
 	}
 	
 	@Override

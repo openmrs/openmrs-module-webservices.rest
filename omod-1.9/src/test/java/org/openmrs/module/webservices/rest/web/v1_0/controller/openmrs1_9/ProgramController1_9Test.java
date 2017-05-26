@@ -52,7 +52,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getAllPrograms(true).size();
+		return service.getAllPrograms(false).size();
 	}
 	
 	/**
