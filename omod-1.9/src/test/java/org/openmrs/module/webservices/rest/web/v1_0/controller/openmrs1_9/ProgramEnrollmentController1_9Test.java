@@ -85,6 +85,17 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	}
 	
 	@Test
+	public void shouldExcludeRetired() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.setParameter("patient", RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		SimpleObject result = deserialize(handle(req));
+		
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
+		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+	}
+	
+	@Test
 	public void shouldGetTheDefaultRepresentationOfPatientProgram() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));

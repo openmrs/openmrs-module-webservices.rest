@@ -113,7 +113,7 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	}
 	
 	/**
-	 * Gets all the programs (including voided) of the given patient
+	 * Gets all the programs (excluding voided) of the given patient
 	 * 
 	 * @param context
 	 * @return all programs of the given patient
@@ -129,7 +129,7 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 			}
 			
 			List<PatientProgram> patientPrograms = Context.getProgramWorkflowService().getPatientPrograms(patient, null,
-			    null, null, null, null, true);
+			    null, null, null, null, false);
 			return new NeedsPaging<PatientProgram>(patientPrograms, context);
 		}
 		return super.doSearch(context);
