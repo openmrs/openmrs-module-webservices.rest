@@ -85,7 +85,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	}
 	
 	@Test
-	public void shouldExcludeRetired() throws Exception {
+	public void shouldExcludeVoided() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter("patient", RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		SimpleObject result = deserialize(handle(req));
