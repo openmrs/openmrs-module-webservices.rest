@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
+import io.swagger.models.Model;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OrderSet;
@@ -101,5 +102,20 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		d.addProperty("operator");
 		d.addProperty("orderSetMembers");
 		return d;
+	}
+	
+	@Override
+	public Model getGETModel(Representation representation) {
+		return null;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation representation) {
+		return null;
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation representation) {
+		return null;
 	}
 }

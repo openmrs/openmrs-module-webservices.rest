@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
+import io.swagger.models.Model;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.api.context.Context;
@@ -98,6 +99,16 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
 		return creatableProperties;
 	}
 	
+	@Override
+	public Model getGETModel(Representation representation) {
+		return null;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation representation) {
+		return null;
+	}
+
 	@Override
 	public OrderSetMember getByUniqueId(String uniqueId) {
 		return Context.getOrderSetService().getOrderSetMemberByUuid(uniqueId);

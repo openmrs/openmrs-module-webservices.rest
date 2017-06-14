@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -91,6 +97,32 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 		d.addProperty("location");
 		d.addProperty("voided");
 		return d;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		return super.getGETModel(rep);
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))
+		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"));
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return new ModelImpl() //FIXME use super.
+		        .property("dateEnrolled", new DateProperty())
+		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))
+		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"))
+		        .property("location", new RefProperty("#/definitions/LocationCreate"))
+		        .property("voided", new BooleanProperty())
+		        .property("dateCompleted", new DateProperty())
+		        
+		        .required("dateEnrolled");
+		
 	}
 	
 	@Override

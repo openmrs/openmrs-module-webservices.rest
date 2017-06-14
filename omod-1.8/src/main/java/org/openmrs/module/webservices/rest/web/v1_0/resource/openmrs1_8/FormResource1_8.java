@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -87,6 +94,57 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 		description.addProperty("template");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			modelImpl
+			        .property("uuid", new StringProperty())
+			        .property("display", new StringProperty())
+			        .property("name", new StringProperty())
+			        .property("description", new StringProperty())
+			        .property("version", new StringProperty())
+			        .property("build", new IntegerProperty())
+			        .property("published", new BooleanProperty()._default(false))
+			        .property("retired", new BooleanProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			modelImpl
+			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef"))
+			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGetRef")));
+		} else if (rep instanceof FullRepresentation) {
+			modelImpl
+			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet"))
+			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGet")));
+		}
+		return modelImpl;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
+		        .property("version", new StringProperty())
+		        .property("encounterType", new StringProperty())
+		        .property("build", new IntegerProperty())
+		        .property("published", new BooleanProperty()._default(false))
+		        .property("formFields", new ArrayProperty(new StringProperty()))
+		        .property("xslt", new StringProperty())
+		        .property("template", new StringProperty())
+		        
+		        .required("version");
+		if (rep instanceof FullRepresentation) {
+			model
+			        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
+			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldCreate")));
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**

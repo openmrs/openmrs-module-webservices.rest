@@ -9,9 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Problem;
+import org.openmrs.activelist.ProblemModifier;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -31,6 +38,27 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
  */
 @Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("modifier", new StringProperty()
+			                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ProblemModifier.class)))
+			        .property("sortWeight", new DoubleProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("problem", new RefProperty("#/definitions/ConceptGetRef"));
+			
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("problem", new RefProperty("#/definitions/ConceptGet"));
+			
+		}
+		return model;
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -64,6 +92,17 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 		description.addProperty("sortWeight");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("problem", new RefProperty("#/definitions/ConceptCreate"))
+		        .property("modifier", new StringProperty()
+		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ProblemModifier.class)))
+		        .property("sortWeight", new DoubleProperty())
+		        
+		        .required("problem");
 	}
 	
 	/**

@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -61,6 +65,25 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 			return description;
 		}
 		return null;
+	}
+	
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("uuid", new StringProperty())
+			        .property("display", new StringProperty())
+			        .property("name", new StringProperty())
+			        .property("description", new StringProperty())
+			        .property("hl7Abbreviation", new StringProperty())
+			        .property("retired", new BooleanProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return super.getCREATEModel(rep);
 	}
 	
 	/**

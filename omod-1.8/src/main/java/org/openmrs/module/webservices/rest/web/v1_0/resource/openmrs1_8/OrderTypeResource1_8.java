@@ -60,5 +60,4 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 		}
 		Context.getOrderService().purgeOrderType(delegate);
 	}
-	
 }

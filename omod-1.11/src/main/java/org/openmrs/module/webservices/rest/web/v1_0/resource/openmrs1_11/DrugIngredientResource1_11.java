@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.swagger.models.Model;
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.api.context.Context;
@@ -78,6 +79,21 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
+	}
+	
+	@Override
+	public Model getGETModel(Representation representation) {
+		return null;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation representation) {
+		return null;
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation representation) {
+		return null;
 	}
 	
 	/**

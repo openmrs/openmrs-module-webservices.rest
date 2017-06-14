@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -51,6 +54,33 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 			return description;
 		}
 		return null;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGetRef"))
+			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGet"))
+			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));
+		}
+		model.getProperties().remove("source"); //FIXME check
+		model.getProperties().remove("sourceCode");
+		model.getProperties().remove("comment");
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation representation) {
+		return new ModelImpl()
+		        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermCreate"))
+		        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeCreate"))
+		        
+		        .required("conceptReferenceTerm").required("conceptMapType");
 	}
 	
 	/**
