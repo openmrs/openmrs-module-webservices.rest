@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -89,10 +90,11 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public void setIdentifierType(PatientIdentifier instance, PatientIdentifierType identifierType) {
 		String uuid = identifierType.getUuid();
 		String name = identifierType.getName();
-		if (name != null && !name.isEmpty()) {
-			instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByName(name));
-		} else if (uuid != null && !uuid.isEmpty()) {
+		if (!StringUtils.isEmpty(uuid)) {
 			instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByUuid(uuid));
+		}
+		if (instance.getIdentifierType() == null && !StringUtils.isEmpty(name)) {
+			instance.setIdentifierType(Context.getPatientService().getPatientIdentifierTypeByName(name));
 		}
 	}
 	
