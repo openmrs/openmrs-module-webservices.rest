@@ -27,7 +27,6 @@ public class SystemInfomationResource1_8 implements Listable {
 	@Override
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
 		
-
 		SimpleObject rest = new SimpleObject();
 		try {
 			rest.put("SystemInfo", Context.getAdministrationService().getSystemInformation());
@@ -36,7 +35,7 @@ public class SystemInfomationResource1_8 implements Listable {
 			System.out.println("SystemInfo Resource is getting Error");
 		}
 		
-		return ret;
+		return rest;
 	}
 	
 	@Override
