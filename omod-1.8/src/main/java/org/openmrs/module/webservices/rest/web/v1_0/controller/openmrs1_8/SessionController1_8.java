@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.LocaleUtils;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -19,6 +26,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -54,8 +62,24 @@ public class SessionController1_8 extends BaseRestController {
 			String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 			Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
+			session.add("locale", Context.getLocale());
+			session.add("availableLocales", Context.getAdministrationService().getAllowedLocales());
 		}
 		return session;
+	}
+	
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	@ResponseStatus(value = HttpStatus.OK)
+	public void post(@RequestBody Map<String, String> body) {
+		String localeStr = body.get("locale");
+		Locale locale = LocaleUtils.toLocale(localeStr);
+		Set<Locale> allowedLocales = new HashSet<Locale>(Context.getAdministrationService().getAllowedLocales());
+		if (allowedLocales.contains(locale)) {
+			Context.setLocale(locale);
+		} else {
+			throw new APIException(" '" + localeStr + "' is not in the list of allowed locales.");
+		}
 	}
 	
 	/**

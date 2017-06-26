@@ -9,11 +9,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.beanutils.PropertyUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.GlobalProperty;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
@@ -35,6 +42,9 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		MockHttpServletRequest hsr = new MockHttpServletRequest();
 		hsr.setSession(new MockHttpSession(new MockServletContext(), SESSION_ID));
 		request = new ServletWebRequest(hsr);
+		
+		Context.getAdministrationService().saveGlobalProperty(
+		    new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCALE_ALLOWED_LIST, "en_GB, sp, fr"));
 	}
 	
 	/**
@@ -65,6 +75,15 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		    PropertyUtils.getProperty(personProp, "uuid"));
 	}
 	
+	@Test
+	public void get_shouldReturnLocaleInfoIfTheUserIsAuthenticated() throws Exception {
+		Assert.assertTrue(Context.isAuthenticated());
+		Object ret = controller.get(request);
+		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		    ((List<Locale>) PropertyUtils.getProperty(ret, "availableLocales")).toArray());
+	}
+	
 	/**
 	 * @see SessionController1_8#get(WebRequest)
 	 * @verifies return the session id if the user is not authenticated
@@ -76,5 +95,27 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		Object ret = controller.get(request);
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(ret, "authenticated"));
+	}
+	
+	@Test
+	public void post_shouldSetTheUserLocale() throws Exception {
+		Locale newLocale = new Locale("sp");
+		String content = "{\"locale\":\"" + newLocale.toString() + "\"}";
+		controller.post(new ObjectMapper().readValue(content, HashMap.class));
+		Assert.assertEquals(newLocale, Context.getLocale());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void post_shouldFailWhenSettingIllegalLocale() throws Exception {
+		String newLocale = "wx_YZ";
+		String content = "{\"locale\":\"" + newLocale + "\"}";
+		controller.post(new ObjectMapper().readValue(content, HashMap.class));
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void post_shouldFailWhenSettingDisallowedLocale() throws Exception {
+		String newLocale = "km_KH";
+		String content = "{\"locale\":\"" + newLocale + "\"}";
+		controller.post(new ObjectMapper().readValue(content, HashMap.class));
 	}
 }
