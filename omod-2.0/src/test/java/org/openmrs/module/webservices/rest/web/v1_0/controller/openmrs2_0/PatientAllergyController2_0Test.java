@@ -270,4 +270,47 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		allergies = Context.getPatientService().getAllergies(patient);
 		Assert.assertEquals(Allergies.NO_KNOWN_ALLERGIES, allergies.getAllergyStatus());
 	}
+	
+	/**
+	 * Save a new Allergy with its reactions in one call
+	 */
+	@Test
+	public void shouldSaveNewAllergyWithReactionsInOneCall() throws Exception {
+		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
+		Patient patient = allergy.getPatient();
+		Allergies allergies = Context.getPatientService().getAllergies(patient);
+		Assert.assertEquals(allergies.size(), 4);
+		
+		// save allergy with coded allergen
+		String json = "{" + " \"comment\" : \"allergy comment\","
+		        + " \"severity\" : { \"uuid\" : \"35d3346a-6769-4d52-823f-b4b234bac3e3\"}," + " \"allergen\" : "
+		        + " { \"allergenType\" : \"DRUG\", "
+		        + " \"codedAllergen\" : { \"uuid\" : \"35d3346a-6769-4d52-823f-b4b234bac3e3\"} " + " }, "
+		        + "\"reactions\" : " + "[" + "{" + " \"reaction\" : { \"uuid\" : \"35d3346a-6769-4d52-823f-b4b234bac3e3\" }"
+		        + "}," + "{" + " \"reaction\" : { \"uuid\" : \"5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\" },"
+		        + " \"reactionNonCoded\" : \"test non coded reaction\"" + "}" + "]" + "}";
+		
+		// save allergy 
+		SimpleObject savedAllergy = deserialize(handle(newPostRequest(getURI(), json)));
+		
+		Assert.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
+		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
+		
+		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
+		
+		Assert.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
+		
+		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		    Util.getByPath(savedAllergy, "reactions[0]/reaction/uuid"));
+		
+		Assert.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+		    Util.getByPath(savedAllergy, "reactions[1]/reaction/uuid"));
+		
+		Assert.assertEquals("test non coded reaction", Util.getByPath(savedAllergy, "reactions[1]/reactionNonCoded"));
+		
+		// assert that a new allergy has been added
+		allergies = Context.getPatientService().getAllergies(patient);
+		Assert.assertEquals(allergies.size(), 5);
+	}
 }
