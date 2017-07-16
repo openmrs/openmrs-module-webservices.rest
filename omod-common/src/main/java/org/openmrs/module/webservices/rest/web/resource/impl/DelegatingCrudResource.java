@@ -76,7 +76,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		T delegate = convert(propertiesToCreate);
 		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 		
 		// add the 'type' discriminator if we support subclasses
 		if (hasTypesDefined()) {
@@ -141,7 +141,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, Representation.DEFAULT);
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 		
 		// add the 'type' discriminator if we support subclasses
 		if (hasTypesDefined()) {
