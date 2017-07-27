@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +55,8 @@ import org.openmrs.util.LocaleUtility;
 public class ConversionUtil {
 	
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
+	
+	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
@@ -235,9 +236,8 @@ public class ConversionUtil {
 			
 			if (toClass.isAssignableFrom(Date.class)) {
 				IllegalArgumentException pex = null;
-				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss",
-				        "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+				String[] supportedFormats = { DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ",
+				        "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
 				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
 						Date date = DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
@@ -385,13 +385,19 @@ public class ConversionUtil {
 				ret.add(convertToRepresentation(item, rep, specificConverter));
 			}
 			return ret;
-			
+		} else if (o instanceof Map) {
+			SimpleObject ret = new SimpleObject();
+			for (Map.Entry<?, ?> entry : ((Map<?, ?>) o).entrySet()) {
+				ret.put(entry.getKey().toString(),
+				    convertToRepresentation(entry.getValue(), Representation.REF, (Converter) null));
+			}
+			return ret;
 		} else {
 			Converter<S> converter = specificConverter != null ? specificConverter : (Converter) getConverter(o.getClass());
 			if (converter == null) {
 				// try a few known datatypes
 				if (o instanceof Date) {
-					return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format((Date) o);
+					return new SimpleDateFormat(DATE_FORMAT).format((Date) o);
 				}
 				// otherwise we have no choice but to return the plain object
 				return o;
