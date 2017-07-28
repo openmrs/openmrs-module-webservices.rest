@@ -32,6 +32,8 @@ public class RelationshipTypeResource1_8Test extends BaseDelegatingResourceTest<
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("aIsToB", getObject().getaIsToB());
 		assertPropEquals("bIsToA", getObject().getbIsToA());
+		assertPropEquals("displayAIsToB", getObject().getaIsToB());
+		assertPropEquals("displayBIsToA", getObject().getbIsToA());
 		assertPropEquals("retired", getObject().isRetired());
 	}
 	
@@ -42,6 +44,8 @@ public class RelationshipTypeResource1_8Test extends BaseDelegatingResourceTest<
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("aIsToB", getObject().getaIsToB());
 		assertPropEquals("bIsToA", getObject().getbIsToA());
+		assertPropEquals("displayAIsToB", getObject().getaIsToB());
+		assertPropEquals("displayBIsToA", getObject().getbIsToA());
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropEquals("weight", getObject().getWeight());
 		assertPropPresent("auditInfo");

@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -91,6 +92,8 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		description.addProperty("description");
 		description.addProperty("aIsToB");
 		description.addProperty("bIsToA");
+		description.addProperty("displayAIsToB");
+		description.addProperty("displayBIsToA");
 		description.addProperty("retired");
 		description.addSelfLink();
 		if (rep instanceof DefaultRepresentation) {
@@ -155,6 +158,36 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	public String getDisplayString(RelationshipType delegate) {
 		// TODO i18n based on message properties
 		return delegate.toString();
+	}
+	
+	@PropertyGetter("displayAIsToB")
+	public String getDisplayAIsToBe(RelationshipType delegate) {
+		String localization = getLocalization(delegate.getUuid(), "aIsToB");
+		if (localization != null) {
+			return localization;
+		} else {
+			return StringUtils.isEmpty(delegate.getaIsToB()) ? "" : delegate.getaIsToB();
+		}
+	}
+	
+	@PropertyGetter("displayBIsToA")
+	public String getDisplayBIsToAe(RelationshipType delegate) {
+		String localization = getLocalization(delegate.getUuid(), "bIsToA");
+		if (localization != null) {
+			return localization;
+		} else {
+			return StringUtils.isEmpty(delegate.getbIsToA()) ? "" : delegate.getbIsToA();
+		}
+	}
+	
+	private String getLocalization(String uuid, String type) {
+		String code = "ui.i18n.RelationshipType" + "." + type + "." + uuid;
+		String localization = Context.getMessageSourceService().getMessage(code);
+		if (localization == null || localization.equals(code)) {
+			return null;
+		} else {
+			return localization;
+		}
 	}
 	
 	/**
