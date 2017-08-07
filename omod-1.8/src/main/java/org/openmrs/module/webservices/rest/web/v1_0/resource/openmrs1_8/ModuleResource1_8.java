@@ -83,6 +83,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("version");
 			description.addProperty("started");
 			description.addProperty("startupErrorMessage");
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
