@@ -102,7 +102,43 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
 	}
-		
+	
+	@Test
+	public void shouldIncludeAllPropertiesForFullRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter("v", "full");
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "packageName"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "author"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
+	}
+	
+	@Test
+	public void shouldIncludeAllPropertiesForDefaultRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
+	}
+	
+	@Test
+	public void shouldIncludeAllPropertiesForRefRepresentation() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter("v", "ref");
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+	}
+	
 	@Test
 	public void shouldUploadModule() throws Exception {
 		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("mockModule.omod"));
