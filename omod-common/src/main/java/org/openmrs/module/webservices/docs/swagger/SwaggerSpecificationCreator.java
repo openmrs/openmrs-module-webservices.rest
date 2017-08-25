@@ -686,24 +686,8 @@ public class SwaggerSpecificationCreator {
 			// get name and parent if it's a subresource
 			Resource annotation = resourceHandler.getClass().getAnnotation(Resource.class);
 			
-			String resourceParentName = null;
-			String resourceName = null;
-			
-			if (annotation != null) {
-				// top level resource
-				resourceName = annotation.name().substring(annotation.name().indexOf('/') + 1, annotation.name().length());
-			} else {
-				// subresource
-				SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
-				
-				if (subResourceAnnotation != null) {
-					Resource parentResourceAnnotation = subResourceAnnotation.parent().getAnnotation(Resource.class);
-					
-					resourceName = subResourceAnnotation.path();
-					resourceParentName = parentResourceAnnotation.name().substring(
-					    parentResourceAnnotation.name().indexOf('/') + 1, parentResourceAnnotation.name().length());
-				}
-			}
+			String resourceParentName = getResourceParentName(resourceHandler, true);
+			String resourceName = getResourceName(resourceHandler, true);
 			
 			// subclass operations are handled separately in another method
 			if (resourceHandler instanceof DelegatingSubclassHandler)
@@ -761,7 +745,65 @@ public class SwaggerSpecificationCreator {
 			addIndividualPath(resourceParentName, resourceName, uuidPathPurge, "/{uuid}");
 		}
 	}
-	
+
+	/**
+	 * Extracts resource name from a resource handler
+	 * @param trim if false returns resource name with version, if true version part of the name is trimmed
+	 * @return resource name
+	 */
+	private String getResourceName(DelegatingResourceHandler resourceHandler, boolean trim) {
+		Resource annotation = resourceHandler.getClass().getAnnotation(Resource.class);
+
+		String resourceName = null;
+		if (annotation != null) {
+			// top level resource
+			resourceName = annotation.name();
+		} else {
+			// sub resource
+			SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
+			if (subResourceAnnotation != null) {
+				resourceName = subResourceAnnotation.path();
+			}
+		}
+		if (trim) {
+			resourceName = trimResourceName(resourceName);
+		}
+		return resourceName;
+	}
+
+	/**
+	 * Extracts resource parent name from a resource handler
+	 * @param trim if false returns name with version, if true version part of the name is trimmed
+	 * @return name of the parent resource or null if its not a sub-resource
+	 */
+	private String getResourceParentName(DelegatingResourceHandler resourceHandler, boolean trim) {
+		SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
+
+		String resourceParentName = null;
+		if (subResourceAnnotation != null) {
+			Resource parentResourceAnnotation = subResourceAnnotation.parent().getAnnotation(Resource.class);
+			resourceParentName = parentResourceAnnotation.name();
+		}
+
+		if (trim) {
+			resourceParentName = trimResourceName(resourceParentName);
+		}
+
+		return resourceParentName;
+	}
+
+	/**
+	 * @param resourceName resource name with version (v1/patient)
+	 * @return resource name without the version (patient)
+	 */
+	private String trimResourceName(String resourceName) {
+		String trimmedResourceName = null;
+		if (resourceName != null) {
+			trimmedResourceName = resourceName.substring(resourceName.indexOf('/') + 1);
+		}
+		return trimmedResourceName;
+	}
+
 	private void addSubclassOperations() {
 		// FIXME: this needs to be improved a lot
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
