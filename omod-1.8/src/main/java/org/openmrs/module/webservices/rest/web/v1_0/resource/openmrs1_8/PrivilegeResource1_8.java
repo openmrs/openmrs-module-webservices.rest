@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
@@ -88,6 +91,22 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 		description.addProperty("description");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		return super.getGETModel(rep); //FIXME
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return super.getCREATEModel(rep);
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return new ModelImpl()
+		        .property("description", new StringProperty());
 	}
 	
 	/**

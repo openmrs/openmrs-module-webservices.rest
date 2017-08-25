@@ -11,6 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.List;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
@@ -105,6 +108,48 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 		DelegatingResourceDescription description = getCreatableProperties();
 		description.removeProperty("property");
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("uuid", new StringProperty())
+			        .property("property", new StringProperty())
+			        .property("value", new StringProperty())
+			        .property("description", new StringProperty())
+			        .property("display", new StringProperty());
+		}
+		if (rep instanceof FullRepresentation) {
+			model
+			        .property("datatypeClassname", new StringProperty())
+			        .property("datatypeConfig", new StringProperty())
+			        .property("preferredHandlerClassname", new StringProperty())
+			        .property("handlerConfig", new StringProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return new ModelImpl()
+		        .property("property", new StringProperty())
+		        .property("description", new StringProperty())
+		        .property("datatypeClassname", new StringProperty())
+		        .property("datatypeConfig", new StringProperty())
+		        .property("preferredHandlerClassname", new StringProperty())
+		        .property("handlerConfig", new StringProperty())
+		        .property("value", new StringProperty())
+		        
+		        .required("property");
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		Model model = getCREATEModel(rep);
+		model.getProperties().remove("property");
+		return model;
 	}
 	
 	/**

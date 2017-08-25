@@ -12,12 +12,12 @@
 
 	<dependencies>
 		<dependency>
-		      <groupId>org.apache.tomcat</groupId>
-		      <artifactId>jasper</artifactId>
-		      <version>6.0.18</version>
-		      <scope>provided</scope>
-	     </dependency>
-		
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>jasper</artifactId>
+			<version>6.0.18</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
@@ -29,8 +29,24 @@
 			<artifactId>evo-inflector</artifactId>
 			<version>1.2.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>1.5.13</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.validation</groupId>
+					<artifactId>validation-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<resources>
 			<resource>
@@ -72,7 +88,7 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.jacoco</groupId>

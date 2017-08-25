@@ -16,6 +16,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.MapProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Role;
@@ -125,6 +132,48 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		description.addProperty("secretQuestion");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		//FIXME check valid supportedClass
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("username", new StringProperty())
+			        .property("systemId", new StringProperty())
+			        .property("userProperties", new MapProperty()); //FIXME type
+		}
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
+			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
+			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("person", new RefProperty("#/definitions/PersonGet"))
+			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
+			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+			        .property("allRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+			        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
+			        .property("secretQuestion", new StringProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("username", new StringProperty())
+		        .property("password", new StringProperty())
+		        .property("person", new RefProperty("#/definitions/PersonCreate"))
+		        .property("systemId", new StringProperty())
+		        .property("userProperties", new MapProperty()) //FIXME type
+		        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")))
+		        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
+		        .property("secretQuestion", new StringProperty())
+		        
+		        .required("username").required("password").required("person");
 	}
 	
 	/**

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -53,6 +55,23 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 		description.addRequiredProperty("description");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		return super.getGETModel(rep);
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        
+		        .required("description");
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**

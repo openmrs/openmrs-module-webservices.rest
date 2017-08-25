@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -31,6 +30,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
@@ -99,6 +103,51 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("display", new StringProperty())
+			        .property("uuid", new StringProperty())
+			        .property("givenName", new StringProperty())
+			        .property("middleName", new StringProperty())
+			        .property("familyName", new StringProperty())
+			        .property("familyName2", new StringProperty())
+			        .property("voided", new BooleanProperty());
+		}
+		if (rep instanceof FullRepresentation) {
+			model
+			        .property("preferred", new BooleanProperty())
+			        .property("prefix", new StringProperty())
+			        .property("familyNamePrefix", new StringProperty())
+			        .property("familyNameSuffix", new StringProperty())
+			        .property("degree", new StringProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return new ModelImpl()
+		        .property("givenName", new StringProperty())
+		        .property("middleName", new StringProperty())
+		        .property("familyName", new StringProperty())
+		        .property("familyName2", new StringProperty())
+		        .property("preferred", new BooleanProperty()._default(false))
+		        .property("prefix", new StringProperty())
+		        .property("familyNamePrefix", new StringProperty())
+		        .property("familyNameSuffix", new StringProperty())
+		        .property("degree", new StringProperty())
+		        
+		        .required("givenName").required("familyName");
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**

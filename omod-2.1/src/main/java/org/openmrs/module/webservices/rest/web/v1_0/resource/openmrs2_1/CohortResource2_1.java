@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
+import io.swagger.models.Model;
 import org.openmrs.Cohort;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -28,6 +29,13 @@ public class CohortResource2_1 extends CohortResource1_8 {
 	@Override
 	public String getResourceVersion() {
 		return RestConstants2_1.RESOURCE_VERSION;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		Model model = super.getGETModel(rep);
+		model.getProperties().remove("memberIds");
+		return model;
 	}
 	
 	@Override

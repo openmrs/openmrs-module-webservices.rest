@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
@@ -33,6 +33,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for
@@ -66,6 +70,32 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		}
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("display", new StringProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
+			        .property("conceptName", new RefProperty("#/definitions/ConceptNameGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
+			        .property("conceptName", new RefProperty("#/definitions/ConceptNameGetRef"))
+			        .property("word", new StringProperty())
+			        .property("transientWeight", new StringProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return null;
 	}
 	
 	/**

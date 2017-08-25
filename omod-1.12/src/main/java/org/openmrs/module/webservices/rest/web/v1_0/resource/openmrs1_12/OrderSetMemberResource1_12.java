@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.api.context.Context;
@@ -98,6 +104,44 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
 		return creatableProperties;
 	}
 	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			modelImpl
+					.property("uuid", new StringProperty())
+					.property("display", new StringProperty())
+					.property("retired", new BooleanProperty())
+					.property("orderTemplate", new StringProperty())
+					.property("orderTemplateType", new StringProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			modelImpl
+					.property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
+					.property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			modelImpl
+					.property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
+					.property("concept", new RefProperty("#/definitions/ConceptGet"));
+		}
+		return modelImpl;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return new ModelImpl()
+				.property("orderType", new ObjectProperty()
+						.property("uuid", new StringProperty()))
+				.property("orderTemplate", new StringProperty())
+				.property("concept", new StringProperty().example("uuid"))
+				.property("retired", new BooleanProperty());
+	}
+
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
+	}
+
 	@Override
 	public OrderSetMember getByUniqueId(String uniqueId) {
 		return Context.getOrderSetService().getOrderSetMemberByUuid(uniqueId);

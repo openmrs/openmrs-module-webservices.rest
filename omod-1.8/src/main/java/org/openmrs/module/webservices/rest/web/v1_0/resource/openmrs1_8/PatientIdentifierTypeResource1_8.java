@@ -9,9 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -74,7 +79,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
 			description.addProperty("uniquenessBehavior");
-			description.addProperty("validator");
+			description.addProperty("validator"); //FIXME duplicate
 			description.addProperty("retired");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
@@ -108,6 +113,41 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("format", new StringProperty())
+			        .property("formatDescription", new StringProperty())
+			        .property("required", new BooleanProperty())
+			        .property("checkDigit", new BooleanProperty())
+			        .property("validator", new StringProperty())
+			        .property("locationBehavior", new StringProperty()
+			                ._enum(SwaggerSpecificationCreator.getEnumsAsList(PatientIdentifierType.LocationBehavior.class)))
+			        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("format", new StringProperty())
+		        .property("formatDescription", new StringProperty())
+		        .property("required", new BooleanProperty())
+		        .property("checkDigit", new BooleanProperty())
+		        .property("validator", new StringProperty())
+		        .property("locationBehavior", new StringProperty()
+		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(PatientIdentifierType.LocationBehavior.class)))
+		        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**

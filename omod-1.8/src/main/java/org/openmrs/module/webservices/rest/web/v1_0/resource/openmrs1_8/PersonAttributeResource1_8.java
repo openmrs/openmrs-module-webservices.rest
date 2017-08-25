@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.Attributable;
 import org.openmrs.Concept;
 import org.openmrs.Person;
@@ -137,6 +142,48 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("display", new StringProperty())
+			        .property("uuid", new StringProperty())
+			        .property("value", new StringProperty())
+			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
+			        .property("voided", new BooleanProperty());
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("display", new StringProperty())
+			        .property("uuid", new StringProperty())
+			        .property("value", new StringProperty())
+			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
+			        .property("voided", new BooleanProperty())
+			        .property("hydratedObject", new StringProperty());
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		ModelImpl model = new ModelImpl()
+		        .property("attributeType", new StringProperty().example("uuid"))
+		        .property("value", new StringProperty())
+		        .property("hydratedObject", new StringProperty().example("uuid"))
+		        
+		        .required("attributeType");
+		if (rep instanceof FullRepresentation) {
+			model
+			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeCreate"));
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**

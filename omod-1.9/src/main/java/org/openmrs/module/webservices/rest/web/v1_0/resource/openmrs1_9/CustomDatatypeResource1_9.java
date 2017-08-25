@@ -9,9 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.CustomDatatypeHandler;
@@ -30,6 +32,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
@@ -97,6 +102,30 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 		return null;
 	}
 	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("uuid", new StringProperty())
+			        .property("display", new StringProperty())
+			        .property("datatypeClassname", new StringProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("handlers", new ArrayProperty(new RefProperty("#/definitions/CustomdatatypeHandlersGetRef")));
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("handlers", new ArrayProperty(new RefProperty("#/definitions/CustomdatatypeHandlersGet")));
+		}
+		return model;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return null;
+	}
+
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();

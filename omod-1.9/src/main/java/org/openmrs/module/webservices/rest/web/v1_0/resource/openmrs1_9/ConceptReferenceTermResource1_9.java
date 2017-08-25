@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
@@ -86,6 +91,41 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		description.addProperty("version");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getGETModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			model
+			        .property("code", new StringProperty())
+			        .property("version", new StringProperty());
+			
+		}
+		if (rep instanceof DefaultRepresentation) {
+			model
+			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			model
+			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGet"));
+		}
+		return model;
+		
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("code", new StringProperty())
+		        .property("conceptSource", new StringProperty())
+		        .property("version", new StringProperty())
+		        
+		        .required("code").required("conceptSource");
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return new ModelImpl(); //FIXME missing props
 	}
 	
 	/**

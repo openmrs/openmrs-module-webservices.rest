@@ -9,6 +9,7 @@
  */
 package org.mockingbird.test.rest.resource;
 
+import io.swagger.models.Model;
 import org.mockingbird.test.Animal;
 import org.mockingbird.test.AnimalClass;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -31,7 +32,12 @@ public class AnimalClassResource_1_9 extends DelegatingSubResource<AnimalClass, 
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
 	}
-	
+
+	@Override
+	public Model getCREATEModel(Representation representation) {
+		return null;
+	}
+
 	@Override
 	public Animal getParent(AnimalClass instance) {
 		return null;
