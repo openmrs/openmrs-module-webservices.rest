@@ -62,20 +62,10 @@ public class BirdResource_1_9 extends DelegatingCrudResource<Bird> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation representation) {
+	public Model getCREATEModel(Representation rep) {
 		return null;
 	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return null;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return null;
-	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(String)
 	 */

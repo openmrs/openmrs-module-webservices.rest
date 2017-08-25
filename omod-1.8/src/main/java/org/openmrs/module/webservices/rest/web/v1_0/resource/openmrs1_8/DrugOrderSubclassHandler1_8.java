@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import ca.uhn.hl7v2.model.v23.datatype.MO;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
@@ -43,7 +42,7 @@ import org.openmrs.util.OpenmrsConstants;
  */
 @SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*" })
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
-	
+
 	public DrugOrderSubclassHandler1_8() {
 		//RESTWS-439
 		//Order subclass fields
@@ -178,11 +177,6 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 		orderModel.getProperties().remove("orderType");
 		
 		return orderModel;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return null;
 	}
 	
 	/**

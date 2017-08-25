@@ -122,11 +122,6 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 		        .required("hl7");
 	}
 	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return null;
-	}
-	
 	/**
 	 * It needs to be overwritten to allow for hidden properties: source, sourceKey and data. They
 	 * are automatically extracted from the hl7 property and populated in

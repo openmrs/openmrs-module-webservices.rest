@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.api.context.Context;
@@ -82,18 +86,39 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	}
 	
 	@Override
-	public Model getGETModel(Representation representation) {
-		return null;
+	public Model getGETModel(Representation rep) {
+		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			modelImpl
+					.property("uuid", new StringProperty())
+					.property("display", new StringProperty())
+					.property("strength", new DoubleProperty());
+		}
+		if (rep instanceof DefaultRepresentation) {
+			modelImpl
+					.property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
+					.property("units", new RefProperty("#/definitions/ConceptGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			modelImpl
+					.property("ingredient", new RefProperty("#/definitions/ConceptGet"))
+					.property("units", new RefProperty("#/definitions/ConceptGet"));
+		}
+		return modelImpl;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation representation) {
-		return null;
+	public Model getCREATEModel(Representation rep) {
+		return new ModelImpl()
+				.property("ingredient", new StringProperty().example("uuid"))
+				.property("strength", new DoubleProperty())
+				.property("units", new StringProperty().example("uuid"))
+
+				.required("ingredient");
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return null;
+	public Model getUPDATEModel(Representation rep) {
+		return getCREATEModel(rep);
 	}
 	
 	/**
