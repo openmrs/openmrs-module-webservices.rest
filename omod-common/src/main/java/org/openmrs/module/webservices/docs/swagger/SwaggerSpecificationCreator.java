@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.docs.swagger;
 
 import io.swagger.models.Contact;
+import io.swagger.models.ExternalDocs;
 import io.swagger.models.Info;
 import io.swagger.models.License;
 import io.swagger.models.Model;
@@ -182,8 +183,11 @@ public class SwaggerSpecificationCreator {
 		        .securityDefinition("basic_auth", new BasicAuthDefinition())
 		        .security(new SecurityRequirement().requirement("basic_auth"))
 		        .consumes("application/json")
-		        .produces("application/json");
-		
+		        .produces("application/json")
+		        .externalDocs(new ExternalDocs()
+				        .description("Find more info on REST Module Wiki")
+				        .url("https://wiki.openmrs.org/display/docs/REST+Module"));
+
 		String host = baseUrl.split("/")[0];
 		String basePath = baseUrl.substring(baseUrl.indexOf("/")) + "/v1";
 		this.swagger
