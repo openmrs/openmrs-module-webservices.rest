@@ -9,7 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertThat;
+
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,7 +146,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldEditIAnAddress() throws Exception {
+	public void shouldEditAnAddress() throws Exception {
 		
 		SimpleObject address = new SimpleObject();
 		address.add("address1", "new address1");
@@ -179,4 +186,34 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		Assert.assertNull(address);
 	}
 	
+	@Test
+	public void shouldSetPreferred() throws Exception {
+		PersonAddress nonPreferred = service.getPersonAddressByUuid(getUuid());
+		Person person = nonPreferred.getPerson();
+		
+		PersonAddress preferred = new PersonAddress();
+		preferred.setCityVillage("Seattle");
+		preferred.setPreferred(true);
+		person.addAddress(preferred);
+		
+		service.savePerson(person);
+		
+		// sanity check
+		assertThat(nonPreferred.isPreferred(), is(false));
+		assertThat(preferred.isPreferred(), is(true));
+		
+		SimpleObject address = new SimpleObject();
+		address.add("preferred", "true");
+		
+		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), address);
+		handle(req);
+		
+		PersonAddress updated = service.getPersonAddressByUuid(getUuid());
+		assertThat(updated.isPreferred(), is(true));
+		// the one that was originally preferred should now not be preferred
+		assertThat(updated.getPerson().getAddresses(), (Matcher) hasItem(allOf(
+		    hasProperty("preferred", is(false)),
+		    hasProperty("cityVillage", is("Seattle"))
+		    )));
+	}
 }

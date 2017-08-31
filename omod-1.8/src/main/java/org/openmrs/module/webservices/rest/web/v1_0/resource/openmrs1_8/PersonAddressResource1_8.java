@@ -235,7 +235,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	 */
 	@Override
 	public PersonAddress save(PersonAddress newAddress) {
-		// make sure that the name has actually been added to the person
+		// make sure that the address has actually been added to the person
 		boolean needToAdd = true;
 		for (PersonAddress pa : newAddress.getPerson().getAddresses()) {
 			if (pa.equals(newAddress)) {
@@ -246,6 +246,15 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 		
 		if (needToAdd) {
 			newAddress.getPerson().addAddress(newAddress);
+		}
+		
+		// if this address is marked preferred, then we need to clear any others that are marked as preferred
+		if (newAddress.isPreferred()) {
+			for (PersonAddress pa : newAddress.getPerson().getAddresses()) {
+				if (!pa.equals(newAddress)) {
+					pa.setPreferred(false);
+				}
+			}
 		}
 		
 		Context.getPersonService().savePerson(newAddress.getPerson());
