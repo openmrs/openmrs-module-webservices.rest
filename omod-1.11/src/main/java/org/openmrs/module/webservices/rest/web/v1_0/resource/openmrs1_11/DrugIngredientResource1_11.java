@@ -90,18 +90,18 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
-					.property("uuid", new StringProperty())
-					.property("display", new StringProperty())
-					.property("strength", new DoubleProperty());
+			        .property("uuid", new StringProperty())
+			        .property("display", new StringProperty())
+			        .property("strength", new DoubleProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-					.property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("units", new RefProperty("#/definitions/ConceptGetRef"));
+			        .property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
+			        .property("units", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-					.property("ingredient", new RefProperty("#/definitions/ConceptGet"))
-					.property("units", new RefProperty("#/definitions/ConceptGet"));
+			        .property("ingredient", new RefProperty("#/definitions/ConceptGet"))
+			        .property("units", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return modelImpl;
 	}
@@ -109,11 +109,11 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
-				.property("ingredient", new StringProperty().example("uuid"))
-				.property("strength", new DoubleProperty())
-				.property("units", new StringProperty().example("uuid"))
-
-				.required("ingredient");
+		        .property("ingredient", new StringProperty().example("uuid"))
+		        .property("strength", new DoubleProperty())
+		        .property("units", new StringProperty().example("uuid"))
+		        
+		        .required("ingredient");
 	}
 	
 	@Override

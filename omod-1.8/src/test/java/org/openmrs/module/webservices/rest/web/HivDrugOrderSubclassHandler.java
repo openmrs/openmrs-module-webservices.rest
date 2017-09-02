@@ -92,18 +92,18 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		ModelImpl model = new ModelImpl();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-					.property("startDate", new DateProperty())
-					.property("autoExpireDate", new DateProperty())
-					.property("standardRegimenCode", new StringProperty());
+			        .property("startDate", new DateProperty())
+			        .property("autoExpireDate", new DateProperty())
+			        .property("standardRegimenCode", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model
-					.property("patient", new RefProperty("#/definitions/PatientGetRef"))
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			model
-					.property("patient", new RefProperty("#/definitions/PatientGet"))
-					.property("concept", new RefProperty("#/definitions/ConceptGet"));
+			        .property("patient", new RefProperty("#/definitions/PatientGet"))
+			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return model;
 	}
@@ -111,14 +111,14 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
-				.property("patient", new StringProperty().example("uuid"))
-				.property("concept", new StringProperty().example("uuid"))
-				.property("startDate", new DateProperty())
-				.property("autoExpireDate", new DateProperty())
-				.property("standardRegimenCode", new StringProperty())
-				.property("instructions", new StringProperty())
-
-				.required("patient").required("concept");
+		        .property("patient", new StringProperty().example("uuid"))
+		        .property("concept", new StringProperty().example("uuid"))
+		        .property("startDate", new DateProperty())
+		        .property("autoExpireDate", new DateProperty())
+		        .property("standardRegimenCode", new StringProperty())
+		        .property("instructions", new StringProperty())
+		        
+		        .required("patient").required("concept");
 	}
 	
 	/**

@@ -58,12 +58,12 @@ public class UnannotatedAnimalResource extends DelegatingCrudResource<Animal> {
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
 	}
-
+	
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return null;
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(String)
 	 */

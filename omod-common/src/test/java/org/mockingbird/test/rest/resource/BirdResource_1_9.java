@@ -65,7 +65,7 @@ public class BirdResource_1_9 extends DelegatingCrudResource<Bird> {
 	public Model getCREATEModel(Representation rep) {
 		return null;
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(String)
 	 */

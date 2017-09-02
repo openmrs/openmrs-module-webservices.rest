@@ -42,7 +42,7 @@ import org.openmrs.util.OpenmrsConstants;
  */
 @SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*" })
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
-
+	
 	public DrugOrderSubclassHandler1_8() {
 		//RESTWS-439
 		//Order subclass fields

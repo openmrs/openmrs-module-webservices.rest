@@ -113,14 +113,16 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
-					.property("operator", new EnumProperty(OrderSet.Operator.class));
+			        .property("operator", new EnumProperty(OrderSet.Operator.class));
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-					.property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberGetRef")));
+			        .property("orderSetMembers", new ArrayProperty(new RefProperty(
+			                "#/definitions/OrdersetOrdersetmemberGetRef")));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-					.property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
+			        .property("orderSetMembers", new ArrayProperty(
+			                new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
 		}
 		return modelImpl;
 	}
@@ -128,7 +130,8 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return new ModelImpl()
-				.property("operator", new EnumProperty(OrderSet.Operator.class))
-				.property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
+		        .property("operator", new EnumProperty(OrderSet.Operator.class))
+		        .property("orderSetMembers",
+		            new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
 	}
 }
