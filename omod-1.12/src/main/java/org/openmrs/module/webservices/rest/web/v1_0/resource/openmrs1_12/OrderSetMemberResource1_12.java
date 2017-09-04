@@ -109,20 +109,20 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
-					.property("uuid", new StringProperty())
-					.property("display", new StringProperty())
-					.property("retired", new BooleanProperty())
-					.property("orderTemplate", new StringProperty())
-					.property("orderTemplateType", new StringProperty());
+			        .property("uuid", new StringProperty())
+			        .property("display", new StringProperty())
+			        .property("retired", new BooleanProperty())
+			        .property("orderTemplate", new StringProperty())
+			        .property("orderTemplateType", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-					.property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			        .property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
+			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-					.property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
-					.property("concept", new RefProperty("#/definitions/ConceptGet"));
+			        .property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
+			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return modelImpl;
 	}
@@ -130,18 +130,18 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
-				.property("orderType", new ObjectProperty()
-						.property("uuid", new StringProperty()))
-				.property("orderTemplate", new StringProperty())
-				.property("concept", new StringProperty().example("uuid"))
-				.property("retired", new BooleanProperty());
+		        .property("orderType", new ObjectProperty()
+		                .property("uuid", new StringProperty()))
+		        .property("orderTemplate", new StringProperty())
+		        .property("concept", new StringProperty().example("uuid"))
+		        .property("retired", new BooleanProperty());
 	}
-
+	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);
 	}
-
+	
 	@Override
 	public OrderSetMember getByUniqueId(String uniqueId) {
 		return Context.getOrderSetService().getOrderSetMemberByUuid(uniqueId);

@@ -60,7 +60,7 @@ public class DuplicateNameAnimalResource_1_9 extends DelegatingCrudResource<Anim
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
 	}
-
+	
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return null;

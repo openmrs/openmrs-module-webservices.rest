@@ -185,9 +185,9 @@ public class SwaggerSpecificationCreator {
 		        .consumes("application/json")
 		        .produces("application/json")
 		        .externalDocs(new ExternalDocs()
-				        .description("Find more info on REST Module Wiki")
-				        .url("https://wiki.openmrs.org/display/docs/REST+Module"));
-
+		                .description("Find more info on REST Module Wiki")
+		                .url("https://wiki.openmrs.org/display/docs/REST+Module"));
+		
 		String host = baseUrl.split("/")[0];
 		String basePath = baseUrl.substring(baseUrl.indexOf("/")) + "/v1";
 		this.swagger
@@ -805,9 +805,10 @@ public class SwaggerSpecificationCreator {
 			post.setDescription("Certain properties may be required depending on type");
 		}
 	}
-
+	
 	@Deprecated
-	private List<org.openmrs.module.webservices.docs.swagger.Parameter> getParametersListForSearchHandlers(String resourceName, String searchHandlerId, int queryIndex) {
+	private List<org.openmrs.module.webservices.docs.swagger.Parameter> getParametersListForSearchHandlers(
+	        String resourceName, String searchHandlerId, int queryIndex) {
 		List<org.openmrs.module.webservices.docs.swagger.Parameter> parameters = new ArrayList<org.openmrs.module.webservices.docs.swagger.Parameter>();
 		String resourceURL = getResourceUrl(getBaseUrl(), resourceName);
 		for (SearchHandlerDoc searchDoc : searchHandlerDocs) {
@@ -829,12 +830,12 @@ public class SwaggerSpecificationCreator {
 					parameter.setRequired(false);
 					parameters.add(parameter);
 				}
-
+				
 				break;
 			}
 		}
 		return parameters;
-
+		
 	}
 	
 	private String createJSON() {
@@ -1017,7 +1018,7 @@ public class SwaggerSpecificationCreator {
 		
 		// 201 response (Successfully created)
 		Response response201 = new Response().description(resourceName + " response");
-
+		
 		// 204 delete success
 		Response response204 = new Response().description("Delete successful");
 		

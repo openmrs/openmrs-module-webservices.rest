@@ -76,12 +76,12 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		return getCreatableProperties();
 	}
-
+	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */

@@ -32,12 +32,12 @@ public class AnimalClassResource_1_9 extends DelegatingSubResource<AnimalClass, 
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return null;
 	}
-
+	
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return null;
 	}
-
+	
 	@Override
 	public Animal getParent(AnimalClass instance) {
 		return null;

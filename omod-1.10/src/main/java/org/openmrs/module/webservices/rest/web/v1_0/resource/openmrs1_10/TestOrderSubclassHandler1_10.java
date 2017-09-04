@@ -131,21 +131,22 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getGETModel(rep);
 		orderModel
-				.property("laterality", new EnumProperty(TestOrder.Laterality.class))
-				.property("clinicalHistory", new StringProperty())
-				.property("numberOfRepeats", new IntegerProperty());
-
+		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
+		        .property("clinicalHistory", new StringProperty())
+		        .property("numberOfRepeats", new IntegerProperty());
+		
 		if (rep instanceof DefaultRepresentation) {
 			orderModel
-					.property("specimenSource", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("frequency", new RefProperty("#/definitions/OrderfrequencyGetRef"));
+			        .property("specimenSource", new RefProperty("#/definitions/ConceptGetRef"))
+			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			orderModel
-					.property("specimenSource", new RefProperty("#/definitions/ConceptGet"))
-					.property("frequency", new RefProperty("#/definitions/OrderfrequencyGet"));
+			        .property("specimenSource", new RefProperty("#/definitions/ConceptGet"))
+			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGet"));
 		}
 		return orderModel;
 	}
@@ -153,20 +154,20 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-				.getResourceBySupportedClass(Order.class);
+		        .getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getCREATEModel(rep);
 		return orderModel
-				.property("specimenSource", new StringProperty().example("uuid"))
-				.property("laterality", new EnumProperty(TestOrder.Laterality.class))
-				.property("clinicalHistory", new StringProperty())
-				.property("frequency", new StringProperty().example("uuid"))
-				.property("numberOfRepeats", new IntegerProperty());
+		        .property("specimenSource", new StringProperty().example("uuid"))
+		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
+		        .property("clinicalHistory", new StringProperty())
+		        .property("frequency", new StringProperty().example("uuid"))
+		        .property("numberOfRepeats", new IntegerProperty());
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-				.getResourceBySupportedClass(Order.class);
+		        .getResourceBySupportedClass(Order.class);
 		return orderResource.getUPDATEModel(rep);
 	}
 	

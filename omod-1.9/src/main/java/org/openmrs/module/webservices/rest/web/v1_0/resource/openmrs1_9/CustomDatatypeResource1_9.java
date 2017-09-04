@@ -125,7 +125,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 	public Model getCREATEModel(Representation rep) {
 		return null;
 	}
-
+	
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();
