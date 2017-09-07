@@ -51,15 +51,13 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void mainTest() {
-		String baseUrl = "host/openmrs/ws/rest";
-		String str = new SwaggerSpecificationCreator(baseUrl).BuildJSON();
+		String str = new SwaggerSpecificationCreator().BuildJSON();
 		assertNotNull(str);
 	}
 	
 	@Test
 	public void hasSearchHandler() {
-		String baseUrl = "host/openmrs/ws/rest";
-		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator(baseUrl);
+		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator();
 		
 		assertTrue(creator.hasSearchHandler("attribute", "location"));
 		
@@ -124,7 +122,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void checkNoDatabaseChanges() throws Exception {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.BuildJSON();
 		
 		Map<String, Integer> afterCounts = getRowCounts();
@@ -152,7 +150,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	public void checkOperationIdsSet() throws Exception {
 		List<String> operationIds = new ArrayList<String>();
 		
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.BuildJSON();
 		Swagger spec = ssc.getSwagger();
 		
@@ -167,7 +165,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	// makes sure that every GET operation has the "v" parameter
 	@Test
 	public void checkRepresentationParamExists() throws Exception {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.BuildJSON();
 		Swagger spec = ssc.getSwagger();
 		
@@ -194,7 +192,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	// make sure each operation that supports paging has the limit and startIndex parameters
 	@Test
 	public void checkPagingParamsExist() throws Exception {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator("/v1/");
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.BuildJSON();
 		Swagger spec = ssc.getSwagger();
 		
