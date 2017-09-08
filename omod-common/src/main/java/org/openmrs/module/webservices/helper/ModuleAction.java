@@ -11,22 +11,22 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.module.Module;
 
-import java.util.Collection;
 import java.util.List;
 
 public class ModuleAction {
 	
 	public enum Action {
-		START, STOP, RESTART, UNLOAD;
+		START, STOP, RESTART, UNLOAD, UPDATE;
 	}
 	
 	public ModuleAction() {
 	}
 	
-	public ModuleAction(Action action, List<Module> modules, boolean startAll) {
+	public ModuleAction(Action action, List<Module> modules, boolean startAll, List<String> downloadUrls) {
 		this.modules = modules;
 		this.action = action;
 		this.allModules = startAll;
+		this.downloadUrls = downloadUrls;
 	}
 	
 	private List<Module> modules;
@@ -34,6 +34,16 @@ public class ModuleAction {
 	private Action action;
 	
 	private Boolean allModules;
+	
+	private List<String> downloadUrls;
+	
+	public void setDownloadUrls(List<String> downloadUrls) {
+		this.downloadUrls = downloadUrls;
+	}
+	
+	public List<String> getDownloadUrls() {
+		return downloadUrls;
+	}
 	
 	public void setModules(List<Module> modules) {
 		this.modules = modules;

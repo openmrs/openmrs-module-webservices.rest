@@ -73,9 +73,13 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		
 		ServletContext servletContext = getServletContext(context);
 		
+		ModuleAction.Action actionPerformed = action.getAction();
 		if (modules == null || modules.isEmpty()) {
 			throw new IllegalRequestException("Cannot execute action " + action.getAction() + " on empty set of modules.");
 		} else {
+			// LoadFromUrl - download new modules, so there are no required of modules
+			// Others should contain the collection of modules
+			
 			if (action.isAllModules() == null || !action.isAllModules()) {
 				// ensure all specified modules exist
 				// ensure they're not trying to modify the REST module
@@ -96,7 +100,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			Module restModule = moduleFactoryWrapper.getModuleById(RestConstants.MODULE_ID);
 			modules.remove(restModule);
 			
-			switch (action.getAction()) {
+			switch (actionPerformed) {
 				case START:
 					startModules(modules, servletContext);
 					break;
@@ -109,10 +113,30 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 				case UNLOAD:
 					unloadModules(modules, servletContext);
 					break;
+				case UPDATE:
+					updateModules(modules, action.getDownloadUrls());
+					break;
 			}
 		}
 		
 		return ConversionUtil.convertToRepresentation(action, Representation.DEFAULT);
+	}
+	
+	private void updateModules(Collection<Module> modules, Collection<String> downloadURLs) {
+		if (modules.isEmpty() || downloadURLs.isEmpty()) {
+			throw new IllegalRequestException("Modules or updateURLs can not be empty");
+		} else {
+			if (modules.size() == downloadURLs.size()) {
+				int index = 0;
+				ArrayList<String> downloadURLList = new ArrayList<String>(downloadURLs);
+				for (Module module : modules) {
+					moduleFactoryWrapper.updateModule(module, downloadURLList.get(index));
+					index++;
+				}
+			} else {
+				throw new IllegalRequestException("Modules and updateURLs does not match");
+			}
+		}
 	}
 	
 	private void restartModules(Collection<Module> modules, ServletContext servletContext) {
@@ -232,6 +256,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		description.addProperty("modules");
 		description.addProperty("allModules");
 		description.addRequiredProperty("action", "action");
+		description.addProperty("downloadUrls");
 		return description;
 	}
 	

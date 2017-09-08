@@ -11,19 +11,13 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Module;
-import org.openmrs.module.ModuleFactory;
-import org.openmrs.module.ModuleFileParser;
-import org.openmrs.module.ModuleUtil;
+import org.openmrs.module.*;
 import org.openmrs.module.web.WebModuleUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -71,6 +65,11 @@ public class ModuleFactoryWrapper {
 	
 	public Module loadModule(File moduleFile) {
 		return ModuleFactory.loadModule(moduleFile);
+	}
+	
+	public Module updateModule(Module module, String downloadUrl) {
+		module.setDownloadURL(downloadUrl);
+		return ModuleFactory.updateModule(module);
 	}
 	
 	public List<Module> stopModuleAndGetDependent(Module module) {
