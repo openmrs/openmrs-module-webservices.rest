@@ -43,7 +43,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -52,6 +54,17 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		String baseUrl = "host/openmrs/ws/rest";
 		String str = new SwaggerSpecificationCreator(baseUrl).BuildJSON();
 		assertNotNull(str);
+	}
+	
+	@Test
+	public void hasSearchHandler() {
+		String baseUrl = "host/openmrs/ws/rest";
+		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator(baseUrl);
+		
+		assertTrue(creator.hasSearchHandler("attribute", "location"));
+		
+		assertFalse(creator.hasSearchHandler("workflow", null));
+		assertFalse(creator.hasSearchHandler("description", "concept"));
 	}
 	
 	@Test

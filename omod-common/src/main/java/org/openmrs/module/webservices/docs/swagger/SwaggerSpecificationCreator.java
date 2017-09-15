@@ -590,7 +590,7 @@ public class SwaggerSpecificationCreator {
 			return;
 		}
 		boolean hasDoSearch = testOperationImplemented(OperationEnum.getWithDoSearch, resourceHandler);
-		boolean hasSearchHandler = hasSearchHandler(resourceName);
+		boolean hasSearchHandler = hasSearchHandler(resourceName, resourceParentName);
 		boolean wasNew = false;
 		
 		if (hasSearchHandler || hasDoSearch) {
@@ -1169,9 +1169,16 @@ public class SwaggerSpecificationCreator {
 		return baseUrl + "/v1/" + resourceName;
 	}
 	
-	private boolean hasSearchHandler(String resourceName) {
-		for (SearchHandlerDoc doc : searchHandlerDocs) {
-			if (doc.getResourceURL().contains(resourceName)) {
+	public boolean hasSearchHandler(String resourceName, String resourceParentName) {
+		if (resourceParentName != null) {
+			resourceName = RestConstants.VERSION_1 + "/" + resourceParentName + "/" + resourceName;
+		} else {
+			resourceName = RestConstants.VERSION_1 + "/" + resourceName;
+		}
+		
+		List<SearchHandler> searchHandlers = Context.getService(RestService.class).getAllSearchHandlers();
+		for (SearchHandler searchHandler : searchHandlers) {
+			if (searchHandler.getSearchConfig().getSupportedResource().equals(resourceName)) {
 				return true;
 			}
 		}
