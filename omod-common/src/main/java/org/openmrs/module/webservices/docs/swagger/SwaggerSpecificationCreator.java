@@ -75,6 +75,12 @@ public class SwaggerSpecificationCreator {
 	
 	private Swagger swagger = new Swagger();
 	
+	private String host;
+	
+	private String basePath;
+	
+	private List<Scheme> schemes;
+	
 	private String baseUrl;
 	
 	private static List<SearchHandlerDoc> searchHandlerDocs;
@@ -87,10 +93,27 @@ public class SwaggerSpecificationCreator {
 	
 	private Logger log = Logger.getLogger(this.getClass());
 	
-	public SwaggerSpecificationCreator(String baseUrl) {
-		this.baseUrl = baseUrl;
-		List<SearchHandler> searchHandlers = Context.getService(RestService.class).getAllSearchHandlers();
-		searchHandlerDocs = fillSearchHandlers(searchHandlers, baseUrl);
+	public SwaggerSpecificationCreator() {
+	}
+	
+	public SwaggerSpecificationCreator host(String host) {
+		this.host = host;
+		return this;
+	}
+	
+	public SwaggerSpecificationCreator basePath(String basePath) {
+		this.basePath = basePath;
+		return this;
+	}
+	
+	public SwaggerSpecificationCreator scheme(Scheme scheme) {
+		if (schemes == null) {
+			this.schemes = new ArrayList<Scheme>();
+		}
+		if (!schemes.contains(scheme)) {
+			this.schemes.add(scheme);
+		}
+		return this;
 	}
 	
 	public String BuildJSON() {
@@ -179,7 +202,9 @@ public class SwaggerSpecificationCreator {
 		
 		this.swagger
 		        .info(info)
-		        .scheme(Scheme.HTTP)
+		        .host(this.host)
+		        .basePath(this.basePath)
+		        .schemes(this.schemes)
 		        .securityDefinition("basic_auth", new BasicAuthDefinition())
 		        .security(new SecurityRequirement().requirement("basic_auth"))
 		        .consumes("application/json")
@@ -187,12 +212,6 @@ public class SwaggerSpecificationCreator {
 		        .externalDocs(new ExternalDocs()
 		                .description("Find more info on REST Module Wiki")
 		                .url("https://wiki.openmrs.org/display/docs/REST+Module"));
-		
-		String host = baseUrl.split("/")[0];
-		String basePath = baseUrl.substring(baseUrl.indexOf("/")) + "/v1";
-		this.swagger
-		        .host(host)
-		        .basePath(basePath);
 	}
 	
 	private List<ModuleVersion> getModuleVersions() {
