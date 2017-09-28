@@ -33,6 +33,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Sub-resource for patient identifiers
@@ -248,7 +250,13 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	 */
 	@Override
 	public NeedsPaging<PatientIdentifier> doGetAll(Patient parent, RequestContext context) throws ResponseException {
-		return new NeedsPaging<PatientIdentifier>(parent.getActiveIdentifiers(), context);
+		List<PatientIdentifier> patientIdentifiers;
+		if (context.getIncludeAll()) {
+			patientIdentifiers = new ArrayList<PatientIdentifier>(parent.getIdentifiers());
+		} else {
+			patientIdentifiers = parent.getActiveIdentifiers();
+		}
+		return new NeedsPaging<PatientIdentifier>(patientIdentifiers, context);
 	}
 	
 	/**

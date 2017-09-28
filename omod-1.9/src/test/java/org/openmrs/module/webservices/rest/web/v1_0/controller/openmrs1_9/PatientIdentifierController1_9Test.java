@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotEquals;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -122,6 +123,23 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		handle(req);
 		assertEquals(true, service.getPatientIdentifierByUuid(getUuid()).isVoided());
 		assertEquals(reason, service.getPatientIdentifierByUuid(getUuid()).getVoidReason());
+	}
+	
+	@Test
+	public void shouldListAllPatientIdentifiersWithVoidedIdentifiersForAPatient() throws Exception {
+		assertEquals(false, service.getPatientIdentifierByUuid(getUuid()).isVoided());
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+		final String reason = "none";
+		req.addParameter("reason", reason);
+		handle(req);
+		assertEquals(true, service.getPatientIdentifierByUuid(getUuid()).isVoided());
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
+		assertNotEquals(getAllCount(), Util.getResultsSize(result));
+		
+		SimpleObject nextResult = deserialize(handle(newGetRequest(getURI(), new Parameter(
+		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "false"))));
+		assertEquals(getAllCount(), Util.getResultsSize(nextResult));
 	}
 	
 	@Test
