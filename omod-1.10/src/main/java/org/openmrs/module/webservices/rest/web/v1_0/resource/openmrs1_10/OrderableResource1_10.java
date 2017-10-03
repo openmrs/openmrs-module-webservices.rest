@@ -186,11 +186,6 @@ public class OrderableResource1_10 extends BaseDelegatingResource<ConceptSearchR
 		return description;
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptSearchResult csr) {
 		ConceptName cn = csr.getConcept().getName();

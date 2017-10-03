@@ -93,11 +93,6 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		return model;
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
 	/**
 	 * @see
 	 */

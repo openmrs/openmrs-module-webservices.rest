@@ -134,11 +134,6 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		return model;
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
