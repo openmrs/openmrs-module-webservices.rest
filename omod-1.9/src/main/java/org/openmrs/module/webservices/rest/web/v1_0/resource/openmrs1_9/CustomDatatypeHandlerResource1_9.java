@@ -53,11 +53,6 @@ public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<Cust
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
-	@Override
 	public CustomDatatypeHandlerRepresentation newDelegate() {
 		return new CustomDatatypeHandlerRepresentation();
 	}

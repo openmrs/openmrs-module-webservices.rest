@@ -181,11 +181,6 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		return description;
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
 	/**
 	 * Converter does not handle getters starting with 'is' instead of 'get'
 	 */

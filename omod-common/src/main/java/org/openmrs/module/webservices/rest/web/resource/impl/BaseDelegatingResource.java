@@ -285,6 +285,11 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return null;
+	}
+	
 	/**
 	 * Gets a description of resource's properties which can be edited.
 	 * <p/>
