@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -111,6 +112,33 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newLocationUuid, patientIdentifierType.getLocation().getUuid());
+	}
+	
+	@Test
+	public void shouldUnsetOtherPreferredIdentifiers() throws Exception {
+		PatientIdentifier exisitingIdentifier = service.getPatientIdentifierByUuid(getUuid());
+		long originalCount = getAllCount();
+		assertTrue(exisitingIdentifier.isPreferred());
+		SimpleObject patientIdentifier = new SimpleObject();
+		patientIdentifier.add("identifier", "abc123ez");
+		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
+		patientIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+		patientIdentifier.add("preferred", true);
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		SimpleObject newPatientIdentifier = deserialize(handle(req));
+		Object uuid = PropertyUtils.getProperty(newPatientIdentifier, "uuid");
+		assertNotNull(uuid);
+		assertEquals(originalCount + 1, getAllCount());
+		
+		PatientIdentifier newIdentifer = service.getPatientIdentifierByUuid(uuid.toString());
+		assertFalse(exisitingIdentifier.isPreferred());
+		assertTrue(newIdentifer.isPreferred());
+		assertEquals(newIdentifer.getIdentifier(), "abc123ez");
 	}
 	
 	@Test

@@ -214,7 +214,14 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	 */
 	@Override
 	public PatientIdentifier save(PatientIdentifier delegate) {
-		// make sure it has already been added to the patient
+		if (delegate.isPreferred()) {
+			for (PatientIdentifier pI : delegate.getPatient().getActiveIdentifiers()) {
+				if (!pI.equals(delegate)) {
+					pI.setPreferred(false);
+				}
+			}
+		}
+		
 		boolean needToAdd = true;
 		for (PatientIdentifier pi : delegate.getPatient().getActiveIdentifiers()) {
 			if (pi.equals(delegate)) {
@@ -222,9 +229,14 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 				break;
 			}
 		}
-		if (needToAdd)
+		
+		if (needToAdd) {
 			delegate.getPatient().addIdentifier(delegate);
-		return service().savePatientIdentifier(delegate);
+		}
+		
+		service().savePatientIdentifier(delegate);
+		return delegate;
+		
 	}
 	
 	@Override
