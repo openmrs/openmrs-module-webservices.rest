@@ -27,10 +27,17 @@ public class SwaggerSpecificationController {
 	public @ResponseBody
 	String getSwaggerSpecification(HttpServletRequest request) throws Exception {
 		
+		String host = request.getHeader(HttpHeaders.HOST);
+		
+		String scheme = request.getHeader(HttpHeaders.X_FORWARDED_PROTO);
+		if (scheme == null) {
+			scheme = request.getScheme();
+		}
+		
 		return new SwaggerSpecificationCreator()
-		        .host(request.getHeader(HttpHeaders.HOST))
+		        .host(host)
 		        .basePath(request.getContextPath() + "/ws/rest/v1")
-		        .scheme(Scheme.forValue(request.getScheme()))
+		        .scheme(Scheme.forValue(scheme))
 		        
 		        .BuildJSON();
 	}
