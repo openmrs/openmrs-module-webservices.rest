@@ -73,7 +73,7 @@ import java.util.Set;
 
 public class SwaggerSpecificationCreator {
 	
-	private Swagger swagger = new Swagger();
+	private static Swagger swagger;
 	
 	private String host;
 	
@@ -116,7 +116,10 @@ public class SwaggerSpecificationCreator {
 		return this;
 	}
 	
-	public String BuildJSON() {
+	/**
+	 * Regenerate the swagger spec from scratch
+	 */
+	private void BuildJSON() {
 		synchronized (this) {
 			log.info("Initiating Swagger specification creation");
 			toggleLogs(RestConstants.SWAGGER_LOGS_OFF);
@@ -133,6 +136,16 @@ public class SwaggerSpecificationCreator {
 				toggleLogs(RestConstants.SWAGGER_LOGS_ON);
 				log.info("Swagger specification creation complete");
 			}
+		}
+	}
+	
+	public String getJSON() {
+		if (isCached()) {
+			log.info("Returning a cached copy of Swagger specification");
+			initSwagger();
+		} else {
+			swagger = new Swagger();
+			BuildJSON();
 		}
 		return createJSON();
 	}
@@ -200,7 +213,7 @@ public class SwaggerSpecificationCreator {
 		        .contact(new Contact().name("OpenMRS").url("http://openmrs.org"))
 		        .license(new License().name("MPL-2.0 w/ HD").url("http://openmrs.org/license"));
 		
-		this.swagger
+		swagger
 		        .info(info)
 		        .host(this.host)
 		        .basePath(this.basePath)
@@ -849,12 +862,10 @@ public class SwaggerSpecificationCreator {
 					parameter.setRequired(false);
 					parameters.add(parameter);
 				}
-				
 				break;
 			}
 		}
 		return parameters;
-		
 	}
 	
 	private String createJSON() {
@@ -1210,6 +1221,17 @@ public class SwaggerSpecificationCreator {
 	
 	public Swagger getSwagger() {
 		return swagger;
+	}
+	
+	/**
+	 * @return true if and only if swagger is not null, and its paths are also set.
+	 */
+	public static boolean isCached() {
+		return swagger != null && swagger.getPaths() != null;
+	}
+	
+	public static void clearCache() {
+		swagger = null;
 	}
 	
 	//FIXME: move to separate util calls

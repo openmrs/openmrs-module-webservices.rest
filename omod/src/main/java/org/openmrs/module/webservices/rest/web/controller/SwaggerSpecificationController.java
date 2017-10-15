@@ -32,7 +32,7 @@ public class SwaggerSpecificationController {
 		        .basePath(request.getContextPath() + "/ws/rest/v1")
 		        .scheme(Scheme.forValue(request.getScheme()))
 		        
-		        .BuildJSON();
+		        .getJSON();
 	}
 	
 }

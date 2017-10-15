@@ -51,7 +51,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void mainTest() {
-		String str = new SwaggerSpecificationCreator().BuildJSON();
+		String str = new SwaggerSpecificationCreator().getJSON();
 		assertNotNull(str);
 	}
 	
@@ -63,6 +63,16 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		assertFalse(creator.hasSearchHandler("workflow", null));
 		assertFalse(creator.hasSearchHandler("description", "concept"));
+	}
+	
+	@Test
+	public void cacheTest() throws Exception {
+		if (SwaggerSpecificationCreator.isCached()) {
+			SwaggerSpecificationCreator.clearCache();
+		}
+		assertFalse(SwaggerSpecificationCreator.isCached());
+		new SwaggerSpecificationCreator().getJSON();
+		assertTrue(SwaggerSpecificationCreator.isCached());
 	}
 	
 	@Test
@@ -123,7 +133,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	@Test
 	public void checkNoDatabaseChanges() throws Exception {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.BuildJSON();
+		ssc.getJSON();
 		
 		Map<String, Integer> afterCounts = getRowCounts();
 		
@@ -151,7 +161,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		List<String> operationIds = new ArrayList<String>();
 		
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.BuildJSON();
+		ssc.getJSON();
 		Swagger spec = ssc.getSwagger();
 		
 		for (Path p : spec.getPaths().values()) {
@@ -166,7 +176,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	@Test
 	public void checkRepresentationParamExists() throws Exception {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.BuildJSON();
+		ssc.getJSON();
 		Swagger spec = ssc.getSwagger();
 		
 		for (Path p : spec.getPaths().values()) {
@@ -193,7 +203,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	@Test
 	public void checkPagingParamsExist() throws Exception {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.BuildJSON();
+		ssc.getJSON();
 		Swagger spec = ssc.getSwagger();
 		
 		for (Path p : spec.getPaths().values()) {
