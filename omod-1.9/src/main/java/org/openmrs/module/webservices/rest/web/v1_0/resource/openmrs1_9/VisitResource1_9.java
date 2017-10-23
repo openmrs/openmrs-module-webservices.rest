@@ -312,7 +312,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, minStartDate, null,
-		    null, null, null, includeInactive, false), context).toSimpleObject(this);
+		    null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 	
 	/**

@@ -214,4 +214,32 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(3, Util.getResultsSize(result));
 	}
 	
+	@Test
+	public void searchByPatient_shouldGetRetiredVisitsIfIncludeAllIsTrue() throws Exception {
+		String patientUUid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+
+		SimpleObject resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", patientUUid),
+		    new Parameter("includeAll", "true"))));
+		SimpleObject resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", patientUUid))));
+		
+		int visitIncludingVoidedSize = Util.getResultsSize(resultWithVoidedVisits);
+		int visitExcludingVoidedSize = Util.getResultsSize(resultWithoutVoidedVisits);
+
+		Assert.assertEquals(visitIncludingVoidedSize, 4);
+		Assert.assertEquals(visitExcludingVoidedSize, 3);
+		
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason",
+		        "void test reason")));
+		
+		resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", patientUUid),
+		    new Parameter("includeAll", "true"))));
+		resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(),
+		    new Parameter("patient", patientUUid))));
+		Assert.assertEquals(Util.getResultsSize(resultWithoutVoidedVisits), 2);
+		Assert.assertEquals(Util.getResultsSize(resultWithVoidedVisits), 4);
+	}
+	
 }
