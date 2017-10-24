@@ -484,7 +484,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			    Encounter.class)).getByUniqueId(encounterUuid);
 			if (enc == null)
 				return new EmptySearchResult();
-			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs());
+			
+			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs(context.getIncludeAll()));
 			return new NeedsPaging<Obs>(obs, context);
 		}
 		

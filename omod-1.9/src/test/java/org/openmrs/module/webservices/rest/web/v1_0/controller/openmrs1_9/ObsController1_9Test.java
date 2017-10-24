@@ -21,17 +21,20 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
@@ -81,6 +84,40 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
+	}
+	
+	@Test
+	public void searchByEncounter_shouldGetVoidedObsIfIncludeAllIsTrue() throws Exception {
+		
+		executeDataSet("encounterWithObsGroup1_9.xml");
+		
+		final String ENCOUNTER_UUID = "62967e68-96bb-11e0-8d6b-9b9415a91465";
+		
+		MockHttpServletRequest allNonVoidedObsRequest = newGetRequest(getURI());
+		allNonVoidedObsRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allNonVoidedObsResponse = handle(allNonVoidedObsRequest);
+		List<Object> allNonVoidedObsList = deserialize(allNonVoidedObsResponse).get("results");
+		
+		assertEquals(allNonVoidedObsList.size(), 6);
+		
+		MockHttpServletRequest deleteRequest = newDeleteRequest(getURI() + "/" + "11de743c-96cd-11e0-8d6b-9b9415a91465");
+		deleteRequest.addParameter("reason", "test voided obs");
+		handle(deleteRequest);
+		
+		MockHttpServletRequest allObsIncludingVoidedRequest = newGetRequest(getURI());
+		allObsIncludingVoidedRequest.addParameter("encounter", ENCOUNTER_UUID);
+		allObsIncludingVoidedRequest.addParameter("includeAll", "true");
+		MockHttpServletResponse allObsIncludingVoidedResponse = handle(allObsIncludingVoidedRequest);
+		List<Object> allObsIncludingVoidedList = deserialize(allObsIncludingVoidedResponse).get("results");
+		
+		assertEquals(allObsIncludingVoidedList.size(), 6);
+		
+		MockHttpServletRequest allNonVoidedObsAfterDeleteRequest = newGetRequest(getURI());
+		allNonVoidedObsAfterDeleteRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allNonVoidedObsAfterDeleteResponse = handle(allNonVoidedObsAfterDeleteRequest);
+		List<Object> allNonVoidedObsAfterDeleteList = deserialize(allNonVoidedObsAfterDeleteResponse).get("results");
+		
+		assertEquals(allNonVoidedObsAfterDeleteList.size(), 5);
 	}
 	
 	@Test
