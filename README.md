@@ -39,6 +39,14 @@ the tests.
 
 ## Developer Documentation
 
+### Integration Tests
+
+Integration tests can be found in the integration-tests directory. They are written with JUnit and Rest-Assured.
+Before you can run integration tests you need to start up a server and install the module.
+You can run integration tests with:
+mvn clean verify -Pintegration-tests -DtestUrl=http://admin:Admin123@localhost:8080/openmrs
+You can skip the testUrl parameter, if it is the same for your server.
+
 ### Wiki Pages
 
 | Page | Description |
