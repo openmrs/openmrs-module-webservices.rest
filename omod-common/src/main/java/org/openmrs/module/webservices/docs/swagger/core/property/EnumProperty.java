@@ -10,11 +10,22 @@
 package org.openmrs.module.webservices.docs.swagger.core.property;
 
 import io.swagger.models.properties.StringProperty;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class EnumProperty extends StringProperty {
 	
 	public EnumProperty(Class<? extends Enum<?>> e) {
-		_enum(SwaggerSpecificationCreator.getEnumsAsList(e));
+		_enum(getEnumsAsList(e));
+	}
+
+	private List<String> getEnumsAsList(Class<? extends Enum<?>> e) {
+		return Arrays.asList(getEnums(e));
+	}
+
+	private String[] getEnums(Class<? extends Enum<?>> e) {
+		return Arrays.toString(e.getEnumConstants())
+		        .replaceAll("^.|.$", "").split(", ");
 	}
 }

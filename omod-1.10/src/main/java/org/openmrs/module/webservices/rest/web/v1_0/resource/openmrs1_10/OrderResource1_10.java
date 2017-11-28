@@ -22,7 +22,7 @@ import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -112,8 +112,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()
 		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("action", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Order.Action.class)))
+		        .property("action", new EnumProperty(Order.Action.class))
 		        .property("accessionNumber", new StringProperty())
 		        .property("dateActivated", new DateProperty())
 		        .property("scheduledDate", new DateProperty())
@@ -124,8 +123,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		        .property("autoExpireDate", new DateProperty())
 		        .property("orderer", new StringProperty().example("uuid"))
 		        .property("previousOrder", new StringProperty().example("uuid"))
-		        .property("urgency", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Order.Urgency.class)))
+		        .property("urgency", new EnumProperty(Order.Urgency.class))
 		        .property("orderReason", new StringProperty().example("uuid"))
 		        .property("orderReasonNonCoded", new StringProperty())
 		        .property("instructions", new StringProperty())

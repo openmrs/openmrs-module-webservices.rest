@@ -11,9 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Obs;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -30,19 +29,15 @@ public class ObsResource2_1 extends ObsResource1_11 {
 	@Override
 	public Model getGETModel(Representation rep) {
 		return ((ModelImpl) super.getGETModel(rep))
-		        .property("status", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Obs.Status.class)))
-		        .property("interpretation", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Obs.Interpretation.class)));
+		        .property("status", new EnumProperty(Obs.Status.class))
+		        .property("interpretation", new EnumProperty(Obs.Interpretation.class));
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("status", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Obs.Status.class)))
-		        .property("interpretation", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(Obs.Interpretation.class)));
+		        .property("status", new EnumProperty(Obs.Status.class))
+		        .property("interpretation", new EnumProperty(Obs.Interpretation.class));
 	}
 	
 	@Override

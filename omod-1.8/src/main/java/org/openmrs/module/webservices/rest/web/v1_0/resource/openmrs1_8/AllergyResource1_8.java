@@ -19,7 +19,7 @@ import org.openmrs.activelist.Allergy;
 import org.openmrs.activelist.AllergySeverity;
 import org.openmrs.activelist.AllergyType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -66,11 +66,9 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("allergyType", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(AllergyType.class)))
+		        .property("allergyType", new EnumProperty(AllergyType.class))
 		        .property("reaction", new RefProperty("#/definitions/ConceptGetRef"))
-		        .property("severity", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(AllergySeverity.class)))
+		        .property("severity", new EnumProperty(AllergySeverity.class))
 		        .property("allergen", new RefProperty("#/definitions/ConceptGetRef"));
 		if (rep instanceof FullRepresentation) {
 			model
@@ -83,12 +81,10 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("allergyType", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(AllergyType.class)))
+		        .property("allergyType", new EnumProperty(AllergyType.class))
 		        .property("reaction", new ObjectProperty()
 		                .property("uuid", new StringProperty()))
-		        .property("severity", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(AllergySeverity.class)))
+		        .property("severity", new EnumProperty(AllergySeverity.class))
 		        .property("allergen", new StringProperty());
 	}
 	

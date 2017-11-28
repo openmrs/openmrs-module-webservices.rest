@@ -1233,15 +1233,5 @@ public class SwaggerSpecificationCreator {
 	public static void clearCache() {
 		swagger = null;
 	}
-	
-	//FIXME: move to separate util calls
-	// see: https://stackoverflow.com/q/13783295/3647002
-	public static String[] getEnums(Class<? extends Enum<?>> e) {
-		return Arrays.toString(e.getEnumConstants())
-		        .replaceAll("^.|.$", "").split(", ");
-	}
-	
-	public static List<String> getEnumsAsList(Class<? extends Enum<?>> e) {
-		return Arrays.asList(getEnums(e));
-	}
+
 }
