@@ -16,7 +16,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -125,8 +125,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			        .property("required", new BooleanProperty())
 			        .property("checkDigit", new BooleanProperty())
 			        .property("validator", new StringProperty())
-			        .property("locationBehavior", new StringProperty()
-			                ._enum(SwaggerSpecificationCreator.getEnumsAsList(PatientIdentifierType.LocationBehavior.class)))
+			        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
 			        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
 		}
 		return model;
@@ -140,8 +139,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 		        .property("required", new BooleanProperty())
 		        .property("checkDigit", new BooleanProperty())
 		        .property("validator", new StringProperty())
-		        .property("locationBehavior", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(PatientIdentifierType.LocationBehavior.class)))
+		        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
 		        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
 	}
 	

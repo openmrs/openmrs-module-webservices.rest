@@ -17,7 +17,7 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.ModuleAction;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -239,8 +239,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 	public Model getGETModel(Representation rep) {
 		return ((ModelImpl) super.getGETModel(rep))
 		        .property("modules", new ArrayProperty(new RefProperty("#/definitions/ModuleGetRef")))
-		        .property("action", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ModuleAction.Action.class)));
+		        .property("action", new EnumProperty(ModuleAction.Action.class));
 	}
 	
 	@Override
@@ -248,9 +247,8 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		return new ModelImpl()
 		        .property("modules", new ArrayProperty(new StringProperty().example("moduleId")))
 		        .property("allModules", new BooleanProperty())
-		        .property("action", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ModuleAction.Action.class)))
-		        
+		        .property("action", new EnumProperty(ModuleAction.Action.class))
+
 		        .required("action");
 	}
 	

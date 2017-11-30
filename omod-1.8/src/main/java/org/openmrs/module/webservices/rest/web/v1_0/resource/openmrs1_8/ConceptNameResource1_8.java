@@ -21,7 +21,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -80,8 +80,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 			        .property("name", new StringProperty())
 			        .property("locale", new StringProperty().example("en"))
 			        .property("localePreferred", new BooleanProperty())
-			        .property("conceptNameType", new StringProperty()
-			                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ConceptNameType.class)));
+			        .property("conceptNameType", new EnumProperty(ConceptNameType.class));
 		}
 		return model;
 	}
@@ -92,8 +91,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		        .property("name", new StringProperty())
 		        .property("locale", new StringProperty().example("en"))
 		        .property("localePreferred", new BooleanProperty()._default(false))
-		        .property("conceptNameType", new StringProperty()
-		                ._enum(SwaggerSpecificationCreator.getEnumsAsList(ConceptNameType.class)))
+		        .property("conceptNameType", new EnumProperty(ConceptNameType.class))
 		        .required("name").required("locale");
 	}
 	
