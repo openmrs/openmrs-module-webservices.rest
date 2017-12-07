@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.LongProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.MapProperty;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -101,6 +108,17 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		description.addRequiredProperty("startOnStartup");
 		description.addRequiredProperty("properties");
 		return description;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getCREATEModel(rep);
+		model.property("taskClass", new StringProperty());
+		model.property("startTime", new DateProperty());
+		model.property("repeatInterval", new LongProperty());
+		model.property("startOnStartup", new BooleanProperty());
+		model.property("properties", new MapProperty());
+		return model;
 	}
 	
 	/**
