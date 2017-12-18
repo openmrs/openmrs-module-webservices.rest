@@ -10,7 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.APIException;
+import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -179,6 +184,16 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		description.addProperty("allTasks");
 		description.addRequiredProperty("action", "action");
 		return description;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		ModelImpl model = (ModelImpl) super.getCREATEModel(rep);
+		model.property("tasks", new ArrayProperty(new StringProperty()));
+		model.property("allTasks", new BooleanProperty());
+		model.property("action", new EnumProperty(TaskAction.Action.class));
+		model.required("action");
+		return model;
 	}
 	
 	/**
