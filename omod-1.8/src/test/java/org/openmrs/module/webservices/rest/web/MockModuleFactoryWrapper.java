@@ -76,6 +76,13 @@ public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	}
 	
 	@Override
+	public Module updateModule(Module module, String downloadUrl) {
+		module.setDownloadURL(downloadUrl);
+		module.setVersion("2.2");
+		return module;
+	}
+	
+	@Override
 	public List<Module> stopModuleAndGetDependent(Module module) {
 		return Collections.singletonList(new Module("dependent", "atlas", "name", "author", "description", "version"));
 	}

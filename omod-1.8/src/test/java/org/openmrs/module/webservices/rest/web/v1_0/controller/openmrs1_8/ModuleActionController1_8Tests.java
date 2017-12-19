@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.Module;
@@ -23,7 +24,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Arrays;
 
@@ -91,6 +94,21 @@ public class ModuleActionController1_8Tests extends MainResourceControllerTest {
 		//check if state preserved
 		assertThat(mockModuleFactory.startedModules, hasItem(atlasModule));
 		assertThat(mockModuleFactory.loadedModules, hasItem(atlasModule));
+	}
+	
+	@Test
+	public void shouldUpdateModule() throws Exception {
+		String currentVersion = atlasModule.getVersion();
+		// To confirm the current version
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject module = deserialize(handle(req));
+		Assert.assertEquals(currentVersion, module.get("version"));
+
+		SimpleObject updatedModule = deserialize(handle(newPostRequest(getURI(), "{\"action\":\"update\", \"modules\":[\""
+		        + getUuid() + "\"], " +
+		        "\"downloadUrls\":[\"https://bintray.com/openmrs/omod/download_file?file_path=atlas-2.2.omod\"]}")));
+		//To confirm the updated version
+		Assert.assertNotEquals(currentVersion, updatedModule.get("version"));
 	}
 	
 	@Test
