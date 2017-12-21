@@ -15,11 +15,16 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.openmrs.api.APIException;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.ModuleAction;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
+import org.openmrs.module.webservices.helper.ModuleAction.Action;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -33,8 +38,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
+import org.springframework.util.ResourceUtils;
 import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -62,6 +72,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		
 		ModuleAction action = newDelegate();
 		setConvertedProperties(action, post, getCreatableProperties(), true);
+		String installUri = action.getInstallUri();
 		
 		Collection<Module> modules;
 		if (action.isAllModules() != null && action.isAllModules()) {
@@ -76,25 +87,32 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		if (modules == null || modules.isEmpty()) {
 			throw new IllegalRequestException("Cannot execute action " + action.getAction() + " on empty set of modules.");
 		} else {
-			if (action.isAllModules() == null || !action.isAllModules()) {
-				// ensure all specified modules exist
-				// ensure they're not trying to modify the REST module
-				for (Module module : modules) {
-					// if they specified a module that's not loaded, it will show up here as null
-					if (module == null) {
-						throw new IllegalRequestException(
-						        "One or more of the modules you specified are not loaded on this server");
-					}
-					if (module.getModuleId().equals(RestConstants.MODULE_ID)) {
-						throw new IllegalRequestException("You are not allowed to modify " + module.getModuleId()
-						        + " via this REST call");
-					}
+			if (action.getAction() == Action.INSTALL) {
+				if (installUri == null || !ResourceUtils.isUrl(installUri)) {
+					throw new IllegalRequestException("The installUri needs to be a URL for this action to be performed");
 				}
 			}
-			
-			// even if they said allModule=true, don't touch the REST module
-			Module restModule = moduleFactoryWrapper.getModuleById(RestConstants.MODULE_ID);
-			modules.remove(restModule);
+			else {
+				if (action.isAllModules() == null || !action.isAllModules()) {
+					// ensure all specified modules exist
+					// ensure they're not trying to modify the REST module
+					for (Module module : modules) {
+						// if they specified a module that's not loaded, it will show up here as null
+						if (module == null) {
+							throw new IllegalRequestException(
+							        "One or more of the modules you specified are not loaded on this server");
+						}
+						if (module.getModuleId().equals(RestConstants.MODULE_ID)) {
+							throw new IllegalRequestException("You are not allowed to modify " + module.getModuleId()
+							        + " via this REST call");
+						}
+					}
+				}
+				
+				// even if they said allModule=true, don't touch the REST module
+				Module restModule = moduleFactoryWrapper.getModuleById(RestConstants.MODULE_ID);
+				modules.remove(restModule);
+			}
 			
 			switch (action.getAction()) {
 				case START:
@@ -109,10 +127,54 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 				case UNLOAD:
 					unloadModules(modules, servletContext);
 					break;
+				case INSTALL:
+					Module module = installModule(modules, installUri, servletContext);
+					modules.clear();
+					modules.add(module);
+					action.setModules(new ArrayList<Module>(modules));
+					break;
 			}
 		}
 		
 		return ConversionUtil.convertToRepresentation(action, Representation.DEFAULT);
+	}
+	
+	private Module installModule(Collection<Module> modules, String installUri, ServletContext servletContext) {
+		List<Module> moduleList = new ArrayList<Module>(modules);
+		Module existingModule = moduleList.get(0);
+		Module tempModule = null;
+		File moduleFile = null;
+		
+		try {
+			if (existingModule != null) {
+				List<Module> dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
+				for (Module depMod : dependentModulesStopped) {
+					moduleFactoryWrapper.stopModuleSkipRefresh(depMod, servletContext);
+				}
+				
+				moduleFactoryWrapper.stopModuleSkipRefresh(existingModule, servletContext);
+				moduleFactoryWrapper.unloadModule(existingModule);
+			}
+			
+			URL downloadUrl = new URL(installUri);
+			String fileName = FilenameUtils.getName(downloadUrl.getPath());
+			InputStream inputStream = ModuleUtil.getURLStream(downloadUrl);
+			moduleFile = ModuleUtil.insertModuleFile(inputStream, fileName);
+			tempModule = moduleFactoryWrapper.loadModule(moduleFile);
+			moduleFactoryWrapper.startModule(tempModule, servletContext);
+			return tempModule;
+		}
+		catch (MalformedURLException e) {
+			throw new APIException(e.getMessage(), e);
+		}
+		catch (IOException e) {
+			throw new APIException(e.getMessage(), e);
+		}
+		finally {
+			if (moduleFile != null) {
+				FileUtils.deleteQuietly(moduleFile);
+			}
+		}
 	}
 	
 	private void restartModules(Collection<Module> modules, ServletContext servletContext) {
@@ -231,6 +293,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("modules");
 		description.addProperty("allModules");
+		description.addProperty("installUri");
 		description.addRequiredProperty("action", "action");
 		return description;
 	}
@@ -248,7 +311,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		        .property("modules", new ArrayProperty(new StringProperty().example("moduleId")))
 		        .property("allModules", new BooleanProperty())
 		        .property("action", new EnumProperty(ModuleAction.Action.class))
-
+		        .property("installUri", new StringProperty())
 		        .required("action");
 	}
 	

@@ -17,13 +17,13 @@ import java.util.List;
 public class ModuleAction {
 	
 	public enum Action {
-		START, STOP, RESTART, UNLOAD;
+		START, STOP, RESTART, UNLOAD, INSTALL;
 	}
 	
 	public ModuleAction() {
 	}
 	
-	public ModuleAction(Action action, List<Module> modules, boolean startAll) {
+	public ModuleAction(Action action, List<Module> modules, boolean startAll, String installUri) {
 		this.modules = modules;
 		this.action = action;
 		this.allModules = startAll;
@@ -34,6 +34,8 @@ public class ModuleAction {
 	private Action action;
 	
 	private Boolean allModules;
+	
+	private String installUri;
 	
 	public void setModules(List<Module> modules) {
 		this.modules = modules;
@@ -57,5 +59,13 @@ public class ModuleAction {
 	
 	public void setAllModules(Boolean allModules) {
 		this.allModules = allModules;
+	}
+	
+	public void setInstallUri(String installUri) {
+		this.installUri = installUri;
+	}
+	
+	public String getInstallUri() {
+		return installUri;
 	}
 }
