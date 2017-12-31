@@ -32,16 +32,6 @@
     background: #fafafa;
   }
 
-  /* remove when LUI-126 is fixed */
-  .swagger-ui .opblock-body pre * {
-    font-family: Source Code Pro, monospace;
-  }
-  .swagger-ui .response-col_description__inner span * {
-    font-family: Source Code Pro,monospace;
-  }
-  .swagger-ui .tab li * {
-    font-family:Titillium Web,sans-serif;
-  }
   .error {
     background-color: transparent;
   }
