@@ -45,7 +45,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8}
  */
 @SubClassHandler(supportedClass = TestOrder.class, supportedOpenmrsVersions = { "1.10.*", "1.11.*", "1.12.*", "2.0.*",
-        "2.1.*" })
+        "2.1.*", "2.2.*" })
 public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<Order, TestOrder> implements DelegatingSubclassHandler<Order, TestOrder> {
 	
 	/**
