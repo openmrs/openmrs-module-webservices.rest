@@ -88,7 +88,8 @@
               plugins: [
                   SwaggerUIBundle.plugins.DownloadUrl
               ],
-              layout: "StandaloneLayout"
+              layout: "StandaloneLayout",
+              tagsSorter: 'alpha'
           });
 
           window.ui = ui
