@@ -13,17 +13,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.helper.ModuleAction;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Arrays;
 
@@ -35,7 +32,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.core.IsNot.not;
 
-public class ModuleActionController1_8Tests extends MainResourceControllerTest {
+public class ModuleActionController1_8Test extends MainResourceControllerTest {
 	
 	@Autowired
 	RestService restService;
@@ -62,6 +59,21 @@ public class ModuleActionController1_8Tests extends MainResourceControllerTest {
 		
 		ModuleResource1_8 moduleResource = (ModuleResource1_8) restService.getResourceBySupportedClass(Module.class);
 		moduleResource.setModuleFactoryWrapper(mockModuleFactory);
+	}
+	
+	@Test
+	public void shouldInstallModule() throws Exception {
+		mockModuleFactory.loadModuleMock = mockModuleToLoad;
+		deserialize(handle(newPostRequest(getURI(), "{\"action\":\"install\", \"modules\":[\""
+		        + getUuid() + "\"], \"installUri\":\"" + getInstallUri() + "\"}")));
+		assertThat(mockModuleFactory.loadedModules, hasItem(mockModuleToLoad));
+		assertThat(mockModuleFactory.startedModules, hasItem(mockModuleToLoad));
+	}
+	
+	@Test(expected = IllegalRequestException.class)
+	public void shouldThrowErrorOnPoorUri() throws Exception {
+		deserialize(handle(newPostRequest(getURI(), "{\"action\":\"install\", \"modules\":[\""
+		        + getUuid() + "\"], \"installUri\":\"anystring\"}")));
 	}
 	
 	@Test
@@ -196,11 +208,15 @@ public class ModuleActionController1_8Tests extends MainResourceControllerTest {
 	
 	@Override
 	public String getUuid() {
-		return null;
+		return "atlas";
 	}
 	
 	@Override
 	public long getAllCount() {
 		return 0;
+	}
+	
+	public String getInstallUri() {
+		return "https://dl.bintray.com/openmrs/omod/xforms-4.3.11.omod";
 	}
 }
