@@ -171,7 +171,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			throw new APIException(e.getMessage(), e);
 		}
 		finally {
-			if (moduleFile != null) {
+			if (tempModule == null && moduleFile != null) {
 				FileUtils.deleteQuietly(moduleFile);
 			}
 		}
