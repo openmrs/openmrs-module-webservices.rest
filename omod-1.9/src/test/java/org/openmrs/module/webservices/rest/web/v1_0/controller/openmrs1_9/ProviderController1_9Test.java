@@ -117,6 +117,7 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest request = newGetRequest(getURI());
 		request.addParameter("q", "Hornblower");
 		
+
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
 		Assert.assertEquals(1, results.size());
 		Object result = results.get(0);
@@ -135,6 +136,18 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		
 		Object next = results.iterator().next();
 		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+	}
+	
+	@Test
+	public void findProviders_shouldReturnNonRetiredByDefault() throws Exception {
+		MockHttpServletRequest request = newGetRequest(getURI());
+		
+		List<?> results = (List<?>) deserialize(handle(request)).get("results");
+		
+		for (Object provider : results) {
+			Assert.assertNotSame(true, PropertyUtils.getProperty(provider, "retired"));
+		}
+		
 	}
 	
 	/**
