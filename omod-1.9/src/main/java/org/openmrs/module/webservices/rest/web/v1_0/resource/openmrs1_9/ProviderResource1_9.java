@@ -213,9 +213,9 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		}
 		
 		List<Provider> providers = Context.getProviderService().getProviders(query, context.getStartIndex(),
-		    context.getLimit(), null);
+		    context.getLimit(), null, context.getIncludeAll());
 		
-		int count = Context.getProviderService().getCountOfProviders(query);
+		int count = Context.getProviderService().getCountOfProviders(query, context.getIncludeAll());
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
 		
 		return new AlreadyPaged<Provider>(context, providers, hasMore);
@@ -228,7 +228,8 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	 */
 	@Override
 	protected NeedsPaging<Provider> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Provider>(Context.getProviderService().getAllProviders(), context);
+		return new NeedsPaging<Provider>(Context.getProviderService()
+				.getAllProviders(context.getIncludeAll()), context);
 	}
 	
 	/**

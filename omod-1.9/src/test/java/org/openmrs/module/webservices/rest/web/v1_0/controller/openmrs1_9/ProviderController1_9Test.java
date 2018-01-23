@@ -158,6 +158,6 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return Context.getProviderService().getAllProviders().size();
+		return Context.getProviderService().getAllProviders(false).size();
 	}
 }

@@ -11,7 +11,7 @@
 	<description>OpenMRS module project for Rest Web Services</description>
 
 	<properties>
-		<openmrs.version.2.0>2.0.0</openmrs.version.2.0>
+		<openmrs.version.2.0>2.0.7-SNAPSHOT</openmrs.version.2.0>
 	</properties>
 
 	<dependencies>
@@ -135,6 +135,13 @@
 		      <scope>provided</scope>
 	     </dependency>
 
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -143,7 +150,15 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 </project>
