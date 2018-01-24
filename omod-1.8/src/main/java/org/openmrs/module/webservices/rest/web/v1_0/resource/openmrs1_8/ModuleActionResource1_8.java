@@ -141,13 +141,14 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 	
 	private Module installModule(Collection<Module> modules, String installUri, ServletContext servletContext) {
 		List<Module> moduleList = new ArrayList<Module>(modules);
+		List<Module> dependentModulesStopped = new ArrayList<Module>();
 		Module existingModule = moduleList.get(0);
 		Module tempModule = null;
 		File moduleFile = null;
 		
 		try {
 			if (existingModule != null) {
-				List<Module> dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
+				dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
 				for (Module depMod : dependentModulesStopped) {
 					moduleFactoryWrapper.stopModuleSkipRefresh(depMod, servletContext);
 				}
@@ -162,6 +163,10 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			moduleFile = ModuleUtil.insertModuleFile(inputStream, fileName);
 			tempModule = moduleFactoryWrapper.loadModule(moduleFile);
 			moduleFactoryWrapper.startModule(tempModule, servletContext);
+			if (existingModule != null && dependentModulesStopped.size() > 0
+			        && moduleFactoryWrapper.isModuleStarted(tempModule)) {
+				startModules(dependentModulesStopped, servletContext);
+			}
 			return tempModule;
 		}
 		catch (MalformedURLException e) {
@@ -251,7 +256,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			for (Exception error : errors) {
 				stringBuilder.append(error.getMessage()).append("; ");
 			}
-			throw new RuntimeException(stringBuilder.toString());
+			throw new ModuleException(stringBuilder.toString());
 		}
 	}
 	
