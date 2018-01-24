@@ -16,6 +16,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
+import org.openmrs.module.ModuleException;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -37,6 +38,7 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
@@ -168,10 +170,10 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				Module tmpModule = moduleFactoryWrapper.parseModuleFile(file);
 				Module existingModule = moduleFactoryWrapper.getModuleById(tmpModule.getModuleId());
 				ServletContext servletContext = context.getRequest().getSession().getServletContext();
-				
+				List<Module> dependentModulesStopped = new ArrayList<Module>();
+
 				if (existingModule != null) {
-					List<Module> dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
-					
+					dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
 					for (Module depMod : dependentModulesStopped) {
 						moduleFactoryWrapper.stopModuleSkipRefresh(depMod, servletContext);
 					}
@@ -183,6 +185,11 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				moduleFile = moduleFactoryWrapper.insertModuleFile(tmpModule, filename);
 				module = moduleFactoryWrapper.loadModule(moduleFile);
 				moduleFactoryWrapper.startModule(module, servletContext);
+
+				if (existingModule != null && dependentModulesStopped.size() > 0
+				        && moduleFactoryWrapper.isModuleStarted(module)) {
+					startModules(dependentModulesStopped, existingModule, servletContext);
+				}
 				return getByUniqueId(tmpModule.getModuleId());
 			}
 		}
@@ -190,6 +197,45 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			if (module == null && moduleFile != null) {
 				FileUtils.deleteQuietly(moduleFile);
 			}
+		}
+	}
+	
+	private void startModules(Collection<Module> modules, Module existingModule, ServletContext servletContext) {
+		boolean needsRefresh = false;
+		if (modules.size() > 1) {
+			modules = moduleFactoryWrapper.getModulesInStartupOrder(modules);
+		}
+
+		for (Module module : modules) {
+			if (moduleFactoryWrapper.isModuleStopped(module) && module.getModuleId() != existingModule.getModuleId()) {
+				needsRefresh = moduleFactoryWrapper.startModuleSkipRefresh(module, servletContext) || needsRefresh;
+			}
+		}
+		//check if any module has been started, doesn't refresh WAC if all modules failed to start
+		if (needsRefresh) {
+			moduleFactoryWrapper.refreshWebApplicationContext(servletContext);
+		}
+
+		findAndThrowStartupErrors(modules);
+	}
+	
+	private void findAndThrowStartupErrors(Collection<Module> modules) {
+		List<Exception> errors = new ArrayList<Exception>();
+		for (Module module : modules) {
+			if (moduleFactoryWrapper.isModuleStopped(module)) {
+				//module actions are executed in other thread, so we need to explicitly check and throw them
+				if (module.getStartupErrorMessage() != null) {
+					errors.add(new ModuleException(module.getStartupErrorMessage()));
+				}
+			}
+		}
+
+		if (!errors.isEmpty()) {
+			StringBuilder stringBuilder = new StringBuilder();
+			for (Exception error : errors) {
+				stringBuilder.append(error.getMessage()).append("; ");
+			}
+			throw new ModuleException(stringBuilder.toString());
 		}
 	}
 }
