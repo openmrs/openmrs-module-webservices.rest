@@ -499,6 +499,7 @@
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
 				<module>omod-2.1</module>
+                <module>omod-2.2</module>                
                 <module>omod</module>
                 <module>integration-tests</module>
             </modules>
@@ -569,6 +570,7 @@
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
 				<module>omod-2.1</module>
+                <module>omod-2.2</module>
                 <module>omod</module>
                 <module>integration-tests</module>
             </modules>
@@ -618,8 +620,7 @@
 		</profile>
 
 	</profiles>
-
-	<repositories>
+    <repositories>
 		<repository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
