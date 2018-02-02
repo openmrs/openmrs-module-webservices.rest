@@ -110,12 +110,17 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 	protected NeedsPaging<VisitType> doGetAll(RequestContext context) {
 		//Apparently, in 1.9.0 this method returns all and has no argument for excluding retired ones
 		List<VisitType> visitTypes = Context.getVisitService().getAllVisitTypes();
-		List<VisitType> unRetiredVisitTypes = new ArrayList<VisitType>();
-		for (VisitType visitType : visitTypes) {
-			if (!visitType.isRetired())
-				unRetiredVisitTypes.add(visitType);
+		List<VisitType> filteredVisitTypes;
+		if (context.getIncludeAll()){
+			filteredVisitTypes = visitTypes;
+		} else {
+			filteredVisitTypes = new ArrayList<VisitType>();
+			for (VisitType visitType : visitTypes) {
+				if (!visitType.isRetired())
+					filteredVisitTypes.add(visitType);
+			}
 		}
-		return new NeedsPaging<VisitType>(unRetiredVisitTypes, context);
+		return new NeedsPaging<VisitType>(filteredVisitTypes, context);
 	}
 	
 	/**
@@ -124,12 +129,17 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 	@Override
 	protected NeedsPaging<VisitType> doSearch(RequestContext context) {
 		List<VisitType> visitTypes = Context.getVisitService().getVisitTypes(context.getParameter("q"));
-		List<VisitType> unRetiredVisitTypes = new ArrayList<VisitType>();
-		for (VisitType visitType : visitTypes) {
-			if (!visitType.isRetired())
-				unRetiredVisitTypes.add(visitType);
+		List<VisitType> filteredVisitTypes;
+		if (context.getIncludeAll()){
+			filteredVisitTypes = visitTypes;
+		} else {
+			filteredVisitTypes = new ArrayList<VisitType>();
+			for (VisitType visitType : visitTypes) {
+				if (!visitType.isRetired())
+					filteredVisitTypes.add(visitType);
+			}
 		}
-		return new NeedsPaging<VisitType>(unRetiredVisitTypes, context);
+		return new NeedsPaging<VisitType>(filteredVisitTypes, context);
 	}
 	
 	/**
