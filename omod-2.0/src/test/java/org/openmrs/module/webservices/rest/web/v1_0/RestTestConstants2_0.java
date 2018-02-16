@@ -33,5 +33,5 @@ public class RestTestConstants2_0 {
 	
 	public static final String PROVIDER_TEST_DATA_XML = "providerTestDataset.xml";
 	
-	public static final String PROVIDER_UUID = "f753e10d-9409-4422-9b49-a062b2ec89a1";
+	public static final String PROVIDER_UUID = "e1009293-c561-47ae-b112-214052c17888";
 }
