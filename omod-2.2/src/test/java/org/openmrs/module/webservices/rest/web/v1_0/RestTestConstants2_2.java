@@ -16,4 +16,9 @@ public class RestTestConstants2_2 {
 	public final static String PROGRAM_ATTRIBUTE_TYPE_UUID = "d7477c21-bfc3-4922-9591-e89d8b9c8efb";
 	
 	public final static String PATIENT_PROGRAM_UUID = "9119b9f8-af3d-4ad8-9e2e-2317c3de91c6";
+	
+	public final static String CONDITION_UUID = "c804ee60-ecbc-4d70-abda-1e4f6f64e5b5";
+	
+	public static final String CONDITION_TEST_DATA_XML = "conditionTestDataset.xml";
+	
 }

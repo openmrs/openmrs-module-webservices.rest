@@ -21,7 +21,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import static org.junit.Assert.assertEquals;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
-
 public class ProgramAttributeTypeResource2_2Test extends BaseDelegatingResourceTest<ProgramAttributeTypeResource2_2, ProgramAttributeType> {
 	
 	@Before
