@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.CodedOrFreeText;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Condition;
 import org.openmrs.ConditionClinicalStatus;
 import org.openmrs.ConditionVerificationStatus;
@@ -21,7 +23,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.ConditionService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -41,12 +42,18 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	private Patient patient;
 	
+	private Concept concept;
+	
+	private ConceptName conceptName;
+	
 	@Before
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.CONDITION_TEST_DATA_XML);
 		
 		this.conditionService = Context.getConditionService();
 		this.patient = Context.getPatientService().getPatient(2);
+		this.concept = Context.getConceptService().getConcept(111);
+		this.conceptName = Context.getConceptService().getConceptName(1111);
 	}
 	
 	/**
@@ -81,7 +88,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldCreateACondition() throws Exception {
+	public void shouldCreateANonCodedCondition() throws Exception {
 		CodedOrFreeText cond = new CodedOrFreeText();
 		cond.setNonCoded("Some condition");
 		
@@ -116,6 +123,45 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldCreateACodedCondition() throws Exception {
+		SimpleObject codedOrFreeText = new SimpleObject();
+		codedOrFreeText.add("coded", concept.getUuid());
+		codedOrFreeText.add("specificName", conceptName.getUuid());
+		
+		SimpleObject conditionSource = new SimpleObject();
+		conditionSource.add("condition", codedOrFreeText);
+		conditionSource.add("patient", patient.getUuid());
+		conditionSource.add("clinicalStatus", ConditionClinicalStatus.ACTIVE);
+		conditionSource.add("verificationStatus", ConditionVerificationStatus.CONFIRMED);
+		conditionSource.add("onsetDate", "2017-01-12 00:00:00");
+		
+		String json = new ObjectMapper().writeValueAsString(conditionSource);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+		
+		MockHttpServletResponse res = handle(req);
+		
+		SimpleObject newConditionSource = deserialize(res);
+		String uuid = newConditionSource.get("uuid");
+		LinkedHashMap cond = newConditionSource.get("condition");
+		LinkedHashMap concept = (LinkedHashMap) cond.get("coded");
+		LinkedHashMap conceptName = (LinkedHashMap) cond.get("specificName");
+		LinkedHashMap patient = newConditionSource.get("patient");
+		
+		Assert.assertNotNull(conditionService.getConditionByUuid(uuid));
+		
+		Condition condition = conditionService.getConditionByUuid(uuid);
+		
+		Assert.assertEquals(concept.get("uuid"), condition.getCondition().getCoded().getUuid());
+		Assert.assertEquals(conceptName.get("uuid"), condition.getCondition().getSpecificName().getUuid());
+		Assert.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
+		Assert.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
+		Assert.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
+		Assert.assertNotNull(newConditionSource.get("onsetDate"));
+	}
+	
+	@Test
 	public void shouldVoidACondition() throws Exception {
 		Condition condition = conditionService.getConditionByUuid(getUuid());
 		Assert.assertFalse(condition.isVoided());
@@ -125,8 +171,10 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		handle(req);
 		
 		condition = conditionService.getConditionByUuid(getUuid());
+		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), condition.getVoidedBy().getUuid());
 		Assert.assertTrue(condition.isVoided());
 		Assert.assertEquals("unit test", condition.getVoidReason());
+		Assert.assertNotNull(condition.getDateVoided());
 	}
 	
 	@Test
