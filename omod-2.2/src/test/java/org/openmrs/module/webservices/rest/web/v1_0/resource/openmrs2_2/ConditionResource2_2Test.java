@@ -41,33 +41,35 @@ public class ConditionResource2_2Test extends BaseDelegatingResourceTest<Conditi
 	
 	@Override
 	public String getDisplayProperty() {
-		return "";
+		return "Concept 1";
 	}
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants2_2.CONDITION_UUID;
+		return RestTestConstants2_2.CODED_CONDITION_UUID;
 	}
 	
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
-		assertPropEquals("condition", getObject().getCondition());
+		assertPropPresent("condition");
 		assertPropEquals("clinicalStatus", getObject().getClinicalStatus());
 		assertPropEquals("verificationStatus", getObject().getVerificationStatus());
 		assertPropEquals("previousVersion", getObject().getPreviousVersion());
 		assertPropEquals("onsetDate", getObject().getOnsetDate());
+		assertPropEquals("endDate", getObject().getEndDate());
 		assertPropEquals("voided", getObject().getVoided());
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
-		assertPropEquals("condition", getObject().getCondition());
+		assertPropPresent("condition");
 		assertPropEquals("clinicalStatus", getObject().getClinicalStatus());
 		assertPropEquals("verificationStatus", getObject().getVerificationStatus());
 		assertPropEquals("previousVersion", getObject().getPreviousVersion());
 		assertPropEquals("onsetDate", getObject().getOnsetDate());
+		assertPropEquals("endDate", getObject().getEndDate());
 		assertPropEquals("additionalDetail", getObject().getAdditionalDetail());
 		assertPropEquals("voided", getObject().getVoided());
 	}

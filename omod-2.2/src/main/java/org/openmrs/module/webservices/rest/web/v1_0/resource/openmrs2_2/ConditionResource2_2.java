@@ -45,12 +45,13 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
 			description.addProperty("display");
-			description.addProperty("condition");
+			description.addProperty("condition", Representation.REF);
 			description.addProperty("patient", Representation.REF);
 			description.addProperty("clinicalStatus");
 			description.addProperty("verificationStatus");
-			description.addProperty("previousVersion");
+			description.addProperty("previousVersion", Representation.REF);
 			description.addProperty("onsetDate");
+			description.addProperty("endDate");
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -65,6 +66,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 			description.addProperty("verificationStatus");
 			description.addProperty("previousVersion");
 			description.addProperty("onsetDate");
+			description.addProperty("endDate");
 			description.addProperty("additionalDetail");
 			description.addProperty("voided");
 			description.addProperty("auditInfo");
@@ -89,6 +91,8 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 			        .property("verificationStatus", new StringProperty())
 			        .property("previousVersion", new StringProperty())
 			        .property("onsetDate", new StringProperty())
+			        .property("endDate", new StringProperty())
+			        .property("additionalDetail", new StringProperty())
 			        .property("voided", new StringProperty());
 		}
 		return model;
@@ -105,7 +109,9 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		        .property("clinicalStatus", new StringProperty())
 		        .property("verificationStatus", new StringProperty())
 		        .property("previousVersion", new StringProperty())
-		        .property("onsetDate", new StringProperty());
+		        .property("onsetDate", new StringProperty())
+		        .property("endDate", new StringProperty())
+		        .property("additionalDetail", new StringProperty());
 	}
 	
 	/**
@@ -119,6 +125,8 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		        .property("verificationStatus", new StringProperty())
 		        .property("previousVersion", new StringProperty())
 		        .property("onsetDate", new StringProperty())
+		        .property("endDate", new StringProperty())
+		        .property("additionalDetail", new StringProperty())
 		        .property("voided", new StringProperty());
 	}
 	
@@ -134,6 +142,8 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		description.addProperty("clinicalStatus");
 		description.addProperty("verificationStatus");
 		description.addProperty("onsetDate");
+		description.addProperty("endDate");
+		description.addProperty("additionalDetail");
 		
 		return description;
 	}
@@ -150,6 +160,8 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		description.addProperty("clinicalStatus");
 		description.addProperty("verificationStatus");
 		description.addProperty("onsetDate");
+		description.addProperty("endDate");
+		description.addProperty("additionalDetail");
 		description.addProperty("voided");
 		
 		return description;
