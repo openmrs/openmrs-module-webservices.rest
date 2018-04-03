@@ -30,6 +30,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,9 +45,11 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	private Patient patient;
 	
-	private Concept concept;
+	private Concept concept1, concept2;
 	
-	private ConceptName conceptName;
+	private ConceptName conceptName1, conceptName2;
+	
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	
 	@Before
 	public void before() throws Exception {
@@ -52,8 +57,10 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		
 		this.conditionService = Context.getConditionService();
 		this.patient = Context.getPatientService().getPatient(2);
-		this.concept = Context.getConceptService().getConcept(111);
-		this.conceptName = Context.getConceptService().getConceptName(1111);
+		this.concept1 = Context.getConceptService().getConcept(111);
+		this.concept2 = Context.getConceptService().getConcept(112);
+		this.conceptName1 = Context.getConceptService().getConceptName(1111);
+		this.conceptName2 = Context.getConceptService().getConceptName(1112);
 	}
 	
 	/**
@@ -69,7 +76,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants2_2.CONDITION_UUID;
+		return RestTestConstants2_2.CODED_CONDITION_UUID;
 	}
 	
 	/**
@@ -125,8 +132,8 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	@Test
 	public void shouldCreateACodedCondition() throws Exception {
 		SimpleObject codedOrFreeText = new SimpleObject();
-		codedOrFreeText.add("coded", concept.getUuid());
-		codedOrFreeText.add("specificName", conceptName.getUuid());
+		codedOrFreeText.add("coded", concept1.getUuid());
+		codedOrFreeText.add("specificName", conceptName1.getUuid());
 		
 		SimpleObject conditionSource = new SimpleObject();
 		conditionSource.add("condition", codedOrFreeText);
@@ -162,6 +169,87 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUpdateANonCodedCondition() throws Exception {
+		final String newNonCoded = "Updated non coded condition";
+		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
+		final Date newOnsetDate = new Date();
+		final Date newEndDate = new Date();
+		final String newAdditionalDetail = "Some extra details.";
+		
+		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
+		
+		Assert.assertNotNull(condition);
+		//sanity checks
+		Assert.assertFalse(newNonCoded.equalsIgnoreCase(condition.getCondition().getNonCoded()));
+		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		
+		String json = "{ \"condition\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + newNonCoded
+		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
+		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
+		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		
+		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.NON_CODED_CONDITION_UUID, json));
+		
+		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
+		
+		Assert.assertNotNull(updatedCondition);
+		Assert.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
+		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+	}
+	
+	@Test
+	public void shouldUpdateACodedCondition() throws Exception {
+		final String newCoded = concept2.getUuid();
+		final String newSpecificName = conceptName2.getUuid();
+		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
+		final Date newOnsetDate = new Date();
+		final Date newEndDate = new Date();
+		final String newAdditionalDetail = "Some extra details.";
+		
+		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
+		
+		Assert.assertNotNull(condition);
+		//sanity checks
+		Assert.assertFalse(newCoded.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
+		Assert.assertFalse(newSpecificName.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
+		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		
+		String json = "{\"condition\":{\"coded\":\"" + newCoded + "\",\"specificName\":\"" + newSpecificName
+		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
+		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
+		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		
+		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.CODED_CONDITION_UUID, json));
+		
+		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
+		
+		Assert.assertNotNull(updatedCondition);
+		Assert.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
+		Assert.assertEquals(newSpecificName, updatedCondition.getCondition().getSpecificName().getUuid());
+		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+	}
+	
+	@Test
 	public void shouldVoidACondition() throws Exception {
 		Condition condition = conditionService.getConditionByUuid(getUuid());
 		Assert.assertFalse(condition.isVoided());
@@ -180,7 +268,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	@Test
 	public void shouldUnvoidACondition() throws Exception {
 		
-		String voidedUuid = "k4n6w9h3-zn9t-9ud4-9d3j-r398ds0ge2f9";
+		String voidedUuid = RestTestConstants2_2.VOIDED_CONDITION_UUID;
 		
 		Condition condition = conditionService.getConditionByUuid(voidedUuid);
 		Assert.assertEquals(true, condition.getVoided());
