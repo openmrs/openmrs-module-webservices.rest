@@ -12,4 +12,6 @@ package org.openmrs.module.webservices.rest.web;
 public class RestTestConstants1_11 {
 	
 	public static final String DRUG_UUID = "05ec820a-d297-44e3-be6e-698531d9dd3f";
+	
+	public static final String ENCOUNTER_ROLE_UUID = "a0b03050-c99b-11e0-9572-0800200c9a66";
 }
