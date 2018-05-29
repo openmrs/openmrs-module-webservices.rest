@@ -201,4 +201,9 @@ public class RestConstants {
 	public static boolean SWAGGER_LOGS_ON = true;
 	
 	public static boolean SWAGGER_LOGS_OFF = false;
+	
+	/**
+	 * Constants used for the Server Log REST Service privilege checking
+	 */
+	public static final String PRIV_GET_SERVER_LOGS = "Get Server Logs";
 }
