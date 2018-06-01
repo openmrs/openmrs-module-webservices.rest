@@ -388,9 +388,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        PropertyUtils.getProperty(resultList.get(2), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(3), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(4), "uuid").toString() });
-		assertThat(uuids, hasItems(expectedOrderUuids));
-	
-assertThat(uuids, contains( orderService.getOrder(7).getUuid(), orderService.getOrder(5).getUuid(), orderService.getOrder(444).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(222).getUuid()));
+		assertThat(uuids, contains( orderService.getOrder(7).getUuid(), orderService.getOrder(5).getUuid(), orderService.getOrder(444).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(222).getUuid()));
 	}
 	
 	@Test
@@ -423,15 +421,14 @@ assertThat(uuids, contains( orderService.getOrder(7).getUuid(), orderService.get
 		        orderService.getOrder(222).getUuid(), orderService.getOrder(444).getUuid() };
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder"), new Parameter("patient",
-		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("sort", "desc"), new Parameter("status", "active"))));
+		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("sort", "asc"), new Parameter("status", "active"))));
 		assertEquals(expectedOrderUuids.length, Util.getResultsSize(results));
 		List<Object> resultList = Util.getResultsList(results);
 		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(2), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(3), "uuid").toString(), });
-		assertThat(uuids, hasItems(expectedOrderUuids));
-assertThat(uuids, contains(orderService.getOrder(5).getUuid(), orderService.getOrder(444).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(222).getUuid()));
+		assertThat(uuids, contains(orderService.getOrder(222).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(444).getUuid(), orderService.getOrder(5).getUuid()));
 	}
 	
 	@Test
