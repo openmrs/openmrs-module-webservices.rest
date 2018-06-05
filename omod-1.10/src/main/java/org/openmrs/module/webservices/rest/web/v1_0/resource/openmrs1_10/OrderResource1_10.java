@@ -11,6 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -39,6 +42,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.util.OpenmrsUtil;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
@@ -226,6 +230,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			String careSettingUuid = context.getRequest().getParameter("careSetting");
 			String asOfDateString = context.getRequest().getParameter("asOfDate");
+			String sortParam = context.getRequest().getParameter("sort");
+			
 			CareSetting careSetting = null;
 			Date asOfDate = null;
 			if (StringUtils.isNotBlank(asOfDateString)) {
@@ -243,10 +249,43 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				filterByType(orders, context.getType());
 			}
 			
-			return new NeedsPaging<Order>(orders, context);
+			if (StringUtils.isNotBlank(sortParam)) {
+				List<Order> sortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, sortParam, status);
+				return new NeedsPaging<Order>(sortedOrder, context);
+			}
+			else {
+				return new NeedsPaging<Order>(orders, context);
+			}
 		}
 		
 		return new EmptySearchResult();
+	}
+
+	private static Date getUsableDate(Order order) {
+		return order.getDateStopped() != null ? order.getDateStopped() : (order.getAutoExpireDate() != null ? order.getAutoExpireDate() : order.getDateCreated());
+	}
+	
+	private static Date getActiveOrderSortDate(Order order) {
+		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();	
+	}
+	public List<Order> sortOrdersBasedOnDateActivatedOrDateStopped(List<Order> orders, final String sortOrder,
+	        final String status) {
+		List<Order> sortedList = new ArrayList<Order>(orders);
+		Collections.sort(sortedList, new Comparator<Order>() {
+			
+			@Override
+			public int compare(Order o1, Order o2) {
+				if (status.equalsIgnoreCase("inactive")) {
+					return sortOrder.equalsIgnoreCase("ASC") ?
+					        getUsableDate(o1).compareTo(getUsableDate(o2)) : getUsableDate(o2).compareTo(getUsableDate(o1));
+				}
+				else {
+							
+					return sortOrder.equalsIgnoreCase("asc") ? getActiveOrderSortDate(o1).compareTo(getActiveOrderSortDate(o2)) : getActiveOrderSortDate(o2).compareTo(getActiveOrderSortDate(o1));
+				}
+			}
+		});
+		return sortedList;
 	}
 	
 	/**

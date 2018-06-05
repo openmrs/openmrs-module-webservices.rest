@@ -11,11 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
@@ -39,6 +34,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
@@ -174,6 +175,7 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	public PageableResult getActiveOrders(Patient patient, RequestContext context) {
 		String careSettingUuid = context.getRequest().getParameter("careSetting");
 		String asOfDateString = context.getRequest().getParameter("asOfDate");
+		String sortParam = context.getRequest().getParameter("sort");
 		CareSetting careSetting = null;
 		java.util.Date asOfDate = null;
 		if (StringUtils.isNotBlank(asOfDateString)) {
@@ -189,7 +191,16 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		OrderType orderType = os.getOrderTypeByName("Test order");
 		List<Order> testOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
 		    context.getIncludeAll());
-		return new NeedsPaging<Order>(testOrders, context);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
+		        .getResourceBySupportedClass(Order.class);
+
+		if (StringUtils.isNotBlank(sortParam)) {
+			List<Order>sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(testOrders, sortParam, status);
+			return new NeedsPaging<Order>(sortedOrder, context);
+		}
+		else {
+			return new NeedsPaging<Order>(testOrders, context);
+		}
 	}
 	
 	/**
