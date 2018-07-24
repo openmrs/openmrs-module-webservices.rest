@@ -23,13 +23,13 @@
 				  date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
 				  voided="false" uuid="b4129154-cd40-4fd1-ac13-dd9d7cd2cc80"/>
 	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
-	<condition condition_id="1" patient_id="2" creator="1" condition_coded="111" condition_coded_name="1111"
+	<conditions condition_id="1" patient_id="2" creator="1" condition_coded="111" condition_coded_name="1111"
 			   date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED"
 			   onset_date="2017-01-12 00:00:00" voided="false" uuid="c1d4185b-0364-4978-a635-3165a82a3178"/>
-	<condition condition_id="2" patient_id="2" creator="1" condition_non_coded="Non coded condition"
+	<conditions condition_id="2" patient_id="2" creator="1" condition_non_coded="Non coded condition"
 			   date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED"
 			   onset_date="2017-01-12 00:00:00" voided="false" uuid="d5361660-c917-4aef-adfc-fb2e6138dc07"/>
-	<condition condition_id="3" patient_id="2" creator="1" condition_non_coded="Non coded condition 2"
+	<conditions condition_id="3" patient_id="2" creator="1" condition_non_coded="Non coded condition 2"
 			   date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED"
 			   onset_date="2017-01-12 00:00:00" voided="true" date_voided="2018-02-23 00:00:00.0" void_reason="Testing void"
 			   uuid="2e7563eb-0dca-46c9-8ba3-7c5945f673fc"/>
