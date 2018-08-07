@@ -47,51 +47,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	}
 	
 	@Test
-	public void requestPasswordReset_shouldFailIfUsernameOrEmailIsBlanck() throws Exception {
-		User u = new User();
-		u.setPerson(new Person());
-		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
-		u.setUsername("bwolfe");
-		u.getPerson().setGender("M");
-		userService.createUser(u, "Openmr5xy");
-		String usernameOrEmail = "  ";
-		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage(messages.getMessage("error.email.notNullOrBlank"));
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + usernameOrEmail + "\"}"));
-		
-	}
-	
-	@Test
-	public void requestPasswordReset_shouldFailIfUsernameOrEmailIsEmptyl() throws Exception {
-		User u = new User();
-		u.setPerson(new Person());
-		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
-		u.setUsername("bwolfe");
-		u.getPerson().setGender("M");
-		userService.createUser(u, "Openmr5xy");
-		String usernameOrEmail = "";
-		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage(messages.getMessage("error.email.notNullOrBlank"));
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + usernameOrEmail + "\"}"));
-		
-	}
-	
-	@Test
 	public void verifyActivationKey_shouldFailWith400BadRequestIfActivationKeyIsInvalid() throws Exception {
 		String activationKey = "wrongActivationKey12";
 		MockHttpServletResponse response = handle(newGetRequest(RESET_PASSWORD_URI + "/" + activationKey));
 		assertEquals(400, response.getStatus());
 	}
 	
-	@Test
-	public void resetPassword_shouldFailWith400BadRequestIfActivationKeyIsInvalid() throws Exception {
-		String activationkey = "wrongActivationKey12";
-		String newPassword = "newPassword9";
-		MockHttpServletResponse response = handle(newPostRequest(RESET_PASSWORD_URI + "/" + activationkey,
-		    "{\"newPassword\":\"" + newPassword + "\"}"));
-		assertEquals(400, response.getStatus());
-		
-	}
 }
