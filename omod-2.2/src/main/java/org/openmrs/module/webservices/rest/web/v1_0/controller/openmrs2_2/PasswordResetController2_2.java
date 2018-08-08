@@ -17,9 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -43,52 +40,25 @@ public class PasswordResetController2_2 extends BaseRestController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
 	public void requestPasswordReset(@RequestBody Map<String, String> body) {
-		User user = null;
 		String usernameOrEmail = body.get("usernameOrEmail");
-		if ((user = userService.getUserByEmail(usernameOrEmail)) == null) {
-			user = userService.getUserByUsername(usernameOrEmail);
-		}
+		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
 		if (user != null) {
 			userService.setUserActivationKey(user);
 		}
 	}
 	
 	@RequestMapping(value = "/{activationkey}", method = RequestMethod.POST)
-	@ResponseBody
-	public SimpleObject resetPassword(@PathVariable("activationkey") String activationkey,
+	public void resetPassword(@PathVariable("activationkey") String activationkey,
 	        @RequestBody Map<String, String> body, HttpServletRequest request,
 	        HttpServletResponse response) {
-		SimpleObject resp = new SimpleObject();
 		String newPassword = body.get("newPassword");
 		
 		try {
 			userService.changePasswordUsingActivationKey(activationkey, newPassword);
 			response.setStatus(HttpServletResponse.SC_OK);
-			resp.add("message", "success");
 		}
 		catch (InvalidActivationKeyException exception) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return RestUtil.wrapErrorResponse(exception, "Password reset failed");
-		}
-		
-		return resp;
-	}
-	
-	@RequestMapping(value = "/{activationkey}", method = RequestMethod.GET)
-	@ResponseBody
-	public SimpleObject verifyActivationKey(@PathVariable("activationkey") String activationkey, HttpServletRequest request,
-	        HttpServletResponse response) {
-		SimpleObject resp = new SimpleObject();
-		User user = userService.getUserByActivationKey(activationkey);
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			resp.add("message", "Invalid Activation Key");
-			return resp;
-		}
-		else {
-			response.setStatus(HttpServletResponse.SC_OK);
-			resp.add("message", "success");
-			return resp;
 		}
 		
 	}

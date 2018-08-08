@@ -10,6 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,10 +20,10 @@ import org.junit.rules.ExpectedException;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.User;
-import org.openmrs.api.APIException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
-import org.openmrs.messagesource.MessageSourceService;
+import org.openmrs.api.db.LoginCredential;
+import org.openmrs.api.db.UserDAO;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,8 +33,6 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	
 	private static final String RESET_PASSWORD_URI = "passwordreset";
 	
-	private MessageSourceService messages;
-	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
@@ -40,17 +40,62 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	@Qualifier("userService")
 	private UserService userService;
 	
+	@Autowired
+	private UserDAO dao;
+	
 	@Before
 	public void setup() {
 		userService = Context.getUserService();
-		messages = Context.getMessageSourceService();
 	}
 	
 	@Test
-	public void verifyActivationKey_shouldFailWith400BadRequestIfActivationKeyIsInvalid() throws Exception {
-		String activationKey = "wrongActivationKey12";
-		MockHttpServletResponse response = handle(newGetRequest(RESET_PASSWORD_URI + "/" + activationKey));
-		assertEquals(400, response.getStatus());
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
+		User u = new User();
+		u.setPerson(new Person());
+		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
+		u.setUsername("bwolfe");
+		u.getPerson().setGender("M");
+		User createdUser = userService.createUser(u, "Openmr5xy");
+		assertNull(dao.getLoginCredential(createdUser).getActivationKey());
+		assertEquals(createdUser, userService.setUserActivationKey(createdUser));
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + "bwolfe" + "\"}"));
+		assertNotNull(dao.getLoginCredential(createdUser).getActivationKey());
 	}
 	
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmail() throws Exception {
+		User u = new User();
+		u.setPerson(new Person());
+		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
+		u.setUsername("bwolfe");
+		u.setEmail("bwolf@gmail.com");
+		u.getPerson().setGender("M");
+		User createdUser = userService.createUser(u, "Openmr5xy");
+		assertNull(dao.getLoginCredential(createdUser).getActivationKey());
+		assertEquals(createdUser, userService.setUserActivationKey(createdUser));
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + "bwolfe@gmail.com" + "\"}"));
+		assertNotNull(dao.getLoginCredential(createdUser).getActivationKey());
+	}
+	
+	@Test
+	public void resetPassword_shouldResetUserPasswordIfActivationKeyIsCorrect() throws Exception {
+		User u = new User();
+		u.setPerson(new Person());
+		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
+		u.setUsername("bwolfe");
+		u.getPerson().setGender("M");
+		User createdUser = userService.createUser(u, "Openmr5xy");
+		String key = "h4ph0fpNzQCIPSw8plJI";
+		int validTime = 10 * 60 * 1000; //equivalent to 10 minutes for token to be valid
+		Long tokenTime = System.currentTimeMillis() + validTime;
+		LoginCredential credentials = dao.getLoginCredential(createdUser);
+		credentials
+		        .setActivationKey("b071c88d6d877922e35af2e6a90dd57d37ac61143a03bb986c5f353566f3972a86ce9b2604c31a22dfa467922dcfd54fa7d18b0a7c7648d94ca3d97a88ea2fd0:"
+		                + tokenTime);
+		dao.updateLoginCredential(credentials);
+		String newPassword = "newPasswordString123";
+		MockHttpServletResponse response = handle(newPostRequest(RESET_PASSWORD_URI + "/" + key, "{\"newPassword\":\""
+		        + newPassword + "\"}"));
+		assertEquals(200, response.getStatus());
+	}
 }
