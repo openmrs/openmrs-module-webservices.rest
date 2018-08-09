@@ -13,10 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -31,20 +28,12 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	
 	private static final String RESET_PASSWORD_URI = "passwordreset";
 	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
-	
 	@Autowired
 	@Qualifier("userService")
 	private UserService userService;
 	
 	@Autowired
 	private UserDAO dao;
-	
-	@Before
-	public void setup() {
-		userService = Context.getUserService();
-	}
 	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
