@@ -17,8 +17,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -50,45 +48,28 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
-		User u = new User();
-		u.setPerson(new Person());
-		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
-		u.setUsername("bwolfe");
-		u.getPerson().setGender("M");
-		User createdUser = userService.createUser(u, "Openmr5xy");
-		assertNull(dao.getLoginCredential(createdUser).getActivationKey());
-		assertEquals(createdUser, userService.setUserActivationKey(createdUser));
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + "bwolfe" + "\"}"));
-		assertNotNull(dao.getLoginCredential(createdUser).getActivationKey());
+		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmail() throws Exception {
-		User u = new User();
-		u.setPerson(new Person());
-		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
-		u.setUsername("bwolfe");
-		u.setEmail("bwolf@gmail.com");
-		u.getPerson().setGender("M");
-		User createdUser = userService.createUser(u, "Openmr5xy");
-		assertNull(dao.getLoginCredential(createdUser).getActivationKey());
-		assertEquals(createdUser, userService.setUserActivationKey(createdUser));
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + "bwolfe@gmail.com" + "\"}"));
-		assertNotNull(dao.getLoginCredential(createdUser).getActivationKey());
+		User u = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		u.setEmail("butch@gmail.com");
+		assertNull(dao.getLoginCredential(u).getActivationKey());
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + u.getEmail() + "\"}"));
+		assertNotNull(dao.getLoginCredential(u).getActivationKey());
 	}
 	
 	@Test
 	public void resetPassword_shouldResetUserPasswordIfActivationKeyIsCorrect() throws Exception {
-		User u = new User();
-		u.setPerson(new Person());
-		u.addName(new PersonName("Benjamin", "A", "Wolfe"));
-		u.setUsername("bwolfe");
-		u.getPerson().setGender("M");
-		User createdUser = userService.createUser(u, "Openmr5xy");
+		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
 		String key = "h4ph0fpNzQCIPSw8plJI";
 		int validTime = 10 * 60 * 1000; //equivalent to 10 minutes for token to be valid
 		Long tokenTime = System.currentTimeMillis() + validTime;
-		LoginCredential credentials = dao.getLoginCredential(createdUser);
+		LoginCredential credentials = dao.getLoginCredential(user);
 		credentials
 		        .setActivationKey("b071c88d6d877922e35af2e6a90dd57d37ac61143a03bb986c5f353566f3972a86ce9b2604c31a22dfa467922dcfd54fa7d18b0a7c7648d94ca3d97a88ea2fd0:"
 		                + tokenTime);
@@ -97,5 +78,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		MockHttpServletResponse response = handle(newPostRequest(RESET_PASSWORD_URI + "/" + key, "{\"newPassword\":\""
 		        + newPassword + "\"}"));
 		assertEquals(200, response.getStatus());
+		Context.authenticate(user.getUsername(), newPassword);
+		
 	}
 }

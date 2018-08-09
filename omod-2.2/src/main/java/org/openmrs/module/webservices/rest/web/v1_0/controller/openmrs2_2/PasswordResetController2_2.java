@@ -11,12 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
+import org.openmrs.api.ValidationException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,17 +46,15 @@ public class PasswordResetController2_2 extends BaseRestController {
 	}
 	
 	@RequestMapping(value = "/{activationkey}", method = RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
 	public void resetPassword(@PathVariable("activationkey") String activationkey,
-	        @RequestBody Map<String, String> body, HttpServletRequest request,
-	        HttpServletResponse response) {
+	        @RequestBody Map<String, String> body) {
 		String newPassword = body.get("newPassword");
-		
 		try {
 			userService.changePasswordUsingActivationKey(activationkey, newPassword);
-			response.setStatus(HttpServletResponse.SC_OK);
 		}
-		catch (InvalidActivationKeyException exception) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		catch (InvalidActivationKeyException ex) {
+			throw new ValidationException(ex.getMessage());
 		}
 		
 	}
