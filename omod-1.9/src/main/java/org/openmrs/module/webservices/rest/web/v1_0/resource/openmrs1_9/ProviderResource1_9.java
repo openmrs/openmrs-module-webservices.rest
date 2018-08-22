@@ -229,7 +229,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	@Override
 	protected NeedsPaging<Provider> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<Provider>(Context.getProviderService()
-				.getAllProviders(context.getIncludeAll()), context);
+		        .getAllProviders(context.getIncludeAll()), context);
 	}
 	
 	/**

@@ -34,7 +34,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@SubResource(parent = CohortResource2_1.class, path = "membership", supportedClass = CohortMembership.class, supportedOpenmrsVersions = { "2.1.*", "2.2.*" })
+@SubResource(parent = CohortResource2_1.class, path = "membership", supportedClass = CohortMembership.class, supportedOpenmrsVersions = {
+        "2.1.*", "2.2.*" })
 public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMembership, Cohort, CohortResource2_1> {
 	
 	@Override

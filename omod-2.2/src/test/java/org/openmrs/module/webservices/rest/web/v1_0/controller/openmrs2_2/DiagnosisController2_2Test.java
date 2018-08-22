@@ -266,7 +266,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		        + "\",\"certainty\":\"" + "PROVISIONAL" + "\",\"encounter\":\""
 		        + encounter.getUuid() + "\",\"rank\":\"" + 1
 		        + "\",\"voided\":\"" + true + "\"}";
-
+		
 		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.UPDATABLE_NON_CODED_DIAGNOSIS_UUID, json));
 		
 		Diagnosis newDiagnosis = diagnosisService

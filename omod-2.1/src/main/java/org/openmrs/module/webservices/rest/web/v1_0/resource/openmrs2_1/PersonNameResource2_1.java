@@ -17,7 +17,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PersonNameResource2_0;
 
-@SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = { "2.1.*", "2.2.*" })
+@SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {
+        "2.1.*", "2.2.*" })
 public class PersonNameResource2_1 extends PersonNameResource2_0 {
 	
 	@Override

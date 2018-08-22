@@ -260,14 +260,16 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		
 		return new EmptySearchResult();
 	}
-
+	
 	private static Date getUsableDate(Order order) {
-		return order.getDateStopped() != null ? order.getDateStopped() : (order.getAutoExpireDate() != null ? order.getAutoExpireDate() : order.getDateCreated());
+		return order.getDateStopped() != null ? order.getDateStopped() : (order.getAutoExpireDate() != null ? order
+		        .getAutoExpireDate() : order.getDateCreated());
 	}
 	
 	private static Date getActiveOrderSortDate(Order order) {
-		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();	
+		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
 	}
+	
 	public List<Order> sortOrdersBasedOnDateActivatedOrDateStopped(List<Order> orders, final String sortOrder,
 	        final String status) {
 		List<Order> sortedList = new ArrayList<Order>(orders);
@@ -280,8 +282,9 @@ public class OrderResource1_10 extends OrderResource1_8 {
 					        getUsableDate(o1).compareTo(getUsableDate(o2)) : getUsableDate(o2).compareTo(getUsableDate(o1));
 				}
 				else {
-							
-					return sortOrder.equalsIgnoreCase("asc") ? getActiveOrderSortDate(o1).compareTo(getActiveOrderSortDate(o2)) : getActiveOrderSortDate(o2).compareTo(getActiveOrderSortDate(o1));
+					
+					return sortOrder.equalsIgnoreCase("asc") ? getActiveOrderSortDate(o1).compareTo(
+					    getActiveOrderSortDate(o2)) : getActiveOrderSortDate(o2).compareTo(getActiveOrderSortDate(o1));
 				}
 			}
 		});

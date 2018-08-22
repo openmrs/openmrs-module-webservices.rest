@@ -90,7 +90,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 		}
 
 	}
-
+	
 	@Test
 	public void doSearch_shouldProcessIncludeAll() throws Exception {
 
