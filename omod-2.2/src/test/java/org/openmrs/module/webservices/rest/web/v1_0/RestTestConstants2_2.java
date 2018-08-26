@@ -34,4 +34,6 @@ public class RestTestConstants2_2 {
 	public final static String UPDATABLE_CODED_DIAGNOSIS_UUID = "59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7";
 	
 	public static final String DIAGNOSIS_TEST_DATA_XML = "patientDiagnosisDataSet.xml";
+	
+	public static final String PERSON_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 }
