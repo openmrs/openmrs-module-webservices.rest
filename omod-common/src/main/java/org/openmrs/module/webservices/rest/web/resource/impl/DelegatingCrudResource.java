@@ -100,7 +100,11 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		}
 		
 		T delegate = handler.newDelegate(propertiesToCreate);
-		setConvertedProperties(delegate, propertiesToCreate, handler.getCreatableProperties(), true);
+		DelegatingResourceDescription description = handler.getCreatableProperties();
+		if (propertiesToCreate.containsKey("uuid")) {
+			description.addProperty("uuid");
+		}
+		setConvertedProperties(delegate, propertiesToCreate, description, true);
 		return delegate;
 	}
 	

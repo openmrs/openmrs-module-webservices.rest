@@ -23,11 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -60,6 +55,12 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
@@ -100,7 +101,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		return model;
 	}
 	
-	protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
+	protected Set<String> propertiesIgnoredOnPostAndPut = new HashSet<String>();
 	
 	/**
 	 * Properties that should silently be ignored if you try to get them. Implementations should
@@ -118,14 +119,18 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	protected volatile List<DelegatingSubclassHandler<T, ? extends T>> subclassHandlers;
 	
 	/**
-	 * Default constructor will set propertiesIgnoredWhenUpdating to include "display", "links", and
+	 * Default constructor will set propertiesIgnoredOnPostAndPut to include "display", "links", and
 	 * "resourceVersion"
 	 */
 	protected BaseDelegatingResource() {
-		propertiesIgnoredWhenUpdating.add("display");
-		propertiesIgnoredWhenUpdating.add("links");
-		propertiesIgnoredWhenUpdating.add("auditInfo");
-		propertiesIgnoredWhenUpdating.add(RestConstants.PROPERTY_FOR_RESOURCE_VERSION);
+		propertiesIgnoredOnPostAndPut.add("display");
+		propertiesIgnoredOnPostAndPut.add("links");
+		propertiesIgnoredOnPostAndPut.add("auditInfo");
+		propertiesIgnoredOnPostAndPut.add(RestConstants.PROPERTY_FOR_RESOURCE_VERSION);
+		
+		for (int i = 7; i < 16; i++) {
+			propertiesIgnoredOnPostAndPut.add("address" + i);
+		}
 	}
 	
 	/**
@@ -633,7 +638,8 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		Map<String, Property> allowedProperties = new LinkedHashMap<String, Property>(description.getProperties());
 		
 		Map<String, Object> propertiesToSet = new HashMap<String, Object>(propertyMap);
-		propertiesToSet.keySet().removeAll(propertiesIgnoredWhenUpdating);
+		
+		propertiesToSet.keySet().removeAll(propertiesIgnoredOnPostAndPut);
 		
 		// Apply properties in the order specified in the resource description (necessary e.g. so the obs resource
 		// can apply "concept" before "value"); we have already excluded unchanged and ignored properties.
@@ -753,7 +759,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 */
 	@Override
 	public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
-		if (propertiesIgnoredWhenUpdating.contains(propertyName)) {
+		if (propertiesIgnoredOnPostAndPut.contains(propertyName)) {
 			return;
 		}
 		try {
@@ -770,7 +776,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 			
 			// try to find a @PropertySetter-annotated method
 			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
-			if (annotatedSetter != null) {
+			if (annotatedSetter != null && value != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
 				annotatedSetter.invoke(handler, instance, value);

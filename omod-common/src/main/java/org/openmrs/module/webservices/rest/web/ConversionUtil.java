@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.openmrs.Auditable;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Retireable;
 import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
@@ -296,11 +297,37 @@ public class ConversionUtil {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convertMap(Map<String, ?> map, Class<?> toClass) throws ConversionException {
-		// TODO handle refs by fetching the object at their URI
-		Converter converter = getConverter(toClass);
-		
+		Converter converter = null;
 		Object ret = null;
 		Object uuid = map.get(RestConstants.PROPERTY_UUID);
+		
+		if (toClass.equals(String.class)) {//is referenced object, retrieve by URI
+			String uri = getSelfLink(map);
+			//TODO RestConstants.URI_PREFIX may be poiting to another server?
+			String resourceCode = uri.split("/ws/rest/v1/")[1].replace("/" + uuid.toString(), "");
+			OpenmrsObject o = null;
+			if ("concept".equals(resourceCode)) {
+				o = Context.getConceptService().getConceptByUuid(uuid.toString());
+			} else if ("location".equals(resourceCode)) {
+				o = Context.getLocationService().getLocationByUuid(uuid.toString());
+			} else if ("encounter".equals(resourceCode)) {
+				o = Context.getEncounterService().getEncounterByUuid(uuid.toString());
+			} else if ("user".equals(resourceCode)) {
+				o = Context.getUserService().getUserByUuid(uuid.toString());
+			} else if ("provider".equals(resourceCode)) {
+				o = Context.getProviderService().getProviderByUuid(uuid.toString());
+			} else if ("person".equals(resourceCode)) {
+				o = Context.getPersonService().getPersonByUuid(uuid.toString());
+			} else if ("patient".equals(resourceCode)) {
+				o = Context.getPatientService().getPatientByUuid(uuid.toString());
+			}
+			//else TODO support more resource types retrieval or perhaps use better algorithm to retrieve referenced object
+			if (o != null) {
+				return String.valueOf(o.getId());
+			}
+		} else {
+			converter = getConverter(toClass);
+		}
 		if (uuid instanceof String) {
 			ret = converter.getByUniqueId(uuid.toString());
 		}
@@ -504,6 +531,26 @@ public class ConversionUtil {
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Get the self link from a simple object
+	 * 
+	 * @param map
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static String getSelfLink(Map<String, ?> map) {
+		List<Map> links = (List<Map>) map.get("links");
+		if (links == null || links.size() == 0) {
+			return null;
+		}
+		for (Map link : links) {
+			if (link.get("rel").equals("self")) {
+				return (String) link.get("uri");
+			}
+		}
+		return null;
 	}
 	
 }
