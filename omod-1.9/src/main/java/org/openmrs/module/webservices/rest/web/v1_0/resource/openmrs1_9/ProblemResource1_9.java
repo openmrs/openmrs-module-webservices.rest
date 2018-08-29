@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Map;
+
 import org.openmrs.activelist.Problem;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -32,7 +34,8 @@ public class ProblemResource1_9 extends ProblemResource1_8 {
 	
 	@PropertySetter("problem")
 	public static void setProblem(Problem problem, Object value) {
-		problem.setProblem(new ConceptResource1_9().getByUniqueId((String) value));
+		String uuid = value instanceof Map ? ((Map) value).get("uuid").toString() : (String) value;
+		problem.setProblem(new ConceptResource1_9().getByUniqueId(uuid));
 	}
 	
 }

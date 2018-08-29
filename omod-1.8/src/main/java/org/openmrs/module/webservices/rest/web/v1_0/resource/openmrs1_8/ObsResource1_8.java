@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -366,7 +367,8 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@PropertySetter("concept")
 	public static void setConcept(Obs obs, Object value) {
-		obs.setConcept(Context.getConceptService().getConceptByUuid((String) value));
+		String uuid = value instanceof Map ? ((Map) value).get("uuid").toString() : (String) value;
+		obs.setConcept(Context.getConceptService().getConceptByUuid(uuid));
 	}
 	
 	/**
