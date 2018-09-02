@@ -12,11 +12,16 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
@@ -103,6 +108,27 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
 		Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
 		Assert.assertEquals(2, service.getVisitsByPatient(patient).get(0).getEncounters().size());
+	}
+	
+	@Test
+	public void shouldCreateAVisitWithEncounterAndObs() throws Exception {
+		int originalCount = service.getAllVisits().size();
+		final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
+		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+		Assert.assertEquals(0, service.getVisitsByPatient(patient).size());
+		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
+		        + RestTestConstants1_9.VISIT_TYPE_UUID
+		        + "\", \"location\":\""
+		        + RestTestConstants1_9.LOCATION_UUID
+		        + "\", \"startDatetime\":\""
+		        + DATE_FORMAT.format(new Date())
+		        + "\", \"encounters\": [{\"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"obs\": [{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\":\"b055abd8-a420-4a11-8b98-02ee170a7b54\"}]}] }}] }";
+		Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+		Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+		Assert.assertEquals(1, service.getVisitsByPatient(patient).get(0).getEncounters().size());
+		Iterator<Encounter> encouters = service.getVisitsByPatient(patient).get(0).getEncounters().iterator();
+		Assert.assertEquals(1, encouters.next().getObs().size());
 	}
 	
 	@Test
