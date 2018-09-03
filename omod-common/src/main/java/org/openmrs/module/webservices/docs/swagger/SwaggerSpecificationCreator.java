@@ -987,12 +987,6 @@ public class SwaggerSpecificationCreator {
 		Model model = null;
 		Model modelRef = null;
 		Model modelFull = null;
-		//FIXME ex:
-		// java.lang.AbstractMethodError: org.openmrs.module.reportingrest.web.resource.EvaluatedCohort
-		//		resourceHandler.getClass().getMethod("getGETModel", Representation.class);
-		if (!resourceHandler.getClass().getName().startsWith("org.openmrs.module.webservices.rest")) {
-			return;
-		}
 		
 		if (definitionName.endsWith("Get")) {
 			model = resourceHandler.getGETModel(Representation.DEFAULT);
