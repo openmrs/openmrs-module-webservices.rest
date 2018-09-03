@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResource;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -268,5 +269,31 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		assertFalse(json.contains("SystemsettingSubdetailsGet"));
 		assertFalse(json.contains("SystemsettingSubdetailsUpdate"));
 		assertTrue(json.contains("SystemsettingSubdetailsCreate"));
+	}
+
+	/**
+	 * Ensure that resources not directly related to the webservices.rest package are successfully defined in the swagger
+	 * documentation.
+	 */
+	@Test
+	public void testUnrelatedResourceDefinitions() {
+		// check the statics are false first
+		assertFalse(UnrelatedGenericChildResource.getGETCalled);
+		assertFalse(UnrelatedGenericChildResource.getCREATECalled);
+		assertFalse(UnrelatedGenericChildResource.getUPDATECalled);
+
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+		ssc.getJSON();
+
+		// check our custom methods were called
+		assertTrue(UnrelatedGenericChildResource.getGETCalled);
+		assertTrue(UnrelatedGenericChildResource.getCREATECalled);
+		assertTrue(UnrelatedGenericChildResource.getUPDATECalled);
+
+		// assert the definition is now in the swagger object
+		Swagger swagger = ssc.getSwagger();
+		assertTrue(swagger.getDefinitions().containsKey("UnrelatedGet"));
+		assertTrue(swagger.getDefinitions().containsKey("UnrelatedUpdate"));
+		assertTrue(swagger.getDefinitions().containsKey("UnrelatedCreate"));
 	}
 }
