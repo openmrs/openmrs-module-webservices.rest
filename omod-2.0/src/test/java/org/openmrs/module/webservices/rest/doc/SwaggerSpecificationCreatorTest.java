@@ -144,7 +144,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		Assert.assertTrue("Ensure that no data was added or removed from any tables",
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
-
+	
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
 		for (String key : beforeCounts.keySet()) {
 			if (beforeCounts.get(key) != afterCounts.get(key)) {
@@ -272,24 +272,29 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	}
 
 	/**
-	 * Ensure that resources not directly related to the webservices.rest package are successfully defined in the swagger
-	 * documentation.
+	 * Ensure that resources not directly related to the webservices.rest package are successfully
+	 * defined in the swagger documentation.
 	 */
 	@Test
 	public void testUnrelatedResourceDefinitions() {
-		// check the statics are false first
-		assertFalse(UnrelatedGenericChildResource.getGETCalled);
-		assertFalse(UnrelatedGenericChildResource.getCREATECalled);
-		assertFalse(UnrelatedGenericChildResource.getUPDATECalled);
+		// ensure the statics are false first
+		UnrelatedGenericChildResource.getGETCalled = false;
+		UnrelatedGenericChildResource.getCREATECalled = false;
+		UnrelatedGenericChildResource.getUPDATECalled = false;
+
+		// make sure to reset the cache for multiple tests in the same run
+		if (SwaggerSpecificationCreator.isCached()) {
+			SwaggerSpecificationCreator.clearCache();
+		}
 
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.getJSON();
-
+		
 		// check our custom methods were called
 		assertTrue(UnrelatedGenericChildResource.getGETCalled);
 		assertTrue(UnrelatedGenericChildResource.getCREATECalled);
 		assertTrue(UnrelatedGenericChildResource.getUPDATECalled);
-
+		
 		// assert the definition is now in the swagger object
 		Swagger swagger = ssc.getSwagger();
 		assertTrue(swagger.getDefinitions().containsKey("UnrelatedGet"));
