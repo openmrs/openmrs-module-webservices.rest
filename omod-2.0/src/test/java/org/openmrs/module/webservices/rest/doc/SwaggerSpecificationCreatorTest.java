@@ -143,7 +143,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		Assert.assertTrue("Ensure that no data was added or removed from any tables",
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
-	
+
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
 		for (String key : beforeCounts.keySet()) {
 			if (beforeCounts.get(key) != afterCounts.get(key)) {
