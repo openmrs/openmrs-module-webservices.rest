@@ -26,10 +26,12 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -497,4 +499,91 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(9, Util.getResultsSize(results));
 	}
 	
+	@Test
+	public void shouldGetOrdersByOrderType() throws Exception {
+		// add a new drug order
+		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		executeDataSet("OrderController1_10Test-conceptMappings.xml");
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
+		OrderType drugOrderType = orderService.getOrderTypeByName("Drug order");
+		if (drugOrderType.getConceptClasses().isEmpty()) {
+			ConceptClass drugClass = Context.getConceptService().getConceptClassByName("Drug");
+			assertNotNull(drugClass);
+			drugOrderType.getConceptClasses().add(drugClass);
+		}
+		SimpleObject order = new SimpleObject();
+		order.add("type", "drugorder");
+		order.add("patient", PATIENT_UUID);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("drug", "3cfcf118-931c-46f7-8ff6-7b876f0d4202");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		order.add("dosingType", "org.openmrs.SimpleDosingInstructions");
+		order.add("dose", "300.0");
+		order.add("doseUnits", "557b9699-68a3-11e3-bd76-0800271c1b75");
+		order.add("quantity", "20.0");
+		order.add("quantityUnits", "5a2aa3db-68a3-11e3-bd76-0800271c1b75");
+		order.add("duration", "20");
+		order.add("durationUnits", "7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66");
+		order.add("frequency", "38090760-7c38-11e4-baa7-0800200c9a67");
+		order.add("numRefills", "2");
+		order.add("route", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
+		order.add("brandName", "Some brand name");
+		order.add("dispenseAsWritten", true);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), order);
+		SimpleObject newDrug = deserialize(handle(req));
+		
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+		    outPatient, null);
+		int activeDrugOrderCount = activeDrugOrders.size();
+		
+		// add a new test order
+		order = new SimpleObject();
+		order.add("type", "testorder");
+		order.add("patient", PATIENT_UUID);
+		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
+		order.add("concept", cd4CountUuid);
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+		order.add("clinicalHistory", "Patient had a negative reaction to the test in the past");
+		String onceUuid = "38090760-7c38-11e4-baa7-0800200c9a67";
+		order.add("frequency", onceUuid);
+		order.add("specimenSource", "e10ffe54-5184-4efe-8960-cd565ec1cdf8");
+		order.add("numberOfRepeats", "3");
+		req = newPostRequest(getURI(), order);
+		SimpleObject newTest = deserialize(handle(req));
+		
+		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"),
+		    outPatient, null);
+		int activeTestOrderCount = activeTestOrders.size();
+		
+		// order service should return all orders when no order type filter specified
+		req = newGetRequest(getURI(),
+		    new Parameter("patient", PATIENT_UUID)
+		        );
+		SimpleObject orders = deserialize(handle(req));
+		ArrayList<Object> resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
+		assertEquals(activeTestOrderCount + activeDrugOrderCount, resp.size());
+		
+		// order service should filter by test order type
+		req = newGetRequest(getURI(),
+		    new Parameter("patient", PATIENT_UUID),
+		    new Parameter("orderType", RestTestConstants1_10.TEST_ORDER_TYPE_UUID)
+		        );
+		orders = deserialize(handle(req));
+		resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
+		assertEquals(activeTestOrderCount, resp.size());
+	}
+	
+	@Test(expected = ObjectNotFoundException.class)
+	public void invalidCareCenterShouldThrowException() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+		    new Parameter("patient", PATIENT_UUID),
+		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID")
+		        );
+		handle(req);
+	}
 }
