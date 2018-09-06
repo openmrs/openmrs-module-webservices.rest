@@ -49,7 +49,7 @@ public class FulfillerDetailsResource2_2Test extends BaseDelegatingResourceTest<
 	
 	/**
 	 * @see BaseDelegatingResourceTest#validateFullRepresentation()
-	 */	
+	 */
 	public void validateFullRepresentation() throws Exception {
 		assertPropEquals("fulfillerStatus", fulfillerStatus);
 		assertPropEquals("fulfillerComment", fulfillerComment);
@@ -62,7 +62,7 @@ public class FulfillerDetailsResource2_2Test extends BaseDelegatingResourceTest<
 		assertPropEquals("fulfillerStatus", fulfillerStatus);
 		assertPropEquals("fulfillerComment", fulfillerComment);
 	}
-		
+	
 	@Override
 	public String getDisplayProperty() {
 		return null;
