@@ -75,6 +75,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("orderer", Representation.REF);
 			description.addProperty("orderReason", Representation.REF);
 			description.addProperty("orderReasonNonCoded");
+			description.addProperty("orderType");
 			description.addProperty("urgency");
 			description.addProperty("instructions");
 			description.addProperty("commentToFulfiller");
@@ -100,6 +101,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			description.addProperty("orderer", Representation.REF);
 			description.addProperty("orderReason", Representation.REF);
 			description.addProperty("orderReasonNonCoded");
+			description.addProperty("orderType");
 			description.addProperty("urgency");
 			description.addProperty("instructions");
 			description.addProperty("commentToFulfiller");
