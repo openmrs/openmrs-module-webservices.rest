@@ -46,6 +46,7 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 		assertPropPresent("orderer");
 		assertPropPresent("orderReason");
 		assertPropPresent("orderReasonNonCoded");
+		assertPropPresent("orderType");
 		assertPropPresent("urgency");
 		assertPropPresent("instructions");
 		assertPropPresent("commentToFulfiller");
@@ -73,6 +74,7 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 		assertPropPresent("orderer");
 		assertPropPresent("orderReason");
 		assertPropPresent("orderReasonNonCoded");
+		assertPropPresent("orderType");
 		assertPropPresent("urgency");
 		assertPropPresent("instructions");
 		assertPropPresent("commentToFulfiller");
