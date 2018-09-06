@@ -23,6 +23,7 @@ import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
@@ -232,20 +233,33 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			String careSettingUuid = context.getRequest().getParameter("careSetting");
 			String asOfDateString = context.getRequest().getParameter("asOfDate");
+			String orderTypeUuid = context.getRequest().getParameter("orderType");
 			String sortParam = context.getRequest().getParameter("sort");
 			
 			CareSetting careSetting = null;
 			Date asOfDate = null;
+			OrderType orderType = null;
 			if (StringUtils.isNotBlank(asOfDateString)) {
 				asOfDate = (Date) ConversionUtil.convert(asOfDateString, Date.class);
 			}
 			if (StringUtils.isNotBlank(careSettingUuid)) {
 				careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 				    CareSetting.class)).getByUniqueId(careSettingUuid);
+				if (careSetting == null) {
+					return new EmptySearchResult();
+				}
+			}
+			if (StringUtils.isNotBlank(orderTypeUuid)) {
+				orderType = ((OrderTypeResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
+				    OrderType.class)).getByUniqueId(orderTypeUuid);
+				if (orderType == null) {
+					return new EmptySearchResult();
+				}
 			}
 			
 			String status = context.getRequest().getParameter("status");
-			List<Order> orders = OrderUtil.getOrders(patient, careSetting, null, status, asOfDate, context.getIncludeAll());
+			List<Order> orders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
+			    context.getIncludeAll());
 			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
