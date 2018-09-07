@@ -19,11 +19,11 @@ public class EnumProperty extends StringProperty {
 	public EnumProperty(Class<? extends Enum<?>> e) {
 		_enum(getEnumsAsList(e));
 	}
-
+	
 	private List<String> getEnumsAsList(Class<? extends Enum<?>> e) {
 		return Arrays.asList(getEnums(e));
 	}
-
+	
 	private String[] getEnums(Class<? extends Enum<?>> e) {
 		return Arrays.toString(e.getEnumConstants())
 		        .replaceAll("^.|.$", "").split(", ");

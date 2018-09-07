@@ -64,11 +64,11 @@ public abstract class ITBase {
 				
 				final RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(retryAfter)
 				        .setConnectTimeout(retryAfter).build();
-
+				
 				final String startupUri = TEST_URL.getScheme() + "://" + TEST_URL.getHost() + ":"
-						+ TEST_URL.getPort() + TEST_URL.getPath();
+				        + TEST_URL.getPort() + TEST_URL.getPath();
 				System.out.println("Waiting for server at " + startupUri + " for " + timeout / 1000 + " more seconds...");
-
+				
 				while (System.currentTimeMillis() - time < timeout) {
 					try {
 						final HttpClient client = HttpClientBuilder.create().disableAutomaticRetries().build();
@@ -97,10 +97,10 @@ public abstract class ITBase {
 					catch (IOException e) {
 						System.out.println(e.toString());
 					}
-
+					
 					try {
 						System.out.println("Waiting for "
-								+ (timeout - (System.currentTimeMillis() - time)) / 1000 + " more seconds...");
+						        + (timeout - (System.currentTimeMillis() - time)) / 1000 + " more seconds...");
 						Thread.sleep(retryAfter);
 					}
 					catch (InterruptedException e) {

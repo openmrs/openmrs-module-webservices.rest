@@ -171,7 +171,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				Module existingModule = moduleFactoryWrapper.getModuleById(tmpModule.getModuleId());
 				ServletContext servletContext = context.getRequest().getSession().getServletContext();
 				List<Module> dependentModulesStopped = new ArrayList<Module>();
-
+				
 				if (existingModule != null) {
 					dependentModulesStopped = moduleFactoryWrapper.stopModuleAndGetDependent(existingModule);
 					for (Module depMod : dependentModulesStopped) {
@@ -185,7 +185,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				moduleFile = moduleFactoryWrapper.insertModuleFile(tmpModule, filename);
 				module = moduleFactoryWrapper.loadModule(moduleFile);
 				moduleFactoryWrapper.startModule(module, servletContext);
-
+				
 				if (existingModule != null && dependentModulesStopped.size() > 0
 				        && moduleFactoryWrapper.isModuleStarted(module)) {
 					startModules(dependentModulesStopped, existingModule, servletContext);
@@ -205,7 +205,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		if (modules.size() > 1) {
 			modules = moduleFactoryWrapper.getModulesInStartupOrder(modules);
 		}
-
+		
 		for (Module module : modules) {
 			if (moduleFactoryWrapper.isModuleStopped(module) && module.getModuleId() != existingModule.getModuleId()) {
 				needsRefresh = moduleFactoryWrapper.startModuleSkipRefresh(module, servletContext) || needsRefresh;
@@ -215,7 +215,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		if (needsRefresh) {
 			moduleFactoryWrapper.refreshWebApplicationContext(servletContext);
 		}
-
+		
 		findAndThrowStartupErrors(modules);
 	}
 	
@@ -229,7 +229,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				}
 			}
 		}
-
+		
 		if (!errors.isEmpty()) {
 			StringBuilder stringBuilder = new StringBuilder();
 			for (Exception error : errors) {

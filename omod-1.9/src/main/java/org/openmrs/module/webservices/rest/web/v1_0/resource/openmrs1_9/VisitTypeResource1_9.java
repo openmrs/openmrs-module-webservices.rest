@@ -111,7 +111,7 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 		//Apparently, in 1.9.0 this method returns all and has no argument for excluding retired ones
 		List<VisitType> visitTypes = Context.getVisitService().getAllVisitTypes();
 		List<VisitType> filteredVisitTypes;
-		if (context.getIncludeAll()){
+		if (context.getIncludeAll()) {
 			filteredVisitTypes = visitTypes;
 		} else {
 			filteredVisitTypes = new ArrayList<VisitType>();
@@ -130,7 +130,7 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 	protected NeedsPaging<VisitType> doSearch(RequestContext context) {
 		List<VisitType> visitTypes = Context.getVisitService().getVisitTypes(context.getParameter("q"));
 		List<VisitType> filteredVisitTypes;
-		if (context.getIncludeAll()){
+		if (context.getIncludeAll()) {
 			filteredVisitTypes = visitTypes;
 		} else {
 			filteredVisitTypes = new ArrayList<VisitType>();

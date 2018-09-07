@@ -173,14 +173,15 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
 		if (StringUtils.isNotBlank(sortParam)) {
-			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(drugOrders, sortParam, status);
+			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(drugOrders, sortParam,
+			    status);
 			return new NeedsPaging<Order>(sortedOrder, context);
 		}
 		else {
 			return new NeedsPaging<Order>(drugOrders, context);
 		}
 	}
-
+	
 	/**
 	 * @see OrderResource1_10#getDisplayString(org.openmrs.Order)
 	 */

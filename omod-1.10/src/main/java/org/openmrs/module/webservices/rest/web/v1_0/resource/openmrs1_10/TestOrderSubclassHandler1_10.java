@@ -193,9 +193,10 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		    context.getIncludeAll());
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
-
+		
 		if (StringUtils.isNotBlank(sortParam)) {
-			List<Order>sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(testOrders, sortParam, status);
+			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(testOrders, sortParam,
+			    status);
 			return new NeedsPaging<Order>(sortedOrder, context);
 		}
 		else {

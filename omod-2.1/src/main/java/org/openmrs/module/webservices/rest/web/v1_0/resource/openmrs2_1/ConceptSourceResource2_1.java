@@ -26,7 +26,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptS
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = { "2.1.*", "2.2.*" })
+@Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {
+        "2.1.*", "2.2.*" })
 public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 	
 	@Override

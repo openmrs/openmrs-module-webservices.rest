@@ -1233,5 +1233,5 @@ public class SwaggerSpecificationCreator {
 	public static void clearCache() {
 		swagger = null;
 	}
-
+	
 }

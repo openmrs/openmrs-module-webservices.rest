@@ -243,6 +243,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	
 	@PropertySetter("obs")
 	public static void setObs(Encounter instance, Set<Obs> obs) {
+		instance.getAllObs(true).clear();
 		for (Obs o : obs)
 			instance.addObs(o);
 	}
