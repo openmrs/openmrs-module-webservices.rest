@@ -15,9 +15,11 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -27,6 +29,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/workflow", supportedClass = ProgramWorkflow.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" }, order = 1)
@@ -86,7 +90,12 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 		}
 		return model;
 	}
-	
+
+	@PropertyGetter("states")
+	public Set<ProgramWorkflowState> getUnretiredStates(ProgramWorkflow instance) {
+		return instance.getStates(false);
+	}
+
 	@Override
 	public ProgramWorkflow getByUniqueId(String uniqueId) {
 		return Context.getProgramWorkflowService().getWorkflowByUuid(uniqueId);

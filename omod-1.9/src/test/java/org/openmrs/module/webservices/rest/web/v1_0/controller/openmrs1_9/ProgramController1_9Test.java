@@ -189,5 +189,22 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "workflows")).size());
 		
 	}
+
+	@Test
+	public void shouldNotListRetiredProgramWorkflowStatesInResultDataset() throws Exception {
+
+		// there is no retired workflows in the standard test dataset, so add some test data with one
+		executeDataSet("programDataset1_9.xml");
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/45ad63a8-84cb-4bcb-bb2c-ec5b233502bc");
+		SimpleObject result = deserialize(handle(req));
+		Assert.assertNotNull(result);
+		Assert.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
+
+		List<Object> workflows = (List<Object>) PropertyUtils.getProperty(result, "workflows");
+		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(workflows.get(0),"states")).size());
+
+	}
+
 	
 }
