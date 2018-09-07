@@ -74,7 +74,9 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("retired");
+			// see https://issues.openmrs.org/browse/RESTWS-723 for why "allWorkflows" is returned
 			description.addProperty("allWorkflows", Representation.DEFAULT);
+			description.addProperty("workflows", Representation.DEFAULT);
 			description.addProperty("concept", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -86,6 +88,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 			description.addProperty("description");
 			description.addProperty("retired");
 			description.addProperty("allWorkflows", Representation.FULL);
+			description.addProperty("workflows", Representation.FULL);
 			description.addProperty("concept");
 			description.addSelfLink();
 			description.addProperty("auditInfo");
@@ -96,6 +99,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 			description.addProperty("display");
 			description.addProperty("retired");
 			description.addProperty("allWorkflows", Representation.REF);
+			description.addProperty("workflows", Representation.REF);
 			description.addSelfLink();
 			return description;
 		}
