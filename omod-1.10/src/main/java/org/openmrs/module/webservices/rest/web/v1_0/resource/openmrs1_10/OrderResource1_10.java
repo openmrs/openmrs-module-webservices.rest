@@ -23,6 +23,7 @@ import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
@@ -38,6 +39,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
@@ -205,20 +207,20 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	/**
 	 * Gets orders by given patient (paged according to context if necessary) only if a patient
 	 * parameter exists in the request set on the {@link RequestContext}, optional careSetting,
-	 * asOfDate request parameters can be specified to filter on
+	 * orderType, asOfDate request parameters can be specified to filter on
 	 * 
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @return all orders for a given patient (possibly filtered by context.type)
 	 */
 	@Override
-	protected PageableResult doSearch(RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) throws ResponseException {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null) {
-				return new EmptySearchResult();
+				throw new ObjectNotFoundException();
 			}
 			
 			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
@@ -232,20 +234,33 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			String careSettingUuid = context.getRequest().getParameter("careSetting");
 			String asOfDateString = context.getRequest().getParameter("asOfDate");
+			String orderTypeUuid = context.getRequest().getParameter("orderType");
 			String sortParam = context.getRequest().getParameter("sort");
 			
 			CareSetting careSetting = null;
 			Date asOfDate = null;
+			OrderType orderType = null;
 			if (StringUtils.isNotBlank(asOfDateString)) {
 				asOfDate = (Date) ConversionUtil.convert(asOfDateString, Date.class);
 			}
 			if (StringUtils.isNotBlank(careSettingUuid)) {
 				careSetting = ((CareSettingResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
 				    CareSetting.class)).getByUniqueId(careSettingUuid);
+				if (careSetting == null) {
+					throw new ObjectNotFoundException();
+				}
+			}
+			if (StringUtils.isNotBlank(orderTypeUuid)) {
+				orderType = ((OrderTypeResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(
+				    OrderType.class)).getByUniqueId(orderTypeUuid);
+				if (orderType == null) {
+					throw new ObjectNotFoundException();
+				}
 			}
 			
 			String status = context.getRequest().getParameter("status");
-			List<Order> orders = OrderUtil.getOrders(patient, careSetting, null, status, asOfDate, context.getIncludeAll());
+			List<Order> orders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
+			    context.getIncludeAll());
 			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());

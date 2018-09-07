@@ -19,5 +19,7 @@ public class RestTestConstants1_10 {
 	
 	public final static String ORDER_TYPE_UUID = "52a447d3-a64a-11e3-9aeb-50e549534c5e";
 	
+	public final static String TEST_ORDER_TYPE_UUID = "52a447d3-a64a-11e3-9aeb-50e549534c5e";
+	
 	public final static String COUGH_SYRUP_UUID = "0cbe2ed3-cd5f-4f46-9459-26127c9265ab";
 }
