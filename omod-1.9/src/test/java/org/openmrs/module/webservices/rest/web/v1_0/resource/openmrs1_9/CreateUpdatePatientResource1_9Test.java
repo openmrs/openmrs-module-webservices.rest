@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +73,20 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 		Assert.assertEquals("address 1", preferredAddress.get("display"));
 		List<Map> attributes = (List<Map>) person.get("attributes");
 		Assert.assertEquals("Race = Muslim", attributes.get(0).get("display"));
+	}
+	
+	@Test
+	public void shouldCreatePatient_fromGET() throws Exception {
+		executeDataSet("personAttributeTypeWithConcept.xml");
+		SimpleObject patientSimpleObject = new SimpleObject();
+		InputStream object = getClass().getClassLoader().getResourceAsStream("create_patient_from_get.json");
+		patientSimpleObject.putAll(new ObjectMapper().readValue(object, HashMap.class));
+		SimpleObject created = (SimpleObject) resource.create(patientSimpleObject, new RequestContext());
+		Assert.assertEquals(created.get("uuid").toString(), patientSimpleObject.get("uuid").toString());
+		Assert.assertEquals(created.get("uuid").toString(), "a65fc361-f6ac-40ba-8485-94749c061509");
+		Assert.assertEquals(created.get("display").toString(), "id-B - Jonnea Bijo");
+		Assert.assertEquals(((Map) (((ArrayList) created.get("identifiers")).get(0))).get("display").toString(),
+		    "OpenMRS Identification Number = id-B");
 	}
 	
 }

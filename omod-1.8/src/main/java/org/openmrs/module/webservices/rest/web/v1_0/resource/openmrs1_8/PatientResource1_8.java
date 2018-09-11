@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -40,11 +40,12 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
@@ -225,6 +226,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	public Patient getPatient(SimpleObject propertiesToCreate) {
+		removeKeys(propertiesToCreate, "preferredName", "preferredAddress", "deathdateEstimated", "birthtime");
 		Object personProperty = propertiesToCreate.get("person");
 		Person person = null;
 		if (personProperty == null) {
@@ -236,7 +238,6 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			person = (Person) ConversionUtil.convert(personProperty, Person.class);
 			propertiesToCreate.put("person", "");
 		}
-		
 		Patient delegate = new Patient(person);
 		setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
 		return delegate;
@@ -341,4 +342,17 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		return patient;
 	}
 	
+	private void removeKeys(Map<String, Object> levels, String... keys) {
+		if (levels == null || (levels != null && levels.size() == 0)) {
+			return;
+		}
+		for (String k : keys) {
+			levels.remove(k);
+		}
+		for (String key : levels.keySet()) {
+			if (levels.get(key) instanceof Map) {
+				removeKeys((Map<String, Object>) levels.get(key), keys);
+			}
+		}
+	}
 }

@@ -1,0 +1,54 @@
+{
+    "uuid":"9a462730-d666-4518-b1d6-1c0620a9027c",
+    "display":"Confused",
+    "name":"Confused",
+    "description":"To be consufed",
+    "address1":"Lutterman Drive Building",
+    "address2":"D Suite D4700",
+    "cityVillage":"San Francisco",
+    "stateProvince":"California",
+    "country":"United States",
+    "postalCode":"94129",
+    "latitude":null,
+    "longitude":null,
+    "countyDistrict":null,
+    "address3":null,
+    "address4":null,
+    "address5":null,
+    "address6":null,
+    "tags":[
+        {
+            "uuid":"60cedb47-88bb-11e1-b45c-0024e8c61285",
+            "display":"Lost",
+            "name":"Lost",
+            "description":"",
+            "retired":false
+        }
+    ],
+    "parentLocation":null,
+    "childLocations":[
+
+    ],
+    "retired":false,
+    "auditInfo":{
+        "creator":{
+            "uuid":"1c3db49d-440a-11e6-a65c-00e04c680037",
+            "display":"admin"
+        },
+        "dateCreated":"2018-08-26T12:50:35.000+0000",
+        "changedBy":null,
+        "dateChanged":null
+    },
+    "attributes":[
+
+    ],
+    "address7":null,
+    "address8":null,
+    "address9":null,
+    "address10":null,
+    "address11":null,
+    "address12":null,
+    "address13":null,
+    "address14":null,
+    "address15":null
+}
