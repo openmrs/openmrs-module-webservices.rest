@@ -143,7 +143,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		Assert.assertTrue("Ensure that no data was added or removed from any tables",
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
-
+	
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
 		for (String key : beforeCounts.keySet()) {
 			if (beforeCounts.get(key) != afterCounts.get(key)) {
@@ -231,25 +231,42 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		return limit && startIndex;
 	}
-
+	
 	@Test
 	public void addPathsWorksForCoreModels() throws NoSuchMethodException, InvocationTargetException,
-			IllegalAccessException, NoSuchFieldException {
+	        IllegalAccessException, NoSuchFieldException {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-
+		
 		// reflect the swagger propperty and initSwagger method so we can setup for the main test
 		Field swagger = ssc.getClass().getDeclaredField("swagger");
 		swagger.setAccessible(true);
 		swagger.set(ssc, new Swagger());
-
+		
 		Method initSwagger = ssc.getClass().getDeclaredMethod("initSwagger");
 		initSwagger.setAccessible(true);
 		initSwagger.invoke(ssc);
-
+		
 		// make the paths method accessible
 		Method addPaths = ssc.getClass().getDeclaredMethod("addPaths");
 		addPaths.setAccessible(true);
-
+		
 		addPaths.invoke(ssc);
+	}
+	
+	/**
+	 * Some subresource appear to only support creation, not fetching or updating. References to the
+	 * Get/Update definitions were still being included in the response options, despite not
+	 * existing. Ensure that these references are not included in the resulting JSON to prevent
+	 * swagger reference errors. See ticket: RESTWS-720
+	 */
+	@Test
+	public void createOnlySubresourceDefinitions() {
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+		String json = ssc.getJSON();
+		
+		// A simple search will tell us if the problem definitions exist
+		assertFalse(json.contains("SystemsettingSubdetailsGet"));
+		assertFalse(json.contains("SystemsettingSubdetailsUpdate"));
+		assertTrue(json.contains("SystemsettingSubdetailsCreate"));
 	}
 }

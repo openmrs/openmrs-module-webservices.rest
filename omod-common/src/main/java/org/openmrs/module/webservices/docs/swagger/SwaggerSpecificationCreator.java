@@ -401,12 +401,8 @@ public class SwaggerSpecificationCreator {
 			return true;
 		}
 		catch (Exception e) {
-			if (e instanceof ResourceDoesNotSupportOperationException
-			        || e.getCause() instanceof ResourceDoesNotSupportOperationException) {
-				return false;
-			} else {
-				return true;
-			}
+			return !(e instanceof ResourceDoesNotSupportOperationException)
+					&& !(e.getCause() instanceof ResourceDoesNotSupportOperationException);
 		}
 	}
 	
@@ -727,7 +723,7 @@ public class SwaggerSpecificationCreator {
 			
 			if (annotation != null) {
 				// top level resource
-				resourceName = annotation.name().substring(annotation.name().indexOf('/') + 1, annotation.name().length());
+				resourceName = annotation.name().substring(annotation.name().indexOf('/') + 1);
 			} else {
 				// subresource
 				SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
@@ -737,7 +733,7 @@ public class SwaggerSpecificationCreator {
 					
 					resourceName = subResourceAnnotation.path();
 					resourceParentName = parentResourceAnnotation.name().substring(
-					    parentResourceAnnotation.name().indexOf('/') + 1, parentResourceAnnotation.name().length());
+					    parentResourceAnnotation.name().indexOf('/') + 1);
 				}
 			}
 			
@@ -1116,8 +1112,7 @@ public class SwaggerSpecificationCreator {
 			operation.setOperationId("create" + getOperationTitle(resourceHandler, false));
 			operation.parameter(buildRequiredUUIDParameter("parent-uuid", "parent resource uuid"));
 			operation.parameter(buildPOSTBodyParameter(resourceName, resourceParentName, OperationEnum.postSubresource));
-			operation.addResponse("201",
-			    response201.schema(new RefProperty(getSchemaRef(resourceName, resourceParentName, OperationEnum.get))));
+			operation.addResponse("201", response201);
 			
 		} else if (operationEnum == OperationEnum.postUpdateSubresouce) {
 			
@@ -1128,8 +1123,7 @@ public class SwaggerSpecificationCreator {
 			operation.parameter(buildRequiredUUIDParameter("uuid", "uuid of resource to update"));
 			operation
 			        .parameter(buildPOSTBodyParameter(resourceName, resourceParentName, OperationEnum.postUpdateSubresouce));
-			operation.addResponse("201",
-			    response201.schema(new RefProperty(getSchemaRef(resourceName, resourceParentName, OperationEnum.get))));
+			operation.addResponse("201", response201);
 			
 		} else if (operationEnum == OperationEnum.getSubresourceWithUUID) {
 			operation.setSummary("Fetch " + resourceName + " subresources by uuid");
