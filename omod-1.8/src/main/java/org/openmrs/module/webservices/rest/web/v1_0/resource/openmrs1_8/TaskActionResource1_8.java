@@ -188,7 +188,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getCREATEModel(rep);
+		ModelImpl model = new ModelImpl();
 		model.property("tasks", new ArrayProperty(new StringProperty()));
 		model.property("allTasks", new BooleanProperty());
 		model.property("action", new EnumProperty(TaskAction.Action.class));

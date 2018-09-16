@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.doc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.converter.ModelConverterContextImpl;
 import io.swagger.converter.ModelConverters;
@@ -35,6 +34,9 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -66,7 +68,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	}
 	
 	@Test
-	public void cacheTest() throws Exception {
+	public void cacheTest() {
 		if (SwaggerSpecificationCreator.isCached()) {
 			SwaggerSpecificationCreator.clearCache();
 		}
@@ -84,7 +86,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	}
 	
 	@Test
-	public void swaggerSerializeTest() throws JsonProcessingException {
+	public void swaggerSerializeTest() {
 		final Info info = new Info().version("1.0.0").title("Swagger WebServices REST");
 		
 		Swagger swagger = new Swagger().info(info).securityDefinition("basicAuth", new BasicAuthDefinition())
@@ -142,7 +144,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
 	
-	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) throws Exception {
+	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
 		for (String key : beforeCounts.keySet()) {
 			if (beforeCounts.get(key) != afterCounts.get(key)) {
 				System.err.println("The " + key + " table has a different number of rows (" + beforeCounts.get(key)
@@ -157,7 +159,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	// makes sure that every operation has a unique operationId
 	@Test
-	public void checkOperationIdsSet() throws Exception {
+	public void checkOperationIdsSet() {
 		List<String> operationIds = new ArrayList<String>();
 		
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
@@ -174,7 +176,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	// makes sure that every GET operation has the "v" parameter
 	@Test
-	public void checkRepresentationParamExists() throws Exception {
+	public void checkRepresentationParamExists() {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.getJSON();
 		Swagger spec = ssc.getSwagger();
@@ -201,7 +203,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	// make sure each operation that supports paging has the limit and startIndex parameters
 	@Test
-	public void checkPagingParamsExist() throws Exception {
+	public void checkPagingParamsExist() {
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.getJSON();
 		Swagger spec = ssc.getSwagger();
@@ -228,5 +230,43 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		}
 		
 		return limit && startIndex;
+	}
+	
+	@Test
+	public void addPathsWorksForCoreModels() throws NoSuchMethodException, InvocationTargetException,
+	        IllegalAccessException, NoSuchFieldException {
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+		
+		// reflect the swagger propperty and initSwagger method so we can setup for the main test
+		Field swagger = ssc.getClass().getDeclaredField("swagger");
+		swagger.setAccessible(true);
+		swagger.set(ssc, new Swagger());
+		
+		Method initSwagger = ssc.getClass().getDeclaredMethod("initSwagger");
+		initSwagger.setAccessible(true);
+		initSwagger.invoke(ssc);
+		
+		// make the paths method accessible
+		Method addPaths = ssc.getClass().getDeclaredMethod("addPaths");
+		addPaths.setAccessible(true);
+		
+		addPaths.invoke(ssc);
+	}
+	
+	/**
+	 * Some subresource appear to only support creation, not fetching or updating. References to the
+	 * Get/Update definitions were still being included in the response options, despite not
+	 * existing. Ensure that these references are not included in the resulting JSON to prevent
+	 * swagger reference errors. See ticket: RESTWS-720
+	 */
+	@Test
+	public void createOnlySubresourceDefinitions() {
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+		String json = ssc.getJSON();
+		
+		// A simple search will tell us if the problem definitions exist
+		assertFalse(json.contains("SystemsettingSubdetailsGet"));
+		assertFalse(json.contains("SystemsettingSubdetailsUpdate"));
+		assertTrue(json.contains("SystemsettingSubdetailsCreate"));
 	}
 }
