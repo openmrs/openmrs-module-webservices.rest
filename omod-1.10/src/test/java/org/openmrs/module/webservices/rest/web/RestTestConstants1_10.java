@@ -21,5 +21,9 @@ public class RestTestConstants1_10 {
 	
 	public final static String TEST_ORDER_TYPE_UUID = "52a447d3-a64a-11e3-9aeb-50e549534c5e";
 	
+	public final static String DRUG_ORDER_TYPE_UUID = "131168f4-15f5-102d-96e4-000c29c2a5d7";
+	
 	public final static String COUGH_SYRUP_UUID = "0cbe2ed3-cd5f-4f46-9459-26127c9265ab";
+	
+	public final static String ASPIRIN_UUID = "15f83cd6-64e9-4e06-a5f9-364d3b14a43d";
 }
