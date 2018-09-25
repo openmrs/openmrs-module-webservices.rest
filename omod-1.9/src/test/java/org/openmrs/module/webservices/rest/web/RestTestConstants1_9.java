@@ -73,4 +73,12 @@ public class RestTestConstants1_9 {
 	
 	public static final String TEST_RESOURCE_FILE = "formResourcefile.txt";
 	
+	public static final String CONCEPT_TEXT_UUID = "96408258-000b-424e-af1a-403919332938";
+	
+	public static final String CONCEPT_CODED_UUID = "95312123-e0c2-466d-b6b1-cb6e990d0d65";
+
+	public static final String PATIENT_WITH_OBS_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
+	
+	public static final String CONCEPT_UNKNOWN_UUID = "325391a8-db12-4e24-863f-5d66f7a4d713";
+	
 }

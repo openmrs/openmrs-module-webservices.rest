@@ -270,7 +270,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		assertFalse(json.contains("SystemsettingSubdetailsUpdate"));
 		assertTrue(json.contains("SystemsettingSubdetailsCreate"));
 	}
-
+	
 	/**
 	 * Ensure that resources not directly related to the webservices.rest package are successfully
 	 * defined in the swagger documentation.
@@ -281,12 +281,12 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		UnrelatedGenericChildResource.getGETCalled = false;
 		UnrelatedGenericChildResource.getCREATECalled = false;
 		UnrelatedGenericChildResource.getUPDATECalled = false;
-
+		
 		// make sure to reset the cache for multiple tests in the same run
 		if (SwaggerSpecificationCreator.isCached()) {
 			SwaggerSpecificationCreator.clearCache();
 		}
-
+		
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.getJSON();
 		

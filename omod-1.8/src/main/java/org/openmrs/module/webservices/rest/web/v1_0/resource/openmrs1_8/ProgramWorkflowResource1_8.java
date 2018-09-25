@@ -90,12 +90,12 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 		}
 		return model;
 	}
-
+	
 	@PropertyGetter("states")
 	public Set<ProgramWorkflowState> getUnretiredStates(ProgramWorkflow instance) {
 		return instance.getStates(false);
 	}
-
+	
 	@Override
 	public ProgramWorkflow getByUniqueId(String uniqueId) {
 		return Context.getProgramWorkflowService().getWorkflowByUuid(uniqueId);
