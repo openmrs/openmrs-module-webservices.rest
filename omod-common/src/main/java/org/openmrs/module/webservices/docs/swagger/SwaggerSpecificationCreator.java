@@ -402,7 +402,7 @@ public class SwaggerSpecificationCreator {
 		}
 		catch (Exception e) {
 			return !(e instanceof ResourceDoesNotSupportOperationException)
-					&& !(e.getCause() instanceof ResourceDoesNotSupportOperationException);
+			        && !(e.getCause() instanceof ResourceDoesNotSupportOperationException);
 		}
 	}
 	
