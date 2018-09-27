@@ -25,11 +25,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
-
+	
 	private final String CODED_FOOD_ASSISTANCE_QUESTION = "59800cf7-c1a9-11e8-9554-54ee75ef41c2";
+	
 	private final String ANSWER_YES = "b055abd8-a420-4a11-8b98-02ee170a7b54";
+	
 	private final String ANSWER_NO = "b98a6ed4-77e7-4cee-aae2-81957fcd7f48";
-
+	
 	protected String getURI() {
 		return "encounter";
 	}
@@ -77,7 +79,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 	@Test
 	public void shouldReturnEncountersWithCodedObsValues() throws Exception {
 		executeDataSet("encounterWithCodedObs1_9.xml");
-
+		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "byObs");
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
@@ -90,7 +92,26 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		List<Encounter> encounters = result.get("results");
 		Assert.assertEquals(1, encounters.size());
 	}
-
+	
+	/**
+	 * @verifies returns encounters having observations with matching concept
+	 * @see EncounterSearchHandler1_9#search(RequestContext)
+	 */
+	@Test
+	public void shouldReturnEncountersForConcept() throws Exception {
+		executeDataSet("encounterWithCodedObs1_9.xml");
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("s", "byObs");
+		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
+		// food assistance question
+		req.addParameter("obsConcept", CODED_FOOD_ASSISTANCE_QUESTION);
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Encounter> encounters = result.get("results");
+		Assert.assertEquals(2, encounters.size());
+	}
+	
 	/**
 	 * @verifies does not return encounters without matching coded observations
 	 * @see EncounterSearchHandler1_9#search(RequestContext)
@@ -98,7 +119,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 	@Test
 	public void shouldNotReturnEncountersWithCodedObsValue() throws Exception {
 		executeDataSet("encounterWithCodedObs1_9.xml");
-
+		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "byObs");
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
@@ -106,12 +127,12 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		req.addParameter("obsConcept", CODED_FOOD_ASSISTANCE_QUESTION);
 		// "no" answer
 		req.addParameter("obsValues", ANSWER_NO);
-
+		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
 		Assert.assertEquals(0, encounters.size());
 	}
-
+	
 	/**
 	 * @verifies does not return encounters without matching coded observations
 	 * @see EncounterSearchHandler1_9#search(RequestContext)
@@ -119,7 +140,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 	@Test(expected = ObjectNotFoundException.class)
 	public void shouldThrowExceptionForInvalidConcept() throws Exception {
 		executeDataSet("encounterWithCodedObs1_9.xml");
-
+		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "byObs");
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
@@ -127,10 +148,10 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		req.addParameter("obsConcept", "FAKE_CONCEPT_123_UUID");
 		// "no" answer
 		req.addParameter("obsValues", ANSWER_NO);
-
+		
 		handle(req);
 	}
-
+	
 	/**
 	 * @verifies does not return encounters without matching coded observations
 	 * @see EncounterSearchHandler1_9#search(RequestContext)
@@ -143,7 +164,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		// CD4 count concept
 		req.addParameter("obsConcept", RestTestConstants1_8.CONCEPT_NUMERIC_UUID);
 		req.addParameter("obsValues", "abc,175");
-
+		
 		handle(req);
 	}
 }
