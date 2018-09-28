@@ -127,7 +127,7 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		
 		LocationTag locationTag = service.getLocationTag(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + locationTag.getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getLocationTag(3));

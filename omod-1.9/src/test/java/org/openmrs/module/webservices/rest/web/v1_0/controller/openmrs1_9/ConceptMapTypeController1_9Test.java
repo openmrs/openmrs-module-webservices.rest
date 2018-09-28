@@ -134,7 +134,7 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 	@Test
 	public void shouldPurgeAConceptMapType() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getConceptMapTypeByUuid(getUuid()));
 	}

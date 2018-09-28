@@ -146,7 +146,7 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		
 		Drug drug = service.getDrug(11);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + drug.getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getDrug(11));

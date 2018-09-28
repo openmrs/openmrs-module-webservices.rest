@@ -294,14 +294,14 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPurgeOrder() throws Exception {
 		Assert.assertNotNull(service.getOrderByUuid(getUuid()));
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		Assert.assertNull(service.getOrderByUuid(getUuid()));
 	}
 	
 	@Test
 	public void shouldPurgeDrugOrder() throws Exception {
 		Assert.assertNotNull(service.getOrderByUuid(DRUG_ORDER_UUID));
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		Assert.assertNull(service.getOrderByUuid(DRUG_ORDER_UUID));
 	}
 	

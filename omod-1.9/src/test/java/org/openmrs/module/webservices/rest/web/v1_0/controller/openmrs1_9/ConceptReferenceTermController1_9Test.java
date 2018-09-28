@@ -141,7 +141,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		final String uuid = "SSTRM-retired code";
 		assertNotNull(service.getConceptReferenceTermByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getConceptReferenceTermByUuid(uuid));
 	}

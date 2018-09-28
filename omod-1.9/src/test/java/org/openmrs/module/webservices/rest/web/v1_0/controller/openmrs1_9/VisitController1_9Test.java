@@ -223,7 +223,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
 		int originalCount = service.getAllVisits().size();
 		
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		
 		Assert.assertNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
 		Assert.assertEquals(originalCount - 1, service.getAllVisits().size());

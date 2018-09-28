@@ -292,7 +292,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		Assert.assertNotNull(conditionService.getConditionByUuid(getUuid()));
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(conditionService.getConditionByUuid(getUuid()));

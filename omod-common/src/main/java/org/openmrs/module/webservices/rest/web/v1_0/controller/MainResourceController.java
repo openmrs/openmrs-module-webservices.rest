@@ -152,7 +152,7 @@ public class MainResourceController extends BaseRestController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge")
+	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge=true")
 	@ResponseBody
 	public Object purge(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {

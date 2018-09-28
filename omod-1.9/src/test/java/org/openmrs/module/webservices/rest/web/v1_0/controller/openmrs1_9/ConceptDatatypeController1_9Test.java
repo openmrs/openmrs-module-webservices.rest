@@ -131,7 +131,7 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldNotSupportPurgingAConceptDatatype() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 	}
 	

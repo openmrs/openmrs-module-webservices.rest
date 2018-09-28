@@ -124,7 +124,7 @@ public class PrivilegeController1_8Test extends MainResourceControllerTest {
 	public void shouldPurgeAPrivilege() throws Exception {
 		assertNotNull(service.getPrivilegeByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getPrivilegeByUuid(getUuid()));
 	}

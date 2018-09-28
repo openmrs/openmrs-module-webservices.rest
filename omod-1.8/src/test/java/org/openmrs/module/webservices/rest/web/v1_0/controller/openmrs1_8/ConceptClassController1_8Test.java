@@ -99,7 +99,7 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(service.getConceptClassByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		Assert.assertNull(service.getConceptClassByUuid(uuid));
 	}

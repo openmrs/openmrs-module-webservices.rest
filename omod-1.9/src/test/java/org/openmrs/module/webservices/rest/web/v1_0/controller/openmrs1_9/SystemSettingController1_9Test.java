@@ -150,7 +150,7 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	public void shouldPurgeASystemSetting() throws Exception {
 		assertNotNull(service.getGlobalPropertyByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getGlobalPropertyByUuid(getUuid()));
 	}

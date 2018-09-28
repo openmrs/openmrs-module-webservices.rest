@@ -108,7 +108,7 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		String uuid = "759799ab-c9a5-435e-b671-77773ada74e6";
 		Assert.assertNotNull(service.getVisitTypeByUuid(uuid));
 		int originalCount = service.getAllVisitTypes().size();
-		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true")));
 		Assert.assertNull(service.getVisitTypeByUuid(uuid));
 		Assert.assertEquals(originalCount - 1, service.getAllVisitTypes().size());
 	}
