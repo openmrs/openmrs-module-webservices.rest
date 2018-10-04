@@ -109,7 +109,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(2, encounters.size());
+		Assert.assertEquals(1, encounters.size());
 	}
 	
 	/**
