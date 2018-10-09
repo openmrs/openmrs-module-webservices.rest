@@ -120,11 +120,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 							
 							// return encounters for filtered obs
 							if (filteredObs.size() > 0) {
-								List<Encounter> encounters = new ArrayList<Encounter>();
-								obsIterator = filteredObs.iterator();
-								while (obsIterator.hasNext()) {
-									encounters.add(obsIterator.next().getEncounter());
-								}
+								List<Encounter> encounters = this.getEncountersForObs(filteredObs.iterator());
 								
 								return new NeedsPaging<Encounter>(encounters, context);
 							}
@@ -132,10 +128,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 					}
 					else {
 						// return all encounters with obs matching concept
-						List<Encounter> encounters = new ArrayList<Encounter>();
-						while (obsIterator.hasNext()) {
-							encounters.add(obsIterator.next().getEncounter());
-						}
+						List<Encounter> encounters = this.getEncountersForObs(obsIterator);
 						
 						return new NeedsPaging<Encounter>(encounters, context);
 					}
@@ -168,5 +161,31 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 		}
 		
 		return found;
+	}
+	
+	private List<Encounter> getEncountersForObs(Iterator<Obs> obsIterator) {
+		List<Encounter> encounters = new ArrayList<Encounter>();
+		Encounter currEncounter;
+		while (obsIterator.hasNext()) {
+			currEncounter = obsIterator.next().getEncounter();
+			if (!this.containsEncounter(encounters, currEncounter)) {
+				encounters.add(currEncounter);
+			}
+		}
+		
+		return encounters;
+	}
+	
+	private boolean containsEncounter(List<Encounter> encounters, Encounter encounter) {
+		boolean containsFlag = false;
+		Iterator<Encounter> encIterator = encounters.iterator();
+		while (encIterator.hasNext()) {
+			if (encIterator.next().getUuid().equalsIgnoreCase(encounter.getUuid())) {
+				containsFlag = true;
+				break;
+			}
+		}
+		
+		return containsFlag;
 	}
 }
