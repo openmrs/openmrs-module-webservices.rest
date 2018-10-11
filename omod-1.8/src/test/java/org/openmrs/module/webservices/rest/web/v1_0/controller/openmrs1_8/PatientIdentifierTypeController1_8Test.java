@@ -135,7 +135,7 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		final String uuid = "158d6b17-a8ab-435b-8fe3-952a04bda757";
 		assertNotNull(service.getPatientIdentifierTypeByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getPatientIdentifierTypeByUuid(uuid));
 	}

@@ -98,7 +98,7 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 	
 	@Test
 	public void shouldPurgeConceptReferenceTerm() throws Exception {
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		assertNull(service.getObjectByUuid(ConceptReferenceTermMap.class, getUuid()));
 	}
 	

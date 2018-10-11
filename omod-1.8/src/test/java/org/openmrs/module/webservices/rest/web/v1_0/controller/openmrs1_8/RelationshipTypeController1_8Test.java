@@ -107,7 +107,7 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		String uuid = "2a5f4ff4-a179-4b8a-aa4c-40f71956eabc";
 		Assert.assertNotNull(service.getRelationshipTypeByUuid(uuid));
 		int originalCount = service.getAllRelationshipTypes().size();
-		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true")));
 		Assert.assertNull(service.getRelationshipTypeByUuid(uuid));
 		Assert.assertEquals(originalCount - 1, service.getAllRelationshipTypes().size());
 	}

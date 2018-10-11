@@ -225,7 +225,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	public void shouldPurgeAPerson() throws Exception {
 		final String uuid = "86526ed6-3c11-11de-a0ba-001e378eb67e";
 		assertNotNull(service.getPersonByUuid(uuid));
-		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", ""));
+		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true"));
 		handle(req);
 		assertNull(service.getPersonByUuid(uuid));
 	}

@@ -153,7 +153,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		Assert.assertNotNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
 		int originalCount = service.getAllVisitAttributeTypes().size();
 		
-		handle(newDeleteRequest(getURI() + "/" + visitAttributeTypeUuid, new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + visitAttributeTypeUuid, new Parameter("purge", "true")));
 		
 		Assert.assertNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
 		Assert.assertEquals(originalCount - 1, service.getAllVisitAttributeTypes().size());

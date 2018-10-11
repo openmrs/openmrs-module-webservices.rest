@@ -182,7 +182,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	public void purgeCohort_shouldPurgeCohort() throws Exception {
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getCohortByUuid(getUuid()));

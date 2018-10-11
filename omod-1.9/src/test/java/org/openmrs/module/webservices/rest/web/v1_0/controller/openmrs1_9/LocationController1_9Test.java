@@ -210,7 +210,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		Location location = service.getLocation(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + location.getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getLocation(3));

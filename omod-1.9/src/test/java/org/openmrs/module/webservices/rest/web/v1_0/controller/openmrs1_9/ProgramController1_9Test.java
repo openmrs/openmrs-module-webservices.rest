@@ -158,7 +158,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		Program program = service.getProgram(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + program.getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getProgram(3));

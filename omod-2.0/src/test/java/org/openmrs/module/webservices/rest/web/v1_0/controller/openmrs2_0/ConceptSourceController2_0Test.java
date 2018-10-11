@@ -143,7 +143,7 @@ public class ConceptSourceController2_0Test extends MainResourceControllerTest {
 	public void shouldPurgeAConceptSource() throws Exception {
 		Assert.assertNotNull(service.getConceptSourceByUuid(getUuid()));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		Assert.assertNull(service.getConceptSourceByUuid(getUuid()));
 	}

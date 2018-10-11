@@ -136,7 +136,7 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 		String uuid = "00e17510-aa09-11e3-a5e2-0800200c9a66";
 		assertNotNull(service.getOrderTypeByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getOrderTypeByUuid(uuid));
 	}

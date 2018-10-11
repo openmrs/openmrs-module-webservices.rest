@@ -201,7 +201,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		String uuid = "11716f9c-1434-4f8d-b9fc-9aa14c4d6129";
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getConceptByUuid(uuid));

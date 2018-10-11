@@ -202,7 +202,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	@Test
 	public void shouldPurgeAPatientProgram() throws Exception {
 		Assert.assertNotNull(service.getPatientProgramByUuid(getUuid()));
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		Assert.assertNull(service.getPatientProgramByUuid(getUuid()));
 	}
 	

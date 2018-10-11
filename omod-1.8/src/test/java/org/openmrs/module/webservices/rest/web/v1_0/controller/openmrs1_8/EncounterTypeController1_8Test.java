@@ -136,7 +136,7 @@ public class EncounterTypeController1_8Test extends MainResourceControllerTest {
 		final String uuid = "02c533ab-b74b-4ee4-b6e5-ffb6d09a0ac8";
 		assertNotNull(service.getEncounterTypeByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
-		req.addParameter("purge", "");
+		req.addParameter("purge", "true");
 		handle(req);
 		assertNull(service.getEncounterTypeByUuid(uuid));
 	}

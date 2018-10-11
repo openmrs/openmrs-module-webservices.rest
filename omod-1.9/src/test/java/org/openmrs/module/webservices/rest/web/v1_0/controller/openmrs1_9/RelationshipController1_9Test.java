@@ -109,7 +109,7 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
 		int originalCount = service.getAllRelationships().size();
 		
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		
 		Assert.assertNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
 		Assert.assertEquals(originalCount - 1, service.getAllRelationships().size());
