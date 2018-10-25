@@ -17,6 +17,7 @@ import static org.junit.Assert.assertThat;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -31,7 +32,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.not;
 
 /**
- * Tests functionality of {@link PersonAttributeController}.
+ * Tests functionality of PersonAttributeController
  */
 public class PersonAttributeController1_9Test extends MainResourceControllerTest {
 	
@@ -127,19 +128,23 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldSupportLocationPersonAttribute() throws Exception {
+		Location l = Context.getLocationService().getLocation(1);
 		String personAttributeTypeJson = "{\"name\": \"location\", \"description\": \"Points to a location\", \"format\": \"org.openmrs.Location\"}";
 		SimpleObject personAttributeType = deserialize(handle(newPostRequest("personattributetype", personAttributeTypeJson)));
 		String personAttributeTypeUuid = (String) personAttributeType.get("uuid");
 		assertThat(personAttributeTypeUuid, is(notNullValue()));
 		
-		String personAttributeJson = "{ \"attributeType\":\"" + personAttributeTypeUuid + "\", \"value\":\"1\"}"; //We should be able to pass UUID, see RESTWS-398
+		String personAttributeJson = "{ \"attributeType\":\"" + personAttributeTypeUuid + "\", \"value\":\"" + l.getUuid()
+		        + "\"}";
 		SimpleObject personAttribute = deserialize(handle(newPostRequest(getURI(), personAttributeJson)));
 		
-		Map<String, Object> value = (Map<String, Object>) personAttribute.get("value");
+		assertThat((String) personAttribute.get("value"), is(l.getUuid()));
 		
-		assertThat(value.get("uuid"), is(notNullValue()));
-		assertThat((String) value.get("display"), is("Unknown Location"));
-		assertThat(value.get("links"), is(notNullValue()));
+		Map<String, Object> hydratedObject = (Map<String, Object>) personAttribute.get("hydratedObject");
+		
+		assertThat(hydratedObject.get("uuid"), is(notNullValue()));
+		assertThat((String) hydratedObject.get("display"), is("Unknown Location"));
+		assertThat(hydratedObject.get("links"), is(notNullValue()));
 	}
 	
 	/**

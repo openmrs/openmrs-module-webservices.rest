@@ -16,12 +16,12 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Attributable;
 import org.openmrs.Concept;
+import org.openmrs.OpenmrsObject;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -58,6 +58,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
 			description.addProperty("voided");
+			description.addProperty("hydratedObject", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -299,19 +300,17 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	}
 	
 	/**
-	 * Gets the hydrated object of person attribute.
+	 * Gets the value of the person attribute, converting primary key to a uuid if applicable
 	 * 
 	 * @param pa the person attribute.
 	 * @return an object containing the hydrated object.
 	 */
 	@PropertyGetter("value")
-	public Object getValue(PersonAttribute pa) {
-		Object value = pa.getHydratedObject();
-		if (value == null) {
-			return null;
+	public String getValue(PersonAttribute pa) {
+		Object hydratedObject = pa.getHydratedObject();
+		if (hydratedObject != null && hydratedObject instanceof OpenmrsObject) {
+			return ((OpenmrsObject) hydratedObject).getUuid();
 		}
-		
-		return ConversionUtil.convertToRepresentation(value, Representation.REF);
+		return pa.getValue();
 	}
-	
 }
