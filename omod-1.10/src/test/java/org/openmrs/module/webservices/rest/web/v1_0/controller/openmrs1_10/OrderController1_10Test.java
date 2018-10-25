@@ -256,13 +256,15 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldPlaceANewTestOrder() throws Exception {
 		executeDataSet(ORDER_ENTRY_DATASET_XML);
+		OrderType testOrderType = orderService.getOrderTypeByName("Test order");
 		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		int originalActiveTestOrderCount = orderService.getActiveOrders(patient,
-		    orderService.getOrderTypeByName("Test order"), outPatient, null).size();
+		    testOrderType, outPatient, null).size();
 		
 		SimpleObject order = new SimpleObject();
 		order.add("type", "testorder");
+		order.add("orderType", testOrderType.getUuid());
 		order.add("patient", PATIENT_UUID);
 		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
 		order.add("concept", cd4CountUuid);
@@ -284,6 +286,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
 		assertEquals("NEW", Util.getByPath(newOrder, "action"));
+		assertEquals(order.get("orderType"), Util.getByPath(newOrder, "orderType/uuid"));
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
 		assertEquals(order.get("concept"), Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));

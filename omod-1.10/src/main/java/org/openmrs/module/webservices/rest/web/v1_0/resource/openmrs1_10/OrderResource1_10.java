@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
@@ -44,7 +38,12 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-import org.openmrs.util.OpenmrsUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
@@ -120,6 +119,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()
 		        .property("encounter", new StringProperty().example("uuid"))
+		        .property("orderType", new StringProperty().example("uuid"))
 		        .property("action", new EnumProperty(Order.Action.class))
 		        .property("accessionNumber", new StringProperty())
 		        .property("dateActivated", new DateProperty())
@@ -170,6 +170,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		d.addProperty("orderer");
 		d.addProperty("previousOrder");
 		d.addProperty("urgency");
+		d.addProperty("orderType");
 		d.addProperty("orderReason");
 		d.addProperty("orderReasonNonCoded");
 		d.addProperty("instructions");
