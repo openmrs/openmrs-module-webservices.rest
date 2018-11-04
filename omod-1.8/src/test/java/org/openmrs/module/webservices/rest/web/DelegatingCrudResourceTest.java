@@ -16,19 +16,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.User;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
 import org.openmrs.util.Reflect;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,7 +42,6 @@ import org.springframework.util.ReflectionUtils;
 /**
  * Contains tests for Representation Descriptions of all resources
  */
-@Ignore
 public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
@@ -158,4 +160,17 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		}
 		return false;
 	}
+	
+	@Test
+	public void convert_shouldConvertASimpleObjectThatIncludesAUuid() {
+		final String uuid = "91f6c840-da25-11e8-ae91-0242ac110002";
+		SimpleObject so = new SimpleObject();
+		so.add("uuid", uuid);
+		so.add("name", "Location name");
+		so.add("description", "Location description");
+		DelegatingCrudResource<Location> resource = new LocationResource1_8();
+		Location location = resource.convert(so);
+		Assert.assertEquals(uuid, location.getUuid());
+	}
+	
 }
