@@ -16,6 +16,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
@@ -38,6 +39,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 import java.util.Arrays;
@@ -297,21 +299,24 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@Override
 	public SimpleObject search(RequestContext context) throws ResponseException {
 		String patientParameter = context.getRequest().getParameter("patient");
+		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
 		String fromStartDate = context.getRequest().getParameter("fromStartDate");
-		if (patientParameter != null || includeInactiveParameter != null) {
+		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null) {
 			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate);
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter);
 		} else {
 			return super.search(context);
 		}
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate) {
+	        Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
+		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
-		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, null, null, minStartDate, null,
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, locations, null, minStartDate,
+		    null,
 		    null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 	
@@ -331,5 +336,13 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		return patient;
+	}
+	
+	private Location getLocation(String locationUniqueId) {
+		Location location = ((LocationResource1_8) Context.getService(RestService.class).getResourceByName(
+		    RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
+		if (location == null)
+			throw new ObjectNotFoundException();
+		return location;
 	}
 }
