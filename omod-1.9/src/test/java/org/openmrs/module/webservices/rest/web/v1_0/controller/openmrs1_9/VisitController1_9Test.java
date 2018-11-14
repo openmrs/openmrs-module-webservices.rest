@@ -241,6 +241,14 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void searchBylocation_shouldGetUnretiredVisitsAtLocation() throws Exception {
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("location",
+		        "8d6c993e-c2cc-11de-8d13-0010c6dffd0f"))));
+		
+		Assert.assertEquals(1, Util.getResultsSize(result));
+	}
+	
+	@Test
 	public void searchByPatient_shouldGetRetiredVisitsIfIncludeAllIsTrue() throws Exception {
 		String patientUUid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		
