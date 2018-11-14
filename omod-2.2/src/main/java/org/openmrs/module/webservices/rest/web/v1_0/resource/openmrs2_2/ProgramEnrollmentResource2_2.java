@@ -9,28 +9,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.openmrs.PatientProgramAttribute;
-import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
-import org.openmrs.Program;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.PatientProgramAttribute;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
-import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.ProgramEnrollmentResource1_10;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "2.2.*" }, order = 0)
@@ -41,11 +31,6 @@ public class ProgramEnrollmentResource2_2 extends ProgramEnrollmentResource1_10 
 		for (PatientProgramAttribute attr : attrs) {
 			instance.addAttribute(attr);
 		}
-	}
-	
-	@Override
-	public PatientProgram newDelegate() {
-		return new PatientProgram();
 	}
 	
 	@Override
@@ -78,47 +63,8 @@ public class ProgramEnrollmentResource2_2 extends ProgramEnrollmentResource1_10 
 	}
 	
 	@Override
-	public PatientProgram getByUniqueId(String uniqueId) {
-		return Context.getProgramWorkflowService().getPatientProgramByUuid(uniqueId);
-	}
-	
-	@Override
-	protected void delete(PatientProgram delegate, String reason, RequestContext context) throws ResponseException {
-		if (!delegate.isVoided().booleanValue()) {
-			Context.getProgramWorkflowService().voidPatientProgram(delegate, reason);
-		}
-	}
-	
-	@Override
-	public void purge(PatientProgram delegate, RequestContext context) throws ResponseException {
-		Context.getProgramWorkflowService().purgePatientProgram(delegate);
-	}
-	
-	@Override
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("attributes");
 	}
 	
-	@Override
-	public PatientProgram save(PatientProgram delegate) {
-		return Context.getProgramWorkflowService().savePatientProgram(delegate);
-	}
-	
-	@Override
-	protected PageableResult doSearch(RequestContext context) {
-		String patientUuid = context.getRequest().getParameter("patient");
-		if (patientUuid != null) {
-			PatientService patientService = Context.getPatientService();
-			Patient patient = patientService.getPatientByUuid(patientUuid);
-			if (patient == null) {
-				return new EmptySearchResult();
-			} else {
-				List patientPrograms = Context.getProgramWorkflowService().getPatientPrograms(patient,
-				    (Program) null, (Date) null, (Date) null, (Date) null, (Date) null, true);
-				return new NeedsPaging(patientPrograms, context);
-			}
-		} else {
-			return super.doSearch(context);
-		}
-	}
 }
