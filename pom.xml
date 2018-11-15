@@ -427,7 +427,7 @@
 					<artifactId>license-maven-plugin</artifactId>
 					<version>3.0</version>
 					<configuration>
-						<header>license-header.txt</header>
+						<header>${project.basedir}/license-header.txt</header>
 						<includes>
 							<include>**/*.java</include>
 						</includes>
