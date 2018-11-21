@@ -388,10 +388,24 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException, IOException {
 		if (value != null) {
 			if (obs.isComplex()) {
-				byte[] bytes = DatatypeConverter.parseBase64Binary(value.toString());
+				byte[] bytes = null;
 				
-				ComplexData complexData = new ComplexData(obs.getUuid() + ".raw", new ByteArrayInputStream(bytes));
+				String extension = "raw";
+				//Try to extract extension from the MIME type if it is provided in value
+				if (value.toString().startsWith("data:")) {
+					String dataUri = value.toString();
+					String mimeType = (dataUri.split(":", 2)[1]).split(";", 2)[0];
+					bytes = DatatypeConverter.parseBase64Binary(dataUri.split(",", 2)[1]);
+					extension = mimeType.toLowerCase().split("/")[1];
+					//extensions with hyphen within them are not supported, instead "raw" is used
+					extension = extension.contains("-") ? "raw" : extension;
+				} else {
+					//no MIME type provided
+					bytes = DatatypeConverter.parseBase64Binary(value.toString());
+				}
+				ComplexData complexData = new ComplexData(obs.getUuid() + "." + extension, new ByteArrayInputStream(bytes));
 				obs.setComplexData(complexData);
+				
 			} else if (obs.getConcept().getDatatype().isCoded()) {
 				// setValueAsString is not implemented for coded obs (in core)
 				
