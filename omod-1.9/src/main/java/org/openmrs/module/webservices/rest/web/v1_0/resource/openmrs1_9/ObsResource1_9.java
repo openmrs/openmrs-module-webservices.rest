@@ -9,7 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Map;
+
+import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -31,7 +35,19 @@ public class ObsResource1_9 extends ObsResource1_8 {
 	 */
 	@PropertySetter("concept")
 	public static void setConcept(Obs obs, Object value) {
-		obs.setConcept(new ConceptResource1_9().getByUniqueId((String) value));
+		Object identifier = null;
+		if (value instanceof Map) {
+			Object uuid = ((Map) value).get(RestConstants.PROPERTY_UUID);
+			if (uuid != null) {
+				identifier = uuid;
+			}
+		}
+		
+		if (identifier == null) {
+			identifier = value;
+		}
+		
+		obs.setConcept(ConversionUtil.getConverter(Concept.class).getByUniqueId((String) identifier));
 	}
 	
 }
