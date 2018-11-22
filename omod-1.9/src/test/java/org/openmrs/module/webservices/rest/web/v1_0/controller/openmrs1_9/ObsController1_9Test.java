@@ -9,7 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Locale;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -22,6 +32,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -32,12 +43,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
 	
@@ -54,6 +60,22 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		
 		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
 		Assert.assertNotNull(PropertyUtils.getProperty(newObs, "concept"));
+	}
+	
+	@Test
+	public void getObs_shouldCreateAnObsWithACodedValueSetAsAMap() throws Exception {
+		long originalCount = getAllCount();
+		SimpleObject obs = new SimpleObject();
+		obs.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		obs.add("concept", "89ca642a-dab6-4f20-b712-e12ca4fc6d36");
+		obs.add("obsDatetime", "2018-11-13T00:00:00.000-0500");
+		final String codeValueUuid = "32d3611a-6699-4d52-823f-b4b788bac3e3";
+		SimpleObject valueCoded = deserialize(handle(newGetRequest("concept/" + codeValueUuid)));
+		obs.add("value", valueCoded);
+		String json = new ObjectMapper().writeValueAsString(obs);
+		SimpleObject ret = deserialize(handle(newPostRequest(getURI(), json)));
+		assertEquals(codeValueUuid, Util.getByPath(ret, "value/uuid"));
+		assertEquals(++originalCount, getAllCount());
 	}
 	
 	/**

@@ -9,14 +9,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -51,15 +55,14 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.obs.ComplexData;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.bind.DatatypeConverter;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.DateTimeProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -169,19 +172,13 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("obsDatetime", new DateProperty())
-			        .property("accessionNumber", new StringProperty())
-			        .property("comment", new StringProperty())
-			        .property("voided", new BooleanProperty())
-			        .property("value", new StringProperty())
-			        .property("valueModifier", new StringProperty());
+			model.property("uuid", new StringProperty()).property("display", new StringProperty())
+			        .property("obsDatetime", new DateProperty()).property("accessionNumber", new StringProperty())
+			        .property("comment", new StringProperty()).property("voided", new BooleanProperty())
+			        .property("value", new StringProperty()).property("valueModifier", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
+			model.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
 			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
 			        .property("obsGroup", new RefProperty("#/definitions/ObsGetRef"))
 			        .property("groupMembers", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef")))
@@ -190,8 +187,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			        .property("order", new RefProperty("#/definitions/OrderGetRef"))
 			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
+			model.property("concept", new RefProperty("#/definitions/ConceptGet"))
 			        .property("person", new RefProperty("#/definitions/PersonGet"))
 			        .property("obsGroup", new RefProperty("#/definitions/ObsGet"))
 			        .property("groupMembers", new ArrayProperty(new RefProperty("#/definitions/ObsGet")))
@@ -205,19 +201,13 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("person", new StringProperty().example("uuid"))
-		        .property("obsDatetime", new DateTimeProperty())
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty())
-		        .property("order", new StringProperty())
-		        .property("encounter", new StringProperty())
-		        .property("accessionNumber", new StringProperty())
+		return new ModelImpl().property("person", new StringProperty().example("uuid"))
+		        .property("obsDatetime", new DateTimeProperty()).property("concept", new StringProperty().example("uuid"))
+		        .property("location", new StringProperty()).property("order", new StringProperty())
+		        .property("encounter", new StringProperty()).property("accessionNumber", new StringProperty())
 		        .property("groupMembers", new ArrayProperty(new StringProperty()))
-		        .property("valueCodedName", new StringProperty())
-		        .property("comment", new StringProperty())
-		        .property("voided", new BooleanProperty())
-		        .property("value", new StringProperty())
+		        .property("valueCodedName", new StringProperty()).property("comment", new StringProperty())
+		        .property("voided", new BooleanProperty()).property("value", new StringProperty())
 		        .property("valueModifier", new StringProperty())
 		        
 		        .required("person").required("obsDatetime").required("concept");
@@ -392,6 +382,16 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 				obs.setComplexData(complexData);
 			} else if (obs.getConcept().getDatatype().isCoded()) {
 				// setValueAsString is not implemented for coded obs (in core)
+				
+				//We want clients to be able to fetch a coded value in one rest call
+				//and set the returned payload as the obs value
+				if (value instanceof Map) {
+					Object uuid = ((Map) value).get(RestConstants.PROPERTY_UUID);
+					if (uuid != null) {
+						value = uuid.toString();
+					}
+				}
+				
 				Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
 				if (valueCoded == null) {
 					//try checking if this this is value drug
