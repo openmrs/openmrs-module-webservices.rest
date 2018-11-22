@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -21,7 +22,6 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -197,6 +197,22 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse rawResponse = handle(newGetRequest(getURI() + "/" + response.get("uuid") + "/value"));
 		
 		assertThat(out.toByteArray(), is(equalTo(rawResponse.getContentAsByteArray())));
+	}
+	
+	@Test
+	public void getObs_shouldCreateAnObsWhenTheQuestionConceptIsSetAsAMapContainingTheUuid() throws Exception {
+		long originalCount = getAllCount();
+		SimpleObject obs = new SimpleObject();
+		obs.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		SimpleObject concept = new SimpleObject();
+		concept.add("uuid", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
+		concept.add("name", new SimpleObject());
+		obs.add("concept", concept);
+		obs.add("obsDatetime", "2018-11-13T00:00:00.000-0500");
+		obs.add("value", 180.0);
+		String json = new ObjectMapper().writeValueAsString(obs);
+		handle(newPostRequest(getURI(), json));
+		assertEquals(++originalCount, getAllCount());
 	}
 	
 	private ConceptComplex newConceptComplex() {
