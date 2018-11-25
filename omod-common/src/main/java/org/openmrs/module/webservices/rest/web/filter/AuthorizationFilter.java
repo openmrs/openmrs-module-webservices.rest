@@ -70,6 +70,15 @@ public class AuthorizationFilter implements Filter {
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
 			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN, "IP address '" + request.getRemoteAddr()
 			        + "' is not authorized");
+			return;
+		}
+		
+		// check content-type (enforce json-only api)
+		if (!request.getContentType().equals("application/json")) {
+			HttpServletResponse httpresponse = (HttpServletResponse) response;
+			httpresponse.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
+			    "Content-Type must be application/json to access this api");
+			return;
 		}
 		
 		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
