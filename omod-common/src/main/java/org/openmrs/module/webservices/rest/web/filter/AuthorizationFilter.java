@@ -70,6 +70,7 @@ public class AuthorizationFilter implements Filter {
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
 			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN, "IP address '" + request.getRemoteAddr()
 			        + "' is not authorized");
+			return;
 		}
 		
 		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
@@ -100,7 +101,7 @@ public class AuthorizationFilter implements Filter {
 			}
 		}
 		
-		// continue with the filter chain in all circumstances
+		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
 	}
 }
