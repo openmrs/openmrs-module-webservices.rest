@@ -18,10 +18,12 @@
 	<visit_attribute_type visit_attribute_type_id="2" name="Return Date" datatype="org.openmrs.customdatatype.datatype.DateDatatype" min_occurs="0" max_occurs="2" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="7770f6d6-7673-11e0-8f03-001e378eb67f" />
 	<visit_attribute_type visit_attribute_type_id="3" name="Random Attribute" datatype="org.openmrs.customdatatype.datatype.DateDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="6770f6d6-7673-11e0-8f03-001e378eb67g" />
 	<visit_attribute_type visit_attribute_type_id="4" name="Date Of Discharge" datatype="org.openmrs.customdatatype.datatype.DateDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="1" retire_reason="none" uuid="5770f6d6-7673-11e0-8f03-001e378eb67h" />
-	<visit_attribute visit_attribute_id="10" visit_id="1" attribute_type_id="1" value_reference="2011-04-25 00:00:00.0" creator="1" date_created="2005-02-01 00:00:00.0" voided="0" uuid="4c2tyr18-6faa-11e0-7899-001e378eb66a" />
+	<visit_attribute_type visit_attribute_type_id="5" name="Random Attribute2" datatype="org.openmrs.customdatatype.datatype.DateDatatype" min_occurs="0" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="4770f6d6-7673-11e0-8f03-001e378eb67i" /> 
+        <visit_attribute visit_attribute_id="10" visit_id="1" attribute_type_id="1" value_reference="2011-04-25 00:00:00.0" creator="1" date_created="2005-02-01 00:00:00.0" voided="0" uuid="4c2tyr18-6faa-11e0-7899-001e378eb66a" />
 	<visit_attribute visit_attribute_id="11" visit_id="2" attribute_type_id="2" value_reference="2011-05-25 00:00:00.0" creator="1" date_created="2005-02-02 00:00:00.0" voided="0" uuid="5c2tyr18-6faa-11e0-7899-001e378eb66b" />
 	<visit_attribute visit_attribute_id="12" visit_id="1" attribute_type_id="1" value_reference="2011-06-25 00:00:00.0" creator="1" date_created="2005-02-03 00:00:00.0" voided="1" void_reason="none" uuid="6c2tyr18-6faa-11e0-7899-001e378eb66c" />
-
+        <visit_attribute visit_attribute_id="13" visit_id="1" attribute_type_id="5" value_reference="2011-05-25 00:00:00.0" creator="1" date_created="2005-02-02 00:00:00.0" voided="0" uuid="7c2tyr18-6faa-11e0-7899-001e378eb66d" />
+        
     <encounter_role encounter_role_id="1" name="Unknown" creator="1" retired="false" date_created="2015-06-16 00:00:00.0"
         uuid="a0b03050-c99b-11e0-9572-0800200c9a66"/>
 
