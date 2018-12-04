@@ -118,7 +118,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
-		Assert.assertEquals(4, Util.getResultsSize(result));
+		Assert.assertEquals(5, Util.getResultsSize(result));
 	}
 	
 	/**

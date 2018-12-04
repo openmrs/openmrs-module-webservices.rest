@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 import java.text.SimpleDateFormat;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitAttributeResource1_9;
 
 /**
  * Tests functionality of {@link VisitAttributeController}.
@@ -68,7 +69,7 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, Util.getResultsSize(result));
+		Assert.assertEquals(3, Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -108,5 +109,15 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
 		Assert.assertTrue(visitAttribute.isVoided());
 		Assert.assertEquals("unit test", visitAttribute.getVoidReason());
+	}
+	
+	@Test
+	public void shouldNotThrowNullPointerExceptionIfMaxOccursIsNull() {
+		VisitAttribute visitAttribute = service.getVisitAttributeByUuid("7c2tyr18-6faa-11e0-7899-001e378eb66d");
+		Assert.assertFalse(visitAttribute.isVoided());
+		Assert.assertNull(visitAttribute.getAttributeType().getMaxOccurs());
+		
+		VisitAttributeResource1_9 visitAttributeResource1_9 = new VisitAttributeResource1_9();
+		visitAttributeResource1_9.save(visitAttribute);
 	}
 }

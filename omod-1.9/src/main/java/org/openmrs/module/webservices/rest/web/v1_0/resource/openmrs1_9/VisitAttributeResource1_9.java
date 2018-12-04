@@ -95,7 +95,7 @@ public class VisitAttributeResource1_9 extends BaseAttributeCrudResource1_9<Visi
 	 */
 	@Override
 	public VisitAttribute save(VisitAttribute delegate) {
-		if (delegate.getAttributeType().getMaxOccurs() == 1) {
+		if (delegate.getAttributeType().getMaxOccurs() != null && delegate.getAttributeType().getMaxOccurs() == 1) {
 			// there is a convencience method for this case, that avoids the client having to make two calls (to void and create)
 			delegate.getVisit().setAttribute(delegate);
 		} else {
