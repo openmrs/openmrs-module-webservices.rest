@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.filter;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +16,8 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -69,18 +68,29 @@ public class ContentTypeFilterTest {
 		
 		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
-
-	@Test public void doFilter_shouldAllowNullContentType() throws IOException, ServletException {
+	
+	@Test
+	public void doFilter_shouldAllowJSONContentTypeWithParameter() throws IOException, ServletException {
+		req.setContentType("application/json;charset=UTF-8");
 		req.setMethod("POST");
 		req.setRequestURI("/ws/rest/v1/obs");
-
+		testFilter.doFilter(req, resp, mockChain);
+		
+		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+	}
+	
+	@Test
+	public void doFilter_shouldAllowNullContentType() throws IOException, ServletException {
+		req.setMethod("POST");
+		req.setRequestURI("/ws/rest/v1/obs");
+		
 		Assert.assertEquals(req.getContentType(), null);
 		
 		testFilter.doFilter(req, resp, mockChain);
-
+		
 		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
-
+	
 	@Test
 	public void doFilter_shouldAllowGetRequest() throws IOException, ServletException {
 		ContentTypeFilter testFilter = new ContentTypeFilter();

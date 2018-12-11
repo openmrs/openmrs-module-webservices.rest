@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.filter;
 
-import java.io.IOException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,9 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.io.IOException;
 
 /**
  * Filter for /ws/rest endpoints to prevent Content-Types other than json due to security concerns
@@ -68,7 +67,7 @@ public class ContentTypeFilter implements Filter {
 	private boolean isUnsupportedContentType(String contentType) {
 		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
 			// whitelist approach
-			if (!contentType.equalsIgnoreCase("application/json")) {
+			if (!contentType.split(";")[0].equalsIgnoreCase("application/json")) {
 				return true;
 			}
 		}
