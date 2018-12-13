@@ -17,6 +17,7 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.ValidationException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.notification.MessageException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class PasswordResetController2_2 extends BaseRestController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void requestPasswordReset(@RequestBody Map<String, String> body) {
+	public void requestPasswordReset(@RequestBody Map<String, String> body) throws MessageException {
 		String usernameOrEmail = body.get("usernameOrEmail");
 		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
 		if (user != null) {

@@ -13,13 +13,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
 import org.openmrs.User;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.LoginCredential;
 import org.openmrs.api.db.UserDAO;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
+import org.openmrs.notification.MessageException;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,21 +42,31 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	@Autowired
 	private UserDAO dao;
 	
+	public ExpectedException expectedException = ExpectedException.none();
+	
+	@Before
+	public void before() {
+		AdministrationService.setGlobalProperty(OpenmrsConstants.GP_HOST_URL,
+		    "http://localhost:8080/openmrs/admin/users/changePassword.form/{activationKey}");
+	}
+	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
 		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
+		expectedException.expect(MessageException.class);
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmail() throws Exception {
-		User u = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
-		u.setEmail("butch@gmail.com");
-		assertNull(dao.getLoginCredential(u).getActivationKey());
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + u.getEmail() + "\"}"));
-		assertNotNull(dao.getLoginCredential(u).getActivationKey());
+		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+		expectedException.expect(MessageException.class);
+		
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
 	@Test
