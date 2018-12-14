@@ -9,18 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
+
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
+import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -42,10 +41,13 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
@@ -150,24 +152,19 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("startDatetime", new DateProperty())
-			        .property("stopDatetime", new DateProperty())
+			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
+			        .property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
 			        .property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
 			        .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			modelImpl.property("patient", new RefProperty("#/definitions/PatientGetRef"))
 			        .property("visitType", new RefProperty("#/definitions/VisittypeGetRef"))
 			        .property("indication", new RefProperty("#/definitions/ConceptGetRef"))
 			        .property("location", new RefProperty("#/definitions/LocationGetRef"))
 			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGetRef")));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
+			modelImpl.property("patient", new RefProperty("#/definitions/PatientGet"))
 			        .property("visitType", new RefProperty("#/definitions/VisittypeGet"))
 			        .property("indication", new RefProperty("#/definitions/ConceptGet"))
 			        .property("location", new RefProperty("#/definitions/LocationGet"))
@@ -178,20 +175,16 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("visitType", new StringProperty().example("uuid"))
-		        .property("startDatetime", new DateProperty())
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("indication", new StringProperty())
+		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
+		        .property("visitType", new StringProperty().example("uuid")).property("startDatetime", new DateProperty())
+		        .property("location", new StringProperty().example("uuid")).property("indication", new StringProperty())
 		        .property("stopDatetime", new DateProperty())
 		        .property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
 		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
 		        
 		        .required("patient").required("visitType");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
+			model.property("patient", new RefProperty("#/definitions/PatientCreate"))
 			        .property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
 			        .property("location", new RefProperty("#/definitions/LocationCreate"))
 			        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
@@ -202,8 +195,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
+		return new ModelImpl().property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
 		        .property("startDatetime", new DateProperty())
 		        .property("location", new RefProperty("#/definitions/LocationCreate"))
 		        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
@@ -288,9 +280,14 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@PropertySetter("attributes")
 	public static void setAttributes(Visit visit, Set<VisitAttribute> attributes) {
 		for (VisitAttribute attribute : attributes) {
-			attribute.setOwner(visit);
+			visit.addAttribute(attribute);
+			//We need to force the API to set valueReference on all new attributes before any hibernate
+			//auto flushes happen otherwise if they happen before we do so, the attributes get rejected
+			//in the DB since valueReference would still be null yet it is not nullable
+			if (attribute.getId() == null) {
+				CustomDatatypeUtil.saveIfDirty(attribute);
+			}
 		}
-		visit.setAttributes(attributes);
 	}
 	
 	/**
@@ -311,13 +308,12 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, String locationParameter) {
+	                               Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, locations, null, minStartDate,
-		    null,
-		    null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
+		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 	
 	/**

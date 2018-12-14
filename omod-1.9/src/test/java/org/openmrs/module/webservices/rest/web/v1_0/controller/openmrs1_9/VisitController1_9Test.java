@@ -9,10 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +30,8 @@ import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
+import org.openmrs.VisitAttributeType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -177,6 +185,37 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldEditAVisitWithAttributes() throws Exception {
+		executeDataSet(RestTestConstants1_9.TEST_DATASET);
+		
+		SimpleObject visit = deserialize(handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", "full"))));
+		List<Map> attributes = visit.get("attributes");
+		Map toEdit = attributes.get(1);
+		VisitAttribute toEditAttribute = service.getVisitAttributeByUuid(toEdit.get("uuid").toString());
+		Visit existingVisit = service.getVisitByUuid(getUuid());
+		final int originalActiveCount = attributes.size();
+		assertEquals(2, originalActiveCount);
+		assertEquals(3, existingVisit.getAttributes().size());
+		//Let's add a new attribute and also updating an existing one
+		VisitAttributeType vat = service.getVisitAttributeTypeByUuid("6770f6d6-7673-11e0-8f03-001e378eb67g");
+		assertTrue(existingVisit.getActiveAttributes(vat).isEmpty());
+		SimpleObject toAdd = new SimpleObject();
+		toAdd.add("attributeType", vat.getUuid());
+		toAdd.add("value", "2005-01-01");
+		attributes.add(toAdd);
+		
+		final String newValue = "2006-01-01";
+		assertNotEquals(newValue, toEditAttribute.getValueReference());
+		toEdit.put("value", newValue);
+		
+		deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), visit)));
+		
+		assertEquals(originalActiveCount + 1, existingVisit.getActiveAttributes().size());
+		assertEquals(newValue, toEditAttribute.getValueReference());
+		
+	}
+	
+	@Test
 	public void shouldAddEncountersToAnExistingVisitOnEdit() throws Exception {
 		Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
 		Assert.assertEquals(0, visit.getEncounters().size());
@@ -252,11 +291,10 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	public void searchByPatient_shouldGetRetiredVisitsIfIncludeAllIsTrue() throws Exception {
 		String patientUUid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		
-		SimpleObject resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", patientUUid),
-		    new Parameter("includeAll", "true"))));
-		SimpleObject resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", patientUUid))));
+		SimpleObject resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        patientUUid), new Parameter("includeAll", "true"))));
+		SimpleObject resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        patientUUid))));
 		
 		int visitIncludingVoidedSize = Util.getResultsSize(resultWithVoidedVisits);
 		int visitExcludingVoidedSize = Util.getResultsSize(resultWithoutVoidedVisits);
@@ -264,14 +302,11 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(visitIncludingVoidedSize, 4);
 		Assert.assertEquals(visitExcludingVoidedSize, 3);
 		
-		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason",
-		        "void test reason")));
+		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "void test reason")));
 		
-		resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", patientUUid),
+		resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid),
 		    new Parameter("includeAll", "true"))));
-		resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", patientUUid))));
+		resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid))));
 		Assert.assertEquals(Util.getResultsSize(resultWithoutVoidedVisits), 2);
 		Assert.assertEquals(Util.getResultsSize(resultWithVoidedVisits), 4);
 	}
