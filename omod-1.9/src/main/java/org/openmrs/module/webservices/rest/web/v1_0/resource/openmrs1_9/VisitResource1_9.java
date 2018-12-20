@@ -308,7 +308,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	                               Date minStartDate, String locationParameter) {
+	        Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);

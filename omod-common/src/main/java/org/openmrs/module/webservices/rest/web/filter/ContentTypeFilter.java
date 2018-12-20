@@ -29,14 +29,13 @@ import java.util.List;
 public class ContentTypeFilter implements Filter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-
+	
 	protected final List<String> ALLOWED_CONTENT_TYPES =
-			Arrays.asList(
-				"application/json",
-				"multipart/form-data"
-			);
-
-
+	        Arrays.asList(
+	            "application/json",
+	            "multipart/form-data"
+	                );
+	
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
@@ -74,7 +73,7 @@ public class ContentTypeFilter implements Filter {
 	}
 	
 	private boolean isUnsupportedContentType(String contentType) {
-
+		
 		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
 			// whitelist approach
 			for (String allowedType : ALLOWED_CONTENT_TYPES) {
