@@ -20,6 +20,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Filter for /ws/rest endpoints to prevent Content-Types other than json due to security concerns
@@ -27,7 +29,14 @@ import java.io.IOException;
 public class ContentTypeFilter implements Filter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
+	protected final List<String> ALLOWED_CONTENT_TYPES =
+			Arrays.asList(
+				"application/json",
+				"multipart/form-data"
+			);
+
+
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
@@ -65,13 +74,16 @@ public class ContentTypeFilter implements Filter {
 	}
 	
 	private boolean isUnsupportedContentType(String contentType) {
+
 		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
 			// whitelist approach
-			if (!contentType.split(";")[0].equalsIgnoreCase("application/json")) {
-				return true;
+			for (String allowedType : ALLOWED_CONTENT_TYPES) {
+				if (contentType.split(";")[0].equalsIgnoreCase(allowedType)) {
+					return false;
+				}
 			}
+			return true;
 		}
-		
 		return false;
 	}
 }
