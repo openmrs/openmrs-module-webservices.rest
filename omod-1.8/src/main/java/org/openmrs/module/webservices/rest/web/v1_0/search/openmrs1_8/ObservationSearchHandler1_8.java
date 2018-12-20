@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -30,6 +27,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptR
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The contents of this file are subject to the OpenMRS Public License Version 1.0 (the "License");
  * you may not use this file except in compliance with the License. You may obtain a copy of the
@@ -42,8 +43,9 @@ import org.springframework.stereotype.Component;
 public class ObservationSearchHandler1_8 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/obs", Arrays.asList(
-	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), Arrays.asList(new SearchQuery.Builder(
-	        "Allows you to find Observations by patient and concept").withRequiredParameters("patient", "concept").build()));
+	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.*"), Arrays.asList(new SearchQuery.Builder(
+	        "Allows you to find Observations by patient and concept").withRequiredParameters("patient")
+	        .withOptionalParameters("concept", "concepts").build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {
@@ -54,21 +56,29 @@ public class ObservationSearchHandler1_8 implements SearchHandler {
 	public PageableResult search(RequestContext context) throws ResponseException {
 		
 		String patientUuid = context.getRequest().getParameter("patient");
-		String conceptUuid = context.getRequest().getParameter("concept");
-		List<Concept> concepts = null;
+		List<String> conceptUuids = new ArrayList<String>();
+		
+		if (context.getRequest().getParameter("concept") != null) {
+			conceptUuids.add(context.getRequest().getParameter("concept"));
+		}
+		else if (context.getRequest().getParameter("concepts") != null) {
+			conceptUuids.addAll(Arrays.asList(context.getRequest().getParameter("concepts").split(",")));
+		}
 		
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
-			if (patient != null && conceptUuid != null) {
-				if (conceptUuid != null) {
+			if (patient != null && !conceptUuids.isEmpty()) {
+				
+				List<Obs> obs = new ArrayList<Obs>();
+				
+				for (String conceptUuid : conceptUuids) {
 					Concept concept = ((ConceptResource1_8) Context.getService(RestService.class)
 					        .getResourceBySupportedClass(Concept.class)).getByUniqueId(conceptUuid);
-					
-					List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(patient, concept);
-					return new NeedsPaging<Obs>(obs, context);
+					obs.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, concept));
 				}
 				
+				return new NeedsPaging<Obs>(obs, context);
 			}
 		}
 		
