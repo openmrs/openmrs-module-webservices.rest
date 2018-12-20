@@ -30,7 +30,7 @@ public class ContentTypeFilter implements Filter {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	protected final List<String> ALLOWED_CONTENT_TYPES =
+	private final List<String> ALLOWED_CONTENT_TYPES =
 	        Arrays.asList(
 	            "application/json",
 	            "multipart/form-data"
