@@ -44,9 +44,9 @@ public class ContentTypeFilterTest {
 	}
 	
 	@Test
-	public void doFilter_shouldNotAllowNonJsonContent() throws IOException, ServletException {
+	public void doFilter_shouldNotAllowXmlContent() throws IOException, ServletException {
 		
-		List<String> xmlContentTypes = Arrays.asList("application/xml", "text/xml", "application/zip", "fake/contenttype");
+		List<String> xmlContentTypes = Arrays.asList("application/xml", "text/xml", "application/xml;utf-8");
 		
 		for (String contentType : xmlContentTypes) {
 			init();
