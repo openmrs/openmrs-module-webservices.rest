@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -159,6 +160,24 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		Role retiredRole = service.getRoleByUuid(getUuid());
 		Assert.assertTrue(retiredRole.isRetired());
 		Assert.assertEquals("random reason", retiredRole.getRetireReason());
+		
+	}
+	
+	@Test
+	public void shouldUnRetireARole() throws Exception {
+		Role role = service.getRoleByUuid(getUuid());
+		role.setRetired(true);
+		role.setRetireReason("random reason");
+		service.saveRole(role);
+		role = service.getRoleByUuid(getUuid());
+		Assert.assertTrue(role.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		role = service.getRoleByUuid(getUuid());
+		Assert.assertFalse(role.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
 		
 	}
 	

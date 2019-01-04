@@ -52,6 +52,14 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	}
 	
 	@Override
+	protected Relationship undelete(Relationship delegate, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			delegate = Context.getPersonService().unvoidRelationship(delegate);
+		}
+		return delegate;
+	}
+	
+	@Override
 	public Relationship newDelegate() {
 		return new Relationship();
 	}

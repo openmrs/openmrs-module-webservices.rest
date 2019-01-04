@@ -90,6 +90,18 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected Order undelete(Order delegate, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			delegate = Context.getOrderService().unvoidOrder(delegate);
+		}
+		return delegate;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

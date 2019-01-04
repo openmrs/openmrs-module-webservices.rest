@@ -12,7 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -129,6 +133,24 @@ public class EncounterTypeController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		assertEquals(true, service.getEncounterTypeByUuid(getUuid()).isRetired());
 		assertEquals(reason, service.getEncounterTypeByUuid(getUuid()).getRetireReason());
+	}
+	
+	@Test
+	public void shouldUnRetireAnEncounterType() throws Exception {
+		EncounterType encounterType = service.getEncounterTypeByUuid(getUuid());
+		encounterType.setRetired(true);
+		encounterType.setRetireReason("random reason");
+		service.saveEncounterType(encounterType);
+		encounterType = service.getEncounterTypeByUuid(getUuid());
+		assertTrue(encounterType.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		encounterType = service.getEncounterTypeByUuid(getUuid());
+		assertFalse(encounterType.isRetired());
+		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	@Test

@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
+import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -151,6 +152,26 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 		Assert.assertNotNull(obj);
 		Assert.assertTrue(obj.isRetired());
 		Assert.assertTrue("unit test".equals(obj.getRetireReason()));
+	}
+	
+	@Test
+	public void shouldUnRetireAPersonAttributeType() throws Exception {
+		
+		final String nonRetiredAttribute = "a0f5521c-dbbd-4c10-81b2-1b7ab18330df";
+		PersonAttributeType personAttrType = service.getPersonAttributeTypeByUuid(nonRetiredAttribute);
+		personAttrType.setRetired(true);
+		personAttrType.setRetireReason("random reason");
+		service.savePersonAttributeType(personAttrType);
+		personAttrType = service.getPersonAttributeTypeByUuid(nonRetiredAttribute);
+		Assert.assertTrue(personAttrType.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + nonRetiredAttribute, json)));
+		
+		personAttrType = service.getPersonAttributeTypeByUuid(nonRetiredAttribute);
+		Assert.assertFalse(personAttrType.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	/**

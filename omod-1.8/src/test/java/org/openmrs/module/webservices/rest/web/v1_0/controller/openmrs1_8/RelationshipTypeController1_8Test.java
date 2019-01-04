@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -100,6 +101,24 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
 		Assert.assertTrue(relationshipType.isRetired());
 		Assert.assertEquals("test reason", relationshipType.getRetireReason());
+	}
+	
+	@Test
+	public void shouldUnRetireARelationshipType() throws Exception {
+		RelationshipType relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
+		relationshipType.setRetired(true);
+		relationshipType.setRetireReason("random reason");
+		service.saveRelationshipType(relationshipType);
+		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
+		Assert.assertTrue(relationshipType.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
+		Assert.assertFalse(relationshipType.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	@Test

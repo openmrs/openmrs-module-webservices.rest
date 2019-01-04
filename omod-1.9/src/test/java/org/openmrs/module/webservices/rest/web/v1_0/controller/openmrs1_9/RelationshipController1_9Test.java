@@ -105,6 +105,22 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUnVoidARelationship() throws Exception {
+		Relationship relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
+		service.voidRelationship(relationship, "some random reason");
+		relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
+		Assert.assertTrue(relationship.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		relationship = service.getRelationshipByUuid(getUuid());
+		Assert.assertFalse(relationship.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
+	}
+	
+	@Test
 	public void shouldPurgeARelatonship() throws Exception {
 		Assert.assertNotNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
 		int originalCount = service.getAllRelationships().size();

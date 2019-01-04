@@ -258,6 +258,22 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUnVoidAVisit() throws Exception {
+		Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+		service.voidVisit(visit, "some random reason");
+		visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+		Assert.assertTrue(visit.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		visit = service.getVisitByUuid(getUuid());
+		Assert.assertFalse(visit.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
+	}
+	
+	@Test
 	public void shouldPurgeAVisit() throws Exception {
 		Assert.assertNotNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
 		int originalCount = service.getAllVisits().size();

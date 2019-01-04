@@ -58,6 +58,14 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	}
 	
 	@Override
+	protected PatientProgram undelete(PatientProgram delegate, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			delegate = Context.getProgramWorkflowService().unvoidPatientProgram(delegate);
+		}
+		return delegate;
+	}
+	
+	@Override
 	public void purge(PatientProgram delegate, RequestContext context) throws ResponseException {
 		Context.getProgramWorkflowService().purgePatientProgram(delegate);
 	}

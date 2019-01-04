@@ -167,6 +167,21 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.api.Deletable#undelete(java.lang.String,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	public Object undelete(String uuid, RequestContext context) throws ResponseException {
+		T delegate = getByUniqueId(uuid);
+		if (delegate == null)
+			throw new ObjectNotFoundException();
+		
+		delegate = undelete(delegate, context);
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
+		return ret;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Purgeable#purge(java.lang.String)
 	 */
 	@Override

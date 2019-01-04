@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 /**
  * Tests functionality of Program CRUD by MainResourceController
@@ -151,6 +152,24 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Program retiredProgram = service.getProgram(2);
 		Assert.assertTrue(retiredProgram.isRetired());
 		Assert.assertEquals("some good reason", retiredProgram.getRetireReason());
+	}
+	
+	@Test
+	public void shouldUnRetireAProgram() throws Exception {
+		Program program = service.getProgramByUuid(getUuid());
+		program.setRetired(true);
+		program.setRetireReason("random reason");
+		service.saveProgram(program);
+		program = service.getProgramByUuid(getUuid());
+		Assert.assertTrue(program.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		program = service.getProgramByUuid(getUuid());
+		Assert.assertFalse(program.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	@Test

@@ -9,13 +9,28 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Date;
+
+import org.openmrs.FieldType;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.FormService;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
  * Tests functionality of {@link FieldTypeController}.
  */
 public class FieldTypeController1_8Test extends MainResourceControllerTest {
+	
+	private FormService service;
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
@@ -39,6 +54,29 @@ public class FieldTypeController1_8Test extends MainResourceControllerTest {
 	@Override
 	public long getAllCount() {
 		return 2;
+	}
+	
+	@Before
+	public void before() {
+		this.service = Context.getFormService();
+	}
+	
+	@Test
+	public void shouldUnRetireAFieldType() throws Exception {
+		FieldType fieldType = service.getFieldTypeByUuid(getUuid());
+		fieldType.setRetired(true);
+		fieldType.setRetireReason("random reason");
+		service.saveFieldType(fieldType);
+		fieldType = service.getFieldTypeByUuid(getUuid());
+		assertTrue(fieldType.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		fieldType = service.getFieldTypeByUuid(getUuid());
+		assertFalse(fieldType.isRetired());
+		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 }

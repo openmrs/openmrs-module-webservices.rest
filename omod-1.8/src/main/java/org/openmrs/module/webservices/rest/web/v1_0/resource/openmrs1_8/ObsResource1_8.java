@@ -84,6 +84,18 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected Obs undelete(Obs delegate, RequestContext context) throws ResponseException {
+		if (delegate.isVoided()) {
+			delegate = Context.getObsService().unvoidObs(delegate);
+		}
+		return delegate;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
 	@Override

@@ -264,6 +264,22 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	protected abstract void delete(T delegate, String reason, RequestContext context) throws ResponseException;
 	
 	/**
+	 * Unvoid or unretire delegate, whichever action is appropriate for the resource type.
+	 * Subclasses need to override this method, which is called internally by
+	 * {@link #undelete(String, RequestContext)}.
+	 * 
+	 * @param delegate
+	 * @param context
+	 * @throws ResponseException
+	 * @return Object
+	 */
+	protected T undelete(T delegate, RequestContext context) throws ResponseException {
+		//Default implementation of this method if not overriden by sub-class is to raise an 
+		//exception stating "undelete action not yet supported for this resource"
+		throw new ResourceDoesNotSupportOperationException("undelete action not yet supported for this resource");
+	}
+	
+	/**
 	 * Purge delegate from persistent storage. Subclasses need to override this method, which is
 	 * called internally by {@link #purge(String, RequestContext)}.
 	 * 
