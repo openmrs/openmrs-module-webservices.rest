@@ -1,3 +1,4 @@
+
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -53,9 +54,9 @@ import io.swagger.models.properties.StringProperty;
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = { "1.9.*",
-        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+		"1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -96,10 +97,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns a display string
-	 * 
+	 *
 	 * @param visit
 	 * @return the display string
 	 */
@@ -112,12 +113,12 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		ret += visit.getStartDatetime() == null ? "?" : Context.getDateTimeFormat().format(visit.getStartDatetime());
 		return ret;
 	}
-	
+
 	@PropertyGetter("attributes")
 	public Collection<VisitAttribute> getActiveAttributes(Visit visit) {
 		return visit.getActiveAttributes();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -133,10 +134,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		description.addProperty("stopDatetime");
 		description.addProperty("encounters");
 		description.addProperty("attributes");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -147,63 +148,63 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		description.removeProperty("patient");
 		return description;
 	}
-	
+
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
-			        .property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
-			        .property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
-			        .property("voided", new BooleanProperty());
+					.property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
+					.property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
+					.property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl.property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("visitType", new RefProperty("#/definitions/VisittypeGetRef"))
-			        .property("indication", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"))
-			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGetRef")));
+					.property("visitType", new RefProperty("#/definitions/VisittypeGetRef"))
+					.property("indication", new RefProperty("#/definitions/ConceptGetRef"))
+					.property("location", new RefProperty("#/definitions/LocationGetRef"))
+					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGetRef")));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl.property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("visitType", new RefProperty("#/definitions/VisittypeGet"))
-			        .property("indication", new RefProperty("#/definitions/ConceptGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"))
-			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGet")));
+					.property("visitType", new RefProperty("#/definitions/VisittypeGet"))
+					.property("indication", new RefProperty("#/definitions/ConceptGet"))
+					.property("location", new RefProperty("#/definitions/LocationGet"))
+					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGet")));
 		}
 		return modelImpl;
 	}
-	
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
-		        .property("visitType", new StringProperty().example("uuid")).property("startDatetime", new DateProperty())
-		        .property("location", new StringProperty().example("uuid")).property("indication", new StringProperty())
-		        .property("stopDatetime", new DateProperty())
-		        .property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
-		        
-		        .required("patient").required("visitType");
+				.property("visitType", new StringProperty().example("uuid")).property("startDatetime", new DateProperty())
+				.property("location", new StringProperty().example("uuid")).property("indication", new StringProperty())
+				.property("stopDatetime", new DateProperty())
+				.property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
+				.property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
+
+				.required("patient").required("visitType");
 		if (rep instanceof FullRepresentation) {
 			model.property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"))
-			        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")));
+					.property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
+					.property("location", new RefProperty("#/definitions/LocationCreate"))
+					.property("indication", new RefProperty("#/definitions/ConceptCreate"))
+					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")));
 		}
 		return model;
 	}
-	
+
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl().property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
-		        .property("startDatetime", new DateProperty())
-		        .property("location", new RefProperty("#/definitions/LocationCreate"))
-		        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
-		        .property("stopDatetime", new DateProperty())
-		        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
-		        .property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
+				.property("startDatetime", new DateProperty())
+				.property("location", new RefProperty("#/definitions/LocationCreate"))
+				.property("indication", new RefProperty("#/definitions/ConceptCreate"))
+				.property("stopDatetime", new DateProperty())
+				.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
+				.property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -211,7 +212,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Visit newDelegate() {
 		return new Visit();
 	}
-	
+
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		// RESTWS-488: set startDatetime if not provided
@@ -220,7 +221,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return super.create(propertiesToCreate, context);
 	};
-	
+
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -228,17 +229,17 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Visit save(Visit visit) {
 		return Context.getVisitService().saveVisit(visit);
 	}
-	
+
 	/**
 	 * Fetches a visit by uuid
-	 * 
+	 *
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Visit getByUniqueId(String uuid) {
 		return Context.getVisitService().getVisitByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -251,7 +252,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		Context.getVisitService().voidVisit(visit, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -262,7 +263,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			return;
 		Context.getVisitService().purgeVisit(visit);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -270,10 +271,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public String getResourceVersion() {
 		return "1.9";
 	}
-	
+
 	/**
 	 * Sets the attributes of a visit
-	 * 
+	 *
 	 * @param visit the visit whose attributes to set
 	 * @param attributes the attributes to set
 	 */
@@ -289,7 +290,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			}
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -306,37 +307,37 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			return super.search(context);
 		}
 	}
-	
+
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, String locationParameter) {
+								   Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, locations, null, minStartDate,
-		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
+				null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
-	
+
 	/**
 	 * Get all the visits
-	 * 
+	 *
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Visit> doGetAll(RequestContext context) {
 		return new NeedsPaging<Visit>(Context.getVisitService().getAllVisits(), context);
 	}
-	
+
 	private Patient getPatient(String patientUniqueId) {
 		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(
-		    RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
+				RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		return patient;
 	}
-	
+
 	private Location getLocation(String locationUniqueId) {
 		Location location = ((LocationResource1_8) Context.getService(RestService.class).getResourceByName(
-		    RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
+				RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
 		if (location == null)
 			throw new ObjectNotFoundException();
 		return location;

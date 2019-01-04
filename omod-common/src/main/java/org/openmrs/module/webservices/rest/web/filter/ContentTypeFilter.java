@@ -25,9 +25,9 @@ import java.io.IOException;
  * Filter for /ws/rest endpoints to prevent XML Content-Types due to security concerns
  */
 public class ContentTypeFilter implements Filter {
-	
+
 	protected final Log log = LogFactory.getLog(getClass());
-	
+
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
@@ -35,7 +35,7 @@ public class ContentTypeFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 		log.debug("Initializing REST WS Content-Type filter");
 	}
-	
+
 	/**
 	 * @see javax.servlet.Filter#destroy()
 	 */
@@ -43,29 +43,29 @@ public class ContentTypeFilter implements Filter {
 	public void destroy() {
 		log.debug("Destroying REST WS Content-Type filter");
 	}
-	
+
 	/**
 	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
 	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	        ServletException {
-		
+			ServletException {
+
 		// check content-type (do not allow xml)
 		if (isUnsupportedContentType(request.getContentType())) {
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
 			httpresponse.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
-			    "Content-Type " + request.getContentType() + " not supported");
+					"Content-Type " + request.getContentType() + " not supported");
 			return;
 		}
-		
+
 		// continue with the filter chain
 		chain.doFilter(request, response);
 	}
-	
+
 	private boolean isUnsupportedContentType(String contentType) {
-		
+
 		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
 			// blacklist approach
 			if (contentType.toLowerCase().contains("xml")) {

@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.PersonResource1_10;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
 
 /**
@@ -29,7 +30,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
  */
 @Resource(name = RestConstants.VERSION_1 + "/person", order = 1, supportedClass = Person.class, supportedOpenmrsVersions = {
         "1.11.*", "1.12.*", "2.0.*", "2.1.*" })
-public class PersonResource1_11 extends PersonResource1_8 {
+public class PersonResource1_11 extends PersonResource1_10 {
 	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
@@ -39,7 +40,6 @@ public class PersonResource1_11 extends PersonResource1_8 {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 		if (description != null) {
 			description.addProperty("deathdateEstimated");
-			description.addProperty("birthtime");
 		}
 		return description;
 	}
@@ -51,7 +51,6 @@ public class PersonResource1_11 extends PersonResource1_8 {
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		description.addProperty("deathdateEstimated");
-		description.addProperty("birthtime");
 		return description;
 	}
 	
@@ -63,7 +62,6 @@ public class PersonResource1_11 extends PersonResource1_8 {
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("deathdateEstimated");
-		description.addProperty("birthtime");
 		return description;
 	}
 	
@@ -85,8 +83,7 @@ public class PersonResource1_11 extends PersonResource1_8 {
 	private Model addNewProperties(Model model, Representation rep) {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			((ModelImpl) model)
-			        .property("deathdateEstimated", new BooleanProperty()._default(false))
-			        .property("birthtime", new DateTimeProperty());
+			        .property("deathdateEstimated", new BooleanProperty()._default(false));
 		}
 		return model;
 	}
