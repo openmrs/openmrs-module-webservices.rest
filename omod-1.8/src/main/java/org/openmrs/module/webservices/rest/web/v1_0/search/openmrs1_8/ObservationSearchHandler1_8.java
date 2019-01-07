@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,7 +48,7 @@ public class ObservationSearchHandler1_8 implements SearchHandler {
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/obs", Arrays.asList(
 	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.*"), Arrays.asList(new SearchQuery.Builder(
 	        "Allows you to find Observations by patient and concept").withRequiredParameters("patient")
-	        .withOptionalParameters("concept", "concepts").build()));
+	        .withOptionalParameters("concept", "concepts", "answers", "groupingConcepts").build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {
@@ -56,26 +59,64 @@ public class ObservationSearchHandler1_8 implements SearchHandler {
 	public PageableResult search(RequestContext context) throws ResponseException {
 		
 		String patientUuid = context.getRequest().getParameter("patient");
-		List<String> conceptUuids = new ArrayList<String>();
+		List<String> questionConceptUuids = new ArrayList<String>();
+		List<String> answerConceptUuids = new ArrayList<String>();
+		List<String> groupingConceptUuids = new ArrayList<String>();
 		
 		if (context.getRequest().getParameter("concept") != null) {
-			conceptUuids.add(context.getRequest().getParameter("concept"));
+			questionConceptUuids.add(context.getRequest().getParameter("concept"));
 		}
 		else if (context.getRequest().getParameter("concepts") != null) {
-			conceptUuids.addAll(Arrays.asList(context.getRequest().getParameter("concepts").split(",")));
+			questionConceptUuids.addAll(Arrays.asList(context.getRequest().getParameter("concepts").split(",")));
+		}
+		
+		if (context.getRequest().getParameter("answers") != null) {
+			answerConceptUuids.addAll(Arrays.asList(context.getRequest().getParameter("answers").split(",")));
+		}
+		
+		if (context.getRequest().getParameter("groupingConcepts") != null) {
+			groupingConceptUuids.addAll(Arrays.asList(context.getRequest().getParameter("groupingConcepts").split(",")));
 		}
 		
 		if (patientUuid != null) {
+			
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
-			if (patient != null && !conceptUuids.isEmpty()) {
+			
+			List<Concept> questionConcepts = new ArrayList<Concept>();
+			List<Concept> answerConcepts = new ArrayList<Concept>();
+			
+			if (patient != null) {
 				
-				List<Obs> obs = new ArrayList<Obs>();
+				if (!questionConceptUuids.isEmpty()) {
+					for (String conceptUuid : questionConceptUuids) {
+						questionConcepts.add(((ConceptResource1_8) Context.getService(RestService.class)
+						        .getResourceBySupportedClass(Concept.class)).getByUniqueId(conceptUuid));
+					}
+				}
 				
-				for (String conceptUuid : conceptUuids) {
-					Concept concept = ((ConceptResource1_8) Context.getService(RestService.class)
-					        .getResourceBySupportedClass(Concept.class)).getByUniqueId(conceptUuid);
-					obs.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, concept));
+				if (!answerConceptUuids.isEmpty()) {
+					for (String conceptUuid : answerConceptUuids) {
+						answerConcepts.add(((ConceptResource1_8) Context.getService(RestService.class)
+						        .getResourceBySupportedClass(Concept.class)).getByUniqueId(conceptUuid));
+					}
+				}
+				
+				List<Obs> obs = Context.getObsService().getObservations(Collections.singletonList((Person) patient), null,
+				    !questionConcepts.isEmpty() ? questionConcepts : null,
+				    !answerConcepts.isEmpty() ? answerConcepts : null, null,
+				    null, null, null, null, null, null, false);
+				
+				// limit by grouping concept, if present... this could potentially be a heavy call if not limiting by question or answer conept
+				if (!groupingConceptUuids.isEmpty()) {
+					Iterator<Obs> i = obs.iterator();
+					while (i.hasNext()) {
+						Obs o = i.next();
+						if (o.getObsGroup() == null
+						        || !groupingConceptUuids.contains(o.getObsGroup().getConcept().getUuid())) {
+							i.remove();
+						}
+					}
 				}
 				
 				return new NeedsPaging<Obs>(obs, context);
