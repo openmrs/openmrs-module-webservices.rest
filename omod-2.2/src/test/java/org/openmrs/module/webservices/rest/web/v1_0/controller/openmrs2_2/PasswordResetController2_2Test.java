@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.Person;
@@ -42,11 +43,12 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	@Autowired
 	private UserDAO dao;
 	
+	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 	
 	@Before
 	public void before() {
-		AdministrationService.setGlobalProperty(OpenmrsConstants.GP_HOST_URL,
+		Context.getAdministrationService().setGlobalProperty(OpenmrsConstants.GP_HOST_URL,
 		    "http://localhost:8080/openmrs/admin/users/changePassword.form/{activationKey}");
 	}
 	
@@ -54,18 +56,19 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
 		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
 		expectedException.expect(MessageException.class);
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmail() throws Exception {
 		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		user.setEmail("fanyuih@gmail.com");
+		userService.saveUser(user);
 		assertNull(dao.getLoginCredential(user).getActivationKey());
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		expectedException.expect(MessageException.class);
-		
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
