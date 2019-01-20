@@ -90,6 +90,10 @@ public class SwaggerSpecificationCreator {
 	
 	PrintStream originalOut;
 	
+	private QueryParameter subclassTypeParameter = new QueryParameter().name("t")
+	        .description("The type of Subclass Resource to return")
+	        .type("string");
+	
 	Map<Integer, Level> originalLevels = new HashMap<Integer, Level>();
 	
 	private Logger log = Logger.getLogger(this.getClass());
@@ -657,9 +661,7 @@ public class SwaggerSpecificationCreator {
 				        .description(resourceName + " response")
 				        .schema(new RefProperty("#/definitions/FetchAll")));
 				if (((BaseDelegatingResource<?>) resourceHandler).hasTypesDefined()) {
-					operation.parameter(new QueryParameter().name("t")
-					        .description("The type of Subclass Resource to return")
-					        .type("string"));
+					operation.parameter(subclassTypeParameter);
 				}
 				// since the path has no existing get operations then it is considered new
 				wasNew = true;
@@ -1060,11 +1062,7 @@ public class SwaggerSpecificationCreator {
 		        .description("The representation to return (ref, default, full or custom)")
 		        .type("string")
 		        ._enum(Arrays.asList("ref", "default", "full", "custom"));
-		
-		Parameter t = new QueryParameter().name("t")
-		        .description("The type of Subclass Resource to return")
-		        .type("string");
-		
+				
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
@@ -1073,7 +1071,7 @@ public class SwaggerSpecificationCreator {
 			operation.setParameters(buildPagingParameters());
 			operation.parameter(v);
 			if (((BaseDelegatingResource<?>) resourceHandler).hasTypesDefined()) {
-				operation.parameter(t);
+				operation.parameter(subclassTypeParameter);
 			}
 			
 		} else if (operationEnum == OperationEnum.getWithUUID) {
