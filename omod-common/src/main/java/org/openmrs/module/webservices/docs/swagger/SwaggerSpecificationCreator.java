@@ -53,6 +53,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -655,7 +656,11 @@ public class SwaggerSpecificationCreator {
 				operation.addResponse("200", new Response()
 				        .description(resourceName + " response")
 				        .schema(new RefProperty("#/definitions/FetchAll")));
-				
+				if (((BaseDelegatingResource<?>) resourceHandler).hasTypesDefined()) {
+					operation.parameter(new QueryParameter().name("t")
+					        .description("The type of Subclass Resource to return")
+					        .type("string"));
+				}
 				// since the path has no existing get operations then it is considered new
 				wasNew = true;
 			} else {
@@ -1056,6 +1061,10 @@ public class SwaggerSpecificationCreator {
 		        .type("string")
 		        ._enum(Arrays.asList("ref", "default", "full", "custom"));
 		
+		Parameter t = new QueryParameter().name("t")
+		        .description("The type of Subclass Resource to return")
+		        .type("string");
+		
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
@@ -1063,6 +1072,9 @@ public class SwaggerSpecificationCreator {
 			operation.addResponse("200", response200.schema(new RefProperty("#/definitions/FetchAll")));
 			operation.setParameters(buildPagingParameters());
 			operation.parameter(v);
+			if (((BaseDelegatingResource<?>) resourceHandler).hasTypesDefined()) {
+				operation.parameter(t);
+			}
 			
 		} else if (operationEnum == OperationEnum.getWithUUID) {
 			
