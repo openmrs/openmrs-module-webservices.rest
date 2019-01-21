@@ -14,7 +14,6 @@ import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10;
 
 public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResource1_10, Order> {
 	
@@ -69,9 +68,6 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 		assertPropPresent("scheduledDate");
 		assertPropPresent("dateStopped");
 		assertPropPresent("autoExpireDate");
-		assertPropPresent("encounter");
-		assertPropPresent("orderer");
-		assertPropPresent("orderReason");
 		assertPropPresent("orderReasonNonCoded");
 		assertPropPresent("urgency");
 		assertPropPresent("instructions");
@@ -94,5 +90,4 @@ public class OrderResource1_10Test extends BaseDelegatingResourceTest<OrderResou
 	public String getUuidProperty() {
 		return RestTestConstants1_10.ORDER_UUID;
 	}
-	
 }

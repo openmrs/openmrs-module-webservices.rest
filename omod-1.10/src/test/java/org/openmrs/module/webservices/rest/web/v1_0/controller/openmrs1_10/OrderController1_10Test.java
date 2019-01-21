@@ -29,11 +29,9 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -489,5 +487,4 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("includeAll", "true"))));
 		assertEquals(9, Util.getResultsSize(results));
 	}
-	
 }

@@ -10,13 +10,16 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import java.util.Date;
+
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.api.MissingRequiredIdentifierException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -29,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
@@ -165,13 +169,25 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	 * @return all orders for a given patient (possibly filtered by context.type)
 	 */
 	@Override
-	protected PageableResult doSearch(RequestContext context) {
+	protected PageableResult doSearch(RequestContext context) throws ResponseException {
 		String patientUuid = context.getRequest().getParameter("patient");
+		String stat = context.getRequest().getParameter("status");
+		if ((StringUtils.isNotEmpty(patientUuid)) && StringUtils.equals(stat, "any")) {
+             try {
+            	 throw new MissingRequiredIdentifierException("Sorry You did not Specify a Patient #UUID");
+			}
+			catch (MissingRequiredIdentifierException e) {
+			Util.log("Error  :", e);
+			
+			}
+			
+		}
+		
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null) {
-				return new EmptySearchResult();
+				throw new ObjectNotFoundException();
 			}
 			
 			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
@@ -204,7 +220,6 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			return new NeedsPaging<Order>(orders, context);
 		}
-		
 		return new EmptySearchResult();
 	}
 	
