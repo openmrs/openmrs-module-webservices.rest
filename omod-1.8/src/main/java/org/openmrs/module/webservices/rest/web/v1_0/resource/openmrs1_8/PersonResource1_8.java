@@ -24,6 +24,7 @@ import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
+import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonName;
@@ -54,6 +55,8 @@ import org.openmrs.util.OpenmrsUtil;
 //order must be greater than that for PatientResource(order=0) RESTWS-273
 public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	
+	private Person person = null;
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -76,7 +79,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-			return description;
+			return ifPatientAddLink(description);
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -96,7 +99,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 			description.addProperty("voided");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
-			return description;
+			return ifPatientAddLink(description);
 		}
 		return null;
 	}
@@ -391,7 +394,8 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 */
 	@Override
 	public Person getByUniqueId(String uuid) {
-		return Context.getPersonService().getPersonByUuid(uuid);
+		this.person = Context.getPersonService().getPersonByUuid(uuid);
+		return this.person;
 	}
 	
 	/**
@@ -551,5 +555,20 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		SimpleObject ret = super.getAuditInfo(person);
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
 		return ret;
+	}
+	
+	/**
+	 * Adds the link to related {@link Patient} resource to this {@link Person} if its a patient
+	 * 
+	 * @param description whose link set is to be modified
+	 * @return audit resource description
+	 */
+	private DelegatingResourceDescription ifPatientAddLink(DelegatingResourceDescription description) {
+		if (this.person != null && person.isPatient()) {
+			Patient patient = Context.getPatientService().getPatient(this.person.getId());
+			String uri = "/" + RestConstants.VERSION_1 + "/patient/" + patient.getUuid();
+			description.addLink("patient", uri);
+		}
+		return description;
 	}
 }

@@ -83,6 +83,23 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldGetALinkIfPersonIsPatient() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> links = (List<Object>) result.get("links");
+		String expectedLink = RestConstants.URI_PREFIX + "v1/patient/" + RestTestConstants1_8.PATIENT_UUID;
+		String recievedLink = null;
+		for (Object link : links.toArray()) {
+			if ("patient".equals((String) PropertyUtils.getProperty(link, "rel"))) {
+				recievedLink = (String) PropertyUtils.getProperty(link, "uri");
+			}
+		}
+		assertNotNull(recievedLink);
+		assertEquals(expectedLink, recievedLink);
+	}
+	
+	@Test
 	public void shouldGetPersonDateCreated() throws Exception {
 		Person person = service.getPersonByUuid(getUuid());
 		Date personDateCreated = new Date();
