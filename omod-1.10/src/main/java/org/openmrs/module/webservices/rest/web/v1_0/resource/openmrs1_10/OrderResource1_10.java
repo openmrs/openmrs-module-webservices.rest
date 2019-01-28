@@ -17,9 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.api.MissingRequiredIdentifierException;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -171,18 +169,6 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	@Override
 	protected PageableResult doSearch(RequestContext context) throws ResponseException {
 		String patientUuid = context.getRequest().getParameter("patient");
-		String stat = context.getRequest().getParameter("status");
-		if ((StringUtils.isNotEmpty(patientUuid)) && StringUtils.equals(stat, "any")) {
-             try {
-            	 throw new MissingRequiredIdentifierException("Sorry You did not Specify a Patient #UUID");
-			}
-			catch (MissingRequiredIdentifierException e) {
-			Util.log("Error  :", e);
-			
-			}
-			
-		}
-		
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);

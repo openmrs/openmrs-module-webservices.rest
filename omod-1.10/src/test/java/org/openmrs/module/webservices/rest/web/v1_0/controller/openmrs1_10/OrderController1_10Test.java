@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -436,6 +437,13 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
+	}
+	
+	@Test
+	public void shouldReturnExceptionIfNoUuidIsSpecified() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("status", "active"))));
+		Object exe = new IllegalRequestException().toString();
+		assertTrue(results.toString().contains(exe.toString()));
 	}
 	
 	@Test

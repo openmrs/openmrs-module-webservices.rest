@@ -12,9 +12,8 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Collections;
 
 /**
  * Empty list of search results
@@ -26,7 +25,7 @@ public class EmptySearchResult implements PageableResult {
 	 */
 	@Override
 	public SimpleObject toSimpleObject(Converter<?> preferredConverter) throws ResponseException {
-		return new SimpleObject().add("results", Collections.emptyList());
+		return new SimpleObject().add("results", new IllegalRequestException().toString());
 	}
 	
 }
