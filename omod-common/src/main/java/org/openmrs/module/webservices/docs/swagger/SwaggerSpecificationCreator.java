@@ -62,6 +62,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -322,8 +323,11 @@ public class SwaggerSpecificationCreator {
 							method.invoke(resourceHandler, null, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
 							    new RequestContext());
 						}
-						catch (ResourceDoesNotSupportOperationException re) {
-							return false;
+						catch (InvocationTargetException e) {
+							if (e.getCause() instanceof ResourceDoesNotSupportOperationException) {
+								return false;
+							}
+							resourceHandler.save(null);	
 						}
 						catch (Exception ee) {
 							// if the resource doesn't immediate throw ResourceDoesNotSupportOperationException
