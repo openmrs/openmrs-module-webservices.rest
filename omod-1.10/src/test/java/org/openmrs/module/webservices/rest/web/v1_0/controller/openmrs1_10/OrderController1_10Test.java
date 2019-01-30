@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -485,7 +486,12 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString() });
 		assertThat(uuids, hasItems(expectedOrderUuids));
 	}
-	
+	@Test
+	public void shouldReturnExceptionIfNoUuidIsSpecified() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("status", "active"))));
+		Object exe = new IllegalRequestException().toString();
+		assertTrue(results.toString().contains(exe.toString()));
+	}
 	@Test
 	public void shouldGetAllOrdersForAPatientInTheSpecifiedCareSetting() throws Exception {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
