@@ -42,6 +42,7 @@ public class PersonAddressResource1_8Test extends BaseDelegatingResourceTest<Per
 		assertPropEquals("latitude", getObject().getLatitude());
 		assertPropEquals("longitude", getObject().getLongitude());
 		assertPropEquals("voided", getObject().getVoided());
+		assertPropEquals("uuid", getObject().getUuid());
 	}
 	
 	@Override
