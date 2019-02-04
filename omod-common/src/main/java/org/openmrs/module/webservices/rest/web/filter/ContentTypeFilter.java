@@ -51,7 +51,6 @@ public class ContentTypeFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
-
 		// check content-type (do not allow xml)
 		if (isUnsupportedContentType(request.getContentType())) {
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
@@ -65,7 +64,6 @@ public class ContentTypeFilter implements Filter {
 	}
 
 	private boolean isUnsupportedContentType(String contentType) {
-
 		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
 			// blacklist approach
 			if (contentType.toLowerCase().contains("xml")) {

@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
+	private static final String ADDRESS_TEST_UUID = "address-test-uuid";
+
 	private PersonService service;
 	
 	@Before
@@ -143,6 +145,22 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		
 		int after = service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID).getAddresses().size();
 		Assert.assertEquals(before + 1, after);
+	}
+	
+	@Test
+	public void shouldAddAnAddressWithSpecificUuidToAPerson() throws Exception {
+		SimpleObject address = new SimpleObject();
+		address.add("address1", "test address");
+		address.add("country", "USA");
+		address.add("preferred", "true");
+		address.add("uuid", ADDRESS_TEST_UUID);
+		
+		MockHttpServletRequest req = newPostRequest(getURI(), address);
+		handle(req);
+		
+		PersonAddress personAddress = service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID).getPersonAddress();
+		Assert.assertNotNull(personAddress);
+		Assert.assertEquals(ADDRESS_TEST_UUID, personAddress.getUuid());
 	}
 	
 	@Test
