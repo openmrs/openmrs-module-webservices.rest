@@ -87,16 +87,6 @@ public class ContentTypeFilterTest {
 
 		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
-
-	@Test
-	public void doFilter_shouldAllowMultipartFormDataContentTypeWithParameter() throws IOException, ServletException {
-		req.setContentType("multipart/form-data; boundary=----WebKitFormBoundaryREl4lGYAfON7BGOo");
-		req.setMethod("POST");
-		req.setRequestURI("/ws/rest/v1/obs");
-		testFilter.doFilter(req, resp, mockChain);
-		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-	}
 	
 	@Test
 	public void doFilter_shouldAllowNullContentType() throws IOException, ServletException {
