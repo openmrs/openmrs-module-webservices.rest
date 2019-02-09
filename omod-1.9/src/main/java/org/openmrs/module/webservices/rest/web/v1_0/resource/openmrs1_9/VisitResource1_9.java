@@ -1,4 +1,3 @@
-
 /**
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -54,7 +53,7 @@ import io.swagger.models.properties.StringProperty;
  * {@link Resource} for {@link Visit}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = { "1.9.*",
-		"1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 
 	/**
@@ -154,22 +153,22 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
-					.property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
-					.property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
-					.property("voided", new BooleanProperty());
+			        .property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
+			        .property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
+			        .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl.property("patient", new RefProperty("#/definitions/PatientGetRef"))
-					.property("visitType", new RefProperty("#/definitions/VisittypeGetRef"))
-					.property("indication", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("location", new RefProperty("#/definitions/LocationGetRef"))
-					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGetRef")));
+			        .property("visitType", new RefProperty("#/definitions/VisittypeGetRef"))
+			        .property("indication", new RefProperty("#/definitions/ConceptGetRef"))
+			        .property("location", new RefProperty("#/definitions/LocationGetRef"))
+			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGetRef")));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl.property("patient", new RefProperty("#/definitions/PatientGet"))
-					.property("visitType", new RefProperty("#/definitions/VisittypeGet"))
-					.property("indication", new RefProperty("#/definitions/ConceptGet"))
-					.property("location", new RefProperty("#/definitions/LocationGet"))
-					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGet")));
+			        .property("visitType", new RefProperty("#/definitions/VisittypeGet"))
+			        .property("indication", new RefProperty("#/definitions/ConceptGet"))
+			        .property("location", new RefProperty("#/definitions/LocationGet"))
+			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterGet")));
 		}
 		return modelImpl;
 	}
@@ -177,19 +176,19 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
-				.property("visitType", new StringProperty().example("uuid")).property("startDatetime", new DateProperty())
-				.property("location", new StringProperty().example("uuid")).property("indication", new StringProperty())
-				.property("stopDatetime", new DateProperty())
-				.property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
-				.property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
+		        .property("visitType", new StringProperty().example("uuid")).property("startDatetime", new DateProperty())
+		        .property("location", new StringProperty().example("uuid")).property("indication", new StringProperty())
+		        .property("stopDatetime", new DateProperty())
+		        .property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
+		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
 
-				.required("patient").required("visitType");
+		        .required("patient").required("visitType");
 		if (rep instanceof FullRepresentation) {
 			model.property("patient", new RefProperty("#/definitions/PatientCreate"))
-					.property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
-					.property("location", new RefProperty("#/definitions/LocationCreate"))
-					.property("indication", new RefProperty("#/definitions/ConceptCreate"))
-					.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")));
+			        .property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
+			        .property("location", new RefProperty("#/definitions/LocationCreate"))
+			        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
+			        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")));
 		}
 		return model;
 	}
@@ -197,12 +196,12 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl().property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
-				.property("startDatetime", new DateProperty())
-				.property("location", new RefProperty("#/definitions/LocationCreate"))
-				.property("indication", new RefProperty("#/definitions/ConceptCreate"))
-				.property("stopDatetime", new DateProperty())
-				.property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
-				.property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
+		        .property("startDatetime", new DateProperty())
+		        .property("location", new RefProperty("#/definitions/LocationCreate"))
+		        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
+		        .property("stopDatetime", new DateProperty())
+		        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
+		        .property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
 	}
 
 	/**
@@ -309,7 +308,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-								   Date minStartDate, String locationParameter) {
+	        Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
@@ -329,7 +328,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 
 	private Patient getPatient(String patientUniqueId) {
 		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(
-				RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
+		    RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
 		if (patient == null)
 			throw new ObjectNotFoundException();
 		return patient;
@@ -337,7 +336,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 
 	private Location getLocation(String locationUniqueId) {
 		Location location = ((LocationResource1_8) Context.getService(RestService.class).getResourceByName(
-				RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
+		    RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
 		if (location == null)
 			throw new ObjectNotFoundException();
 		return location;
