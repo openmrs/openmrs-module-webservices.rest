@@ -55,7 +55,7 @@ import io.swagger.models.properties.StringProperty;
 @Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = { "1.9.*",
         "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -96,10 +96,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Returns a display string
-	 *
+	 * 
 	 * @param visit
 	 * @return the display string
 	 */
@@ -112,12 +112,12 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		ret += visit.getStartDatetime() == null ? "?" : Context.getDateTimeFormat().format(visit.getStartDatetime());
 		return ret;
 	}
-
+	
 	@PropertyGetter("attributes")
 	public Collection<VisitAttribute> getActiveAttributes(Visit visit) {
 		return visit.getActiveAttributes();
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -133,10 +133,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		description.addProperty("stopDatetime");
 		description.addProperty("encounters");
 		description.addProperty("attributes");
-
+		
 		return description;
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
@@ -147,7 +147,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		description.removeProperty("patient");
 		return description;
 	}
-
+	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
@@ -172,7 +172,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return modelImpl;
 	}
-
+	
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
@@ -181,7 +181,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		        .property("stopDatetime", new DateProperty())
 		        .property("encounters", new ArrayProperty(new StringProperty().example("uuid")))
 		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
-
+		        
 		        .required("patient").required("visitType");
 		if (rep instanceof FullRepresentation) {
 			model.property("patient", new RefProperty("#/definitions/PatientCreate"))
@@ -192,7 +192,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return model;
 	}
-
+	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl().property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
@@ -203,7 +203,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
 		        .property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
 	}
-
+	
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
@@ -211,7 +211,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Visit newDelegate() {
 		return new Visit();
 	}
-
+	
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		// RESTWS-488: set startDatetime if not provided
@@ -220,7 +220,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		return super.create(propertiesToCreate, context);
 	};
-
+	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -228,17 +228,17 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public Visit save(Visit visit) {
 		return Context.getVisitService().saveVisit(visit);
 	}
-
+	
 	/**
 	 * Fetches a visit by uuid
-	 *
+	 * 
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
 	@Override
 	public Visit getByUniqueId(String uuid) {
 		return Context.getVisitService().getVisitByUuid(uuid);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -251,7 +251,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 		Context.getVisitService().voidVisit(visit, reason);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -262,7 +262,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			return;
 		Context.getVisitService().purgeVisit(visit);
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
@@ -270,10 +270,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	public String getResourceVersion() {
 		return "1.9";
 	}
-
+	
 	/**
 	 * Sets the attributes of a visit
-	 *
+	 * 
 	 * @param visit the visit whose attributes to set
 	 * @param attributes the attributes to set
 	 */
@@ -289,7 +289,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			}
 		}
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -306,7 +306,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			return super.search(context);
 		}
 	}
-
+	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
 	        Date minStartDate, String locationParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
@@ -315,17 +315,17 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, locations, null, minStartDate,
 		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
-
+	
 	/**
 	 * Get all the visits
-	 *
+	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	protected NeedsPaging<Visit> doGetAll(RequestContext context) {
 		return new NeedsPaging<Visit>(Context.getVisitService().getAllVisits(), context);
 	}
-
+	
 	private Patient getPatient(String patientUniqueId) {
 		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(
 		    RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
@@ -333,7 +333,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			throw new ObjectNotFoundException();
 		return patient;
 	}
-
+	
 	private Location getLocation(String locationUniqueId) {
 		Location location = ((LocationResource1_8) Context.getService(RestService.class).getResourceByName(
 		    RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
