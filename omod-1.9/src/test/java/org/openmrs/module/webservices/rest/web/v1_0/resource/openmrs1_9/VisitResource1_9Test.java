@@ -18,7 +18,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
  * Contains tests for the {@link VisitResource1_9}
  */
 public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResource1_9, Visit> {
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#newObject()
 	 */
@@ -26,7 +26,7 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 	public Visit newObject() {
 		return Context.getVisitService().getVisitByUuid(getUuidProperty());
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#validateDefaultRepresentation()
 	 */
@@ -43,7 +43,7 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 		assertPropPresent("attributes");
 		assertPropEquals("voided", getObject().isVoided());
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#validateFullRepresentation()
 	 */
@@ -61,7 +61,7 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("auditInfo");
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#getDisplayProperty()
 	 */
@@ -69,7 +69,7 @@ public class VisitResource1_9Test extends BaseDelegatingResourceTest<VisitResour
 	public String getDisplayProperty() {
 		return "Initial HIV Clinic Visit @ Unknown Location - 01/01/2005 00:00";
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#getUuidProperty()
 	 */
