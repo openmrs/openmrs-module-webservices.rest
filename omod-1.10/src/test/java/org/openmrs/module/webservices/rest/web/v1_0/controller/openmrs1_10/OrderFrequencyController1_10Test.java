@@ -22,6 +22,8 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.OrderFrequency;
+import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -42,9 +44,12 @@ public class OrderFrequencyController1_10Test extends MainResourceControllerTest
 	
 	private OrderService service;
 	
+	private ConceptService conceptService;
+	
 	@Before
 	public void before() {
 		this.service = Context.getOrderService();
+		this.conceptService = Context.getConceptService();
 	}
 	
 	/**
@@ -150,4 +155,29 @@ public class OrderFrequencyController1_10Test extends MainResourceControllerTest
 		assertThat(uuids, hasItems(expectedUuids));
 	}
 	
+	@Test
+	public void shouldCreateAnOrderFrequency() throws Exception {
+		String json = "{ \"names\": [{\"name\":\"Frequency test\", \"locale\":\"en\", \"conceptNameType\":\""
+		        + ConceptNameType.FULLY_SPECIFIED
+		        + "\"}], \"datatype\":\"8d4a4488-c2cc-11de-8d13-0010c6dffd0f\", \"conceptClass\":\"Frequency\" }";
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, "concept");
+		req.setContent(json.getBytes());
+		
+		Object newConcept = deserialize(handle(req));
+		String conceptUuid = (String) PropertyUtils.getProperty(newConcept, "uuid");
+		assertNotNull(conceptUuid);
+		
+		int originalOrderFrequencyCount = service.getOrderFrequencies(false).size();
+		
+		json = "{\"frequencyPerDay\":5.0,\"concept\":\"" + conceptUuid + "\"}";
+		MockHttpServletRequest req2 = request(RequestMethod.POST, getURI());
+		req2.setContent(json.getBytes());
+		Object newOrderFrequency = deserialize(handle(req2));
+		
+		assertNotNull(PropertyUtils.getProperty(newOrderFrequency, "uuid"));
+		assertEquals("Frequency test", PropertyUtils.getProperty(newOrderFrequency, "name"));
+		assertEquals(5.0, PropertyUtils.getProperty(newOrderFrequency, "frequencyPerDay"));
+		assertEquals(originalOrderFrequencyCount + 1, service.getOrderFrequencies(false).size());
+	}
 }
