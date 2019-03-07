@@ -18,7 +18,7 @@
 	</li>
 	
 	<li <c:if test='<%= request.getRequestURI().contains("rest/help") %>'>class="active"</c:if>>
-		<a href="help.form">
+		<a href="help.htm">
 			<spring:message code="webservices.rest.help"/>
 		</a>
 	</li>
