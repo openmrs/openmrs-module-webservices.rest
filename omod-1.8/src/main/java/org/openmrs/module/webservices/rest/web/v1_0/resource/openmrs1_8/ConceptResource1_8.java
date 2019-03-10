@@ -593,7 +593,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			    Collections.<ConceptClass> emptyList(), Collections.<ConceptClass> emptyList(),
 			    Collections.<ConceptDatatype> emptyList(), Collections.<ConceptDatatype> emptyList(), answerTo);
 			boolean hasMore = count > startIndex + limit;
-			result = new AlreadyPaged<Concept>(context, results, hasMore);
+			result = new AlreadyPaged<Concept>(context, results, hasMore, Long.valueOf(count));
 		} else {
 			result = new NeedsPaging<Concept>(results, context);
 		}

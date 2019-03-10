@@ -221,6 +221,6 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		List<Drug> drugs = Context.getConceptService().getDrugs(drugName, null, searchOnPhrase, searchDrugConceptNames,
 		    includeRetired, startIndex, limit);
 		boolean hasMore = countOfDrugs > startIndex + limit;
-		return new AlreadyPaged<Drug>(ctx, drugs, hasMore);
+		return new AlreadyPaged<Drug>(ctx, drugs, hasMore, Long.valueOf(countOfDrugs));
 	}
 }

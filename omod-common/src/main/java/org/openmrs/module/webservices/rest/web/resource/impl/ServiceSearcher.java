@@ -52,7 +52,7 @@ public class ServiceSearcher<T> {
 		results = doPagedSearch(service, query, context);
 		count = doCount(service, query, context);
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
-		return new AlreadyPaged<T>(context, results, hasMore);
+		return new AlreadyPaged<T>(context, results, hasMore, Long.valueOf(count));
 	}
 	
 	/**

@@ -80,7 +80,8 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 		if (codeOrName == null) {
 			List<ConceptReferenceTerm> terms = conceptService.getConceptReferenceTerms(null, conceptSource,
 			    context.getStartIndex(), context.getLimit(), context.getIncludeAll());
-			return new AlreadyPaged<ConceptReferenceTerm>(context, terms, context.getIncludeAll());
+			int count = conceptService.getCountOfConceptReferenceTerms(null, conceptSource, context.getIncludeAll());
+			return new AlreadyPaged<ConceptReferenceTerm>(context, terms, context.getIncludeAll(), Long.valueOf(count));
 		} else if (searchType.equals(SEARCH_TYPE_EQUAL)) {
 			if (conceptSource != null) {
 				ConceptReferenceTerm term = conceptService.getConceptReferenceTermByCode(codeOrName, conceptSource);
@@ -91,7 +92,8 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 				if (term == null) {
 					return new EmptySearchResult();
 				} else {
-					return new AlreadyPaged<ConceptReferenceTerm>(context, Arrays.asList(term), false);
+					List<ConceptReferenceTerm> results = Arrays.asList(term);
+					return new AlreadyPaged<ConceptReferenceTerm>(context, results, false, Long.valueOf(results.size()));
 				}
 			} else {
 				Integer startIndex = 0;
@@ -122,7 +124,7 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 						}
 						
 						return new AlreadyPaged<ConceptReferenceTerm>(context, equalTerms.subList(context.getStartIndex(),
-						    toIndex), hasMoreTerms);
+						    toIndex), hasMoreTerms, Long.valueOf(termsCount));
 					} else {
 						startIndex += context.getLimit();
 					}
@@ -137,7 +139,7 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 			    context.getIncludeAll());
 			boolean hasMoreTerms = termsCount > (context.getStartIndex() + context.getLimit());
 			
-			return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMoreTerms);
+			return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMoreTerms, Long.valueOf(termsCount));
 		}
 		
 		throw new InvalidSearchException("Invalid searchType parameter: '" + searchType + "'. Expected '"
