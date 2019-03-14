@@ -24,58 +24,58 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
 @Resource(name = RestConstants.VERSION_1 + "/person", order = 3, supportedClass = Person.class, supportedOpenmrsVersions = {
         "1.10.4 - 1.10.6" })
 public class PersonResource1_10 extends PersonResource1_8 {
-
-    /**
-     * @see DelegatingCrudResource#getRepresentationDescription(Representation)
-     */
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-        if (description != null) {
-            description.addProperty("birthtime");
-        }
-        return description;
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-     */
-    @Override
-    public DelegatingResourceDescription getCreatableProperties() {
-        DelegatingResourceDescription description = super.getCreatableProperties();
-        description.addProperty("birthtime");
-        return description;
-    }
-
-    /**
-     * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-     */
-    @Override
-    public Model getGETModel(Representation rep) {
-        return addNewProperties(super.getGETModel(rep), rep);
-    }
-
-    @Override
-    public Model getCREATEModel(Representation rep) {
-        return addNewProperties(super.getCREATEModel(rep), rep);
-    }
-
-    @Override
-    public Model getUPDATEModel(Representation rep) {
-        return addNewProperties(super.getUPDATEModel(rep), rep);
-    }
-
-    private Model addNewProperties(Model model, Representation rep) {
-
-        return model;
-    }
-
-    /**
-     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
-     */
-    @Override
-    public String getResourceVersion() {
-        return RestConstants1_10.RESOURCE_VERSION;
-    }
+	
+	/**
+	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
+	 */
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
+		if (description != null) {
+			description.addProperty("birthtime");
+		}
+		return description;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("birthtime");
+		return description;
+	}
+	
+	/**
+	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public Model getGETModel(Representation rep) {
+		return addNewProperties(super.getGETModel(rep), rep);
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return addNewProperties(super.getCREATEModel(rep), rep);
+	}
+	
+	@Override
+	public Model getUPDATEModel(Representation rep) {
+		return addNewProperties(super.getUPDATEModel(rep), rep);
+	}
+	
+	private Model addNewProperties(Model model, Representation rep) {
+		
+		return model;
+	}
+	
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+	 */
+	@Override
+	public String getResourceVersion() {
+		return RestConstants1_10.RESOURCE_VERSION;
+	}
 }

@@ -15,31 +15,31 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PersonResource1_10Test extends BaseDelegatingResourceTest<PersonResource1_10, Person> {
-
-    @Override
-    public Person newObject() {
-        return Context.getPersonService().getPersonByUuid(getUuidProperty());
-    }
-
-    @Override
-    public void validateDefaultRepresentation() throws Exception {
-        super.validateDefaultRepresentation();
-        assertPropEquals("birthtime", getObject().getBirthtime());
-    }
-
-    @Override
-    public void validateFullRepresentation() throws Exception {
-        super.validateFullRepresentation();
-        assertPropEquals("birthtime", getObject().getBirthtime());
-    }
-
-    @Override
-    public String getDisplayProperty() {
-        return "Mr. Horatio Test Hornblower Esq.";
-    }
-
-    @Override
-    public String getUuidProperty() {
-        return RestTestConstants1_8.PERSON_UUID;
-    }
+	
+	@Override
+	public Person newObject() {
+		return Context.getPersonService().getPersonByUuid(getUuidProperty());
+	}
+	
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
+		assertPropEquals("birthtime", getObject().getBirthtime());
+	}
+	
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
+		assertPropEquals("birthtime", getObject().getBirthtime());
+	}
+	
+	@Override
+	public String getDisplayProperty() {
+		return "Mr. Horatio Test Hornblower Esq.";
+	}
+	
+	@Override
+	public String getUuidProperty() {
+		return RestTestConstants1_8.PERSON_UUID;
+	}
 }
