@@ -29,7 +29,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for {@link VisitType}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/visittype", supportedClass = VisitType.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitType> {
 	
 	/**

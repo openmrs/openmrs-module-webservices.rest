@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
 @SubResource(parent = PersonResource1_8.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {
-        "2.0.*", "2.1.*", "2.2.*" })
+        "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class PersonAddressResource2_0 extends PersonAddressResource1_8 {
 	
 	/**

@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Resource(name = RestConstants.VERSION_1 + "/taskaction", supportedClass = TaskAction.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> implements Creatable {
 	
 	private TaskServiceWrapper taskServiceWrapper = new TaskServiceWrapper();

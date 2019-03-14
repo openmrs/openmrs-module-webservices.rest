@@ -252,5 +252,5 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		}
 		return description;
 	}
-
+	
 }

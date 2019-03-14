@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> implements Uploadable {
 	
 	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();

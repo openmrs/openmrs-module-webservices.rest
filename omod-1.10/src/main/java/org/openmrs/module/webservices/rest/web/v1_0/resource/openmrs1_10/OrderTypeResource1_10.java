@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for {@link org.openmrs.OrderType}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {
-        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderType> {
 	
 	/**

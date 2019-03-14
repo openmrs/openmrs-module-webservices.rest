@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	private static final String ADDRESS_TEST_UUID = "address-test-uuid";
-
+	
 	private PersonService service;
 	
 	@Before

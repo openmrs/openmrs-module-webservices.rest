@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
  * Allows standard CRUD for the {@link ConceptAttributeType} domain object
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptattributetype", supportedClass = ConceptAttributeType.class, supportedOpenmrsVersions = {
-        "2.0.*", "2.1.*", "2.2.*" })
+        "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ConceptAttributeTypeResource2_0 extends BaseAttributeTypeCrudResource1_9<ConceptAttributeType> {
 	
 	public ConceptAttributeTypeResource2_0() {

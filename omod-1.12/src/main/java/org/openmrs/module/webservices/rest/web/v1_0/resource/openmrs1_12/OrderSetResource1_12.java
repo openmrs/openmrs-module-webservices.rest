@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/orderset", supportedClass = OrderSet.class, supportedOpenmrsVersions = {
-        "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSet> {
 	
 	@Override

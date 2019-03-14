@@ -97,19 +97,19 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugsByMapping"),
 		    new Parameter("code", "CD41003"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes",
 		            mapTypeUuids))));
-
+		
 		assertEquals(0, Util.getResultsSize(results));
 		
 		mapTypeUuids = conceptService.getConceptMapType(2).getUuid();
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugsByMapping"), new Parameter("code",
 		        "CD41003"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes", mapTypeUuids))));
-
+		
 		Set<Object> actualDrugs = new HashSet<Object>();
-		for(Object drug : Util.getResultsList(results)) {
+		for (Object drug : Util.getResultsList(results)) {
 			actualDrugs.add(PropertyUtils.getProperty(drug, "uuid"));
 		}
 		assert actualDrugs.contains(expectedDrugUuid);
-
+		
 	}
 	
 	/**
