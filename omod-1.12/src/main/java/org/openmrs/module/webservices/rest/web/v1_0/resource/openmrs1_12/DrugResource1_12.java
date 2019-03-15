@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
 import org.openmrs.Drug;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -23,8 +23,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.DrugRes
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/drug", order = 1, supportedClass = Drug.class, supportedOpenmrsVersions = {
-        "2.0.*", "2.1.*", "2.2.*" })
-public class DrugResource2_0 extends DrugResource1_11 {
+		"1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+public class DrugResource1_12 extends DrugResource1_11 {
 	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
@@ -64,6 +64,6 @@ public class DrugResource2_0 extends DrugResource1_11 {
 	 */
 	@Override
 	public String getResourceVersion() {
-		return RestConstants2_0.RESOURCE_VERSION;
+		return RestConstants1_12.RESOURCE_VERSION;
 	}
 }

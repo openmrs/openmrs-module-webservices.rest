@@ -7,15 +7,15 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
-public class RestTestConstants1_12 {
+/**
+ * {@link org.openmrs.module.webservices.rest.web.RestConstants} for 1.12 resources.
+ */
+public class RestConstants1_12 {
 	
-	public final static String TEST_DATA_SET = "customTestDataset1_12.xml";
-	
-	public final static String ORDER_SET_UUID = "order_set_uuid1";
-	
-	public final static String ORDER_SET_MEMBER_UUID = "order_set_member_uuid1";
-	
-	public static final String DRUG_UUID = "05ec820a-d297-44e3-be6e-698531d9dd3f";
+	/**
+	 * A default value for the resource version parameter.
+	 */
+	public static final String RESOURCE_VERSION = "1.12";
 }
