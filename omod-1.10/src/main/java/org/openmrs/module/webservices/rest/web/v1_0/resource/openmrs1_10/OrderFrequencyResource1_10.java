@@ -69,6 +69,19 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		
+		description.addRequiredProperty("frequencyPerDay");
+		description.addRequiredProperty("concept");
+		
+		return description;
+	}
+	
+	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
 	@Override
@@ -81,7 +94,7 @@ public class OrderFrequencyResource1_10 extends MetadataDelegatingCrudResource<O
 	 */
 	@Override
 	public OrderFrequency save(OrderFrequency orderFrequency) {
-		throw new ResourceDoesNotSupportOperationException();
+		return Context.getOrderService().saveOrderFrequency(orderFrequency);
 	}
 	
 	/**
