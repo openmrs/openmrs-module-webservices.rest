@@ -327,7 +327,7 @@ public class SwaggerSpecificationCreator {
 							if (e.getCause() instanceof ResourceDoesNotSupportOperationException) {
 								return false;
 							}
-							resourceHandler.save(null);	
+							resourceHandler.save(null);
 						}
 						catch (Exception ee) {
 							// if the resource doesn't immediate throw ResourceDoesNotSupportOperationException
@@ -1066,7 +1066,7 @@ public class SwaggerSpecificationCreator {
 		        .description("The representation to return (ref, default, full or custom)")
 		        .type("string")
 		        ._enum(Arrays.asList("ref", "default", "full", "custom"));
-				
+		
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
