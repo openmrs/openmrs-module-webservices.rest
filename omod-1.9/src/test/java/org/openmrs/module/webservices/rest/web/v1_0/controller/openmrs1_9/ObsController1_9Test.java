@@ -13,6 +13,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 import java.util.List;
@@ -25,11 +27,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.Obs;
 import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptName;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -76,6 +80,23 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		SimpleObject ret = deserialize(handle(newPostRequest(getURI(), json)));
 		assertEquals(codeValueUuid, Util.getByPath(ret, "value/uuid"));
 		assertEquals(++originalCount, getAllCount());
+	}
+	
+	@Test
+	public void shouldUnVoidAnObs() throws Exception {
+		ObsService obsService = Context.getObsService();
+		Obs obs = obsService.getObsByUuid(getUuid());
+		obsService.voidObs(obs, "some random reason");
+		obs = obsService.getObsByUuid(getUuid());
+		Assert.assertTrue(obs.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		obs = obsService.getObsByUuid(getUuid());
+		Assert.assertFalse(obs.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
 	}
 	
 	/**

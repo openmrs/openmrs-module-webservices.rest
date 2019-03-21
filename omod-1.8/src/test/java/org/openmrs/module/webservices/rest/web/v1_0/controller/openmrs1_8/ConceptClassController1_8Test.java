@@ -10,11 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
+import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -91,6 +93,24 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		Assert.assertEquals(true, service.getConceptClassByUuid(uuid).isRetired());
 		Assert.assertEquals(reason, service.getConceptClassByUuid(uuid).getRetireReason());
+	}
+	
+	@Test
+	public void shouldUnRetireAConceptClass() throws Exception {
+		ConceptClass conceptClass = service.getConceptClassByUuid(getUuid());
+		conceptClass.setRetired(true);
+		conceptClass.setRetireReason("random reason");
+		service.saveConceptClass(conceptClass);
+		conceptClass = service.getConceptClassByUuid(getUuid());
+		Assert.assertTrue(conceptClass.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		conceptClass = service.getConceptClassByUuid(getUuid());
+		Assert.assertFalse(conceptClass.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	@Test

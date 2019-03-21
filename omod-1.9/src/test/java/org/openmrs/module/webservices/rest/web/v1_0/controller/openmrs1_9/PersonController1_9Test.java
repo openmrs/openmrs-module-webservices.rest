@@ -222,6 +222,22 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUnVoidAPerson() throws Exception {
+		Person person = service.getPersonByUuid(getUuid());
+		service.voidPerson(person, "some random reason");
+		person = service.getPersonByUuid(getUuid());
+		assertTrue(person.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		person = service.getPersonByUuid(getUuid());
+		assertFalse(person.isVoided());
+		assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
+	}
+	
+	@Test
 	public void shouldPurgeAPerson() throws Exception {
 		final String uuid = "86526ed6-3c11-11de-a0ba-001e378eb67e";
 		assertNotNull(service.getPersonByUuid(uuid));

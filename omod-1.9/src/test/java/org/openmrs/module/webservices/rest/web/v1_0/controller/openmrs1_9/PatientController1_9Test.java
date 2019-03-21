@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
@@ -126,6 +127,23 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		patient = service.getPatientByUuid(getUuid());
 		assertTrue(patient.isVoided());
 		assertEquals(reason, patient.getVoidReason());
+	}
+	
+	@Test
+	public void shouldUnVoidAPatient() throws Exception {
+		service = Context.getPatientService();
+		Patient patient = service.getPatientByUuid(getUuid());
+		service.voidPatient(patient, "some random reason");
+		patient = service.getPatientByUuid(getUuid());
+		assertTrue(patient.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		patient = service.getPatientByUuid(getUuid());
+		assertFalse(patient.isVoided());
+		assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
 	}
 	
 	@Test

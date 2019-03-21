@@ -207,6 +207,18 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected Encounter undelete(Encounter enc, RequestContext context) throws ResponseException {
+		if (enc.isVoided()) {
+			enc = Context.getEncounterService().unvoidEncounter(enc);
+		}
+		return enc;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.Encounter,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

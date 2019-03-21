@@ -252,6 +252,14 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		Context.getVisitService().voidVisit(visit, reason);
 	}
 	
+	@Override
+	protected Visit undelete(Visit visit, RequestContext context) throws ResponseException {
+		if (visit.isVoided()) {
+			visit = Context.getVisitService().unvoidVisit(visit);
+		}
+		return visit;
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)

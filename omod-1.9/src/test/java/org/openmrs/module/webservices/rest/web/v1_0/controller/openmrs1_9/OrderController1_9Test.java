@@ -228,6 +228,23 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldUnVoidAnOrder() throws Exception {
+		service = Context.getOrderService();
+		Order order = service.getOrderByUuid(getUuid());
+		service.voidOrder(order, "some random reason");
+		order = service.getOrderByUuid(getUuid());
+		Assert.assertTrue(order.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		order = service.getOrderByUuid(getUuid());
+		Assert.assertFalse(order.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
+	}
+	
+	@Test
 	public void shouldUpdateDrugOrder() throws Exception {
 		
 		SimpleObject content = new SimpleObject();

@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -480,6 +481,23 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(initialCount, updatedEncounter.getEncounterProviders().size());
 		Assert.assertNotNull(updatedEncounter);
 		Assert.assertEquals(es.getEncounterRoleByUuid(newRoleUuid), updateEncounterProvider.getEncounterRole());
+	}
+	
+	@Test
+	public void shouldUnVoidAnEncounter() throws Exception {
+		EncounterService es = Context.getEncounterService();
+		Encounter encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+		es.voidEncounter(encounter, "some random reason");
+		encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+		Assert.assertTrue(encounter.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.ENCOUNTER_UUID, json)));
+		
+		encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+		Assert.assertFalse(encounter.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
 	}
 	
 	private EncounterProvider getEncounterProviderWthUuid(Set<EncounterProvider> eps, String uuid) {

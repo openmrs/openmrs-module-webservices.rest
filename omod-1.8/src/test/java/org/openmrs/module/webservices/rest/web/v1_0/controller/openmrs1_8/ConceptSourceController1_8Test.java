@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -137,6 +138,24 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		Assert.assertEquals(true, service.getConceptSourceByUuid(getUuid()).isRetired());
 		Assert.assertEquals(reason, service.getConceptSourceByUuid(getUuid()).getRetireReason());
+	}
+	
+	@Test
+	public void shouldUnRetireAConceptSource() throws Exception {
+		ConceptSource conceptSource = service.getConceptSourceByUuid(getUuid());
+		conceptSource.setRetired(true);
+		conceptSource.setRetireReason("random reason");
+		service.saveConceptSource(conceptSource);
+		conceptSource = service.getConceptSourceByUuid(getUuid());
+		Assert.assertTrue(conceptSource.isRetired());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		conceptSource = service.getConceptSourceByUuid(getUuid());
+		Assert.assertFalse(conceptSource.isRetired());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		
 	}
 	
 	@Test

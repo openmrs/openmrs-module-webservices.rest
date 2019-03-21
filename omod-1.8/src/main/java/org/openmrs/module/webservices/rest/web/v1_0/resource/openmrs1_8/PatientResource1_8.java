@@ -280,6 +280,18 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected Patient undelete(Patient patient, RequestContext context) throws ResponseException {
+		if (patient.isVoided()) {
+			patient = Context.getPatientService().unvoidPatient(patient);
+		}
+		return patient;
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

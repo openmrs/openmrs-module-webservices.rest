@@ -123,9 +123,17 @@ public class MainResourceController extends BaseRestController {
 	        throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
-		Object updated = res.update(uuid, post, context);
-		return RestUtil.updated(response, updated);
+		
+		if (post.get("deleted") != null && "false".equals(post.get("deleted")) && post.size() == 1) {
+			Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
+			Object undeletedRes = res.undelete(uuid, context);
+			return RestUtil.updated(response, undeletedRes);
+		}
+		else {
+			Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
+			Object updated = res.update(uuid, post, context);
+			return RestUtil.updated(response, updated);
+		}
 	}
 	
 	/**

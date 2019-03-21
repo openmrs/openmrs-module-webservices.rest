@@ -200,6 +200,22 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	}
 	
 	@Test
+	public void shouldUnVoidAPatientProgram() throws Exception {
+		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
+		service.voidPatientProgram(patientProgram, "some random reason");
+		patientProgram = service.getPatientProgramByUuid(getUuid());
+		Assert.assertTrue(patientProgram.isVoided());
+		
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+		
+		patientProgram = service.getPatientProgramByUuid(getUuid());
+		Assert.assertFalse(patientProgram.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		
+	}
+	
+	@Test
 	public void shouldPurgeAPatientProgram() throws Exception {
 		Assert.assertNotNull(service.getPatientProgramByUuid(getUuid()));
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));

@@ -138,6 +138,24 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	}
 	
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
+	 *      org.openmrs.module.webservices.rest.web.RequestContext)
+	 */
+	@Override
+	protected T undelete(T delegate, RequestContext context) throws ResponseException {
+		if (delegate.isRetired()) {
+			delegate.setRetired(false);
+			delegate.setRetiredBy(null);
+			delegate.setDateRetired(null);
+			delegate.setRetireReason(null);
+			delegate.setChangedBy(Context.getAuthenticatedUser());
+			delegate.setDateChanged(new Date());
+			delegate = save(delegate);
+		}
+		return delegate;
+	}
+	
+	/**
 	 * Gets the display string, which is specific to {@link OpenmrsMetadata}
 	 * 
 	 * @param delegate the meta-data object.
