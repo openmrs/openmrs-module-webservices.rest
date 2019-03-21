@@ -29,8 +29,6 @@ public class RestTestConstants2_0 {
 	
 	public static final String CONCEPT_ATTRIBUTE_UUID = "3a2bdb18-6faa-11e0-8414-001e378eb67f";
 	
-	public static final String DRUG_UUID = "05ec820a-d297-44e3-be6e-698531d9dd3f";
-	
 	public static final String PROVIDER_TEST_DATA_XML = "providerTestDataset.xml";
 	
 	public static final String PROVIDER_UUID = "e1009293-c561-47ae-b112-214052c17888";

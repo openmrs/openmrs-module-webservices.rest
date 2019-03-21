@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-public class OrderController2_0Test extends MainResourceControllerTest {
+public class OrderController1_12Test extends MainResourceControllerTest {
 	
 	protected static final String ORDER_ENTRY_DATASET_XML = "org/openmrs/api/include/OrderEntryIntegrationTest-other.xml";
 	

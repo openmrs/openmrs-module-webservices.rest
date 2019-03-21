@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
 import org.openmrs.DrugOrder;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
@@ -21,8 +21,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrd
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "2.0.*", "2.1.*", "2.2.*" })
-public class DrugOrderSubclassHandler2_0 extends DrugOrderSubclassHandler1_10 {
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = {"1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+public class DrugOrderSubclassHandler1_12 extends DrugOrderSubclassHandler1_10 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

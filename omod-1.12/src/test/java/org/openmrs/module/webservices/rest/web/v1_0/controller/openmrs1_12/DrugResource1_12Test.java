@@ -7,15 +7,16 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.DrugResource2_0;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12.DrugResource1_12;
 
-public class DrugResource2_0Test extends BaseDelegatingResourceTest<DrugResource2_0, Drug> {
+
+public class DrugResource1_12Test extends BaseDelegatingResourceTest<DrugResource1_12, Drug> {
 	
 	@Override
 	public Drug newObject() {
@@ -45,6 +46,6 @@ public class DrugResource2_0Test extends BaseDelegatingResourceTest<DrugResource
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants2_0.DRUG_UUID;
+		return RestTestConstants1_12.DRUG_UUID;
 	}
 }
