@@ -205,7 +205,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		    context.getLimit(), context.getIncludeAll());
 		int count = cs.getCountOfConceptReferenceTerms(query, null, context.getIncludeAll());
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
-		return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore);
+		return new AlreadyPaged<ConceptReferenceTerm>(context, terms, hasMore, Long.valueOf(count));
 	}
 	
 	/**

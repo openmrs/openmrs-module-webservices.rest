@@ -218,7 +218,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		int count = Context.getProviderService().getCountOfProviders(query, context.getIncludeAll());
 		boolean hasMore = count > context.getStartIndex() + context.getLimit();
 		
-		return new AlreadyPaged<Provider>(context, providers, hasMore);
+		return new AlreadyPaged<Provider>(context, providers, hasMore, Long.valueOf(count));
 		
 	}
 	

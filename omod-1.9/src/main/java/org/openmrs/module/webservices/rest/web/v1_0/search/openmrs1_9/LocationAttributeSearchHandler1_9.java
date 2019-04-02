@@ -60,6 +60,6 @@ public class LocationAttributeSearchHandler1_9 implements SubResourceSearchHandl
 				results.add(activeAttribute);
 			}
 		}
-		return new AlreadyPaged<LocationAttribute>(context, results, false);
+		return new AlreadyPaged<LocationAttribute>(context, results, false, Long.valueOf(results.size()));
 	}
 }
