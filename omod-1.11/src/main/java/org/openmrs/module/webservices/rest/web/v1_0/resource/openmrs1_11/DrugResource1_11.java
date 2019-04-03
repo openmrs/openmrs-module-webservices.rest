@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugRes
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/drug", order = 2, supportedClass = Drug.class, supportedOpenmrsVersions = {
-        "1.11.*", "1.12.*" })
+        "1.11.*"})
 public class DrugResource1_11 extends DrugResource1_10 {
 	
 	/**
