@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ObsReso
  * Resource for `obs`, supporting the new properties added in openmrs-core 2.1 (status and
  * interpretation)
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.1.*", "2.2.*" })
+@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.1.*", "2.2.*", "2.3.*" })
 public class ObsResource2_1 extends ObsResource1_11 {
 	
 	@Override

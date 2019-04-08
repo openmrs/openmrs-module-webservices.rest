@@ -35,7 +35,7 @@ public class PatientByIdentifierSearchHandler1_8 implements SearchHandler {
 	RestHelperService restHelperService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("patientByIdentifier", RestConstants.VERSION_1 + "/patient",
-	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"),
+	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"),
 	        Arrays.asList(new SearchQuery.Builder("Allows you to find Patients by identifier")
 	                .withRequiredParameters("identifier").withOptionalParameters("searchType").build()));
 	

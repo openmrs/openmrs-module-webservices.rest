@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * Allows standard CRUD for the {@link VisitAttributeType} domain object
  */
 @Resource(name = RestConstants.VERSION_1 + "/visitattributetype", supportedClass = VisitAttributeType.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class VisitAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<VisitAttributeType> {
 	
 	private VisitService getService() {

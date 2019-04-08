@@ -33,7 +33,7 @@ import java.util.List;
  * {@link Resource} for {@link ConceptStopWord}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptstopword", supportedClass = ConceptStopWord.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptStopWord> {
 	
 	/**

@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.Program
 import java.util.Arrays;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "2.2.*" }, order = 0)
+@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "2.2.*", "2.3.*" }, order = 0)
 public class ProgramEnrollmentResource2_2 extends ProgramEnrollmentResource1_10 {
 	
 	@PropertySetter("attributes")

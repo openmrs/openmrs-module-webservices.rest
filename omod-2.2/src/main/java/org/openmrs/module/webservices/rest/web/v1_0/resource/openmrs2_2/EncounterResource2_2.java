@@ -21,7 +21,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.Encounte
 /**
  * {@link Resource} for {@link EncounterResource2_2}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = { "2.2.*" })
+@Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = { "2.2.*", "2.3.*" })
 public class EncounterResource2_2 extends EncounterResource1_9 {
 	
 	@Override

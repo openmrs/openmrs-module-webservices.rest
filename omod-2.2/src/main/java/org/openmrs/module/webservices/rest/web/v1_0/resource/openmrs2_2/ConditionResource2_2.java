@@ -31,7 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for Condition, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/condition", supportedClass = Condition.class, supportedOpenmrsVersions = {
-        "2.2.*" })
+        "2.2.*", "2.3.*" })
 public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> {
 	
 	private ConditionService conditionService = Context.getConditionService();

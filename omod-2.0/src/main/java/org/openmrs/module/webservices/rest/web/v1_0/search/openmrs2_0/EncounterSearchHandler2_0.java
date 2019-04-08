@@ -43,7 +43,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 	private static final String DATE_TO = "todate";
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter",
-	        Arrays.asList("2.0.*", "2.1.*", "2.2.*"), Arrays.asList(new SearchQuery.Builder(
+	        Arrays.asList("2.0.*", "2.1.*", "2.2.*", "2.3.*"), Arrays.asList(new SearchQuery.Builder(
 	                "Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
 	                .withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
 	                .build()));

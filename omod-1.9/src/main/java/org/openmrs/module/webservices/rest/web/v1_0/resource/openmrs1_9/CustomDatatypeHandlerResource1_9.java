@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @SubResource(parent = CustomDatatypeResource1_9.class, path = "handlers", supportedClass = CustomDatatypeHandlerRepresentation.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<CustomDatatypeHandlerRepresentation, CustomDatatypeRepresentation, CustomDatatypeResource1_9> {
 	
 	@Override

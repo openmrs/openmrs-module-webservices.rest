@@ -31,7 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * fulfiller_status
  */
 @SubResource(parent = OrderResource2_2.class, path = "fulfillerdetails", supportedClass = FulfillerDetails.class, supportedOpenmrsVersions = {
-        "2.2.*" })
+        "2.2.*", "2.3.*" })
 public class FulfillerDetailsResource2_2 extends DelegatingSubResource<FulfillerDetails, Order, OrderResource2_2> {
 	
 	@Override

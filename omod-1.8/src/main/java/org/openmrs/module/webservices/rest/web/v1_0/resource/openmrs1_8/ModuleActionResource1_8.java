@@ -50,7 +50,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/moduleaction", supportedClass = ModuleAction.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction> implements Creatable {
 	
 	/**

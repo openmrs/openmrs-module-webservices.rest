@@ -32,7 +32,7 @@ public class LocationSearchHandler implements SearchHandler {
 	private static final String VIEW_LOCATIONS = "View Locations";
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/location",
-	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"),
+	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"),
 	        new SearchQuery.Builder(
 	                "Allows you to find locations by tag uuid or tag name").withRequiredParameters("tag").build());
 	

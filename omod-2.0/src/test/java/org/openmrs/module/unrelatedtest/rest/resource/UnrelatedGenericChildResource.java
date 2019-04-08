@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
  */
 @Resource(name = RestConstants.VERSION_1 + "/unrelated",
         supportedClass = UnrelatedGenericChild.class, supportedOpenmrsVersions = {
-                "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+                "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class UnrelatedGenericChildResource extends GenericChildResource {
 	
 	public static boolean getGETCalled = false;

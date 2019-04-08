@@ -40,7 +40,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 
 @SubResource(parent = PatientResource1_9.class, path = "allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {
-        "2.0.*", "2.1.*", "2.2.*" })
+        "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Patient, PatientResource1_9> {
 	
 	@Override

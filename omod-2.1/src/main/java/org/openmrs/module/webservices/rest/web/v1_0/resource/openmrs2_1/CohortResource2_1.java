@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortRe
  * itself didn't change we update the resource here.
  */
 @Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = { "2.1.*",
-        "2.2.*" })
+        "2.2.*", "2.3.*" })
 public class CohortResource2_1 extends CohortResource1_8 {
 	
 	@Override

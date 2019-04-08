@@ -45,7 +45,7 @@ import java.util.List;
  * supporting standard CRUD operations
  */
 @SubResource(path = "encounterprovider", parent = EncounterResource1_9.class, supportedClass = EncounterProvider.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class EncounterProviderResource1_9 extends DelegatingSubResource<EncounterProvider, Encounter, EncounterResource1_9> {
 	
 	@Override

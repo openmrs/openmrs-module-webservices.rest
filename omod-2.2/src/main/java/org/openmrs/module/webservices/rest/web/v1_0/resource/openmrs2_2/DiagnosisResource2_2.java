@@ -38,7 +38,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = "2.2.*")
+@Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {"2.2.*", "2.3.*"})
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**

@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<ProgramWorkflowState, ProgramWorkflow, ProgramWorkflowResource1_8> {
 	
 	@Override
