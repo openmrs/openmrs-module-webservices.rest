@@ -12,11 +12,13 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,12 +27,14 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.Obs;
 import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptName;
 import org.openmrs.GlobalProperty;
+import org.openmrs.Obs;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
@@ -256,6 +260,32 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		String json = new ObjectMapper().writeValueAsString(obs);
 		handle(newPostRequest(getURI(), json));
 		assertEquals(++originalCount, getAllCount());
+	}
+	
+	@Test
+	public void shouldCreateObsAWithADateTimeValueHavingATimeZone() throws Exception {
+		String dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+		String dateWithTimeZone = "2018-11-13T00:00:06.040-0500";
+		executeDataSet("customConceptDataset1_9.xml");
+		
+		long originalCount = getAllCount();
+		SimpleObject obs = new SimpleObject();
+		obs.add("person", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		SimpleObject concept = new SimpleObject();
+		concept.add("uuid", "A607c80f-1ea9-4da3-bb88-6276ce8868ii");
+		concept.add("name", new SimpleObject());
+		obs.add("concept", concept);
+		obs.add("obsDatetime", "2018-11-13T00:00:00.000-0500");
+		obs.add("value",dateWithTimeZone );
+		String json = new ObjectMapper().writeValueAsString(obs);
+		
+		Object obsWithTimeZone = deserialize(handle(newPostRequest(getURI(), json)));
+		assertEquals(++originalCount, getAllCount());
+		assertNotNull(PropertyUtils.getProperty(obsWithTimeZone, "value"));
+		
+		DateFormat sdf = new SimpleDateFormat(dateFormat);
+		Date date = sdf.parse(dateWithTimeZone);
+		assertEquals(sdf.format(date), PropertyUtils.getProperty(obsWithTimeZone, "value"));
 	}
 	
 	private ConceptComplex newConceptComplex() {

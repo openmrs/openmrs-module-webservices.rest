@@ -58,6 +58,8 @@ public class ConversionUtil {
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	
+	private static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm";
+	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
 	private static Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
@@ -237,7 +239,8 @@ public class ConversionUtil {
 			if (toClass.isAssignableFrom(Date.class)) {
 				IllegalArgumentException pex = null;
 				String[] supportedFormats = { DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ",
-				        "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+				        "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",
+				        DATE_TIME_PATTERN };
 				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
 						Date date = DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
