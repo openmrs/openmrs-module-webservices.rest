@@ -81,4 +81,8 @@ public class RestTestConstants1_9 {
 	
 	public static final String CONCEPT_UNKNOWN_UUID = "325391a8-db12-4e24-863f-5d66f7a4d713";
 	
+	public static final String PATIENT_WITH_ENCOUNTER_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+	
+	
+	
 }
