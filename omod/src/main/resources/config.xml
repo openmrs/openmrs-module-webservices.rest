@@ -36,11 +36,11 @@
 		</conditionalResource>
 		<conditionalResource>
 			<path>/lib/webservices.rest-omod-2.1.*</path>
-			<openmrsVersion>2.1.*,2.2.*</openmrsVersion>
+			<openmrsVersion>2.1.*,2.2.*,2.3.*</openmrsVersion>
 		</conditionalResource>
 		<conditionalResource>
 			<path>/lib/webservices.rest-omod-2.2.*</path>
-			<openmrsVersion>2.2.*</openmrsVersion>
+			<openmrsVersion>2.2.*,2.3.*</openmrsVersion>
 		</conditionalResource>
 	</conditionalResources>
 	
