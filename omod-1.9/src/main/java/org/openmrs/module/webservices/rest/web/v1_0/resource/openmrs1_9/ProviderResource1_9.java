@@ -41,7 +41,7 @@ import java.util.Set;
  * {@link Resource} for Provider, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider> {
 	
 	public ProviderResource1_9() {

@@ -37,7 +37,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for DrugIngredient, supporting standard CRUD operations
  */
 @SubResource(parent = DrugResource1_11.class, path = "ingredient", supportedClass = DrugIngredient.class, supportedOpenmrsVersions = {
-        "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngredient, Drug, DrugResource1_11> {
 	
 	@Override

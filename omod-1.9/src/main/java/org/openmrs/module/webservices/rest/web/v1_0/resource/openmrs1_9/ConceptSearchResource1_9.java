@@ -46,7 +46,7 @@ import java.util.Locale;
  * their weights
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptsearch", supportedClass = ConceptSearchResult.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSearchResult> implements Searchable {
 	
 	/**

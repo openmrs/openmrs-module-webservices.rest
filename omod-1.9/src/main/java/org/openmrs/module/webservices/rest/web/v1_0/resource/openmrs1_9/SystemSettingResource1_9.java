@@ -41,7 +41,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for {@link GlobalProperty}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/systemsetting", supportedClass = GlobalProperty.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalProperty> {
 	
 	public static final String GENERAL = "General Settings";

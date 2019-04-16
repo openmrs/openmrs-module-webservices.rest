@@ -31,7 +31,7 @@ import java.util.List;
  * Resource for Task Definitions, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/taskdefinition", supportedClass = TaskDefinition.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<TaskDefinition> {
 	
 	private TaskServiceWrapper taskServiceWrapper = new TaskServiceWrapper();

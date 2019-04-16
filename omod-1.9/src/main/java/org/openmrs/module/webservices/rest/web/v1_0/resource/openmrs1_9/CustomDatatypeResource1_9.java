@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/customdatatype", supportedClass = CustomDatatypeRepresentation.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomDatatypeRepresentation> {
 	
 	@Override

@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
  * Allows standard CRUD for the {@link LocationAttributeType} domain object
  */
 @Resource(name = RestConstants.VERSION_1 + "/locationattributetype", supportedClass = LocationAttributeType.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class LocationAttributeTypeResource1_9 extends BaseAttributeTypeCrudResource1_9<LocationAttributeType> {
 	
 	public LocationAttributeTypeResource1_9() {

@@ -75,7 +75,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		@Override
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-first-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
-			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), new SearchQuery.Builder(
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), new SearchQuery.Builder(
 			        "Allows you to find users by username").withRequiredParameters(new SearchParameter("username", "admin"))
 			        .withOptionalParameters("preferredLocales").build());
 		}
@@ -100,7 +100,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		@Override
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-second-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
-			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), new SearchQuery.Builder(
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), new SearchQuery.Builder(
 			        "Allows you to find users by username").withRequiredParameters(new SearchParameter("systemId"))
 			        .withOptionalParameters(new SearchParameter("username", "bruno")).build());
 		}
@@ -125,7 +125,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		@Override
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-third-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
-			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), new SearchQuery.Builder(
+			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), new SearchQuery.Builder(
 			        "Allows you to find users by username").withOptionalParameters(new SearchParameter("username", "bruno"))
 			        .build());
 		}

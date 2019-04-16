@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
 import java.util.Collection;
 import java.util.List;
 
-@SubResource(parent = ProgramEnrollmentResource2_2.class, path = "attribute", supportedClass = PatientProgramAttribute.class, supportedOpenmrsVersions = { "2.2.*" })
+@SubResource(parent = ProgramEnrollmentResource2_2.class, path = "attribute", supportedClass = PatientProgramAttribute.class, supportedOpenmrsVersions = { "2.2.*", "2.3.*" })
 public class PatientProgramAttributeResource2_2 extends BaseAttributeCrudResource1_9<PatientProgramAttribute, PatientProgram, ProgramEnrollmentResource2_2> {
 	
 	@PropertySetter("attributeType")

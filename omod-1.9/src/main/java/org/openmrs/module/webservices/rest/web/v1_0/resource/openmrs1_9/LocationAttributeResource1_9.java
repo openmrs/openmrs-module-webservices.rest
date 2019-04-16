@@ -26,7 +26,7 @@ import java.util.List;
  * {@link Resource} for LocationAttributes, supporting standard CRUD operations
  */
 @SubResource(parent = LocationResource1_9.class, path = "attribute", supportedClass = LocationAttribute.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class LocationAttributeResource1_9 extends BaseAttributeCrudResource1_9<LocationAttribute, Location, LocationResource1_9> {
 	
 	/**

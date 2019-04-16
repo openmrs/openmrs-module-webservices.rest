@@ -35,7 +35,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @SubResource(parent = CohortResource2_1.class, path = "membership", supportedClass = CohortMembership.class, supportedOpenmrsVersions = {
-        "2.1.*", "2.2.*" })
+        "2.1.*", "2.2.*", "2.3.*" })
 public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMembership, Cohort, CohortResource2_1> {
 	
 	@Override

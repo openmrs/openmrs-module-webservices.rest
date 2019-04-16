@@ -21,7 +21,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 // the framework requires we specify a supportedClass, even though this shouldn't have one
 @Resource(name = RestConstants.VERSION_1 + "/orderentryconfig", supportedClass = OrderService.class, supportedOpenmrsVersions = {
-        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class OrderEntryConfigResource1_10 implements Listable {
 	
 	@Override

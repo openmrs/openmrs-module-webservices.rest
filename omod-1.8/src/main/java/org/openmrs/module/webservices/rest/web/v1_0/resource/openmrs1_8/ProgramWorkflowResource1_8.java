@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/workflow", supportedClass = ProgramWorkflow.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" }, order = 1)
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" }, order = 1)
 public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<ProgramWorkflow> {
 	
 	@Override

@@ -60,7 +60,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("byObs",
 	        RestConstants.VERSION_1 + "/encounter",
-	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"),
+	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"),
 	        searchQuery);
 	
 	@Override

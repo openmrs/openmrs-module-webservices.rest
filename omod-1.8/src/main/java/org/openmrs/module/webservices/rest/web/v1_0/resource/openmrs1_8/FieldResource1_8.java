@@ -34,7 +34,7 @@ import java.util.List;
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	
 	public Model getGETModel(Representation rep) {

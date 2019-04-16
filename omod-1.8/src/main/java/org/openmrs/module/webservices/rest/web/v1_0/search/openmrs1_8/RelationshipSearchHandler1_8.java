@@ -35,7 +35,7 @@ import java.util.List;
 public class RelationshipSearchHandler1_8 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/relationship",
-	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), Arrays.asList(
+	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), Arrays.asList(
 	            new SearchQuery.Builder("Allows you to find relationship by person uuid").withRequiredParameters("person")
 	                    .build(), new SearchQuery.Builder(
 	                    "Allows you to find relationships between two persons by specifying their uuids")

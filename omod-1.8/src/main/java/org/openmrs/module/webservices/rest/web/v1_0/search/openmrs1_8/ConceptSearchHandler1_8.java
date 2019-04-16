@@ -48,7 +48,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	ConceptService conceptService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept",
-	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), Arrays.asList(
+	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), Arrays.asList(
 	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
 	                    "Allows you to find concepts by name and class").withRequiredParameters("name")

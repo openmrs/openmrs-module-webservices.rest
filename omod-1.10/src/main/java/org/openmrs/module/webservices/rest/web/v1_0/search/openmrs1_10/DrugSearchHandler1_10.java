@@ -54,7 +54,7 @@ public class DrugSearchHandler1_10 implements SearchHandler {
 	        .withOptionalParameters(REQUEST_PARAM_LOCALE, REQUEST_PARAM_EXACT_LOCALE).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/drug", Arrays.asList(
-	    "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*"), searchQuery);
+	    "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

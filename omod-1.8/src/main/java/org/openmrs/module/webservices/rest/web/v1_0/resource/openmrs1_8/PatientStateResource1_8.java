@@ -44,7 +44,7 @@ import java.util.List;
  * {@link Resource} for PatientState, supporting standard CRUD operations
  */
 @SubResource(parent = ProgramEnrollmentResource1_8.class, path = "state", supportedClass = PatientState.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*" })
+        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
 public class PatientStateResource1_8 extends DelegatingSubResource<PatientState, PatientProgram, ProgramEnrollmentResource1_8> {
 	
 	@Override
