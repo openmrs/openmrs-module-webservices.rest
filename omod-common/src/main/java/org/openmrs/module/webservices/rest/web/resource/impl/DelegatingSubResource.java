@@ -90,7 +90,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 		P parent = parentResource.getByUniqueId(parentUniqueId);
 		if (parent == null)
 			throw new ObjectNotFoundException();
-		T delegate = newDelegate();
+		T delegate = newDelegate(post);
 		setParent(delegate, parent);
 		DelegatingResourceDescription description = getBuildCreatableProperties(post);
 		setConvertedProperties(delegate, post, description, true);
