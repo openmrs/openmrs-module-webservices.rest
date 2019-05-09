@@ -229,6 +229,32 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldNotReturnVoidedEncounters() throws Exception {
+		final String voidedEncounterId = "6519d653-393b-4118-9c83-a3715b82d4ac";
+		Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+		Assert.assertEquals(0, visit.getEncounters().size());
+		
+		String json = "{\"encounters\": [\"" + voidedEncounterId + "\", \"eec646cb-c847-45a7-98bc-91c8c4f70add\"] }";
+		// add 2 encounters to the visit
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		
+		Visit updated = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+		Assert.assertEquals(2, updated.getEncounters().size());
+		
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", "full"))));
+		List<Map> encounters = result.get("encounters");
+		Assert.assertEquals(2, encounters.size());
+		// void one of the encounters
+		Encounter encounter = Context.getEncounterService().getEncounterByUuid(voidedEncounterId);
+		encounter = Context.getEncounterService().voidEncounter(encounter, "test visit");
+		
+		result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", "full"))));
+		encounters = result.get("encounters");
+		// visit contains now just the one non-voided encounter
+		Assert.assertEquals(1, encounters.size());
+	}
+	
+	@Test
 	public void shouldRemoveAnEncounterFromAnExistingVisitOnEdit() throws Exception {
 		final String encounterId = "6519d653-393b-4118-9c83-a3715b82d4ac";
 		Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);

@@ -13,9 +13,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-
+import java.util.Iterator;
 import org.openmrs.Location;
 import org.openmrs.Patient;
+import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
@@ -116,6 +117,21 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@PropertyGetter("attributes")
 	public Collection<VisitAttribute> getActiveAttributes(Visit visit) {
 		return visit.getActiveAttributes();
+	}
+	
+	@PropertyGetter("encounters")
+	public Collection<Encounter> getNonVoidedEncounters(Visit visit) {
+		Set<Encounter> allEncounters = visit.getEncounters();
+		if (allEncounters != null && allEncounters.size() > 0) {
+			Iterator<Encounter> encounterIterator = allEncounters.iterator();
+			while (encounterIterator.hasNext()) {
+				Encounter next = encounterIterator.next();
+				if (next.isVoided()) {
+					allEncounters.remove(next);
+				}
+			}
+		}
+		return allEncounters;
 	}
 	
 	/**
