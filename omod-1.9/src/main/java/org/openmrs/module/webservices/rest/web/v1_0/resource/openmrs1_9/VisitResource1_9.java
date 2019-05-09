@@ -9,8 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
+import java.util.Iterator;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Encounter;
@@ -117,7 +120,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	@PropertyGetter("encounters")
-	public Collection<Encounter> getActiveEncounters(Visit visit) {
+	public Collection<Encounter> getNonVoidedEncounters(Visit visit) {
 		Set<Encounter> allEncounters = visit.getEncounters();
 		if (allEncounters != null && allEncounters.size() > 0) {
 			Iterator<Encounter> encounterIterator = allEncounters.iterator();
