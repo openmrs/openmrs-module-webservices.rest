@@ -127,7 +127,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			while (encounterIterator.hasNext()) {
 				Encounter next = encounterIterator.next();
 				if (next.isVoided()) {
-					allEncounters.remove(next);
+					encounterIterator.remove();
 				}
 			}
 		}
