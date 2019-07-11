@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -27,6 +23,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
@@ -79,7 +80,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			description.addProperty("validator");
 			description.addProperty("locationBehavior");
 			description.addProperty("uniquenessBehavior");
-			description.addProperty("validator"); //FIXME duplicate
+			description.addProperty("validator");
 			description.addProperty("retired");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
@@ -126,7 +127,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 			        .property("checkDigit", new BooleanProperty())
 			        .property("validator", new StringProperty())
 			        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
-			        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+			        .property("uniquenessBehavior", new StringProperty());
 		}
 		return model;
 	}
@@ -140,7 +141,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 		        .property("checkDigit", new BooleanProperty())
 		        .property("validator", new StringProperty())
 		        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
-		        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+		        .property("uniquenessBehavior", new StringProperty());
 	}
 	
 	@Override
