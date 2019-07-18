@@ -26,4 +26,16 @@ public class RestTestConstants1_10 {
 	public final static String COUGH_SYRUP_UUID = "0cbe2ed3-cd5f-4f46-9459-26127c9265ab";
 	
 	public final static String ASPIRIN_UUID = "15f83cd6-64e9-4e06-a5f9-364d3b14a43d";
+	
+	public final static String DRUG_REFERENCE_MAP_TEST_DATASET = "DrugReferenceMap1_10Test_Dataset.xml";
+	
+	public final static String DRUG_REFERENCE_DRUG_UUID = "8e2323fa-0fa0-461f-9b59-6765997d849d";
+	
+	public final static String DRUG_REFERENCE_MAP_UUID = "fe7693a0-8a55-11e3-8507-1f26fdd6e3f2";
+	
+	public final static String CONCEPT_REF_TERM_UUID = "ee7693a0-8a55-22e3-8507-1f26fdd6e3f3";
+	
+	public final static String CONCEPT_MAP_TYPE_UUID = "sece2323fa-0fa0-461f-9b59-6765997d84";
+	
+	public final static String CONCEPT_MAP_TYPE_UUID2 = "8e2323fa-0fa0-461f-9b59-6765997d84td";	
 }
