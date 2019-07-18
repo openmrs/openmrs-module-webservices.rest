@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -498,6 +499,49 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertFalse(encounter.isVoided());
 		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 		
+	}
+	
+	@Test
+	public void shouldFetchAllPatientEncounterIncludingVoidedPatientEncountersIfIncludeAllParamIsSetToTrue()
+	        throws Exception {
+		Patient patient = Context.getPatientService().getPatientByUuid(RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
+		
+		Encounter enc = Context.getEncounterService().getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+		Context.getEncounterService().voidEncounter(enc, "some reason");
+		Context.getEncounterService().saveEncounter(enc);
+		
+		//list of non voided encounters
+		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
+		Assert.assertEquals(1, encs.size());
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
+		req.addParameter("includeAll", "true");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> encounters = result.get("results");
+		Assert.assertEquals(2, encounters.size());
+	}
+	
+	@Test
+	public void shouldFetchOnlyNonVoidedPatientEncountersIfIncludeAllParamIsSetToFalse() throws Exception {
+		Patient patient = Context.getPatientService().getPatientByUuid(RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
+		
+		Encounter enc = Context.getEncounterService().getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
+		Context.getEncounterService().voidEncounter(enc, "bcbcb");
+		Context.getEncounterService().saveEncounter(enc);
+		
+		//list of non voided encounters
+		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
+		Assert.assertEquals(1, encs.size());
+		
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
+		req.addParameter("includeAll", "false");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> encounters = result.get("results");
+		Assert.assertEquals(1, encounters.size());
 	}
 	
 	private EncounterProvider getEncounterProviderWthUuid(Set<EncounterProvider> eps, String uuid) {

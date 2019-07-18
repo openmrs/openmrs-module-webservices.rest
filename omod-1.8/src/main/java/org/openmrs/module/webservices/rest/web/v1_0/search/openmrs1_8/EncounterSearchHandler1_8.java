@@ -68,7 +68,7 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 		        .getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 		if (patient != null) {
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, fromDate, toDate, null,
-			    encounterType != null ? Arrays.asList(encounterType) : null, null, false);
+			    encounterType != null ? Arrays.asList(encounterType) : null, null, context.getIncludeAll());
 			String order = context.getRequest().getParameter("order");
 			if ("desc".equals(order)) {
 				Collections.reverse(encounters);
