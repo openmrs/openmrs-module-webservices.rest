@@ -15,6 +15,7 @@ import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.ValidationException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.notification.MessageException;
@@ -22,11 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/passwordreset")
@@ -40,9 +37,15 @@ public class PasswordResetController2_2 extends BaseRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void requestPasswordReset(@RequestBody Map<String, String> body) throws MessageException {
 		String usernameOrEmail = body.get("usernameOrEmail");
+		String browserName = body.get("browserName");
+		String platform = body.get("platform");
+		String operatingSystem = body.get("operatingSystem");
+		System.out.println("browserName is " + browserName);
+		System.out.println("platfomName is " + platform);
+		System.out.println("os is " + operatingSystem);
 		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
 		if (user != null) {
-			userService.setUserActivationKey(user);
+			Context.getUserService().setUserActivationKey(user, operatingSystem, browserName, platform);
 		}
 	}
 	
