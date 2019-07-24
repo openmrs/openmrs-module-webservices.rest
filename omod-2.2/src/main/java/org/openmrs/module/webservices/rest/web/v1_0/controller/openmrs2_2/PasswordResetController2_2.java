@@ -40,13 +40,12 @@ public class PasswordResetController2_2 extends BaseRestController {
 		String browserName = body.get("browserName");
 		String platform = body.get("platform");
 		String operatingSystem = body.get("operatingSystem");
-		String operatingSystemVersion = body.get("operatingSystemVersion");
-		String platformVendor = body.get("platformVendor");
-		String browserVersion = body.get("browserVersion");
+		System.out.println("browserName is " + browserName);
+		System.out.println("platfomName is " + platform);
+		System.out.println("os is " + operatingSystem);
 		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
 		if (user != null) {
-			userService.setUserActivationKey(user, operatingSystem, browserName, platform, operatingSystemVersion,
-			    platformVendor, browserVersion);
+			Context.getUserService().setUserActivationKey(user, operatingSystem, browserName, platform);
 		}
 	}
 	
