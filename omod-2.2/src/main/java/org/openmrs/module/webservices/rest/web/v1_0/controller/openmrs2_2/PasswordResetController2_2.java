@@ -44,6 +44,9 @@ public class PasswordResetController2_2 extends BaseRestController {
 		if (user != null) {
 			userService.setUserActivationKey(user);
 		}
+		else {
+			throw new MessageException("User " + usernameOrEmail + " does not exist");
+		}
 	}
 	
 	@RequestMapping(value = "/{activationkey}", method = RequestMethod.POST)
