@@ -131,7 +131,6 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	 * @param value
 	 */
 	
-	@PropertySetter("problem")
 	public static void setProblem(Problem problem, Object value) {
 		problem.setProblem(Context.getConceptService().getConceptByUuid((String) value));
 	}
