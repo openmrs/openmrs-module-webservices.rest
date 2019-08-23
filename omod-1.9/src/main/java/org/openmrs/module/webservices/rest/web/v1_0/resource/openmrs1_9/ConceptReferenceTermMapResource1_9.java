@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
@@ -30,6 +27,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
 
 /**
  * {@link Resource} for {@link ConceptReferenceTermMap}, supporting standard CRUD operations
@@ -116,7 +117,11 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+		        
+		        .property("termA", new RefProperty("#/definitions/ConceptreferencetermCreate"))
+		        .property("termB", new RefProperty("#/definitions/ConceptreferencetermCreate"))
+		        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeCreate"));
 	}
 	
 	/**

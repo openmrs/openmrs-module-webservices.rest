@@ -11,11 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,6 +24,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Cohorts, supporting standard CRUD operations
@@ -92,6 +93,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -101,7 +103,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 			        .property("name", new StringProperty())
 			        .property("description", new StringProperty())
 			        .property("voided", new StringProperty())
-			        .property("memberIds", new ArrayProperty(new IntegerProperty())); //FIXME
+			        .property("memberIds", new ArrayProperty(new IntegerProperty()));
 		}
 		return model;
 	}
@@ -111,7 +113,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		return new ModelImpl()
 		        .property("name", new StringProperty())
 		        .property("description", new StringProperty())
-		        .property("memberIds", new ArrayProperty(new IntegerProperty())) //FIXME
+		        .property("memberIds", new ArrayProperty(new IntegerProperty()))
 		        .required("name").required("description").required("memberIds");
 	}
 	

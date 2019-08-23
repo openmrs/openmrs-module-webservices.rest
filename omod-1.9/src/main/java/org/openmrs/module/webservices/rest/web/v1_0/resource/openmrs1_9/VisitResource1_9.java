@@ -12,11 +12,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
+
+import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Patient;
-import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
@@ -170,7 +171,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
 			        .property("startDatetime", new DateProperty()).property("stopDatetime", new DateProperty())
-			        .property("attributes", new ArrayProperty(new StringProperty())) //FIXME type
+			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")))
 			        .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
@@ -217,7 +218,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		        .property("indication", new RefProperty("#/definitions/ConceptCreate"))
 		        .property("stopDatetime", new DateProperty())
 		        .property("encounters", new ArrayProperty(new RefProperty("#/definitions/EncounterCreate")))
-		        .property("attributes", new ArrayProperty(new StringProperty())); //FIXME type
+		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/VisitAttributeCreate")));
 	}
 	
 	/**

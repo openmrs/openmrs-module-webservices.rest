@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -24,6 +21,10 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptMapResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
 
 /**
  * {@link Resource} for {@link ConceptMap}, supporting standard CRUD operations
@@ -68,7 +69,7 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGet"))
 			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));
 		}
-		model.getProperties().remove("source"); //FIXME check
+		model.getProperties().remove("source");
 		model.getProperties().remove("sourceCode");
 		model.getProperties().remove("comment");
 		return model;

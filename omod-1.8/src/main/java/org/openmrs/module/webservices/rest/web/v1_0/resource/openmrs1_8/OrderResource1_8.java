@@ -11,12 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService.ORDER_STATUS;
@@ -35,6 +29,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Resource for {@link Order} and all of its subclasses
@@ -275,13 +276,13 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			        .property("discontinuedBy", new RefProperty("#/definitions/UserCreate"))
 			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"));
 		}
-		//FIXME missing prop: type
+		
 		return model;
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return getCREATEModel(rep);
 	}
 	
 	/**

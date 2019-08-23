@@ -13,10 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
@@ -34,6 +30,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for ConceptNames, supporting standard CRUD operations
@@ -70,6 +71,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
 		        .property("uuid", new StringProperty())
@@ -98,7 +100,11 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()
-		        .property("name", new StringProperty()); //FIXME missing props
+				
+
+		        .property("name", new StringProperty())
+		        .property("localePreferred", new BooleanProperty())
+		        .property("locale", new StringProperty().example("en")); 
 	}
 	
 	/**

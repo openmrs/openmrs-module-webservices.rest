@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
@@ -35,10 +35,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for EncounterProvider,
@@ -113,7 +114,7 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		ModelImpl model = new ModelImpl()
 		        .property("provider", new StringProperty().example("uuid"))
 		        .property("encounterRole", new StringProperty().example("uuid"))
-		        .property("encounter", new StringProperty()); //FIXME remove if not needed
+		        .property("encounter", new StringProperty());
 		if (rep instanceof FullRepresentation) {
 			model
 			        .property("provider", new RefProperty("#/definitions/ProviderCreate"))

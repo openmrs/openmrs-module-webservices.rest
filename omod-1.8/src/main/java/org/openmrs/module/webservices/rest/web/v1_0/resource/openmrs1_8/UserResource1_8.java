@@ -16,13 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Role;
@@ -46,6 +39,14 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.MapProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for User, supporting standard CRUD operations
@@ -142,7 +143,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			model
 			        .property("username", new StringProperty())
 			        .property("systemId", new StringProperty())
-			        .property("userProperties", new MapProperty()); //FIXME type
+			        .property("userProperties", new MapProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model
@@ -168,7 +169,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		        .property("password", new StringProperty())
 		        .property("person", new RefProperty("#/definitions/PersonCreate"))
 		        .property("systemId", new StringProperty())
-		        .property("userProperties", new MapProperty()) //FIXME type
+		        .property("userProperties", new MapProperty())
 		        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")))
 		        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
 		        .property("secretQuestion", new StringProperty())

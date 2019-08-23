@@ -9,13 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -39,12 +37,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.hibernate.criterion.Projections.property;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations
@@ -93,6 +92,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -105,20 +105,20 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
+			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //
+			        .property("form", new RefProperty("#/definitions/FormGetRef"))
+			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef"))
+			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef")))
+			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef")));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
+			        .property("patient", new RefProperty("#/definitions/PatientGet"))
+			        .property("location", new RefProperty("#/definitions/LocationGet"))
+			        .property("form", new RefProperty("#/definitions/FormGet"))
+			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet"))
+			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet")))
+			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet")));
 		}
 		return modelImpl;
 	}

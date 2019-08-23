@@ -227,7 +227,16 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl().property("obsDatetime", new DateTimeProperty())
+		        .property("concept", new StringProperty().example("uuid")).property("location", new StringProperty())
+		        .property("order", new StringProperty()).property("encounter", new StringProperty())
+		        .property("accessionNumber", new StringProperty())
+		        .property("groupMembers", new ArrayProperty(new StringProperty()))
+		        .property("valueCodedName", new StringProperty()).property("comment", new StringProperty())
+		        .property("voided", new BooleanProperty()).property("value", new StringProperty())
+		        .property("valueModifier", new StringProperty())
+		        
+		        .required("person").required("obsDatetime").required("concept");
 	}
 	
 	/**

@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -29,11 +29,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProgramEnrollmentResource1_8;
 import org.openmrs.util.OpenmrsUtil;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {
         "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
@@ -113,7 +114,7 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl() //FIXME use super.
+		return ((ModelImpl) super.getUPDATEModel(rep))
 		        .property("dateEnrolled", new DateProperty())
 		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))
 		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"))

@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.PatientService;
@@ -33,7 +29,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "1.8.*, 1.9.*" }, order = 1)
 public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<PatientProgram> {
@@ -175,7 +176,11 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
 		        .property("dateEnrolled", new DateProperty())
-		        .property("dateCompleted", new DateProperty()); //FIXME missing props
+		        .property("dateCompleted", new DateProperty())
+		        
+		        .property("patient", new StringProperty().example("uuid"))
+		        .property("program", new StringProperty().example("uuid"))
+		        .property("location", new StringProperty().example("uuid"));
 		
 	}
 	

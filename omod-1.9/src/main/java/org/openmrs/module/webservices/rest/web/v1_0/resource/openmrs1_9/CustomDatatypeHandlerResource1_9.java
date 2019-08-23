@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -24,6 +21,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
 
 @SubResource(parent = CustomDatatypeResource1_9.class, path = "handlers", supportedClass = CustomDatatypeHandlerRepresentation.class, supportedOpenmrsVersions = {
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
@@ -47,7 +48,7 @@ public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<Cust
 			model
 			        .property("uuid", new StringProperty())
 			        .property("handlerClassname", new StringProperty())
-			        .property("display", new StringProperty()); //FIXME delegate property name
+			        .property("display", new StringProperty());
 		}
 		return model;
 	}

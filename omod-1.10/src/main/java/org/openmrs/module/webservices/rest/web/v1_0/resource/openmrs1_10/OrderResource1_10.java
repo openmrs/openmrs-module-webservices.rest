@@ -9,11 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
@@ -39,11 +40,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
@@ -145,9 +146,10 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
 			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
 			        .property("previousOrder", new RefProperty("#/definitions/OrderCreate"))
-			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"));
+			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"))
+			        .property("careSetting", new RefProperty("#/definitions/CareSettingCreate"));
 		}
-		//FIXME missing prop: type
+		
 		return model;
 	}
 	
