@@ -247,7 +247,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 */
 	@Override
 	protected NeedsPaging<UserAndPassword1_8> doSearch(RequestContext context) {
-		// determine roles 
+		// determine roles
 		List<Role> foundRoles = null;
 		final String requestedRolesParameter = context.getParameter(PARAMETER_ROLES);
 		if (requestedRolesParameter != null) {
