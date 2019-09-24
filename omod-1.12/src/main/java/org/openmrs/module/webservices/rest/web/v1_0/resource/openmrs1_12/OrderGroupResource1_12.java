@@ -35,7 +35,7 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/ordergroup", supportedClass = OrderGroup.class, supportedOpenmrsVersions = {
-        "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
+        "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
 public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGroup> {
 	
 	@Override
