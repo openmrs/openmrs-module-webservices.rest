@@ -37,5 +37,5 @@ public class RestTestConstants1_10 {
 	
 	public final static String CONCEPT_MAP_TYPE_UUID = "sece2323fa-0fa0-461f-9b59-6765997d84";
 	
-	public final static String CONCEPT_MAP_TYPE_UUID2 = "8e2323fa-0fa0-461f-9b59-6765997d84td";	
+	public final static String CONCEPT_MAP_TYPE_UUID2 = "8e2323fa-0fa0-461f-9b59-6765997d84td";
 }

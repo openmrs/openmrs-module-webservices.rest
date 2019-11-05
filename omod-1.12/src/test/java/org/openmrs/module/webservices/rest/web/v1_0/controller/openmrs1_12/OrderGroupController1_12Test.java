@@ -60,29 +60,34 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 	public void shouldCreateNewOrderGroup() throws Exception {
 		
 		final String JSON = "{\n" + "  \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
-		        + "  \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n" + "  \"orders\": [\n" + "    {\n"
-		        + "      \"encounter\": \""+ RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID +"\",\n"
-		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n" + "      \"type\": \"order\",\n"
+		        + "  \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n" + "  \"orders\": [\n"
+		        + "    {\n"
+		        + "      \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n"
+		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
+		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
 		        + "      \"dateActivated\": \"2012-09-19\",\n" + "     \"scheduledDate\": \"2012-09-19\",\n"
 		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
-		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID  + "\",\n"
+		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
 		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
 		        + "      \"autoExpireDate\": \"2012-09-21\",\n"
-		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n" + "      \"previousOrder\": \"\",\n"
+		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n"
+		        + "      \"previousOrder\": \"\",\n"
 		        + "      \"urgency\": \"ROUTINE\",\n" + "      \"orderReason\": \"\",\n"
 		        + "      \"orderReasonNonCoded\": \"string\",\n" + "      \"instructions\": \"string\",\n"
 		        + "      \"commentToFulfiller\": \"string\"\n" + "    }\n" + "," + "  "
 		        + "      {\n"
-		        + "      \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID +  "\",\n"
-		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n" + "      \"type\": \"order\",\n"
+		        + "      \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n"
+		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
+		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
 		        + "      \"dateActivated\": \"2012-09-10\",\n" + "      \"scheduledDate\": \"2012-09-10\",\n"
-		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID  + "\",\n"
+		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
 		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
 		        + "      \"autoExpireDate\": \"2012-09-21\",\n"
-		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n" + "      \"previousOrder\": \"\",\n"
+		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n"
+		        + "      \"previousOrder\": \"\",\n"
 		        + "      \"urgency\": \"ROUTINE\",\n" + "      \"orderReason\": \"\",\n"
 		        + "      \"orderReasonNonCoded\": \"string\",\n" + "      \"instructions\": \"string\",\n"
 		        + "      \"commentToFulfiller\": \"string\"\n" + "    }\n" + "  ],\n"
@@ -130,14 +135,16 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 	public void shouldAddOrdersToAnExistingOrderGroup() throws Exception {
 		final String JSON_ORDER = " { \"orders\": [\n" + "    {\n"
 		        + "      \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n"
-		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID  + "\",\n" + "      \"type\": \"order\",\n"
+		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
+		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
 		        + "      \"dateActivated\": \"2012-09-11\",\n" + "      \"scheduledDate\": \"2012-09-11\",\n"
-		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID  + "\",\n"
+		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
-		        + "      \"careSetting\": \"" +  RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
+		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
 		        + "      \"autoExpireDate\": \"2012-09-21\",\n"
-		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n" + "      \"previousOrder\": \"\",\n"
+		        + "      \"orderer\": \"" + RestTestConstants1_12.ORDER_GROUP_ODERER_UUID + "\",\n"
+		        + "      \"previousOrder\": \"\",\n"
 		        + "      \"urgency\": \"ROUTINE\",\n" + "      \"orderReason\": \"\",\n"
 		        + "      \"orderReasonNonCoded\": \"for Test\",\n" + "      \"instructions\": \"string\",\n"
 		        + "      \"commentToFulfiller\": \"string\"\n" + "    }\n" + "  ]\n" + "}";
@@ -146,7 +153,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + RestTestConstants1_12.ORDER_GROUP_UUID, JSON_ORDER);
 		handle(req);
 		Integer ordersAfter = orderService.getOrderGroupByUuid(RestTestConstants1_12.ORDER_GROUP_UUID).getOrders().size();
-		Assert.assertEquals(++ordersBefore , ordersAfter);
+		Assert.assertEquals(++ordersBefore, ordersAfter);
 	}
 	
 	@Override

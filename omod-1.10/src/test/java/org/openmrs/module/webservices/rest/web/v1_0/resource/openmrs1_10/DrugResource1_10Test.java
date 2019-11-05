@@ -18,24 +18,24 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugResource1_10;
 
 public class DrugResource1_10Test extends BaseDelegatingResourceTest<DrugResource1_10, Drug> {
-
+	
 	@Before
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_10.DRUG_REFERENCE_MAP_TEST_DATASET);
 	}
 	
 	@Override
-	public Drug newObject() {	
+	public Drug newObject() {
 		return Context.getConceptService().getDrugByUuid(getUuidProperty());
 	}
-
+	
 	@Override
-	public String getDisplayProperty() {		
+	public String getDisplayProperty() {
 		return "Panadol";
 	}
-
+	
 	@Override
-	public String getUuidProperty() {	
+	public String getUuidProperty() {
 		return RestTestConstants1_10.DRUG_REFERENCE_DRUG_UUID;
 	}
 	
@@ -49,5 +49,5 @@ public class DrugResource1_10Test extends BaseDelegatingResourceTest<DrugResourc
 	public void validateFullRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
 		assertPropPresent("drugReferenceMaps");
-	}	
+	}
 }

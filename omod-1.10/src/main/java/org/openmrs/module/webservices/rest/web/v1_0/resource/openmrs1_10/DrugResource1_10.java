@@ -81,5 +81,5 @@ public class DrugResource1_10 extends DrugResource1_8 {
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
 		        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapCreate"));
-	}	
+	}
 }

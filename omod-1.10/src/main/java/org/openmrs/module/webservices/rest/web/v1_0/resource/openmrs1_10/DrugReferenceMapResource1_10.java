@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 
 @Resource(name = RestConstants.VERSION_1
         + "/drugreferencemap", supportedClass = DrugReferenceMap.class, supportedOpenmrsVersions = { "1.10.*", "1.11.*",
-                "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
+        "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
 public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugReferenceMap> {
 	
 	@Override
@@ -130,7 +130,7 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 			modelImpl.property("display", new StringProperty()).property("uuid", new StringProperty())
 			        .property("auditInfo", new StringProperty()).property("drug", new RefProperty("#/definitions/DrugGet"))
 			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGet"))
-			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));			
+			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));
 		}
 		return modelImpl;
 	}
@@ -140,5 +140,5 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 		return new ModelImpl().property("conceptReferenceTerm", new StringProperty().example("uuid"))
 		        .property("conceptMapType", new StringProperty().example("uuid"))
 		        .property("drug", new StringProperty().example("uuid"));
-	}	
+	}
 }

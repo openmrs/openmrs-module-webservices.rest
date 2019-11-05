@@ -63,7 +63,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	public void shouldNotReturnPatientsIfQParamIsNotSet() throws Exception {
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("includeDead", "True");	
+		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
 		Assert.assertEquals(0, patients.size());
@@ -71,11 +71,11 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldReturnBothDeadAndLivingPatientsIfIncludeDeadIsSetToTrue() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);		
+		patientService.getPatientByUuid(getUuid()).setDead(true);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
-		req.addParameter("includeDead", "True");		
+		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
 		Assert.assertEquals(3, patients.size());
@@ -83,22 +83,22 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsBydefaultIfIncludeDeadIsNotSet() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);		
+		patientService.getPatientByUuid(getUuid()).setDead(true);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("q", "Moz");		
+		req.addParameter("q", "Moz");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(2, patients.size());		
+		Assert.assertEquals(2, patients.size());
 	}
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsOnWrongIncludeDeadParamValue() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);		
+		patientService.getPatientByUuid(getUuid()).setDead(true);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
-		req.addParameter("includeDead", "wrongx");		
+		req.addParameter("includeDead", "wrongx");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
 		Assert.assertEquals(2, patients.size());
@@ -106,11 +106,11 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsIfIncludeDeadParamIsSetToFalse() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);		
+		patientService.getPatientByUuid(getUuid()).setDead(true);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
-		req.addParameter("includeDead", "False");	
+		req.addParameter("includeDead", "False");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
 		Assert.assertEquals(2, patients.size());
@@ -118,11 +118,11 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldNotReturnPatientsIfNoPatientMatchesQParam() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);		
+		patientService.getPatientByUuid(getUuid()).setDead(true);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "www");
-		req.addParameter("includeDead", "True");	
+		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
 		Assert.assertEquals(0, patients.size());
@@ -132,5 +132,5 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
-	}	
+	}
 }

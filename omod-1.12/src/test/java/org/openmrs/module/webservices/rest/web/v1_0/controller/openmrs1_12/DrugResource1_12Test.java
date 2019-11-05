@@ -15,7 +15,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12.DrugResource1_12;
 
-
 public class DrugResource1_12Test extends BaseDelegatingResourceTest<DrugResource1_12, Drug> {
 	
 	@Override
