@@ -42,6 +42,10 @@
 			<path>/lib/webservices.rest-omod-2.2.*</path>
 			<openmrsVersion>2.2.*,2.3.*,2.4.*</openmrsVersion>
 		</conditionalResource>
+		<conditionalResource>
+			<path>/lib/webservices.rest-omod-2.4.*</path>
+			<openmrsVersion>2.4.*</openmrsVersion>
+		</conditionalResource>
 	</conditionalResources>
 	
 	<!-- AOP -->
