@@ -46,14 +46,14 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	}
 	
 	/**
-	 * @verifies returns orders matching dateStoppedOnOrBeforeDate
+	 * @verifies returns orders with dateStopped not null
 	 * @see OrderSearchHandler2_4#search(RequestContext)
 	 */
 	@Test
-	public void getSearchConfig_shouldReturnOrdersStoppedBeforeDate() throws Exception {
+	public void getSearchConfig_shouldReturnStoppedOrders() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
-		req.addParameter("dateStoppedOnOrBeforeDate", "2006-05-30");
+		req.addParameter("isStopped", "true");
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");

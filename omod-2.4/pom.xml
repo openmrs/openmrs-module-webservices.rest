@@ -104,7 +104,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-omod-2.0</artifactId>

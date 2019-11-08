@@ -47,7 +47,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_ACTIVATED_ON_OR_AFTER_DATE = "activatedOnOrAfterDate";
 	
-	public static final String REQUEST_PARAM_DATE_STOPPED_ON_OR_BEFORE_DATE = "dateStoppedOnOrBeforeDate";
+	public static final String REQUEST_PARAM_IS_STOPPED = "isStopped";
 	
 	public static final String REQUEST_PARAM_AUTO_EXPIRE_ON_OR_BEFORE_DATE = "autoExpireOnOrBeforeDate";
 	
@@ -82,7 +82,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	            REQUEST_PARAM_ORDER_TYPES,
 	            REQUEST_PARAM_ACTIVATED_ON_OR_BEFORE_DATE,
 	            REQUEST_PARAM_ACTIVATED_ON_OR_AFTER_DATE,
-	            REQUEST_PARAM_DATE_STOPPED_ON_OR_BEFORE_DATE,
+	            REQUEST_PARAM_IS_STOPPED,
 	            REQUEST_PARAM_AUTO_EXPIRE_ON_OR_BEFORE_DATE,
 	            REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE,
 	            REQUEST_PARAM_ACTION,
@@ -113,7 +113,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		String orderTypeUuids = context.getParameter("orderTypes");
 		String activatedOnOrBeforeDateStr = context.getParameter("activatedOnOrBeforeDate");
 		String activatedOnOrAfterDateStr = context.getParameter("activatedOnOrAfterDate");
-		String dateStoppedOnOrBeforeDateStr = context.getParameter(REQUEST_PARAM_DATE_STOPPED_ON_OR_BEFORE_DATE);
+		String isStoppedStr = context.getParameter(REQUEST_PARAM_IS_STOPPED);
 		String autoExpireOnOrBeforeDateStr = context.getParameter(REQUEST_PARAM_AUTO_EXPIRE_ON_OR_BEFORE_DATE);
 		String canceledOrExpiredOnOrBeforeDateStr = context
 		        .getParameter(REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE);
@@ -127,13 +127,12 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		// by default the Canceled(dateStopped != null) and Expired(autoExpire < today) orders are excluded
 		boolean excludeCanceledAndExpired = StringUtils.isNotBlank(excludeCanceledAndExpiredStr) ? Boolean
 		        .parseBoolean(excludeCanceledAndExpiredStr) : false;
+		boolean isStopped = StringUtils.isNotBlank(isStoppedStr) ? Boolean.parseBoolean(isStoppedStr) : false;
 		
 		Date activatedOnOrBeforeDate = StringUtils.isNotBlank(activatedOnOrBeforeDateStr) ?
 		        (Date) ConversionUtil.convert(activatedOnOrBeforeDateStr, Date.class) : null;
 		Date activatedOnOrAfterDate = StringUtils.isNotBlank(activatedOnOrAfterDateStr) ?
 		        (Date) ConversionUtil.convert(activatedOnOrAfterDateStr, Date.class) : null;
-		Date dateStoppedOnOrBeforeDate = StringUtils.isNotBlank(dateStoppedOnOrBeforeDateStr) ?
-		        (Date) ConversionUtil.convert(dateStoppedOnOrBeforeDateStr, Date.class) : null;
 		Date autoExpireOnOrBeforeDate = StringUtils.isNotBlank(autoExpireOnOrBeforeDateStr) ?
 		        (Date) ConversionUtil.convert(autoExpireOnOrBeforeDateStr, Date.class) : null;
 		Date canceledOrExpiredOnOrBeforeDate = StringUtils.isNotBlank(canceledOrExpiredOnOrBeforeDateStr) ?
@@ -203,7 +202,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .setOrderTypes(orderTypes)
 		        .setActivatedOnOrBeforeDate(activatedOnOrBeforeDate)
 		        .setActivatedOnOrAfterDate(activatedOnOrAfterDate)
-		        .setDateStoppedOnOrBeforeDate(dateStoppedOnOrBeforeDate)
+		        .setIsStopped(isStopped)
 		        .setAutoExpireOnOrBeforeDate(autoExpireOnOrBeforeDate)
 		        .setCanceledOrExpiredOnOrBeforeDate(canceledOrExpiredOnOrBeforeDate)
 		        .setAction(action)
