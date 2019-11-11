@@ -44,7 +44,9 @@ the tests.
 Integration tests can be found in the integration-tests directory. They are written with JUnit and Rest-Assured.
 Before you can run integration tests you need to start up a server and install the module.
 You can run integration tests with:
+```
 mvn clean verify -Pintegration-tests -DtestUrl=http://admin:Admin123@localhost:8080/openmrs
+```
 You can skip the testUrl parameter, if it is the same for your server.
 
 ### Wiki Pages
@@ -59,12 +61,12 @@ You can skip the testUrl parameter, if it is the same for your server.
 ### API Documentation
 
 The API documentation is available inside the OpenMRS application and is linked
-to from the advanced administration screen. The URL should be something like:
+to the advanced administration screen. The URL should be something like:
 > [http://localhost:8080/openmrs/module/webservices/rest/apiDocs.htm](http://localhost:8080/openmrs/module/webservices/rest/apiDocs.htm)
 
 ### Example Client code
   * Quick java swing client that displays patients and encounters: http://svn.openmrs.org/openmrs-contrib/examples/webservices/hackyswingexample/
-  * You can download a client java application that allows  add/edit a person (any resource) by making a query to the webservices.rest module - https://project-development-software-victor-aravena.googlecode.com/svn/trunk/ClientOpenMRSRest/
+  * You can download a client java application that allows add/edit a person (any resource) by making a query to the webservices.rest module - https://project-development-software-victor-aravena.googlecode.com/svn/trunk/ClientOpenMRSRest/
 
 ### Contributing to the API Documentation
 
