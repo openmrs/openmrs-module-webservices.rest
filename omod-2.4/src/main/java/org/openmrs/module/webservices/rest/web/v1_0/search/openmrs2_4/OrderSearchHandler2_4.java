@@ -78,7 +78,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	
 	SearchQuery searchQuery = new SearchQuery.Builder("Allows you to search for orders, it matches on "
 	        + "patient, care setting, concepts (comma delimited), order types (comma delimited), "
-	        + "date activated (before or after), voided flag")
+	        + "date activated (before or after), fulfiller status, action, canceled or expired, stopped, voided flag")
 	        .withOptionalParameters(REQUEST_PARAM_PATIENT,
 	            REQUEST_PARAM_CARE_SETTING,
 	            REQUEST_PARAM_CONCEPTS,
@@ -110,12 +110,12 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
 		// get input parameters
-		String patientUuid = context.getParameter("patient");
-		String careSettingUuid = context.getParameter("careSetting");
-		String conceptUuids = context.getParameter("concepts");
-		String orderTypeUuids = context.getParameter("orderTypes");
-		String activatedOnOrBeforeDateStr = context.getParameter("activatedOnOrBeforeDate");
-		String activatedOnOrAfterDateStr = context.getParameter("activatedOnOrAfterDate");
+		String patientUuid = context.getParameter(REQUEST_PARAM_PATIENT);
+		String careSettingUuid = context.getParameter(REQUEST_PARAM_CARE_SETTING);
+		String conceptUuids = context.getParameter(REQUEST_PARAM_CONCEPTS);
+		String orderTypeUuids = context.getParameter(REQUEST_PARAM_ORDER_TYPES);
+		String activatedOnOrBeforeDateStr = context.getParameter(REQUEST_PARAM_ACTIVATED_ON_OR_BEFORE_DATE);
+		String activatedOnOrAfterDateStr = context.getParameter(REQUEST_PARAM_ACTIVATED_ON_OR_AFTER_DATE);
 		String isStoppedStr = context.getParameter(REQUEST_PARAM_IS_STOPPED);
 		String autoExpireOnOrBeforeDateStr = context.getParameter(REQUEST_PARAM_AUTO_EXPIRE_ON_OR_BEFORE_DATE);
 		String canceledOrExpiredOnOrBeforeDateStr = context
@@ -123,7 +123,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		String actionStr = context.getParameter(REQUEST_PARAM_ACTION);
 		String fulfillerStatusStr = context.getParameter(REQUEST_PARAM_FULFILLER_STATUS);
 		String excludeCanceledAndExpiredStr = context.getParameter(REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED);
-		String includeVoidedStr = context.getParameter("includeVoided");
+		String includeVoidedStr = context.getParameter(REQUEST_PARAM_INCLUDE_VOIDED);
 		
 		// build search criteria for order service
 		boolean includeVoided = StringUtils.isNotBlank(includeVoidedStr) ? Boolean.parseBoolean(includeVoidedStr) : false;
