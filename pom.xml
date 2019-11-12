@@ -507,7 +507,8 @@
                 <module>omod-1.12</module>
                 <module>omod-2.0</module>
 				<module>omod-2.1</module>
-                <module>omod-2.2</module>                
+                <module>omod-2.2</module>
+				<module>omod-2.4</module>
                 <module>omod</module>
                 <module>integration-tests</module>
             </modules>
@@ -579,6 +580,7 @@
                 <module>omod-2.0</module>
 				<module>omod-2.1</module>
                 <module>omod-2.2</module>
+				<module>omod-2.4</module>
                 <module>omod</module>
                 <module>integration-tests</module>
             </modules>
