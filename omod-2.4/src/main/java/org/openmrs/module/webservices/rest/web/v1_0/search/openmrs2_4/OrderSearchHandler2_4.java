@@ -60,6 +60,8 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_FULFILLER_STATUS = "fulfillerStatus";
 	
+	public static final String REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS = "includeNullFufillerStatus";
+	
 	public static final String REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED = "excludeCanceledAndExpired";
 	
 	public static final String REQUEST_PARAM_INCLUDE_VOIDED = "includeVoided";
@@ -90,6 +92,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	            REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE,
 	            REQUEST_PARAM_ACTION,
 	            REQUEST_PARAM_FULFILLER_STATUS,
+	            REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS,
 	            REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED,
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 	
@@ -122,6 +125,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .getParameter(REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE);
 		String actionStr = context.getParameter(REQUEST_PARAM_ACTION);
 		String fulfillerStatusStr = context.getParameter(REQUEST_PARAM_FULFILLER_STATUS);
+		String includeNullFulfillerStatusStr = context.getParameter(REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS);
 		String excludeCanceledAndExpiredStr = context.getParameter(REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED);
 		String includeVoidedStr = context.getParameter(REQUEST_PARAM_INCLUDE_VOIDED);
 		
@@ -144,6 +148,8 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .valueOf(actionStr) : null;
 		Order.FulfillerStatus fulfillerStatus = StringUtils.isNotBlank(fulfillerStatusStr) ? Order.FulfillerStatus
 		        .valueOf(fulfillerStatusStr) : null;
+		Boolean includeNullFulfillerStatus = StringUtils.isNotBlank(includeNullFulfillerStatusStr) ? new Boolean(
+		        includeNullFulfillerStatusStr) : null;
 		List<Concept> concepts = null;
 		List<OrderType> orderTypes = null;
 		
@@ -210,6 +216,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .setCanceledOrExpiredOnOrBeforeDate(canceledOrExpiredOnOrBeforeDate)
 		        .setAction(action)
 		        .setFulfillerStatus(fulfillerStatus)
+		        .setIncludeNullFufillerStatus(includeNullFulfillerStatus)
 		        .setExcludeCanceledAndExpired(excludeCanceledAndExpired)
 		        .setIncludeVoided(includeVoided)
 		        .build();

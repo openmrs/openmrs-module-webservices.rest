@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_4;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Order;
@@ -84,6 +85,69 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
 		Assert.assertEquals(1, orders.size());
+	}
+	
+	/**
+	 * @verifies returns orders matching fulfillerStatus RECEIVED or null
+	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 */
+	@Test
+	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusReceivedOrNull() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("s", "default");
+		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
+		req.addParameter("fulfillerStatus", "RECEIVED");
+		req.addParameter("includeNullFufillerStatus", "true");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> orders = (List<Object>) result.get("results");
+		Assert.assertEquals(12, orders.size());
+		for (Object order : orders) {
+			Object fulfillerStatus = PropertyUtils.getProperty(order, "fulfillerStatus");
+			if (fulfillerStatus != null) {
+				Assert.assertEquals("RECEIVED", fulfillerStatus);
+			} else {
+				Assert.assertNull(fulfillerStatus);
+			}
+		}
+	}
+	
+	/**
+	 * @verifies returns orders matching fulfillerStatus not null
+	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 */
+	@Test
+	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusNotNull() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("s", "default");
+		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
+		req.addParameter("includeNullFufillerStatus", "false");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> orders = (List<Object>) result.get("results");
+		Assert.assertEquals(3, orders.size());
+		for (Object order : orders) {
+			Assert.assertNotNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
+		}
+	}
+	
+	/**
+	 * @verifies returns orders matching fulfillerStatus = null
+	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 */
+	@Test
+	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusNull() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("s", "default");
+		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
+		req.addParameter("includeNullFufillerStatus", "true");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> orders = (List<Object>) result.get("results");
+		Assert.assertEquals(10, orders.size());
+		for (Object order : orders) {
+			Assert.assertNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
+		}
 	}
 	
 	/**
