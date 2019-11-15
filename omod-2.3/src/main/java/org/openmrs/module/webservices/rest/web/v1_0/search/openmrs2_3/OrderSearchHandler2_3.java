@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_4;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.*;
@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class OrderSearchHandler2_4 implements SearchHandler {
+public class OrderSearchHandler2_3 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_PATIENT = "patient";
 	
@@ -59,6 +59,8 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	public static final String REQUEST_PARAM_ACTION = "action";
 	
 	public static final String REQUEST_PARAM_FULFILLER_STATUS = "fulfillerStatus";
+	
+	public static final String REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS = "includeNullFulfillerStatus";
 	
 	public static final String REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED = "excludeCanceledAndExpired";
 	
@@ -90,11 +92,12 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	            REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE,
 	            REQUEST_PARAM_ACTION,
 	            REQUEST_PARAM_FULFILLER_STATUS,
+	            REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS,
 	            REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED,
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.4.*"), searchQuery);
+	        + "/order", Arrays.asList("2.3.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -122,6 +125,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .getParameter(REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE);
 		String actionStr = context.getParameter(REQUEST_PARAM_ACTION);
 		String fulfillerStatusStr = context.getParameter(REQUEST_PARAM_FULFILLER_STATUS);
+		String includeNullFulfillerStatusStr = context.getParameter(REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS);
 		String excludeCanceledAndExpiredStr = context.getParameter(REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED);
 		String includeVoidedStr = context.getParameter(REQUEST_PARAM_INCLUDE_VOIDED);
 		
@@ -144,6 +148,8 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .valueOf(actionStr) : null;
 		Order.FulfillerStatus fulfillerStatus = StringUtils.isNotBlank(fulfillerStatusStr) ? Order.FulfillerStatus
 		        .valueOf(fulfillerStatusStr) : null;
+		Boolean includeNullFulfillerStatus = StringUtils.isNotBlank(includeNullFulfillerStatusStr) ? new Boolean(
+		        includeNullFulfillerStatusStr) : null;
 		List<Concept> concepts = null;
 		List<OrderType> orderTypes = null;
 		
@@ -210,6 +216,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .setCanceledOrExpiredOnOrBeforeDate(canceledOrExpiredOnOrBeforeDate)
 		        .setAction(action)
 		        .setFulfillerStatus(fulfillerStatus)
+		        .setIncludeNullFulfillerStatus(includeNullFulfillerStatus)
 		        .setExcludeCanceledAndExpired(excludeCanceledAndExpired)
 		        .setIncludeVoided(includeVoided)
 		        .build();

@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0;
 
-public class RestTestConstants2_4 {
+public class RestTestConstants2_3 {
 	
 	public final static String OUTPATIENT_CARE_SETTING_UUID = "6f0c9a92-6f24-11e3-af88-005056821db0";
 	
