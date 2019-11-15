@@ -10,6 +10,11 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
@@ -96,7 +101,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.3.*,2.4.*"), searchQuery);
+	        + "/order", Arrays.asList("2.3.*","2.4.*"), searchQuery);
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
