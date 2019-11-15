@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_4;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.*;
@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class OrderSearchHandler2_4 implements SearchHandler {
+public class OrderSearchHandler2_3 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_PATIENT = "patient";
 	
@@ -97,7 +97,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.4.*"), searchQuery);
+	        + "/order", Arrays.asList("2.3.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

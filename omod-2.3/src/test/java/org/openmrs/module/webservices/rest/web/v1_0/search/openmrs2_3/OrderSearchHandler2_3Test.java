@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_4;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
+public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 	
 	protected String getURI() {
 		return "order";
@@ -29,7 +29,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching autoExpireOnOrBeforeDate
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOrdersAutoExpiredBeforeDate() throws Exception {
@@ -44,7 +44,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders with dateStopped not null
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnStoppedOrders() throws Exception {
@@ -59,7 +59,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching autoExpireOnOrBeforeDate
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOnlyCanceledOrAutoExpiredBeforeDate() throws Exception {
@@ -74,7 +74,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching fulfillerStatus
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusCompleted() throws Exception {
@@ -89,7 +89,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching fulfillerStatus RECEIVED or null
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusReceivedOrNull() throws Exception {
@@ -114,7 +114,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching fulfillerStatus not null
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusNotNull() throws Exception {
@@ -133,7 +133,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching fulfillerStatus = null
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnOrdersWithFulfillerStatusNull() throws Exception {
@@ -152,7 +152,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders exluding Canceled and Expired
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldNotReturnCanceledOrExpired() throws Exception {
@@ -167,7 +167,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 	
 	/**
 	 * @verifies returns orders matching action
-	 * @see OrderSearchHandler2_4#search(RequestContext)
+	 * @see OrderSearchHandler2_3#search(RequestContext)
 	 */
 	@Test
 	public void getSearchConfig_shouldReturnDiscontinuedOrders() throws Exception {
