@@ -60,7 +60,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_FULFILLER_STATUS = "fulfillerStatus";
 	
-	public static final String REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS = "includeNullFufillerStatus";
+	public static final String REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS = "includeNullFulfillerStatus";
 	
 	public static final String REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED = "excludeCanceledAndExpired";
 	
@@ -216,7 +216,7 @@ public class OrderSearchHandler2_4 implements SearchHandler {
 		        .setCanceledOrExpiredOnOrBeforeDate(canceledOrExpiredOnOrBeforeDate)
 		        .setAction(action)
 		        .setFulfillerStatus(fulfillerStatus)
-		        .setIncludeNullFufillerStatus(includeNullFulfillerStatus)
+		        .setIncludeNullFulfillerStatus(includeNullFulfillerStatus)
 		        .setExcludeCanceledAndExpired(excludeCanceledAndExpired)
 		        .setIncludeVoided(includeVoided)
 		        .build();

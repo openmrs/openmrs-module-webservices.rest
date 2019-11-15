@@ -97,7 +97,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 		req.addParameter("s", "default");
 		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
 		req.addParameter("fulfillerStatus", "RECEIVED");
-		req.addParameter("includeNullFufillerStatus", "true");
+		req.addParameter("includeNullFulfillerStatus", "true");
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
@@ -121,7 +121,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
 		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
-		req.addParameter("includeNullFufillerStatus", "false");
+		req.addParameter("includeNullFulfillerStatus", "false");
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
@@ -140,7 +140,7 @@ public class OrderSearchHandler2_4Test extends RestControllerTestUtils {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
 		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus)");
-		req.addParameter("includeNullFufillerStatus", "true");
+		req.addParameter("includeNullFulfillerStatus", "true");
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
