@@ -41,47 +41,47 @@ import java.util.List;
 
 @Component
 public class OrderSearchHandler2_3 implements SearchHandler {
-
+	
 	public static final String REQUEST_PARAM_PATIENT = "patient";
-
+	
 	public static final String REQUEST_PARAM_CARE_SETTING = "careSetting";
-
+	
 	public static final String REQUEST_PARAM_CONCEPTS = "concepts";
-
+	
 	public static final String REQUEST_PARAM_ORDER_TYPES = "orderTypes";
-
+	
 	public static final String REQUEST_PARAM_ACTIVATED_ON_OR_BEFORE_DATE = "activatedOnOrBeforeDate";
-
+	
 	public static final String REQUEST_PARAM_ACTIVATED_ON_OR_AFTER_DATE = "activatedOnOrAfterDate";
-
+	
 	public static final String REQUEST_PARAM_IS_STOPPED = "isStopped";
-
+	
 	public static final String REQUEST_PARAM_AUTO_EXPIRE_ON_OR_BEFORE_DATE = "autoExpireOnOrBeforeDate";
-
+	
 	public static final String REQUEST_PARAM_CANCELED_OR_AUTO_EXPIRE_ON_OR_BEFORE_DATE = "canceledOrExpiredOnOrBeforeDate";
-
+	
 	public static final String REQUEST_PARAM_ACTION = "action";
-
+	
 	public static final String REQUEST_PARAM_FULFILLER_STATUS = "fulfillerStatus";
-
+	
 	public static final String REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS = "includeNullFulfillerStatus";
-
+	
 	public static final String REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED = "excludeCanceledAndExpired";
-
+	
 	public static final String REQUEST_PARAM_INCLUDE_VOIDED = "includeVoided";
-
+	
 	@Autowired
 	@Qualifier("patientService")
 	PatientService patientService;
-
+	
 	@Autowired
 	@Qualifier("orderService")
 	OrderService orderService;
-
+	
 	@Autowired
 	@Qualifier("conceptService")
 	ConceptService conceptService;
-
+	
 	SearchQuery searchQuery = new SearchQuery.Builder("Allows you to search for orders, it matches on "
 	        + "patient, care setting, concepts (comma delimited), order types (comma delimited), "
 	        + "date activated (before or after), fulfiller status, action, canceled or expired, stopped, voided flag")
@@ -99,10 +99,10 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	            REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS,
 	            REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED,
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
-
+	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.3.*","2.4.*"), searchQuery);
-
+	        + "/order", Arrays.asList("2.3.*", "2.4.*"), searchQuery);
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
 	 */
@@ -110,7 +110,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	public SearchConfig getSearchConfig() {
 		return searchConfig;
 	}
-
+	
 	/**
 	 * @see SearchHandler#search(RequestContext)
 	 */
@@ -132,14 +132,14 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 		String includeNullFulfillerStatusStr = context.getParameter(REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS);
 		String excludeCanceledAndExpiredStr = context.getParameter(REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED);
 		String includeVoidedStr = context.getParameter(REQUEST_PARAM_INCLUDE_VOIDED);
-
+		
 		// build search criteria for order service
 		boolean includeVoided = StringUtils.isNotBlank(includeVoidedStr) ? Boolean.parseBoolean(includeVoidedStr) : false;
 		// by default the Canceled(dateStopped != null) and Expired(autoExpire < today) orders are excluded
 		boolean excludeCanceledAndExpired = StringUtils.isNotBlank(excludeCanceledAndExpiredStr) ? Boolean
 		        .parseBoolean(excludeCanceledAndExpiredStr) : false;
 		boolean isStopped = StringUtils.isNotBlank(isStoppedStr) ? Boolean.parseBoolean(isStoppedStr) : false;
-
+		
 		Date activatedOnOrBeforeDate = StringUtils.isNotBlank(activatedOnOrBeforeDateStr) ?
 		        (Date) ConversionUtil.convert(activatedOnOrBeforeDateStr, Date.class) : null;
 		Date activatedOnOrAfterDate = StringUtils.isNotBlank(activatedOnOrAfterDateStr) ?
@@ -156,7 +156,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 		        includeNullFulfillerStatusStr) : null;
 		List<Concept> concepts = null;
 		List<OrderType> orderTypes = null;
-
+		
 		Patient patient = null;
 		if (StringUtils.isNotBlank(patientUuid)) {
 			patient = patientService.getPatientByUuid(patientUuid);
@@ -164,7 +164,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 				throw new ObjectNotFoundException();
 			}
 		}
-
+		
 		CareSetting careSetting = null;
 		if (StringUtils.isNotBlank(careSettingUuid)) {
 			careSetting = orderService.getCareSettingByUuid(careSettingUuid);
@@ -172,7 +172,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 				throw new ObjectNotFoundException();
 			}
 		}
-
+		
 		// if none of the uuids are found, throw an exception
 		if (StringUtils.isNotBlank(conceptUuids)) {
 			Concept concept = null;
@@ -189,7 +189,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 				throw new ObjectNotFoundException();
 			}
 		}
-
+		
 		// if none of the uuids are found, throw an exception
 		if (StringUtils.isNotBlank(orderTypeUuids)) {
 			OrderType orderType = null;
@@ -206,7 +206,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 				throw new ObjectNotFoundException();
 			}
 		}
-
+		
 		OrderSearchCriteriaBuilder builder = new OrderSearchCriteriaBuilder();
 		OrderSearchCriteria orderSearchCriteria = builder
 		        .setPatient(patient)
@@ -224,11 +224,11 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 		        .setExcludeCanceledAndExpired(excludeCanceledAndExpired)
 		        .setIncludeVoided(includeVoided)
 		        .build();
-
+		
 		// invoke order service and return results
 		List<Order> orders = orderService.getOrders(orderSearchCriteria);
-
+		
 		return new NeedsPaging<Order>(orders, context);
 	}
-
+	
 }
