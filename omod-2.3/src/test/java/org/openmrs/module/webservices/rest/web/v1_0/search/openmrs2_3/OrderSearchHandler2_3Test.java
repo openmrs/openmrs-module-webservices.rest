@@ -180,4 +180,23 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 		Assert.assertEquals(2, orders.size());
 	}
 	
+	/**
+	 * @verifies returns orders that are not DISCONTINUE
+	 * @see OrderSearchHandler2_3#search(RequestContext)
+	 */
+	@Test
+	public void getSearchConfig_shouldNotReturnDiscontinueOrders() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("s", "default");
+		req.addParameter("v", "custom:(id,uuid,display,orderNumber,dateActivated,fulfillerStatus,action)");
+		req.addParameter("excludeDiscontinueOrders", "true");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> orders = (List<Object>) result.get("results");
+		Assert.assertEquals(11, orders.size());
+		for (Object order : orders) {
+			Assert.assertNotEquals(PropertyUtils.getProperty(order, "action"), "DISCONTINUE");
+		}
+	}
+	
 }
