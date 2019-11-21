@@ -68,6 +68,8 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	
 	public static final String REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED = "excludeCanceledAndExpired";
 	
+	public static final String REQUEST_PARAM_EXCLUDE_DISCONTINUE_ORDERS = "excludeDiscontinueOrders";
+	
 	public static final String REQUEST_PARAM_INCLUDE_VOIDED = "includeVoided";
 	
 	@Autowired
@@ -98,6 +100,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	            REQUEST_PARAM_FULFILLER_STATUS,
 	            REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS,
 	            REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED,
+	            REQUEST_PARAM_EXCLUDE_DISCONTINUE_ORDERS,
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
@@ -130,12 +133,15 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 		String actionStr = context.getParameter(REQUEST_PARAM_ACTION);
 		String fulfillerStatusStr = context.getParameter(REQUEST_PARAM_FULFILLER_STATUS);
 		String includeNullFulfillerStatusStr = context.getParameter(REQUEST_PARAM_INCLUDE_NULL_FULFILLER_STATUS);
+		String excludeDiscontinueOrdersStr = context.getParameter(REQUEST_PARAM_EXCLUDE_DISCONTINUE_ORDERS);
 		String excludeCanceledAndExpiredStr = context.getParameter(REQUEST_PARAM_EXCLUDE_CANCELED_AND_EXPIRED);
 		String includeVoidedStr = context.getParameter(REQUEST_PARAM_INCLUDE_VOIDED);
 		
 		// build search criteria for order service
 		boolean includeVoided = StringUtils.isNotBlank(includeVoidedStr) ? Boolean.parseBoolean(includeVoidedStr) : false;
 		// by default the Canceled(dateStopped != null) and Expired(autoExpire < today) orders are excluded
+		boolean excludeDiscontinueOrders = StringUtils.isNotBlank(excludeDiscontinueOrdersStr) ? Boolean
+		        .parseBoolean(excludeDiscontinueOrdersStr) : false;
 		boolean excludeCanceledAndExpired = StringUtils.isNotBlank(excludeCanceledAndExpiredStr) ? Boolean
 		        .parseBoolean(excludeCanceledAndExpiredStr) : false;
 		boolean isStopped = StringUtils.isNotBlank(isStoppedStr) ? Boolean.parseBoolean(isStoppedStr) : false;
@@ -221,6 +227,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 		        .setAction(action)
 		        .setFulfillerStatus(fulfillerStatus)
 		        .setIncludeNullFulfillerStatus(includeNullFulfillerStatus)
+		        .setExcludeDiscontinueOrders(excludeDiscontinueOrders)
 		        .setExcludeCanceledAndExpired(excludeCanceledAndExpired)
 		        .setIncludeVoided(includeVoided)
 		        .build();
