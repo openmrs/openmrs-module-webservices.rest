@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.junit.Assert.assertNull;
+
 import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -114,7 +116,7 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAConceptSource() throws Exception {
 		final String newName = "updated name";
 		SimpleObject conceptSource = new SimpleObject();
@@ -126,6 +128,19 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Assert.assertEquals(newName, service.getConceptSourceByUuid(getUuid()).getName());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAConceptSource() throws Exception {
+		final String newName = "updated name";
+		SimpleObject conceptSource = new SimpleObject();
+		conceptSource.add("name", newName);
+		
+		String json = new ObjectMapper().writeValueAsString(conceptSource);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

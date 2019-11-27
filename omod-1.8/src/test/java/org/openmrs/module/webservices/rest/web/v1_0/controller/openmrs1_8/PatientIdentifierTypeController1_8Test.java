@@ -108,7 +108,7 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAPatientIdentifierType() throws Exception {
 		final String newName = "updated name";
 		SimpleObject patientIdentifierType = new SimpleObject();
@@ -120,6 +120,18 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newName, service.getPatientIdentifierTypeByUuid(getUuid()).getName());
+	}
+	
+	@Test
+	public void shouldThrowAnExceptionWhenEditingAPatientIdentifierType() throws Exception {
+		final String newName = "updated name";
+		SimpleObject patientIdentifierType = new SimpleObject();
+		patientIdentifierType.add("name", newName);
+		
+		String json = new ObjectMapper().writeValueAsString(patientIdentifierType);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
 	}
 	
 	@Test

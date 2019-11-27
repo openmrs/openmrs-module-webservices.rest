@@ -84,13 +84,19 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	 * @see VisitAttributeTypeController#update(String, SimpleObject,
 	 *      javax.servlet.http.HttpServletRequest, HttpServletResponse)
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void update_shouldChangeAPropertyOnAVisitAttributeType() throws Exception {
 		String json = "{\"description\":\"Updated description\"}";
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		Assert.assertEquals("Updated description", service.getVisitAttributeType(1).getDescription());
+	}
+	@Test(expected = RuntimeException.class)
+	public void update_shouldThrowAnExceptionWhenEditingAPropertyOnAVisitAttributeType() throws Exception {
+		String json = "{\"description\":\"Updated description\"}";
+		
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 	}
 	
 	/**

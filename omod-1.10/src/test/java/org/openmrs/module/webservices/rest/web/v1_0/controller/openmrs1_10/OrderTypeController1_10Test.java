@@ -162,7 +162,7 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 		assertEquals(orderType.get("description"), Util.getByPath(newOrder, "description"));
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAnOrderType() throws Exception {
 		final String newName = "Updated name";
 		SimpleObject conceptMapTypeType = new SimpleObject();
@@ -174,6 +174,18 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newName, service.getOrderTypeByUuid(getUuid()).getName());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAnAnOrderType() throws Exception {
+		final String newName = "updated name";
+		SimpleObject orderType = new SimpleObject();
+		orderType.add("name", newName);
+		String json = new ObjectMapper().writeValueAsString(orderType);
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		
 	}
 	
 	@Test

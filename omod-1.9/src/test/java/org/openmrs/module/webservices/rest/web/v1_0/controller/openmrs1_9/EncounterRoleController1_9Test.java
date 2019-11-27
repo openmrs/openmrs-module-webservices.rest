@@ -93,7 +93,7 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAnEncounterRole() throws Exception {
 		final String newName = "updated name";
 		SimpleObject encounterRole = new SimpleObject();
@@ -105,6 +105,18 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newName, service.getEncounterRoleByUuid(getUuid()).getName());
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAnEncounterRole() throws Exception {
+		final String newName = "updated name";
+		SimpleObject encounterRole = new SimpleObject();
+		encounterRole.add("name", newName);
+		
+		String json = new ObjectMapper().writeValueAsString(encounterRole);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

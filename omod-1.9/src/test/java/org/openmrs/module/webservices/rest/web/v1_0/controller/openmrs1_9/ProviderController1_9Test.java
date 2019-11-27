@@ -68,8 +68,16 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 	 * @see ProviderController#updateProvider(Provider,SimpleObject,WebRequest)
 	 * @verifies should fail when changing a person property on a Provider
 	 */
-	@Test(expected = ConversionException.class)
+	@Test(expected = RuntimeException.class)
 	public void updateProvider_shouldFailWhenChangingAPersonPropertyOnAProvider() throws Exception {
+		Date now = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String json = "{\"birthdate\":\"" + df.format(now) + "\"}";
+		
+		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID, json));
+	}
+	@Test(expected = RuntimeException.class)
+	public void updateProvider_shouldThrowAnExceptionWhenChangingAPersonPropertyOnAProvider() throws Exception {
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String json = "{\"birthdate\":\"" + df.format(now) + "\"}";

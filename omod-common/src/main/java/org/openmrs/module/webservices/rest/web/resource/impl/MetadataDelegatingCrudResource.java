@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -28,7 +29,9 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * Subclass of {@link DelegatingCrudResource} with helper methods specific to
@@ -216,5 +219,49 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	@Override
 	public boolean isRetirable() {
 		return true;
+	}
+	
+	@Override
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+		T delegate = getByUniqueId(uuid);
+		if (delegate == null)
+			throw new ObjectNotFoundException();
+		if (propertiesToUpdate.get("name") != delegate.getName()) {
+			throw new RuntimeException(
+			        "does not support editing of this type because this is metadata");
+		}
+		if (hasTypesDefined()) {
+			// if they specify a type discriminator it must match the expected one--type can't be modified
+			if (propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
+				String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
+				if (!delegate.getClass().equals(getActualSubclass(type))) {
+					String nameToShow = getTypeName(delegate);
+					if (nameToShow == null)
+						nameToShow = delegate.getClass().getName();
+					throw new IllegalArgumentException("You passed " + RestConstants.PROPERTY_FOR_TYPE + "=" + type
+					        + " but this instance is a " + nameToShow);
+				}
+			}
+		}
+		
+		DelegatingResourceHandler<? extends T> handler = getResourceHandler(delegate);
+		
+		DelegatingResourceDescription description = handler.getUpdatableProperties();
+		if (isRetirable()) {
+			description.addProperty("retired");
+		}
+		
+		setConvertedProperties(delegate, propertiesToUpdate, description, false);
+		ValidateUtil.validate(delegate);
+		delegate = save(delegate);
+		
+		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
+		
+		// add the 'type' discriminator if we support subclasses
+		if (hasTypesDefined()) {
+			ret.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
+		}
+		
+		return ret;
 	}
 }

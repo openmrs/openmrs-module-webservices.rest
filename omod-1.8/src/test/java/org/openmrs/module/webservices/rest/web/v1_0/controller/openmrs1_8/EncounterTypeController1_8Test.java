@@ -109,7 +109,7 @@ public class EncounterTypeController1_8Test extends MainResourceControllerTest {
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAnEncounterType() throws Exception {
 		final String newName = "updated name";
 		SimpleObject encounterType = new SimpleObject();
@@ -121,6 +121,17 @@ public class EncounterTypeController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newName, service.getEncounterTypeByUuid(getUuid()).getName());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAnEncounterTypeProperty() throws Exception {
+		final String newName = "updated name";
+		SimpleObject encounterType = new SimpleObject();
+		encounterType.add("name", newName);
+		String json = new ObjectMapper().writeValueAsString(encounterType);
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

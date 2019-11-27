@@ -105,7 +105,7 @@ public class PrivilegeController1_8Test extends MainResourceControllerTest {
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAPrivilege() throws Exception {
 		final String newDescription = "updated descr";
 		SimpleObject privilege = new SimpleObject();
@@ -118,6 +118,20 @@ public class PrivilegeController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newDescription, service.getPrivilegeByUuid(getUuid()).getDescription());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAPrivilage() throws Exception {
+		final String newDescription = "updated descr";
+		SimpleObject privilege = new SimpleObject();
+		assertEquals(false, newDescription.equals(service.getPrivilegeByUuid(getUuid()).getName()));
+		privilege.add("description", newDescription);
+		
+		String json = new ObjectMapper().writeValueAsString(privilege);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test
