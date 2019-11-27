@@ -589,4 +589,10 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        );
 		handle(req);
 	}
+	@Test(expected = ObjectNotFoundException.class)
+	public void shouldReturnExceptionIfNoUuidIsSpecified() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID"));
+		handle(req);
+	}
 }

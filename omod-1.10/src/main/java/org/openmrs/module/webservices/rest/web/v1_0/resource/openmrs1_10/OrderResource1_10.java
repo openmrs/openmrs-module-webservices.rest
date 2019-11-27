@@ -274,6 +274,8 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			else {
 				return new NeedsPaging<Order>(orders, context);
 			}
+			}else if (patientUuid == null) {
+				throw new ObjectNotFoundException();
 		}
 		
 		return new EmptySearchResult();
