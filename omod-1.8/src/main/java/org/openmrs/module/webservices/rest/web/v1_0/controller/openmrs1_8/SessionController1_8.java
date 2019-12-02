@@ -9,20 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.LocaleUtils;
+import org.openmrs.Location;
+import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -32,6 +32,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Controller that lets a client check the status of their session, and log out. (Authenticating is
@@ -43,6 +49,8 @@ public class SessionController1_8 extends BaseRestController {
 	
 	@Autowired
 	RestService restService;
+	
+	private final static String LOCATION_SESSION_ATTRIBUTE = "emrContext.sessionLocationId";
 	
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
@@ -57,12 +65,41 @@ public class SessionController1_8 extends BaseRestController {
 	public Object get(WebRequest request) {
 		boolean authenticated = Context.isAuthenticated();
 		SimpleObject session = new SimpleObject();
+		
+		UserContext userContext = Context.getUserContext();
+		Provider currentProvider = null;
+		if (userContext != null && userContext.getAuthenticatedUser() != null) {
+			User currentUser = userContext.getAuthenticatedUser();
+			Collection<Provider> providers = new HashSet<Provider>();
+			try {
+				Context.addProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+				if (currentUser.getPerson() != null) {
+					providers = Context.getProviderService().getProvidersByPerson(currentUser.getPerson(), false);
+				}
+			}
+			finally {
+				Context.removeProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+			}
+			if (providers.size() > 1) {
+				throw new IllegalStateException("Can't handle users with multiple provider accounts");
+			} else if (providers.size() == 1) {
+				currentProvider = providers.iterator().next();
+			}
+		}
+		Integer locationId = (Integer) request.getAttribute(LOCATION_SESSION_ATTRIBUTE, WebRequest.SCOPE_REQUEST);
+		Location sessionLocation = null;
+		if (locationId != null) {
+			sessionLocation = Context.getLocationService().getLocation(locationId);
+		}
+		
 		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
 		if (authenticated) {
 			String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 			Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
-			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
 			session.add("locale", Context.getLocale());
+			session.add("currentProvider", ConversionUtil.convertToRepresentation(currentProvider, rep));
+			session.add("sessionLocation", ConversionUtil.convertToRepresentation(sessionLocation, rep));
+			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 		}
 		return session;
