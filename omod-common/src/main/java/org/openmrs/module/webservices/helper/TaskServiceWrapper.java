@@ -11,7 +11,9 @@
 package org.openmrs.module.webservices.helper;
 
 import org.openmrs.scheduler.TaskDefinition;
+import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
@@ -96,4 +98,14 @@ public class TaskServiceWrapper {
 		Context.getSchedulerService().rescheduleAllTasks();
 	}
 	
+	/**
+	 * It will run the task from the service
+	 * 
+	 * @param task will contain the taskDefinition to be run
+	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
+	 */
+	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
+		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
+		task.execute();
+	}
 }

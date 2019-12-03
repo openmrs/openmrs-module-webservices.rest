@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
+
+import java.util.Arrays;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.webservices.helper.TaskAction;
@@ -17,20 +24,21 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskDefinitionResource1_8;
+import org.openmrs.scheduler.Task;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.Arrays;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
 
 public class TaskActionController1_8Test extends MainResourceControllerTest {
 	
 	@Autowired
 	RestService restService;
+	static int count = 1;
 	
 	private TaskDefinition testTask = new TaskDefinition(1, "TestTask", "TestTask Description",
 	        "org.openmrs.scheduler.tasks.TestTask");
+	
+	private TaskDefinition testDummyTask = new TaskDefinition(5, "TestDummy", "TestTask Description",
+		DummyTask.class.getName());
 	
 	private TaskDefinition tempTask = new TaskDefinition(3, "TempTask", "TempTask Description",
 	        "org.openmrs.scheduler.tasks.TestTask");
@@ -39,7 +47,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask));
+		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask , testDummyTask));
 		
 		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
 		        .getResourceBySupportedClass(TaskAction.class);
@@ -101,6 +109,21 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		assertThat(mockTaskServiceWrapper.registeredTasks, not(hasItem(testTask)));
 	}
 	
+	@Test
+	public void shouldRunTask() throws Exception {
+		//sanity check
+		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
+		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
+        //count before manual execution
+		int countBefore = count;
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"runtask\", \"tasks\":[\"" + getTestDummyTaskName() + "\"]}")));
+		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
+		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
+		//count after manual execution
+		int countAfter = count;
+		Assert.assertEquals(++countBefore, countAfter);
+	}
+	
 	@Override
 	@Test(expected = Exception.class)
 	public void shouldGetDefaultByUuid() throws Exception {
@@ -138,9 +161,38 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public String getTestTaskName() {
 		return "TestTask";
 	}
+	public String getTestDummyTaskName() {
+		return "TestDummy";
+	}
 	
 	@Override
 	public long getAllCount() {
 		return 0;
+	}
+	
+	public static class DummyTask implements Task {
+		
+		@Override
+		public void execute() {
+			count = count + 1;
+		}
+		
+		@Override
+		public TaskDefinition getTaskDefinition() {
+			return null;
+		}
+		
+		@Override
+		public void initialize(TaskDefinition definition) {
+		}
+		
+		@Override
+		public boolean isExecuting() {
+			return false;
+		}
+		
+		@Override
+		public void shutdown() {
+		}
 	}
 }

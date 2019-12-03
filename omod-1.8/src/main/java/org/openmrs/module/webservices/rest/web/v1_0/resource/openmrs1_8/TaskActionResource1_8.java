@@ -84,6 +84,9 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 			case RESCHEDULEALLTASKS:
 				reScheduleAllTasks();
 				break;
+			case RUNTASK:
+				runTasks(taskDefinitions);
+				break;
 		}
 		return ConversionUtil.convertToRepresentation(action, Representation.DEFAULT);
 	}
@@ -140,6 +143,17 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 			}
 			catch (SchedulerException e) {
 				throw new APIException("Errors occurred while deleting task", e);
+			}
+		}
+	}
+	
+	private void runTasks(Collection<TaskDefinition> taskDefs) {
+		for (TaskDefinition taskDef : taskDefs) {
+			try {
+			   taskServiceWrapper.runTask(taskDef);
+			}
+			catch (SchedulerException e) {
+				throw new APIException("Errors occurred while running task", e);
 			}
 		}
 	}
