@@ -150,7 +150,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 	private void runTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
-			   taskServiceWrapper.runTask(taskDef);
+				taskServiceWrapper.runTask(taskDef);
 			}
 			catch (SchedulerException e) {
 				throw new APIException("Errors occurred while running task", e);

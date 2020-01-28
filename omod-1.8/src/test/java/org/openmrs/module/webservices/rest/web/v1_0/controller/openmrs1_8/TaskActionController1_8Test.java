@@ -32,13 +32,14 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	
 	@Autowired
 	RestService restService;
+	
 	static int count = 1;
 	
 	private TaskDefinition testTask = new TaskDefinition(1, "TestTask", "TestTask Description",
 	        "org.openmrs.scheduler.tasks.TestTask");
 	
 	private TaskDefinition testDummyTask = new TaskDefinition(5, "TestDummy", "TestTask Description",
-		DummyTask.class.getName());
+	        DummyTask.class.getName());
 	
 	private TaskDefinition tempTask = new TaskDefinition(3, "TempTask", "TempTask Description",
 	        "org.openmrs.scheduler.tasks.TestTask");
@@ -47,7 +48,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask , testDummyTask));
+		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask, testDummyTask));
 		
 		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
 		        .getResourceBySupportedClass(TaskAction.class);
@@ -114,9 +115,10 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
 		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
-        //count before manual execution
+		//count before manual execution
 		int countBefore = count;
-		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"runtask\", \"tasks\":[\"" + getTestDummyTaskName() + "\"]}")));
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"runtask\", \"tasks\":[\"" + getTestDummyTaskName()
+		        + "\"]}")));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
 		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
 		//count after manual execution
@@ -161,6 +163,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public String getTestTaskName() {
 		return "TestTask";
 	}
+	
 	public String getTestDummyTaskName() {
 		return "TestDummy";
 	}
