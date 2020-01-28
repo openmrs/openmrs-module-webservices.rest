@@ -353,4 +353,21 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(Util.getResultsSize(resultWithVoidedVisits), 4);
 	}
 	
+	@Test
+	public void searchByVisitType_shouldGetVisits() throws Exception {
+		String patientUUid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"; // patient_id = 2, Horatio Hornblower
+		String visitTypeUuid = "759799ab-c9a5-435e-b671-77773ada74e4"; //Return TB Clinic Visit
+		
+		SimpleObject allVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        patientUUid))));
+		
+		SimpleObject filteredVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
+		        patientUUid), new Parameter("visitType", visitTypeUuid))));
+		
+		Assert.assertEquals(Util.getResultsSize(allVisits), 3);
+		int filteredVisitsSize = Util.getResultsSize(filteredVisits);
+		Assert.assertEquals(filteredVisitsSize, 1);
+		
+	}
+	
 }

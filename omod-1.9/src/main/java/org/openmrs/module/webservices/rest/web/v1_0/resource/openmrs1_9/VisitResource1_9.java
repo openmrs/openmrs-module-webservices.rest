@@ -18,6 +18,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
@@ -323,20 +324,26 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
 		String fromStartDate = context.getRequest().getParameter("fromStartDate");
-		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null) {
+		String visitTypeParameter = context.getRequest().getParameter("visitType");
+		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null
+		        || visitTypeParameter != null) {
 			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter);
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter,
+			    visitTypeParameter);
 		} else {
 			return super.search(context);
 		}
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, String locationParameter) {
+	        Date minStartDate, String locationParameter, String visitTypeParameter) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
+		Collection<VisitType> visitTypes = visitTypeParameter == null ? null : Arrays
+		        .asList(getVisitType(visitTypeParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
-		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(null, patients, locations, null, minStartDate,
+		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(visitTypes, patients, locations, null,
+		    minStartDate,
 		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 	
@@ -364,5 +371,13 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		if (location == null)
 			throw new ObjectNotFoundException();
 		return location;
+	}
+	
+	private VisitType getVisitType(String visitTypeUuid) {
+		VisitType visitType = ((VisitTypeResource1_9) Context.getService(RestService.class).getResourceByName(
+		    RestConstants.VERSION_1 + "/visittype")).getByUniqueId(visitTypeUuid);
+		if (visitType == null)
+			throw new ObjectNotFoundException();
+		return visitType;
 	}
 }
