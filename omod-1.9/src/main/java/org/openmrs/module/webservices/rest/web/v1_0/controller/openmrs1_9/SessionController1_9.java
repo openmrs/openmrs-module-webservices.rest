@@ -7,14 +7,10 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
-
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -33,13 +29,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Controller that lets a client check the status of their session, and log out. (Authenticating is
  * handled through a filter, and may happen through this or any other resource.
  */
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
-public class SessionController1_8 extends BaseRestController {
+public class SessionController1_9 extends BaseRestController {
 	
 	@Autowired
 	RestService restService;
@@ -64,6 +66,8 @@ public class SessionController1_8 extends BaseRestController {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
 			session.add("locale", Context.getLocale());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
+			session.add("sessionLocation",
+			    ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), rep));
 		}
 		return session;
 	}
@@ -71,20 +75,33 @@ public class SessionController1_8 extends BaseRestController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
-	public void post(@RequestBody Map<String, String> body) {
+	public void post(HttpServletRequest request, @RequestBody Map<String, String> body) {
 		String localeStr = body.get("locale");
-		Locale locale = null;
-		try {
-			locale = LocaleUtils.toLocale(localeStr);
+		if (localeStr != null) {
+			Locale locale = null;
+			try {
+				locale = LocaleUtils.toLocale(localeStr);
+			}
+			catch (IllegalArgumentException e) {
+				throw new APIException(" '" + localeStr + "' does not represent a valid locale.");
+			}
+			Set<Locale> allowedLocales = new HashSet<Locale>(Context.getAdministrationService().getAllowedLocales());
+			if (allowedLocales.contains(locale)) {
+				Context.setLocale(locale);
+			} else {
+				throw new APIException(" '" + localeStr + "' is not in the list of allowed locales.");
+			}
 		}
-		catch (IllegalArgumentException e) {
-			throw new APIException(" '" + localeStr + "' does not represent a valid locale.");
-		}
-		Set<Locale> allowedLocales = new HashSet<Locale>(Context.getAdministrationService().getAllowedLocales());
-		if (allowedLocales.contains(locale)) {
-			Context.setLocale(locale);
-		} else {
-			throw new APIException(" '" + localeStr + "' is not in the list of allowed locales.");
+		String locationUuid = body.get("sessionLocation");
+		if (locationUuid != null) {
+			Location location = Context.getLocationService().getLocationByUuid(locationUuid);
+			if (location == null) {
+				throw new APIException(" '" + locationUuid + "' is not the UUID of any location.");
+			}
+			Context.getUserContext().setLocation(location);
+			{ // for compatability with AppUi session location
+				request.getSession().setAttribute("emrContext.sessionLocationId", location.getId());
+			}
 		}
 	}
 	
