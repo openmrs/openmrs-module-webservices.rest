@@ -374,8 +374,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private VisitType getVisitType(String visitTypeUuid) {
-		VisitType visitType = ((VisitTypeResource1_9) Context.getService(RestService.class).getResourceByName(
-		    RestConstants.VERSION_1 + "/visittype")).getByUniqueId(visitTypeUuid);
+		VisitType visitType = Context.getVisitService().getVisitTypeByUuid(visitTypeUuid);
 		if (visitType == null)
 			throw new ObjectNotFoundException();
 		return visitType;
