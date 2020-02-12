@@ -91,24 +91,6 @@
 				<version>${openmrs.version}</version>
 				<type>pom</type>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.mockito</groupId>
-						<artifactId>mockito-all</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-module-junit4</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.hamcrest</groupId>
-						<artifactId>hamcrest-all</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.tools</groupId>
