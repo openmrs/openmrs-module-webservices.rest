@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Controller("webservices.rest.searchIndexController1_11")
+@Controller("webservices.rest.searchIndexController2_0")
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/searchindexupdate", method = RequestMethod.POST)
 @ResponseStatus(HttpStatus.OK)
 public class SearchIndexController2_0 extends BaseRestController {
