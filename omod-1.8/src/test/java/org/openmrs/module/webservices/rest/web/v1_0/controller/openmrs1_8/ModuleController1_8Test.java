@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -17,9 +23,8 @@ import org.junit.Test;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +33,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
 
 /**
  *
@@ -141,8 +139,8 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUploadModule() throws Exception {
-		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("mockModule.omod"));
-		
+		final String moduleFile = "org/openmrs/module/webservices/rest/include/mockModule.omod";
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(moduleFile));
 		MockMultipartFile toUpload = new MockMultipartFile("file", "mockModule.omod", "archive/zip", fileData);
 		
 		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();

@@ -94,8 +94,7 @@
     </bean>
     
     <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
-    <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
-
+    
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 
     <bean id="multipartResolver"
