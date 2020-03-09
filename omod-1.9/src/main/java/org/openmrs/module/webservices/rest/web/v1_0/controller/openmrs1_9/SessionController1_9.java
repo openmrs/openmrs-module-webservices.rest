@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,8 @@ import java.util.Set;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_9 extends BaseRestController {
 	
+	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid),privileges:(uuid,name),roles:(uuid,name))";
+	
 	@Autowired
 	RestService restService;
 	
@@ -61,13 +64,12 @@ public class SessionController1_9 extends BaseRestController {
 		SimpleObject session = new SimpleObject();
 		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
 		if (authenticated) {
-			String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
-			Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
-			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
+			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
+			    new CustomRepresentation(USER_CUSTOM_REP)));
 			session.add("locale", Context.getLocale());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 			session.add("sessionLocation",
-			    ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), rep));
+			    ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
 		}
 		return session;
 	}

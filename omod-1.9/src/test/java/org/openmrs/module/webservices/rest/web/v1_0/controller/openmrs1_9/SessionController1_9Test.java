@@ -9,16 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import net.sf.saxon.functions.Parse;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,6 +27,9 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -53,7 +47,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	
 	@Before
 	public void before() {
-		controller = new SessionController1_9();
+		controller = Context.getRegisteredComponents(SessionController1_9.class).iterator().next(); // should only be 1
 		MockHttpServletRequest mockHsr = new MockHttpServletRequest();
 		mockHsr.setSession(new MockHttpSession(new MockServletContext(), SESSION_ID));
 		hsr = mockHsr;
@@ -84,6 +78,9 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get(request);
 		Object userProp = PropertyUtils.getProperty(ret, "user");
+		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp,
+		    "roles");
+		Assert.assertEquals(userRoles.get(0).get("name"), "System Developer");
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
 		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
@@ -106,8 +103,8 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get(request);
 		Object loc = PropertyUtils.getProperty(ret, "sessionLocation");
-		Assert.assertTrue(loc.toString() + " should contain 'name=Unknown Location'",
-		    loc.toString().contains("name=Unknown Location"));
+		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'",
+		    loc.toString().contains("display=Unknown Location"));
 	}
 	
 	/**
