@@ -112,7 +112,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
-	 * @should return all Orders (including retired) if context.includeAll is set
+	 * <strong>Should</strong> return all Orders (including retired) if context.includeAll is set
 	 */
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {

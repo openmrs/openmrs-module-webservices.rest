@@ -59,8 +59,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests functionality of {@link ConceptController}. This does not use @should annotations because
- * the controller inherits those methods from a subclass
+ * Tests functionality of {@link ConceptController}.
  */
 public class ConceptController1_8Test extends MainResourceControllerTest {
 	

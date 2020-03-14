@@ -366,16 +366,16 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getRepresentation(java.lang.String)
-	 * @should return default representation if given null
-	 * @should return default representation if given string is empty
-	 * @should return reference representation if given string matches the ref representation
+	 * <strong>Should</strong> return default representation if given null
+	 * <strong>Should</strong> return default representation if given string is empty
+	 * <strong>Should</strong> return reference representation if given string matches the ref representation
 	 *         constant
-	 * @should return default representation if given string matches the default representation
+	 * <strong>Should</strong> return default representation if given string matches the default representation
 	 *         constant
-	 * @should return full representation if given string matches the full representation constant
-	 * @should return an instance of custom representation if given string starts with the custom
+	 * <strong>Should</strong> return full representation if given string matches the full representation constant
+	 * <strong>Should</strong> return an instance of custom representation if given string starts with the custom
 	 *         representation prefix
-	 * @should return an instance of named representation for given string if it is not empty and
+	 * <strong>Should</strong> return an instance of named representation for given string if it is not empty and
 	 *         does not match any other case
 	 */
 	@Override
@@ -399,15 +399,15 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceByName(String)
-	 * @should return resource for given name
-	 * @should return resource for given name and ignore unannotated resources
-	 * @should fail if failed to get resource classes
-	 * @should fail if resource for given name cannot be found
-	 * @should fail if resource for given name does not support the current openmrs version
-	 * @should return subresource for given name
-	 * @should fail if subresource for given name does not support the current openmrs version
-	 * @should fail if two resources with same name and order are found for given name
-	 * @should return resource with lower order value if two resources with the same name are found
+	 * <strong>Should</strong> return resource for given name
+	 * <strong>Should</strong> return resource for given name and ignore unannotated resources
+	 * <strong>Should</strong> fail if failed to get resource classes
+	 * <strong>Should</strong> fail if resource for given name cannot be found
+	 * <strong>Should</strong> fail if resource for given name does not support the current openmrs version
+	 * <strong>Should</strong> return subresource for given name
+	 * <strong>Should</strong> fail if subresource for given name does not support the current openmrs version
+	 * <strong>Should</strong> fail if two resources with same name and order are found for given name
+	 * <strong>Should</strong> return resource with lower order value if two resources with the same name are found
 	 *         for given name
 	 */
 	@Override
@@ -424,18 +424,18 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceBySupportedClass(Class)
-	 * @should return resource supporting given class and current openmrs version
-	 * @should fail if no resource supporting given class and current openmrs version was found
-	 * @should fail if no resource supporting given class was found
-	 * @should return resource supporting superclass of given class if given class is a hibernate
+	 * <strong>Should</strong> return resource supporting given class and current openmrs version
+	 * <strong>Should</strong> fail if no resource supporting given class and current openmrs version was found
+	 * <strong>Should</strong> fail if no resource supporting given class was found
+	 * <strong>Should</strong> return resource supporting superclass of given class if given class is a hibernate
 	 *         proxy
-	 * @should return resource supporting superclass of given class if no resource supporting given
+	 * <strong>Should</strong> return resource supporting superclass of given class if no resource supporting given
 	 *         class was found
-	 * @should return resource supporting direct superclass of given class if no resource supporting
+	 * <strong>Should</strong> return resource supporting direct superclass of given class if no resource supporting
 	 *         given class was found but multiple resources supporting multiple superclasses exist
-	 * @should fail if failed to get resource classes
-	 * @should fail if two resources with same name and order are found for given class
-	 * @should return resource with lower order value if two resources with the same name are found
+	 * <strong>Should</strong> fail if failed to get resource classes
+	 * <strong>Should</strong> fail if two resources with same name and order are found for given class
+	 * <strong>Should</strong> return resource with lower order value if two resources with the same name are found
 	 *         for given class
 	 */
 	@Override
@@ -505,21 +505,21 @@ public class RestServiceImpl implements RestService {
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandler(java.lang.String,
 	 *      java.util.Map)
-	 * @should return search handler matching id set in given parameters
-	 * @should fail if parameters contain a search handler id which cannot be found
-	 * @should fail if two search handlers for the same resource have the same id
-	 * @should return null if parameters do not contain a search handler id and no other non special
+	 * <strong>Should</strong> return search handler matching id set in given parameters
+	 * <strong>Should</strong> fail if parameters contain a search handler id which cannot be found
+	 * <strong>Should</strong> fail if two search handlers for the same resource have the same id
+	 * <strong>Should</strong> return null if parameters do not contain a search handler id and no other non special
 	 *         request parameters
-	 * @should return search handler providing all request parameters and parameters satisfying its
+	 * <strong>Should</strong> return search handler providing all request parameters and parameters satisfying its
 	 *         required parameters
-	 * @should return null if given parameters are missing a parameter required by search handlers
+	 * <strong>Should</strong> return null if given parameters are missing a parameter required by search handlers
 	 *         eligible for given resource name and parameters
-	 * @should fail if two search handlers match given resource and parameters and no search handler
+	 * <strong>Should</strong> fail if two search handlers match given resource and parameters and no search handler
 	 *         id is specified
-	 * @should return null if a non special request parameter in given parameters cannot be found in
+	 * <strong>Should</strong> return null if a non special request parameter in given parameters cannot be found in
 	 *         any search handler
-	 * @should return null if no search handler is found for given resource name
-	 * @should return null if no search handler is found for current openmrs version
+	 * <strong>Should</strong> return null if no search handler is found for given resource name
+	 * <strong>Should</strong> return null if no search handler is found for current openmrs version
 	 */
 	@Override
 	public SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException {
@@ -634,11 +634,11 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceHandlers()
-	 * @should return list of delegating resource handlers including subclass handlers
-	 * @should return list with delegating resource with lower order value if two resources with the
+	 * <strong>Should</strong> return list of delegating resource handlers including subclass handlers
+	 * <strong>Should</strong> return list with delegating resource with lower order value if two resources with the
 	 *         same name are found for given name
-	 * @should fail if failed to get resource classes
-	 * @should fail if two resources with same name and order are found for a class
+	 * <strong>Should</strong> fail if failed to get resource classes
+	 * <strong>Should</strong> fail if two resources with same name and order are found for a class
 	 */
 	@Override
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException {
@@ -662,8 +662,8 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getAllSearchHandlers()
-	 * @should return all search handlers if search handlers have been initialized
-	 * @should return null if search handlers have not been initialized
+	 * <strong>Should</strong> return all search handlers if search handlers have been initialized
+	 * <strong>Should</strong> return null if search handlers have not been initialized
 	 */
 	public List<SearchHandler> getAllSearchHandlers() {
 		
@@ -672,11 +672,11 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getSearchHandlers(java.lang.String)
-	 * @should return search handlers for given resource name
-	 * @should return null if no search handler is found for given resource name
-	 * @should return null if no search handler is found for current openmrs version
-	 * @should return null given null
-	 * @should fail if two search handlers for the same resource have the same id
+	 * <strong>Should</strong> return search handlers for given resource name
+	 * <strong>Should</strong> return null if no search handler is found for given resource name
+	 * <strong>Should</strong> return null if no search handler is found for current openmrs version
+	 * <strong>Should</strong> return null given null
+	 * <strong>Should</strong> fail if two search handlers for the same resource have the same id
 	 */
 	@Override
 	public Set<SearchHandler> getSearchHandlers(String resourceName) {
@@ -688,12 +688,12 @@ public class RestServiceImpl implements RestService {
 	
 	/**
 	 * @see RestService#initialize()
-	 * @should initialize resources and search handlers
-	 * @should clear cached resources and search handlers and reinitialize them
-	 * @should fail if failed to get resource classes
-	 * @should fail if failed to instantiate a resource
-	 * @should fail if two resources with same name and order are found
-	 * @should fail if two search handlers for the same resource have the same id
+	 * <strong>Should</strong> initialize resources and search handlers
+	 * <strong>Should</strong> clear cached resources and search handlers and reinitialize them
+	 * <strong>Should</strong> fail if failed to get resource classes
+	 * <strong>Should</strong> fail if failed to instantiate a resource
+	 * <strong>Should</strong> fail if two resources with same name and order are found
+	 * <strong>Should</strong> fail if two search handlers for the same resource have the same id
 	 */
 	@Override
 	public void initialize() {

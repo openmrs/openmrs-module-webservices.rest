@@ -37,15 +37,15 @@ public class SearchConfig {
 	 * @param supportedResource the supported resource
 	 * @param supportedOpenmrsVersions the supported openmrs versions
 	 * @param searchQueries the search queries
-	 * @should create an instance of search config
-	 * @should fail if given id is null
-	 * @should fail if given id is empty
-	 * @should fail if given supported resource is null
-	 * @should fail if given supported resource is empty
-	 * @should fail if given supported openmrs versions is null
-	 * @should fail if given supported openmrs versions is empty
-	 * @should fail if given search queries is null
-	 * @should fail if given search queries is empty
+	 * <strong>Should</strong> create an instance of search config
+	 * <strong>Should</strong> fail if given id is null
+	 * <strong>Should</strong> fail if given id is empty
+	 * <strong>Should</strong> fail if given supported resource is null
+	 * <strong>Should</strong> fail if given supported resource is empty
+	 * <strong>Should</strong> fail if given supported openmrs versions is null
+	 * <strong>Should</strong> fail if given supported openmrs versions is empty
+	 * <strong>Should</strong> fail if given search queries is null
+	 * <strong>Should</strong> fail if given search queries is empty
 	 */
 	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
 	    Collection<SearchQuery> searchQueries) {
@@ -70,7 +70,7 @@ public class SearchConfig {
 	 * @param supportedResource the supported resource
 	 * @param supportedOpenmrsVersion the supported openmrs version
 	 * @param searchQuery the search query
-	 * @should create an instance of search config
+	 * <strong>Should</strong> create an instance of search config
 	 */
 	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion, SearchQuery searchQuery) {
 		this(id, supportedResource, Arrays.asList(supportedOpenmrsVersion), Arrays.asList(searchQuery));
@@ -86,7 +86,7 @@ public class SearchConfig {
 	 * @param supportedResource the supported resource
 	 * @param supportedOpenmrsVersions the supported openmrs versions
 	 * @param searchQuery the search query
-	 * @should create an instance of search config
+	 * <strong>Should</strong> create an instance of search config
 	 */
 	public SearchConfig(String id, String supportedResource, Collection<String> supportedOpenmrsVersions,
 	    SearchQuery searchQuery) {
@@ -103,7 +103,7 @@ public class SearchConfig {
 	 * @param supportedResource the supported resource
 	 * @param supportedOpenmrsVersion the supported openmrs version
 	 * @param searchQueries the search queries
-	 * @should create an instance of search config
+	 * <strong>Should</strong> create an instance of search config
 	 */
 	public SearchConfig(String id, String supportedResource, String supportedOpenmrsVersion,
 	    Collection<SearchQuery> searchQueries) {
@@ -149,7 +149,7 @@ public class SearchConfig {
 	/**
 	 * @see Object#hashCode()
 	 * @return the hash code
-	 * @should return same hashcode for equal search configs
+	 * <strong>Should</strong> return same hashcode for equal search configs
 	 */
 	@Override
 	public int hashCode() {
@@ -165,17 +165,17 @@ public class SearchConfig {
 	 * @see Object#equals(Object)
 	 * @param obj the object to test for if equal to this
 	 * @return true if obj is equal to this otherwise false
-	 * @should return true if given this
-	 * @should return true if this id and supported openmrs version and supported resource are equal
+	 * <strong>Should</strong> return true if given this
+	 * <strong>Should</strong> return true if this id and supported openmrs version and supported resource are equal
 	 *         to given search configs
-	 * @should be symmetric
-	 * @should be transitive
-	 * @should return false if given null
-	 * @should return false if given an object which is not an instanceof this class
-	 * @should return false if this id is not equal to the given search configs id
-	 * @should return false if this supported openmrs version is not equal to given search configs
+	 * <strong>Should</strong> be symmetric
+	 * <strong>Should</strong> be transitive
+	 * <strong>Should</strong> return false if given null
+	 * <strong>Should</strong> return false if given an object which is not an instanceof this class
+	 * <strong>Should</strong> return false if this id is not equal to the given search configs id
+	 * <strong>Should</strong> return false if this supported openmrs version is not equal to given search configs
 	 *         supported openmrs version
-	 * @should return false if this supported resource is not equal to given search configs
+	 * <strong>Should</strong> return false if this supported resource is not equal to given search configs
 	 *         supported resource
 	 */
 	@Override

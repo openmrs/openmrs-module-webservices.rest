@@ -22,8 +22,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import java.text.SimpleDateFormat;
 
 /**
- * Tests functionality of {@link ConceptController}. This does not use @should annotations because
- * the controller inherits those methods from a subclass
+ * Tests functionality of {@link ConceptController}.
  */
 public class ConceptController2_0Test extends MainResourceControllerTest {
 	

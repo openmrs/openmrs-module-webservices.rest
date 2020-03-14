@@ -37,8 +37,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * Tests functionality of
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderFrequencyResource1_10}
- * . This does not use @should annotations because the controller inherits those methods from a
- * subclass
  */
 public class OrderFrequencyController1_10Test extends MainResourceControllerTest {
 	

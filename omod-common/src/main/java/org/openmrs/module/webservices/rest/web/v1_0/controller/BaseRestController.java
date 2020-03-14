@@ -47,8 +47,8 @@ public class BaseRestController {
 	private final Log log = LogFactory.getLog(getClass());
 	
 	/**
-	 * @should return unauthorized if not logged in
-	 * @should return forbidden if logged in
+	 * <strong>Should</strong> return unauthorized if not logged in
+	 * <strong>Should</strong> return forbidden if logged in
 	 */
 	@ExceptionHandler(APIAuthenticationException.class)
 	@ResponseBody

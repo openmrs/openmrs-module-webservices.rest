@@ -364,9 +364,9 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * 
 	 * @param representation
 	 * @return
-	 * @should return valid RefRepresentation
-	 * @should return valid DefaultRepresentation
-	 * @should return valid FullRepresentation
+	 * <strong>Should</strong> return valid RefRepresentation
+	 * <strong>Should</strong> return valid DefaultRepresentation
+	 * <strong>Should</strong> return valid FullRepresentation
 	 */
 	@Override
 	public SimpleObject asRepresentation(T delegate, Representation representation) throws ConversionException {
@@ -422,7 +422,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 	
 	/**
-	 * @should return delegating resource description
+	 * <strong>Should</strong> return delegating resource description
 	 */
 	private DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
 		DelegatingResourceDescription desc = new DelegatingResourceDescription();
@@ -642,7 +642,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	 * @param description
 	 * @param mustIncludeRequiredProperties
 	 * @throws ResponseException
-	 * @should allow setting a null value
+	 * <strong>Should</strong> allow setting a null value
 	 */
 	public void setConvertedProperties(T delegate, Map<String, Object> propertyMap,
 	        DelegatingResourceDescription description, boolean mustIncludeRequiredProperties) throws ConversionException {

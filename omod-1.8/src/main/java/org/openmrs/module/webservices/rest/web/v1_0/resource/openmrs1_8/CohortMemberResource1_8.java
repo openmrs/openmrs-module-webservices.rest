@@ -190,7 +190,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	}
 	
 	/**
-	 * @should add patient to cohort
+	 * <strong>Should</strong> add patient to cohort
 	 */
 	@Override
 	public CohortMember1_8 save(CohortMember1_8 delegate) {

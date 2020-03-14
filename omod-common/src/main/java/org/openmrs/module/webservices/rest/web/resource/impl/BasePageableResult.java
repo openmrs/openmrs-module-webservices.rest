@@ -44,9 +44,9 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	
 	/**
 	 * @see PageableResult#toSimpleObject(Converter)
-	 * @should add property totalCount if context contains parameter totalCount which is true
-	 * @should not add property totalCount if context contains parameter totalCount which is false
-	 * @should not add property totalCount if context does not contains parameter totalCount
+	 * <strong>Should</strong> add property totalCount if context contains parameter totalCount which is true
+	 * <strong>Should</strong> not add property totalCount if context contains parameter totalCount which is false
+	 * <strong>Should</strong> not add property totalCount if context does not contains parameter totalCount
 	 */
 	@Override
 	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {

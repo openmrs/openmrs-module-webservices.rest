@@ -31,10 +31,10 @@ public interface RestService {
 	 * 
 	 * @param requested
 	 * @return
-	 * @should get ref representation when specified
-	 * @should get default representation when specified
-	 * @should get full representation when specified
-	 * @should get a named representation when specified
+	 * <strong>Should</strong> get ref representation when specified
+	 * <strong>Should</strong> get default representation when specified
+	 * <strong>Should</strong> get full representation when specified
+	 * <strong>Should</strong> get a named representation when specified
 	 */
 	public Representation getRepresentation(String requested);
 	

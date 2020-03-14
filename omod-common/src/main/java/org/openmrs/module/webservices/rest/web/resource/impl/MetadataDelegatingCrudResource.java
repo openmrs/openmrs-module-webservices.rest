@@ -160,9 +160,9 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	 * 
 	 * @param delegate the meta-data object.
 	 * @return the display string.
-	 * @should return a localized message if specified
-	 * @should return the name property when no localized message is specified
-	 * @should return the empty string when no localized message is specified and the name property
+	 * <strong>Should</strong> return a localized message if specified
+	 * <strong>Should</strong> return the name property when no localized message is specified
+	 * <strong>Should</strong> return the empty string when no localized message is specified and the name property
 	 *         is null
 	 */
 	@PropertyGetter("display")
