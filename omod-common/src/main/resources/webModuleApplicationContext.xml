@@ -80,22 +80,8 @@
 	        </list>
 	    </property>
 	</bean>
-
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
-        <property name="order" value="1"/>
-        <property name="messageConverters">
-			<list>
-				<ref bean="stringHttpMessageConverter"/>
-				<ref bean="jsonHttpMessageConverter"/>
-				<!-- This bean is defined in the core 'openmrs-servlet.xml' file -->
-				<ref bean="xmlMarshallingHttpMessageConverter"/>
-			</list>
-		</property>
-    </bean>
     
     <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
-    
-	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

@@ -13,8 +13,8 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.openmrs.annotation.OpenmrsProfile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMa
 /**
  * We should not need to apply this fix in versions where TRUNK-5022 is fixed.
  */
-@Component
+@OpenmrsProfile(openmrsPlatformVersion = "1.9.* - 2.3.*")
 public class InitPathMatcher implements ServletContextAware {
 	
 	@Autowired
