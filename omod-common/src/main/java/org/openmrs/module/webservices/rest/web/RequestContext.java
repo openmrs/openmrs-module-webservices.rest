@@ -131,8 +131,8 @@ public class RequestContext {
 	
 	/**
 	 * @param limit the limit to set
-	 * @should not accept a value less than one
-	 * @should not accept a null value
+	 * <strong>Should</strong> not accept a value less than one
+	 * <strong>Should</strong> not accept a null value
 	 */
 	public void setLimit(Integer limit) {
 		if (limit == null || limit <= 0)
@@ -218,9 +218,9 @@ public class RequestContext {
 	 * 
 	 * @param name the request parameter name
 	 * @return the value
-	 * @should return the request parameter of given name if present in the request
-	 * @should return null if the wanted request parameter is not present in the request
-	 * @should return null if request is null
+	 * <strong>Should</strong> return the request parameter of given name if present in the request
+	 * <strong>Should</strong> return null if the wanted request parameter is not present in the request
+	 * <strong>Should</strong> return null if request is null
 	 */
 	public String getParameter(String name) {
 		

@@ -54,8 +54,8 @@ public class SessionController1_9 extends BaseRestController {
 	 * 
 	 * @param request
 	 * @return
-	 * @should return the session id if the user is authenticated
-	 * @should return the session id if the user is not authenticated
+	 * <strong>Should</strong> return the session id if the user is authenticated
+	 * <strong>Should</strong> return the session id if the user is not authenticated
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
@@ -110,7 +110,7 @@ public class SessionController1_9 extends BaseRestController {
 	/**
 	 * Logs the client out
 	 * 
-	 * @should log the client out
+	 * <strong>Should</strong> log the client out
 	 */
 	@RequestMapping(method = RequestMethod.DELETE)
 	@ResponseBody

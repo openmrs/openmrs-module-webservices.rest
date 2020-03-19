@@ -40,7 +40,7 @@ public class ValidateUtil {
 	 * 
 	 * @param obj the object to validate
 	 * @throws ValidationException thrown if a binding exception occurs
-	 * @should throw ValidationException if errors occur during validation
+	 * <strong>Should</strong> throw ValidationException if errors occur during validation
 	 */
 	public static void validate(Object obj) throws ValidationException {
 		

@@ -59,7 +59,7 @@ public class SearchQuery {
 		 * 
 		 * @param requiredParameters the required empty parameters to be set
 		 * @return this builder instance
-		 * @should fail if required parameters are already set
+		 * <strong>Should</strong> fail if required parameters are already set
 		 */
 		public Builder withRequiredParameters(String... requiredParameters) {
 			if (searchQuery.requiredParameters != null) {
@@ -99,7 +99,7 @@ public class SearchQuery {
 		 * 
 		 * @param optionalParameters the optional parameters to be set
 		 * @return this builder instance
-		 * @should fail if optional parameters are already set
+		 * <strong>Should</strong> fail if optional parameters are already set
 		 */
 		public Builder withOptionalParameters(String... optionalParameters) {
 			if (searchQuery.optionalParameters != null) {
@@ -136,12 +136,12 @@ public class SearchQuery {
 		 * Builds an instance of {@code SearchQuery}.
 		 * 
 		 * @return a search query instance with properties set through the builder
-		 * @should return a search query instance with properties set through the builder
-		 * @should assign an empty set to required parameters if not set by the builder
-		 * @should assign an empty set to optional parameters if not set by the builder
-		 * @should fail if the description is null
-		 * @should fail if the description is empty
-		 * @should fail if both required and optional parameters are empty
+		 * <strong>Should</strong> return a search query instance with properties set through the builder
+		 * <strong>Should</strong> assign an empty set to required parameters if not set by the builder
+		 * <strong>Should</strong> assign an empty set to optional parameters if not set by the builder
+		 * <strong>Should</strong> fail if the description is null
+		 * <strong>Should</strong> fail if the description is empty
+		 * <strong>Should</strong> fail if both required and optional parameters are empty
 		 */
 		public SearchQuery build() {
 			if (searchQuery.requiredParameters == null) {
@@ -188,7 +188,7 @@ public class SearchQuery {
 	/**
 	 * @see Object#hashCode()
 	 * @return the hash code
-	 * @should return same hashcode for equal search configs
+	 * <strong>Should</strong> return same hashcode for equal search configs
 	 */
 	@Override
 	public int hashCode() {
@@ -203,16 +203,16 @@ public class SearchQuery {
 	 * @see Object#equals(Object)
 	 * @param obj the object to test for if equal to this
 	 * @return true if obj is equal to this otherwise false
-	 * @should return true if given this
-	 * @should return true if this optional parameters and required parameters are equal to given
+	 * <strong>Should</strong> return true if given this
+	 * <strong>Should</strong> return true if this optional parameters and required parameters are equal to given
 	 *         search query
-	 * @should be symmetric
-	 * @should be transitive
-	 * @should return false if given null
-	 * @should return false if given an object which is not an instanceof this class
-	 * @should return false if this optional parameters is not equal to the given search queries
+	 * <strong>Should</strong> be symmetric
+	 * <strong>Should</strong> be transitive
+	 * <strong>Should</strong> return false if given null
+	 * <strong>Should</strong> return false if given an object which is not an instanceof this class
+	 * <strong>Should</strong> return false if this optional parameters is not equal to the given search queries
 	 *         optional parameters
-	 * @should return false if this required parameters is not equal to the given search queries
+	 * <strong>Should</strong> return false if this required parameters is not equal to the given search queries
 	 *         required parameters
 	 */
 	@Override

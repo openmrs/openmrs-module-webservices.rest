@@ -378,11 +378,11 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * @param value
 	 * @throws ParseException
 	 * @throws ConversionException
-	 * @should return uuid for foncept true
-	 * @should return uuid for concept false
-	 * @should throw exception on unexpected value
-	 * @should return uuid for primitive true
-	 * @should return uuid for primitive false
+	 * <strong>Should</strong> return uuid for foncept true
+	 * <strong>Should</strong> return uuid for concept false
+	 * <strong>Should</strong> throw exception on unexpected value
+	 * <strong>Should</strong> return uuid for primitive true
+	 * <strong>Should</strong> return uuid for primitive false
 	 */
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException, IOException {

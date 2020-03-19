@@ -38,8 +38,8 @@ public class LocationSearchHandler implements SearchHandler {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
-	 * @should return location by tag uuid
-	 * @should return location by tag name
+	 * <strong>Should</strong> return location by tag uuid
+	 * <strong>Should</strong> return location by tag name
 	 */
 	@Override
 	public SearchConfig getSearchConfig() {

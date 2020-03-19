@@ -145,7 +145,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-	 * @should create an encounter type
+	 * <strong>Should</strong> create an encounter type
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {

@@ -24,8 +24,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 
 /**
- * Tests functionality of {@link ConceptController}. This does not use @should annotations because
- * the controller inherits those methods from a subclass
+ * Tests functionality of {@link ConceptController}.
  */
 public class ConceptController1_9Test extends MainResourceControllerTest {
 	

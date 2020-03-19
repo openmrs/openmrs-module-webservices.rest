@@ -50,9 +50,9 @@ public class ReflectionUtil {
 	 * with the given index from that interface. This method will recursively look at superclasses
 	 * until it finds one implementing the requested interface
 	 * 
-	 * @should find genericInterface on a superclass if clazz does not directly implement it
-	 * @should ignore type variables on the declaring interface
-	 * @should not inspect superclasses of the specified genericInterface
+	 * <strong>Should</strong> find genericInterface on a superclass if clazz does not directly implement it
+	 * <strong>Should</strong> ignore type variables on the declaring interface
+	 * <strong>Should</strong> not inspect superclasses of the specified genericInterface
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Class getParameterizedTypeFromInterface(Class<?> clazz, Class<?> genericInterface, int index) {

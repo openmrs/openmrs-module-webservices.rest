@@ -144,7 +144,7 @@ public class ConversionUtil {
 	 * @param toType The type to convert the value to
 	 * @param instance The source object instance
 	 * @return The specified object converted to the specified type
-	 * @should resolve TypeVariables to actual type
+	 * <strong>Should</strong> resolve TypeVariables to actual type
 	 */
 	public static Object convert(Object object, Type toType, Object instance) throws ConversionException {
 		if (instance != null && toType instanceof TypeVariable<?>) {
@@ -162,10 +162,10 @@ public class ConversionUtil {
 	 * @param toType a simple class or generic type
 	 * @return
 	 * @throws ConversionException
-	 * @should convert strings to locales
-	 * @should convert strings to enum values
-	 * @should convert to an array
-	 * @should convert to a class
+	 * <strong>Should</strong> convert strings to locales
+	 * <strong>Should</strong> convert strings to enum values
+	 * <strong>Should</strong> convert to an array
+	 * <strong>Should</strong> convert to a class
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
@@ -417,12 +417,12 @@ public class ConversionUtil {
 	 * @param instanceClass An instance of the class with the specified generic type variable.
 	 * @param typeVariable The generic type variable.
 	 * @return The actual type of the generic type variable or {@code null} if not found.
-	 * @should return the actual type if defined on the parent class
-	 * @should return the actual type if defined on the grand-parent class
-	 * @should return null when actual type cannot be found
-	 * @should return the correct actual type if there are multiple generic types
-	 * @should throw IllegalArgumentException when instance class is null
-	 * @should throw IllegalArgumentException when typeVariable is null
+	 * <strong>Should</strong> return the actual type if defined on the parent class
+	 * <strong>Should</strong> return the actual type if defined on the grand-parent class
+	 * <strong>Should</strong> return null when actual type cannot be found
+	 * <strong>Should</strong> return the correct actual type if there are multiple generic types
+	 * <strong>Should</strong> throw IllegalArgumentException when instance class is null
+	 * <strong>Should</strong> throw IllegalArgumentException when typeVariable is null
 	 */
 	public static Type getTypeVariableClass(Class<?> instanceClass, TypeVariable<?> typeVariable) {
 		if (instanceClass == null) {

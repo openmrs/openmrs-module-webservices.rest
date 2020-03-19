@@ -128,13 +128,13 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param ip
 	 * @param candidateIps
 	 * @return <code>true</code> if there is a match
-	 * @should return true if list is empty
-	 * @should return false if there is no match
-	 * @should return true for exact match
-	 * @should return true for match with submask
-	 * @should return false if there is no match with submask
-	 * @should return true for exact ipv6 match
-	 * @should throw IllegalArgumentException for invalid mask
+	 * <strong>Should</strong> return true if list is empty
+	 * <strong>Should</strong> return false if there is no match
+	 * <strong>Should</strong> return true for exact match
+	 * <strong>Should</strong> return true for match with submask
+	 * <strong>Should</strong> return false if there is no match with submask
+	 * <strong>Should</strong> return true for exact ipv6 match
+	 * <strong>Should</strong> throw IllegalArgumentException for invalid mask
 	 */
 	public static boolean ipMatches(String ip, List<String> candidateIps) {
 		if (candidateIps.isEmpty()) {
@@ -519,7 +519,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param param the string name to fetch
 	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> for any empty
 	 *         value, null value, or not equal to 'true', or missing param.
-	 * @should return true only if request param is 'true'
+	 * <strong>Should</strong> return true only if request param is 'true'
 	 */
 	public static Boolean getBooleanParam(HttpServletRequest request, String param) {
 		try {
