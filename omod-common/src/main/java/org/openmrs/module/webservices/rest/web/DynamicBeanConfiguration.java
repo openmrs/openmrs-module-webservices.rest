@@ -54,7 +54,7 @@ public class DynamicBeanConfiguration {
 	 * webModuleApplicationContext.xml file.
 	 */
 	@Bean
-	public AbstractHandlerExceptionResolver gettHandlerExceptionResolver() throws Exception {
+	public AbstractHandlerExceptionResolver getHandlerExceptionResolver() throws Exception {
 		
 		boolean setConverters = false;
 		
@@ -99,7 +99,7 @@ public class DynamicBeanConfiguration {
 	 * file.
 	 */
 	@Bean
-	public AbstractHandlerMapping gettHandlerMapping() throws Exception {
+	public AbstractHandlerMapping getHandlerMapping() throws Exception {
 		
 		Class<?> clazz;
 		try {
