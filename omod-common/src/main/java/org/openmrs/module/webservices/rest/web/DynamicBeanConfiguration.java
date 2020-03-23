@@ -49,7 +49,7 @@ public class DynamicBeanConfiguration {
 	/**
 	 * The AnnotationMethodHandlerExceptionResolver class was deprecated and eventually removed in
 	 * Spring 5 The recommended replacement class ExceptionHandlerExceptionResolver was introduced
-	 * in Spring 3.1.0 which is not available on OpenMRS platform versions 1.9.x and 1.1.0.x which
+	 * in Spring 3.1.0 which is not available on OpenMRS platform versions 1.9.x and 1.10.x which
 	 * run Spring 3.0.5 That's why we can't just statically replace this class in the
 	 * webModuleApplicationContext.xml file.
 	 */
@@ -94,7 +94,7 @@ public class DynamicBeanConfiguration {
 	/**
 	 * The DefaultAnnotationHandlerMapping class was deprecated and eventually removed in Spring 5
 	 * The recommended replacement class RequestMappingHandlerMapping was introduced in Spring 3.1.0
-	 * which is not available on OpenMRS platform versions 1.9.x and 1.1.0.x which run Spring 3.0.5
+	 * which is not available on OpenMRS platform versions 1.9.x and 1.10.x which run Spring 3.0.5
 	 * That's why we can't just statically replace this class in the webModuleApplicationContext.xml
 	 * file.
 	 */
