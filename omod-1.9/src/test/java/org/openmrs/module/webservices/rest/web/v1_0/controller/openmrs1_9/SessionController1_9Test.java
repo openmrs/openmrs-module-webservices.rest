@@ -106,7 +106,20 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'",
 		    loc.toString().contains("display=Unknown Location"));
 	}
-	
+
+	/**
+	 * @see SessionController1_9#get(WebRequest)
+	 * @verifies return the session with current provider if the user is authenticated
+	 */
+	@Test
+	public void get_shouldReturnCurrentProviderIfTheUserIsAuthenticated() throws Exception {
+		Assert.assertTrue(Context.isAuthenticated());
+		Object ret = controller.get(request);
+		Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
+		Assert.assertNotNull(currentProvider);
+		Assert.assertTrue(currentProvider.toString().contains("Super User"));
+	}
+
 	/**
 	 * @see SessionController1_9#get(WebRequest)
 	 * @verifies return the session id if the user is not authenticated
@@ -157,5 +170,5 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		String content = "{\"sessionLocation\":\"fake-nonexistant-uuid\"}";
 		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 	}
-	
+
 }
