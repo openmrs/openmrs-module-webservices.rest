@@ -9,8 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.junit.Test;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -59,6 +62,21 @@ public class RelationshipTypeResource1_8Test extends BaseDelegatingResourceTest<
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants1_8.RELATIONSHIP_TYPE_UUID;
+	}
+	
+	@Test
+	public void shouldIgnoreRelationshipSpecificPropertiesWhenCreating() {
+		SimpleObject relationshipTypeSimpleObject = new SimpleObject()
+		        .add("display", "Sibling/Sibling")
+		        .add("description", "Relationship between brother/sister, brother/brother, and sister/sister")
+		        .add("aIsToB", "Sibling")
+		        .add("bIsToA", "Sibling")
+		        .add("displayAIsToB", "Sibling side")
+		        .add("displayBIsToA", "Sibling another")
+		        .add("weight", 1);
+		
+		// This line should not throw exception.
+		getResource().create(relationshipTypeSimpleObject, new RequestContext());
 	}
 	
 }
