@@ -31,7 +31,7 @@ public class OpenmrsPathMatcher implements PathMatcher {
 	
 	@Override
 	public boolean matchStart(String pattern, String path) {
-		return this.matchStart(pattern, path);
+		return this.delegate.matchStart(pattern, path);
 	}
 	
 	@Override
