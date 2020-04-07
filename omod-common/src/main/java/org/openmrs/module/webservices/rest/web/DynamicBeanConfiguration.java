@@ -22,7 +22,7 @@ import org.springframework.web.servlet.handler.AbstractHandlerMapping;
  * For configuration of beans whose classes are determined at runtime depending on the OpenMRS core
  * platform version.
  */
-@Configuration
+@Configuration("webservices.rest")
 public class DynamicBeanConfiguration {
 	
 	/**
