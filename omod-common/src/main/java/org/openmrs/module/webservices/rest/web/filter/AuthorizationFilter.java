@@ -10,7 +10,11 @@
 package org.openmrs.module.webservices.rest.web.filter;
 
 import java.io.IOException;
+
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,6 +31,13 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.springframework.http.HttpEntity;
+
+import com.google.common.net.HttpHeaders;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
  * Filter intended for all /ws/rest calls that allows the user to authenticate via Basic
@@ -61,19 +72,20 @@ public class AuthorizationFilter implements Filter {
 	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	        ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	        throws IOException, ServletException {
 		
-		// check the IP address first.  If its not valid, return a 403
+		// check the IP address first. If its not valid, return a 403
 		if (!RestUtil.isIpAllowed(request.getRemoteAddr())) {
 			// the ip address is not valid, set a 403 http error code
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
-			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN, "IP address '" + request.getRemoteAddr()
-			        + "' is not authorized");
+			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN,
+			    "IP address '" + request.getRemoteAddr() + "' is not authorized");
 			return;
 		}
 		
-		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
+		// skip if the session has timed out, we're already authenticated, or it's not
+		// an HTTP request
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()) {
@@ -99,9 +111,32 @@ public class AuthorizationFilter implements Filter {
 					}
 				}
 			}
+			// using jwt authentication
+			String id = UUID.randomUUID().toString().replace("-", "");
+			Date now = new Date();
+			Date exp = new Date(System.currentTimeMillis() + (1000 * 120)); // 60 seconds
+			String token;
+			
+			// generating jwt token
+			try {
+				token = Jwts.builder().setId(id).setIssuedAt(now).setNotBefore(now).setExpiration(exp)
+				        .signWith(SignatureAlgorithm.HS256, "secret".getBytes("UTF-8")).compact();
+				//Adding it the header
+				
+				HttpServletResponse httpResp = (HttpServletResponse) response;
+				httpResp.addHeader("Authorization", "Bearer" + token);
+				return;
+				
+			}
+			catch (UnsupportedEncodingException e) {
+				
+				token = id;
+			}
+			
 		}
 		
 		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
 	}
+	
 }
