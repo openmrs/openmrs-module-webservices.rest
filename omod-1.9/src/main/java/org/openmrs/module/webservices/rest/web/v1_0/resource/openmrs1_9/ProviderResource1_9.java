@@ -240,7 +240,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	@PropertyGetter("display")
 	public String getDisplayString(Provider provider) {
 		if (provider.getIdentifier() == null) {
-			return "";
+			return provider.getName();
 		}
 		return provider.getIdentifier() + " - " + provider.getName();
 	}
