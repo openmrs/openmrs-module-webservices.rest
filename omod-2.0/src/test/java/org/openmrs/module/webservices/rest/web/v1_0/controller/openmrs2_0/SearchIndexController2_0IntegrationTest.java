@@ -36,7 +36,7 @@ public class SearchIndexController2_0IntegrationTest extends RestControllerTestU
 		
 		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, data));
 		
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertEquals(1, conceptService.getConcepts("Measles", Context.getLocale(), false).size());
 		assertEquals(1, conceptService.getConcepts("Rubeola", Context.getLocale(), false).size());
 		//The indices for other types should not have been updated
@@ -54,7 +54,7 @@ public class SearchIndexController2_0IntegrationTest extends RestControllerTestU
 		        "\"uuid\": \"1bd5693b-f558-30c9-8177-145a4b119ca7\"}";
 		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, data));
 		
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertEquals(1, conceptService.getConcepts("Headache", Context.getLocale(), false).size());
 		//The indices for other concept names should not have been updated
 		assertEquals(0, conceptService.getConcepts("Pain", Context.getLocale(), false).size());

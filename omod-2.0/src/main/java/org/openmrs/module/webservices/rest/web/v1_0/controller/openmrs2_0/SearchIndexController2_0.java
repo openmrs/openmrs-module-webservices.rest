@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -29,9 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Controller("webservices.rest.searchIndexController2_0")
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/searchindexupdate", method = RequestMethod.POST)
-@ResponseStatus(HttpStatus.OK)
 public class SearchIndexController2_0 extends BaseRestController {
 	
 	private static final Logger log = LoggerFactory.getLogger(SearchIndexController2_0.class);
@@ -40,6 +40,7 @@ public class SearchIndexController2_0 extends BaseRestController {
 	private RestService restService;
 	
 	@RequestMapping
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateSearchIndex(@RequestBody(required = false) String json) throws Exception {
 		String resourceName = null;
 		String subResourceName = null;
