@@ -10,18 +10,24 @@
 package org.openmrs.module.webservices.rest.web;
 
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
+import org.openmrs.util.MemoryAppender;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * MockServerLogActionWrapper used to run the Unit tests for ServerLogResource
  */
-public class MockServerLogActionWrapper extends ServerLogActionWrapper {
-	
+public class MockServerLogActionWrapper<T extends ServerLogActionWrapper> extends ServerLogActionWrapper {
+
 	public List<String> mockMemoryAppenderBuffer = new ArrayList<String>();
-	
+
 	private ServerLogActionWrapper serverLogActionWrapper;
-	
+
+	public MockServerLogActionWrapper(T serverLogActionWrapper) {
+		this.serverLogActionWrapper = serverLogActionWrapper;
+	}
+
 	/**
 	 * Override method from ServerLogActionWrapper to get the logs from mockMemoryAppender
 	 * 
@@ -31,11 +37,16 @@ public class MockServerLogActionWrapper extends ServerLogActionWrapper {
 	public List<String[]> getServerLogs() {
 		List<String> logLines = mockMemoryAppenderBuffer;
 		List<String[]> finalOutput = new ArrayList<String[]>();
-		serverLogActionWrapper = new ServerLogActionWrapper();
+
 		for (String logLine : logLines) {
 			String[] logElements = serverLogActionWrapper.logLinePatternMatcher(logLine);
 			finalOutput.add(logElements);
 		}
 		return finalOutput;
+	}
+
+	@Override
+	public MemoryAppender getMemoryAppender() {
+		return serverLogActionWrapper.getMemoryAppender();
 	}
 }

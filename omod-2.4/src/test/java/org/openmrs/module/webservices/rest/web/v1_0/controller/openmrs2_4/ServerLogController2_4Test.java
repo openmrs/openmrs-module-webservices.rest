@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,12 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
-import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
+import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ServerLogResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.ServerLogResource2_4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ServerLogController1_8Test extends MainResourceControllerTest {
+public class ServerLogController2_4Test extends MainResourceControllerTest {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	@Autowired
 	private RestService restService;
@@ -38,17 +41,14 @@ public class ServerLogController1_8Test extends MainResourceControllerTest {
 
 	private static final String log2 = "ERROR - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 
-	private final MockServerLogActionWrapper<ServerLogActionWrapper1_8> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper1_8>(
-			new ServerLogActionWrapper1_8());
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
+	private final MockServerLogActionWrapper<ServerLogActionWrapper2_4> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper2_4>(
+			new ServerLogActionWrapper2_4());
 
 	@Before
 	public void setUp() {
-		ServerLogResource1_8 serverLogResource1_8 = (ServerLogResource1_8) restService
+		ServerLogResource2_4 serverLogResource2_4 = (ServerLogResource2_4) restService
 				.getResourceBySupportedClass(ServerLogActionWrapper.class);
-		serverLogResource1_8.setServerLogActionWrapper(mockServerLogActionWrapper);
+		serverLogResource2_4.setServerLogActionWrapper(mockServerLogActionWrapper);
 	}
 
 	@Test(expected = Exception.class)

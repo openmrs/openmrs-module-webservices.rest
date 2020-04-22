@@ -9,12 +9,11 @@
  */
 package org.openmrs.module.webservices.helper;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Logger;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.util.MemoryAppender;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +22,7 @@ import java.util.regex.PatternSyntaxException;
 /**
  * ServerLogActionWrapper used to serve the Server logs
  */
-public class ServerLogActionWrapper {
+public abstract class ServerLogActionWrapper {
 	
 	public List<String[]> serverLog;
 	
@@ -44,20 +43,19 @@ public class ServerLogActionWrapper {
 		// Check the GET_SERVER_LOGS privilege to serve the server logs
 		Context.requirePrivilege(RestConstants.PRIV_GET_SERVER_LOGS);
 		// Use the Memory Appender to retrieve the logs
-		Appender appender = Logger.getRootLogger().getAppender("MEMORY_APPENDER");
-		if (appender instanceof MemoryAppender) {
-			MemoryAppender memoryAppender = (MemoryAppender) appender;
-			List<String> logLines = memoryAppender.getLogLines();
-			List<String[]> finalOutput = new ArrayList<String[]>();
-			for (String logLine : logLines) {
-				String[] logElements = logLinePatternMatcher(logLine);
-				finalOutput.add(logElements);
-			}
-			return finalOutput;
+		MemoryAppender memoryAppender = getMemoryAppender();
+
+		if (memoryAppender == null) {
+			return Collections.emptyList();
 		}
-		else {
-			return new ArrayList<String[]>();
+
+		List<String> logLines = memoryAppender.getLogLines();
+		List<String[]> finalOutput = new ArrayList<String[]>();
+		for (String logLine : logLines) {
+			String[] logElements = logLinePatternMatcher(logLine);
+			finalOutput.add(logElements);
 		}
+		return finalOutput;
 	}
 	
 	/**
@@ -91,4 +89,6 @@ public class ServerLogActionWrapper {
 			return logElements;
 		}
 	}
+
+	public abstract MemoryAppender getMemoryAppender();
 }
