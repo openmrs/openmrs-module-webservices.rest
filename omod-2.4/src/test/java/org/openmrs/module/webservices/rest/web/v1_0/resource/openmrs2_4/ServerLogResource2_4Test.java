@@ -7,13 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
-import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
+import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -25,9 +25,12 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.util.ArrayList;
 
 /**
- * Integration tests for the ServerLogResource class
+ * Integration tests for the ServerLogResource2_4 class
  */
-public class ServerLogResource1_8Test extends BaseModuleWebContextSensitiveTest {
+public class ServerLogResource2_4Test extends BaseModuleWebContextSensitiveTest {
+
+	private final MockServerLogActionWrapper<ServerLogActionWrapper2_4> mockServerLogActionWrapper = new MockServerLogActionWrapper<>(
+			new ServerLogActionWrapper2_4());
 
 	@Autowired
 	RestService restService;
@@ -35,16 +38,13 @@ public class ServerLogResource1_8Test extends BaseModuleWebContextSensitiveTest 
 	@Autowired
 	private MainResourceController mainResourceController;
 
-	private final MockServerLogActionWrapper<ServerLogActionWrapper1_8> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper1_8>(
-			new ServerLogActionWrapper1_8());
-
 	public String getURI() {
 		return "serverlog";
 	}
 
 	@Test
 	public void testGetAll() {
-		ServerLogResource1_8 serverLogResource = (ServerLogResource1_8) restService
+		ServerLogResource2_4 serverLogResource = (ServerLogResource2_4) restService
 				.getResourceBySupportedClass(ServerLogActionWrapper.class);
 		serverLogResource.setServerLogActionWrapper(mockServerLogActionWrapper);
 
