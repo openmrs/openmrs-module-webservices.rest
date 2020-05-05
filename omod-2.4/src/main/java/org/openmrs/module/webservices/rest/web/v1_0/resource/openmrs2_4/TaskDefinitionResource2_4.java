@@ -7,12 +7,13 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.webservices.helper.TaskServiceWrapper;
+import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -28,24 +29,21 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.scheduler.TaskDefinition;
 
-/**
- * Resource for Task Definitions, supporting standard CRUD operations
- */
-@Resource(name = RestConstants.VERSION_1 + "/taskdefinition", supportedClass = TaskDefinition.class, supportedOpenmrsVersions = {
-				"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
-public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<TaskDefinition> {
-	
-	private TaskServiceWrapper taskServiceWrapper = new TaskServiceWrapper();
-	
-	public void setTaskServiceWrapper(TaskServiceWrapper taskServiceWrapper) {
+@Resource(name = RestConstants.VERSION_1
+		+ "/taskdefinition", supportedClass = TaskDefinition.class, supportedOpenmrsVersions = { "2.4.*" })
+public class TaskDefinitionResource2_4 extends MetadataDelegatingCrudResource<TaskDefinition> {
+
+	private TaskServiceWrapper2_4 taskServiceWrapper = new TaskServiceWrapper2_4();
+
+	public void setTaskServiceWrapper(TaskServiceWrapper2_4 taskServiceWrapper) {
 		this.taskServiceWrapper = taskServiceWrapper;
 	}
-	
+
 	@Override
 	public TaskDefinition newDelegate() {
 		return new TaskDefinition();
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
@@ -87,7 +85,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
@@ -103,7 +101,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		description.addRequiredProperty("properties");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
@@ -112,44 +110,44 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		taskServiceWrapper.saveTaskDefinition(taskDefinition);
 		return taskDefinition;
 	}
-	
+
 	@Override
 	public TaskDefinition getByUniqueId(String uniqueId) {
 		TaskDefinition taskDefinition = taskServiceWrapper.getTaskByName(uniqueId);
 		if (taskDefinition == null) {
-			taskDefinition = taskServiceWrapper.getTaskById(Integer.parseInt(uniqueId));
+			taskDefinition = taskServiceWrapper.getTaskByUuid(uniqueId);
 		}
 		return taskDefinition;
 	}
-	
+
 	@Override
 	public void purge(TaskDefinition delegate, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("TaskAction cannot be purged");
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
 	public NeedsPaging<TaskDefinition> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<TaskDefinition>(new ArrayList<TaskDefinition>(taskServiceWrapper.getRegisteredTasks()),
-		        context);
+				context);
 	}
-	
+
 	@PropertyGetter("uuid")
 	public static String getUuid(TaskDefinition instance) {
 		return instance.getUuid();
 	}
-	
+
 	@PropertyGetter("display")
 	public static String getDisplay(TaskDefinition instance) {
 		return instance.getName();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-	 *      It will return only the scheduled tasks, if query contains string as scheduled otherwise
-	 *      it will return the registered tasks
+	 *      It will return only the scheduled tasks, if query contains string as
+	 *      scheduled otherwise it will return the registered tasks
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
@@ -162,5 +160,5 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		}
 		return new NeedsPaging<TaskDefinition>(taskDefinitions, context);
 	}
-	
+
 }

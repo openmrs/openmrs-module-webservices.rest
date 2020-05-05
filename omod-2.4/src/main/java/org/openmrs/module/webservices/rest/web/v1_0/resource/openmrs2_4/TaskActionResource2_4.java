@@ -7,7 +7,8 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
+
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +16,7 @@ import java.util.Collection;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.TaskAction;
-import org.openmrs.module.webservices.helper.TaskServiceWrapper;
+import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -38,21 +39,21 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
 
-@Resource(name = RestConstants.VERSION_1 + "/taskaction", supportedClass = TaskAction.class, supportedOpenmrsVersions = {
-				"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*" })
-public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> implements Creatable {
-	
-	private TaskServiceWrapper taskServiceWrapper = new TaskServiceWrapper();
-	
-	public void setTaskServiceWrapper(TaskServiceWrapper taskServiceWrapper) {
+@Resource(name = RestConstants.VERSION_1
+		+ "/taskaction", supportedClass = TaskAction.class, supportedOpenmrsVersions = { "2.4.*" })
+public class TaskActionResource2_4 extends BaseDelegatingResource<TaskAction> implements Creatable {
+
+	private TaskServiceWrapper2_4 taskServiceWrapper = new TaskServiceWrapper2_4();
+
+	public void setTaskServiceWrapper(TaskServiceWrapper2_4 taskServiceWrapper) {
 		this.taskServiceWrapper = taskServiceWrapper;
 	}
-	
+
 	@Override
 	public Object create(SimpleObject post, RequestContext context) throws ResponseException {
 		TaskAction action = newDelegate();
 		setConvertedProperties(action, post, getCreatableProperties(), true);
-		
+
 		Collection<TaskDefinition> taskDefinitions;
 		if (action.isAllTasks()) {
 			taskDefinitions = taskServiceWrapper.getRegisteredTasks();
@@ -60,115 +61,109 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		} else {
 			taskDefinitions = action.getTasks();
 		}
-		
+
 		TaskAction.Action actionType = action.getAction();
 		if (actionType != TaskAction.Action.RESCHEDULEALLTASKS) {
 			if (taskDefinitions == null || taskDefinitions.isEmpty()) {
-				throw new IllegalRequestException("Cannot execute action " + actionType
-				        + " on empty set of task definitions.");
+				throw new IllegalRequestException(
+						"Cannot execute action " + actionType + " on empty set of task definitions.");
 			}
 		}
-		
+
 		switch (action.getAction()) {
-			case SCHEDULETASK:
-				scheduleTasks(taskDefinitions);
-				break;
-			case RESCHEDULETASK:
-				reScheduleTasks(taskDefinitions);
-				break;
-			case DELETE:
-				deleteTasks(taskDefinitions);
-				break;
-			case SHUTDOWNTASK:
-				shutDownTasks(taskDefinitions);
-				break;
-			case RESCHEDULEALLTASKS:
-				reScheduleAllTasks();
-				break;
-			case RUNTASK:
-				runTasks(taskDefinitions);
-				break;
+		case SCHEDULETASK:
+			scheduleTasks(taskDefinitions);
+			break;
+		case RESCHEDULETASK:
+			reScheduleTasks(taskDefinitions);
+			break;
+		case DELETE:
+			deleteTasks(taskDefinitions);
+			break;
+		case SHUTDOWNTASK:
+			shutDownTasks(taskDefinitions);
+			break;
+		case RESCHEDULEALLTASKS:
+			reScheduleAllTasks();
+			break;
+		case RUNTASK:
+			runTasks(taskDefinitions);
+			break;
 		}
 		return ConversionUtil.convertToRepresentation(action, Representation.DEFAULT);
 	}
-	
+
 	private void scheduleTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
 				taskServiceWrapper.scheduleTask(taskDef);
-			}
-			catch (SchedulerException e) {
+			} catch (SchedulerException e) {
 				throw new APIException("Errors occurred while scheduling task", e);
 			}
 		}
 	}
-	
+
 	private void shutDownTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
 				taskServiceWrapper.shutDownTask(taskDef);
-			}
-			catch (SchedulerException e) {
+			} catch (SchedulerException e) {
 				throw new APIException("Errors occurred while shutdowning task", e);
 			}
 		}
 	}
-	
+
 	// Stop and start a set of scheduled tasks.
 	private void reScheduleTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
 				taskServiceWrapper.reScheduleTask(taskDef);
-			}
-			catch (SchedulerException e) {
+			} catch (SchedulerException e) {
 				throw new APIException("Errors occurred while rescheduling task", e);
 			}
 		}
 	}
-	
+
 	// Stop and start all the tasks.
 	private void reScheduleAllTasks() {
 		try {
 			taskServiceWrapper.reScheduleAllTasks();
-		}
-		catch (SchedulerException e) {
+		} catch (SchedulerException e) {
 			throw new APIException("Errors occurred while rescheduling all tasks", e);
 		}
-		
+
 	}
-	
+
 	private void deleteTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
 				taskServiceWrapper.deleteTask(taskDef);
-			}
-			catch (SchedulerException e) {
+			} catch (SchedulerException e) {
 				throw new APIException("Errors occurred while deleting task", e);
 			}
 		}
 	}
-	
+
 	private void runTasks(Collection<TaskDefinition> taskDefs) {
 		for (TaskDefinition taskDef : taskDefs) {
 			try {
 				taskServiceWrapper.runTask(taskDef);
-			}
-			catch (SchedulerException e) {
+			} catch (SchedulerException e) {
 				throw new APIException("Errors occurred while running task", e);
 			}
 		}
 	}
-	
+
 	@Override
 	public TaskAction newDelegate() {
 		return new TaskAction();
 	}
-	
+
 	@Override
 	public TaskAction save(TaskAction delegate) {
 		throw new UnsupportedOperationException("TaskAction cannot be saved");
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -176,22 +171,22 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		description.addProperty("action", "action");
 		return description;
 	}
-	
+
 	@Override
 	public TaskAction getByUniqueId(String uniqueId) {
 		throw new UnsupportedOperationException("TaskAction can not get by id");
 	}
-	
+
 	@Override
 	protected void delete(TaskAction delegate, String reason, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("TaskAction can not be deleted");
 	}
-	
+
 	@Override
 	public void purge(TaskAction delegate, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("TaskAction can not be purged");
 	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -200,7 +195,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		description.addRequiredProperty("action", "action");
 		return description;
 	}
-	
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
@@ -210,7 +205,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		model.required("action");
 		return model;
 	}
-	
+
 	/**
 	 * Converter does not handle getters starting with 'is' instead of 'get'
 	 */
@@ -218,5 +213,5 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 	public Boolean isAllModules(TaskAction action) {
 		return action.isAllTasks();
 	}
-	
+
 }
