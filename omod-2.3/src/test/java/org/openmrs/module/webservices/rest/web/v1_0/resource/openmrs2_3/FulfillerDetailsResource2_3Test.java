@@ -7,27 +7,28 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_3;
 
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_3;
 
-public class FulfillerDetailsResource2_2Test extends BaseDelegatingResourceTest<FulfillerDetailsResource2_2, FulfillerDetails2_2> {
+public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<FulfillerDetailsResource2_3, FulfillerDetails2_3> {
 
 	private String fulfillerComment = "Some example comment";
 
 	private Order.FulfillerStatus fulfillerStatus = Order.FulfillerStatus.RECEIVED;
 
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest#newObject()
+	 * @see BaseDelegatingResourceTest#newObject()
 	 */
-	@Override
-	public FulfillerDetails2_2 newObject() {
 
-		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants2_2.ORDER_UUID);
-		FulfillerDetails2_2 fillerDetailsRepresentation = new FulfillerDetails2_2();
+	@Override
+	public FulfillerDetails2_3 newObject() {
+
+		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants2_3.ORDER_UUID);
+		FulfillerDetails2_3 fillerDetailsRepresentation = new FulfillerDetails2_3();
 		fillerDetailsRepresentation.setOrder(order);
 		fillerDetailsRepresentation.setFulfillerComment(fulfillerComment);
 		fillerDetailsRepresentation.setFulfillerStatus(fulfillerStatus);
