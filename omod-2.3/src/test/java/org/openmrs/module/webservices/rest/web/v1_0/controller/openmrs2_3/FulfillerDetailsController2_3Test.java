@@ -25,9 +25,11 @@ public class FulfillerDetailsController2_3Test extends MainResourceControllerTes
 	@Test
 	public void test_shouldSetFulfillerDetailsOfOrderByPost() throws Exception {
 		Order.FulfillerStatus fulfillerStatus = Order.FulfillerStatus.RECEIVED;
+		String accessionNumber = "123-abc";
 		String fillerComment = "An example comment from a filler";
 		SimpleObject post = new SimpleObject().add("fulfillerStatus", fulfillerStatus)
-		        .add("fulfillerComment", fillerComment);
+		        .add("fulfillerComment", fillerComment)
+                .add("accessionNumber", accessionNumber);
 		MockHttpServletRequest request = newPostRequest(getURI(), post);
 
 		handle(request);
@@ -35,6 +37,7 @@ public class FulfillerDetailsController2_3Test extends MainResourceControllerTes
 		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants2_3.ORDER_UUID);
 		assertEquals(order.getFulfillerStatus(), fulfillerStatus);
 		assertEquals(order.getFulfillerComment(), fillerComment);
+		assertEquals(order.getAccessionNumber(), accessionNumber);
 	}
 
 	@Test(expected = ResourceDoesNotSupportOperationException.class)

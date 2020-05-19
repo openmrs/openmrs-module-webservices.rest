@@ -29,7 +29,7 @@ public class FulfillerDetailsResource2_3 extends DelegatingSubResource<Fulfiller
     @Override
     public FulfillerDetails2_3 save(FulfillerDetails2_3 delegate) {
         Context.getOrderService().updateOrderFulfillerStatus(delegate.getOrder(), delegate.getFulfillerStatus(),
-                delegate.getFulfillerComment());
+                delegate.getFulfillerComment(), delegate.getAccessionNumber());
         return null;
     }
 
@@ -38,6 +38,7 @@ public class FulfillerDetailsResource2_3 extends DelegatingSubResource<Fulfiller
         DelegatingResourceDescription delegatingResourceDescription = new DelegatingResourceDescription();
         delegatingResourceDescription.addProperty("fulfillerStatus");
         delegatingResourceDescription.addProperty("fulfillerComment");
+        delegatingResourceDescription.addProperty("accessionNumber");
         return delegatingResourceDescription;
     }
 
@@ -45,7 +46,8 @@ public class FulfillerDetailsResource2_3 extends DelegatingSubResource<Fulfiller
     public Model getCREATEModel(Representation rep) {
         return new ModelImpl()
                 .property("fulfillerComment", new StringProperty())
-                .property("fulfillerStatus", new EnumProperty(Order.FulfillerStatus.class));
+                .property("fulfillerStatus", new EnumProperty(Order.FulfillerStatus.class))
+                .property("accessionNumber", new StringProperty());
     }
 
     @Override

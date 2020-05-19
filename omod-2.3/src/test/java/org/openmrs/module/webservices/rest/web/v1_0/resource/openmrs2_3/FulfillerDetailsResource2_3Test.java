@@ -18,6 +18,8 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 
 	private String fulfillerComment = "Some example comment";
 
+	private String accessionNumber = "123-abc";
+
 	private Order.FulfillerStatus fulfillerStatus = Order.FulfillerStatus.RECEIVED;
 
 	/**
@@ -32,6 +34,7 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 		fillerDetailsRepresentation.setOrder(order);
 		fillerDetailsRepresentation.setFulfillerComment(fulfillerComment);
 		fillerDetailsRepresentation.setFulfillerStatus(fulfillerStatus);
+		fillerDetailsRepresentation.setAccessionNumber(accessionNumber);
 
 		return fillerDetailsRepresentation;
 	}
@@ -43,6 +46,7 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 	public void validateDefaultRepresentation() throws Exception {
 		assertPropEquals("fulfillerStatus", fulfillerStatus);
 		assertPropEquals("fulfillerComment", fulfillerComment);
+		assertPropEquals("accessionNumber", accessionNumber);
 	}
 
 	/**
@@ -51,6 +55,7 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 	public void validateFullRepresentation() throws Exception {
 		assertPropEquals("fulfillerStatus", fulfillerStatus);
 		assertPropEquals("fulfillerComment", fulfillerComment);
+        assertPropEquals("accessionNumber", accessionNumber);
 	}
 
 	/**
@@ -59,6 +64,7 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 	public void validateRefRepresentation() throws Exception {
 		assertPropEquals("fulfillerStatus", fulfillerStatus);
 		assertPropEquals("fulfillerComment", fulfillerComment);
+        assertPropEquals("accessionNumber", accessionNumber);
 	}
 
 	@Override
