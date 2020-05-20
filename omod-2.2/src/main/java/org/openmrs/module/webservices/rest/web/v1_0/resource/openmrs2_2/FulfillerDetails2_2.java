@@ -12,40 +12,43 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
 import org.openmrs.Order;
 
-public class FulfillerDetails {
-	
+/**
+ * Backing object for FulfillerDetailsResource2_2
+ */
+public class FulfillerDetails2_2 {
+
 	private Order.FulfillerStatus fulfillerStatus;
-	
+
 	private String fulfillerComment;
-	
+
 	private Order order;
-	
-	public FulfillerDetails() {
-		
+
+	public FulfillerDetails2_2() {
+
 	}
-	
+
 	public Order.FulfillerStatus getFulfillerStatus() {
 		return fulfillerStatus;
 	}
-	
+
 	public String getFulfillerComment() {
 		return fulfillerComment;
 	}
-	
+
 	public Order getOrder() {
 		return order;
 	}
-	
+
 	public void setFulfillerStatus(Order.FulfillerStatus fulfillerStatus) {
 		this.fulfillerStatus = fulfillerStatus;
 	}
-	
+
 	public void setFulfillerComment(String fulfillerComment) {
 		this.fulfillerComment = fulfillerComment;
 	}
-	
+
 	public void setOrder(Order order) {
 		this.order = order;
 	}
-	
+
 }
