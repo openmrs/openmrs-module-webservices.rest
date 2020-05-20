@@ -7,6 +7,7 @@ import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -14,10 +15,14 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.FulfillerDetails2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
-@SubResource(parent = OrderResource2_2.class, path = "fulfillerdetails", supportedClass = FulfillerDetails2_2.class, supportedOpenmrsVersions = {
+/**
+ * {@link Resource} for Order, supporting standard CRUD operations on fulfiller_comment and
+ * fulfiller_status and accession number (supplants FulfillerDetails2_2 which only supported
+ * updating fulfiller_comment and fulfiller_status)
+ */
+@SubResource(parent = OrderResource2_2.class, path = "fulfillerdetails", supportedClass = FulfillerDetails2_3.class, supportedOpenmrsVersions = {
         "2.3.*", "2.4.*" })
 public class FulfillerDetailsResource2_3 extends DelegatingSubResource<FulfillerDetails2_3, Order, OrderResource2_2> {
 
