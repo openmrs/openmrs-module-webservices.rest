@@ -39,8 +39,8 @@ public class ValidateUtil {
 	 * object class
 	 * 
 	 * @param obj the object to validate
-	 * @throws ValidationException thrown if a binding exception occurs
-	 * <strong>Should</strong> throw ValidationException if errors occur during validation
+	 * @throws ValidationException thrown if a binding exception occurs <strong>Should</strong>
+	 *             throw ValidationException if errors occur during validation
 	 */
 	public static void validate(Object obj) throws ValidationException {
 		
@@ -84,5 +84,4 @@ public class ValidateUtil {
 		exceptionMessage += StringUtils.join(uniqueErrorMessages, ", ");
 		return exceptionMessage;
 	}
-	
 }

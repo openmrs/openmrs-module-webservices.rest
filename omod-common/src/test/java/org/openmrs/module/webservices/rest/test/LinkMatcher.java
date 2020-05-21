@@ -9,20 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.test;
 
-import java.util.List;
-import java.util.Map;
-
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 
+import java.util.List;
+import java.util.Map;
+
 public class LinkMatcher {
 	
 	public static Matcher hasLink(final String rel, final String uriEndsWith) {
 		return new BaseMatcher<Object>() {
-			
+
 			@Override
 			public boolean matches(Object o) {
 				List links = ((SimpleObject) o).get("links");
@@ -41,7 +41,7 @@ public class LinkMatcher {
 				}
 				return false;
 			}
-			
+
 			@Override
 			public void describeTo(Description description) {
 				description.appendText("representation with a link with rel=").appendValue(rel)
@@ -49,5 +49,4 @@ public class LinkMatcher {
 			}
 		};
 	}
-	
 }

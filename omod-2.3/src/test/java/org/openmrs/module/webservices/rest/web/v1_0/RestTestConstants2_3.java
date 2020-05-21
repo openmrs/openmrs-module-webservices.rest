@@ -10,11 +10,11 @@
 package org.openmrs.module.webservices.rest.web.v1_0;
 
 public class RestTestConstants2_3 {
-
+	
 	public final static String OUTPATIENT_CARE_SETTING_UUID = "6f0c9a92-6f24-11e3-af88-005056821db0";
-
+	
 	public final static String INPATIENT_CARE_SETTING_UUID = "c365e560-c3ec-11e3-9c1a-0800200c9a66";
-
-    public final static String ORDER_UUID = "2c96f25c-4949-4f72-9931-d808fbc226df";
-
+	
+	public final static String ORDER_UUID = "2c96f25c-4949-4f72-9931-d808fbc226df";
+	
 }
