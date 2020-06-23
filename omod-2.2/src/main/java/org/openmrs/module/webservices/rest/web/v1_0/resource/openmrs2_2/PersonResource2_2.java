@@ -50,7 +50,7 @@ public class PersonResource2_2 extends PersonResource1_11 {
 		return description;
 	}
 
-    	/**
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
