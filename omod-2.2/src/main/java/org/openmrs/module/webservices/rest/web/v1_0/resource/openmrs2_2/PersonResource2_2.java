@@ -49,4 +49,14 @@ public class PersonResource2_2 extends PersonResource1_11 {
 		description.addProperty("causeOfDeathNonCoded");
 		return description;
 	}
+
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.addProperty("causeOfDeathNonCoded");
+		return description;
+	}
 }
