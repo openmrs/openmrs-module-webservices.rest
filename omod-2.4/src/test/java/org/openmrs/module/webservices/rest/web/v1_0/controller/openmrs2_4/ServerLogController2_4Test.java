@@ -9,11 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
+import static org.junit.Assert.assertThrows;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -25,14 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class ServerLogController2_4Test extends MainResourceControllerTest {
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 
 	@Autowired
 	private RestService restService;
@@ -51,16 +48,16 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 		serverLogResource2_4.setServerLogActionWrapper(mockServerLogActionWrapper);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void save_shouldFailOnSave() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
-		SimpleObject resultLogs = deserialize(handle(req));
+		assertThrows(Exception.class, () -> deserialize(handle(req)));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void delete_shouldFailOnDelete() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI());
-		SimpleObject resultLogs = deserialize(handle(req));
+		assertThrows(Exception.class, () -> deserialize(handle(req)));
 	}
 
 	@Test
@@ -80,28 +77,28 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 		Assert.assertEquals(mockServerLogActionWrapper.getServerLogs().size(), getAllCount());
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	@Override
 	public void shouldGetFullByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "full");
-		handle(req);
+		assertThrows(Exception.class, () -> handle(req));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	@Override
 	public void shouldGetDefaultByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "full");
-		handle(req);
+		assertThrows(Exception.class, () -> handle(req));
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	@Override
 	public void shouldGetRefByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "ref");
-		handle(req);
+		assertThrows(Exception.class, () -> handle(req));
 	}
 
 	@Override
