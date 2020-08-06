@@ -9,20 +9,21 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 
 import org.apache.struts.mock.MockHttpServletResponse;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -56,20 +57,20 @@ public class ServerLogResource2_4Test extends BaseModuleWebContextSensitiveTest 
 		SimpleObject result = mainResourceController.get(getURI(), request, response);
 
 		ArrayList<String[]> serverLog = result.get("serverLog");
-		Assert.assertEquals(serverLog.size(), 0);
+		assertEquals(serverLog.size(), 0);
 
 		String mockLogLine1 = "INFO - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 		// Add some mock log lines to mockMemoryAppenderBuffer
 		mockServerLogActionWrapper.mockMemoryAppenderBuffer.add(mockLogLine1);
 		result = mainResourceController.get(getURI(), request, response);
 		serverLog = result.get("serverLog");
-		Assert.assertNotEquals(serverLog.size(), 0);
+		assertNotEquals(serverLog.size(), 0);
 
 		String[] logLine1 = serverLog.get(0);
-		Assert.assertNotEquals(logLine1[0], null);
-		Assert.assertNotEquals(logLine1[1], null);
-		Assert.assertNotEquals(logLine1[2], null);
-		Assert.assertNotEquals(logLine1[3], null);
+		assertNotEquals(logLine1[0], null);
+		assertNotEquals(logLine1[1], null);
+		assertNotEquals(logLine1[2], null);
+		assertNotEquals(logLine1[3], null);
 	}
 
 	@Test

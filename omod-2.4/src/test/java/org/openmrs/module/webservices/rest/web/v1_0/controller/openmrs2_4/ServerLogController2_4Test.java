@@ -9,21 +9,22 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.ServerLogResource2_4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -41,7 +42,7 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 	private final MockServerLogActionWrapper<ServerLogActionWrapper2_4> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper2_4>(
 			new ServerLogActionWrapper2_4());
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		ServerLogResource2_4 serverLogResource2_4 = (ServerLogResource2_4) restService
 				.getResourceBySupportedClass(ServerLogActionWrapper.class);
@@ -65,16 +66,16 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 	public void shouldGetAll() throws Exception {
 		//sanity check
 		List<String[]> mockServerLogs = mockServerLogActionWrapper.getServerLogs();
-		Assert.assertEquals(mockServerLogs.size(), 0);
+		assertEquals(mockServerLogs.size(), 0);
 
 		mockServerLogActionWrapper.mockMemoryAppenderBuffer.addAll(Arrays.asList(log1, log2));
 
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		ArrayList<String[]> results = response.get("serverLog");
-		Assert.assertNotNull(results);
-		Assert.assertEquals(results.size(), getAllCount());
+		assertNotNull(results);
+		assertEquals(results.size(), getAllCount());
 
-		Assert.assertEquals(mockServerLogActionWrapper.getServerLogs().size(), getAllCount());
+		assertEquals(mockServerLogActionWrapper.getServerLogs().size(), getAllCount());
 	}
 
 	@Test
