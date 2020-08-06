@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
+import static org.junit.Assert.assertThrows;
+
+import java.util.ArrayList;
+
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,8 +25,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.ArrayList;
 
 /**
  * Integration tests for the ServerLogResource2_4 class
@@ -70,14 +72,13 @@ public class ServerLogResource2_4Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertNotEquals(logLine1[3], null);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldThrowExceptionWhenRequestGetDefaultByUuid() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("GET");
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		SimpleObject result = mainResourceController.get(getURI() + "/" + getUuid(), request, response);
+		assertThrows(Exception.class, () -> mainResourceController.get(getURI() + "/" + getUuid(), request, response));
 
-		ArrayList<String[]> serverLog = result.get("serverLog");
 	}
 
 	public String getUuid() {
