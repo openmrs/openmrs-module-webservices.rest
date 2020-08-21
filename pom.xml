@@ -53,6 +53,7 @@
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
 		<apacheTomcatVersion>6.0.53</apacheTomcatVersion>
+		<javaxVersion>4.0.1</javaxVersion>
 	</properties>
 
 	<dependencyManagement>
