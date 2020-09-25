@@ -163,7 +163,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			moduleFile = ModuleUtil.insertModuleFile(inputStream, fileName);
 			tempModule = moduleFactoryWrapper.loadModule(moduleFile);
 			moduleFactoryWrapper.startModule(tempModule, servletContext);
-			if (existingModule != null && dependentModulesStopped.size() > 0
+			if (existingModule != null && !dependentModulesStopped.isEmpty()
 			        && moduleFactoryWrapper.isModuleStarted(tempModule)) {
 				startModules(dependentModulesStopped, servletContext);
 			}

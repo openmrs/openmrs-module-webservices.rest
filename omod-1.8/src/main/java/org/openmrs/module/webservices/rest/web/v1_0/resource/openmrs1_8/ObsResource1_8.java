@@ -354,7 +354,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@PropertyGetter("groupMembers")
 	public static Object getGroupMembers(Obs obs) throws ConversionException {
-		if (obs.getGroupMembers() != null && obs.getGroupMembers().size() > 0) {
+		if (obs.getGroupMembers() != null && !obs.getGroupMembers().isEmpty()) {
 			return obs.getGroupMembers();
 		}
 		return null;

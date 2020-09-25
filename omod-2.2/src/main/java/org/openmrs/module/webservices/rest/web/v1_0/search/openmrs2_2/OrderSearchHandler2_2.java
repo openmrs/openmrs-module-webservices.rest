@@ -138,7 +138,7 @@ public class OrderSearchHandler2_2 implements SearchHandler {
 					}
 				}
 			}
-			if (concepts.size() == 0) {
+			if (concepts.isEmpty()) {
 				throw new ObjectNotFoundException();
 			}
 		}
