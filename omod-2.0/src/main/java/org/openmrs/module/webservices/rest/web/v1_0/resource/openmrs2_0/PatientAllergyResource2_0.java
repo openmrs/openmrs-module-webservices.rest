@@ -302,7 +302,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		}
 		
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		if (allergies.size() != 0) {
+		if (!allergies.isEmpty()) {
 			// not allowed unless patient has no allergies
 			throw new ResourceDoesNotSupportOperationException();
 		}

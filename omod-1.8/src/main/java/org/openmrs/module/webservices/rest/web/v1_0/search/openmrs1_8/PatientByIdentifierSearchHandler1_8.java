@@ -54,7 +54,7 @@ public class PatientByIdentifierSearchHandler1_8 implements SearchHandler {
 			if ("start".equals(searchType)) {
 				List<Patient> patients = restHelperService.findPatientsByIdentifierStartingWith(identifier,
 				    context.getIncludeAll());
-				if (patients != null && patients.size() > 0) {
+				if (patients != null && !patients.isEmpty()) {
 					return new NeedsPaging<Patient>(patients, context);
 				}
 			} else {
