@@ -123,7 +123,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	@PropertyGetter("encounters")
 	public Collection<Encounter> getNonVoidedEncounters(Visit visit) {
 		Set<Encounter> allEncounters = visit.getEncounters();
-		if (allEncounters != null && allEncounters.size() > 0) {
+		if (allEncounters != null && !allEncounters.isEmpty()) {
 			Iterator<Encounter> encounterIterator = allEncounters.iterator();
 			while (encounterIterator.hasNext()) {
 				Encounter next = encounterIterator.next();
