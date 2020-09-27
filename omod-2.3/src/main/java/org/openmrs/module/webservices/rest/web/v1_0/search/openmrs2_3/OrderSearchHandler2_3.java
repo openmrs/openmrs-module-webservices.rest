@@ -216,7 +216,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 					}
 				}
 			}
-			if (orderTypes.size() == 0) {
+			if (orderTypes.isEmpty()) {
 				throw new ObjectNotFoundException();
 			}
 		}

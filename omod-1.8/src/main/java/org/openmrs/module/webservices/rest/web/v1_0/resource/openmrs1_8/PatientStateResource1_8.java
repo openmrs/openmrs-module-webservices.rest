@@ -90,7 +90,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	private PatientState getLastPatientState(ProgramWorkflow currentWorkflow, PatientProgram patientProgram) {
 		List<PatientState> patientStates = new ArrayList<PatientState>(patientProgram.statesInWorkflow(currentWorkflow,
 		    false));
-		if (patientStates.size() > 0) {
+		if (!patientStates.isEmpty()) {
 			sortPatientStatesBasedOnStartDate(patientStates);
 			return patientStates.get(patientStates.size() - 1);
 		} else {
