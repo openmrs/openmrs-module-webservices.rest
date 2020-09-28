@@ -128,6 +128,7 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		return description;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
