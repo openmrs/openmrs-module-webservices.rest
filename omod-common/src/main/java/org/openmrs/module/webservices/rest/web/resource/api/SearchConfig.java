@@ -185,15 +185,8 @@ public class SearchConfig {
 		if (!(obj instanceof SearchConfig))
 			return false;
 		SearchConfig other = (SearchConfig) obj;
-		if (!id.equals(other.id)) {
-			return false;
-		}
-		if (!supportedOpenmrsVersions.equals(other.supportedOpenmrsVersions)) {
-			return false;
-		}
-		if (!supportedResource.equals(other.supportedResource)) {
-			return false;
-		}
-		return true;
+		return id.equals(other.id)
+				&& supportedOpenmrsVersions.equals(other.supportedOpenmrsVersions)
+				&& supportedResource.equals(other.supportedResource);
 	}
 }
