@@ -196,10 +196,7 @@ public class RestServiceImpl implements RestService {
 			        + ") must not have the same order");
 		}
 		
-		if (existingResourceDefinition.order < resourceMetadata.getOrder()) {
-			return false;
-		}
-		return true;
+		return existingResourceDefinition.order >= resourceMetadata.getOrder();
 	}
 	
 	/**
