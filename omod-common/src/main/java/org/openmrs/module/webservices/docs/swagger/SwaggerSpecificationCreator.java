@@ -1062,7 +1062,7 @@ public class SwaggerSpecificationCreator {
 		        .description("The representation to return (ref, default, full or custom)")
 		        .type("string")
 		        ._enum(Arrays.asList("ref", "default", "full", "custom"));
-				
+		
 		if (operationEnum == OperationEnum.get) {
 			
 			operation.setSummary("Fetch all non-retired");
