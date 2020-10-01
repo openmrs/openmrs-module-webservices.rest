@@ -136,7 +136,7 @@ public class OrderableResource1_10 extends BaseDelegatingResource<ConceptSearchR
 		
 		List<ConceptClass> conceptClasses = new ArrayList<ConceptClass>();
 		
-		if (orderTypes == null | orderTypes.isEmpty())
+		if (orderTypes == null || orderTypes.isEmpty())
 			return conceptClasses;
 		
 		for (int i = 0; i < orderTypes.size(); i++) {
