@@ -466,8 +466,9 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 				}
 				obs.setValueAsString(value.toString());
 			}
-		} else
+		} else {
 			throw new APIException("The value for an observation cannot be null");
+		}
 	}
 	
 	/**

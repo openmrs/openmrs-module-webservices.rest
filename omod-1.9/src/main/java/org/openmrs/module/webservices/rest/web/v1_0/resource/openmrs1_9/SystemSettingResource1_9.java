@@ -339,8 +339,9 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 				catch (Exception ex) {
 					throw new APIException("Exception in converting value to custom data type", ex);
 				}
-			} else
+			} else {
 				throw new APIException("Custom data type is null as per provided parameters");
+			}
 		} else {
 			property.setPropertyValue(value);
 		}
