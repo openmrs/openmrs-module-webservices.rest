@@ -15,6 +15,10 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
  * {@link RestConstants} for 1.9 resources.
  */
 public class RestConstants1_9 {
+
+	private RestConstants1_9(){
+		throw new IllegalStateException("Utility class");
+	}
 	
 	/**
 	 * A default value for the resource version parameter.
