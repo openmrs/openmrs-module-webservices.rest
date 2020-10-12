@@ -14,9 +14,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
  */
 public class RestConstants1_11 {
 
-	private RestConstants1_11(){
-		throw new IllegalStateException("Utility class");
-	}
+	private RestConstants1_11(){}
 	
 	/**
 	 * A default value for the resource version parameter.
