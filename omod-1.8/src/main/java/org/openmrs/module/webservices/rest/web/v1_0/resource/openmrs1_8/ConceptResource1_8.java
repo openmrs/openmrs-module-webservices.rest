@@ -651,8 +651,9 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 				answerUuids.remove(conceptUuid); // remove from passed in list
 			} else if (answerUuids.contains(drugUuid)) {
 				answerUuids.remove(drugUuid); // remove from passed in list
-			} else
+			} else {
 				instance.removeAnswer(answer); // remove from concept question object
+			}
 		}
 		
 		List<Object> answerObjects = new ArrayList<Object>(answerUuids.size());
