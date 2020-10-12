@@ -23,9 +23,7 @@ import org.openmrs.api.context.Context;
 
 public class OrderUtil {
 
-	private OrderUtil(){
-		throw new IllegalStateException("Utility class");
-	}
+	private OrderUtil(){}
 	
 	private static final String INACTIVE = "inactive";
 	
