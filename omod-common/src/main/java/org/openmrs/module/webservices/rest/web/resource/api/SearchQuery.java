@@ -225,15 +225,19 @@ public class SearchQuery {
 		}
 		SearchQuery other = (SearchQuery) obj;
 		if (optionalParameters == null) {
-			if (other.optionalParameters != null)
+			if (other.optionalParameters != null) {
 				return false;
-		} else if (!optionalParameters.equals(other.optionalParameters))
+			}
+		} else if (!optionalParameters.equals(other.optionalParameters)) {
 			return false;
+		}
 		if (requiredParameters == null) {
-			if (other.requiredParameters != null)
+			if (other.requiredParameters != null) {
 				return false;
-		} else if (!requiredParameters.equals(other.requiredParameters))
+			}
+		} else if (!requiredParameters.equals(other.requiredParameters)) {
 			return false;
+		}
 		return true;
 	}
 }
