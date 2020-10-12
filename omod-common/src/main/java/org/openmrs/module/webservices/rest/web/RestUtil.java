@@ -756,10 +756,11 @@ public class RestUtil implements GlobalPropertyListener {
 			} else {
 				
 				//Directory does not exist, look in jar file.
+				JarFile jarFile = null;
 				try {
 					String fullPath = resource.getFile();
 					String jarPath = fullPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-					JarFile jarFile = new JarFile(jarPath);
+					jarFile = new JarFile(jarPath);
 					
 					Enumeration<JarEntry> entries = jarFile.entries();
 					while (entries.hasMoreElements()) {
@@ -786,6 +787,11 @@ public class RestUtil implements GlobalPropertyListener {
 				}
 				catch (IOException e) {
 					throw new RuntimeException(pkgname + " (" + directory + ") does not appear to be a valid package", e);
+				}
+				finally {
+					if (jarFile != null) {
+						jarFile.close();
+					}
 				}
 			}
 		}
