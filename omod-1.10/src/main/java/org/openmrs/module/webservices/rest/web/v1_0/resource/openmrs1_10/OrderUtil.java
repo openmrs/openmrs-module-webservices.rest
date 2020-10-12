@@ -22,6 +22,8 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 
 public class OrderUtil {
+
+	private OrderUtil(){}
 	
 	private static final String INACTIVE = "inactive";
 	
