@@ -32,11 +32,7 @@ public class RelationshipResource1_9 extends RelationshipResource1_8 {
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-		if (rep instanceof DefaultRepresentation) {
-			description.addProperty("startDate");
-			description.addProperty("endDate");
-			return description;
-		} else if (rep instanceof FullRepresentation) {
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			description.addProperty("startDate");
 			description.addProperty("endDate");
 			return description;

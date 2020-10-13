@@ -727,9 +727,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 			RepHandler ann = method.getAnnotation(RepHandler.class);
 			if (ann != null) {
 				if (ann.value().isAssignableFrom(rep.getClass())) {
-					if (!(rep instanceof NamedRepresentation)) {
-						return method;
-					} else if (ann.name().equals(rep.getRepresentation())) {
+					if (!(rep instanceof NamedRepresentation) || ann.name().equals(rep.getRepresentation())) {
 						return method;
 					}
 				}

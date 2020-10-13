@@ -51,11 +51,7 @@ public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-			description.addProperty("uniqueId");
-			return description;
-		} else if (rep instanceof FullRepresentation) {
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 			description.addProperty("uniqueId");
 			return description;
