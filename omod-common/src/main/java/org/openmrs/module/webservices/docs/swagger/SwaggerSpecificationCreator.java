@@ -382,7 +382,7 @@ public class SwaggerSpecificationCreator {
 						return false;
 					} else {
 						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
-						    RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,"", new RequestContext());
+						    RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, "", new RequestContext());
 					}
 					break;
 				case purge:
