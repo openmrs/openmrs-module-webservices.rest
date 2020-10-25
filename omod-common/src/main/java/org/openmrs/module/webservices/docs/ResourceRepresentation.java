@@ -46,12 +46,7 @@ public class ResourceRepresentation {
 	
 	@Override
 	public String toString() {
-		/*String text = "h3. " + name;
-		
-		for (String property : properties) {
-			text += System.getProperty("line.separator") + "* " + property;
-		}*/
-		
+				
 		String text = null;
 		
 		for (String property : properties) {
