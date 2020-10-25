@@ -266,7 +266,6 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 		return delegate.getPatient().getUuid();
 	}
 	
-	
 	/**
 	 * @param member the patient
 	 * @return string that contains cohort member's identifier and full name
