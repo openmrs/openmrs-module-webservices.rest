@@ -726,7 +726,6 @@ public class RestUtil implements GlobalPropertyListener {
 				        + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...", e);
 			}
 			catch (IllegalArgumentException ex) {
-				
 			}
 			
 			//If folder exists, look for all resource class files in it.
