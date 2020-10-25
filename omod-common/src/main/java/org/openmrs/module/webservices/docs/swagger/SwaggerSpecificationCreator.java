@@ -794,7 +794,6 @@ public class SwaggerSpecificationCreator {
 			/////////////////////////
 			Path uuidPathDelete = buildDeletePath(uuidPathPostUpdate, resourceHandler, resourceName,
 			    resourceParentName);
-
 			
 			/////////////////////////
 			// DELETE (purge)      //
