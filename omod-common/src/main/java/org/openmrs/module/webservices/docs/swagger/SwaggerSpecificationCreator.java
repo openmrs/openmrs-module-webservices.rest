@@ -1038,7 +1038,6 @@ public class SwaggerSpecificationCreator {
 		
 		// create definition
 		if (operationName == "post" || operationName == "get") {
-	
 			createDefinition(operationEnum, resourceName, resourceParentName, resourceHandler);
 		}
 		
