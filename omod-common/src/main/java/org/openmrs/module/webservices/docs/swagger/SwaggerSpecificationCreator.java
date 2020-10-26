@@ -794,7 +794,6 @@ public class SwaggerSpecificationCreator {
 			/////////////////////////
 			Path uuidPathDelete = buildDeletePath(uuidPathPostUpdate, resourceHandler, resourceName,
 			    resourceParentName);
-			//addIndividualPath(pathMap, uuidPathDelete, resourceParentName, resourceName, uuidPathDelete, "/{uuid}");
 			
 			/////////////////////////
 			// DELETE (purge)      //
@@ -1039,7 +1038,6 @@ public class SwaggerSpecificationCreator {
 		
 		// create definition
 		if (operationName == "post" || operationName == "get") {
-			//			createDefinition(operationEnum, resourceName, resourceParentName, representation);
 			createDefinition(operationEnum, resourceName, resourceParentName, resourceHandler);
 		}
 		
