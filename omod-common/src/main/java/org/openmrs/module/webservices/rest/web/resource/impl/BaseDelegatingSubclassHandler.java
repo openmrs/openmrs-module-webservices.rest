@@ -134,9 +134,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 		if (delegate instanceof OpenmrsData) {
 			if (((OpenmrsData) delegate).isVoided())
 				rep.addProperty("voided");
-		} else if (delegate instanceof OpenmrsMetadata) {
-			if (((OpenmrsMetadata) delegate).isRetired())
-				rep.addProperty("retired");
+		} else if (delegate instanceof OpenmrsMetadata && ((OpenmrsMetadata) delegate).isRetired()) {
+			rep.addProperty("retired");
 		}
 		rep.addSelfLink();
 		return getResource().convertDelegateToRepresentation(delegate, rep);

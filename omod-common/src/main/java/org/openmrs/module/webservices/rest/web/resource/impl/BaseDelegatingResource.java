@@ -725,11 +725,9 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	private Method findAnnotatedMethodForRepresentation(Class<?> clazz, Representation rep) {
 		for (Method method : clazz.getMethods()) {
 			RepHandler ann = method.getAnnotation(RepHandler.class);
-			if (ann != null) {
-				if (ann.value().isAssignableFrom(rep.getClass())) {
-					if (!(rep instanceof NamedRepresentation) || ann.name().equals(rep.getRepresentation())) {
-						return method;
-					}
+			if (ann != null && ann.value().isAssignableFrom(rep.getClass())) {
+				if (!(rep instanceof NamedRepresentation) || ann.name().equals(rep.getRepresentation())) {
+					return method;
 				}
 			}
 		}

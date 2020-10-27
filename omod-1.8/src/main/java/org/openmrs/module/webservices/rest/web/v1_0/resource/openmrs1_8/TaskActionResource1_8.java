@@ -61,11 +61,8 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		}
 		
 		TaskAction.Action actionType = action.getAction();
-		if (actionType != TaskAction.Action.RESCHEDULEALLTASKS) {
-			if (taskDefinitions == null || taskDefinitions.isEmpty()) {
-				throw new IllegalRequestException("Cannot execute action " + actionType
-				        + " on empty set of task definitions.");
-			}
+		if (actionType != TaskAction.Action.RESCHEDULEALLTASKS && (taskDefinitions == null || taskDefinitions.isEmpty())) {
+			throw new IllegalRequestException("Cannot execute action " + actionType + " on empty set of task definitions.");
 		}
 		
 		switch (action.getAction()) {
