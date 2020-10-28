@@ -449,10 +449,9 @@ public class RestServiceImpl implements RestService {
 			Entry<Class<?>, Resource> bestResourceEntry = null;
 			
 			for (Entry<Class<?>, Resource> resourceEntry : resourcesBySupportedClasses.entrySet()) {
-				if (resourceEntry.getKey().isAssignableFrom(resourceClass)) {
-					if (bestResourceEntry == null || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey())) {
-						bestResourceEntry = resourceEntry;
-					}
+				if (resourceEntry.getKey().isAssignableFrom(resourceClass) && (bestResourceEntry == null
+				        || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey()))) {
+					bestResourceEntry = resourceEntry;
 				}
 			}
 			
