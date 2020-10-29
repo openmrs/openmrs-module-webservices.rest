@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import io.swagger.models.Model;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
