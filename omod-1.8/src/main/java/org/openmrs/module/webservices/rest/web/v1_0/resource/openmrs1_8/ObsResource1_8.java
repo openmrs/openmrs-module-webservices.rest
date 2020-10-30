@@ -464,6 +464,13 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 						}
 					}
 				}
+				else if (obs.getConcept().getDatatype().containsDate()) {
+					Date dateWithTimeZone = (Date) ConversionUtil.convert(value.toString(), Date.class);
+					if (dateWithTimeZone != null) {
+						obs.setValueDatetime(dateWithTimeZone);
+						return;
+					}
+				}
 				obs.setValueAsString(value.toString());
 			}
 		} else {
