@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateTimeProperty;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -23,7 +22,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.PersonResource1_10;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations

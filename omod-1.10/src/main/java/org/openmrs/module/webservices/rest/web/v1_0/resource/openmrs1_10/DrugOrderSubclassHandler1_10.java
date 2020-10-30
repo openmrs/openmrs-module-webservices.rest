@@ -10,8 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import java.util.List;
-import java.util.Collections;
-import java.util.Comparator;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;

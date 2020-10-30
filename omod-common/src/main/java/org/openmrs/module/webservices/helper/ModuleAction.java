@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.module.Module;
 
-import java.util.Collection;
 import java.util.List;
 
 public class ModuleAction {
