@@ -12,10 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
@@ -30,6 +26,11 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Subclass of {@link DelegatingSubResource} with helper methods specific to {@link Attribute}
@@ -124,8 +125,9 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 			model
 			        .property("display", new StringProperty())
 			        .property("uuid", new StringProperty())
-			        .property("attributeType", new StringProperty()) //FIXME type
-			        .property("value", new StringProperty()) //FIXME type
+			        .property("attributeType", new StringProperty().example("uuid")) 
+			        
+			        .property("value", new StringProperty()) 
 			        .property("voided", new BooleanProperty());
 		}
 		return model;

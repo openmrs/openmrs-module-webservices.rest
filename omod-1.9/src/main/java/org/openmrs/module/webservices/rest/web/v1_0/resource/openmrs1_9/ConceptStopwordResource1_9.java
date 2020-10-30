@@ -9,25 +9,29 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.ConceptStopWord;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.*;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.ConceptStopWord;
 
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link ConceptStopWord}, supporting standard CRUD operations
@@ -93,7 +97,7 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
 			        .property("value", new StringProperty())
-			        .property("locale", new StringProperty().example("en")); //FIXME type
+			        .property("locale", new StringProperty().example("en"));
 		}
 		return modelImpl;
 	}

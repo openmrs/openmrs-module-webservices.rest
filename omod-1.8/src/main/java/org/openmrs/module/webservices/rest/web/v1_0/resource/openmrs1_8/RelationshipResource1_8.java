@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.context.Context;
@@ -30,6 +24,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Provider, supporting
@@ -206,6 +207,9 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
-		        .property("voided", new BooleanProperty()); //FIXME missing properties
+		        
+		        .property("voided", new BooleanProperty()).property("startDate", new DateProperty())
+		        .property("endDate", new DateProperty())
+		        .property("relationshipType", new RefProperty("#/definitions/RelationshiptypeCreate"));
 	}
 }

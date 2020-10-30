@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
@@ -25,6 +22,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Privilege, supporting standard CRUD operations
@@ -95,7 +96,7 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep); //FIXME
+		return super.getGETModel(rep);
 	}
 	
 	@Override

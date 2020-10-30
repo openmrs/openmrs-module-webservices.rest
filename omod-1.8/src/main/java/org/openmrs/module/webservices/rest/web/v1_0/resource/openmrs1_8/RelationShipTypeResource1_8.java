@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -28,8 +27,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.StringProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/relationshiptype", supportedClass = RelationshipType.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
@@ -158,7 +159,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return getCREATEModel(rep);
 	}
 	
 	/**

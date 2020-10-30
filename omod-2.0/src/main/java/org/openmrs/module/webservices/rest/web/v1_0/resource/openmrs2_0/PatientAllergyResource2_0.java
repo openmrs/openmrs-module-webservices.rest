@@ -12,14 +12,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-import org.openmrs.Allergy;
 import org.openmrs.Allergies;
+import org.openmrs.Allergy;
 import org.openmrs.AllergyReaction;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -38,6 +32,13 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 @SubResource(parent = PatientResource1_9.class, path = "allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {
         "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
@@ -102,7 +103,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			model
 			        .property("display", new StringProperty())
 			        .property("uuid", new StringProperty())
-			        .property("allergen", new ObjectProperty()) //FIXME type
+			        .property("allergen", new RefProperty("#/definitions/AllergenGetRef"))
 			        .property("severity", new RefProperty("#/definitions/ConceptGetRef"))
 			        .property("comment", new StringProperty())
 			        .property("reactions", new ArrayProperty(new RefProperty("#/definitions/ConceptGetRef")))
@@ -120,7 +121,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
-		        .property("allergen", new ObjectProperty()) //FIXME type
+		        .property("allergen", new ObjectProperty())
 		        .property("severity", new ObjectProperty()
 		                .property("uuid", new StringProperty()))
 		        .property("comment", new StringProperty())

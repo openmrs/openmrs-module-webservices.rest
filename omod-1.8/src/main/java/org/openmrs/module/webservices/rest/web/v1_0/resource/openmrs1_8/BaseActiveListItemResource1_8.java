@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.activelist.ActiveListItem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -25,6 +19,13 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Subclass of {@link DataDelegatingCrudResource} with helper methods specific to
@@ -90,6 +91,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
 		        .property("uuid", new StringProperty())
@@ -101,13 +103,13 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		if (rep instanceof DefaultRepresentation) {
 			model
 			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("activeListType", new StringProperty()) //FIXME type
+			        .property("activeListType", new RefProperty("#/definitionsActiveListType/Ref"))
 			        .property("startObs", new RefProperty("#/definitions/ObsGet"))
 			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			model
 			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("activeListType", new StringProperty()) //FIXME type
+			        .property("activeListType", new RefProperty("#/definitionsActiveListType/Ref"))
 			        .property("startObs", new RefProperty("#/definitions/ObsGetRef"))
 			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
 		}

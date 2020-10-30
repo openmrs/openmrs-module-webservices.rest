@@ -9,13 +9,19 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -53,18 +59,13 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.LocaleUtility;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
@@ -216,6 +217,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
 		        .property("uuid", new StringProperty())
@@ -228,11 +230,11 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			        .property("set", new BooleanProperty())
 			        .property("version", new StringProperty())
 			        .property("retired", new BooleanProperty())
-			        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameGetRef"))) //FIXME
-			        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionGetRef"))) //FIXME
-			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingGetRef"))) //FIXME
-			        .property("answers", new ArrayProperty(new ObjectProperty())) //FIXME
-			        .property("setMembers", new ArrayProperty(new ObjectProperty())); //FIXME
+			        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameGetRef")))
+			        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionGetRef")))
+			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingGetRef")))
+			        .property("answers", new ArrayProperty(new RefProperty("#/definitions/ConceptAnswersGetRef")))
+			        .property("setMembers", new ArrayProperty(new ObjectProperty()));
 		}
 		return modelImpl;
 	}

@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
 import org.openmrs.FieldType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -25,6 +22,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+
 /**
  * {@link Resource} for {@link FieldType}, supporting standard CRUD operations
  */
@@ -32,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
 public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldType> {
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -43,12 +45,15 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep); //FIXME missing props
+		return ((ModelImpl) super.getCREATEModel(rep))
+		        .property("isSet", new BooleanProperty()._default(false));
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+		        
+		        .property("isSet", new BooleanProperty()._default(false));
 	}
 	
 	/**

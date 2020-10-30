@@ -9,11 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
@@ -34,12 +37,11 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.web.WebUtil;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
@@ -117,8 +119,8 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			        .property("display", new StringProperty())
 			        .property("name", new StringProperty())
 			        .property("description", new StringProperty())
-			        .property("started", new BooleanProperty()) //FIXME check type
-			        .property("startupErrorMessage", new StringProperty()); //FIXME add-link: action
+			        .property("started", new BooleanProperty()._default(false))
+			        .property("startupErrorMessage", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
 			model
@@ -126,7 +128,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			        .property("author", new StringProperty())
 			        .property("version", new StringProperty())
 			        .property("requireOpenmrsVersion", new StringProperty())
-			        .property("awareOfModules", new ArrayProperty(new StringProperty())) //FIXME check type
+			        .property("awareOfModules", new ArrayProperty(new StringProperty()))
 			        .property("requiredModules", new ArrayProperty(new StringProperty()));
 		} else if (rep instanceof RefRepresentation) {
 			model

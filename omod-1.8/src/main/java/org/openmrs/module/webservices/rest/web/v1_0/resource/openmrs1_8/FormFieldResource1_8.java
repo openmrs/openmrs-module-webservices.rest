@@ -12,13 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.FloatProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
@@ -35,6 +28,14 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.FloatProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 /**
  * {@link Resource} for {@link FormField}, supporting standard CRUD operations
  */
@@ -42,6 +43,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -55,7 +57,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 			        .property("maxOccurs", new IntegerProperty())
 			        .property("required", new BooleanProperty()._default(false))
 			        .property("sortWeight", new FloatProperty())
-			        .property("retired", new BooleanProperty()); //FIXME
+			        .property("retired", new BooleanProperty()._default(false)); 
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
@@ -73,7 +75,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl() //FIXME validate if correct
+		ModelImpl model = new ModelImpl()
 		        .property("form", new StringProperty().example("uuid"))
 		        .property("field", new StringProperty().example("uuid"))
 		        .property("required", new BooleanProperty()._default(false))
@@ -97,7 +99,12 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+		        
+		        .property("form", new StringProperty().example("uuid"))
+		        .property("field", new StringProperty().example("uuid")).property("fieldNumber", new IntegerProperty())
+		        .property("fieldPart", new StringProperty()).property("minOccurs", new IntegerProperty())
+		        .property("maxOccurs", new IntegerProperty()).property("sortWeight", new BooleanProperty()._default(false));
 	}
 	
 	/**

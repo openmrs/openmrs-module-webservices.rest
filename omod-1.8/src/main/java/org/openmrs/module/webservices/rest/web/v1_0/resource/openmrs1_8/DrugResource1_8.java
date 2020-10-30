@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.List;
+
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -30,7 +26,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
@@ -120,6 +121,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		return null;
 	}
 	
+	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -168,7 +170,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep); //FIXME no updatableProperties()
+		return getCREATEModel(rep);
 	}
 	
 	/**

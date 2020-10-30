@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.List;
+
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -31,7 +27,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 @Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = { "1.8.*, 1.9.*" }, order = 1)
 public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> {
@@ -151,7 +152,13 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+				
+
+				.property("concept", new StringProperty().example("uuid"))
+		        .property("retired", new BooleanProperty())
+		        .required("concept").required("description");
+		
 	}
 	
 	@Override

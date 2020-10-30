@@ -9,11 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -32,8 +30,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 @SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*" })
@@ -146,6 +147,11 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+		        
+		        .property("uuid", new StringProperty())
+		        
+		        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
+		        .property("retired", new BooleanProperty());
 	}
 }

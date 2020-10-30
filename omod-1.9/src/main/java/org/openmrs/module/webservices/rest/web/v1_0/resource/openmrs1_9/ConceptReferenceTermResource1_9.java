@@ -9,11 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
@@ -34,7 +31,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.List;
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD operations
@@ -125,7 +125,12 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+		        
+		        .property("code", new StringProperty())
+		        
+		        .property("conceptSource", new StringProperty())
+		        .property("version", new StringProperty());
 	}
 	
 	/**
