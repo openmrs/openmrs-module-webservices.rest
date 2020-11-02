@@ -16,7 +16,8 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
  */
 public class RestConstants1_9 {
 	
-	private RestConstants1_9() {}
+	private RestConstants1_9() {
+	}
 	
 	/**
 	 * A default value for the resource version parameter.
