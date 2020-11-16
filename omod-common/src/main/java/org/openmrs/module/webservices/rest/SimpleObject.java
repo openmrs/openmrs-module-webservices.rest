@@ -68,8 +68,7 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 	 */
 	public static SimpleObject parseJson(String json) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		SimpleObject object = objectMapper.readValue(json, SimpleObject.class);
-		return object;
+		return objectMapper.readValue(json, SimpleObject.class);
 	}
 	
 	/**
