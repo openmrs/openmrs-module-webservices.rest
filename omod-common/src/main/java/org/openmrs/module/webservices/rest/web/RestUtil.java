@@ -501,8 +501,7 @@ public class RestUtil implements GlobalPropertyListener {
 		
 		if (paramString != null) {
 			try {
-				Integer tempInt = new Integer(paramString);
-				return tempInt; // return the valid value
+				return new Integer(paramString);// return the valid value
 			}
 			catch (NumberFormatException e) {
 				log.debug("unable to parse '" + param + "' parameter into a valid integer: " + paramString);

@@ -175,8 +175,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		
 		delegate = undelete(delegate, context);
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
-		return ret;
+		return (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 	}
 	
 	/**

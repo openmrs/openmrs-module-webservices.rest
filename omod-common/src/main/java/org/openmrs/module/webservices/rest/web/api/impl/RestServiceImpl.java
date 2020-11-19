@@ -472,9 +472,7 @@ public class RestServiceImpl implements RestService {
 	 */
 	private Resource newResource(Class<? extends Resource> resourceClass) {
 		try {
-			Resource resource = resourceClass.newInstance();
-			
-			return resource;
+			return resourceClass.newInstance();
 		}
 		catch (Exception ex) {
 			throw new APIException("Failed to instantiate " + resourceClass, ex);
