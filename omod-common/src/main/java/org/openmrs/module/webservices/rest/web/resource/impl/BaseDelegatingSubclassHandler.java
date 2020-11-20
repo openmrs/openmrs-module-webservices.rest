@@ -117,7 +117,7 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 		Resource resource = Context.getService(RestService.class).getResourceBySupportedClass(getSuperclass());
 		
 		return (DelegatingCrudResource<Superclass>) resource;
-	};
+	}
 	
 	/**
 	 * Assumes we can get a "display" property
