@@ -110,7 +110,6 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByName(name);
 			if (pit != null) {
 				instance.setIdentifierType(pit);
-				reset = true;
 			}
 		}
 	}
