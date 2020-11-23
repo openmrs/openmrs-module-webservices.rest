@@ -44,12 +44,24 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
+		return super.getGETModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
+		return super.getCREATEModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override

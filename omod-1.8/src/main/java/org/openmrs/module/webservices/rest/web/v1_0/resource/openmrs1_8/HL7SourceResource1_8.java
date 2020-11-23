@@ -59,7 +59,13 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
+		return super.getGETModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override

@@ -95,7 +95,13 @@ public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<Locat
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
+		return super.getGETModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override

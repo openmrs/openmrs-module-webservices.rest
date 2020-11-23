@@ -83,7 +83,13 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
+		return super.getCREATEModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	/**

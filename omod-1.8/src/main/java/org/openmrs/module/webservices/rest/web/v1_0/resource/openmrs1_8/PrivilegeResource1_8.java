@@ -95,12 +95,24 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep); //FIXME
+		return super.getGETModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		}); //FIXME
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
+		return super.getCREATEModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override

@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
 import org.openmrs.VisitType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -24,6 +23,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
 
 /**
  * {@link Resource} for {@link VisitType}, supporting standard CRUD operations
@@ -47,12 +48,24 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
+		return super.getGETModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
+		return super.getCREATEModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		});
 	}
 	
 	/**

@@ -49,7 +49,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	
 	@Override
 	public String getUri(Object instance) {
-		return super.getUri(instance);
+		return super.getUri(new Object());
 	}
 	
 	@Override

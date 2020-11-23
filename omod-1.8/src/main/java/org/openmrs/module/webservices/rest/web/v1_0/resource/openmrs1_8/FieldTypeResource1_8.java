@@ -43,7 +43,13 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep); //FIXME missing props
+		return super.getCREATEModel(new Representation() {
+			
+			@Override
+			public String getRepresentation() {
+				return getRepresentation();
+			}
+		}); //FIXME missing props
 	}
 	
 	@Override
