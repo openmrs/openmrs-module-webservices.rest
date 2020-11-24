@@ -94,11 +94,6 @@ public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<Locat
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
-	}
-	
-	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
 		        .property("retired", new BooleanProperty())
