@@ -45,16 +45,6 @@ public class VisitTypeResource1_9 extends MetadataDelegatingCrudResource<VisitTy
 		return description;
 	}
 	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
-	}
-	
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */
