@@ -222,11 +222,9 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	private void findAndThrowStartupErrors(Collection<Module> modules) {
 		List<Exception> errors = new ArrayList<Exception>();
 		for (Module module : modules) {
-			if (moduleFactoryWrapper.isModuleStopped(module)) {
+			if (moduleFactoryWrapper.isModuleStopped(module) && module.getStartupErrorMessage() != null) {
 				//module actions are executed in other thread, so we need to explicitly check and throw them
-				if (module.getStartupErrorMessage() != null) {
-					errors.add(new ModuleException(module.getStartupErrorMessage()));
-				}
+				errors.add(new ModuleException(module.getStartupErrorMessage()));
 			}
 		}
 		

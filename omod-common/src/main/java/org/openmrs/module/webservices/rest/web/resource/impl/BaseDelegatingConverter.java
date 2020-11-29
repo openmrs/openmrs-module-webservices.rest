@@ -64,8 +64,7 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 			throw new NullPointerException();
 		
 		DelegatingResourceDescription description = getRepresentationDescription(rep);
-		SimpleObject simple = convertDelegateToRepresentation(delegate, description);
-		return simple;
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 	@Override

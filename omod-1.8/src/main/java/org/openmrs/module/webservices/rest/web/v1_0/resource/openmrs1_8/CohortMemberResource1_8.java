@@ -113,7 +113,6 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("patient");
-			//description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
 		}
@@ -266,26 +265,6 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	protected String getUniqueId(CohortMember1_8 delegate) {
 		return delegate.getPatient().getUuid();
 	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getAll(java.lang.String,
-	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
-	/*
-	 * TODO: Should be deleted since doGetAll is already overridden
-	@Override
-	public List<Object> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
-	Cohort parent = Context.getCohortService().getCohortByUuid(parentUniqueId);
-	List<Object> ret = new ArrayList<Object>();
-	Representation rep = Representation.FULL;
-	if (context.getRepresentation().equals(Representation.DEFAULT))
-		rep = Representation.REF;
-	else if (context.getRepresentation().equals(Representation.FULL))
-		rep = Representation.DEFAULT;
-	for (CohortMember member : doGetAll(parent, context))
-		ret.add(asRepresentation(member, rep));
-	return ret;
-	}*/
 	
 	/**
 	 * @param member the patient

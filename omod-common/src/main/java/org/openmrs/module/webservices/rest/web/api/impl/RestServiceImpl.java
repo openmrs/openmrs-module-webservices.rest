@@ -196,10 +196,7 @@ public class RestServiceImpl implements RestService {
 			        + ") must not have the same order");
 		}
 		
-		if (existingResourceDefinition.order < resourceMetadata.getOrder()) {
-			return false;
-		}
-		return true;
+		return existingResourceDefinition.order >= resourceMetadata.getOrder();
 	}
 	
 	/**
@@ -452,10 +449,9 @@ public class RestServiceImpl implements RestService {
 			Entry<Class<?>, Resource> bestResourceEntry = null;
 			
 			for (Entry<Class<?>, Resource> resourceEntry : resourcesBySupportedClasses.entrySet()) {
-				if (resourceEntry.getKey().isAssignableFrom(resourceClass)) {
-					if (bestResourceEntry == null || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey())) {
-						bestResourceEntry = resourceEntry;
-					}
+				if (resourceEntry.getKey().isAssignableFrom(resourceClass) && (bestResourceEntry == null
+				        || bestResourceEntry.getKey().isAssignableFrom(resourceEntry.getKey()))) {
+					bestResourceEntry = resourceEntry;
 				}
 			}
 			
@@ -476,9 +472,7 @@ public class RestServiceImpl implements RestService {
 	 */
 	private Resource newResource(Class<? extends Resource> resourceClass) {
 		try {
-			Resource resource = resourceClass.newInstance();
-			
-			return resource;
+			return resourceClass.newInstance();
 		}
 		catch (Exception ex) {
 			throw new APIException("Failed to instantiate " + resourceClass, ex);

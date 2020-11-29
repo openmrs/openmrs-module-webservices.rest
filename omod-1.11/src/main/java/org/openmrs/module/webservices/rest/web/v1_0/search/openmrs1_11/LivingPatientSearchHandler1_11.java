@@ -49,7 +49,7 @@ public class LivingPatientSearchHandler1_11 implements SearchHandler {
 		Boolean includeDead = StringUtils.isNotBlank(includeDeadStr) ? Boolean.parseBoolean(includeDeadStr) : false;
 		if (StringUtils.isNotBlank(searchPhrase)) {
 			List<Patient> allPatients = Context.getPatientService().getPatients(searchPhrase);
-			Boolean resultsExist = allPatients != null && allPatients.size() > 0;
+			Boolean resultsExist = allPatients != null && !allPatients.isEmpty();
 			if (!resultsExist) {
 				return new EmptySearchResult();
 			}

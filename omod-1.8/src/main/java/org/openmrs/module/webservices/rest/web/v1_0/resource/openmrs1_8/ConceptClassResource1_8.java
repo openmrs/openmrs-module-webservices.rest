@@ -68,16 +68,6 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return super.getCREATEModel(rep);
-	}
-	
-	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);
 	}

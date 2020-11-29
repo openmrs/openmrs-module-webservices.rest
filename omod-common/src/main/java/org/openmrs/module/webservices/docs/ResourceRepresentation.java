@@ -9,10 +9,8 @@
  */
 package org.openmrs.module.webservices.docs;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * This class stands for a resource representation.
@@ -46,12 +44,7 @@ public class ResourceRepresentation {
 	
 	@Override
 	public String toString() {
-		/*String text = "h3. " + name;
-		
-		for (String property : properties) {
-			text += System.getProperty("line.separator") + "* " + property;
-		}*/
-		
+				
 		String text = null;
 		
 		for (String property : properties) {

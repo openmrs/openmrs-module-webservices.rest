@@ -119,7 +119,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 							}
 							
 							// return encounters for filtered obs
-							if (filteredObs.size() > 0) {
+							if (!filteredObs.isEmpty()) {
 								List<Encounter> encounters = this.getEncountersForObs(filteredObs.iterator());
 								
 								return new NeedsPaging<Encounter>(encounters, context);

@@ -66,12 +66,10 @@ public class ContentTypeFilter implements Filter {
 	
 	private boolean isUnsupportedContentType(String contentType) {
 		
-		if (contentType != null && !contentType.isEmpty()) { // contentType will be null for GET requests
-			// blacklist approach
-			if (contentType.toLowerCase().contains("xml")) {
-				return true;
-			}
-		}
-		return false;
+		// contentType will be null for GET requests
+		// blacklist approach
+		return contentType != null
+				&& !contentType.isEmpty()
+				&& contentType.toLowerCase().contains("xml");
 	}
 }
