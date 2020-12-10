@@ -48,11 +48,6 @@ import java.util.List;
 public class PatientStateResource1_8 extends DelegatingSubResource<PatientState, PatientProgram, ProgramEnrollmentResource1_8> {
 	
 	@Override
-	public String getUri(Object instance) {
-		return super.getUri(instance);
-	}
-	
-	@Override
 	public PatientProgram getParent(PatientState instance) {
 		return instance.getPatientProgram();
 	}

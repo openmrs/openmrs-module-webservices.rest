@@ -44,11 +44,6 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
-	}
-	
-	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
 		        .required("description");

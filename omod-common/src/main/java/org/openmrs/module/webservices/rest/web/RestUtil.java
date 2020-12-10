@@ -501,8 +501,7 @@ public class RestUtil implements GlobalPropertyListener {
 		
 		if (paramString != null) {
 			try {
-				Integer tempInt = new Integer(paramString);
-				return tempInt; // return the valid value
+				return new Integer(paramString);// return the valid value
 			}
 			catch (NumberFormatException e) {
 				log.debug("unable to parse '" + param + "' parameter into a valid integer: " + paramString);
@@ -726,7 +725,6 @@ public class RestUtil implements GlobalPropertyListener {
 				        + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...", e);
 			}
 			catch (IllegalArgumentException ex) {
-				//ex.printStackTrace();
 			}
 			
 			//If folder exists, look for all resource class files in it.
@@ -756,10 +754,11 @@ public class RestUtil implements GlobalPropertyListener {
 			} else {
 				
 				//Directory does not exist, look in jar file.
+				JarFile jarFile = null;
 				try {
 					String fullPath = resource.getFile();
 					String jarPath = fullPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
-					JarFile jarFile = new JarFile(jarPath);
+					jarFile = new JarFile(jarPath);
 					
 					Enumeration<JarEntry> entries = jarFile.entries();
 					while (entries.hasMoreElements()) {
@@ -787,6 +786,11 @@ public class RestUtil implements GlobalPropertyListener {
 				catch (IOException e) {
 					throw new RuntimeException(pkgname + " (" + directory + ") does not appear to be a valid package", e);
 				}
+				finally {
+					if (jarFile != null) {
+						jarFile.close();
+					}
+				}
 			}
 		}
 		
@@ -804,8 +808,9 @@ public class RestUtil implements GlobalPropertyListener {
 		LinkedHashMap map = new LinkedHashMap();
 		if (reason != null && !reason.isEmpty()) {
 			map.put("message", reason + " [" + ex.getMessage() + "]");
-		} else
+		} else {
 			map.put("message", "[" + ex.getMessage() + "]");
+		}
 		StackTraceElement[] steElements = ex.getStackTrace();
 		if (steElements.length > 0) {
 			StackTraceElement ste = ex.getStackTrace()[0];

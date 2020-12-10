@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
-import org.apache.xpath.operations.Mod;
 import org.openmrs.ConceptSource;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -51,11 +50,7 @@ public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-			description.addProperty("uniqueId");
-			return description;
-		} else if (rep instanceof FullRepresentation) {
+		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 			description.addProperty("uniqueId");
 			return description;

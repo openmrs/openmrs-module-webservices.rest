@@ -10,23 +10,18 @@
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs2_0;
 
 import org.openmrs.Allergen;
-import org.openmrs.AllergenType;
 import org.openmrs.Concept;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ConceptResource1_11;
-import org.apache.commons.lang.StringUtils;
-import java.util.LinkedHashMap;
 
 /**
  * An implementation of Converter to be able to create a representation from a Allergen when

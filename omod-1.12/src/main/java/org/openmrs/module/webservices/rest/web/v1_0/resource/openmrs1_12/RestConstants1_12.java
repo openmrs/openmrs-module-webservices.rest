@@ -14,6 +14,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
  */
 public class RestConstants1_12 {
 	
+	private RestConstants1_12() {
+	}
+	
 	/**
 	 * A default value for the resource version parameter.
 	 */

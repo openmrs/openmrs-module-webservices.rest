@@ -9,16 +9,15 @@
  */
 package org.openmrs.module.webservices.helper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import org.openmrs.util.MemoryAppender;
+import org.openmrs.util.OpenmrsUtil;
 
 public class ServerLogActionWrapper2_4 extends ServerLogActionWrapper {
 
 	@Override
 	public MemoryAppender getMemoryAppender() {
 		try {
-			return (MemoryAppender) ((Logger) LogManager.getRootLogger()).getAppenders().get("MEMORY_APPENDER");
+			return OpenmrsUtil.getMemoryAppender();
 		} catch (ClassCastException | NullPointerException e) {
 			return null;
 		}

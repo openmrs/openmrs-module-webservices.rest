@@ -100,11 +100,6 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		return super.getGETModel(rep);
-	}
-	
-	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
 		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))

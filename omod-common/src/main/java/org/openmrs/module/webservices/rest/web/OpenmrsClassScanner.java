@@ -82,30 +82,27 @@ public class OpenmrsClassScanner {
 				
 				MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
 				
-				if (typeFilter.match(metadataReader, metadataReaderFactory)) {
+				if (typeFilter.match(metadataReader, metadataReaderFactory)
+				        && concrete == metadataReader.getClassMetadata().isConcrete()) {
 					
-					if (concrete == metadataReader.getClassMetadata().isConcrete()) {
+					String classname = metadataReader.getClassMetadata().getClassName();
+					
+					try {
 						
-						String classname = metadataReader.getClassMetadata().getClassName();
+						@SuppressWarnings("unchecked")
+						Class<? extends T> metadata = (Class<? extends T>) OpenmrsClassLoader.getInstance()
+						        .loadClass(classname);
 						
-						try {
-							
-							@SuppressWarnings("unchecked")
-							Class<? extends T> metadata = (Class<? extends T>) OpenmrsClassLoader.getInstance().loadClass(
-							    
-							    classname);
-							
-							types.add(metadata);
-							
-						}
-						
-						catch (ClassNotFoundException e) {
-							
-							throw new IOException("Class cannot be loaded: " + classname, e);
-							
-						}
+						types.add(metadata);
 						
 					}
+					
+					catch (ClassNotFoundException e) {
+						
+						throw new IOException("Class cannot be loaded: " + classname, e);
+						
+					}
+
 					
 				}
 				

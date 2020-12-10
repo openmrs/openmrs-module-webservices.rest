@@ -466,8 +466,9 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 				}
 				obs.setValueAsString(value.toString());
 			}
-		} else
+		} else {
 			throw new APIException("The value for an observation cannot be null");
+		}
 	}
 	
 	/**
@@ -525,8 +526,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		obs = obsService.saveObs(obs, null);
 		
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
-		return ret;
+		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
 	}
 	
 }

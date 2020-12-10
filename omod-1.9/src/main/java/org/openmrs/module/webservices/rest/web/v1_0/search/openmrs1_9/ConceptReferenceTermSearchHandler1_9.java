@@ -109,9 +109,7 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 					hasMoreTerms = termsCount > (startIndex + context.getLimit());
 					
 					for (ConceptReferenceTerm term : terms) {
-						if (StringUtils.equalsIgnoreCase(codeOrName, term.getCode())) {
-							equalTerms.add(term);
-						} else if (StringUtils.equalsIgnoreCase(codeOrName, term.getName())) {
+						if (StringUtils.equalsIgnoreCase(codeOrName, term.getCode()) || StringUtils.equalsIgnoreCase(codeOrName, term.getName())) {
 							equalTerms.add(term);
 						}
 					}

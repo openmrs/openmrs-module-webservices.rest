@@ -155,18 +155,16 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 	
 	@Override
 	public Model getCREATEModel(Representation representation) {
-		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
+		return new ModelImpl().property("patient", new StringProperty().example("uuid"))
 		        .property("encounter", new StringProperty().example("uuid"))
 		        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderCreate")))
 		        .property("orderSet", new StringProperty().example("uuid"));
-		return model;
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl().property("orders",
+		return new ModelImpl().property("orders",
 		    new ArrayProperty(new RefProperty("#/definitions/OrderCreate")));
-		return model;
 	}
 	
 	@PropertyGetter("display")

@@ -236,7 +236,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 			propertiesToCreate.add("startDatetime", new Date());
 		}
 		return super.create(propertiesToCreate, context);
-	};
+	}
 	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)

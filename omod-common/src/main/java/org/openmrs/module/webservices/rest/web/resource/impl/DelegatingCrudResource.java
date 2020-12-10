@@ -118,17 +118,15 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		if (delegate == null)
 			throw new ObjectNotFoundException();
 		
-		if (hasTypesDefined()) {
+		if (hasTypesDefined() && propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
 			// if they specify a type discriminator it must match the expected one--type can't be modified
-			if (propertiesToUpdate.containsKey(RestConstants.PROPERTY_FOR_TYPE)) {
-				String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
-				if (!delegate.getClass().equals(getActualSubclass(type))) {
-					String nameToShow = getTypeName(delegate);
-					if (nameToShow == null)
-						nameToShow = delegate.getClass().getName();
-					throw new IllegalArgumentException("You passed " + RestConstants.PROPERTY_FOR_TYPE + "=" + type
-					        + " but this instance is a " + nameToShow);
-				}
+			String type = (String) propertiesToUpdate.remove(RestConstants.PROPERTY_FOR_TYPE);
+			if (!delegate.getClass().equals(getActualSubclass(type))) {
+				String nameToShow = getTypeName(delegate);
+				if (nameToShow == null)
+					nameToShow = delegate.getClass().getName();
+				throw new IllegalArgumentException("You passed " + RestConstants.PROPERTY_FOR_TYPE + "=" + type
+				        + " but this instance is a " + nameToShow);
 			}
 		}
 		
@@ -177,8 +175,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			throw new ObjectNotFoundException();
 		
 		delegate = undelete(delegate, context);
-		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
-		return ret;
+		return (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 	}
 	
 	/**

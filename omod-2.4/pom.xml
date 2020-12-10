@@ -11,7 +11,7 @@
     <name>Rest Web Services 2.4 OMOD</name>
 
     <properties>
-        <openmrs.version.2.4.0>2.4.0-alpha</openmrs.version.2.4.0>
+        <openmrs.version.2.4.0>2.4.0-SNAPSHOT</openmrs.version.2.4.0>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
@@ -174,7 +174,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
 

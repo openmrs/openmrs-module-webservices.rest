@@ -240,8 +240,7 @@ public class ConversionUtil {
 				        "yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
 				for (int i = 0; i < supportedFormats.length; i++) {
 					try {
-						Date date = DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
-						return date;
+						return DateTime.parse(string, DateTimeFormat.forPattern(supportedFormats[i])).toDate();
 					}
 					catch (IllegalArgumentException ex) {
 						pex = ex;
