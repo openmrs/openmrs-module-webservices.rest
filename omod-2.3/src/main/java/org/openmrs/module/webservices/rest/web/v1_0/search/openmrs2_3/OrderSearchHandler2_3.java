@@ -110,7 +110,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.3.*", "2.4.*"), searchQuery);
+	        + "/order", Arrays.asList("2.3.*", "2.4.*", "2.5.*"), searchQuery);
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

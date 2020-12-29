@@ -40,7 +40,7 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	UserService userService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user", Arrays.asList(
-	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*"),
+	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*"),
 	        new SearchQuery.Builder(
 	                "Allows you to find users by username").withRequiredParameters("username").build());
 	
