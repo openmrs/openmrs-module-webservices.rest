@@ -58,4 +58,19 @@ public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
         }
         return new NeedsPaging<TaskDefinition>(taskDefinitions, context);
     }
+
+    @Override
+    public TaskDefinition getByUniqueId(String uniqueId) {
+        TaskDefinition taskDefinition = taskServiceWrapper.getTaskByUuid(uniqueId);
+        if (taskDefinition == null) {
+            taskDefinition = taskServiceWrapper.getTaskById(Integer.parseInt(uniqueId));
+        }
+        return taskDefinition;
+    }
+
+    @Override
+    public TaskDefinition save(TaskDefinition taskDefinition) {
+        taskServiceWrapper.saveTaskDefinition(taskDefinition);
+        return taskDefinition;
+    }
 }

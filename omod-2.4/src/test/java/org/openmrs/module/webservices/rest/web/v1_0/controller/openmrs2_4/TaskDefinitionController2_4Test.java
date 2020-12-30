@@ -18,6 +18,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.RestTestConstants2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.web.MockTaskServiceWrapper2_4;
 import org.openmrs.scheduler.TaskDefinition;
@@ -135,17 +136,17 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
         mockTask.add("name", "MockTask");
         mockTask.add("description", "MockTask Description");
         mockTask.add("taskClass", "org.openmrs.scheduler.tasks.TestTask");
-        mockTask.add("startTime", "2017-08-28T23:59:59.000+0530");
+        mockTask.add("startTime", "2020-08-28T23:59:59.000+0530");
         mockTask.add("repeatInterval", "10");
         mockTask.add("startOnStartup", false);
         mockTask.add("properties", null);
         String json = new ObjectMapper().writeValueAsString(mockTask);
 
-        Assert.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask"));
+        Assert.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask Description"));
         MockHttpServletRequest req = request(RequestMethod.POST, getURI());
         req.setContent(json.getBytes());
         deserialize(handle(req));
-        Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getName(), "MockTask");
+        Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getDescription(), "MockTask Description");
     }
 
     @Override
@@ -155,7 +156,7 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
 
     @Override
     public String getUuid() {
-        return getTestTaskName();
+        return RestTestConstants2_4.TASK_DEFINITION_UUID;
     }
 
     @Override
