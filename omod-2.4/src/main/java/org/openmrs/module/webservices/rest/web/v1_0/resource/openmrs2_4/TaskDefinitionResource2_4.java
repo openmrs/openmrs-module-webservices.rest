@@ -58,6 +58,7 @@ public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
         }
         return new NeedsPaging<TaskDefinition>(taskDefinitions, context);
     }
+<<<<<<< HEAD
 
     @Override
     public TaskDefinition getByUniqueId(String uniqueId) {
@@ -73,4 +74,6 @@ public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
         taskServiceWrapper.saveTaskDefinition(taskDefinition);
         return taskDefinition;
     }
+=======
+>>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
 }

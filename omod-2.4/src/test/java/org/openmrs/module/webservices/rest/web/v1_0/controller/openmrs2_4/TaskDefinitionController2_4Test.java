@@ -18,7 +18,10 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+<<<<<<< HEAD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.RestTestConstants2_4;
+=======
+>>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.web.MockTaskServiceWrapper2_4;
 import org.openmrs.scheduler.TaskDefinition;
@@ -136,17 +139,29 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
         mockTask.add("name", "MockTask");
         mockTask.add("description", "MockTask Description");
         mockTask.add("taskClass", "org.openmrs.scheduler.tasks.TestTask");
+<<<<<<< HEAD
         mockTask.add("startTime", "2020-08-28T23:59:59.000+0530");
+=======
+        mockTask.add("startTime", "2017-08-28T23:59:59.000+0530");
+>>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
         mockTask.add("repeatInterval", "10");
         mockTask.add("startOnStartup", false);
         mockTask.add("properties", null);
         String json = new ObjectMapper().writeValueAsString(mockTask);
 
+<<<<<<< HEAD
         Assert.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask Description"));
         MockHttpServletRequest req = request(RequestMethod.POST, getURI());
         req.setContent(json.getBytes());
         deserialize(handle(req));
         Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getDescription(), "MockTask Description");
+=======
+        Assert.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask"));
+        MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+        req.setContent(json.getBytes());
+        deserialize(handle(req));
+        Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getName(), "MockTask");
+>>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
     }
 
     @Override
@@ -156,7 +171,11 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
 
     @Override
     public String getUuid() {
+<<<<<<< HEAD
         return RestTestConstants2_4.TASK_DEFINITION_UUID;
+=======
+        return getTestTaskName();
+>>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
     }
 
     @Override
