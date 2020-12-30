@@ -21,10 +21,7 @@ import org.junit.Test;
 import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-<<<<<<< HEAD
-=======
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
->>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskActionResource2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.web.MockTaskServiceWrapper2_4;
@@ -43,11 +40,7 @@ public class TaskActionController2_4Test extends MainResourceControllerTest {
             "org.openmrs.scheduler.tasks.TestTask");
 
     private TaskDefinition testDummyTask = new TaskDefinition(5, "TestDummy", "TestTask Description",
-<<<<<<< HEAD
             TaskActionController2_4Test.DummyTask.class.getName());
-=======
-            TaskActionController1_8Test.DummyTask.class.getName());
->>>>>>> b524f8f3629b035e91cc364e6ed9e07721c0901a
 
     private TaskDefinition tempTask = new TaskDefinition(3, "TempTask", "TempTask Description",
             "org.openmrs.scheduler.tasks.TestTask");
