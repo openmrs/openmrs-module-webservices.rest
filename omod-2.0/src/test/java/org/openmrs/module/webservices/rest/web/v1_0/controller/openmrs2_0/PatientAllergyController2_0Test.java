@@ -127,7 +127,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 4);
+		Assert.assertEquals(4, allergies.size());
 		
 		// save allergy with coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -147,7 +147,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 5);
+		Assert.assertEquals(5, allergies.size());
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 4);
+		Assert.assertEquals(4, allergies.size());
 		
 		// save allergy with non coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -180,7 +180,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 5);
+		Assert.assertEquals(5, allergies.size());
 	}
 	
 	/**
@@ -191,7 +191,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 4);
+		Assert.assertEquals(4, allergies.size());
 		
 		// update allergy with reactions
 		String json = "{ \"reactions\" : " + "[" + "{" + " \"allergy\" : { \"uuid\" : \"" + allergy.getUuid() + "\"},"
@@ -210,7 +210,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		
 		// assert that a allergy has been updated
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 4);
+		Assert.assertEquals(4, allergies.size());
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 4);
+		Assert.assertEquals(4, allergies.size());
 		
 		// save allergy with coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -311,6 +311,6 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(allergies.size(), 5);
+		Assert.assertEquals(5, allergies.size());
 	}
 }

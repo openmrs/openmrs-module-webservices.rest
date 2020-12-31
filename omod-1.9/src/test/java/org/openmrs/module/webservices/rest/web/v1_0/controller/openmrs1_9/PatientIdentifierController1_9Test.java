@@ -138,7 +138,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		PatientIdentifier newIdentifer = service.getPatientIdentifierByUuid(uuid.toString());
 		assertFalse(exisitingIdentifier.isPreferred());
 		assertTrue(newIdentifer.isPreferred());
-		assertEquals(newIdentifer.getIdentifier(), "abc123ez");
+		assertEquals("abc123ez", newIdentifer.getIdentifier());
 	}
 	
 	@Test

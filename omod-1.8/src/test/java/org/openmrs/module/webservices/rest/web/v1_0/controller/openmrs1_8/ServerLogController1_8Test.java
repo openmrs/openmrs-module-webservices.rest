@@ -68,7 +68,7 @@ public class ServerLogController1_8Test extends MainResourceControllerTest {
 	public void shouldGetAll() throws Exception {
 		//sanity check
 		List<String[]> mockServerLogs = mockServerLogActionWrapper.getServerLogs();
-		Assert.assertEquals(mockServerLogs.size(), 0);
+		Assert.assertEquals(0, mockServerLogs.size());
 
 		mockServerLogActionWrapper.mockMemoryAppenderBuffer.addAll(Arrays.asList(log1, log2));
 

@@ -73,7 +73,7 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 		Assert.assertEquals(1, resultsList.size());
 		List<Object> ingredients = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "ingredient"));
 		
-		Assert.assertEquals(((Map) ingredients.get(0)).get("display"), "ASPIRIN");
-		Assert.assertEquals(((Map) ingredients.get(0)).get("uuid"), "15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
+		Assert.assertEquals("ASPIRIN", ((Map) ingredients.get(0)).get("display"));
+		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", ((Map) ingredients.get(0)).get("uuid"));
 	}
 }

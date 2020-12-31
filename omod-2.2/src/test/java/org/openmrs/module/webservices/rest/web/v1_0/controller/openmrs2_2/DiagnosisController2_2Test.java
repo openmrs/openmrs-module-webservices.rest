@@ -256,10 +256,10 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		
 		Assert.assertFalse(diagnosis.getVoided());
 		Assert.assertNull(diagnosis.getDiagnosis().getCoded());
-		Assert.assertEquals((int) diagnosis.getRank(), 2);
-		Assert.assertEquals(diagnosis.getCertainty().toString(), "CONFIRMED");
-		Assert.assertEquals(diagnosis.getCondition().getUuid(), "e804ee60-ecbc-4d70-abda-1e4f6f64e5b5");
-		Assert.assertEquals(diagnosis.getEncounter().getUuid(), "34444-fcdb-4a5b-97ea-0d5c4b4315a1");
+		Assert.assertEquals(2, (int) diagnosis.getRank());
+		Assert.assertEquals("CONFIRMED", diagnosis.getCertainty().toString());
+		Assert.assertEquals("e804ee60-ecbc-4d70-abda-1e4f6f64e5b5", diagnosis.getCondition().getUuid());
+		Assert.assertEquals("34444-fcdb-4a5b-97ea-0d5c4b4315a1", diagnosis.getEncounter().getUuid());
 		
 		String json = "{\"diagnosis\":{\"coded\":\"" + concept.getUuid() + "\",\"specificName\":\"" + conceptName.getUuid()
 		        + "\"},\"condition\":\"" + condition.getUuid()
@@ -274,10 +274,10 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		
 		Assert.assertTrue(newDiagnosis.getVoided());
 		Assert.assertEquals(newDiagnosis.getDiagnosis().getCoded().getUuid(), concept.getUuid());
-		Assert.assertEquals((int) newDiagnosis.getRank(), 1);
-		Assert.assertEquals(newDiagnosis.getCondition().getUuid(), condition.getUuid());
-		Assert.assertEquals(newDiagnosis.getCertainty().toString(), "PROVISIONAL");
-		Assert.assertEquals(newDiagnosis.getEncounter().getUuid(), encounter.getUuid());
+		Assert.assertEquals(1, (int) newDiagnosis.getRank());
+		Assert.assertEquals(condition.getUuid(), newDiagnosis.getCondition().getUuid());
+		Assert.assertEquals("PROVISIONAL", newDiagnosis.getCertainty().toString());
+		Assert.assertEquals(encounter.getUuid(), newDiagnosis.getEncounter().getUuid());
 	}
 	
 	@Test
@@ -288,10 +288,10 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		
 		Assert.assertTrue(diagnosis.getVoided());
 		Assert.assertNull(diagnosis.getDiagnosis().getNonCoded());
-		Assert.assertEquals((int) diagnosis.getRank(), 1);
-		Assert.assertEquals(diagnosis.getCondition().getUuid(), "e804ee60-ecbc-4d70-abda-1e4f6f64e5b5");
-		Assert.assertEquals(diagnosis.getEncounter().getUuid(), "54444-fcdb-4a5b-97ea-0d5c4b4315a1");
-		Assert.assertEquals(diagnosis.getCertainty().toString(), "PROVISIONAL");
+		Assert.assertEquals(1, (int) diagnosis.getRank());
+		Assert.assertEquals("e804ee60-ecbc-4d70-abda-1e4f6f64e5b5", diagnosis.getCondition().getUuid());
+		Assert.assertEquals("54444-fcdb-4a5b-97ea-0d5c4b4315a1", diagnosis.getEncounter().getUuid());
+		Assert.assertEquals("PROVISIONAL", diagnosis.getCertainty().toString());
 		
 		String json = "{ \"diagnosis\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + nonCoded
 		        + "\"},\"condition\":\"" + condition.getUuid()
@@ -304,11 +304,11 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		Diagnosis newDiagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID);
 		
 		Assert.assertFalse(newDiagnosis.getVoided());
-		Assert.assertEquals(newDiagnosis.getDiagnosis().getNonCoded(), "Some condition");
-		Assert.assertEquals((int) newDiagnosis.getRank(), 2);
-		Assert.assertEquals(newDiagnosis.getCondition().getUuid(), condition.getUuid());
-		Assert.assertEquals(newDiagnosis.getCertainty().toString(), "CONFIRMED");
-		Assert.assertEquals(newDiagnosis.getEncounter().getUuid(), encounter.getUuid());
+		Assert.assertEquals("Some condition", newDiagnosis.getDiagnosis().getNonCoded());
+		Assert.assertEquals(2, (int) newDiagnosis.getRank());
+		Assert.assertEquals(condition.getUuid(), newDiagnosis.getCondition().getUuid());
+		Assert.assertEquals("CONFIRMED", newDiagnosis.getCertainty().toString());
+		Assert.assertEquals(encounter.getUuid(), newDiagnosis.getEncounter().getUuid());
 	}
 	
 	@Test
