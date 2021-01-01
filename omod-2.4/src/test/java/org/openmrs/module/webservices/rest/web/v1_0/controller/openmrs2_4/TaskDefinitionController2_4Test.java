@@ -147,7 +147,8 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
         req.setContent(json.getBytes());
         deserialize(handle(req));
         Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getDescription(), "MockTask Description");
-    }
+  }
+
 
     @Override
     public String getURI() {
@@ -157,7 +158,8 @@ public class TaskDefinitionController2_4Test extends MainResourceControllerTest 
     @Override
     public String getUuid() {
         return RestTestConstants2_4.TASK_DEFINITION_UUID;
-    }
+  }
+
 
     @Override
     public long getAllCount() {
