@@ -63,7 +63,7 @@ public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
     public TaskDefinition getByUniqueId(String uniqueId) {
         TaskDefinition taskDefinition = taskServiceWrapper.getTaskByUuid(uniqueId);
         if (taskDefinition == null) {
-            taskDefinition = taskServiceWrapper.getTaskById(Integer.parseInt(uniqueId));
+            taskDefinition = taskServiceWrapper.getTaskByUuid(uniqueId);
         }
         return taskDefinition;
     }

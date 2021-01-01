@@ -17,4 +17,9 @@ public class TaskServiceWrapper2_4 extends TaskServiceWrapper {
 	public TaskDefinition getTaskByUuid(String uuid) {
 		return Context.getSchedulerService().getTaskByUuid(uuid);
 	}
+
+	public TaskDefinition getTaskByUuid(Integer uuid) {
+		return Context.getSchedulerService().getTask(uuid);
+	}
+
 }
