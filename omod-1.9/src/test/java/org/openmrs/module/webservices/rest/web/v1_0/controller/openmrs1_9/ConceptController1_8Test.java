@@ -699,7 +699,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	public void shouldFindConceptsByName() throws Exception {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name", "WEIGHT (KG)"))));
 		List<Object> results = Util.getResultsList(response);
-		Assert.assertEquals(results.size(), 1);
+		Assert.assertEquals(1, results.size());
 		Object next = results.iterator().next();
 		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
@@ -708,7 +708,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	public void shouldFailToFetchAConceptByNameIfTheNameIsNeitherPreferredNorFullySpecified() throws Exception {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name", "WT"))));
 		List<Object> results = Util.getResultsList(response);
-		Assert.assertEquals(results.size(), 0);
+		Assert.assertEquals(0, results.size());
 	}
 	
 	@Test

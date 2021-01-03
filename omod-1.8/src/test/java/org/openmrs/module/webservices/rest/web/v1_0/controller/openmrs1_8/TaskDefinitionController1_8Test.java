@@ -143,7 +143,7 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
 		deserialize(handle(req));
-		Assert.assertEquals(mockTaskServiceWrapper.getTaskByName("MockTask").getName(), "MockTask");
+		Assert.assertEquals("MockTask", mockTaskServiceWrapper.getTaskByName("MockTask").getName());
 	}
 	
 	@Override

@@ -141,7 +141,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse allNonVoidedObsResponse = handle(allNonVoidedObsRequest);
 		List<Object> allNonVoidedObsList = deserialize(allNonVoidedObsResponse).get("results");
 		
-		assertEquals(allNonVoidedObsList.size(), 6);
+		assertEquals(6, allNonVoidedObsList.size());
 		
 		MockHttpServletRequest deleteRequest = newDeleteRequest(getURI() + "/" + "11de743c-96cd-11e0-8d6b-9b9415a91465");
 		deleteRequest.addParameter("reason", "test voided obs");
@@ -153,14 +153,14 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse allObsIncludingVoidedResponse = handle(allObsIncludingVoidedRequest);
 		List<Object> allObsIncludingVoidedList = deserialize(allObsIncludingVoidedResponse).get("results");
 		
-		assertEquals(allObsIncludingVoidedList.size(), 6);
+		assertEquals(6, allObsIncludingVoidedList.size());
 		
 		MockHttpServletRequest allNonVoidedObsAfterDeleteRequest = newGetRequest(getURI());
 		allNonVoidedObsAfterDeleteRequest.addParameter("encounter", ENCOUNTER_UUID);
 		MockHttpServletResponse allNonVoidedObsAfterDeleteResponse = handle(allNonVoidedObsAfterDeleteRequest);
 		List<Object> allNonVoidedObsAfterDeleteList = deserialize(allNonVoidedObsAfterDeleteResponse).get("results");
 		
-		assertEquals(allNonVoidedObsAfterDeleteList.size(), 5);
+		assertEquals(5, allNonVoidedObsAfterDeleteList.size());
 	}
 	
 	@Test

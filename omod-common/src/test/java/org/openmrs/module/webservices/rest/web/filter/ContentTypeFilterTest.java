@@ -55,7 +55,7 @@ public class ContentTypeFilterTest {
 			req.setRequestURI("/ws/rest/v1/obs");
 			testFilter.doFilter(req, resp, mockChain);
 			
-			Assert.assertEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+			Assert.assertEquals(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, resp.getStatus());
 		}
 	}
 	
@@ -94,7 +94,7 @@ public class ContentTypeFilterTest {
 		req.setMethod("POST");
 		req.setRequestURI("/ws/rest/v1/obs");
 		
-		Assert.assertEquals(req.getContentType(), null);
+		Assert.assertEquals(null, req.getContentType());
 		
 		testFilter.doFilter(req, resp, mockChain);
 		

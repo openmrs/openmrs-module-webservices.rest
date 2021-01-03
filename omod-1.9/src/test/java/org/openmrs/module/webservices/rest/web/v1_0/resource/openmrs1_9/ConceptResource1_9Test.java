@@ -92,21 +92,21 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		otherNames.add(otherName);
 		
 		ConceptResource1_8.setNames(instance, otherNames);
-		assertEquals(instance.getNames().size(), 1);
+		assertEquals(1, instance.getNames().size());
 		assertTrue(instance.getNames().contains(otherName));
 		
 		ConceptResource1_8.setNames(instance, getMockNamesList());
-		assertEquals(instance.getNames().size(), 2);
+		assertEquals(2, instance.getNames().size());
 		assertFalse(instance.getNames().contains(otherName));
 		
 		otherNames.addAll(getMockNamesList());
 		
 		ConceptResource1_8.setNames(instance, otherNames);
-		assertEquals(instance.getNames().size(), 3);
+		assertEquals(3, instance.getNames().size());
 		assertTrue(instance.getNames().contains(otherName));
 		
 		ConceptResource1_8.setNames(instance, getMockNamesList());
-		assertEquals(instance.getNames().size(), 2);
+		assertEquals(2, instance.getNames().size());
 		assertFalse(instance.getNames().contains(otherName));
 	}
 	

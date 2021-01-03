@@ -341,16 +341,16 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		int visitIncludingVoidedSize = Util.getResultsSize(resultWithVoidedVisits);
 		int visitExcludingVoidedSize = Util.getResultsSize(resultWithoutVoidedVisits);
 		
-		Assert.assertEquals(visitIncludingVoidedSize, 4);
-		Assert.assertEquals(visitExcludingVoidedSize, 3);
+		Assert.assertEquals(4, visitIncludingVoidedSize);
+		Assert.assertEquals(3, visitExcludingVoidedSize);
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "void test reason")));
 		
 		resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid),
 		    new Parameter("includeAll", "true"))));
 		resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid))));
-		Assert.assertEquals(Util.getResultsSize(resultWithoutVoidedVisits), 2);
-		Assert.assertEquals(Util.getResultsSize(resultWithVoidedVisits), 4);
+		Assert.assertEquals(2, Util.getResultsSize(resultWithoutVoidedVisits));
+		Assert.assertEquals(4, Util.getResultsSize(resultWithVoidedVisits));
 	}
 	
 	@Test
@@ -364,9 +364,9 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		SimpleObject filteredVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
 		        patientUUid), new Parameter("visitType", visitTypeUuid))));
 		
-		Assert.assertEquals(Util.getResultsSize(allVisits), 3);
+		Assert.assertEquals(3, Util.getResultsSize(allVisits));
 		int filteredVisitsSize = Util.getResultsSize(filteredVisits);
-		Assert.assertEquals(filteredVisitsSize, 1);
+		Assert.assertEquals(1, filteredVisitsSize);
 		
 	}
 	

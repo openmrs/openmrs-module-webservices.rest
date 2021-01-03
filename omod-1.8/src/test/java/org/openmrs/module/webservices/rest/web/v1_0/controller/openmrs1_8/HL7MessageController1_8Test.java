@@ -68,7 +68,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(hl7InQueue.getHL7Data(), hl7Data);
+				Assert.assertEquals(hl7Data, hl7InQueue.getHL7Data());
 			}
 		}
 	}
@@ -86,7 +86,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(hl7InQueue.getHL7Data(), hl7Data);
+				Assert.assertEquals(hl7Data, hl7InQueue.getHL7Data());
 			}
 		}
 	}

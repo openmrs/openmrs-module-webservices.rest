@@ -54,7 +54,7 @@ public class ServerLogResource1_8Test extends BaseModuleWebContextSensitiveTest 
 		SimpleObject result = mainResourceController.get(getURI(), request, response);
 
 		ArrayList<String[]> serverLog = result.get("serverLog");
-		Assert.assertEquals(serverLog.size(), 0);
+		Assert.assertEquals(0, serverLog.size());
 
 		String mockLogLine1 = "INFO - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 		// Add some mock log lines to mockMemoryAppenderBuffer

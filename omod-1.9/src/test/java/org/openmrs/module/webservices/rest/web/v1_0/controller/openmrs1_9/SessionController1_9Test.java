@@ -80,7 +80,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Object userProp = PropertyUtils.getProperty(ret, "user");
 		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp,
 		    "roles");
-		Assert.assertEquals(userRoles.get(0).get("name"), "System Developer");
+		Assert.assertEquals("System Developer", userRoles.get(0).get("name"));
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
 		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));

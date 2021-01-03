@@ -114,13 +114,13 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public void shouldRunTask() throws Exception {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
-		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
+		Assert.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
 		//count before manual execution
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"runtask\", \"tasks\":[\"" + getTestDummyTaskName()
 		        + "\"]}")));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
-		Assert.assertEquals(mockTaskServiceWrapper.getRegisteredTasks().size(), 3);
+		Assert.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
 		//count after manual execution
 		int countAfter = count;
 		Assert.assertEquals(++countBefore, countAfter);
