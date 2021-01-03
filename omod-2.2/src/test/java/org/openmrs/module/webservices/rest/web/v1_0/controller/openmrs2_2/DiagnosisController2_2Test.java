@@ -273,7 +273,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		        .getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_NON_CODED_DIAGNOSIS_UUID);
 		
 		Assert.assertTrue(newDiagnosis.getVoided());
-		Assert.assertEquals(newDiagnosis.getDiagnosis().getCoded().getUuid(), concept.getUuid());
+		Assert.assertEquals(concept.getUuid(), newDiagnosis.getDiagnosis().getCoded().getUuid());
 		Assert.assertEquals(1, (int) newDiagnosis.getRank());
 		Assert.assertEquals(condition.getUuid(), newDiagnosis.getCondition().getUuid());
 		Assert.assertEquals("PROVISIONAL", newDiagnosis.getCertainty().toString());
