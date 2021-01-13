@@ -60,6 +60,7 @@ public class ObsResource1_9 extends ObsResource1_8 {
             return super.convertDelegateToRepresentation(delegate, rep);
         } catch (ConversionException e) {
             // hack to handle https://issues.openmrs.org/browse/RESTWS-816
+            // (if converting to a custom rep fails because an obs is valueDrug or valueLocation, return null for the value of that obs instead of failing hard)
             if (delegate.getValueDrug() != null || "org.openmrs.Location".equals(delegate.getComment())) {
                 rep.removeProperty("value");
                 SimpleObject result = super.convertDelegateToRepresentation(delegate, rep);
