@@ -12,13 +12,18 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.webservices.helper.TaskAction;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskActionResource2_4;
@@ -27,6 +32,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.web.MockTaskServiceWrapper2_
 import org.openmrs.scheduler.Task;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 public class TaskActionController2_4Test extends MainResourceControllerTest {
 
@@ -63,8 +70,9 @@ public class TaskActionController2_4Test extends MainResourceControllerTest {
     public void shouldScheduleTask() throws Exception {
         // sanity check
         assertThat(mockTaskServiceWrapper.scheduledTasks, not(hasItem(testTask)));
-        deserialize(handle(
+       SimpleObject obj = deserialize(handle(
                 newPostRequest(getURI(), "{\"action\": \"scheduletask\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
+        System.out.println(obj);
         assertThat(mockTaskServiceWrapper.scheduledTasks, hasItem(testTask));
     }
 
@@ -109,6 +117,16 @@ public class TaskActionController2_4Test extends MainResourceControllerTest {
         deserialize(handle(
                 newPostRequest(getURI(), "{\"action\": \"delete\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
         assertThat(mockTaskServiceWrapper.registeredTasks, not(hasItem(testTask)));
+    }
+
+    @Override
+    public void shouldGetRefByUuid() throws Exception {
+        MockHttpServletResponse response = handle(request(RequestMethod.GET, getURI() + "/" + getUuid()));
+        SimpleObject result = deserialize(response);
+
+        assertNotNull(result);
+        assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+
     }
 
     @Test

@@ -18,7 +18,6 @@ import java.util.List;
 
 public class MockTaskServiceWrapper2_4 extends TaskServiceWrapper2_4 {
 
-
     public List<TaskDefinition> registeredTasks = new ArrayList<TaskDefinition>();
 
     public List<TaskDefinition> scheduledTasks = new ArrayList<TaskDefinition>();
@@ -112,9 +111,6 @@ public class MockTaskServiceWrapper2_4 extends TaskServiceWrapper2_4 {
         if (scheduledTasks.contains(task)) {
             scheduledTasks.remove(task);
         }
-        if (registeredTasks.contains(task)) {
-            registeredTasks.remove(task);
-        }
     }
 
     /**
@@ -125,7 +121,7 @@ public class MockTaskServiceWrapper2_4 extends TaskServiceWrapper2_4 {
      */
     @Override
     public void scheduleTask(TaskDefinition task) throws SchedulerException {
-        if (!scheduledTasks.contains(task)) {
+        if (!registeredTasks.contains(task)) {
             scheduledTasks.add(task);
         }
     }
