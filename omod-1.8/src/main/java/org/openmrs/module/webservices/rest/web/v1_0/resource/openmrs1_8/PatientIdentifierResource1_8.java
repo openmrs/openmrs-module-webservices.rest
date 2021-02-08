@@ -9,12 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -33,8 +31,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import java.util.List;
-import java.util.ArrayList;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 
 /**
  * Sub-resource for patient identifiers
@@ -97,17 +99,16 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public void setIdentifierType(PatientIdentifier instance, PatientIdentifierType identifierType) {
 		String uuid = identifierType.getUuid();
 		String name = identifierType.getName();
-		boolean reset = false;
-		if (!reset && !StringUtils.isEmpty(uuid)) {
-			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByUuid(uuid);
+		PatientIdentifierType pit = null;
+		if (!StringUtils.isEmpty(uuid)) {
+			pit = Context.getPatientService().getPatientIdentifierTypeByUuid(uuid);
 			if (pit != null) {
 				instance.setIdentifierType(pit);
-				reset = true;
 			}
 			
 		}
-		if (!reset && !StringUtils.isEmpty(name)) {
-			PatientIdentifierType pit = Context.getPatientService().getPatientIdentifierTypeByName(name);
+		if (pit == null && !StringUtils.isEmpty(name)) {
+			pit = Context.getPatientService().getPatientIdentifierTypeByName(name);
 			if (pit != null) {
 				instance.setIdentifierType(pit);
 			}
