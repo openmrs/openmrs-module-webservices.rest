@@ -44,7 +44,7 @@ import java.util.Set;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_9 extends BaseRestController {
 
-	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name))";
+	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name),links)";
 
 	@Autowired
 	RestService restService;
