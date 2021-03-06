@@ -43,15 +43,15 @@ import java.util.Set;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_9 extends BaseRestController {
-	
-	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid),privileges:(uuid,name),roles:(uuid,name))";
-	
+
+	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name),links)";
+
 	@Autowired
 	RestService restService;
-	
+
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * <strong>Should</strong> return the session id if the user is authenticated
@@ -73,7 +73,7 @@ public class SessionController1_9 extends BaseRestController {
 		}
 		return session;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
@@ -106,10 +106,10 @@ public class SessionController1_9 extends BaseRestController {
 			}
 		}
 	}
-	
+
 	/**
 	 * Logs the client out
-	 * 
+	 *
 	 * <strong>Should</strong> log the client out
 	 */
 	@RequestMapping(method = RequestMethod.DELETE)
@@ -118,5 +118,5 @@ public class SessionController1_9 extends BaseRestController {
 	public void delete() {
 		Context.logout();
 	}
-	
+
 }
