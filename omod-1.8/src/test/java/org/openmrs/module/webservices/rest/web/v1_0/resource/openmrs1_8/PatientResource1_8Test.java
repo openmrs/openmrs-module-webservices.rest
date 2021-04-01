@@ -25,6 +25,17 @@ public class PatientResource1_8Test extends BaseDelegatingResourceTest<PatientRe
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("attributes");
 		assertPropPresent("display");
 		assertPropEquals("voided", getObject().getVoided());
 	}
@@ -32,6 +43,17 @@ public class PatientResource1_8Test extends BaseDelegatingResourceTest<PatientRe
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("attributes");
 		assertPropPresent("display");
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("auditInfo");
