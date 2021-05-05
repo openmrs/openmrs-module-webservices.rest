@@ -18,9 +18,7 @@ public class RestTestConstants1_9 {
 	public final static String LOCATION_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
 	
 	public final static String LOCATION_ATTRIBUTE_TYPE2_UUID = "9516cc50-6f9f-132r-5433-001e378eb67f";
-	
-	public final static String LOCATION_SEARCH_DATASET = "locationTestDataset.xml";
-	
+
 	public final static String PROVIDER_UUID = "c2299800-dgha-11e0-9572-0800200c9a66";
 	
 	public final static String PROVIDER_ATTRIBUTE_TYPE_UUID = "9516cc50-n8ik-bc4f-8414-001e378eb67e";
