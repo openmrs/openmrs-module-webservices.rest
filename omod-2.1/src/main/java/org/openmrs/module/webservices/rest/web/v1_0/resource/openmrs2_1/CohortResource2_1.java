@@ -10,6 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.IntegerProperty;
 import org.openmrs.Cohort;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -34,8 +36,9 @@ public class CohortResource2_1 extends CohortResource1_8 {
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		Model model = super.getGETModel(rep);
+		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		model.getProperties().remove("memberIds");
+		model.property("size", new IntegerProperty());
 		return model;
 	}
 	
@@ -43,7 +46,6 @@ public class CohortResource2_1 extends CohortResource1_8 {
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		// We do not override the CohortResource1_8 representation, because we want to basically do a clean-slate
 		// representation, rather than make minor tweaks (and require a dev to look at a superclass)
-		
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
@@ -51,6 +53,7 @@ public class CohortResource2_1 extends CohortResource1_8 {
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("voided");
+			description.addProperty("size");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -61,6 +64,7 @@ public class CohortResource2_1 extends CohortResource1_8 {
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("voided");
+			description.addProperty("size");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
