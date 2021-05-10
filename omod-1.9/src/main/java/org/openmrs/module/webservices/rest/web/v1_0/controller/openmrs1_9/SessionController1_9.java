@@ -11,6 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.openmrs.Location;
+import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -20,6 +22,9 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.util.PrivilegeConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -31,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -43,6 +49,8 @@ import java.util.Set;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_9 extends BaseRestController {
+
+	private static final Logger log = LoggerFactory.getLogger(SessionController1_9.class);
 
 	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name),links)";
 
@@ -68,8 +76,8 @@ public class SessionController1_9 extends BaseRestController {
 			    new CustomRepresentation(USER_CUSTOM_REP)));
 			session.add("locale", Context.getLocale());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
-			session.add("sessionLocation",
-			    ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
+			session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
+			session.add("currentProvider", ConversionUtil.convertToRepresentation(getCurrentProvider(), Representation.REF));
 		}
 		return session;
 	}
@@ -119,4 +127,31 @@ public class SessionController1_9 extends BaseRestController {
 		Context.logout();
 	}
 
+	/**
+	 * Get current provider
+	 *
+	 * @return Provider if the user is authenticated
+	 */
+	private Provider getCurrentProvider() {
+		Provider currentProvider = null;
+		User currentUser = Context.getAuthenticatedUser();
+		if (currentUser != null) {
+			Collection<Provider> providers = new HashSet<Provider>();
+			try {
+				Context.addProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+				if (currentUser.getPerson() != null) {
+					providers = Context.getProviderService().getProvidersByPerson(currentUser.getPerson(), false);
+				}
+			}
+			finally {
+				Context.removeProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+			}
+			if (providers.size() > 1) {
+				log.warn("Can't handle users with multiple provider accounts");
+			} else if (providers.size() == 1) {
+				currentProvider = providers.iterator().next();
+			}
+		}
+		return currentProvider;
+	}
 }
