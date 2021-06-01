@@ -142,6 +142,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.openmrs.module</groupId>
+			<artifactId>legacyui-omod</artifactId>
+			<version>1.8.3</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
