@@ -9,9 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.APIException;
@@ -27,25 +26,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/password")
 public class ChangePasswordController1_8 extends BaseRestController {
-	
+
 	@Qualifier("userService")
 	@Autowired
 	private UserService userService;
-	
+
+	private final Log log = LogFactory.getLog(getClass());
+
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void changeOwnPassword(@RequestBody Map<String, String> body) {
+	public void changeOwnPassword(@RequestBody Map<String, String> body, HttpServletRequest servletRequest) {
 		String oldPassword = body.get("oldPassword");
 		String newPassword = body.get("newPassword");
 		if (!Context.isAuthenticated()) {
@@ -53,13 +56,16 @@ public class ChangePasswordController1_8 extends BaseRestController {
 		}
 		try {
 			userService.changePassword(oldPassword, newPassword);
-		}
-		catch (APIException ex) {
+			SessionListener.invalidateOtherSessions(Context.getAuthenticatedUser().getUuid(), servletRequest.getSession());
+		} catch (APIException ex) {
 			// this happens if they give the wrong oldPassword
+			log.error("Change password failed", ex);
 			throw new ValidationException(ex.getMessage());
+		} catch (Exception e) {
+			log.error("Change password failed", e);
 		}
 	}
-	
+
 	@RequestMapping(value = "/{userUuid}", method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
 	public void changeOthersPassword(@PathVariable("userUuid") String userUuid, @RequestBody Map<String, String> body) {
@@ -69,26 +75,71 @@ public class ChangePasswordController1_8 extends BaseRestController {
 		User user;
 		try {
 			user = userService.getUserByUuid(userUuid);
-		}
-		finally {
+		} finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
 			Context.removeProxyPrivilege("Get Users");
 		}
-		
+
 		if (user == null || user.getUserId() == null) {
 			throw new NullPointerException();
 		} else {
 			userService.changePassword(user, newPassword);
+			SessionListener.invalidateAllSessions(user.getUuid());
 		}
 	}
-	
+
 	// This probably belongs in the base class, but we don't want to test all the behaviors that would change
 	@ExceptionHandler(NullPointerException.class)
 	@ResponseBody
 	public SimpleObject handleNotFound(NullPointerException exception, HttpServletRequest request,
-	        HttpServletResponse response) {
+									   HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		return RestUtil.wrapErrorResponse(exception, "User not found");
 	}
-	
+
+	static class SessionListener {
+		private static final Log log = LogFactory.getLog(SessionListener.class);
+
+		private static final Map<String, List<HttpSession>> map = new HashMap<>();
+
+		public static void sessionCreated(String userUuid, HttpSession httpSession) {
+			if (!map.containsKey(userUuid))
+				map.put(userUuid, new ArrayList<>());
+
+			List<HttpSession> sessions = map.get(userUuid);
+			if (sessions.contains(httpSession))
+				return;
+
+			sessions.add(httpSession);
+			log.info(String.format("Added new session. Total sessions for user: %s = %d", userUuid, map.get(userUuid).size()));
+		}
+
+		public static void invalidateOtherSessions(String userUuid, HttpSession currentSession) {
+			log.info(String.format("Finding other sessions for the user: %s, for session: %s", userUuid, currentSession));
+			List<HttpSession> sessions = map.get(userUuid);
+			for (HttpSession session : sessions) {
+				if (!currentSession.getId().equals(session.getId())) {
+					session.invalidate();
+				}
+			}
+			ArrayList<HttpSession> httpSessions = new ArrayList<>();
+			httpSessions.add(currentSession);
+			map.put(userUuid, httpSessions);
+			log.info(String.format("Invalidated %d other sessions for the user with this session", sessions.size() - 1));
+		}
+
+		public static void invalidateAllSessions(String userUuid) {
+			log.info(String.format("Finding other sessions for the user: %s", userUuid));
+
+			List<HttpSession> sessions = map.get(userUuid);
+			if (sessions == null) {
+				log.info("No sessions found for this user");
+				return;
+			}
+
+			sessions.forEach(HttpSession::invalidate);
+			map.remove(userUuid);
+			log.info(String.format("Found %d sessions for the user: %s", sessions.size(), userUuid));
+		}
+	}
 }

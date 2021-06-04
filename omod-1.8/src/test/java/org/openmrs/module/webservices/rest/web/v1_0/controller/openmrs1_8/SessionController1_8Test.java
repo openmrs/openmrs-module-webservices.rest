@@ -30,24 +30,24 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest {
-	
+
 	private String SESSION_ID = "test-session-id";
-	
+
 	private SessionController1_8 controller;
-	
-	private WebRequest request;
-	
+
+	private ServletWebRequest request;
+
 	@Before
 	public void before() {
 		controller = new SessionController1_8();
 		MockHttpServletRequest hsr = new MockHttpServletRequest();
 		hsr.setSession(new MockHttpSession(new MockServletContext(), SESSION_ID));
 		request = new ServletWebRequest(hsr);
-		
+
 		Context.getAdministrationService().saveGlobalProperty(
 		    new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCALE_ALLOWED_LIST, "en_GB, sp, fr"));
 	}
-	
+
 	/**
 	 * @see SessionController1_8#delete()
 	 * @verifies log the client out
@@ -58,15 +58,15 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		controller.delete();
 		Assert.assertFalse(Context.isAuthenticated());
 	}
-	
+
 	/**
-	 * @see SessionController1_8#get(WebRequest)
+	 * @see SessionController1_8#get(WebRequest, javax.servlet.http.HttpServletRequest)
 	 * @verifies return the session id if the user is authenticated
 	 */
 	@Test
 	public void get_shouldReturnTheSessionIdAndUserIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get(request, request.getRequest());
 		Object userProp = PropertyUtils.getProperty(ret, "user");
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
@@ -75,29 +75,29 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(),
 		    PropertyUtils.getProperty(personProp, "uuid"));
 	}
-	
+
 	@Test
 	public void get_shouldReturnLocaleInfoIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get(request, request.getRequest());
 		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
 		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 		    ((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
-	
+
 	/**
-	 * @see SessionController1_8#get(WebRequest)
+	 * @see SessionController1_8#get(WebRequest, javax.servlet.http.HttpServletRequest)
 	 * @verifies return the session id if the user is not authenticated
 	 */
 	@Test
 	public void get_shouldReturnTheSessionIdIfTheUserIsNotAuthenticated() throws Exception {
 		Context.logout();
 		Assert.assertFalse(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get(request, request.getRequest());
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(false, PropertyUtils.getProperty(ret, "authenticated"));
 	}
-	
+
 	@Test
 	public void post_shouldSetTheUserLocale() throws Exception {
 		Locale newLocale = new Locale("sp");
@@ -106,14 +106,14 @@ public class SessionController1_8Test extends BaseModuleWebContextSensitiveTest 
 		controller.post(new ObjectMapper().readValue(content, HashMap.class));
 		Assert.assertEquals(newLocale, Context.getLocale());
 	}
-	
+
 	@Test(expected = APIException.class)
 	public void post_shouldFailWhenSettingIllegalLocale() throws Exception {
 		String newLocale = "fOOb@r:";
 		String content = "{\"locale\":\"" + newLocale + "\"}";
 		controller.post(new ObjectMapper().readValue(content, HashMap.class));
 	}
-	
+
 	@Test(expected = APIException.class)
 	public void post_shouldFailWhenSettingDisallowedLocale() throws Exception {
 		String newLocale = "km_KH";

@@ -15,12 +15,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.LocaleUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.User;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Controller that lets a client check the status of their session, and log out. (Authenticating is
  * handled through a filter, and may happen through this or any other resource.
@@ -40,13 +46,15 @@ import org.springframework.web.context.request.WebRequest;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/session")
 public class SessionController1_8 extends BaseRestController {
-	
+
 	@Autowired
 	RestService restService;
-	
+
+    private final Log log = LogFactory.getLog(getClass());
+
 	/**
 	 * Tells the user their sessionId, and whether or not they are authenticated.
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * @should return the session id if the user is authenticated
@@ -54,20 +62,22 @@ public class SessionController1_8 extends BaseRestController {
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Object get(WebRequest request) {
+	public Object get(WebRequest request, HttpServletRequest httpServletRequest) {
 		boolean authenticated = Context.isAuthenticated();
 		SimpleObject session = new SimpleObject();
 		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
 		if (authenticated) {
 			String repParam = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 			Representation rep = (repParam != null) ? restService.getRepresentation(repParam) : Representation.DEFAULT;
-			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), rep));
-			session.add("locale", Context.getLocale());
+            User user = Context.getAuthenticatedUser();
+            session.add("locale", Context.getLocale());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
+            session.add("user", ConversionUtil.convertToRepresentation(user, rep));
+            ChangePasswordController1_8.SessionListener.sessionCreated(user.getUuid(), httpServletRequest.getSession(false));
 		}
 		return session;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
@@ -87,10 +97,10 @@ public class SessionController1_8 extends BaseRestController {
 			throw new APIException(" '" + localeStr + "' is not in the list of allowed locales.");
 		}
 	}
-	
+
 	/**
 	 * Logs the client out
-	 * 
+	 *
 	 * @should log the client out
 	 */
 	@RequestMapping(method = RequestMethod.DELETE)
@@ -99,5 +109,5 @@ public class SessionController1_8 extends BaseRestController {
 	public void delete() {
 		Context.logout();
 	}
-	
+
 }
