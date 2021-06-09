@@ -154,7 +154,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 	protected PageableResult doSearch(RequestContext context) {
 		String query = context.getParameter("q");
 		List<TaskDefinition> taskDefinitions = null;
-		if (query == "registered") {
+		if (query.equals("registered")) {
 			taskDefinitions = (ArrayList<TaskDefinition>) taskServiceWrapper.getRegisteredTasks();
 		} else {
 			taskDefinitions = (ArrayList<TaskDefinition>) taskServiceWrapper.getScheduledTasks();

@@ -1037,7 +1037,12 @@ public class SwaggerSpecificationCreator {
 		        .consumes("application/json").produces("application/json");
 		
 		// create definition
+
+		if (operationName.equals("post") || operationName.equals("get")) {
+		
+
 		if (operationName == "post" || operationName == "get") {
+
 			createDefinition(operationEnum, resourceName, resourceParentName, resourceHandler);
 		}
 		
