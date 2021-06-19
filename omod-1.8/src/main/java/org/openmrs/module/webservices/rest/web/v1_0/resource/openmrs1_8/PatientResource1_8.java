@@ -36,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
@@ -309,6 +310,19 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	 */
 	@Override
 	protected AlreadyPaged<Patient> doSearch(RequestContext context) {
+		String attributesParam = context.getParameter("attributesToFindDuplicatesBy");
+		if (attributesParam != null) {
+			List<String> attributes = Arrays.asList((attributesParam.split(",")));
+
+			if (attributes.size() < 2) {
+				throw new IllegalRequestException("Choose a minimum of two attributes");
+			}
+
+			List<Patient> duplicatedPatientsFound = Context.getPatientService().getDuplicatePatientsByAttributes(attributes);
+
+			return new AlreadyPaged<Patient>(context, duplicatedPatientsFound, false, (long) duplicatedPatientsFound.size());
+		}
+
 		return new ServiceSearcher<Patient>(PatientService.class, "getPatients", "getCountOfPatients").search(
 		    context.getParameter("q"), context);
 	}
