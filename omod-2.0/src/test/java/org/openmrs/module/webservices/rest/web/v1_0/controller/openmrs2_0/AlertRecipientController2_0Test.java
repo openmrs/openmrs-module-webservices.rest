@@ -88,9 +88,14 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 
 	@Test
 	public void shouldPurgeRecipientFromAlert() throws Exception {
+        Alert existingAlert = getAlertByUuid(NEW_ALERT_UUID);
+        assertNotNull(existingAlert);
+
+        assertEquals(1, existingAlert.getRecipients().size());
+
 		handle(newDeleteRequest(getURI() + "/" + getUuid()));
 
-		Alert existingAlert = getAlertByUuid(NEW_ALERT_UUID);
+		existingAlert = getAlertByUuid(NEW_ALERT_UUID);
 		assertNotNull(existingAlert);
 
 		assertEquals(0, existingAlert.getRecipients().size());
