@@ -15,6 +15,14 @@ import java.util.Map;
 
 /**
  * REST wrapper for {@link AdministrationSectionExt}
+ * We're using it instead of {@link AdministrationSectionExt} for a few reasons:
+ * - {@link AdministrationSectionExt} class doesn't support setters for its fields
+ * so we cannot map their values, for example as we do with message keys.
+ * - Using {@link AdministrationSectionExt} as a Resource requires all Resource classes
+ * to have this class on their classpath, resulting in requirement to add legacyui-omod
+ * dependency to each module
+ * - Using a custom wrapper gives us more flexibility when {@link AdministrationSectionExt}
+ * would change in the future.
  */
 public class AdministrationSectionLinks2_0 {
 
