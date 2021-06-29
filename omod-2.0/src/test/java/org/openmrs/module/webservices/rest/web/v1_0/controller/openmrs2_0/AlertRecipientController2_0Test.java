@@ -21,6 +21,7 @@ import org.openmrs.notification.AlertService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Tests CRUD operations for {@link AlertRecipient}s via web service calls
@@ -72,10 +73,14 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 
 	@Test
 	public void shouldAddRecipientToAlert() throws Exception {
+		Alert existingAlert = getAlertByUuid(EMPTY_ALERT_UUID);
+		assertNotNull(existingAlert);
+		assertNull(existingAlert.getRecipients());
+
 		String json = "{\"recipient\": \"" + RestTestConstants1_8.USER_UUID + "\"}";
 		handle(newPostRequest("alert/" + EMPTY_ALERT_UUID + "/recipient", json));
 
-		Alert existingAlert = getAlertByUuid(EMPTY_ALERT_UUID);
+		existingAlert = getAlertByUuid(EMPTY_ALERT_UUID);
 		assertNotNull(existingAlert);
 
 		assertEquals(1, existingAlert.getRecipients().size());
