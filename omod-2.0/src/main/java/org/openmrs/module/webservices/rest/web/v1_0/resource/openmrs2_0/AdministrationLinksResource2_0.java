@@ -32,15 +32,15 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks2_0;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Resource(name = RestConstants.VERSION_1 + "/administrationlinks", supportedClass = AdministrationSectionLinks2_0.class,
+@Resource(name = RestConstants.VERSION_1 + "/administrationlinks", supportedClass = AdministrationSectionLinks.class,
 		supportedOpenmrsVersions = { "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
-public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResource<AdministrationSectionLinks2_0> {
+public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResource<AdministrationSectionLinks> {
 
 	private static final String UUID = "uuid";
 
@@ -55,16 +55,16 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();
 
 	@Override
-	public AdministrationSectionLinks2_0 newDelegate() {
+	public AdministrationSectionLinks newDelegate() {
 		return null;
 	}
 
 	@Override
-	public AdministrationSectionLinks2_0 getByUniqueId(String moduleId) {
+	public AdministrationSectionLinks getByUniqueId(String moduleId) {
 		// Assumes that moduleId is an id of a module that user wants to get admin links for.
 		// AdministrationLinksResource has no id by itself as it's not an OpenMRS data object.
 
-		AdministrationSectionLinks2_0 administrationLinks = getAdministrationLinksForModule(moduleId);
+		AdministrationSectionLinks administrationLinks = getAdministrationLinksForModule(moduleId);
 		if (administrationLinks == null) {
 			throw new ObjectNotFoundException(
 					"Module with id: " + moduleId + " doesn't have any administration links registered.");
@@ -104,17 +104,17 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	@PropertyGetter(UUID)
-	public static String getUuid(AdministrationSectionLinks2_0 instance) {
+	public static String getUuid(AdministrationSectionLinks instance) {
 		return instance.getModuleId();
 	}
 
 	@PropertyGetter(DISPLAY)
-	public static String getDisplay(AdministrationSectionLinks2_0 instance) {
+	public static String getDisplay(AdministrationSectionLinks instance) {
 		return instance.getTitle();
 	}
 
 	@PropertyGetter(LINKS)
-	public static Map<String, String> getLinks(AdministrationSectionLinks2_0 instance) {
+	public static Map<String, String> getLinks(AdministrationSectionLinks instance) {
 		return instance.getLinks();
 	}
 
@@ -131,11 +131,11 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	@Override
-	public NeedsPaging<AdministrationSectionLinks2_0> doGetAll(RequestContext context) throws ResponseException {
+	public NeedsPaging<AdministrationSectionLinks> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<>(getAllAdministrationLinks(), context);
 	}
 
-	private AdministrationSectionLinks2_0 getAdministrationLinksForModule(String moduleId) {
+	private AdministrationSectionLinks getAdministrationLinksForModule(String moduleId) {
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 		for (Extension adminListExtension : adminListsExtensions) {
 			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId()
@@ -147,8 +147,8 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		return null;
 	}
 
-	private List<AdministrationSectionLinks2_0> getAllAdministrationLinks() {
-		List<AdministrationSectionLinks2_0> modulesWithLinksList = new ArrayList<>();
+	private List<AdministrationSectionLinks> getAllAdministrationLinks() {
+		List<AdministrationSectionLinks> modulesWithLinksList = new ArrayList<>();
 
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
@@ -161,7 +161,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		return modulesWithLinksList;
 	}
 
-	private AdministrationSectionLinks2_0 mapAdminListExtension(Extension extension) {
+	private AdministrationSectionLinks mapAdminListExtension(Extension extension) {
 		MessageSourceService messageSourceService = Context.getMessageSourceService();
 		AdministrationSectionExt adminListExtension = (AdministrationSectionExt) extension;
 
@@ -174,7 +174,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 			link.setValue(messageSourceService.getMessage(link.getValue()));
 		}
 
-		AdministrationSectionLinks2_0 administrationSectionLinks = new AdministrationSectionLinks2_0();
+		AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
 		administrationSectionLinks.setModuleId(adminListExtension.getModuleId());
 		administrationSectionLinks.setTitle(title);
 		administrationSectionLinks.setLinks(links);

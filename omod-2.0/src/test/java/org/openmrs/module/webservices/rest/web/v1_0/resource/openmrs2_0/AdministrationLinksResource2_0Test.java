@@ -11,20 +11,20 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks2_0;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AdministrationLinksResource2_0Test
-		extends BaseDelegatingResourceTest<AdministrationLinksResource2_0, AdministrationSectionLinks2_0> {
+		extends BaseDelegatingResourceTest<AdministrationLinksResource2_0, AdministrationSectionLinks> {
 
 	@Override
-	public AdministrationSectionLinks2_0 newObject() {
+	public AdministrationSectionLinks newObject() {
 		Map<String, String> links = new HashMap<>();
 		links.put("module/webservices/rest/settings.form", RestConstants.MODULE_ID + ".manage.settings");
 
-		return new AdministrationSectionLinks2_0(RestConstants.MODULE_ID,
+		return new AdministrationSectionLinks(RestConstants.MODULE_ID,
 				RestConstants.MODULE_ID + ".title", links);
 	}
 

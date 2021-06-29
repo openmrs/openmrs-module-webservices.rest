@@ -24,7 +24,7 @@ import java.util.Map;
  * - Using a custom wrapper gives us more flexibility when {@link AdministrationSectionExt}
  * would change in the future.
  */
-public class AdministrationSectionLinks2_0 {
+public class AdministrationSectionLinks {
 
 	private String moduleId;
 
@@ -32,10 +32,10 @@ public class AdministrationSectionLinks2_0 {
 
 	private Map<String, String> links;
 
-	public AdministrationSectionLinks2_0() {
+	public AdministrationSectionLinks() {
 	}
 
-	public AdministrationSectionLinks2_0(String moduleId, String title, Map<String, String> links) {
+	public AdministrationSectionLinks(String moduleId, String title, Map<String, String> links) {
 		this.moduleId = moduleId;
 		this.title = title;
 		this.links = links;

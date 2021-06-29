@@ -21,7 +21,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.AdministrationLinksResource2_0;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks2_0;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -51,7 +51,7 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 		setupMockAtlasModuleAdminListExtension();
 
 		AdministrationLinksResource2_0 administrationLinksResource = (AdministrationLinksResource2_0) restService
-				.getResourceBySupportedClass(AdministrationSectionLinks2_0.class);
+				.getResourceBySupportedClass(AdministrationSectionLinks.class);
 
 		Whitebox.setInternalState(administrationLinksResource, "moduleFactoryWrapper", mockModuleFactory);
 	}
