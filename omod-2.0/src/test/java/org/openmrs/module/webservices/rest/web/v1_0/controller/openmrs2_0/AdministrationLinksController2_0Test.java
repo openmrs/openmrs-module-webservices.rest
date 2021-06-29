@@ -102,7 +102,7 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 
 	private void assertCorrectAtlasModuleLinks(Object result)
 			throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-		assertEquals("openconceptlab", PropertyUtils.getProperty(result, "uuid"));
+		assertEquals("atlas", PropertyUtils.getProperty(result, "uuid"));
 		assertEquals("Atlas-links", PropertyUtils.getProperty(result, "title"));
 
 		Object links = PropertyUtils.getProperty(result, "administrationLinks");
@@ -154,7 +154,7 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 				return "org.openmrs.admin.list";
 			}
 		};
-		extension.setModuleId("openconceptlab");
+		extension.setModuleId("atlas");
 		mockModuleFactory.loadedExtensions.add(extension);
 	}
 }
