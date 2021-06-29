@@ -103,12 +103,12 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		return null;
 	}
 
-	@PropertyGetter("uuid")
+	@PropertyGetter(UUID)
 	public static String getUuid(AdministrationSectionLinks2_0 instance) {
 		return instance.getModuleId();
 	}
 
-	@PropertyGetter("display")
+	@PropertyGetter(DISPLAY)
 	public static String getDisplay(AdministrationSectionLinks2_0 instance) {
 		return instance.getTitle();
 	}
