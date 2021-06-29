@@ -16,7 +16,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTes
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class PatientController2_4Test extends RestControllerTestUtils {
 
@@ -27,7 +27,7 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 
-		assertTrue(Util.getResultsSize(result) > 0);
+		assertEquals(4, Util.getResultsSize(result));
 	}
 
 }
