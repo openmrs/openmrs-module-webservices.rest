@@ -24,4 +24,8 @@ public class ObjectNotFoundException extends ResponseException {
 	public ObjectNotFoundException() {
 		
 	}
+
+	public ObjectNotFoundException(String message) {
+		super(message);
+	}
 }

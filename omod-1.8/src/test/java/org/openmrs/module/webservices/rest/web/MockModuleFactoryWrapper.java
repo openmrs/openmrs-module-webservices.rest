@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import org.openmrs.module.Extension;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,9 @@ import java.util.List;
 public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	
 	public List<Module> loadedModules = new ArrayList<Module>();
-	
+
+	public List<Extension> loadedExtensions = new ArrayList<Extension>();
+
 	public List<Module> startedModules = new ArrayList<Module>();
 	
 	public Module loadModuleMock;
@@ -53,7 +56,18 @@ public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	public Collection<Module> getLoadedModules() {
 		return loadedModules;
 	}
-	
+
+	@Override
+	public List<Extension> getExtensions(String pointId) {
+		List<Extension> foundExtensions = new ArrayList<Extension>();
+		for (Extension loadedExtension : loadedExtensions) {
+			if (loadedExtension.getPointId().equals(pointId)) {
+				foundExtensions.add(loadedExtension);
+			}
+		}
+		return foundExtensions;
+	}
+
 	@Override
 	public boolean isModuleStarted(Module module) {
 		return startedModules.contains(module);

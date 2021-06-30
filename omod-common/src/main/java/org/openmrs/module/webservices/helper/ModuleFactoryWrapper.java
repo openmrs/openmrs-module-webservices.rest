@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.helper;
 
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.Extension;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.ModuleFileParser;
@@ -51,6 +52,10 @@ public class ModuleFactoryWrapper {
 	
 	public Collection<Module> getLoadedModules() {
 		return ModuleFactory.getLoadedModules();
+	}
+
+	public List<Extension> getExtensions(String pointId) {
+		return ModuleFactory.getExtensions(pointId);
 	}
 	
 	public boolean isModuleStarted(Module module) {
