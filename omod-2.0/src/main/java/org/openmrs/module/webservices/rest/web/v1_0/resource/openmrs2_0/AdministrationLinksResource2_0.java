@@ -54,6 +54,8 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 
 	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();
 
+	private MessageSourceService messageSourceService = Context.getMessageSourceService();
+
 	@Override
 	public AdministrationSectionLinks newDelegate() {
 		return null;
@@ -162,7 +164,6 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	private AdministrationSectionLinks mapAdminListExtension(Extension extension) {
-		MessageSourceService messageSourceService = Context.getMessageSourceService();
 		AdministrationSectionExt adminListExtension = (AdministrationSectionExt) extension;
 
 		// map module title message key to its value
