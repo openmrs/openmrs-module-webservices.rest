@@ -54,8 +54,6 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 
 	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();
 
-	private MessageSourceService messageSourceService = Context.getMessageSourceService();
-
 	@Override
 	public AdministrationSectionLinks newDelegate() {
 		return null;
@@ -138,11 +136,14 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	private AdministrationSectionLinks getAdministrationLinksForModule(String moduleId) {
+		MessageSourceService messageSourceService = Context.getMessageSourceService();
+
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
+
 		for (Extension adminListExtension : adminListsExtensions) {
 			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId()
 					.equals(moduleId)) {
-				return mapAdminListExtension(adminListExtension);
+				return mapAdminListExtension(adminListExtension, messageSourceService);
 			}
 		}
 
@@ -150,20 +151,22 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	private List<AdministrationSectionLinks> getAllAdministrationLinks() {
+		MessageSourceService messageSourceService = Context.getMessageSourceService();
 		List<AdministrationSectionLinks> modulesWithLinksList = new ArrayList<>();
 
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
 			if (adminListExtension instanceof AdministrationSectionExt) {
-				modulesWithLinksList.add(mapAdminListExtension(adminListExtension));
+				modulesWithLinksList.add(mapAdminListExtension(adminListExtension, messageSourceService));
 			}
 		}
 
 		return modulesWithLinksList;
 	}
 
-	private AdministrationSectionLinks mapAdminListExtension(Extension extension) {
+	private AdministrationSectionLinks mapAdminListExtension(Extension extension,
+			MessageSourceService messageSourceService) {
 		AdministrationSectionExt adminListExtension = (AdministrationSectionExt) extension;
 
 		// map module title message key to its value
