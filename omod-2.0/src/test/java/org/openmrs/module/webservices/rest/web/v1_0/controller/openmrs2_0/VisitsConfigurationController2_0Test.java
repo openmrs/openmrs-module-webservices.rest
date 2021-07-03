@@ -69,7 +69,7 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 		assertNotNull(result);
 		assertEquals(true, PropertyUtils.getProperty(result, "enableVisits"));
 		assertEquals("org.openmrs.api.handler.NoVisitAssignmentHandler",
-				PropertyUtils.getProperty(result, "visitEncounterHandler"));
+				PropertyUtils.getProperty(result, "encounterVisitsAssignmentHandler"));
 
 		List<Object> visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
 		assertEquals(1, visitTypesToAutoClose.size());
@@ -79,7 +79,7 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 	public void shouldUpdateCurrentConfiguration() throws Exception {
 		// update configuration
 		String json =
-				"{\"enableVisits\": true,\"visitEncounterHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"startAutoCloseVisitsTask\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
+				"{\"enableVisits\": true,\"encounterVisitsAssignmentHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"startAutoCloseVisitsTask\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
 						+ RestTestConstants1_9.VISIT_TYPE_UUID + "\"}]}";
 		handle(newPostRequest("visitconfiguration", json));
 
@@ -91,7 +91,7 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 		assertNotNull(result);
 		assertEquals(true, PropertyUtils.getProperty(result, "enableVisits"));
 		assertEquals("org.openmrs.api.handler.NoVisitAssignmentHandler",
-				PropertyUtils.getProperty(result, "visitEncounterHandler"));
+				PropertyUtils.getProperty(result, "encounterVisitsAssignmentHandler"));
 
 		List<Object> visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
 		assertEquals(1, visitTypesToAutoClose.size());

@@ -31,7 +31,7 @@ public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<Vis
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("visitEncounterHandler");
+		description.addProperty("encounterVisitsAssignmentHandler");
 		description.addProperty("enableVisits");
 		description.addProperty("startAutoCloseVisitsTask");
 		if (rep instanceof FullRepresentation) {
@@ -54,7 +54,7 @@ public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<Vis
 	@Override
 	public SimpleObject asRepresentation(VisitsConfiguration delegate, Representation rep) throws ConversionException {
 		SimpleObject configuration = new SimpleObject();
-		configuration.add("visitEncounterHandler", delegate.getVisitEncounterHandler());
+		configuration.add("encounterVisitsAssignmentHandler", delegate.getEncounterVisitsAssignmentHandler());
 		configuration.add("enableVisits", delegate.getEnableVisits());
 		configuration.add("startAutoCloseVisitsTask", delegate.getStartAutoCloseVisitsTask());
 

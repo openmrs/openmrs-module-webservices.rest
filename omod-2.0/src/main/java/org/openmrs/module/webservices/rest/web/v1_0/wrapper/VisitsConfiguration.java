@@ -15,7 +15,7 @@ import java.util.List;
 
 public class VisitsConfiguration {
 
-	private String visitEncounterHandler;
+	private String encounterVisitsAssignmentHandler;
 
 	private Boolean enableVisits;
 
@@ -23,12 +23,12 @@ public class VisitsConfiguration {
 
 	private List<VisitType> visitTypesToAutoClose;
 
-	public String getVisitEncounterHandler() {
-		return visitEncounterHandler;
+	public String getEncounterVisitsAssignmentHandler() {
+		return encounterVisitsAssignmentHandler;
 	}
 
-	public void setVisitEncounterHandler(String visitEncounterHandler) {
-		this.visitEncounterHandler = visitEncounterHandler;
+	public void setEncounterVisitsAssignmentHandler(String encounterVisitsAssignmentHandler) {
+		this.encounterVisitsAssignmentHandler = encounterVisitsAssignmentHandler;
 	}
 
 	public Boolean getEnableVisits() {

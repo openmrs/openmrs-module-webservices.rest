@@ -62,7 +62,7 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 
 		VisitsConfiguration visitsConfiguration = new VisitsConfiguration();
 		visitsConfiguration.setEnableVisits(getEnableVisitsValue(administrationService));
-		visitsConfiguration.setVisitEncounterHandler(getVisitEncounterHandlerValue(administrationService, encounterService));
+		visitsConfiguration.setEncounterVisitsAssignmentHandler(getVisitEncounterHandlerValue(administrationService, encounterService));
 		visitsConfiguration.setStartAutoCloseVisitsTask(getAutoCloseVisitsTaskStartedValue(schedulerService));
 		visitsConfiguration.setVisitTypesToAutoClose(getVisitTypesToAutoCloseValue(administrationService, visitService));
 
@@ -78,7 +78,7 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 		SchedulerService schedulerService = Context.getSchedulerService();
 
 		// validate
-		if (newConfiguration.getEnableVisits() && StringUtils.isEmpty(newConfiguration.getVisitEncounterHandler())) {
+		if (newConfiguration.getEnableVisits() && StringUtils.isEmpty(newConfiguration.getEncounterVisitsAssignmentHandler())) {
 			throw new IllegalRequestException("Visit encounter handler cannot be empty");
 		}
 
@@ -86,7 +86,7 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 
 		if (newConfiguration.getEnableVisits()) {
 			updateVisitEncounterHandlerValue(administrationService,
-					newConfiguration.getVisitEncounterHandler());
+					newConfiguration.getEncounterVisitsAssignmentHandler());
 		}
 		updateGetAutoCloseVisitsTaskStartedValue(schedulerService, newConfiguration.getStartAutoCloseVisitsTask());
 		updateVisitTypesToAutoCloseValue(administrationService, visitService, newConfiguration.getVisitTypesToAutoClose());
