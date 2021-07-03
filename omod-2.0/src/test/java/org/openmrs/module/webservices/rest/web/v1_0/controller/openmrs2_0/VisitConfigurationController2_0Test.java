@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.poi.hssf.record.formula.functions.Proper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.GlobalProperty;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class VisitConfigurationController2_0Test extends RestControllerTestUtils {
 
@@ -77,6 +79,16 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 
 	@Test
 	public void shouldUpdateCurrentConfiguration() throws Exception {
+		// assert initial configuration
+		MockHttpServletRequest req = request(RequestMethod.GET, "visitconfiguration");
+		SimpleObject result = deserialize(handle(req));
+
+		assertNotNull(result);
+		assertEquals(false, PropertyUtils.getProperty(result, "enableVisits"));
+		assertNull(PropertyUtils.getProperty(result, "encounterVisitsAssignmentHandler"));
+		List<Object> visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
+		assertEquals(0, visitTypesToAutoClose.size());
+
 		// update configuration
 		String json =
 				"{\"enableVisits\": true,\"encounterVisitsAssignmentHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"startAutoCloseVisitsTask\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
@@ -84,8 +96,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 		handle(newPostRequest("visitconfiguration", json));
 
 		// make GET call
-		MockHttpServletRequest req = request(RequestMethod.GET, "visitconfiguration");
-		SimpleObject result = deserialize(handle(req));
+		result = deserialize(handle(req));
 
 		// assert response
 		assertNotNull(result);
@@ -93,7 +104,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 		assertEquals("org.openmrs.api.handler.NoVisitAssignmentHandler",
 				PropertyUtils.getProperty(result, "encounterVisitsAssignmentHandler"));
 
-		List<Object> visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
+		visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
 		assertEquals(1, visitTypesToAutoClose.size());
 	}
 }
