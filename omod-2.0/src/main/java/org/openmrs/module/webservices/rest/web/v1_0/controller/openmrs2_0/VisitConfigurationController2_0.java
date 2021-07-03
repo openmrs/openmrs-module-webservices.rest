@@ -133,7 +133,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 			return autoCloseVisitsTaskStarted.getStarted();
 		}
 
-		return null;
+		return false;
 	}
 
 	private void updateGetAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService,
