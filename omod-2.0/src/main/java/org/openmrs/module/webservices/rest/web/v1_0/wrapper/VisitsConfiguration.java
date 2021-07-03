@@ -19,7 +19,7 @@ public class VisitsConfiguration {
 
 	private Boolean enableVisits;
 
-	private Boolean autoCloseVisitsTaskStarted;
+	private Boolean startAutoCloseVisitsTask;
 
 	private List<VisitType> visitTypesToAutoClose;
 
@@ -39,12 +39,12 @@ public class VisitsConfiguration {
 		this.enableVisits = enableVisits;
 	}
 
-	public Boolean getAutoCloseVisitsTaskStarted() {
-		return autoCloseVisitsTaskStarted;
+	public Boolean getStartAutoCloseVisitsTask() {
+		return startAutoCloseVisitsTask;
 	}
 
-	public void setAutoCloseVisitsTaskStarted(Boolean autoCloseVisitsTaskStarted) {
-		this.autoCloseVisitsTaskStarted = autoCloseVisitsTaskStarted;
+	public void setStartAutoCloseVisitsTask(Boolean startAutoCloseVisitsTask) {
+		this.startAutoCloseVisitsTask = startAutoCloseVisitsTask;
 	}
 
 	public List<VisitType> getVisitTypesToAutoClose() {

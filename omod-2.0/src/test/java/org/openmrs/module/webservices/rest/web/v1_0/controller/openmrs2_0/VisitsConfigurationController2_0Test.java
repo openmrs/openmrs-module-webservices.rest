@@ -79,7 +79,7 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 	public void shouldUpdateCurrentConfiguration() throws Exception {
 		// update configuration
 		String json =
-				"{\"enableVisits\": true,\"visitEncounterHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"autoCloseVisitsTaskStarted\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
+				"{\"enableVisits\": true,\"visitEncounterHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"startAutoCloseVisitsTask\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
 						+ RestTestConstants1_9.VISIT_TYPE_UUID + "\"}]}";
 		handle(newPostRequest("visitconfiguration", json));
 

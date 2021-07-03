@@ -63,7 +63,7 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 		VisitsConfiguration visitsConfiguration = new VisitsConfiguration();
 		visitsConfiguration.setEnableVisits(getEnableVisitsValue(administrationService));
 		visitsConfiguration.setVisitEncounterHandler(getVisitEncounterHandlerValue(administrationService, encounterService));
-		visitsConfiguration.setAutoCloseVisitsTaskStarted(getAutoCloseVisitsTaskStartedValue(schedulerService));
+		visitsConfiguration.setStartAutoCloseVisitsTask(getAutoCloseVisitsTaskStartedValue(schedulerService));
 		visitsConfiguration.setVisitTypesToAutoClose(getVisitTypesToAutoCloseValue(administrationService, visitService));
 
 		return ConversionUtil.convertToRepresentation(visitsConfiguration, Representation.FULL);
@@ -88,7 +88,7 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 			updateVisitEncounterHandlerValue(administrationService,
 					newConfiguration.getVisitEncounterHandler());
 		}
-		updateGetAutoCloseVisitsTaskStartedValue(schedulerService, newConfiguration.getAutoCloseVisitsTaskStarted());
+		updateGetAutoCloseVisitsTaskStartedValue(schedulerService, newConfiguration.getStartAutoCloseVisitsTask());
 		updateVisitTypesToAutoCloseValue(administrationService, visitService, newConfiguration.getVisitTypesToAutoClose());
 	}
 

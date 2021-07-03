@@ -33,7 +33,7 @@ public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<Vis
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("visitEncounterHandler");
 		description.addProperty("enableVisits");
-		description.addProperty("autoCloseVisitsTaskStarted");
+		description.addProperty("startAutoCloseVisitsTask");
 		if (rep instanceof FullRepresentation) {
 			description.addProperty("visitTypesToAutoClose");
 			return description;
@@ -56,7 +56,7 @@ public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<Vis
 		SimpleObject configuration = new SimpleObject();
 		configuration.add("visitEncounterHandler", delegate.getVisitEncounterHandler());
 		configuration.add("enableVisits", delegate.getEnableVisits());
-		configuration.add("autoCloseVisitsTaskStarted", delegate.getAutoCloseVisitsTaskStarted());
+		configuration.add("startAutoCloseVisitsTask", delegate.getStartAutoCloseVisitsTask());
 
 		if (rep instanceof FullRepresentation) {
 			VisitTypeResource1_9 visitTypeResource = (VisitTypeResource1_9) Context.getService(RestService.class)
