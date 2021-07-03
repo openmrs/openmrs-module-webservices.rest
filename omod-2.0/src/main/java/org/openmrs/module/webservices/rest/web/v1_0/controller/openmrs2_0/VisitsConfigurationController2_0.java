@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/visitsconfiguration")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/visitconfiguration")
 public class VisitsConfigurationController2_0 extends BaseRestController {
 
 	@RequestMapping(method = RequestMethod.GET)

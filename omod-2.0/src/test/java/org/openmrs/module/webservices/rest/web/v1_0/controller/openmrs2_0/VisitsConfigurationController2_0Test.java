@@ -62,7 +62,7 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 		administrationService.saveGlobalProperty(visitTypesToAutoCloseGp);
 
 		// make GET call
-		MockHttpServletRequest req = request(RequestMethod.GET, "visitsconfiguration");
+		MockHttpServletRequest req = request(RequestMethod.GET, "visitconfiguration");
 		SimpleObject result = deserialize(handle(req));
 
 		// assert response
@@ -81,10 +81,10 @@ public class VisitsConfigurationController2_0Test extends RestControllerTestUtil
 		String json =
 				"{\"enableVisits\": true,\"visitEncounterHandler\": \"org.openmrs.api.handler.NoVisitAssignmentHandler\",\"autoCloseVisitsTaskStarted\": true,\"visitTypesToAutoClose\":[{\"uuid\":\""
 						+ RestTestConstants1_9.VISIT_TYPE_UUID + "\"}]}";
-		handle(newPostRequest("visitsconfiguration", json));
+		handle(newPostRequest("visitconfiguration", json));
 
 		// make GET call
-		MockHttpServletRequest req = request(RequestMethod.GET, "visitsconfiguration");
+		MockHttpServletRequest req = request(RequestMethod.GET, "visitconfiguration");
 		SimpleObject result = deserialize(handle(req));
 
 		// assert response
