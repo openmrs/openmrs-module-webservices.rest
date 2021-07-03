@@ -20,13 +20,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConve
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitTypeResource1_9;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitsConfiguration;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Handler(supports = VisitsConfiguration.class, order = 0)
-public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<VisitsConfiguration> {
+@Handler(supports = VisitConfiguration.class, order = 0)
+public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<VisitConfiguration> {
 
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
@@ -42,17 +42,17 @@ public class VisitsConfigurationConverter2_0 extends BaseDelegatingConverter<Vis
 	}
 
 	@Override
-	public VisitsConfiguration newInstance(String type) {
-		return new VisitsConfiguration();
+	public VisitConfiguration newInstance(String type) {
+		return new VisitConfiguration();
 	}
 
 	@Override
-	public VisitsConfiguration getByUniqueId(String string) {
+	public VisitConfiguration getByUniqueId(String string) {
 		return null;
 	}
 
 	@Override
-	public SimpleObject asRepresentation(VisitsConfiguration delegate, Representation rep) throws ConversionException {
+	public SimpleObject asRepresentation(VisitConfiguration delegate, Representation rep) throws ConversionException {
 		SimpleObject configuration = new SimpleObject();
 		configuration.add("encounterVisitsAssignmentHandler", delegate.getEncounterVisitsAssignmentHandler());
 		configuration.add("enableVisits", delegate.getEnableVisits());

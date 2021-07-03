@@ -13,7 +13,7 @@ import org.openmrs.VisitType;
 
 import java.util.List;
 
-public class VisitsConfiguration {
+public class VisitConfiguration {
 
 	private String encounterVisitsAssignmentHandler;
 

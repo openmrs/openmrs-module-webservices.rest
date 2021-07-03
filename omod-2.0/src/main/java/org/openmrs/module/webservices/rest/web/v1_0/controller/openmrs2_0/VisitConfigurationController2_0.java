@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitsConfiguration;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/visitconfiguration")
-public class VisitsConfigurationController2_0 extends BaseRestController {
+public class VisitConfigurationController2_0 extends BaseRestController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
@@ -60,18 +60,19 @@ public class VisitsConfigurationController2_0 extends BaseRestController {
 		VisitService visitService = Context.getVisitService();
 		SchedulerService schedulerService = Context.getSchedulerService();
 
-		VisitsConfiguration visitsConfiguration = new VisitsConfiguration();
-		visitsConfiguration.setEnableVisits(getEnableVisitsValue(administrationService));
-		visitsConfiguration.setEncounterVisitsAssignmentHandler(getVisitEncounterHandlerValue(administrationService, encounterService));
-		visitsConfiguration.setStartAutoCloseVisitsTask(getAutoCloseVisitsTaskStartedValue(schedulerService));
-		visitsConfiguration.setVisitTypesToAutoClose(getVisitTypesToAutoCloseValue(administrationService, visitService));
+		VisitConfiguration visitConfiguration = new VisitConfiguration();
+		visitConfiguration.setEnableVisits(getEnableVisitsValue(administrationService));
+		visitConfiguration
+				.setEncounterVisitsAssignmentHandler(getVisitEncounterHandlerValue(administrationService, encounterService));
+		visitConfiguration.setStartAutoCloseVisitsTask(getAutoCloseVisitsTaskStartedValue(schedulerService));
+		visitConfiguration.setVisitTypesToAutoClose(getVisitTypesToAutoCloseValue(administrationService, visitService));
 
-		return ConversionUtil.convertToRepresentation(visitsConfiguration, Representation.FULL);
+		return ConversionUtil.convertToRepresentation(visitConfiguration, Representation.FULL);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void updateCurrentConfiguration(@RequestBody VisitsConfiguration newConfiguration) {
+	public void updateCurrentConfiguration(@RequestBody VisitConfiguration newConfiguration) {
 		Context.requirePrivilege(PrivilegeConstants.CONFIGURE_VISITS);
 		AdministrationService administrationService = Context.getAdministrationService();
 		VisitService visitService = Context.getVisitService();

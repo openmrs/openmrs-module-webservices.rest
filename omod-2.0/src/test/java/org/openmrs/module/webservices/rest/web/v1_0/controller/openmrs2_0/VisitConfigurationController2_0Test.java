@@ -30,7 +30,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class VisitsConfigurationController2_0Test extends RestControllerTestUtils {
+public class VisitConfigurationController2_0Test extends RestControllerTestUtils {
 
 	private AdministrationService administrationService;
 
