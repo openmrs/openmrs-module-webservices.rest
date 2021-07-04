@@ -106,5 +106,13 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 
 		visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
 		assertEquals(1, visitTypesToAutoClose.size());
+
+		Object actualVisitType = visitTypesToAutoClose.get(0);
+		VisitType expectedVisitType = Context.getVisitService().getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
+
+		assertEquals(expectedVisitType.getUuid(), PropertyUtils.getProperty(actualVisitType, "uuid"));
+		assertEquals(expectedVisitType.getName(), PropertyUtils.getProperty(actualVisitType, "name"));
+		assertEquals(expectedVisitType.getDescription(), PropertyUtils.getProperty(actualVisitType, "description"));
+		assertEquals(expectedVisitType.getRetired(), PropertyUtils.getProperty(actualVisitType, "retired"));
 	}
 }
