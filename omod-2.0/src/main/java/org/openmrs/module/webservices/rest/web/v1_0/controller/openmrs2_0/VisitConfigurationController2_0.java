@@ -23,7 +23,6 @@ import org.openmrs.api.handler.EncounterVisitHandler;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
@@ -41,7 +40,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +70,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void updateCurrentConfiguration(@RequestBody VisitConfiguration newConfiguration) {
+	public void updateCurrentConfiguration(@RequestBody VisitConfiguration newConfiguration) throws SchedulerException {
 		Context.requirePrivilege(PrivilegeConstants.CONFIGURE_VISITS);
 		AdministrationService administrationService = Context.getAdministrationService();
 		VisitService visitService = Context.getVisitService();
@@ -128,18 +126,13 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 	}
 
 	private void updateGetAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService,
-			Boolean autoCloseVisitsTaskStarted) {
+			Boolean autoCloseVisitsTaskStarted) throws SchedulerException {
 		TaskDefinition closeVisitsTask = schedulerService.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
 		if (closeVisitsTask != null) {
-			try {
-				if (autoCloseVisitsTaskStarted && !closeVisitsTask.getStarted()) {
-					schedulerService.scheduleTask(closeVisitsTask);
-				} else if (!autoCloseVisitsTaskStarted && closeVisitsTask.getStarted()) {
-					schedulerService.shutdownTask(closeVisitsTask);
-				}
-			}
-			catch (SchedulerException e) {
-				throw new GenericRestException(e);
+			if (autoCloseVisitsTaskStarted && !closeVisitsTask.getStarted()) {
+				schedulerService.scheduleTask(closeVisitsTask);
+			} else if (!autoCloseVisitsTaskStarted && closeVisitsTask.getStarted()) {
+				schedulerService.shutdownTask(closeVisitsTask);
 			}
 		}
 	}
