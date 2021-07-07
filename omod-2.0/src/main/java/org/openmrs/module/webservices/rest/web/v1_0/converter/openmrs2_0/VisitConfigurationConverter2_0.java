@@ -19,14 +19,19 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9.SessionController1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitTypeResource1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Handler(supports = VisitConfiguration.class, order = 0)
 public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<VisitConfiguration> {
+
+	private static final Logger log = LoggerFactory.getLogger(VisitConfigurationConverter2_0.class);
 
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
@@ -66,7 +71,7 @@ public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<Visi
 					visitTypesToAutoClose.add(visitTypeResource.asDefaultRep(visitType));
 				}
 				catch (Exception e) {
-					e.printStackTrace();
+					log.error("Conversion error", e);
 				}
 			}
 			configuration.add("visitTypesToAutoClose", visitTypesToAutoClose);
