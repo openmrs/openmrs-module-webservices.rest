@@ -86,7 +86,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 		updateEnableVisitsValue(administrationService, newConfiguration.getEnableVisits());
 
 		if (newConfiguration.getEnableVisits()) {
-			updateVisitEncounterHandlerValue(administrationService,
+			administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER,
 					newConfiguration.getEncounterVisitsAssignmentHandler());
 		}
 		updateGetAutoCloseVisitsTaskStartedValue(schedulerService, newConfiguration.getStartAutoCloseVisitsTask());
@@ -114,11 +114,6 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 			}
 		}
 		return null;
-	}
-
-	private void updateVisitEncounterHandlerValue(AdministrationService administrationService, String value) {
-		GlobalProperty visitEncounterHandlerGp = new GlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, value);
-		administrationService.saveGlobalProperty(visitEncounterHandlerGp);
 	}
 
 	private Boolean getAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService) {
