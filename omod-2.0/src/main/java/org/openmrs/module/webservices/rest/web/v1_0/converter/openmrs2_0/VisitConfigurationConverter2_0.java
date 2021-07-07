@@ -36,9 +36,8 @@ public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<Visi
 		description.addProperty("startAutoCloseVisitsTask");
 		if (rep instanceof FullRepresentation) {
 			description.addProperty("visitTypesToAutoClose");
-			return description;
 		}
-		return null;
+		return description;
 	}
 
 	@Override
