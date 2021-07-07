@@ -80,7 +80,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 
 		// validate
 		if (newConfiguration.getEnableVisits() && StringUtils.isEmpty(newConfiguration.getEncounterVisitsAssignmentHandler())) {
-			throw new IllegalRequestException("Visit encounter handler cannot be empty");
+			throw new IllegalRequestException("Encounter Visit assignment handler cannot be empty");
 		}
 
 		updateEnableVisitsValue(administrationService, newConfiguration.getEnableVisits());
