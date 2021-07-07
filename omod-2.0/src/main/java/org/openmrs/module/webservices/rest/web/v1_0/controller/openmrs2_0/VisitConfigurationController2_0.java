@@ -91,7 +91,8 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 				administrationService
 						.setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, newEncounterVisitsAssignmentHandler);
 			} else {
-				throw new IllegalPropertyException("Provided encounterVisitsAssignmentHandler class does not exist.");
+				throw new IllegalPropertyException(
+						"Provided encounterVisitsAssignmentHandler class " + newEncounterVisitsAssignmentHandler + " does not exist.");
 			}
 		}
 		updateGetAutoCloseVisitsTaskStartedValue(schedulerService, newConfiguration.getStartAutoCloseVisitsTask());
