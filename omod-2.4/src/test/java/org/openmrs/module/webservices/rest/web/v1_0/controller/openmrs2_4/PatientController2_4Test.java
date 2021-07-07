@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
 import org.junit.Test;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -23,7 +24,7 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 	@Test
 	public void shouldReturnDuplicatesPatients() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, "patient");
-		req.addParameter("attributesToFindDuplicatesBy", "gender,middleName");
+		req.addParameter("attributesToFindDuplicatesBy", "middleName,gender");
 
 		SimpleObject result = deserialize(handle(req));
 
