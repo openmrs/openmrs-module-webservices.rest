@@ -101,7 +101,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 
 	private Boolean getEnableVisitsValue(AdministrationService administrationService) {
 		String enableVisits = administrationService
-				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, Boolean.FALSE.toString());
+				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, "true");
 		return Boolean.parseBoolean(enableVisits);
 	}
 
