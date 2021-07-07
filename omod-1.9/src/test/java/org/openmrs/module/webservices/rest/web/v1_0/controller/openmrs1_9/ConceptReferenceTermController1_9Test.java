@@ -110,7 +110,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAConceptReferenceTerm() throws Exception {
 		final String newCode = "updated code";
 		SimpleObject conceptReferenceTermType = new SimpleObject();
@@ -122,6 +122,18 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newCode, service.getConceptReferenceTermByUuid(getUuid()).getCode());
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAConceptReferenceTerm() throws Exception {
+		final String newCode = "updated code";
+		SimpleObject conceptReferenceTermType = new SimpleObject();
+		conceptReferenceTermType.add("code", newCode);
+		
+		String json = new ObjectMapper().writeValueAsString(conceptReferenceTermType);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

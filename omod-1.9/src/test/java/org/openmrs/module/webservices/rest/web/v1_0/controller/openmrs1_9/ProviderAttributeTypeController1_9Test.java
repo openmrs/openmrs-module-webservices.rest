@@ -51,14 +51,18 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 	 * @see ProviderAttributeTypeController#updateProviderAttributeType(ProviderAttributeType,SimpleObject,WebRequest)
 	 * @verifies change a property on a provider
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void updateProviderAttributeType_shouldChangeAPropertyOnAProviderAttributeType() throws Exception {
 		String json = "{\"description\":\"Updated description\"}";
 		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, json));
 		
 		Assert.assertEquals("Updated description", Context.getProviderService().getProviderAttributeType(1).getDescription());
 	}
-	
+	@Test(expected = RuntimeException.class)
+	public void updateProviderAttributeType_shouldThrowAnExceptionWhenEditingAPropertyOnAProviderAttributeType() throws Exception {
+		String json = "{\"description\":\"Updated description\"}";
+		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, json));
+	}
 	/**
 	 * @see ProviderAttributeTypeController#retireProviderAttributeType(ProviderAttributeType,String,WebRequest)
 	 * @verifies void a provider attribute type

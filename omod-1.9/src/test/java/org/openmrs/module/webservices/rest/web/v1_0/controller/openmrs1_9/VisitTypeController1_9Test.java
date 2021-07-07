@@ -83,7 +83,7 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(originalCount + 1, service.getAllVisitTypes().size());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAVisitType() throws Exception {
 		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
@@ -92,6 +92,12 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals("new visit type", updated.getName());
 		Assert.assertEquals("new description", updated.getDescription());
 	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditAVisitType() throws Exception {
+		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		}
+	
 	
 	@Test
 	public void shouldRetireAVisitType() throws Exception {

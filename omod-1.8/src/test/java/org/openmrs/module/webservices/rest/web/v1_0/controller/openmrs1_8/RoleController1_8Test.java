@@ -126,7 +126,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 *      HttpServletResponse)
 	 * @verifies change a property on a Role
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void updateRole_shouldChangeAPropertyOnARole() throws Exception {
 		
 		final String editedDescription = "Role description edited";
@@ -139,6 +139,16 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(editedRole);
 		Assert.assertEquals(editedDescription, editedRole.getDescription());
 		
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void updateRole_shouldThrowAnExceptionWhenEditingAPrivilage() throws Exception {
+		
+		final String editedDescription = "Role description edited";
+		String json = "{ \"description\":\"" + editedDescription + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	/**

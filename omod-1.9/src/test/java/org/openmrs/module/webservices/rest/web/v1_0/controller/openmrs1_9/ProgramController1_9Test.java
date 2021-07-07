@@ -124,7 +124,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAProgram() throws Exception {
 		
 		final String editedName = "Malaria Program Edited";
@@ -136,6 +136,15 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Program editedProgram = service.getProgramByUuid(getUuid());
 		Assert.assertNotNull(editedProgram);
 		Assert.assertEquals(editedName, editedProgram.getName());
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAProgram() throws Exception {
+		
+		final String editedName = "Malaria Program Edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

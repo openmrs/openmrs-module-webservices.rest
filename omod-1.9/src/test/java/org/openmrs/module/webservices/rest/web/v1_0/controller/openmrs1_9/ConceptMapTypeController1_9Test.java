@@ -105,7 +105,7 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 		assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditingAConceptMapType() throws Exception {
 		final String newName = "updated name";
 		SimpleObject conceptMapTypeType = new SimpleObject();
@@ -117,6 +117,18 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 		req.setContent(json.getBytes());
 		handle(req);
 		assertEquals(newName, service.getConceptMapTypeByUuid(getUuid()).getName());
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAConceptMapType() throws Exception {
+		final String newName = "updated name";
+		SimpleObject conceptMapTypeType = new SimpleObject();
+		conceptMapTypeType.add("name", newName);
+		
+		String json = new ObjectMapper().writeValueAsString(conceptMapTypeType);
+		
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

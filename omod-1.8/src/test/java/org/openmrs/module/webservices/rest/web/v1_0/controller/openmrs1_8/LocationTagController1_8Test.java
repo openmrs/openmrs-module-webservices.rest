@@ -108,7 +108,7 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldUpdateLocationTag() throws Exception {
 		
 		final String editedName = "Location Tag edited";
@@ -120,6 +120,16 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		Assert.assertNotNull(editedLocationTag);
 		Assert.assertEquals(editedName, editedLocationTag.getName());
 		
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingALocationTag() throws Exception {
+		
+		final String editedName = "Location Tag edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

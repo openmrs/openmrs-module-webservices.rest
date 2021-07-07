@@ -124,7 +124,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditALocation() throws Exception {
 		
 		final String editedName = "Xanadu edited";
@@ -138,12 +138,21 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(editedName, editedLocation.getName());
 		
 	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingALocation() throws Exception {
+		
+		final String editedName = "Xanadu edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+	}
 	
 	/**
 	 * See RESTWS-418 - Allow REST POST requests to accept un-updatable properties if they haven't
 	 * been updated
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldAllowYouToPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
 		MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject location = deserialize(handle(get));
@@ -155,8 +164,17 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Location updatedLocation = service.getLocationByUuid(getUuid());
 		assertThat(updatedLocation.getName(), is("New York"));
 	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenYouPostANonUpdatablePropertyWithAnUnchangedValue() throws Exception {
+		MockHttpServletRequest get = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject location = deserialize(handle(get));
+		location.put("name", "New York");
+		
+		MockHttpServletRequest post = newPostRequest(getURI() + "/" + getUuid(), location);
+		handle(post);
+	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldOverwriteAListOfChildLocations() throws Exception {
 		
 		Location location = service.getLocationByUuid(getUuid());
@@ -171,6 +189,18 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(updatedLocation);
 		Assert.assertTrue(updatedLocation.getChildLocations().isEmpty());
 		
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenOverwriteAListOfChildLocations() throws Exception {
+		
+		Location location = service.getLocationByUuid(getUuid());
+		location.addChildLocation(service.getLocation(2));
+		service.saveLocation(location);
+		
+		String json = "{ \"childLocations\": [] }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test
@@ -190,7 +220,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldUnretireALocation() throws Exception {
 		
 		Location location = service.getLocation(3);
@@ -203,6 +233,17 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Location updatedLocation = service.getLocationByUuid(getUuid());
 		Assert.assertTrue(!updatedLocation.isRetired());
 		
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenYouUnretireALocation() throws Exception {
+		
+		Location location = service.getLocation(3);
+		Assert.assertTrue(location.isRetired());
+		
+		String json = "{ \"retired\": false }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test
