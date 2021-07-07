@@ -69,7 +69,7 @@ import java.util.Set;
 /**
  * {@link Resource} for {@link Concept}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/concept", order = 2, supportedClass = Concept.class, supportedOpenmrsVersions = "1.8.*")
+@Resource(name = RestConstants.VERSION_1 + "/concept", order = 2, supportedClass = Concept.class, supportedOpenmrsVersions = {"1.8.*"})
 public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	
 	public ConceptResource1_8() {
@@ -516,16 +516,30 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		Context.getConceptService().purgeConcept(concept);
 	}
 	
-	/**
-	 * This does not include retired concepts
-	 * 
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
-	 */
 	@Override
-	protected NeedsPaging<Concept> doGetAll(RequestContext context) {
-		List<Concept> allConcepts = Context.getConceptService().getAllConcepts(null, true, context.getIncludeAll());
-		return new NeedsPaging<Concept>(allConcepts, context);
-	}
+	protected AlreadyPaged<Concept> doGetAll(RequestContext context){
+		List<Locale> locales = new ArrayList<Locale>();
+		locales.add(Context.getLocale());
+		
+		List<Concept> result = Context.getConceptService().getAllConcepts();
+		List<Concept> concepts = new ArrayList<Concept>();
+		   for (Concept concept : result) {
+			    concepts.addAll((Collection<? extends Concept>) concept.getConceptClass());
+			    StringBuilder sb = new StringBuilder("result");
+			    for(Concept concept1:result) {
+			    	   sb.append("concept").append(result);
+			    }
+		}
+		   boolean hasMoreResults = false;
+			if (concepts.size() == context.getLimit()) {
+				Integer count = Context.getConceptService().getCountOfConcepts(null, null, context.getIncludeAll(), null, null,
+				    null, null, null);
+
+				Integer fetchedCount = context.getStartIndex() + concepts.size();
+				hasMoreResults = (fetchedCount < count);
+			}
+			return new AlreadyPaged<Concept>(context, concepts, hasMoreResults);
+		}
 	
 	/**
 	 * Concept searches support the following additional query parameters:
