@@ -81,7 +81,8 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 			throw new IllegalRequestException("Encounter Visit assignment handler cannot be empty");
 		}
 
-		updateEnableVisitsValue(administrationService, newConfiguration.getEnableVisits());
+		administrationService
+				.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, Boolean.toString(newConfiguration.getEnableVisits()));
 
 		if (newConfiguration.getEnableVisits()) {
 			administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER,
@@ -95,12 +96,6 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 		String enableVisits = administrationService
 				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, Boolean.FALSE.toString());
 		return Boolean.parseBoolean(enableVisits);
-	}
-
-	private void updateEnableVisitsValue(AdministrationService administrationService, Boolean value) {
-		GlobalProperty enableVisitsGp = new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS,
-				Boolean.toString(value));
-		administrationService.saveGlobalProperty(enableVisitsGp);
 	}
 
 	private String getVisitEncounterHandlerValue(AdministrationService administrationService,
