@@ -108,16 +108,12 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 	private String getVisitEncounterHandlerValue(AdministrationService administrationService,
 			EncounterService encounterService) {
 		String visitEncounterHandler = administrationService.getGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER);
-		for (EncounterVisitHandler visitHandler : getEncounterVisitHandlers(encounterService)) {
+		for (EncounterVisitHandler visitHandler : encounterService.getEncounterVisitHandlers()) {
 			if (visitHandler.getClass().getName().equals(visitEncounterHandler)) {
 				return visitHandler.getClass().getName();
 			}
 		}
 		return null;
-	}
-
-	private Collection<EncounterVisitHandler> getEncounterVisitHandlers(EncounterService encounterService) {
-		return encounterService.getEncounterVisitHandlers();
 	}
 
 	private void updateVisitEncounterHandlerValue(AdministrationService administrationService, String value) {
