@@ -19,6 +19,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9.SessionController1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitTypeResource1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
@@ -52,7 +53,7 @@ public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<Visi
 
 	@Override
 	public VisitConfiguration getByUniqueId(String string) {
-		return null;
+		throw new ResourceDoesNotSupportOperationException();
 	}
 
 	@Override
