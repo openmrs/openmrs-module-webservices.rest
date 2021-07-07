@@ -68,7 +68,7 @@ public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<Visi
 					visitTypesToAutoClose.add(visitTypeResource.asDefaultRep(visitType));
 				}
 				catch (Exception e) {
-					throw new GenericRestException("Cannot convert VisitType to REST Resource", e);
+					throw new ConversionException("Cannot convert VisitType to REST Resource", e);
 				}
 			}
 			configuration.add("visitTypesToAutoClose", visitTypesToAutoClose);
