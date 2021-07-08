@@ -53,9 +53,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 		administrationService.saveGlobalProperty(enableVisitsGp);
 
 		// set encounter visit handler
-		GlobalProperty visitEncounterHandlerGp = new GlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER,
-				"org.openmrs.api.handler.NoVisitAssignmentHandler");
-		administrationService.saveGlobalProperty(visitEncounterHandlerGp);
+		administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, "org.openmrs.api.handler.NoVisitAssignmentHandler");
 
 		// set visit types to auto close
 		VisitType testVisitType = visitService.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
