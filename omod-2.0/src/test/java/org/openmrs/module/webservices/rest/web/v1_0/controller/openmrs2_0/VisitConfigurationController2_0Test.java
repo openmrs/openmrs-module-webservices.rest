@@ -49,8 +49,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 		// set initial configuration
 
 		// enable visits
-		GlobalProperty enableVisitsGp = new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, "true");
-		administrationService.saveGlobalProperty(enableVisitsGp);
+		administrationService.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, "true");
 
 		// set encounter visit handler
 		administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_ASSIGNMENT_HANDLER, "org.openmrs.api.handler.NoVisitAssignmentHandler");
