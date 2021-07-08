@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingReadableResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.util.DatabaseUpdater;
 
@@ -153,8 +154,7 @@ public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<Da
 			databaseChanges = DatabaseUpdater.getDatabaseChanges();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
-			databaseChanges = new ArrayList<>();
+			throw new GenericRestException("Exception while getting database changes", e);
 		}
 		return databaseChanges;
 	}
