@@ -18,8 +18,6 @@ import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.PatientDAO;
 import org.openmrs.api.db.PersonDAO;
-import org.openmrs.api.db.hibernate.HibernatePatientDAO;
-import org.openmrs.api.db.hibernate.HibernatePersonDAO;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -40,7 +38,7 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 	private PersonDAO hibernatePersonDAO;
 
 	@Test
-	@Ignore("TRUNK-6010: The generated SQL contains syntax error in Core before version 2.5. This has been fixed on commit c3f63301")
+	@Ignore("TRUNK-6010: The generated SQL contains syntax error in Core before version 2.5. This has been fixed on commit c3f63301. Once a submodule that depends on core version 2.5 is added, this test should be moved there and unignored.")
 	public void shouldReturnDuplicatesPatients() throws Exception {
 		// given
 		Person person1 = new Person();
