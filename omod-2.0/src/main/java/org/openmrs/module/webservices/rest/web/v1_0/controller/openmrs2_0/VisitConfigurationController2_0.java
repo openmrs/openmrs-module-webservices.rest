@@ -160,9 +160,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 		String visitTypeNames = visitTypesToAutoCloseFull.stream().map(BaseOpenmrsMetadata::getName)
 				.collect(Collectors.joining(","));
 
-		GlobalProperty visitTypesToAutoCloseGp = new GlobalProperty(OpenmrsConstants.GP_VISIT_TYPES_TO_AUTO_CLOSE,
-				visitTypeNames);
-		administrationService.saveGlobalProperty(visitTypesToAutoCloseGp);
+		administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_TYPES_TO_AUTO_CLOSE, visitTypeNames);
 	}
 
 	private List<VisitType> getVisitTypesByUuids(List<String> uuids, VisitService visitService) {
