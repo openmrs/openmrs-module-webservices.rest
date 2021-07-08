@@ -84,7 +84,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 		SimpleObject result = deserialize(handle(req));
 
 		assertNotNull(result);
-		assertEquals(false, PropertyUtils.getProperty(result, "enableVisits"));
+		assertEquals(true, PropertyUtils.getProperty(result, "enableVisits"));
 		assertNull(PropertyUtils.getProperty(result, "encounterVisitsAssignmentHandler"));
 		List<Object> visitTypesToAutoClose = (List<Object>) PropertyUtils.getProperty(result, "visitTypesToAutoClose");
 		assertEquals(0, visitTypesToAutoClose.size());
