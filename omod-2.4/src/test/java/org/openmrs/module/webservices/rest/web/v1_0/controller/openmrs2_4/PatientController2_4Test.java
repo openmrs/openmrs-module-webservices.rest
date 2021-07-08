@@ -39,7 +39,7 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 
 	@Test
 	@Ignore("TRUNK-6010: The generated SQL contains syntax error in Core before version 2.5. This has been fixed on commit c3f63301. Once a submodule that depends on core version 2.5 is added, this test should be moved there and unignored.")
-	public void shouldReturnDuplicatesPatients() throws Exception {
+	public void shouldReturnDuplicatedPatientsByAllAttributesIncludingVoided() throws Exception {
 		// given
 		Person person1 = new Person();
 		person1.addName(new PersonName("Ioan", "Theo", "Fletcher"));
