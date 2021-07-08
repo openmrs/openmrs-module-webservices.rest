@@ -56,9 +56,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 
 		// set visit types to auto close
 		VisitType testVisitType = visitService.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
-		GlobalProperty visitTypesToAutoCloseGp = new GlobalProperty(OpenmrsConstants.GP_VISIT_TYPES_TO_AUTO_CLOSE,
-				testVisitType.getName());
-		administrationService.saveGlobalProperty(visitTypesToAutoCloseGp);
+		administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_TYPES_TO_AUTO_CLOSE, testVisitType.getName());
 
 		// make GET call
 		MockHttpServletRequest req = request(RequestMethod.GET, "visitconfiguration");
