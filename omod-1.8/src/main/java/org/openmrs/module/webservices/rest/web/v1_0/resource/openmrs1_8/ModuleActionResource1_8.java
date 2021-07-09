@@ -228,7 +228,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		}
 		
 		for (Module module : modules) {
-			if (moduleFactoryWrapper.isModuleStopped(module)) {
+			if ((moduleFactoryWrapper.isModuleStopped(module)&& module.getModuleId()).equal( existingModule.getModuleId())) {
 				needsRefresh = moduleFactoryWrapper.startModuleSkipRefresh(module, servletContext) || needsRefresh;
 			}
 		}
