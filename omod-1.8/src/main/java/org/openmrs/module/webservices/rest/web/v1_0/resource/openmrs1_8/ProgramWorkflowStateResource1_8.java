@@ -67,9 +67,11 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	
 	@Override
 	protected void delete(ProgramWorkflowState delegate, String reason, RequestContext context) throws ResponseException {
-		throw new ResourceDoesNotSupportOperationException();
+		ProgramWorkflow parentWorkflow = getParent(delegate);
+		parentWorkflow.removeState(delegate);
+		Context.getProgramWorkflowService().saveProgram(parentWorkflow.getProgram());
 	}
-	
+
 	@Override
 	public ProgramWorkflowState newDelegate() {
 		return new ProgramWorkflowState();
@@ -77,7 +79,7 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	
 	@Override
 	public ProgramWorkflowState save(ProgramWorkflowState delegate) {
-		ProgramWorkflow workflow = delegate.getProgramWorkflow();
+		ProgramWorkflow workflow = getParent(delegate);
 		workflow.addState(delegate);
 		Program program = workflow.getProgram();
 		program.addWorkflow(workflow);
@@ -147,5 +149,14 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props
+	}
+
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("concept");
+		description.addProperty("initial");
+		description.addProperty("terminal");
+		return description;
 	}
 }
