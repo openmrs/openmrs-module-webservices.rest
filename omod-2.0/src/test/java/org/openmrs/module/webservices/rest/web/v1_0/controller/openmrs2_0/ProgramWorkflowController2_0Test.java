@@ -14,6 +14,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.junit.Test;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 import static org.junit.Assert.assertEquals;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertNotNull;
 public class ProgramWorkflowController2_0Test extends MainResourceControllerTest {
 
 	@Override
-	@Test(expected = Exception.class)
+	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
 		// resource doesn't support get all operation
 		super.shouldGetAll();
