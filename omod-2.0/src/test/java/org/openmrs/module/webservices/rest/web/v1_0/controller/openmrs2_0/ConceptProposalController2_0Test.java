@@ -57,6 +57,9 @@ public class ConceptProposalController2_0Test extends MainResourceControllerTest
 
 	@Test
 	public void shouldIgnoreProposal() throws Exception {
+		ConceptProposal existingProposal = Context.getConceptService().getConceptProposalByUuid(proposal.getUuid());
+		assertEquals(OpenmrsConstants.CONCEPT_PROPOSAL_UNMAPPED, existingProposal.getState());
+
 		String json = "{\"action\": \"ignore\"}";
 
 		handle(newPostRequest(getURI() + "/" + proposal.getUuid(), json));
