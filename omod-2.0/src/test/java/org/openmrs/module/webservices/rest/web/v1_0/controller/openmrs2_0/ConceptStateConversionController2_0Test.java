@@ -54,7 +54,7 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 	@Override
 	public String getURI() {
-		return "stateconversion";
+		return "conceptstateconversion";
 	}
 
 	@Override

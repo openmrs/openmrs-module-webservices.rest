@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for {@link ConceptStateConversion}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/stateconversion", supportedClass = ConceptStateConversion.class,
+@Resource(name = RestConstants.VERSION_1 + "/conceptstateconversion", supportedClass = ConceptStateConversion.class,
 		supportedOpenmrsVersions = { "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
 public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<ConceptStateConversion> {
 
