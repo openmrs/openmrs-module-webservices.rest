@@ -51,4 +51,28 @@ public class ConceptStateConversionResource2_0Test
 	public String getUuidProperty() {
 		return "e4f2fc12-0ca5-47d2-91bb-a129dca3149b";
 	}
+
+	@Override
+	public void validateRefRepresentation() throws Exception {
+		assertPropPresent("concept");
+		assertPropPresent("programWorkflow");
+		assertPropPresent("programWorkflowState");
+		super.validateRefRepresentation();
+	}
+
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		assertPropPresent("concept");
+		assertPropPresent("programWorkflow");
+		assertPropPresent("programWorkflowState");
+		super.validateDefaultRepresentation();
+	}
+
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		assertPropPresent("concept");
+		assertPropPresent("programWorkflow");
+		assertPropPresent("programWorkflowState");
+		super.validateFullRepresentation();
+	}
 }
