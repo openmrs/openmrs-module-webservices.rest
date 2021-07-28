@@ -44,7 +44,7 @@ public class ConceptStateConversionResource2_0Test
 
 	@Override
 	public String getDisplayProperty() {
-		return null;
+		return "ConceptStateConversion: Concept[Concept #16] results in State [State DIED initial=true terminal=false] for workflow [ProgramWorkflow(id=1)]";
 	}
 
 	@Override

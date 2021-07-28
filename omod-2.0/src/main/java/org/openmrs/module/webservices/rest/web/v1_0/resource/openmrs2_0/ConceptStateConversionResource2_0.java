@@ -17,6 +17,7 @@ import org.openmrs.ConceptStateConversion;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -42,6 +43,7 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("programWorkflow", Representation.REF);
 			description.addProperty("programWorkflowState", Representation.REF);
@@ -51,6 +53,7 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("concept", Representation.DEFAULT);
 			description.addProperty("programWorkflow", Representation.DEFAULT);
 			description.addProperty("programWorkflowState", Representation.DEFAULT);
@@ -59,6 +62,7 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 		} else if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("concept", Representation.REF);
 			description.addProperty("programWorkflow", Representation.REF);
 			description.addProperty("programWorkflowState", Representation.REF);
@@ -67,6 +71,11 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 			return description;
 		}
 		return null;
+	}
+
+	@PropertyGetter("display")
+	public String getDisplayProperty(ConceptStateConversion delegate) {
+		return delegate.toString();
 	}
 
 	@Override
