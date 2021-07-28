@@ -105,7 +105,15 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 	public ProgramWorkflow newDelegate() {
 		return new ProgramWorkflow();
 	}
-	
+
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("program");
+		description.addRequiredProperty("concept");
+		return description;
+	}
+
 	@Override
 	public ProgramWorkflow save(ProgramWorkflow delegate) {
 		Program parent = delegate.getProgram();
