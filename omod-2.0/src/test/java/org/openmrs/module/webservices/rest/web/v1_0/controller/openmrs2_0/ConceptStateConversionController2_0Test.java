@@ -15,6 +15,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptStateConversion;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -99,6 +100,8 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 	@Test
 	public void shouldPurgeStateConversion() throws Exception {
+		ProgramWorkflowService service = Context.getProgramWorkflowService();
+
 		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
 		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
 
@@ -108,17 +111,19 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		state.setTerminal(false);
 
 		workflow.addState(state);
-		Context.getProgramWorkflowService().saveProgram(workflow.getProgram());
+		service.saveProgram(workflow.getProgram());
 		Context.flushSession();
 
 		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
 		conceptStateConversion.setConcept(concept);
 		conceptStateConversion.setProgramWorkflow(workflow);
 		conceptStateConversion.setProgramWorkflowState(state);
-		Context.getProgramWorkflowService().saveConceptStateConversion(conceptStateConversion);
+		service.saveConceptStateConversion(conceptStateConversion);
+
+		assertNotNull(service.getConceptStateConversionByUuid(conceptStateConversion.getUuid()));
 
 		handle(newDeleteRequest(getURI() + "/" + conceptStateConversion.getUuid(), new Parameter("purge", "true")));
 
-		assertNull(Context.getProgramWorkflowService().getConceptStateConversionByUuid(conceptStateConversion.getUuid()));
+		assertNull(service.getConceptStateConversionByUuid(conceptStateConversion.getUuid()));
 	}
 }
