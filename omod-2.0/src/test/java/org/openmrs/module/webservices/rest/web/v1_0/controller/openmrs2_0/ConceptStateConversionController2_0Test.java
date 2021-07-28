@@ -70,8 +70,12 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 	@Test
 	public void shouldCreateStateConversion() throws Exception {
+		ProgramWorkflowService service = Context.getProgramWorkflowService();
+
+		int countBefore = service.getAllConceptStateConversions().size();
+
 		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		ProgramWorkflow workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
 		state.setConcept(concept);
@@ -79,7 +83,7 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		state.setTerminal(false);
 
 		workflow.addState(state);
-		Context.getProgramWorkflowService().saveProgram(workflow.getProgram());
+		service.saveProgram(workflow.getProgram());
 
 		Context.flushSession();
 
@@ -92,7 +96,8 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		assertNotNull(newStateConversion);
 		String uuid = newStateConversion.get("uuid");
 
-		ConceptStateConversion createdStateConversion = Context.getProgramWorkflowService().getConceptStateConversionByUuid(uuid);
+		ConceptStateConversion createdStateConversion = service.getConceptStateConversionByUuid(uuid);
+		assertEquals(countBefore + 1, service.getAllConceptStateConversions().size());
 		assertEquals(workflow.getUuid(), createdStateConversion.getProgramWorkflow().getUuid());
 		assertEquals(state.getUuid(), createdStateConversion.getProgramWorkflowState().getUuid());
 		assertEquals(concept.getUuid(), createdStateConversion.getProgramWorkflow().getConcept().getUuid());
