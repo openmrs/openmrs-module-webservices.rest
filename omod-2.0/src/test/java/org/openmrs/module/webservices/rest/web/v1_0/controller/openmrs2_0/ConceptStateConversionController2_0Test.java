@@ -125,10 +125,12 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		conceptStateConversion.setProgramWorkflowState(state);
 		service.saveConceptStateConversion(conceptStateConversion);
 
+		int countBefore = service.getAllConceptStateConversions().size();
 		assertNotNull(service.getConceptStateConversionByUuid(conceptStateConversion.getUuid()));
 
 		handle(newDeleteRequest(getURI() + "/" + conceptStateConversion.getUuid(), new Parameter("purge", "true")));
 
 		assertNull(service.getConceptStateConversionByUuid(conceptStateConversion.getUuid()));
+		assertEquals(countBefore - 1, service.getAllConceptStateConversions().size());
 	}
 }
