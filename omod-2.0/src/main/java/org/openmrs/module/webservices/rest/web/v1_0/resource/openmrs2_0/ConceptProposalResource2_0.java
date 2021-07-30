@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.openmrs.Concept;
 import org.openmrs.ConceptProposal;
 import org.openmrs.User;
@@ -18,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -36,13 +38,17 @@ import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * {@link Resource} for {@link ConceptProposal}, supporting standard CRUD operations
@@ -61,6 +67,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 			description.addProperty("finalText");
 			description.addProperty("state");
 			description.addProperty("comments");
+			description.addProperty("occurrences");
 			description.addProperty("creator", Representation.REF);
 			description.addProperty("dateCreated");
 			description.addSelfLink();
@@ -76,6 +83,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 			description.addProperty("finalText");
 			description.addProperty("state");
 			description.addProperty("comments");
+			description.addProperty("occurrences");
 			description.addProperty("creator", Representation.DEFAULT);
 			description.addProperty("dateCreated");
 			description.addProperty("changedBy", Representation.DEFAULT);
@@ -88,12 +96,19 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("originalText");
 			description.addProperty("state");
+			description.addProperty("occurrences");
 			description.addProperty("creator", Representation.REF);
 			description.addProperty("dateCreated");
 			description.addSelfLink();
 			return description;
 		}
 		return null;
+	}
+
+	@PropertyGetter("occurrences")
+	public Integer getOccurrencesProperty(ConceptProposal proposal) {
+		Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(false);
+		return proposalsMap.get(proposal.getOriginalText()).size();
 	}
 
 	@Override
@@ -125,8 +140,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<>(
-				Context.getConceptService().getAllConceptProposals(Boolean.parseBoolean(context.getParameter("includeCompleted"))),
-				context);
+				getAllProposalsWithUniqueOriginalTexts(Boolean.valueOf(context.getParameter("includeCompleted"))), context);
 	}
 
 	@Override
@@ -135,16 +149,29 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		String sortOrder = context.getParameter("sortOrder");
 		String sortOn = context.getParameter("sortOn");
 
-		List<ConceptProposal> allConceptProposals = Context.getConceptService().getAllConceptProposals(includeCompleted);
+		List<ConceptProposal> sortedProposals = getAllProposalsWithUniqueOriginalTexts(includeCompleted);
 
-		if (sortOn != null && sortOn.equals("originalText")) {
-			allConceptProposals.sort(Comparator.comparing(ConceptProposal::getOriginalText));
-			if (sortOrder != null && sortOrder.equals("desc")) {
-				Collections.reverse(allConceptProposals);
+		if (sortOn != null) {
+			if (sortOn.equals("originalText")) {
+				sortedProposals.sort(Comparator.comparing(ConceptProposal::getOriginalText));
+				if (sortOrder != null && sortOrder.equals("desc")) {
+					Collections.reverse(sortedProposals);
+				}
+			} else if (sortOn.equals("occurrences")) {
+				Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(includeCompleted);
+				sortedProposals = proposalsMap
+						.entrySet()
+						.stream()
+						.sorted(Comparator.comparingInt(list -> list.getValue().size()))
+						.map(entry -> entry.getValue().get(0))
+						.collect(Collectors.toList());
+				if (sortOrder != null && sortOrder.equals("desc")) {
+					Collections.reverse(sortedProposals);
+				}
 			}
 		}
 
-		return new NeedsPaging<>(allConceptProposals, context);
+		return new NeedsPaging<>(sortedProposals, context);
 	}
 
 	@Override
@@ -277,6 +304,33 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.MANAGE_ALERTS);
 		}
+	}
+
+	private List<ConceptProposal> getAllProposalsWithUniqueOriginalTexts(Boolean includeCompleted) {
+		Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(includeCompleted);
+		List<ConceptProposal> proposalsWithUniqueOriginalTexts = new ArrayList<>();
+
+		proposalsMap.forEach((originalText, proposals) -> proposalsWithUniqueOriginalTexts.add(proposals.get(0)));
+
+		return proposalsWithUniqueOriginalTexts;
+	}
+
+	private Map<String, List<ConceptProposal>> getProposalsMapByOriginalText(Boolean includeCompleted) {
+		List<ConceptProposal> proposals = Context.getConceptService().getAllConceptProposals(includeCompleted);
+		Map<String, List<ConceptProposal>> map = new HashMap<>();
+
+		for (ConceptProposal proposal : proposals) {
+			String originalText = proposal.getOriginalText();
+			if (map.containsKey(originalText)) {
+				map.get(originalText).add(proposal);
+			} else {
+				List<ConceptProposal> list = new ArrayList<>();
+				list.add(proposal);
+				map.put(originalText, list);
+			}
+		}
+
+		return map;
 	}
 
 }
