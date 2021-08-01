@@ -49,15 +49,46 @@ public class ConceptProposalResource2_0Test extends BaseDelegatingResourceTest<C
 	@Override
 	public void validateRefRepresentation() throws Exception {
 		super.validateRefRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("display", proposal.toString());
+		assertPropPresent("encounter");
+		assertPropEquals("originalText", proposal.getOriginalText());
+		assertPropEquals("state", proposal.getState());
+		assertPropEquals("occurrences", 1);
+		assertPropPresent("creator");
+		assertPropPresent("dateCreated");
 	}
 
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("display", proposal.toString());
+		assertPropPresent("encounter");
+		assertPropEquals("originalText", proposal.getOriginalText());
+		assertPropEquals("finalText", proposal.getFinalText());
+		assertPropEquals("state", proposal.getState());
+		assertPropEquals("comments", proposal.getComments());
+		assertPropEquals("occurrences", 1);
+		assertPropPresent("creator");
+		assertPropPresent("dateCreated");
 	}
 
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("display", proposal.toString());
+		assertPropPresent("encounter");
+		assertPropPresent("obsConcept");
+		assertPropPresent("obs");
+		assertPropPresent("mappedConcept");
+		assertPropEquals("originalText", proposal.getOriginalText());
+		assertPropEquals("finalText", proposal.getFinalText());
+		assertPropEquals("state", proposal.getState());
+		assertPropEquals("comments", proposal.getComments());
+		assertPropEquals("occurrences", 1);
+		assertPropPresent("creator");
+		assertPropPresent("dateCreated");
 	}
 }
