@@ -38,11 +38,26 @@ public class ConceptProposalResource2_0Test extends BaseDelegatingResourceTest<C
 
 	@Override
 	public String getDisplayProperty() {
-		return null;
+		return proposal.toString();
 	}
 
 	@Override
 	public String getUuidProperty() {
 		return proposal.getUuid();
+	}
+
+	@Override
+	public void validateRefRepresentation() throws Exception {
+		super.validateRefRepresentation();
+	}
+
+	@Override
+	public void validateDefaultRepresentation() throws Exception {
+		super.validateDefaultRepresentation();
+	}
+
+	@Override
+	public void validateFullRepresentation() throws Exception {
+		super.validateFullRepresentation();
 	}
 }

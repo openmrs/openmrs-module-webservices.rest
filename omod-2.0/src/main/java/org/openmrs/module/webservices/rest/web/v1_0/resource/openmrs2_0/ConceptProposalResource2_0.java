@@ -62,6 +62,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("originalText");
 			description.addProperty("finalText");
@@ -75,6 +76,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("encounter", Representation.DEFAULT);
 			description.addProperty("obsConcept", Representation.DEFAULT);
 			description.addProperty("obs", Representation.DEFAULT);
@@ -93,6 +95,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		} else if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("encounter", Representation.REF);
 			description.addProperty("originalText");
 			description.addProperty("state");
@@ -109,6 +112,11 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 	public Integer getOccurrencesProperty(ConceptProposal proposal) {
 		Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(false);
 		return proposalsMap.get(proposal.getOriginalText()).size();
+	}
+
+	@PropertyGetter("display")
+	public String getDisplayProperty(ConceptProposal proposal) {
+		return proposal.toString();
 	}
 
 	@Override
