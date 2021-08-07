@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.openmrs.ImplementationId;
-import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -54,12 +53,7 @@ public class ImplementationIdController2_0 extends BaseRestController {
 			throw new IllegalRequestException(exceptions);
 		}
 
-		try {
-			administrationService.setImplementationId(implementationId);
-		}
-		catch (APIException e) {
-			throw new IllegalRequestException(e);
-		}
+		administrationService.setImplementationId(implementationId);
 	}
 
 }
