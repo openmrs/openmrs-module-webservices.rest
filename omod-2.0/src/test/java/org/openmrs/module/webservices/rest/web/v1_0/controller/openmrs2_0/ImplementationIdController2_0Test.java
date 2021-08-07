@@ -63,17 +63,17 @@ public class ImplementationIdController2_0Test extends RestControllerTestUtils {
 	@Test
 	public void shouldUpdateCurrentConfiguration() throws Exception {
 		// make POST call
-		String json = "{\"name\": \"test\",\"description\": \"test\",\"implementationId\": \"test\",\"passphrase\": \"test\"}";
+		String json = "{\"name\": \"name\",\"description\": \"description\",\"implementationId\": \"implementationId\",\"passphrase\": \"passphrase\"}";
 		MockHttpServletRequest req = newPostRequest(getURI(), json);
 		handle(req);
 
 		verify(administrationService).setImplementationId(implementationIdArgumentCaptor.capture());
 		ImplementationId savedImplementationId = implementationIdArgumentCaptor.getValue();
 
-		assertEquals("test", savedImplementationId.getName());
-		assertEquals("test", savedImplementationId.getImplementationId());
-		assertEquals("test", savedImplementationId.getDescription());
-		assertEquals("test", savedImplementationId.getPassphrase());
+		assertEquals("name", savedImplementationId.getName());
+		assertEquals("implementationId", savedImplementationId.getImplementationId());
+		assertEquals("description", savedImplementationId.getDescription());
+		assertEquals("passphrase", savedImplementationId.getPassphrase());
 	}
 
 	private String getURI() {
