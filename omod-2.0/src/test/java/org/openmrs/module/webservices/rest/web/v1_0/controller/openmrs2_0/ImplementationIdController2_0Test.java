@@ -44,8 +44,8 @@ public class ImplementationIdController2_0Test extends RestControllerTestUtils {
 	public void shouldGetCurrentConfiguration() throws Exception {
 		// set initial config (mock)
 		ImplementationId implementationId = new ImplementationId();
-		implementationId.setImplementationId("test");
-		implementationId.setPassphrase("test");
+		implementationId.setImplementationId("implementationId");
+		implementationId.setPassphrase("passphrase");
 		implementationId.setName("name");
 		implementationId.setDescription("description");
 		when(administrationService.getImplementationId()).thenReturn(implementationId);
@@ -55,9 +55,9 @@ public class ImplementationIdController2_0Test extends RestControllerTestUtils {
 		SimpleObject result = deserialize(handle(req));
 
 		assertEquals("name", PropertyUtils.getProperty(result, "name"));
-		assertEquals("test", PropertyUtils.getProperty(result, "implementationId"));
+		assertEquals("implementationId", PropertyUtils.getProperty(result, "implementationId"));
 		assertEquals("description", PropertyUtils.getProperty(result, "description"));
-		assertEquals("test", PropertyUtils.getProperty(result, "passphrase"));
+		assertEquals("passphrase", PropertyUtils.getProperty(result, "passphrase"));
 	}
 
 	@Test
