@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * We should not need to apply this fix in versions where TRUNK-5022 is fixed.
  */
 @OpenmrsProfile(openmrsPlatformVersion = "2.4.* - 2.*")
-public class InitPathMatcher implements ServletContextAware {
+public class InitPathMatcher2_4 implements ServletContextAware {
 	
 	@Autowired
 	private List<RequestMappingHandlerMapping> handlerMappings;
