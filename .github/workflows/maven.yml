@@ -48,8 +48,6 @@ jobs:
           echo "::set-output name=pr_number::$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")"
       - name: Update coverage
         continue-on-error: true
-        after_success:
-         - mvn jacoco:report coveralls:report
         if: ${{ steps.refs.outcome == 'success' }}
         env:
           CI_NAME: Github
