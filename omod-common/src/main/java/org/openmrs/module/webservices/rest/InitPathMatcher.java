@@ -39,6 +39,6 @@ public class InitPathMatcher implements ServletContextAware {
 			handlerMapping.setPathMatcher(pathMatcher);
 		}
 		
-		handlerAdapter.setPathMatcher(pathMatcher);
+		handlerAdapter.setPathMatcher(pathMatcher); 
 	}
 }
