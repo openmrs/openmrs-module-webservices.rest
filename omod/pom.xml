@@ -177,7 +177,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
@@ -190,7 +189,7 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>org/openmrs/module/openmrs-module-webservices.rest/**</include>
+						<include>org/openmrs/**</include>
 					</includes>
 				</configuration>
 			</plugin>
