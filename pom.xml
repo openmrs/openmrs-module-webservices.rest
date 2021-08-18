@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.openmrs.module</groupId>
@@ -17,8 +15,8 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-webservices.rest.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-webservices.rest.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-webservices.rest/</url>
-		<tag>HEAD</tag>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<distributionManagement>
 		<repository>
@@ -26,18 +24,24 @@
 			<name>Modules</name>
 			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/modules/</url>
 		</repository>
-		<snapshotRepository>
-			<id>openmrs-repo-snapshots</id>
-			<name>OpenMRS Snapshots</name>
-			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
+        <snapshotRepository>
+            <id>openmrs-repo-snapshots</id>
+            <name>OpenMRS Snapshots</name>
+            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
 	</distributionManagement>
 
-	<!-- modules are now configured in profile section so we can provide a no-java-8 
-		profile (see profiles section below) -->
-	<!-- <modules> <module>omod-common</module> <module>omod-1.8</module> <module>omod-1.9</module> 
-		<module>omod-1.10</module> <module>omod-1.11</module> <module>omod-2.0</module> 
-		<module>omod-1.12</module> <module>omod</module> </modules> -->
+    <!-- modules are now configured in profile section so we can provide a no-java-8 profile (see profiles section below) -->
+<!--	<modules>
+		<module>omod-common</module>
+		<module>omod-1.8</module>
+		<module>omod-1.9</module>
+		<module>omod-1.10</module>
+		<module>omod-1.11</module>
+		<module>omod-2.0</module>
+		<module>omod-1.12</module>
+		<module>omod</module>
+	</modules>-->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -140,7 +144,7 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-
+		
 
 	</dependencies>
 
@@ -229,14 +233,14 @@
 						<useReleaseProfile>false</useReleaseProfile>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<arguments>-Prelease</arguments>
-						<tagNameFormat>@{project.version}</tagNameFormat>
+                        <tagNameFormat>@{project.version}</tagNameFormat>
 					</configuration>
 				</plugin>
 
 				<plugin>
 					<groupId>com.googlecode.maven-java-formatter-plugin</groupId>
 					<artifactId>maven-java-formatter-plugin</artifactId>
-					<version>0.4</version>
+                    <version>0.4</version>
 					<configuration>
 						<compilerSource>${java.version}</compilerSource>
 						<compilerCompliance>${java.version}</compilerCompliance>
@@ -252,12 +256,12 @@
 						</execution>
 					</executions>
 				</plugin>
-
-				<plugin>
+				
+			<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.7</version>
-
+					
 					<executions>
 						<execution>
 							<id>prepare-agent</id>
@@ -416,12 +420,12 @@
 				<artifactId>license-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
-				<configuration>
-					<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-				</configuration>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.22.1</version>
+			    <configuration>
+			    	<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+			    </configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -436,52 +440,51 @@
 			</modules>
 		</profile>
 
-		<!-- if you update this default profile, be sure to update the "release" 
-			profile to make sure it stays consistent -->
-		<profile>
-			<id>java-8</id>
-			<activation>
-				<property>
-					<name>!noJava8</name>
-				</property>
-			</activation>
+        <!-- if you update this default profile, be sure to update the "release" profile to make sure it stays consistent -->
+        <profile>
+            <id>java-8</id>
+            <activation>
+                <property>
+                    <name>!noJava8</name>
+                </property>
+            </activation>
 
-			<modules>
-				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
-				<module>omod-2.0</module>
+            <modules>
+                <module>omod-common</module>
+                <module>omod-1.8</module>
+                <module>omod-1.9</module>
+                <module>omod-1.10</module>
+                <module>omod-1.11</module>
+                <module>omod-1.12</module>
+                <module>omod-2.0</module>
 				<module>omod-2.1</module>
-				<module>omod-2.2</module>
+                <module>omod-2.2</module>
 				<module>omod-2.3</module>
 				<module>omod-2.4</module>
-				<module>omod</module>
-				<module>integration-tests</module>
-			</modules>
-		</profile>
+                <module>omod</module>
+                <module>integration-tests</module>
+            </modules>
+        </profile>
 
-		<profile>
-			<id>no-java-8</id>
-			<activation>
-				<property>
-					<name>noJava8</name>
-				</property>
-			</activation>
+        <profile>
+            <id>no-java-8</id>
+            <activation>
+                <property>
+                    <name>noJava8</name>
+                </property>
+            </activation>
 
-			<modules>
-				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
-				<module>omod</module>
-				<module>integration-tests</module>
-			</modules>
-		</profile>
+            <modules>
+                <module>omod-common</module>
+                <module>omod-1.8</module>
+                <module>omod-1.9</module>
+                <module>omod-1.10</module>
+                <module>omod-1.11</module>
+                <module>omod-1.12</module>
+                <module>omod</module>
+                <module>integration-tests</module>
+            </modules>
+        </profile>
 
 		<profile>
 			<id>ci</id>
@@ -519,21 +522,21 @@
 		<profile>
 			<id>release</id>
 
-			<modules>
-				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
-				<module>omod-2.0</module>
+            <modules>
+                <module>omod-common</module>
+                <module>omod-1.8</module>
+                <module>omod-1.9</module>
+                <module>omod-1.10</module>
+                <module>omod-1.11</module>
+                <module>omod-1.12</module>
+                <module>omod-2.0</module>
 				<module>omod-2.1</module>
-				<module>omod-2.2</module>
+                <module>omod-2.2</module>
 				<module>omod-2.3</module>
 				<module>omod-2.4</module>
-				<module>omod</module>
-				<module>integration-tests</module>
-			</modules>
+                <module>omod</module>
+                <module>integration-tests</module>
+            </modules>
 
 			<build>
 				<plugins>
@@ -570,8 +573,8 @@
 									<goal>jar</goal>
 								</goals>
 								<configuration>
-									<failOnError>false</failOnError>
-								</configuration>
+					              	<failOnError>false</failOnError>
+					            </configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -580,7 +583,7 @@
 		</profile>
 
 	</profiles>
-	<repositories>
+    <repositories>
 		<repository>
 			<id>openmrs-repo</id>
 			<name>OpenMRS Nexus Repository</name>
