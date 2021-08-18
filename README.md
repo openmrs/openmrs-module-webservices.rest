@@ -1,7 +1,8 @@
-[![Build Status](https://travis-ci.org/openmrs/openmrs-module-webservices.rest.svg?branch=master)](https://travis-ci.org/openmrs/openmrs-module-webservices.rest) [![Coverage
-Status](https://coveralls.io/repos/github/openmrs/openmrs-module-webservices.rest/badge.svg?branch=master)](https://coveralls.io/github/openmrs/openmrs-module-webservices.rest?branch=master)
 
 <img src="https://talk.openmrs.org/uploads/default/original/2X/f/f1ec579b0398cb04c80a54c56da219b2440fe249.jpg" alt="OpenMRS"/>
+
+[![Build Status](https://travis-ci.org/openmrs/openmrs-module-webservices.rest.svg?branch=master)](https://travis-ci.org/openmrs/openmrs-module-webservices.rest) [![Coverage
+Status](https://coveralls.io/repos/github/openmrs/openmrs-module-webservices.rest/badge.svg?branch=master)](https://coveralls.io/github/openmrs/openmrs-module-webservices.rest?branch=master)
 
 # OpenMRS REST Web Services Module
 
