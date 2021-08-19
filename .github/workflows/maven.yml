@@ -7,8 +7,6 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
-   after_success:
-         - mvn jacoco:report coveralls:report
 
 jobs:
   build:
