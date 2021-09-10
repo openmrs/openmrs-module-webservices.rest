@@ -34,7 +34,6 @@
     <!-- modules are now configured in profile section so we can provide a no-java-8 profile (see profiles section below) -->
 <!--	<modules>
 		<module>omod-common</module>
-		<module>omod-1.8</module>
 		<module>omod-1.9</module>
 		<module>omod-1.10</module>
 		<module>omod-1.11</module>
@@ -431,7 +430,6 @@
 
             <modules>
                 <module>omod-common</module>
-                <module>omod-1.8</module>
                 <module>omod-1.9</module>
                 <module>omod-1.10</module>
                 <module>omod-1.11</module>
@@ -456,7 +454,6 @@
 
             <modules>
                 <module>omod-common</module>
-                <module>omod-1.8</module>
                 <module>omod-1.9</module>
                 <module>omod-1.10</module>
                 <module>omod-1.11</module>
@@ -504,7 +501,6 @@
 
             <modules>
                 <module>omod-common</module>
-                <module>omod-1.8</module>
                 <module>omod-1.9</module>
                 <module>omod-1.10</module>
                 <module>omod-1.11</module>
