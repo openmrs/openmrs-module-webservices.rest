@@ -15,7 +15,7 @@
 		<connection>scm:git:git@github.com:openmrs/openmrs-module-webservices.rest.git</connection>
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-webservices.rest.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-webservices.rest/</url>
-	  <tag>HEAD</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
