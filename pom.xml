@@ -16,7 +16,7 @@
 		<developerConnection>scm:git:git@github.com:openmrs/openmrs-module-webservices.rest.git</developerConnection>
 		<url>https://github.com/openmrs/openmrs-module-webservices.rest/</url>
 	  <tag>HEAD</tag>
-  </scm>
+	</scm>
 
 	<distributionManagement>
 		<repository>
@@ -24,24 +24,12 @@
 			<name>Modules</name>
 			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/modules/</url>
 		</repository>
-        <snapshotRepository>
-            <id>openmrs-repo-snapshots</id>
-            <name>OpenMRS Snapshots</name>
-            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
+		<snapshotRepository>
+			<id>openmrs-repo-snapshots</id>
+			<name>OpenMRS Snapshots</name>
+			<url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
-
-    <!-- modules are now configured in profile section so we can provide a no-java-8 profile (see profiles section below) -->
-<!--	<modules>
-		<module>omod-common</module>
-		<module>omod-1.8</module>
-		<module>omod-1.9</module>
-		<module>omod-1.10</module>
-		<module>omod-1.11</module>
-		<module>omod-2.0</module>
-		<module>omod-1.12</module>
-		<module>omod</module>
-	</modules>-->
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -419,52 +407,51 @@
 				<module>integration-tests</module>
 			</modules>
 		</profile>
+		<!-- if you update this default profile, be sure to update the "release" profile to make sure it stays consistent -->
+		<profile>
+			<id>java-8</id>
+			<activation>
+				<property>
+					<name>!noJava8</name>
+				</property>
+			</activation>
 
-        <!-- if you update this default profile, be sure to update the "release" profile to make sure it stays consistent -->
-        <profile>
-            <id>java-8</id>
-            <activation>
-                <property>
-                    <name>!noJava8</name>
-                </property>
-            </activation>
-
-            <modules>
-                <module>omod-common</module>
-                <module>omod-1.8</module>
-                <module>omod-1.9</module>
-                <module>omod-1.10</module>
-                <module>omod-1.11</module>
-                <module>omod-1.12</module>
-                <module>omod-2.0</module>
+			<modules>
+				<module>omod-common</module>
+				<module>omod-1.8</module>
+				<module>omod-1.9</module>
+				<module>omod-1.10</module>
+				<module>omod-1.11</module>
+				<module>omod-1.12</module>
+				<module>omod-2.0</module>
 				<module>omod-2.1</module>
-                <module>omod-2.2</module>
+				<module>omod-2.2</module>
 				<module>omod-2.3</module>
 				<module>omod-2.4</module>
-                <module>omod</module>
-                <module>integration-tests</module>
-            </modules>
-        </profile>
+				<module>omod</module>
+				<module>integration-tests</module>
+			</modules>
+		</profile>
 
-        <profile>
-            <id>no-java-8</id>
-            <activation>
-                <property>
-                    <name>noJava8</name>
-                </property>
-            </activation>
+		<profile>
+			<id>no-java-8</id>
+			<activation>
+				<property>
+					<name>noJava8</name>
+				</property>
+			</activation>
 
-            <modules>
-                <module>omod-common</module>
-                <module>omod-1.8</module>
-                <module>omod-1.9</module>
-                <module>omod-1.10</module>
-                <module>omod-1.11</module>
-                <module>omod-1.12</module>
-                <module>omod</module>
-                <module>integration-tests</module>
-            </modules>
-        </profile>
+			<modules>
+				<module>omod-common</module>
+				<module>omod-1.8</module>
+				<module>omod-1.9</module>
+				<module>omod-1.10</module>
+				<module>omod-1.11</module>
+				<module>omod-1.12</module>
+				<module>omod</module>
+				<module>integration-tests</module>
+			</modules>
+		</profile>
 
 		<profile>
 			<id>ci</id>
@@ -502,21 +489,21 @@
 		<profile>
 			<id>release</id>
 
-            <modules>
-                <module>omod-common</module>
-                <module>omod-1.8</module>
-                <module>omod-1.9</module>
-                <module>omod-1.10</module>
-                <module>omod-1.11</module>
-                <module>omod-1.12</module>
-                <module>omod-2.0</module>
+			<modules>
+				<module>omod-common</module>
+				<module>omod-1.8</module>
+				<module>omod-1.9</module>
+				<module>omod-1.10</module>
+				<module>omod-1.11</module>
+				<module>omod-1.12</module>
+				<module>omod-2.0</module>
 				<module>omod-2.1</module>
-                <module>omod-2.2</module>
+				<module>omod-2.2</module>
 				<module>omod-2.3</module>
 				<module>omod-2.4</module>
-                <module>omod</module>
-                <module>integration-tests</module>
-            </modules>
+				<module>omod</module>
+				<module>integration-tests</module>
+			</modules>
 
 			<build>
 				<plugins>
