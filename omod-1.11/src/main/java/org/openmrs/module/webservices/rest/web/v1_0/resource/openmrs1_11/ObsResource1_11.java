@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -60,6 +61,28 @@ public class ObsResource1_11 extends ObsResource1_9 {
 		description.addProperty("formFieldPath");
 		description.addProperty("formFieldNamespace");
 		return description;
+	}
+	
+	/**
+	 * Annotated setter for formFieldPath
+	 * 
+	 * @param obs
+	 * @param formFieldPath
+	 */
+	@PropertySetter("formFieldPath")
+	public static void setFormFieldPath(Obs obs, Object formFieldPath) {
+		obs.setFormField(obs.getFormFieldNamespace(), (String)formFieldPath);
+	}
+	
+	/**
+	 * Annotated setter for formFieldNamespace
+	 * 
+	 * @param obs
+	 * @param namespace
+	 */
+	@PropertySetter("formFieldNamespace")
+	public static void setFormFieldNamespace(Obs obs, Object namespace) {
+		obs.setFormField((String)namespace, obs.getFormFieldPath());
 	}
 	
 	/**
