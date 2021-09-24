@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,11 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -157,5 +163,17 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		
 		Assert.assertNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
 		Assert.assertEquals(originalCount - 1, service.getAllVisitAttributeTypes().size());
+	}
+	
+	@Test
+	public void shouldGetAVisitAttributeTypeByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" +getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		VisitAttributeType visitAttributeType = service.getVisitAttributeTypeByUuid(getUuid());
+		assertNotNull(result);
+		assertEquals(visitAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(visitAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
+		assertEquals(visitAttributeType.getDescription(), PropertyUtils.getProperty(result, "description"));
 	}
 }
