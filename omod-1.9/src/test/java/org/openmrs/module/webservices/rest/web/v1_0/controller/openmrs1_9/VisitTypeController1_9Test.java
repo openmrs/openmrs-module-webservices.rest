@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
@@ -145,7 +144,6 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		VisitType visitType = service.getVisitTypeByUuid(getUuid());
-		assertNotNull(result);
 		assertEquals(visitType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(visitType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
