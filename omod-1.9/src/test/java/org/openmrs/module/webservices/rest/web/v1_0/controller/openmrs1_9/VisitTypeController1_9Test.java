@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +22,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -132,6 +136,16 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		List<Object> hits = Util.getResultsList(result);
 		Assert.assertEquals(0, hits.size());
 		
+	}
+	
+	@Test
+	public void shouldGetAVisitTypeByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		VisitType visitType = service.getVisitTypeByUuid(getUuid());
+		assertEquals(visitType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(visitType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 }
