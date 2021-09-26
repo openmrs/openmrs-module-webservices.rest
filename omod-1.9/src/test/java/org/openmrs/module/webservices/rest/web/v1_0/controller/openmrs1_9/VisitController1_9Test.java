@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.DateFormat;
@@ -96,7 +95,6 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Visit visit = service.getVisitByUuid(getUuid());
-		assertNotNull(result);
 		assertEquals(visit.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 	
