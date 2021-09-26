@@ -290,6 +290,15 @@ public class ObsController1_9Test extends MainResourceControllerTest {
         assertNull(result.get("value"));
     }
 
+    @Test
+    public void shouldGetObsById() throws Exception {
+    	MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+    	SimpleObject result = deserialize(handle(req));
+    	
+    	ObsService obsService = Context.getObsService();
+    	Obs obs = obsService.getObsByUuid(getUuid());
+    	assertEquals(obs.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+    }
 
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
