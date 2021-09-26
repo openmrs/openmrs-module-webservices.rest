@@ -25,7 +25,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -171,7 +170,6 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(req));
 		
 		VisitAttributeType visitAttributeType = service.getVisitAttributeTypeByUuid(getUuid());
-		assertNotNull(result);
 		assertEquals(visitAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(visitAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
 		assertEquals(visitAttributeType.getDescription(), PropertyUtils.getProperty(result, "description"));
