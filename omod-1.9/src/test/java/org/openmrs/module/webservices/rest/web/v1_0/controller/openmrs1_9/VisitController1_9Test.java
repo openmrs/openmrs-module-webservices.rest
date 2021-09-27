@@ -38,6 +38,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 public class VisitController1_9Test extends MainResourceControllerTest {
 	
@@ -88,6 +90,15 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldGetAVisitByUuid() throws Exception{
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		Visit visit = service.getVisitByUuid(getUuid());
+		assertEquals(visit.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+	}
+	
+	@Test
 	public void shouldCreateVisitWithoutStartDatetime() throws Exception {
 		int originalCount = service.getAllVisits().size();
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
@@ -98,7 +109,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
 		Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
 	}
-	
+
 	@Test
 	public void shouldCreateAVisitWithEncounters() throws Exception {
 		int originalCount = service.getAllVisits().size();
