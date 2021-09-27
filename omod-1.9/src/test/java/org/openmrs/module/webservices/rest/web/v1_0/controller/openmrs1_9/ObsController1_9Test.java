@@ -291,7 +291,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
     }
 
     @Test
-    public void shouldGetObsById() throws Exception {
+    public void shouldGetObsByUuid() throws Exception {
     	MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
     	SimpleObject result = deserialize(handle(req));
     	
