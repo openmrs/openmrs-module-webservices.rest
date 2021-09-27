@@ -300,6 +300,17 @@ public class ObsController1_9Test extends MainResourceControllerTest {
     	assertEquals(obs.getUuid(), PropertyUtils.getProperty(result, "uuid"));
     }
 
+    @Test
+    public void shouldCreateObs() throws Exception {
+    	SimpleObject obs = new SimpleObject();
+    	obs.add("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+    	obs.add("concept", "89ca642a-dab6-4f20-b712-e12ca4fc6d36");
+    	obs.add("obsDatetime", "2018-11-13T00:00:00.000-0500");
+    	
+    	SimpleObject newObs = deserialize(handle(newPostRequest(getURI(), obs)));
+    	assertEquals(obs.get("patient"), Util.getByPath(newObs, "patient/uuid"));
+    }
+    
     private ConceptComplex newConceptComplex() {
 		setupBinaryDataHandler();
 
