@@ -9,8 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.EncounterRole;
@@ -126,5 +129,16 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+	
+	@Test
+	public void shouldGetAllEncounterRoles() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.setParameter("encounter", RestTestConstants1_9.ENCOUNTER_ROLE_UUID);
+		SimpleObject result = deserialize(handle(req));
+		
+		EncounterRole encounterRole = service.getEncounterRoleByUuid(RestTestConstants1_9.ENCOUNTER_ROLE_UUID);
+		List<EncounterRole> encounter = (List<EncounterRole>) service.getEncounterRole(1);
+		Assert.assertEquals(encounter.size(), Util.getResultsSize(result));
 	}
 }
