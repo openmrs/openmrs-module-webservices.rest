@@ -101,10 +101,10 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 	
 	@Test
 	public void shouldGetAConceptAttributeByUuid() throws Exception {
-	MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
-	SimpleObject result = deserialize(handle(req));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
 
-	ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
-	assertEquals(conceptAttribute.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
+		assertEquals(conceptAttribute.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 }
