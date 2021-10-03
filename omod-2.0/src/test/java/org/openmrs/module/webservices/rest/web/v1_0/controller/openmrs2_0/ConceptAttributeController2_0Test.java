@@ -9,13 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+
+import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.ConceptAttribute;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -94,5 +97,14 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 		conceptAttribute = service.getConceptAttributeByUuid(getUuid());
 		Assert.assertTrue(conceptAttribute.isVoided());
 		Assert.assertEquals("unit test", conceptAttribute.getVoidReason());
+	}
+	
+	@Test
+	public void shouldGetAConceptAttributeByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+
+		ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
+		assertEquals(conceptAttribute.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 }
