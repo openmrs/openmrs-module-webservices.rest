@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,10 +30,12 @@ import org.openmrs.api.DatatypeService;
 import org.openmrs.api.FormService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.ClobDatatypeStorage;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -160,6 +164,16 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		String expected = "attachment;filename=\"" + resource.getName() + "\"";
 		Assert.assertTrue(StringUtils.equals((String) response.getHeader("Content-Disposition"), expected));
 		Assert.assertEquals(clobData.getValue(), response.getContentAsString());
+	}
+	
+	@Test
+	public void shouldGetAFormResourceByUuid() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() +"/" +getUuid());
+		SimpleObject result = deserialize(handle(req));
+		
+		FormResource resource = formService.getFormResourceByUuid(getUuid());
+		assertEquals(resource.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(resource.getName(), PropertyUtils.getProperty(result, "name"));		
 	}
 	
 	@Override
