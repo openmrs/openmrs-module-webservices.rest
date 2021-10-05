@@ -113,7 +113,7 @@ public class ConceptSourceController2_0Test extends MainResourceControllerTest {
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAConceptSource() throws Exception {
 		final String newName = "updated name";
 		SimpleObject conceptSource = new SimpleObject();
@@ -125,6 +125,19 @@ public class ConceptSourceController2_0Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Assert.assertEquals(newName, service.getConceptSourceByUuid(getUuid()).getName());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAConceptSource() throws Exception {
+		final String newName = "updated name";
+		SimpleObject conceptSource = new SimpleObject();
+		conceptSource.add("name", newName);
+
+		String json = new ObjectMapper().writeValueAsString(conceptSource);
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

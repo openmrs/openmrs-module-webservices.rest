@@ -75,13 +75,19 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 	 * @see LocationAttributeTypeController#updateLocationAttributeType(LocationAttributeType,SimpleObject,WebRequest)
 	 * @verifies change a property on a location
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void updateLocationAttributeType_shouldChangeAPropertyOnALocationAttributeType() throws Exception {
 		String json = "{\"description\":\"Updated description\"}";
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		Assert.assertEquals("Updated description", Context.getLocationService().getLocationAttributeType(1).getDescription());
+	}
+	@Test(expected = RuntimeException.class)
+	public void updateLocationAttributeType_shouldshouldThrowAnExceptionWhenEditingAPropertyOnALocationAttributeType() throws Exception {
+		String json = "{\"description\":\"Updated description\"}";
+		
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 	}
 	
 	/**

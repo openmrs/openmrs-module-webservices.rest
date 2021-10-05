@@ -108,7 +108,7 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 	 * @throws Exception
 	 * @verifies change a property on a person
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void updatePersonAttributeType_shouldChangeAPropertyOnAPersonAttributeType() throws Exception {
 		
 		final String newDescription = "Updated description";
@@ -127,6 +127,22 @@ public class PersonAttributeTypeController1_8Test extends MainResourceController
 		Assert.assertNotNull(editedAttr);
 		Assert.assertEquals(newDescription, editedAttr.getDescription());
 		Util.log("Edited PersonAttributeType Description: ", editedAttr.getDescription());
+	}
+	
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAPersonAttributeType() throws Exception {
+		
+		final String newDescription = "Updated description";
+		
+		PersonAttributeType obj = service.getPersonAttributeTypeByUuid(getUuid());
+		Assert.assertNotNull(obj);
+		Assert.assertFalse(newDescription.equals(obj.getDescription()));
+		Util.log("Old PersonAttributeType Description: ", obj.getDescription());
+		
+		String json = "{\"description\":\"Updated description\"}";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	/**

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -23,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests functionality of OrderSet CRUD by MainResourceController
@@ -127,7 +128,7 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditAnOrderSet() throws Exception {
 		
 		final String editedName = "OrderSet Edited";
@@ -140,6 +141,16 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(editedOrderSet);
 		Assert.assertEquals(editedName, editedOrderSet.getName());
+	}
+
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingAnAnOrderSet() throws Exception {
+		
+		final String editedName = "OrderSet Edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test

@@ -108,7 +108,7 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		
 	}
 	
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void shouldEditADrug() throws Exception {
 		
 		final String editedName = "Aspirin Edited";
@@ -121,6 +121,15 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(editedDrug);
 		Assert.assertEquals(editedName, editedDrug.getName());
 		
+	}
+	@Test(expected = RuntimeException.class)
+	public void shouldThrowAnExceptionWhenEditingADrug() throws Exception {
+		
+		final String editedName = "Aspirin Edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
 	}
 	
 	@Test
