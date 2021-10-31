@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
+import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
@@ -30,6 +31,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ProviderController1_9Test extends MainResourceControllerTest {
+	
+	private ProviderService service;
 	
 	@Before
 	public void before() throws Exception {
@@ -135,6 +138,19 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		
 		Object next = results.iterator().next();
 		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+	}
+	
+	@Test
+	public void shouldEditAProvider() throws Exception {	
+		final String editedName = "Edited Provider";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+		
+		Provider editedProvider = service.getProviderByUuid(getUuid());
+		Assert.assertNotNull(editedProvider);
+		Assert.assertEquals(editedName, editedProvider.getName());
 	}
 	
 	/**
