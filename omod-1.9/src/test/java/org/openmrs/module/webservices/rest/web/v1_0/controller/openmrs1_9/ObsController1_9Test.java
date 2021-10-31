@@ -54,6 +54,8 @@ import static org.junit.Assert.assertTrue;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
 
+	private ObsService service;
+	
 	@Autowired
 	ConceptService conceptService;
 
@@ -102,6 +104,18 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 	}
 
+	@Test
+	public void shouldEditObs() throws Exception {		
+		final String editedName = "Malaria Program Edited";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+
+		Obs editedObs = service.getObsByUuid(getUuid());
+		Assert.assertEquals(editedName, editedObs.getValueCodedName());
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
