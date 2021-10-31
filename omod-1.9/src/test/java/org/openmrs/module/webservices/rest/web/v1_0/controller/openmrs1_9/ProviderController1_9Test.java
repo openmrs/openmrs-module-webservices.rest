@@ -14,6 +14,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Provider;
+import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
@@ -30,6 +31,8 @@ import java.util.Date;
 import java.util.List;
 
 public class ProviderController1_9Test extends MainResourceControllerTest {
+	
+	private ProviderService service;
 	
 	@Before
 	public void before() throws Exception {
@@ -106,6 +109,20 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
 		Assert.assertEquals(0, results.size());
+	}
+	
+	@Test
+	public void shouldEditAProviderAttribute() throws Exception {
+		String json = "{ \"attributeType\":\"" + RestTestConstants1_9.PROVIDER_UUID
+		        + "\", \"value\": \"2015-04-12\" }";
+		
+		Provider provider = Context.getProviderService().getProvider(1);
+		Assert.assertEquals("2011-04-25", provider.getAttributes());
+		
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		
+		provider = service.getProviderByUuid(getUuid());
+		Assert.assertEquals("2015-04-12", provider.getAttributes());
 	}
 	
 	/**
