@@ -63,19 +63,24 @@ public class ObsController2_2Test extends MainResourceControllerTest {
         ObsService obsService = Context.getObsService();
         final String obsUuid ="47f18998-96cc-11e0-8d6b-9b9415a91465";
         Date updatedObsDatetime = new Date();
+        double updatedValue = 10.0 ;
 
         executeDataSet("obsDataSet2_2.xml");
         Obs existingObs = obsService.getObsByUuid(obsUuid);
         assertNotNull(existingObs);
+        System.out.println(existingObs.getValueNumeric());
 
-        String json = "{\"obsDatetime\":\""+ DATE_FORMAT.format (updatedObsDatetime) +"\",\"voided\":false}";
+        String json = "{ \"value\":\"" + updatedValue + "\", \"person\":\"" + RestTestConstants1_8.PERSON_UUID
+                + "\", \"concept\":\"SNOMED CT:2332523\",\"obsDatetime\":\""+ DATE_FORMAT.format (updatedObsDatetime) +"\",\"voided\":false}";
 
         handle(newPostRequest(getURI() + "/" + existingObs.getUuid(), json));
         Obs updatedObs = obsService.getRevisionObs(existingObs);
 
         assertNotNull(updatedObs);
-        assertEquals(false,updatedObs.getVoided());
+        assertEquals(10.0,updatedObs.getValueNumeric(),updatedValue);
+        assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",updatedObs.getPerson().getUuid());
         assertEquals(updatedObsDatetime.toString(),updatedObs.getObsDatetime().toString());
+        assertEquals(false,updatedObs.getVoided());
     }
 
 }
