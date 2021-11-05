@@ -41,8 +41,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.xml.bind.DatatypeConverter;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +51,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
 
@@ -62,8 +59,6 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 	@Autowired
 	AdministrationService adminService;
-
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	@Test
 	public void getObs_shouldGetObsConceptByConceptMappings() throws Exception {
@@ -88,36 +83,6 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		SimpleObject ret = deserialize(handle(newPostRequest(getURI(), json)));
 		assertEquals(codeValueUuid, Util.getByPath(ret, "value/uuid"));
 		assertEquals(++originalCount, getAllCount());
-	}
-
-	@Test
-	public void shouldUpdateObs() throws Exception {
-		Drug drug = Context.getConceptService().getDrugByUuid("3cfcf118-931c-46f7-8ff6-7b876f0d4202");
-		Concept concept = Context.getConceptService().getConceptByUuid("89ca642a-dab6-4f20-b712-e12ca4fc6d36");
-		Person person = Context.getPersonService().getPerson(2);
-		final Date newDatetime = new Date();
-		Obs obs = new Obs();
-		obs.setConcept(concept);
-		obs.setValueDrug(drug);
-		obs.setValueCoded(drug.getConcept());
-		obs.setObsDatetime(newDatetime);
-		obs.setPerson(person);
-		obs.setComment("An option free text comment about the observation");
-		ObsService obsService = Context.getObsService();
-		obsService.saveObs(obs, "some random reason");
-
-		String json = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", " +
-				"\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
-				+ "\"obsDatetime\":\""+ DATE_FORMAT.format (newDatetime)+ "\","
-				+ "\"comment\":\"An option free text comment about the observation\"}";
-		handle(newPostRequest(getURI() + "/" + obs.getUuid(), json));
-		Obs updatedObs = obsService.getObsByUuid(obs.getUuid());
-
-		assertNotNull(updatedObs);
-		assertEquals("89ca642a-dab6-4f20-b712-e12ca4fc6d36", updatedObs.getConcept().getUuid());
-		assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", updatedObs.getPerson().getUuid());
-		assertEquals(newDatetime, updatedObs.getObsDatetime());
-		assertEquals("An option free text comment about the observation", updatedObs.getComment());
 	}
 
 	@Test
