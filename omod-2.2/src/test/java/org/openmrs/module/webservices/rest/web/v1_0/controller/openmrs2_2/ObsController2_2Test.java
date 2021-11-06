@@ -68,7 +68,6 @@ public class ObsController2_2Test extends MainResourceControllerTest {
         executeDataSet("obsDataSet2_2.xml");
         Obs existingObs = obsService.getObsByUuid(obsUuid);
         assertNotNull(existingObs);
-        System.out.println(existingObs.getValueNumeric());
 
         String json = "{ \"value\":\"" + updatedValue + "\", \"person\":\"" + RestTestConstants1_8.PERSON_UUID
                 + "\", \"concept\":\"SNOMED CT:2332523\",\"obsDatetime\":\""+ DATE_FORMAT.format (updatedObsDatetime) +"\",\"voided\":false}";
@@ -82,5 +81,4 @@ public class ObsController2_2Test extends MainResourceControllerTest {
         assertEquals(updatedObsDatetime.toString(),updatedObs.getObsDatetime().toString());
         assertEquals(false,updatedObs.getVoided());
     }
-
 }
