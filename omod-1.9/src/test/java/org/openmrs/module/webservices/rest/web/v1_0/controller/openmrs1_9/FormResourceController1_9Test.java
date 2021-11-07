@@ -167,6 +167,19 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldEditAFormResource() throws Exception {		
+		final String editedName = "Edited Form Resource";
+		String json = "{ \"name\":\"" + editedName + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+
+		FormResource editedForm = formService.getFormResourceByUuid(getUuid());
+		Assert.assertEquals(editedName, editedForm.getName());
+	}
+
+	
+	@Test
 	public void shouldGetAFormResourceByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() +"/" +getUuid());
 		SimpleObject result = deserialize(handle(req));
