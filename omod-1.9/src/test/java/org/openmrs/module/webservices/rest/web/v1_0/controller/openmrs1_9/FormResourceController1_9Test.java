@@ -168,7 +168,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAFormResourceByUuid() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() +"/" +getUuid());
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
 		FormResource resource = formService.getFormResourceByUuid(getUuid());

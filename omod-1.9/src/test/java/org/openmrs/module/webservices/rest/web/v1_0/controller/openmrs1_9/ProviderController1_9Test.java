@@ -137,6 +137,19 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
 	}
 	
+	@Test
+	public void shouldEditAProvider() throws Exception {
+		final String EDITED_PERSON = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+		Provider provider = Context.getProviderService().getAllProviders().get(1);
+		Assert.assertFalse(EDITED_PERSON.equals(provider.getPerson().getUuid()));
+		
+		String json = "{\"person\":\"" + EDITED_PERSON + "\"" + "}";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		
+		Provider updatedProvider = Context.getProviderService().getAllProviders().get(1);
+		Assert.assertEquals(EDITED_PERSON, updatedProvider.getPerson().getUuid());
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
