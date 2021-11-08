@@ -61,12 +61,11 @@ public class ObsController2_2Test extends MainResourceControllerTest {
     @Test
     public void shouldUpdateObs() throws Exception {
         ObsService obsService = Context.getObsService();
-        final String obsUuid ="47f18998-96cc-11e0-8d6b-9b9415a91465";
         Date updatedObsDatetime = new Date();
         double updatedValue = 10.0 ;
 
         executeDataSet("obsDataSet2_2.xml");
-        Obs existingObs = obsService.getObsByUuid(obsUuid);
+        Obs existingObs = obsService.getObsByUuid("47f18998-96cc-11e0-8d6b-9b9415a91465");
         assertNotNull(existingObs);
 
         String json = "{ \"value\":\"" + updatedValue + "\", \"person\":\"" + RestTestConstants1_8.PERSON_UUID
