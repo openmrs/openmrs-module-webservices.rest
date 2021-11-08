@@ -76,7 +76,7 @@ public class ObsController2_2Test extends MainResourceControllerTest {
 
         assertNotNull(updatedObs);
         assertEquals(10.0,updatedObs.getValueNumeric(),updatedValue);
-        assertEquals("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",updatedObs.getPerson().getUuid());
+        assertEquals(RestTestConstants1_8.PERSON_UUID,updatedObs.getPerson().getUuid());
         assertEquals(updatedObsDatetime.toString(),updatedObs.getObsDatetime().toString());
         assertEquals(false,updatedObs.getVoided());
     }
