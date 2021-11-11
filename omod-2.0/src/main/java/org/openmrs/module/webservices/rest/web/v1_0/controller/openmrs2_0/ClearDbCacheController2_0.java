@@ -10,6 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SessionFactory;
+import org.openmrs.OpenmrsObject;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,42 +33,40 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Controller("webservices.rest.searchIndexController2_0")
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/searchindexupdate", method = RequestMethod.POST)
-public class SearchIndexController2_0 extends BaseRestController {
+@Controller("webservices.rest.DbCacheController")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/cleardbcache", method = RequestMethod.POST)
+public class ClearDbCacheController2_0 extends BaseRestController {
 	
-	private static final Logger log = LoggerFactory.getLogger(SearchIndexController2_0.class);
+	private static final Logger log = LoggerFactory.getLogger(ClearDbCacheController2_0.class);
+	
+	private RestService restService;
 	
 	@Autowired
-	private RestService restService;
+	public ClearDbCacheController2_0(RestService restService) {
+		this.restService = restService;
+	}
 	
 	@RequestMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateSearchIndex(@RequestBody(required = false) String json) throws Exception {
+	public void clearDbCache(@RequestBody(required = false) String json) throws Exception {
 		String resourceName = null;
 		String subResourceName = null;
-		boolean async = false;
 		String uuid = null;
 		if (StringUtils.isNotBlank(json)) {
 			SimpleObject simpleObject = new ObjectMapper().readValue(json, SimpleObject.class);
 			resourceName = simpleObject.get("resource");
 			subResourceName = simpleObject.get("subResource");
 			uuid = simpleObject.get("uuid");
-			if (simpleObject.get("async") != null) {
-				async = simpleObject.get("async");
-			}
 		}
 		
+		//TODO Replace this logic with the methods added as part of https://issues.openmrs.org/browse/TRUNK-6047
+		SessionFactory sf = Context.getRegisteredComponents(SessionFactory.class).get(0);
 		if (StringUtils.isBlank(resourceName)) {
 			if (log.isDebugEnabled()) {
-				log.debug("Updating search index via REST" + (async ? " asynchronously" : ""));
+				log.debug("Clearing DB cache via REST");
 			}
 			
-			if (async) {
-				Context.updateSearchIndexAsync();
-			} else {
-				Context.updateSearchIndex();
-			}
+			sf.getCache().evictAllRegions();
 		} else {
 			if (StringUtils.isNotBlank(subResourceName)) {
 				resourceName += ("/" + subResourceName);
@@ -74,15 +75,23 @@ public class SearchIndexController2_0 extends BaseRestController {
 			Resource resource = restService.getResourceByName(buildResourceName(resourceName));
 			Class<?> supportedClass = RestUtil.getSupportedClass(resource);
 			if (StringUtils.isBlank(uuid)) {
-				log.debug("Updating search index via REST for resource: {} ({})", resourceName, supportedClass);
+				log.debug("Clearing DB cache via REST for resource: {} ({})", resourceName, supportedClass);
 				
-				Context.updateSearchIndexForType(supportedClass);
+				sf.getCache().evictEntityRegion(supportedClass);
 			} else {
-				log.debug("Updating search index via REST for resource: {} with uuid: {}", resourceName, uuid);
+				log.debug("Clearing DB cache via REST for resource: {} ({}) with uuid: {}",
+				    new Object[] { resourceName, supportedClass, uuid });
 				
-				Object object = ((BaseDelegatingResource) resource).getByUniqueId(uuid);
-				Context.updateSearchIndexForObject(object);
+				OpenmrsObject object = (OpenmrsObject) ((BaseDelegatingResource) resource).getByUniqueId(uuid);
+				if ("user".equals(resourceName)) {
+					supportedClass = User.class;
+				}
+				
+				sf.getCache().evictEntity(supportedClass, object.getId());
 			}
+			
+			sf.getCache().evictCollectionRegions();
+			sf.getCache().evictQueryRegions();
 		}
 	}
 	
