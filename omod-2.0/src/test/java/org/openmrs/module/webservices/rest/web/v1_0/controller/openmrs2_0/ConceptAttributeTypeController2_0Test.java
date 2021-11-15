@@ -79,7 +79,7 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid("9516cc50-6f9f-11e0-8414-001e378eb67e");
         Assert.assertNotNull(existingConceptAttributeType);
 
-        String json = "{\"name\": \"new updated name\",\"description\": \"Dummy description update\",\"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
+        String json = "{\"name\": \"new updated name\", \"description\": \"Dummy description update\", \"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
 
         handle(newPostRequest(getURI() + "/" + existingConceptAttributeType.getUuid(), json));
         ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid("9516cc50-6f9f-11e0-8414-001e378eb67e");
