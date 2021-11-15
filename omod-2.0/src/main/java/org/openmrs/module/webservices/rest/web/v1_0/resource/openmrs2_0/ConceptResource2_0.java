@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = { "2.0.*",
-        "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+        "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class ConceptResource2_0 extends ConceptResource1_11 {
 	
 	/**

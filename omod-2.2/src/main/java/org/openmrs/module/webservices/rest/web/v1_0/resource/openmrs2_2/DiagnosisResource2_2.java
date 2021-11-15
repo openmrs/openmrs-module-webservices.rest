@@ -36,7 +36,7 @@ import io.swagger.models.properties.StringProperty;
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
-        "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+        "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**
