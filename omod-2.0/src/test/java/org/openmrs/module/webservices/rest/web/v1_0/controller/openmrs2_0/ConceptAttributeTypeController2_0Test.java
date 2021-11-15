@@ -85,7 +85,7 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid("858472ac-c220-4c7f-9990-980c176c6099");
 
         Assert.assertNotNull(updatedConceptAttributeType);
-        Assert.assertEquals("new updated name",updatedConceptAttributeType.getName());
+        Assert.assertEquals("new updated name", updatedConceptAttributeType.getName());
         Assert.assertEquals("Dummy description update",updatedConceptAttributeType.getDescription());
         Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype",updatedConceptAttributeType.getDatatypeClassname());
     }
