@@ -87,6 +87,6 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         Assert.assertNotNull(updatedConceptAttributeType);
         Assert.assertEquals("new updated name", updatedConceptAttributeType.getName());
         Assert.assertEquals("Dummy description update",updatedConceptAttributeType.getDescription());
-        Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype",updatedConceptAttributeType.getDatatypeClassname());
+        Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedConceptAttributeType.getDatatypeClassname());
     }
 }
