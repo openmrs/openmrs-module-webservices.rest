@@ -14,5 +14,4 @@
     <concept_attribute_type concept_attribute_type_id="1" name="Joining Date" datatype="org.openmrs.customdatatype.datatype.DateDatatype" uuid="9516cc50-6f9f-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" retired="false" />
     <concept_attribute_type concept_attribute_type_id="2" name="A Date We Don't Care About" datatype="org.openmrs.customdatatype.datatype.DateDatatype" uuid="9516cc50-6f9f-11e0-8414-001e378eb67f" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" retired="true" retired_by="1" date_retired="2005-01-01 02:00:00.0" retire_reason="for fun and profit" />
     <concept_attribute concept_attribute_id="1" concept_id="3" attribute_type_id="1" value_reference="2011-04-25" uuid="3a2bdb18-6faa-11e0-8414-001e378eb67f" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
-    <concept_attribute_type concept_attribute_type_id="4" name="existing name" datatype="org.openmrs.customdatatype.datatype.DateDatatype" description="existing text" uuid="858472ac-c220-4c7f-9990-980c176c6099" creator="1" date_created="2021-01-01 00:00:00.0" min_occurs="0" retired="false" />
 </dataset>
