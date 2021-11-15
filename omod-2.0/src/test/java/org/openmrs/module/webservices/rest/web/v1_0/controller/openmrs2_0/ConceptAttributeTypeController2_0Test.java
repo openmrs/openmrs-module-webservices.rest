@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.ConceptAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
@@ -71,6 +72,22 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         Assert.assertNotNull(PropertyUtils.getProperty(newConceptAttributeType, "uuid"));
         Assert.assertEquals(originalCount + 1 , getAllCount());
 
+    }
+
+    @Test
+    public void shouldUpdateConceptAttributeType() throws Exception {
+        ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid("858472ac-c220-4c7f-9990-980c176c6099");
+        Assert.assertNotNull(existingConceptAttributeType);
+
+        String json = "{\"name\": \"new updated name\",\"description\": \"Dummy description update\",\"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
+
+        handle(newPostRequest(getURI() + "/" + existingConceptAttributeType.getUuid(), json));
+        ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid("858472ac-c220-4c7f-9990-980c176c6099");
+
+        Assert.assertNotNull(updatedConceptAttributeType);
+        Assert.assertEquals("new updated name",updatedConceptAttributeType.getName());
+        Assert.assertEquals("Dummy description update",updatedConceptAttributeType.getDescription());
+        Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype",updatedConceptAttributeType.getDatatypeClassname());
     }
 
 }
