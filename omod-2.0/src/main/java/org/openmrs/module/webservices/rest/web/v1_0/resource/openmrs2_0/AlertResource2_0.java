@@ -46,7 +46,7 @@ import java.util.Set;
  * {@link Resource} for {@link Alert}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/alert", supportedClass = Alert.class, supportedOpenmrsVersions = { "2.0.*",
-		"2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+		"2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	private static final String ALERT_ID = "alertId";
