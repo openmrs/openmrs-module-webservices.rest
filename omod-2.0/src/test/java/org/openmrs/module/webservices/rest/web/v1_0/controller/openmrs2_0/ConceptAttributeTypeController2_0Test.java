@@ -76,14 +76,14 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
 
     @Test
     public void shouldUpdateConceptAttributeType() throws Exception {
-        String existingConceptAttributeTypeUuid ="9516cc50-6f9f-11e0-8414-001e378eb67e";
-        ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid(existingConceptAttributeTypeUuid);
+        String CONCEPT_ATTRIBUTE_TYPE_UUID ="9516cc50-6f9f-11e0-8414-001e378eb67e";
+        ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid(CONCEPT_ATTRIBUTE_TYPE_UUID);
         Assert.assertNotNull(existingConceptAttributeType);
 
         String json = "{\"name\": \"new updated name\", \"description\": \"Dummy description update\", \"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
 
         handle(newPostRequest(getURI() + "/" + existingConceptAttributeType.getUuid(), json));
-        ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid(existingConceptAttributeTypeUuid);
+        ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid(CONCEPT_ATTRIBUTE_TYPE_UUID);
 
         Assert.assertNotNull(updatedConceptAttributeType);
         Assert.assertEquals("new updated name", updatedConceptAttributeType.getName());
