@@ -76,7 +76,7 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
 
     @Test
     public void shouldUpdateConceptAttributeType() throws Exception {
-        String CONCEPT_ATTRIBUTE_TYPE_UUID ="9516cc50-6f9f-11e0-8414-001e378eb67e";
+        final String CONCEPT_ATTRIBUTE_TYPE_UUID ="9516cc50-6f9f-11e0-8414-001e378eb67e";
         ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid(CONCEPT_ATTRIBUTE_TYPE_UUID);
         Assert.assertNotNull(existingConceptAttributeType);
 
