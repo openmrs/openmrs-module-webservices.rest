@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.openmrs.ConceptAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -89,5 +90,15 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         Assert.assertEquals("new updated name", updatedConceptAttributeType.getName());
         Assert.assertEquals("Dummy description update", updatedConceptAttributeType.getDescription());
         Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedConceptAttributeType.getDatatypeClassname());
+    }
+    
+    @Test
+    public void shouldGetAConceptAttributeTypeByUuid() throws Exception {
+    	MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		SimpleObject result = deserialize(handle(req));
+
+		ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(getUuid());
+		Assert.assertEquals(conceptAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(conceptAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
     }
 }
