@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Resource(name = RestConstants.VERSION_1
 		+ "/databasechange", supportedClass = DatabaseUpdater.OpenMRSChangeSet.class, supportedOpenmrsVersions = {
-		"2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+		"2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<DatabaseUpdater.OpenMRSChangeSet> {
 
 	private static final String UUID = "uuid";

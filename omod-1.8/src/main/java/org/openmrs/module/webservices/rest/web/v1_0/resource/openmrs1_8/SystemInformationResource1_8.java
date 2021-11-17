@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @Resource(name = RestConstants.VERSION_1 + "/systeminformation", supportedClass = AdministrationServiceImpl.class, supportedOpenmrsVersions = {
-        "1.10.*", "1.11.*", "1.12.*", "1.8.*", "1.9.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*" })
+        "1.10.*", "1.11.*", "1.12.*", "1.8.*", "1.9.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class SystemInformationResource1_8 implements Listable {
 	
 	@Override

@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 @Resource(name = RestConstants.VERSION_1 + "/serverlog", supportedClass = ServerLogActionWrapper.class, supportedOpenmrsVersions = {
-		"2.4.*", "2.5.*" })
+		"2.4.*", "2.5.*", "2.6.*" })
 public class ServerLogResource2_4 extends BaseDelegatingResource<ServerLogActionWrapper> implements Listable {
 
 	private ServerLogActionWrapper serverLogActionWrapper = new ServerLogActionWrapper2_4();

@@ -44,6 +44,8 @@ import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.util.OpenmrsClassLoader;
 import org.springframework.validation.FieldError;
@@ -70,15 +72,15 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
+		String limit = Context.getAdministrationService()
+		        .getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
-				log.error(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME + " must be an integer. "
-				        + nfex.getMessage());
+				log.error(
+				    RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_DEFAULT;
 			}
 		} else {
@@ -94,15 +96,15 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getAbsoluteLimit() {
-		String limit = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+		String limit = Context.getAdministrationService()
+		        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
-				log.error(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME + " must be an integer. "
-				        + nfex.getMessage());
+				log.error(
+				    RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_ABSOLUTE;
 			}
 		} else {
@@ -111,8 +113,8 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based
-	 * on a admin-settable global property).
+	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based on a
+	 * admin-settable global property).
 	 * 
 	 * @param ip address of the client
 	 * @return <code>true</code> if client should be allowed access
@@ -127,14 +129,12 @@ public class RestUtil implements GlobalPropertyListener {
 	 * 
 	 * @param ip
 	 * @param candidateIps
-	 * @return <code>true</code> if there is a match
-	 * <strong>Should</strong> return true if list is empty
-	 * <strong>Should</strong> return false if there is no match
-	 * <strong>Should</strong> return true for exact match
-	 * <strong>Should</strong> return true for match with submask
-	 * <strong>Should</strong> return false if there is no match with submask
-	 * <strong>Should</strong> return true for exact ipv6 match
-	 * <strong>Should</strong> throw IllegalArgumentException for invalid mask
+	 * @return <code>true</code> if there is a match <strong>Should</strong> return true if list is
+	 *         empty <strong>Should</strong> return false if there is no match <strong>Should</strong>
+	 *         return true for exact match <strong>Should</strong> return true for match with submask
+	 *         <strong>Should</strong> return false if there is no match with submask
+	 *         <strong>Should</strong> return true for exact ipv6 match <strong>Should</strong> throw
+	 *         IllegalArgumentException for invalid mask
 	 */
 	public static boolean ipMatches(String ip, List<String> candidateIps) {
 		if (candidateIps.isEmpty()) {
@@ -172,8 +172,8 @@ public class RestUtil implements GlobalPropertyListener {
 				
 				int bits = Integer.parseInt(candidateIpPattern[1]);
 				if (candidateAddress.getAddress().length < Math.ceil((double) bits / 8)) {
-					throw new IllegalArgumentException("Invalid mask " + bits + " for IP " + candidateIp
-					        + " in the candidateIps parameter");
+					throw new IllegalArgumentException(
+					        "Invalid mask " + bits + " for IP " + candidateIp + " in the candidateIps parameter");
 				}
 				
 				// compare bytes based on the given mask
@@ -203,15 +203,15 @@ public class RestUtil implements GlobalPropertyListener {
 	 * property is empty, returns an empty list.
 	 * <p>
 	 * IPs should be separated by a whitespace or a comma. IPs can be declared with bit masks e.g.
-	 * <code>10.0.0.0/30</code> matches <code>10.0.0.0 - 10.0.0.3</code> and
-	 * <code>10.0.0.0/24</code> matches <code>10.0.0.0 - 10.0.0.255</code>.
+	 * <code>10.0.0.0/30</code> matches <code>10.0.0.0 - 10.0.0.3</code> and <code>10.0.0.0/24</code>
+	 * matches <code>10.0.0.0 - 10.0.0.255</code>.
 	 * 
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 * @return the list of IPs
 	 */
 	public static List<String> getAllowedIps() {
-		String allowedIpsProperty = Context.getAdministrationService().getGlobalProperty(
-		    RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
+		String allowedIpsProperty = Context.getAdministrationService()
+		        .getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
 		
 		if (allowedIpsProperty.isEmpty()) {
 			return Collections.emptyList();
@@ -427,7 +427,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_INCLUDE_ALL
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response,
-	        Representation defaultView) {
+	                                               Representation defaultView) {
 		if (defaultView == null)
 			defaultView = Representation.DEFAULT;
 		
@@ -442,8 +442,8 @@ public class RestUtil implements GlobalPropertyListener {
 		} else if (temp == null) {
 			ret.setRepresentation(defaultView);
 		} else if (temp.equals(defaultView.getRepresentation())) {
-			throw new IllegalArgumentException("Do not specify ?v=" + temp
-			        + " because it is the default behavior for this request");
+			throw new IllegalArgumentException(
+			        "Do not specify ?v=" + temp + " because it is the default behavior for this request");
 		} else {
 			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
@@ -451,8 +451,8 @@ public class RestUtil implements GlobalPropertyListener {
 		// get the "t" param for subclass-specific requests
 		temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE);
 		if ("".equals(temp)) {
-			throw new IllegalArgumentException("?" + RestConstants.REQUEST_PROPERTY_FOR_TYPE
-			        + "=(empty string) is not allowed");
+			throw new IllegalArgumentException(
+			        "?" + RestConstants.REQUEST_PROPERTY_FOR_TYPE + "=(empty string) is not allowed");
 		} else {
 			ret.setType(temp);
 		}
@@ -517,8 +517,8 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param request the WebRequest to look in
 	 * @param param the string name to fetch
 	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> for any empty
-	 *         value, null value, or not equal to 'true', or missing param.
-	 * <strong>Should</strong> return true only if request param is 'true'
+	 *         value, null value, or not equal to 'true', or missing param. <strong>Should</strong>
+	 *         return true only if request param is 'true'
 	 */
 	public static Boolean getBooleanParam(HttpServletRequest request, String param) {
 		try {
@@ -595,15 +595,14 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Updates the Uri prefix through which clients consuming web services will connect to the web
-	 * app
+	 * Updates the Uri prefix through which clients consuming web services will connect to the web app
 	 * 
 	 * @return the webapp's Url prefix
 	 */
 	public static void setUriPrefix() {
 		if (contextEnabled) {
-			RestConstants.URI_PREFIX = Context.getAdministrationService().getGlobalProperty(
-			    RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+			RestConstants.URI_PREFIX = Context.getAdministrationService()
+			        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
 		}
 		
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
@@ -721,11 +720,12 @@ public class RestUtil implements GlobalPropertyListener {
 				directory = new File(resource.toURI());
 			}
 			catch (URISyntaxException e) {
-				throw new RuntimeException(pkgname + " (" + resource
-				        + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...", e);
+				throw new RuntimeException(
+				        pkgname + " (" + resource
+				                + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...",
+				        e);
 			}
-			catch (IllegalArgumentException ex) {
-			}
+			catch (IllegalArgumentException ex) {}
 			
 			//If folder exists, look for all resource class files in it.
 			if (directory != null && directory.exists()) {
@@ -880,5 +880,22 @@ public class RestUtil implements GlobalPropertyListener {
 		errors.put("fieldErrors", fieldErrors);
 		
 		return new SimpleObject().add("error", errors);
+	}
+	
+	/**
+	 * Gets the supported type for the specified resource object
+	 *
+	 * @param resource the resource object whose supported type to look up
+	 * @return the supported class object
+	 */
+	public static Class<?> getSupportedClass(Resource resource) {
+		Class<? extends Resource> resourceClass = resource.getClass();
+		if (resource instanceof SubResource) {
+			return resourceClass.getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class)
+			        .supportedClass();
+		} else {
+			return resourceClass.getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class)
+			        .supportedClass();
+		}
 	}
 }

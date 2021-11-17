@@ -18,7 +18,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.OrderResource1_10;
 
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "2.2.*",
-        "2.3.*", "2.4.*", "2.5.*" })
+        "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
 public class OrderResource2_2 extends OrderResource1_10 {
 	
 	/**

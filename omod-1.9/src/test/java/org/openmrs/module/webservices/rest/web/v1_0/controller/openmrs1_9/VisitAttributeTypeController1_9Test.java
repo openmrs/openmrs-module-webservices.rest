@@ -166,7 +166,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	
 	@Test
 	public void shouldGetAVisitAttributeTypeByUuid() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" +getUuid());
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
 		VisitAttributeType visitAttributeType = service.getVisitAttributeTypeByUuid(getUuid());
