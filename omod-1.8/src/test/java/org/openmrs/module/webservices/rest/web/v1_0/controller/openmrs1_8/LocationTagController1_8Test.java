@@ -109,33 +109,22 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldUpdateLocationTagName() throws Exception {
+	public void shouldUpdateLocationTag() throws Exception {
 		
 		final String EDITED_NAME = "Location Tag edited";
-		LocationTag locationTag = service.getLocationTagByUuid(getUuid());
-		Assert.assertFalse(EDITED_NAME.equals(locationTag.getName()));
-
-		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		req.setContent(json.getBytes());
-		handle(req);
-		LocationTag editedLocationTag = service.getLocationTagByUuid(getUuid());
-		Assert.assertNotNull(editedLocationTag);
-		Assert.assertEquals(EDITED_NAME, editedLocationTag.getName());	
-	}
-	
-	@Test
-	public void shouldUpdateLocationTagDescription() throws Exception {
-
 		final String EDITED_DESCRIPTION = "New Location Tag Description";
 		LocationTag locationTag = service.getLocationTagByUuid(getUuid());
+		Assert.assertFalse(EDITED_NAME.equals(locationTag.getName()));
 		Assert.assertFalse(EDITED_DESCRIPTION.equals(locationTag.getDescription()));
-		
-		String json = "{ \"description\":\"" + EDITED_DESCRIPTION + "\" }";
+
+		String json = "{ \"name\":\"" + EDITED_NAME + "\", \"description\":\"" + EDITED_DESCRIPTION + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
+		
 		LocationTag editedLocationTag = service.getLocationTagByUuid(getUuid());
+		Assert.assertNotNull(editedLocationTag);
+		Assert.assertEquals(EDITED_NAME, editedLocationTag.getName());
 		Assert.assertEquals(EDITED_DESCRIPTION, editedLocationTag.getDescription());		
 	}
 	
