@@ -179,6 +179,9 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldEditAFormResource() throws Exception {		
 		final String EDITED_NAME = "Edited Form Resource";
+		FormResource formResource = formService.getFormResourceByUuid(getUuid());
+		Assert.assertFalse(EDITED_NAME.equals(formResource.getForm().getName()));
+		
 		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
