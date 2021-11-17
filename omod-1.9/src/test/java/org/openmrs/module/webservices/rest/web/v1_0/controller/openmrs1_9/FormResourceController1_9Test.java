@@ -176,6 +176,21 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		assertEquals(resource.getName(), PropertyUtils.getProperty(result, "name"));		
 	}
 	
+	@Test
+	public void shouldEditAFormResource() throws Exception {		
+		final String EDITED_NAME = "Edited Form Resource";
+		FormResource formResource = formService.getFormResourceByUuid(getUuid());
+		Assert.assertFalse(EDITED_NAME.equals(formResource.getForm().getName()));
+		
+		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+		handle(req);
+
+		FormResource editedForm = formService.getFormResourceByUuid(getUuid());
+		Assert.assertEquals(EDITED_NAME, editedForm.getName());
+	}
+	
 	@Override
 	public String getURI() {
 		return "form/" + RestTestConstants1_9.FORM_UUID + "/resource";
