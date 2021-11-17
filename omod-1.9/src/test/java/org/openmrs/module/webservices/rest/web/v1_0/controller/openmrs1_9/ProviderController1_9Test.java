@@ -140,13 +140,13 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldEditAProvider() throws Exception {
 		final String EDITED_PERSON = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
-		Provider provider = Context.getProviderService().getAllProviders().get(1);
+		Provider provider = Context.getProviderService().getProviderByUuid(getUuid());
 		Assert.assertFalse(EDITED_PERSON.equals(provider.getPerson().getUuid()));
 		
 		String json = "{\"person\":\"" + EDITED_PERSON + "\"" + "}";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
-		Provider updatedProvider = Context.getProviderService().getAllProviders().get(1);
+		Provider updatedProvider = Context.getProviderService().getProviderByUuid(getUuid());
 		Assert.assertEquals(EDITED_PERSON, updatedProvider.getPerson().getUuid());
 	}
 	
