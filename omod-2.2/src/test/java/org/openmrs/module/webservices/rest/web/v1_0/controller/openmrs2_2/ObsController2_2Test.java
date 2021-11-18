@@ -62,7 +62,7 @@ public class ObsController2_2Test extends MainResourceControllerTest {
     public void shouldUpdateObs() throws Exception {
         ObsService obsService = Context.getObsService();
         Date updatedObsDatetime = new Date();
-        double updatedValue = 10.0 ;
+        Double updatedValue = 10.0 ;
 
         executeDataSet("obsDataSet2_2.xml");
         Obs existingObs = obsService.getObsByUuid("47f18998-96cc-11e0-8d6b-9b9415a91465");
@@ -75,7 +75,7 @@ public class ObsController2_2Test extends MainResourceControllerTest {
         Obs updatedObs = obsService.getRevisionObs(existingObs);
 
         assertNotNull(updatedObs);
-        assertEquals(updatedValue, updatedObs.getValueNumeric(), 0.001);
+        assertEquals(updatedValue, updatedObs.getValueNumeric());
         assertEquals(RestTestConstants1_8.PERSON_UUID, updatedObs.getPerson().getUuid());
         assertEquals(updatedObsDatetime.toString(), updatedObs.getObsDatetime().toString());
         assertEquals(false, updatedObs.getVoided());
