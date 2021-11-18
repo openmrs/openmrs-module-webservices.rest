@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<dataset>
-
-<obs obs_id="1000" person_id="7" status="FINAL"  concept_id="23" obs_datetime="2010-08-01 00:00:00.0"  value_Numeric="50" comments="some comment" creator="1" date_created="2008-08-18 14:09:05.0" voided="true" uuid="47f18998-96cc-11e0-8d6b-9b9415a91465" />
-
-</dataset>
