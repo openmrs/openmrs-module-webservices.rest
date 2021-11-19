@@ -61,17 +61,17 @@ public class ObsController2_2Test extends MainResourceControllerTest {
     @Test
     public void shouldUpdateObs() throws Exception {
         ObsService obsService = Context.getObsService();
-        Double updatedValue = 10.0 ;
+        Double UPDATED_VALUE = 10.0 ;
 
         Obs existingObs = obsService.getObsByUuid("2f616900-5e7c-4667-9a7f-dcb260abf1de");
         assertNotNull(existingObs);
 
-        String json = "{ \"value\":\"" + updatedValue + "\"}";
+        String json = "{ \"value\":\"" + UPDATED_VALUE + "\"}";
 
         handle(newPostRequest(getURI() + "/" + existingObs.getUuid(), json));
         Obs updatedObs = obsService.getRevisionObs(existingObs);
 
         assertNotNull(updatedObs);
-        assertEquals(updatedValue, updatedObs.getValueNumeric());
+        assertEquals(UPDATED_VALUE, updatedObs.getValueNumeric());
     }
 }
