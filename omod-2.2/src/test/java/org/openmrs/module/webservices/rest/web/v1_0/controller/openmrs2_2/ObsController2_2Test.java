@@ -61,7 +61,7 @@ public class ObsController2_2Test extends MainResourceControllerTest {
     @Test
     public void shouldUpdateObs() throws Exception {
         ObsService obsService = Context.getObsService();
-        Double UPDATED_VALUE = 10.0 ;
+        final Double UPDATED_VALUE = 10.0 ;
 
         Obs existingObs = obsService.getObsByUuid("2f616900-5e7c-4667-9a7f-dcb260abf1de");
         assertNotNull(existingObs);
