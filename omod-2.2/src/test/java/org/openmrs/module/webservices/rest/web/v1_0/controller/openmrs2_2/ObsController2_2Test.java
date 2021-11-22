@@ -19,9 +19,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ObsController2_2Test extends MainResourceControllerTest {
 
