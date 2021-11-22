@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import org.mockito.Mockito;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.util.DatabaseUpdater;
+import static liquibase.changelog.ChangeSet.RunStatus.ALREADY_RAN;
 
 import java.util.Date;
 
-import static liquibase.changelog.ChangeSet.RunStatus.ALREADY_RAN;
+import org.mockito.Mockito;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.util.DatabaseUpdater;
 
 public class DatabaseChangeResource2_0Test extends BaseDelegatingResourceTest<DatabaseChangeResource2_0, DatabaseUpdater.OpenMRSChangeSet> {
 

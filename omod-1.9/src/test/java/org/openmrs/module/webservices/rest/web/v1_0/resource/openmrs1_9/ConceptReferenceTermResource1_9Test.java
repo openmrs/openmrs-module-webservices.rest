@@ -53,5 +53,4 @@ public class ConceptReferenceTermResource1_9Test extends BaseDelegatingResourceT
 	public String getUuidProperty() {
 		return RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID;
 	}
-	
 }

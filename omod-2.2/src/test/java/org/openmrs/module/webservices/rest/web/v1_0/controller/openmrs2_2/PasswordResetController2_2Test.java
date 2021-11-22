@@ -76,15 +76,11 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		int validTime = 10 * 60 * 1000; //equivalent to 10 minutes for token to be valid
 		Long tokenTime = System.currentTimeMillis() + validTime;
 		LoginCredential credentials = dao.getLoginCredential(user);
-		credentials
-		        .setActivationKey("b071c88d6d877922e35af2e6a90dd57d37ac61143a03bb986c5f353566f3972a86ce9b2604c31a22dfa467922dcfd54fa7d18b0a7c7648d94ca3d97a88ea2fd0:"
-		                + tokenTime);
+		credentials.setActivationKey("b071c88d6d877922e35af2e6a90dd57d37ac61143a03bb986c5f353566f3972a86ce9b2604c31a22dfa467922dcfd54fa7d18b0a7c7648d94ca3d97a88ea2fd0:" + tokenTime);
 		dao.updateLoginCredential(credentials);
 		String newPassword = "newPasswordString123";
-		MockHttpServletResponse response = handle(newPostRequest(RESET_PASSWORD_URI + "/" + key, "{\"newPassword\":\""
-		        + newPassword + "\"}"));
+		MockHttpServletResponse response = handle(newPostRequest(RESET_PASSWORD_URI + "/" + key, "{\"newPassword\":\"" + newPassword + "\"}"));
 		assertEquals(200, response.getStatus());
-		Context.authenticate(user.getUsername(), newPassword);
-		
+		Context.authenticate(user.getUsername(), newPassword);	
 	}
 }

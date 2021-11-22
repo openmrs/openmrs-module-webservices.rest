@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -24,9 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class PatientByIdentifierSearchHandler1_8 implements SearchHandler {
@@ -46,14 +46,12 @@ public class PatientByIdentifierSearchHandler1_8 implements SearchHandler {
 	
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
-		
 		String identifier = context.getRequest().getParameter("identifier");
 		String searchType = context.getParameter("searchType");
 		
 		if (StringUtils.isNotBlank(identifier)) {
 			if ("start".equals(searchType)) {
-				List<Patient> patients = restHelperService.findPatientsByIdentifierStartingWith(identifier,
-				    context.getIncludeAll());
+				List<Patient> patients = restHelperService.findPatientsByIdentifierStartingWith(identifier, context.getIncludeAll());
 				if (patients != null && !patients.isEmpty()) {
 					return new NeedsPaging<Patient>(patients, context);
 				}
@@ -63,9 +61,7 @@ public class PatientByIdentifierSearchHandler1_8 implements SearchHandler {
 					return new NeedsPaging<Patient>(patients, context);
 				}
 			}
-		}
-		
+		}	
 		return new EmptySearchResult();
 	}
-	
 }

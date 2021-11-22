@@ -9,6 +9,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptProposal;
 import org.openmrs.User;
@@ -36,18 +48,6 @@ import org.openmrs.util.LocaleUtility;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * {@link Resource} for {@link ConceptProposal}, supporting standard CRUD operations
@@ -146,8 +146,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<>(
-				getAllProposalsWithUniqueOriginalTexts(Boolean.valueOf(context.getParameter("includeCompleted"))), context);
+		return new NeedsPaging<>(getAllProposalsWithUniqueOriginalTexts(Boolean.valueOf(context.getParameter("includeCompleted"))), context);
 	}
 
 	@Override
@@ -166,9 +165,7 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 				}
 			} else if (sortOn.equals("occurrences")) {
 				Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(includeCompleted);
-				sortedProposals = proposalsMap
-						.entrySet()
-						.stream()
+				sortedProposals = proposalsMap.entrySet().stream()
 						.sorted(Comparator.comparingInt(list -> list.getValue().size()))
 						.map(entry -> entry.getValue().get(0))
 						.collect(Collectors.toList());
@@ -339,5 +336,4 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 
 		return map;
 	}
-
 }

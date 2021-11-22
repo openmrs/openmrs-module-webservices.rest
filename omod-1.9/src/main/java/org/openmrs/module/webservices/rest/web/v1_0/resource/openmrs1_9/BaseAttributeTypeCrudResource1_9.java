@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.attribute.AttributeType;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -33,16 +34,14 @@ public abstract class BaseAttributeTypeCrudResource1_9<T extends AttributeType<?
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("minOccurs", new IntegerProperty())
-			        .property("maxOccurs", new IntegerProperty())
-			        .property("datatypeClassname", new StringProperty())
-			        .property("preferredHandlerClassname", new StringProperty());
+			model.property("minOccurs", new IntegerProperty())
+			     .property("maxOccurs", new IntegerProperty())
+			     .property("datatypeClassname", new StringProperty())
+			     .property("preferredHandlerClassname", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("datatypeConfig", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
+			model.property("datatypeConfig", new StringProperty())
+			     .property("handlerConfig", new StringProperty());
 		}
 		return model;
 	}

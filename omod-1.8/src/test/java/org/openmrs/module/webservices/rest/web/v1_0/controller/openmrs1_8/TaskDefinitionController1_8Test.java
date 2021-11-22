@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -24,15 +26,13 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-import java.util.List;
 
 public class TaskDefinitionController1_8Test extends MainResourceControllerTest {
 	
 	@Autowired
 	RestService restService;
 	
-	private TaskDefinition testTask = new TaskDefinition(1, "TestTask", "TestTask Description",
-	        "org.openmrs.scheduler.tasks.TestTask");
+	private TaskDefinition testTask = new TaskDefinition(1, "TestTask", "TestTask Description", "org.openmrs.scheduler.tasks.TestTask");
 	
 	private MockTaskServiceWrapper mockTaskServiceWrapper = new MockTaskServiceWrapper();
 	
@@ -44,8 +44,7 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		
 		mockTaskServiceWrapper.registeredTasks.add(testTask);
 		
-		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService
-		        .getResourceBySupportedClass(TaskDefinition.class);
+		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService.getResourceBySupportedClass(TaskDefinition.class);
 		taskResource.setTaskServiceWrapper(mockTaskServiceWrapper);
 	}
 	
@@ -172,5 +171,4 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 	public long getAllScheduledCount() {
 		return mockTaskServiceWrapper.scheduledTasks.size();
 	}
-	
 }

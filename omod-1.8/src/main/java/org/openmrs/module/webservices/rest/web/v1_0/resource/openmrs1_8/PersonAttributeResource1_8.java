@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Attributable;
 import org.openmrs.Concept;
 import org.openmrs.Person;
@@ -147,20 +148,18 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
-			        .property("voided", new BooleanProperty());
+			model.property("display", new StringProperty())
+			     .property("uuid", new StringProperty())
+			     .property("value", new StringProperty())
+			     .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
+			     .property("voided", new BooleanProperty());
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
-			        .property("voided", new BooleanProperty())
-			        .property("hydratedObject", new StringProperty());
+			model.property("display", new StringProperty())
+			     .property("uuid", new StringProperty())
+			     .property("value", new StringProperty())
+			     .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
+			     .property("voided", new BooleanProperty())
+			     .property("hydratedObject", new StringProperty());
 		}
 		return model;
 	}
@@ -174,8 +173,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		        
 		        .required("attributeType");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeCreate"));
+			model.property("attributeType", new RefProperty("#/definitions/PersonattributetypeCreate"));
 		}
 		return model;
 	}
@@ -308,9 +306,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		Object value = pa.getHydratedObject();
 		if (value == null) {
 			return null;
-		}
-		
+		}	
 		return ConversionUtil.convertToRepresentation(value, Representation.REF);
-	}
-	
+	}	
 }

@@ -91,6 +91,5 @@ public class LocationResource1_9Test extends BaseDelegatingResourceTest<Location
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants1_9.LOCATION_UUID;
-	}
-	
+	}	
 }

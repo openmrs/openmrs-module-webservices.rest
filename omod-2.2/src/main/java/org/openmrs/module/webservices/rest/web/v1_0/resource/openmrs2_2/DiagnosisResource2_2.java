@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.api.context.Context;
@@ -24,13 +31,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
@@ -125,14 +125,13 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("diagnosis", new StringProperty())
-			        .property("condition", new StringProperty())
-			        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
-			        .property("rank", new IntegerProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("diagnosis", new StringProperty())
+			     .property("condition", new StringProperty())
+			     .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
+			     .property("rank", new IntegerProperty())
+			     .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			     .property("voided", new BooleanProperty());
 		}
 		return model;
 	}

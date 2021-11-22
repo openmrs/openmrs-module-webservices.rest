@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -25,11 +30,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -53,8 +53,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		hsr = mockHsr;
 		request = new ServletWebRequest(hsr);
 		
-		Context.getAdministrationService().saveGlobalProperty(
-		    new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCALE_ALLOWED_LIST, "en_GB, sp, fr"));
+		Context.getAdministrationService().saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCALE_ALLOWED_LIST, "en_GB, sp, fr"));
 		Context.getUserContext().setLocation(Context.getLocationService().getLocationByUuid(UNKNOWN_LOCATION_UUID));
 	}
 	
@@ -78,15 +77,15 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get(request);
 		Object userProp = PropertyUtils.getProperty(ret, "user");
-		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp,
-		    "roles");
+		
+		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp, "roles");
 		Assert.assertEquals("System Developer", userRoles.get(0).get("name"));
 		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
 		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
+		
 		Object personProp = PropertyUtils.getProperty(userProp, "person");
-		Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(),
-		    PropertyUtils.getProperty(personProp, "uuid"));
+		Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(), PropertyUtils.getProperty(personProp, "uuid"));
 	}
 	
 	@Test
@@ -103,8 +102,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get(request);
 		Object loc = PropertyUtils.getProperty(ret, "sessionLocation");
-		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'",
-		    loc.toString().contains("display=Unknown Location"));
+		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'", loc.toString().contains("display=Unknown Location"));
 	}
 
 	/**
@@ -170,5 +168,4 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		String content = "{\"sessionLocation\":\"fake-nonexistant-uuid\"}";
 		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 	}
-
 }

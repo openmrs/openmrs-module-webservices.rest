@@ -14,6 +14,10 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -31,9 +35,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -126,22 +127,19 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			model.property("uuid", new StringProperty())
+			     .property("description", new StringProperty())
+			     .property("retired", new BooleanProperty())
+			     .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
+			model.property("uuid", new StringProperty())
+			     .property("description", new StringProperty())
+			     .property("retired", new BooleanProperty())
+			     .property("concept", new RefProperty("#/definitions/ConceptGet"));
 		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			model.property("uuid", new StringProperty())
+			     .property("retired", new BooleanProperty())
+			     .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		}
 		return model;
 	}

@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,10 +28,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ServerLo
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ServerLogController1_8Test extends MainResourceControllerTest {
 
@@ -46,8 +46,7 @@ public class ServerLogController1_8Test extends MainResourceControllerTest {
 
 	@Before
 	public void setUp() {
-		ServerLogResource1_8 serverLogResource1_8 = (ServerLogResource1_8) restService
-				.getResourceBySupportedClass(ServerLogActionWrapper.class);
+		ServerLogResource1_8 serverLogResource1_8 = (ServerLogResource1_8) restService.getResourceBySupportedClass(ServerLogActionWrapper.class);
 		serverLogResource1_8.setServerLogActionWrapper(mockServerLogActionWrapper);
 	}
 

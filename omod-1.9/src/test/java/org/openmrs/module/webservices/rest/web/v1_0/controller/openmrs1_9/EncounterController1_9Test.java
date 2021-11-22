@@ -9,6 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.Matchers.is;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -35,19 +46,6 @@ import org.openmrs.util.Format.FORMAT_TYPE;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
 /**
  * Contains tests for the 19 ext {@link EncounterController} Overrides the failing test methods from
@@ -143,8 +141,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 			obsDisplayValues.add(o.get("display"));
 		}
 		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
-		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
-		
+		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));	
 	}
 	
 	@Test
@@ -311,9 +308,9 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void createEncounter_shouldCreateANewEncounterWithAVisitProperty() throws Exception {
 		long before = getAllCount();
-		final String visitUuid = "1e5d5d48-6b78-11e0-93c3-18a905e044dc";
+		final String VISIT_UUID = "1e5d5d48-6b78-11e0-93c3-18a905e044dc";
 		String json = "{\"visit\":\""
-		        + visitUuid
+		        + VISIT_UUID
 		        + "\",\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"encounterType\": \"61ae96f4-6afe-4351-b6f8-cd4fc383cce1\", \"encounterDatetime\": \"2011-01-15\", \"patient\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"provider\":\"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\"}";
 		
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
@@ -326,7 +323,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		//the encounter should have been assigned to the visit
 		Assert.assertNotNull(newEncounter);
 		Assert.assertNotNull(newEncounter.getVisit());
-		Assert.assertEquals(visitUuid, newEncounter.getVisit().getUuid());
+		Assert.assertEquals(VISIT_UUID, newEncounter.getVisit().getUuid());
 	}
 	
 	@Test
@@ -372,19 +369,15 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	 * @throws Exception
 	 */
 	private SimpleObject createEncounterWithObs() throws Exception {
-		
 		List<SimpleObject> obs = new ArrayList<SimpleObject>();
 		// weight in kg = 70
 		obs.add(SimpleObject.parseJson("{ \"concept\": \"c607c80f-1ea9-4da3-bb88-6276ce8868dd\",\"value\": 70 }"));
 		// civil status = married
-		obs.add(SimpleObject
-		        .parseJson("{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\": \"92afda7c-78c9-47bd-a841-0de0817027d4\" }"));
 		// favorite food, non-coded = fried chicken
-		obs.add(SimpleObject
-		        .parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"96408258-000b-424e-af1a-403919332938\", \"value\": \"fried chicken\" }"));
 		// date of food assistance = 2011-06-21
-		obs.add(SimpleObject
-		        .parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
+		obs.add(SimpleObject.parseJson("{ \"concept\": \"11716f9c-1434-4f8d-b9fc-9aa14c4d6126\", \"value\": \"2011-06-21 00:00\" }"));
 		
 		return new SimpleObject().add("location", "9356400c-a5a2-4532-8f2b-2361b3446eb8")
 		        .add("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1").add("encounterDatetime", "2011-01-15")
@@ -498,12 +491,10 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
 		Assert.assertFalse(encounter.isVoided());
 		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-		
 	}
 	
 	@Test
-	public void shouldFetchAllPatientEncounterIncludingVoidedPatientEncountersIfIncludeAllParamIsSetToTrue()
-	        throws Exception {
+	public void shouldFetchAllPatientEncounterIncludingVoidedPatientEncountersIfIncludeAllParamIsSetToTrue() throws Exception {
 		Patient patient = Context.getPatientService().getPatientByUuid(RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
 		
 		Encounter enc = Context.getEncounterService().getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);

@@ -134,6 +134,5 @@ public class ConceptReferenceTermMapSearchHandler1_9 implements SearchHandler {
 		}
 		
 		return new NeedsPaging<ConceptReferenceTermMap>(termMaps, context);
-	}
-	
+	}	
 }

@@ -9,12 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -31,7 +29,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest.Parameter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -114,7 +111,6 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldAddANewProblemToAPatient() throws Exception {
-		
 		long originalCount = getAllCount();
 		SimpleObject problem = new SimpleObject();
 		problem.add("problem", RestTestConstants1_8.CONCEPT_UUID);
@@ -129,40 +125,39 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 		
 		assertNotNull(PropertyUtils.getProperty(newPatientIdentifierType, "uuid"));
 		assertEquals(originalCount + 1, getAllCount());
-		
 	}
 	
 	@Test
 	public void shouldEditAProblem() throws Exception {
-		final int id = 2;
-		final ProblemModifier newModifier = ProblemModifier.HISTORY_OF;
-		Problem problem = patientService.getProblem(id);
-		assertEquals(false, newModifier.equals(problem.getModifier()));
+		final int ID = 2;
+		final ProblemModifier NEW_MODIFIER = ProblemModifier.HISTORY_OF;
+		Problem problem = patientService.getProblem(ID);
+		assertEquals(false, NEW_MODIFIER.equals(problem.getModifier()));
 		SimpleObject p = new SimpleObject();
-		p.add("modifier", newModifier);
+		p.add("modifier", NEW_MODIFIER);
 		String json = new ObjectMapper().writeValueAsString(p);
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + problem.getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
-		problem = patientService.getProblem(id);
-		assertEquals(newModifier, problem.getModifier());
+		problem = patientService.getProblem(ID);
+		assertEquals(NEW_MODIFIER, problem.getModifier());
 	}
 	
 	@Test
 	public void voidProblem_shouldVoidAProblem() throws Exception {
-		final int id = 2;
-		Problem problem = patientService.getProblem(id);
+		final int ID = 2;
+		Problem problem = patientService.getProblem(ID);
 		assertEquals(false, problem.isVoided());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + problem.getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		
-		problem = patientService.getProblem(id);
+		problem = patientService.getProblem(ID);
 		assertEquals(true, problem.isVoided());
-		assertEquals(reason, problem.getVoidReason());
+		assertEquals(REASON, problem.getVoidReason());
 	}
 	
 	@Test

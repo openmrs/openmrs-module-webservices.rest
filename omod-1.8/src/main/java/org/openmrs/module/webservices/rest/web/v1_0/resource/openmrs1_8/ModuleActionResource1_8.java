@@ -15,6 +15,18 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.openmrs.api.APIException;
@@ -39,15 +51,6 @@ import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ResourceUtils;
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/moduleaction", supportedClass = ModuleAction.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -152,7 +155,6 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 				for (Module depMod : dependentModulesStopped) {
 					moduleFactoryWrapper.stopModuleSkipRefresh(depMod, servletContext);
 				}
-				
 				moduleFactoryWrapper.stopModuleSkipRefresh(existingModule, servletContext);
 				moduleFactoryWrapper.unloadModule(existingModule);
 			}
@@ -169,11 +171,11 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			}
 			return tempModule;
 		}
-		catch (MalformedURLException e) {
-			throw new APIException(e.getMessage(), e);
+		catch (MalformedURLException exception) {
+			throw new APIException(exception.getMessage(), exception);
 		}
-		catch (IOException e) {
-			throw new APIException(e.getMessage(), e);
+		catch (IOException exception) {
+			throw new APIException(exception.getMessage(), exception);
 		}
 		finally {
 			if (tempModule == null && moduleFile != null) {

@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.struts.mock.MockHttpServletRequest;
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Test;
@@ -19,13 +26,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class OrderEntryConfigResource1_10Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -52,6 +52,5 @@ public class OrderEntryConfigResource1_10Test extends BaseModuleWebContextSensit
 		temp = (List<SimpleObject>) config.get("drugDosingUnits");
 		assertThat(temp.size(), is(1));
 		assertThat((String) temp.get(0).get("uuid"), is(dosingUnit.getUuid()));
-	}
-	
+	}	
 }

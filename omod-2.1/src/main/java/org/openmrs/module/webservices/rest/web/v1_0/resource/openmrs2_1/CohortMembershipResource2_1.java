@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import java.util.ArrayList;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
@@ -83,31 +84,30 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addProperty("patientUuid");
-		d.addProperty("startDate");
-		d.addProperty("endDate");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("patientUuid");
+		description.addProperty("startDate");
+		description.addProperty("endDate");
+		return description;
 	}
 	
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addProperty("startDate");
-		d.addProperty("endDate");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("startDate");
+		description.addProperty("endDate");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("patientUuid", new StringProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("startDate", new DateProperty())
+			     .property("endDate", new DateProperty())
+			     .property("patientUuid", new StringProperty());
 		}
 		//FIXME missing props
 		return model;

@@ -13,7 +13,6 @@ import org.openmrs.Field;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FieldResource1_8;
 
 public class FieldResource1_8Test extends BaseDelegatingResourceTest<FieldResource1_8, Field> {
 	
@@ -40,5 +39,4 @@ public class FieldResource1_8Test extends BaseDelegatingResourceTest<FieldResour
 	public String getUuidProperty() {
 		return RestTestConstants1_8.FIELD_UUID;
 	}
-	
 }

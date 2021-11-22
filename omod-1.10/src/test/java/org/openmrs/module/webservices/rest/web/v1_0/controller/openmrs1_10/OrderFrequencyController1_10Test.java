@@ -120,8 +120,7 @@ public class OrderFrequencyController1_10Test extends MainResourceControllerTest
 		req.addParameter("q", "Twice A Day");
 		SimpleObject result = deserialize(handle(req));
 		assertEquals(1, Util.getResultsSize(result));
-		assertEquals("78090760-7c39-11e3-baa7-0800200c9a66",
-		    PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
+		assertEquals("78090760-7c39-11e3-baa7-0800200c9a66", PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
 		
 		req.removeAllParameters();
 		req.addParameter("q", "ce");

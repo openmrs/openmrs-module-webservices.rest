@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
+
+import static org.junit.Assert.assertEquals;
+
+import java.sql.Date;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -24,10 +29,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.sql.Date;
-
-import static org.junit.Assert.assertEquals;
 
 public class PatientController2_4Test extends RestControllerTestUtils {
 
@@ -72,5 +73,4 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 		// then
 		assertEquals(2, Util.getResultsSize(result));
 	}
-
 }

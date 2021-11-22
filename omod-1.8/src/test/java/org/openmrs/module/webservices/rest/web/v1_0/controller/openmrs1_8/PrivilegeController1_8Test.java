@@ -68,11 +68,11 @@ public class PrivilegeController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAPrivilegeByName() throws Exception {
-		final String name = "Some Privilege";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = "Some Privilege";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		Privilege privilege = service.getPrivilege(name);
+		Privilege privilege = service.getPrivilege(NAME);
 		assertEquals(privilege.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(privilege.getPrivilege(), PropertyUtils.getProperty(result, "name"));
 	}
@@ -107,17 +107,17 @@ public class PrivilegeController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditingAPrivilege() throws Exception {
-		final String newDescription = "updated descr";
+		final String NEW_DESCRIPTION = "updated descr";
 		SimpleObject privilege = new SimpleObject();
-		assertEquals(false, newDescription.equals(service.getPrivilegeByUuid(getUuid()).getName()));
-		privilege.add("description", newDescription);
+		assertEquals(false, NEW_DESCRIPTION.equals(service.getPrivilegeByUuid(getUuid()).getName()));
+		privilege.add("description", NEW_DESCRIPTION);
 		
 		String json = new ObjectMapper().writeValueAsString(privilege);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newDescription, service.getPrivilegeByUuid(getUuid()).getDescription());
+		assertEquals(NEW_DESCRIPTION, service.getPrivilegeByUuid(getUuid()).getDescription());
 	}
 	
 	@Test

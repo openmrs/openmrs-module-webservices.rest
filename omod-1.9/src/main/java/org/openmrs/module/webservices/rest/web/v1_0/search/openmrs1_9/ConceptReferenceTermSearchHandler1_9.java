@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptSource;
@@ -26,10 +30,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Allows you to find terms by source and code or name.
@@ -143,6 +143,5 @@ public class ConceptReferenceTermSearchHandler1_9 implements SearchHandler {
 		
 		throw new InvalidSearchException("Invalid searchType parameter: '" + searchType + "'. Expected '"
 		        + SEARCH_TYPE_EQUAL + "' or '" + SEARCH_TYPE_ALIKE + "'");
-	}
-	
+	}	
 }

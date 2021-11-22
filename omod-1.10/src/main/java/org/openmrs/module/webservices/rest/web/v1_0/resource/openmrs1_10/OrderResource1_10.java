@@ -14,6 +14,13 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
@@ -38,12 +45,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Order}
@@ -139,13 +140,12 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		        
 		        .required("orderType").required("patient").required("concept");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
-			        .property("previousOrder", new RefProperty("#/definitions/OrderCreate"))
-			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"));
+			model.property("encounter", new RefProperty("#/definitions/EncounterCreate"))
+			     .property("patient", new RefProperty("#/definitions/PatientCreate"))
+			     .property("concept", new RefProperty("#/definitions/ConceptCreate"))
+			     .property("orderer", new RefProperty("#/definitions/UserCreate"))
+			     .property("previousOrder", new RefProperty("#/definitions/OrderCreate"))
+			     .property("orderReason", new RefProperty("#/definitions/ConceptCreate"));
 		}
 		//FIXME missing prop: type
 		return model;
@@ -156,26 +156,26 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("encounter");
-		d.addProperty("action");
-		d.addProperty("accessionNumber");
-		d.addProperty("dateActivated");
-		d.addProperty("scheduledDate");
-		d.addProperty("patient");
-		d.addProperty("concept");
-		d.addProperty("careSetting");
-		d.addProperty("dateStopped");
-		d.addProperty("autoExpireDate");
-		d.addProperty("orderer");
-		d.addProperty("previousOrder");
-		d.addProperty("urgency");
-		d.addProperty("orderType");
-		d.addProperty("orderReason");
-		d.addProperty("orderReasonNonCoded");
-		d.addProperty("instructions");
-		d.addProperty("commentToFulfiller");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("encounter");
+		description.addProperty("action");
+		description.addProperty("accessionNumber");
+		description.addProperty("dateActivated");
+		description.addProperty("scheduledDate");
+		description.addProperty("patient");
+		description.addProperty("concept");
+		description.addProperty("careSetting");
+		description.addProperty("dateStopped");
+		description.addProperty("autoExpireDate");
+		description.addProperty("orderer");
+		description.addProperty("previousOrder");
+		description.addProperty("urgency");
+		description.addProperty("orderType");
+		description.addProperty("orderReason");
+		description.addProperty("orderReasonNonCoded");
+		description.addProperty("instructions");
+		description.addProperty("commentToFulfiller");
+		return description;
 	}
 	
 	/**
@@ -226,8 +226,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
 			if (context.getType() != null) {
-				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
-				    "getActiveOrders", patient, context);
+				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(), "getActiveOrders", patient, context);
 				if (ret != null) {
 					return ret;
 				}
@@ -260,8 +259,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			}
 			
 			String status = context.getRequest().getParameter("status");
-			List<Order> orders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
-			    context.getIncludeAll());
+			List<Order> orders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate, context.getIncludeAll());
 			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
@@ -288,8 +286,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
 	}
 	
-	public List<Order> sortOrdersBasedOnDateActivatedOrDateStopped(List<Order> orders, final String sortOrder,
-	        final String status) {
+	public List<Order> sortOrdersBasedOnDateActivatedOrDateStopped(List<Order> orders, final String sortOrder, final String status) {
 		List<Order> sortedList = new ArrayList<Order>(orders);
 		Collections.sort(sortedList, new Comparator<Order>() {
 			
@@ -299,8 +296,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 					return sortOrder.equalsIgnoreCase("ASC") ?
 					        getUsableDate(o1).compareTo(getUsableDate(o2)) : getUsableDate(o2).compareTo(getUsableDate(o1));
 				}
-				else {
-					
+				else {	
 					return sortOrder.equalsIgnoreCase("asc") ? getActiveOrderSortDate(o1).compareTo(
 					    getActiveOrderSortDate(o2)) : getActiveOrderSortDate(o2).compareTo(getActiveOrderSortDate(o1));
 				}

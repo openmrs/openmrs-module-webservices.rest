@@ -81,7 +81,6 @@ public class ProblemResource1_9Test extends BaseDelegatingResourceTest<ProblemRe
 	
 	@Test
 	public void asRepresentation_shouldReturnProperlyEncodedValues() throws Exception {
-		
 		Problem problem = getObject();
 		
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");

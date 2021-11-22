@@ -34,9 +34,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- *
- */
 public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	@Autowired
@@ -139,8 +136,8 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUploadModule() throws Exception {
-		final String moduleFile = "org/openmrs/module/webservices/rest/include/mockModule.omod";
-		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(moduleFile));
+		final String MODULE_FILE = "org/openmrs/module/webservices/rest/include/mockModule.omod";
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(MODULE_FILE));
 		MockMultipartFile toUpload = new MockMultipartFile("file", "mockModule.omod", "archive/zip", fileData);
 		
 		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
@@ -170,6 +167,5 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	@Override
 	public long getAllCount() {
 		return mockModuleFactory.loadedModules.size();
-	}
-	
+	}	
 }

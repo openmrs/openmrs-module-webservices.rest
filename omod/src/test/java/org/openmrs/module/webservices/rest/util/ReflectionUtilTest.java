@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
@@ -17,9 +20,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingSubcl
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class ReflectionUtilTest {
 	

@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs2_0;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.VisitType;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -19,13 +22,9 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitTypeResource1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.VisitConfiguration;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Handler(supports = VisitConfiguration.class, order = 0)
 public class VisitConfigurationConverter2_0 extends BaseDelegatingConverter<VisitConfiguration> {

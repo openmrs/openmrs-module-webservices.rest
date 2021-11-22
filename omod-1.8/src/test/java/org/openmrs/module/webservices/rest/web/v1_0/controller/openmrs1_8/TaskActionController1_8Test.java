@@ -50,12 +50,10 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public void setUp() throws Exception {
 		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask, testDummyTask));
 		
-		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
-		        .getResourceBySupportedClass(TaskAction.class);
+		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService.getResourceBySupportedClass(TaskAction.class);
 		taskActionResource.setTaskServiceWrapper(mockTaskServiceWrapper);
 		
-		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService
-		        .getResourceBySupportedClass(TaskDefinition.class);
+		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService.getResourceBySupportedClass(TaskDefinition.class);
 		taskResource.setTaskServiceWrapper(mockTaskServiceWrapper);
 	}
 	
@@ -63,8 +61,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public void shouldScheduleTask() throws Exception {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.scheduledTasks, not(hasItem(testTask)));
-		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"scheduletask\", \"tasks\":[\"" + getTestTaskName()
-		        + "\"]}")));
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"scheduletask\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
 		assertThat(mockTaskServiceWrapper.scheduledTasks, hasItem(testTask));
 	}
 	
@@ -72,8 +69,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public void shouldShutdownTask() throws Exception {
 		mockTaskServiceWrapper.scheduledTasks.add(testTask);
 		assertThat(mockTaskServiceWrapper.scheduledTasks, hasItem(testTask));
-		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"shutdowntask\", \"tasks\":[\"" + getTestTaskName()
-		        + "\"]}")));
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"shutdowntask\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
 		assertThat(mockTaskServiceWrapper.scheduledTasks, not(hasItem(testTask)));
 	}
 	
@@ -83,8 +79,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.scheduledTasks, hasItem(testTask));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testTask));
-		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"scheduletask\", \"tasks\":[\"" + getTestTaskName()
-		        + "\"]}")));
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"scheduletask\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
 		//check if state preserved
 		assertThat(mockTaskServiceWrapper.scheduledTasks, hasItem(testTask));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testTask));
@@ -95,8 +90,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.scheduledTasks, not(hasItem(testTask)));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testTask));
-		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"shutdowntask\", \"tasks\":[\"" + getTestTaskName()
-		        + "\"]}")));
+		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"shutdowntask\", \"tasks\":[\"" + getTestTaskName() + "\"]}")));
 		//check if state preserved
 		assertThat(mockTaskServiceWrapper.scheduledTasks, not(hasItem(testTask)));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testTask));

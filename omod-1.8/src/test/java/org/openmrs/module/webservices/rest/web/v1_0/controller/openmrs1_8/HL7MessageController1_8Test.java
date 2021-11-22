@@ -93,7 +93,6 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void adt_a28_shouldCreatePatient() throws Exception {
-		
 		//get the initial number of patients
 		int count = Context.getPatientService().getAllPatients().size();
 		
@@ -173,5 +172,4 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
 	}
-	
 }

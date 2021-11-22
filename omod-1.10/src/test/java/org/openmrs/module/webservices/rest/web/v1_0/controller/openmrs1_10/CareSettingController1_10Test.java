@@ -74,10 +74,10 @@ public class CareSettingController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetACareSettingByName() throws Exception {
-		final String name = "outpatient";
-		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + name)));
+		final String NAME = "outpatient";
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + NAME)));
 		
-		CareSetting expectedCareSetting = service.getCareSettingByName(name);
+		CareSetting expectedCareSetting = service.getCareSettingByName(NAME);
 		assertEquals(expectedCareSetting.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(expectedCareSetting.getName(), PropertyUtils.getProperty(result, "name"));
 	}

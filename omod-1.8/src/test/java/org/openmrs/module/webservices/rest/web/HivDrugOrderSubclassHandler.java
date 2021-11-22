@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -40,9 +41,9 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	 */
 	@Override
 	public HivDrugOrder newDelegate() {
-		HivDrugOrder o = new HivDrugOrder();
-		o.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
-		return o;
+		HivDrugOrder hivDrugOrder = new HivDrugOrder();
+		hivDrugOrder.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+		return hivDrugOrder;
 	}
 	
 	/**
@@ -51,22 +52,22 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			DelegatingResourceDescription d = new DelegatingResourceDescription();
-			d.addProperty("patient", Representation.REF);
-			d.addProperty("concept", Representation.REF);
-			d.addProperty("startDate");
-			d.addProperty("autoExpireDate");
-			d.addProperty("standardRegimenCode");
-			return d;
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("patient", Representation.REF);
+			description.addProperty("concept", Representation.REF);
+			description.addProperty("startDate");
+			description.addProperty("autoExpireDate");
+			description.addProperty("standardRegimenCode");
+			return description;
 		} else if (rep instanceof FullRepresentation) {
-			DelegatingResourceDescription d = new DelegatingResourceDescription();
-			d.addProperty("patient");
-			d.addProperty("concept");
-			d.addProperty("startDate");
-			d.addProperty("autoExpireDate");
-			d.addProperty("standardRegimenCode");
-			d.addProperty("instructions");
-			return d;
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("patient");
+			description.addProperty("concept");
+			description.addProperty("startDate");
+			description.addProperty("autoExpireDate");
+			description.addProperty("standardRegimenCode");
+			description.addProperty("instructions");
+			return description;
 		}
 		return null;
 	}
@@ -76,14 +77,14 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("patient");
-		d.addRequiredProperty("concept");
-		d.addProperty("startDate");
-		d.addProperty("autoExpireDate");
-		d.addProperty("standardRegimenCode");
-		d.addProperty("instructions");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("patient");
+		description.addRequiredProperty("concept");
+		description.addProperty("startDate");
+		description.addProperty("autoExpireDate");
+		description.addProperty("standardRegimenCode");
+		description.addProperty("instructions");
+		return description;
 		
 	}
 	
@@ -91,19 +92,16 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("standardRegimenCode", new StringProperty());
+			model.property("startDate", new DateProperty())
+			     .property("autoExpireDate", new DateProperty())
+			     .property("standardRegimenCode", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			model.property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			     .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
+			model.property("patient", new RefProperty("#/definitions/PatientGet"))
+			     .property("concept", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return model;
 	}
@@ -146,5 +144,4 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 	public static void setStandardRegimenCode(HivDrugOrder delegate, String code) {
 		delegate.setInstructions("Standard Regimen: " + code);
 	}
-	
 }

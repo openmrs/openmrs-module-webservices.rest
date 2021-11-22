@@ -16,6 +16,12 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -38,13 +44,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.hibernate.criterion.Projections.property;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations
@@ -96,29 +95,26 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("encounterDatetime", new DateProperty())
-			        .property("provider", new StringProperty()) //FIXME
-			        .property("voided", new BooleanProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("encounterDatetime", new DateProperty())
+			         .property("provider", new StringProperty()) //FIXME
+			         .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
+			modelImpl.property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
+			         .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
+			         .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
+			         .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
+			         .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
+			         .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
+			modelImpl.property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
+			         .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
+			         .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
+			         .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
+			         .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
+			         .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
 		}
 		return modelImpl;
 	}
@@ -169,12 +165,12 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	 */
 	@Override
 	public Encounter newDelegate() {
-		Encounter enc = new Encounter();
+		Encounter encounter = new Encounter();
 		// default to now(), so a web client can create a real-time encounter based on the server time
-		enc.setEncounterDatetime(new Date());
+		encounter.setEncounterDatetime(new Date());
 		// As of 2012-04-27 there is a bug in Encounter.getOrders() where, if null, it returns an empty list without keeping a reference to it
-		enc.setOrders(new LinkedHashSet<Order>());
-		return enc;
+		encounter.setOrders(new LinkedHashSet<Order>());
+		return encounter;
 	}
 	
 	/**
@@ -211,11 +207,11 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	protected Encounter undelete(Encounter enc, RequestContext context) throws ResponseException {
-		if (enc.isVoided()) {
-			enc = Context.getEncounterService().unvoidEncounter(enc);
+	protected Encounter undelete(Encounter encounter, RequestContext context) throws ResponseException {
+		if (encounter.isVoided()) {
+			encounter = Context.getEncounterService().unvoidEncounter(encounter);
 		}
-		return enc;
+		return encounter;
 	}
 	
 	/**
@@ -223,12 +219,12 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(Encounter enc, RequestContext context) throws ResponseException {
-		if (enc == null) {
+	public void purge(Encounter encounter, RequestContext context) throws ResponseException {
+		if (encounter == null) {
 			// DELETE is idempotent, so we return success here
 			return;
 		}
-		Context.getEncounterService().purgeEncounter(enc);
+		Context.getEncounterService().purgeEncounter(encounter);
 	}
 	
 	/**
@@ -256,14 +252,14 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	@PropertySetter("obs")
 	public static void setObs(Encounter instance, Set<Obs> obs) {
 		instance.getAllObs(true).clear();
-		for (Obs o : obs)
-			instance.addObs(o);
+		for (Obs object : obs)
+			instance.addObs(object);
 	}
 	
 	@PropertySetter("orders")
 	public static void setOrders(Encounter instance, Set<Order> orders) {
-		for (Order o : orders)
-			instance.addOrder(o);
+		for (Order order : orders)
+			instance.addOrder(order);
 	}
 	
 	/**
@@ -289,5 +285,4 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(
 		    context.getParameter("q"), context);
 	}
-	
 }

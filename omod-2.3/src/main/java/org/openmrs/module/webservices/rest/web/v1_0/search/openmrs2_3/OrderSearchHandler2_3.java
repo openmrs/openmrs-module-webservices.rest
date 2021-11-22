@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
@@ -33,11 +38,6 @@ import org.openmrs.parameter.OrderSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 @Component
 public class OrderSearchHandler2_3 implements SearchHandler {
@@ -247,5 +247,4 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 
 		return new NeedsPaging<Order>(orders, context);
 	}
-
 }

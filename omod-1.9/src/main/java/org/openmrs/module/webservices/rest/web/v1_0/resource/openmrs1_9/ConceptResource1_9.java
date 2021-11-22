@@ -32,7 +32,6 @@ public class ConceptResource1_9 extends ConceptResource1_8 {
 	
 	@Override
 	public Concept getByUniqueId(String identifier) {
-		
 		Concept concept = null;
 		
 		if (identifier.contains(":")) {

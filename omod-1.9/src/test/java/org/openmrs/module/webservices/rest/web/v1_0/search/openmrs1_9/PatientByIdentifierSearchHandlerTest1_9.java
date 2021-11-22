@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,8 +21,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8.LocationSearchHandler;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControllerTest {
 	
@@ -59,8 +59,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
-		    PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -71,8 +70,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
-		    PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test

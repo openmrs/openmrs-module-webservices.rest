@@ -87,11 +87,9 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		getReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(getReq));
 		assertEquals("a.property.test", PropertyUtils.getProperty(result, "property"));
-		assertEquals("Testing post operation of global property",
-		    PropertyUtils.getProperty(newlyCreatedSetting, "description"));
+		assertEquals("Testing post operation of global property", PropertyUtils.getProperty(newlyCreatedSetting, "description"));
 		assertEquals("true", PropertyUtils.getProperty(result, "value"));
-		assertEquals("org.openmrs.customdatatype.datatype.BooleanDatatype",
-		    PropertyUtils.getProperty(result, "datatypeClassname"));
+		assertEquals("org.openmrs.customdatatype.datatype.BooleanDatatype", PropertyUtils.getProperty(result, "datatypeClassname"));
 		assertNull(PropertyUtils.getProperty(result, "datatypeConfig"));
 	}
 	
@@ -124,11 +122,11 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetASystemSettingByName() throws Exception {
-		final String name = service.getAllGlobalProperties().get(0).getProperty();
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = service.getAllGlobalProperties().get(0).getProperty();
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		GlobalProperty gp = service.getGlobalPropertyObject(name);
+		GlobalProperty gp = service.getGlobalPropertyObject(NAME);
 		assertEquals(gp.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(gp.getProperty(), PropertyUtils.getProperty(result, "property"));
 		assertEquals(gp.getDescription(), PropertyUtils.getProperty(result, "description"));
@@ -137,13 +135,13 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditASystemSetting() throws Exception {
-		final String newValue = "Adding description by editing property";
+		final String NEW_VALUE = "Adding description by editing property";
 		GlobalProperty expectedProperty = service.getGlobalPropertyByUuid(getUuid());
 		assertNull(expectedProperty.getDescription());
-		String json = "{ \"description\":\"" + newValue + "\" }";
+		String json = "{ \"description\":\"" + NEW_VALUE + "\" }";
 		
 		SimpleObject updatedProperty = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
-		assertTrue(newValue.equals(PropertyUtils.getProperty(updatedProperty, "description")));
+		assertTrue(NEW_VALUE.equals(PropertyUtils.getProperty(updatedProperty, "description")));
 	}
 	
 	@Test

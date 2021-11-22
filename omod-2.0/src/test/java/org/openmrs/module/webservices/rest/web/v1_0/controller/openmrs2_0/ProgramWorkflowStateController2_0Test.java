@@ -9,18 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ProgramWorkflowStateController2_0Test extends MainResourceControllerTest {
 
@@ -41,8 +39,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 
 	@Test
 	public void shouldCreateWorkflowState() throws Exception {
-		String json =
-				"{\"concept\": \"" + RestTestConstants1_8.CONCEPT_UUID + "\",\"initial\": true,\"terminal\": false}";
+		String json = "{\"concept\": \"" + RestTestConstants1_8.CONCEPT_UUID + "\",\"initial\": true,\"terminal\": false}";
 
 		SimpleObject newWorkflowState = deserialize(handle(newPostRequest(getURI(), json)));
 

@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
 import org.openmrs.activelist.AllergySeverity;
@@ -71,9 +72,8 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		        .property("severity", new EnumProperty(AllergySeverity.class))
 		        .property("allergen", new RefProperty("#/definitions/ConceptGetRef"));
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("reaction", new RefProperty("#/definitions/ConceptGet"))
-			        .property("allergen", new RefProperty("#/definitions/ConceptGet"));
+			model.property("reaction", new RefProperty("#/definitions/ConceptGet"))
+			     .property("allergen", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return model;
 	}
@@ -83,7 +83,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		return ((ModelImpl) super.getCREATEModel(rep))
 		        .property("allergyType", new EnumProperty(AllergyType.class))
 		        .property("reaction", new ObjectProperty()
-		                .property("uuid", new StringProperty()))
+		        .property("uuid", new StringProperty()))
 		        .property("severity", new EnumProperty(AllergySeverity.class))
 		        .property("allergen", new StringProperty());
 	}
@@ -156,6 +156,5 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		
 		//currently this is not supported since the superclass throws an exception
 		return super.doSearch(context);
-	}
-	
+	}	
 }

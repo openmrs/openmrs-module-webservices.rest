@@ -65,7 +65,6 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldCreateALocationTag() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject locationTag = new SimpleObject();
@@ -80,37 +79,31 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		SimpleObject newLocationTag = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newLocationTag, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
-		
+		Assert.assertEquals(originalCount + 1, getAllCount());	
 	}
 	
 	@Test
 	public void shouldGetALocationTagByUuid() throws Exception {
-		
 		LocationTag locationTag = service.getLocationTag(1);
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + locationTag.getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(locationTag.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(locationTag.getName(), PropertyUtils.getProperty(result, "name"));
-		
+		Assert.assertEquals(locationTag.getName(), PropertyUtils.getProperty(result, "name"));	
 	}
 	
 	@Test
 	public void shouldListAll() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
-		
 	}
 	
 	@Test
 	public void shouldUpdateLocationTag() throws Exception {
-		
 		final String EDITED_NAME = "Location Tag edited";
 		final String EDITED_DESCRIPTION = "New Location Tag Description";
 		LocationTag locationTag = service.getLocationTagByUuid(getUuid());
@@ -130,7 +123,6 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldPurgeLocationTag() throws Exception {
-		
 		LocationTag locationTag = service.getLocationTag(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + locationTag.getUuid());
 		req.addParameter("purge", "true");
@@ -141,7 +133,6 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldRetireLocationTag() throws Exception {
-		
 		LocationTag locationTag = service.getLocationTag(2);
 		Assert.assertFalse(locationTag.isRetired());
 		
@@ -153,7 +144,5 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		LocationTag retiredLocationTag = service.getLocationTag(2);
 		Assert.assertTrue(retiredLocationTag.isRetired());
 		Assert.assertEquals("random reason", retiredLocationTag.getRetireReason());
-		
 	}
-	
 }

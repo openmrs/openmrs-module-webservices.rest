@@ -12,11 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
-
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.FormService;
@@ -75,8 +73,6 @@ public class FormController1_8Test extends MainResourceControllerTest {
 		
 		form = service.getFormByUuid(getUuid());
 		assertFalse(form.isRetired());
-		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
-	
 }

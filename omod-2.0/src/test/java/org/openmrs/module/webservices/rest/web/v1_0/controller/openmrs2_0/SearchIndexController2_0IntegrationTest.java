@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -16,8 +18,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTes
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import static org.junit.Assert.assertEquals;
 
 public class SearchIndexController2_0IntegrationTest extends RestControllerTestUtils {
 	
@@ -32,9 +32,9 @@ public class SearchIndexController2_0IntegrationTest extends RestControllerTestU
 		assertEquals(0, conceptService.getConcepts("Measles", Context.getLocale(), false).size());
 		assertEquals(0, conceptService.getConcepts("Rubeola", Context.getLocale(), false).size());
 		assertEquals(0, conceptService.getDrugs("Panadol").size());
-		final String data = "{\"resource\": \"concept\", \"subResource\": \"name\"}";
+		final String DATA = "{\"resource\": \"concept\", \"subResource\": \"name\"}";
 		
-		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, data));
+		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, DATA));
 		
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertEquals(1, conceptService.getConcepts("Measles", Context.getLocale(), false).size());
@@ -50,9 +50,9 @@ public class SearchIndexController2_0IntegrationTest extends RestControllerTestU
 		assertEquals(0, conceptService.getConcepts("Pain", Context.getLocale(), false).size());
 		assertEquals(0, conceptService.getConcepts("Typhoid", Context.getLocale(), false).size());
 		
-		final String data = "{\"resource\": \"concept\", \"subResource\": \"name\", " +
+		final String DATA = "{\"resource\": \"concept\", \"subResource\": \"name\", " +
 		        "\"uuid\": \"1bd5693b-f558-30c9-8177-145a4b119ca7\"}";
-		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, data));
+		MockHttpServletResponse response = handle(newPostRequest(SEARCH_INDEX_URI, DATA));
 		
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertEquals(1, conceptService.getConcepts("Headache", Context.getLocale(), false).size());
@@ -60,6 +60,5 @@ public class SearchIndexController2_0IntegrationTest extends RestControllerTestU
 		assertEquals(0, conceptService.getConcepts("Pain", Context.getLocale(), false).size());
 		//The indices for other concepts should not have been updated
 		assertEquals(0, conceptService.getConcepts("Typhoid", Context.getLocale(), false).size());
-	}
-	
+	}	
 }

@@ -33,6 +33,5 @@ public class ProblemResource1_9 extends ProblemResource1_8 {
 	@PropertySetter("problem")
 	public static void setProblem(Problem problem, Object value) {
 		problem.setProblem(new ConceptResource1_9().getByUniqueId((String) value));
-	}
-	
+	}	
 }

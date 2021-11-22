@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper;
 
-import org.openmrs.module.web.extension.AdministrationSectionExt;
-
 import java.util.Map;
+
+import org.openmrs.module.web.extension.AdministrationSectionExt;
 
 /**
  * REST wrapper for {@link AdministrationSectionExt}

@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper;
 
-import org.openmrs.VisitType;
-
 import java.util.List;
+
+import org.openmrs.VisitType;
 
 public class VisitConfiguration {
 

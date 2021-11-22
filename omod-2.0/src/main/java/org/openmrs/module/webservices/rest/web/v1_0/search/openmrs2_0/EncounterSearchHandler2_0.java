@@ -45,8 +45,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter",
 	        Arrays.asList("2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"), Arrays.asList(new SearchQuery.Builder(
 	                "Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
-	                .withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
-	                .build()));
+	                .withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order").build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {

@@ -28,7 +28,6 @@ public class FulfillerDetailsResource2_3Test extends BaseDelegatingResourceTest<
 
 	@Override
 	public FulfillerDetails2_3 newObject() {
-
 		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants2_3.ORDER_UUID);
 		FulfillerDetails2_3 fillerDetailsRepresentation = new FulfillerDetails2_3();
 		fillerDetailsRepresentation.setOrder(order);

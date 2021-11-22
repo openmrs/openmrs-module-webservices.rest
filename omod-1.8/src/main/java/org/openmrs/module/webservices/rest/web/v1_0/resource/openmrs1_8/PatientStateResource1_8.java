@@ -16,6 +16,12 @@ import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflow;
@@ -34,11 +40,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * {@link Resource} for PatientState, supporting standard CRUD operations
@@ -83,8 +84,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	}
 	
 	private PatientState getLastPatientState(ProgramWorkflow currentWorkflow, PatientProgram patientProgram) {
-		List<PatientState> patientStates = new ArrayList<PatientState>(patientProgram.statesInWorkflow(currentWorkflow,
-		    false));
+		List<PatientState> patientStates = new ArrayList<PatientState>(patientProgram.statesInWorkflow(currentWorkflow, false));
 		if (!patientStates.isEmpty()) {
 			sortPatientStatesBasedOnStartDate(patientStates);
 			return patientStates.get(patientStates.size() - 1);
@@ -159,9 +159,9 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("state");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("state");
+		return description;
 	}
 	
 	@Override
@@ -177,33 +177,26 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("startDate", new DateProperty())
+			     .property("endDate", new DateProperty())
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGet"));
+			model.property("state", new RefProperty("#/definitions/WorkflowStateGet"));
 		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
+			model.property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
+			     .property("patientProgram", new ObjectProperty()); //FIXME type
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
+			model.property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
+			     .property("patientProgram", new ObjectProperty()); //FIXME type
 		}
 		return model;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("state", new RefProperty("#/definitions/WorkflowStateCreate"))
-		        
-		        .required("state");
+		return new ModelImpl().property("state", new RefProperty("#/definitions/WorkflowStateCreate")).required("state");
 	}
 	
 	@Override

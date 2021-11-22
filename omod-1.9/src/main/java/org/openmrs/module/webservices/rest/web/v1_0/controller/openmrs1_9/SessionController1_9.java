@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.LocaleUtils;
 import org.openmrs.Location;
 import org.openmrs.Provider;
@@ -34,13 +41,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Controller that lets a client check the status of their session, and log out. (Authenticating is
@@ -72,8 +72,7 @@ public class SessionController1_9 extends BaseRestController {
 		SimpleObject session = new SimpleObject();
 		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
 		if (authenticated) {
-			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
-			    new CustomRepresentation(USER_CUSTOM_REP)));
+			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(), new CustomRepresentation(USER_CUSTOM_REP)));
 			session.add("locale", Context.getLocale());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 			session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));

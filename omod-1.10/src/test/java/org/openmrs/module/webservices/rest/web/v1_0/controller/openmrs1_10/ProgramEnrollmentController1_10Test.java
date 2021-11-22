@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,14 +33,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 
 public class ProgramEnrollmentController1_10Test extends MainResourceControllerTest {
 	
@@ -194,6 +194,5 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 				return OpenmrsUtil.compareWithNullAsLatest(o1.getStartDate(), o2.getStartDate());
 			}
 		});
-	}
-	
+	}	
 }

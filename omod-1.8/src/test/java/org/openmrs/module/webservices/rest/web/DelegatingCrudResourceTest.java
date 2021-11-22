@@ -171,6 +171,5 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		DelegatingCrudResource<Location> resource = new LocationResource1_8();
 		Location location = resource.convert(so);
 		Assert.assertEquals(uuid, location.getUuid());
-	}
-	
+	}	
 }

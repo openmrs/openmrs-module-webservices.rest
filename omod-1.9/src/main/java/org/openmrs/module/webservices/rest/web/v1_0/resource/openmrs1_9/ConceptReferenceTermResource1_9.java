@@ -13,6 +13,9 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
@@ -32,8 +35,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.List;
 
 /**
  * {@link Resource} for {@link ConceptReferenceTerm}, supporting standard CRUD operations
@@ -96,17 +97,14 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("code", new StringProperty())
-			        .property("version", new StringProperty());
+			model.property("code", new StringProperty())
+			     .property("version", new StringProperty());
 			
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
+			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGet"));
+			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGet"));
 		}
 		return model;
 		

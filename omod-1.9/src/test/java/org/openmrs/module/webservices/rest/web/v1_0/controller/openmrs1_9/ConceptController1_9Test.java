@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.Matchers.is;
+
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,10 +22,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-
-import static org.hamcrest.Matchers.is;
 
 /**
  * Tests functionality of {@link ConceptController}.
@@ -65,8 +65,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldFindNumericConceptsByQueryString() throws Exception {
 		executeDataSet("numericConcept.xml");
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "HEIGHT"), new Parameter("v",
-		        "full"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "HEIGHT"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(response);
 		
 		Assert.assertEquals(1, results.size());
@@ -81,5 +80,4 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
-	
 }

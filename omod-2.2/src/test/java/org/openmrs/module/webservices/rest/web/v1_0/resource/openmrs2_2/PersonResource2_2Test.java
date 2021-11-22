@@ -35,6 +35,5 @@ public class PersonResource2_2Test extends BaseDelegatingResourceTest<PersonReso
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
 		assertPropEquals("causeOfDeathNonCoded", getObject().getCauseOfDeathNonCoded());
-	}
-	
+	}	
 }

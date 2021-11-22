@@ -56,8 +56,6 @@ public class PasswordResetController2_2 extends BaseRestController {
 		}
 		catch (InvalidActivationKeyException ex) {
 			throw new ValidationException(ex.getMessage());
-		}
-		
+		}	
 	}
-	
 }

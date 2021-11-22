@@ -20,8 +20,7 @@ public class ConceptSearchResource1_9Test extends BaseDelegatingResourceTest<Con
 	@Override
 	public ConceptSearchResult newObject() {
 		Concept concept = Context.getConceptService().getConceptByUuid(getUuidProperty());
-		return new ConceptSearchResult("Yes", concept, concept.getName(), 12d);
-		
+		return new ConceptSearchResult("Yes", concept, concept.getName(), 12d);	
 	}
 	
 	@Override
@@ -70,5 +69,4 @@ public class ConceptSearchResource1_9Test extends BaseDelegatingResourceTest<Con
 	public String getUuidProperty() {
 		return RestTestConstants1_8.CONCEPT_UUID;
 	}
-	
 }

@@ -56,6 +56,5 @@ public class PersonNameResource1_9Test extends BaseDelegatingResourceTest<Person
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants1_8.PERSON_NAME_UUID;
-	}
-	
+	}	
 }

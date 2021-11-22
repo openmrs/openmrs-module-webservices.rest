@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.text.SimpleDateFormat;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,8 +22,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import java.text.SimpleDateFormat;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitAttributeResource1_9;
 
 /**
@@ -65,8 +65,7 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldListAllAttributesForAVisit() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(
-		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
 		Assert.assertNotNull(result);
 		Assert.assertEquals(3, Util.getResultsSize(result));
@@ -85,9 +84,9 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldEditAVisitAttribute() throws Exception {
-		final String newValue = "2012-05-05";
+		final String NEW_VALUE = "2012-05-05";
 		VisitAttribute va = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertFalse(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(va.getValue()));
+		Assert.assertFalse(new SimpleDateFormat(DATE_PATTERN).parse(NEW_VALUE).equals(va.getValue()));
 		String json = "{ \"value\":\"2012-05-05\" }";
 		
 		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
@@ -96,7 +95,7 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		VisitAttribute updated = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertTrue(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(updated.getValue()));
+		Assert.assertTrue(new SimpleDateFormat(DATE_PATTERN).parse(NEW_VALUE).equals(updated.getValue()));
 	}
 	
 	@Test

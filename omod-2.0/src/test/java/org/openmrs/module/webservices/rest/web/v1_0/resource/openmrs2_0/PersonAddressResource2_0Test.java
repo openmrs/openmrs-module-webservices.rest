@@ -93,5 +93,4 @@ public class PersonAddressResource2_0Test extends BaseDelegatingResourceTest<Per
 	public String getUuidProperty() {
 		return RestTestConstants1_8.PERSON_ADDRESS_UUID;
 	}
-	
 }

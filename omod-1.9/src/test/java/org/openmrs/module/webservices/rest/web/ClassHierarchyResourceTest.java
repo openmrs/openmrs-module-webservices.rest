@@ -195,6 +195,5 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		Util.log("drug orders for patient", simple);
 		Assert.assertEquals(1, Util.getResultsSize(simple));
 		Assert.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));
-	}
-	
+	}	
 }

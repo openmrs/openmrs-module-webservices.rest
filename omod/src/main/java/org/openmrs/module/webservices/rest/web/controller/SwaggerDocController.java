@@ -19,6 +19,5 @@ public class SwaggerDocController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public void get() {
-	}
-	
+	}	
 }

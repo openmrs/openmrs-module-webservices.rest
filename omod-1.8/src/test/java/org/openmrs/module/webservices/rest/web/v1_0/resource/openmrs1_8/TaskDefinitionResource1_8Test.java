@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Date;
+
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.scheduler.TaskDefinition;
-
-import java.util.Date;
 
 public class TaskDefinitionResource1_8Test extends BaseDelegatingResourceTest<TaskDefinitionResource1_8, TaskDefinition> {
 	

@@ -49,5 +49,4 @@ public class ConceptMapTypeResource1_9Test extends BaseDelegatingResourceTest<Co
 	public String getUuidProperty() {
 		return RestTestConstants1_9.CONCEPT_MAP_TYPE_UUID;
 	}
-	
 }

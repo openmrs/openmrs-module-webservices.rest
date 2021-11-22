@@ -9,6 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.webservices.rest.test.Util.getByPath;
+import static org.openmrs.module.webservices.rest.test.Util.getResultsList;
+import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
+
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
@@ -21,15 +30,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.openmrs.module.webservices.rest.test.Util.getByPath;
-import static org.openmrs.module.webservices.rest.test.Util.getResultsList;
-import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
 
 public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest<EncounterProviderResource1_9, EncounterProvider> {
 	

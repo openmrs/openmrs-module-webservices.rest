@@ -9,15 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -90,11 +91,11 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	 */
 	@Override
 	public OrderType getByUniqueId(String uniqueId) {
-		OrderType ot = Context.getOrderService().getOrderTypeByUuid(uniqueId);
-		if (ot == null) {
-			ot = Context.getOrderService().getOrderTypeByName(uniqueId);
+		OrderType orderType = Context.getOrderService().getOrderTypeByUuid(uniqueId);
+		if (orderType == null) {
+			orderType = Context.getOrderService().getOrderTypeByName(uniqueId);
 		}
-		return ot;
+		return orderType;
 	}
 	
 	/**
@@ -124,8 +125,7 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 		List<OrderType> orderTypes = Context.getOrderService().getOrderTypes(context.getIncludeAll());
 		for (Iterator<OrderType> iterator = orderTypes.iterator(); iterator.hasNext();) {
 			OrderType ot = iterator.next();
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(ot.getName())
-			        .find()) {
+			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(ot.getName()).find()) {
 				iterator.remove();
 			}
 		}
@@ -145,39 +145,33 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = super.getCreatableProperties();
-		d.addRequiredProperty("javaClassName");
-		d.addProperty("parent");
-		d.addProperty("conceptClasses");
-		return d;
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addRequiredProperty("javaClassName");
+		description.addProperty("parent");
+		description.addProperty("conceptClasses");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("javaClassName", new StringProperty());
+			model.property("javaClassName", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGetRef")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGetRef"));
+			model.property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGetRef")))
+			     .property("parent", new RefProperty("#/definitions/OrdertypeGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGet")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGet"));
+			model.property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGet")))
+			     .property("parent", new RefProperty("#/definitions/OrdertypeGet"));
 		}
 		return model;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("javaClassName", new StringProperty())
+		return ((ModelImpl) super.getCREATEModel(rep)).property("javaClassName", new StringProperty())
 		        .property("parent", new StringProperty().example("uuid")) //FIXME type
-		        .property("conceptClasses", new ArrayProperty(new StringProperty().example("uuid")))
-		        
-		        .required("javaClassName");
+		        .property("conceptClasses", new ArrayProperty(new StringProperty().example("uuid"))).required("javaClassName");
 	}
 }

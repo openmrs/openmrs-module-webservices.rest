@@ -25,8 +25,7 @@ public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 	@Verifies(value = "should throw ValidationException if errors occur during validation", method = "validate(Object)")
 	public void validate_shouldThrowValidationExceptionIfErrorsOccurDuringValidation() throws Exception {
 		
-		Location loc = new Location();
-		ValidateUtil.validate(loc);
-	}
-	
+		Location location = new Location();
+		ValidateUtil.validate(location);
+	}	
 }

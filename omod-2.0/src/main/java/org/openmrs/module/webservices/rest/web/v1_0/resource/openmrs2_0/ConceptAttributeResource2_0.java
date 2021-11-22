@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptAttribute;
 import org.openmrs.ConceptAttributeType;
@@ -20,8 +22,6 @@ import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeCrudResource1_9;
-
-import java.util.List;
 
 /**
  * {@link Resource} for ConceptAttributes, supporting standard CRUD operations
@@ -130,5 +130,4 @@ public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<Co
 	public String getResourceVersion() {
 		return "2.0";
 	}
-	
 }

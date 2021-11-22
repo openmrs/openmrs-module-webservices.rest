@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -22,8 +24,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.Map;
 
 public class ProgramResource1_10Test extends MainResourceControllerTest {
 	
@@ -67,8 +67,7 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 		SimpleObject newProgram = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT2_UUID,
-		    ((Map) PropertyUtils.getProperty(newProgram, "outcomesConcept")).get("uuid"));
+		Assert.assertEquals(RestTestConstants1_8.CONCEPT2_UUID, ((Map) PropertyUtils.getProperty(newProgram, "outcomesConcept")).get("uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
@@ -82,6 +81,5 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 		Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
 		Assert.assertEquals(program.getOutcomesConcept(), PropertyUtils.getProperty(result, "outcomesConcept"));
-	}
-	
+	}	
 }

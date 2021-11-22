@@ -14,6 +14,11 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
@@ -33,10 +38,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Resource(name = RestConstants.VERSION_1 + "/administrationlinks", supportedClass = AdministrationSectionLinks.class,
 		supportedOpenmrsVersions = { "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -66,8 +67,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 
 		AdministrationSectionLinks administrationLinks = getAdministrationLinksForModule(moduleId);
 		if (administrationLinks == null) {
-			throw new ObjectNotFoundException(
-					"Module with id: " + moduleId + " doesn't have any administration links registered.");
+			throw new ObjectNotFoundException("Module with id: " + moduleId + " doesn't have any administration links registered.");
 		}
 
 		return administrationLinks;
@@ -122,9 +122,8 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-					.property(MODULE_TITLE, new StringProperty())
-					.property(LINKS, new ArrayProperty(new ObjectProperty()));
+			model.property(MODULE_TITLE, new StringProperty())
+			     .property(LINKS, new ArrayProperty(new ObjectProperty()));
 		}
 
 		return model;
@@ -141,8 +140,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
-			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId()
-					.equals(moduleId)) {
+			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId().equals(moduleId)) {
 				return mapAdminListExtension(adminListExtension, messageSourceService);
 			}
 		}

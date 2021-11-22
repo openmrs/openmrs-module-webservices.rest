@@ -37,8 +37,7 @@ public class PatientResource1_9 extends PatientResource1_8 {
 		for (Visit visit : visits) {
 			visitService.voidVisit(visit, "Patient deleted");
 		}
-		
+
 		super.delete(patient, reason, context);
-	}
-	
+	}	
 }

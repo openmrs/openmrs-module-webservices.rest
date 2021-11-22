@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -24,8 +27,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Resource for Task Definitions, supporting standard CRUD operations
@@ -131,8 +132,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 	 */
 	@Override
 	public NeedsPaging<TaskDefinition> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<TaskDefinition>(new ArrayList<TaskDefinition>(taskServiceWrapper.getRegisteredTasks()),
-		        context);
+		return new NeedsPaging<TaskDefinition>(new ArrayList<TaskDefinition>(taskServiceWrapper.getRegisteredTasks()), context);
 	}
 	
 	@PropertyGetter("uuid")
@@ -160,6 +160,5 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 			taskDefinitions = (ArrayList<TaskDefinition>) taskServiceWrapper.getScheduledTasks();
 		}
 		return new NeedsPaging<TaskDefinition>(taskDefinitions, context);
-	}
-	
+	}	
 }

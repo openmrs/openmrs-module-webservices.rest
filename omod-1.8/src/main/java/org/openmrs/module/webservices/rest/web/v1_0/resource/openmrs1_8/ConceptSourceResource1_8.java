@@ -13,6 +13,12 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.openmrs.ConceptSource;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,11 +32,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
@@ -178,8 +179,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 			ConceptSource conceptSource = iterator.next();
 			//find matches excluding retired ones if necessary
 			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
-			        .matcher(conceptSource.getName()).find()
-			        || (!context.getIncludeAll() && conceptSource.isRetired())) {
+			    .matcher(conceptSource.getName()).find() || (!context.getIncludeAll() && conceptSource.isRetired())) {
 				iterator.remove();
 			}
 		}

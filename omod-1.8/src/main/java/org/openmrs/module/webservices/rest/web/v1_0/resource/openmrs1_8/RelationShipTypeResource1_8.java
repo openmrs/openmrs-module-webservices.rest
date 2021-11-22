@@ -9,11 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import org.apache.commons.lang.StringUtils;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,9 +31,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/relationshiptype", supportedClass = RelationshipType.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -135,13 +136,11 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("aIsToB", new StringProperty())
-			        .property("bIsToA", new StringProperty());
+			model.property("aIsToB", new StringProperty())
+			     .property("bIsToA", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("weight", new IntegerProperty());
+			model.property("weight", new IntegerProperty());
 		}
 		return model;
 	}
@@ -237,5 +236,4 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	public String getResourceVersion() {
 		return "1.8";
 	}
-	
 }

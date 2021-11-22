@@ -14,6 +14,9 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Map;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -29,8 +32,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.HL7MessageController1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.IncomingHl7Message1_8;
-
-import java.util.Map;
 
 /**
  * {@link Resource} for {@link IncomingHl7Message1_8}, supporting standard CRUD operations
@@ -99,27 +100,24 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("messageState", new IntegerProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("messageState", new IntegerProperty());
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("source", new RefProperty("#/definitions/Hl7sourceGet"))
-			        .property("sourceKey", new StringProperty())
-			        .property("data", new StringProperty())
-			        .property("messageState", new IntegerProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("source", new RefProperty("#/definitions/Hl7sourceGet"))
+			         .property("sourceKey", new StringProperty())
+			         .property("data", new StringProperty())
+			         .property("messageState", new IntegerProperty());
 		}
 		return modelImpl;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("hl7", new StringProperty()) //FIXME TYPE
-		        .required("hl7");
+		return new ModelImpl().property("hl7", new StringProperty()) //FIXME TYPE
+				.required("hl7");
 	}
 	
 	/**

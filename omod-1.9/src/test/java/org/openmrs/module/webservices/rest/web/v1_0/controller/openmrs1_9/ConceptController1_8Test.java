@@ -9,15 +9,27 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -41,22 +53,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests functionality of {@link ConceptController}.
@@ -156,26 +152,26 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditFullySpecifiedNameOfAConcept() throws Exception {
-		final String changedName = "TESTING NAME";
-		String json = "{ \"name\":\"" + changedName + "\" }";
+		final String CHANGED_NAME = "TESTING NAME";
+		String json = "{ \"name\":\"" + CHANGED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/f923524a-b90c-4870-a948-4125638606fd");
 		req.setContent(json.getBytes());
 		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
 		Assert.assertNotNull(updated);
-		Assert.assertEquals(changedName, updated.getFullySpecifiedName(Context.getLocale()).getName());
+		Assert.assertEquals(CHANGED_NAME, updated.getFullySpecifiedName(Context.getLocale()).getName());
 	}
 	
 	@Test
 	public void shouldEditAConcept() throws Exception {
-		final String changedVersion = "1.2.3";
-		String json = "{ \"version\":\"" + changedVersion + "\" }";
+		final String CHANGED_VERSION = "1.2.3";
+		String json = "{ \"version\":\"" + CHANGED_VERSION + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/f923524a-b90c-4870-a948-4125638606fd");
 		req.setContent(json.getBytes());
 		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
 		Assert.assertNotNull(updated);
-		Assert.assertEquals(changedVersion, updated.getVersion());
+		Assert.assertEquals(CHANGED_VERSION, updated.getVersion());
 	}
 	
 	@Test
@@ -218,8 +214,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	//Custom matcher
 	FeatureMatcher<Object, String> hasUuid(String uuid) {
-		return new FeatureMatcher<Object, String>(
-		                                          CoreMatchers.equalTo(uuid), "uuid", "uuid") {
+		return new FeatureMatcher<Object, String>(CoreMatchers.equalTo(uuid), "uuid", "uuid") {
 			
 			@Override
 			protected String featureValueOf(Object o) {
@@ -328,7 +323,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test(expected = InvalidSearchException.class)
 	public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result;
 		
@@ -556,9 +550,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	private Matcher<ConceptMap> hasTerm(final ConceptReferenceTerm term) {
-		return new FeatureMatcher<ConceptMap, ConceptReferenceTerm>(
-		                                                            equalTo(term), "conceptReferenceTerm",
-		                                                            "conceptReferenceTerm") {
+		return new FeatureMatcher<ConceptMap, ConceptReferenceTerm>(equalTo(term), "conceptReferenceTerm", "conceptReferenceTerm") {
 			
 			@Override
 			protected ConceptReferenceTerm featureValueOf(final ConceptMap actual) {
@@ -576,13 +568,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
 		List<Map<String, String>> data = (List<Map<String, String>>) object.get("links");
-		Assert.assertThat(
-		    data,
-		    contains(
-		        allOf(hasEntry("rel", "self"),
-		            hasEntry("uri", "http://localhost/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65")),
-		        allOf(hasEntry("rel", "default"),
-		            hasEntry("uri", "http://localhost/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65?v=default"))));
+		Assert.assertThat(data, contains(allOf(hasEntry("rel", "self"), hasEntry("uri", "http://localhost/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65")),
+		        allOf(hasEntry("rel", "default"), hasEntry("uri", "http://localhost/ws/rest/v1/concept/95312123-e0c2-466d-b6b1-cb6e990d0d65?v=default"))));
 	}
 	
 	@Test
@@ -623,23 +610,22 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(3, name.size());
 		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
 		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
-		Assert.assertNotNull(name.get("links"));
-		
+		Assert.assertNotNull(name.get("links"));	
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldIncludeAllUnretiredConceptAnswersForAQuestionConcept() throws Exception {
-		final String conceptUuid = "89ca642a-dab6-4f20-b712-e12ca4fc6d36";
-		Concept questionConcept = service.getConceptByUuid(conceptUuid);
+		final String CONCEPT_UUID = "89ca642a-dab6-4f20-b712-e12ca4fc6d36";
+		Concept questionConcept = service.getConceptByUuid(CONCEPT_UUID);
 		//for the test to stay valid, the sort weights should always be the same(null in this case)
-		for (ConceptAnswer ca : questionConcept.getAnswers(false)) {
-			Assert.assertNull(ca.getSortWeight());
+		for (ConceptAnswer conceptAnswer : questionConcept.getAnswers(false)) {
+			Assert.assertNull(conceptAnswer.getSortWeight());
 		}
 		
-		int expectedAnswerCount = service.getConceptByUuid(conceptUuid).getAnswers(false).size();
+		int expectedAnswerCount = service.getConceptByUuid(CONCEPT_UUID).getAnswers(false).size();
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + CONCEPT_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
@@ -649,17 +635,17 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldIncludeAllSetMembersForAConceptSet() throws Exception {
-		final String conceptUuid = "0f97e14e-cdc2-49ac-9255-b5126f8a5147";
-		Concept parentConcept = service.getConceptByUuid(conceptUuid);
+		final String CONCEPT_UUID = "0f97e14e-cdc2-49ac-9255-b5126f8a5147";
+		Concept parentConcept = service.getConceptByUuid(CONCEPT_UUID);
 		//for testing purposes set the same weight for the set members
 		for (ConceptSet conceptSet : parentConcept.getConceptSets()) {
 			conceptSet.setSortWeight(2.0);
 		}
 		service.saveConcept(parentConcept);
 		
-		int expectedMemberCount = service.getConceptByUuid(conceptUuid).getConceptSets().size();
+		int expectedMemberCount = service.getConceptByUuid(CONCEPT_UUID).getConceptSets().size();
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + CONCEPT_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
@@ -679,8 +665,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldFindConceptsBySource() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
-		        "Some Standardized Terminology"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source", "Some Standardized Terminology"))));
 		List<Object> results = Util.getResultsList(response);
 		
 		assertThat(results.size(), is(6));
@@ -688,8 +673,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldFindConceptsBySourceUuid() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
-		        "00001827-639f-4cb4-961f-1e025bf80000"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("source", "00001827-639f-4cb4-961f-1e025bf80000"))));
 		List<Object> results = Util.getResultsList(response);
 		
 		assertThat(results.size(), is(6));
@@ -741,8 +725,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		        "level1"))));
 		
 		List<Object> results = Util.getResultsList(level1);
-		assertThatLevelsIncluded((Map<String, Object>) results.get(0), conceptLevel2, conceptLevel3, conceptLevel4,
-		    conceptLevel5);
+		assertThatLevelsIncluded((Map<String, Object>) results.get(0), conceptLevel2, conceptLevel3, conceptLevel4, conceptLevel5);
 	}
 	
 	@Test(expected = ConversionException.class)
@@ -798,6 +781,5 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Concept concept = new Concept();
 		concept.addName(new ConceptName(name, Locale.ENGLISH));
 		return concept;
-	}
-	
+	}	
 }

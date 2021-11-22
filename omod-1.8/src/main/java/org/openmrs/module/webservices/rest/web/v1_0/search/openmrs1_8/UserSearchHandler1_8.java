@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -25,10 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Allows for finding users by username
  */
@@ -41,8 +41,7 @@ public class UserSearchHandler1_8 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/user", Arrays.asList(
 	    "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*"),
-	        new SearchQuery.Builder(
-	                "Allows you to find users by username").withRequiredParameters("username").build());
+	        new SearchQuery.Builder("Allows you to find users by username").withRequiredParameters("username").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -67,6 +66,5 @@ public class UserSearchHandler1_8 implements SearchHandler {
 		List<UserAndPassword1_8> users = new ArrayList<UserAndPassword1_8>();
 		users.add(new UserAndPassword1_8(user));
 		return new NeedsPaging<UserAndPassword1_8>(users, context);
-	}
-	
+	}	
 }

@@ -54,6 +54,5 @@ public class CohortResource2_1Test extends BaseDelegatingResourceTest<CohortReso
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants2_1.COHORT_UUID;
-	}
-	
+	}	
 }

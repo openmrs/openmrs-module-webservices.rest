@@ -9,24 +9,19 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ProviderController2_0Test extends MainResourceControllerTest {
 	
@@ -37,7 +32,6 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 	
 	@Test
 	public void doGetAll_shouldProcessIncludeAllParameter() throws Exception {
-
 		{
 			// setup
 			MockHttpServletRequest request = newGetRequest(getURI());
@@ -58,14 +52,11 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			Object allProviders = (deserialize(handle(request)).get("results"));
-			List<Object> allProvidersUuid = ((List<Map>) allProviders).stream().map(
-					p -> p.get("uuid")
+			List<Object> allProvidersUuid = ((List<Map>) allProviders).stream().map(p -> p.get("uuid")
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=true' same as Java API
-			Assert.assertArrayEquals(
-					Context.getProviderService().getAllProviders(true).stream()
-							.map(BaseOpenmrsObject::getUuid).toArray(),
+			Assert.assertArrayEquals(Context.getProviderService().getAllProviders(true).stream().map(BaseOpenmrsObject::getUuid).toArray(),
 					allProvidersUuid.toArray()
 			);
 		}
@@ -77,23 +68,18 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			Object allNonRetired = (deserialize(handle(request)).get("results"));
-			List<Object> allNonRetiredUuid = ((List<Map>) allNonRetired).stream().map(
-					p -> p.get("uuid")
+			List<Object> allNonRetiredUuid = ((List<Map>) allNonRetired).stream().map(p -> p.get("uuid")
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
-					Context.getProviderService().getAllProviders(false).stream()
-							.map(BaseOpenmrsObject::getUuid).toArray(),
+			Assert.assertArrayEquals(Context.getProviderService().getAllProviders(false).stream().map(BaseOpenmrsObject::getUuid).toArray(),
 					allNonRetiredUuid.toArray()
 			);
 		}
-
 	}
 	
 	@Test
 	public void doSearch_shouldProcessIncludeAll() throws Exception {
-
 		String providerName = "test";
 
 		{
@@ -103,19 +89,16 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			List<?> allProvidersDef = deserialize(handle(request)).get("results");
-			List<Object> allUuidDef = ((List<Map>) allProvidersDef).stream().map(
-					p -> p.get("uuid")
+			List<Object> allUuidDef = ((List<Map>) allProvidersDef).stream().map(p -> p.get("uuid")
 			).collect(Collectors.toList());
 
 			// Verify: no retired by default
-			Assert.assertArrayEquals(
-					Context.getProviderService().getProviders(providerName, null, null, null, false)
-							.stream().map(
-							BaseOpenmrsObject::getUuid
-					).toArray(),
+			Assert.assertArrayEquals(Context.getProviderService().getProviders(providerName, null, null, null, false)
+				    .stream().map(BaseOpenmrsObject::getUuid).toArray(),
 					allUuidDef.toArray()
 			);
 		}
+		
 		{
 			// Setup
 			MockHttpServletRequest request = newGetRequest(getURI());
@@ -124,16 +107,12 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			List<?> allNonRetired = deserialize(handle(request)).get("results");
-			List<Object> nonRetiredUuids = ((List<Map>) allNonRetired).stream().map(
-					p -> p.get("uuid")
+			List<Object> nonRetiredUuids = ((List<Map>) allNonRetired).stream().map(p -> p.get("uuid")
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
-					Context.getProviderService().getProviders(providerName, null, null, null, false)
-							.stream().map(
-							BaseOpenmrsObject::getUuid
-					).toArray(),
+			Assert.assertArrayEquals(Context.getProviderService().getProviders(providerName, null, null, null, false)
+				    .stream().map(BaseOpenmrsObject::getUuid).toArray(),
 					nonRetiredUuids.toArray()
 			);
 		}
@@ -146,16 +125,12 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			List<?> allProviders = deserialize(handle(request)).get("results");
-			List<Object> allUuids = ((List<Map>) allProviders).stream().map(
-					p -> p.get("uuid")
+			List<Object> allUuids = ((List<Map>) allProviders).stream().map(p -> p.get("uuid")
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=true' same as Java API
-			Assert.assertArrayEquals(
-					Context.getProviderService().getProviders(providerName, null, null, null, true)
-							.stream().map(
-							BaseOpenmrsObject::getUuid
-					).toArray(),
+			Assert.assertArrayEquals(Context.getProviderService().getProviders(providerName, null, null, null, true)
+				    .stream().map(BaseOpenmrsObject::getUuid).toArray(),
 					allUuids.toArray()
 			);
 		}

@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -46,23 +47,23 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		User user = service.getUserByUuid(RestTestConstants1_8.USER_UUID);
 		assertNotNull(user);
 		assertNotEquals(user, Context.getAuthenticatedUser());
-		final String username = user.getUsername();
-		final String newPassword = "SomeOtherPassword123";
+		final String USER_NAME = user.getUsername();
+		final String NEW_PASSWORD = "SomeOtherPassword123";
 		
 		ContextAuthenticationException exception = null;
 		try {
-			Context.authenticate(username, newPassword);
+			Context.authenticate(USER_NAME, NEW_PASSWORD);
 		}
 		catch (ContextAuthenticationException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
-		assertEquals("Invalid username and/or password: " + username, exception.getMessage());
+		assertEquals("Invalid username and/or password: " + USER_NAME, exception.getMessage());
 		
-		handle(newPostRequest("password" + "/" + user.getUuid(), "{\"newPassword\":\"" + newPassword + "\"}"));
+		handle(newPostRequest("password" + "/" + user.getUuid(), "{\"newPassword\":\"" + NEW_PASSWORD + "\"}"));
 		Context.logout();
 		
-		Context.authenticate(username, newPassword);
+		Context.authenticate(USER_NAME, NEW_PASSWORD);
 		assertEquals(user, Context.getAuthenticatedUser());
 	}
 	
@@ -132,8 +133,7 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		expectedException.expectMessage("Privileges required: [Edit User Passwords]");
 		
 		handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID, "{\"newPassword\":\"" + newPassword
-		        + "\"}"));
-		
+		        + "\"}"));	
 	}
 	
 	@Test
@@ -149,14 +149,13 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	
 	private User setUpUser(String userName) throws Exception {
 		User user = service.getUserByUsername(userName);
-		final String newPassword = "SomeOtherPassword123";
+		final String NEW_PASSWORD = "SomeOtherPassword123";
 		
-		service.changePassword(user, newPassword);
+		service.changePassword(user, NEW_PASSWORD);
 		
 		Context.logout();
 		
-		Context.authenticate(userName, newPassword);
+		Context.authenticate(userName, NEW_PASSWORD);
 		return Context.getAuthenticatedUser();
-	}
-	
+	}	
 }

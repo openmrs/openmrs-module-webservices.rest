@@ -10,6 +10,7 @@
 package org.openmrs.module.unrelatedtest.rest.resource;
 
 import io.swagger.models.Model;
+
 import org.openmrs.module.unrelatedtest.UnrelatedGenericChild;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RestConstants;

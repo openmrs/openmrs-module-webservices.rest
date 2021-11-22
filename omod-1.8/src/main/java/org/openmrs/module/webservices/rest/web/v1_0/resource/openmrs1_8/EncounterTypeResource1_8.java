@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
+
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -45,8 +46,7 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .required("description");
+		return ((ModelImpl) super.getCREATEModel(rep)).required("description");
 	}
 	
 	/**
@@ -97,8 +97,7 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 	 */
 	@Override
 	protected NeedsPaging<EncounterType> doGetAll(RequestContext context) {
-		return new NeedsPaging<EncounterType>(Context.getEncounterService().getAllEncounterTypes(context.getIncludeAll()),
-		        context);
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().getAllEncounterTypes(context.getIncludeAll()), context);
 	}
 	
 	/**
@@ -106,7 +105,6 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 	 */
 	@Override
 	protected NeedsPaging<EncounterType> doSearch(RequestContext context) {
-		return new NeedsPaging<EncounterType>(Context.getEncounterService().findEncounterTypes(context.getParameter("q")),
-		        context);
+		return new NeedsPaging<EncounterType>(Context.getEncounterService().findEncounterTypes(context.getParameter("q")), context);
 	}
 }

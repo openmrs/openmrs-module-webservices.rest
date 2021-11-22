@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,9 +25,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class OrderSetMemberController1_12Test extends MainResourceControllerTest {
 	
@@ -78,7 +78,6 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldShowAllOrderSetMembersForAnOrderSet() throws Exception {
-		
 		OrderSet testOrderSet = Context.getOrderSetService().getOrderSetByUuid(orderSetUuid);
 		OrderSetMember testOrderSetMember = new OrderSetMember();
 		testOrderSet.addOrderSetMember(testOrderSetMember);
@@ -87,8 +86,7 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		Context.flushSession();
 		Context.clearSession();
 		
-		List<OrderSetMember> orderSetMembers = Context.getOrderSetService().getOrderSetByUuid(orderSetUuid)
-		        .getOrderSetMembers();
+		List<OrderSetMember> orderSetMembers = Context.getOrderSetService().getOrderSetByUuid(orderSetUuid).getOrderSetMembers();
 		
 		for (OrderSetMember orderSetMember : orderSetMembers) {
 			Assert.assertNotNull(orderSetMember.getOrderSetMemberId());
@@ -140,6 +138,5 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		
 		int after = orderSetService.getOrderSetByUuid(orderSetUuid).getOrderSetMembers().size();
 		Assert.assertEquals(before - 1, after);
-	}
-	
+	}	
 }

@@ -100,18 +100,18 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldEditAPatientIdentifier() throws Exception {
-		final String newLocationUuid = RestTestConstants1_8.LOCATION_UUID;
+		final String NEW_LOCATION_UUID = RestTestConstants1_8.LOCATION_UUID;
 		PatientIdentifier patientIdentifierType = service.getPatientIdentifierByUuid(getUuid());
-		assertFalse(newLocationUuid.equals(patientIdentifierType.getLocation().getUuid()));
+		assertFalse(NEW_LOCATION_UUID.equals(patientIdentifierType.getLocation().getUuid()));
 		SimpleObject patientIdentifier = new SimpleObject();
-		patientIdentifier.add("location", newLocationUuid);
+		patientIdentifier.add("location", NEW_LOCATION_UUID);
 		
 		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newLocationUuid, patientIdentifierType.getLocation().getUuid());
+		assertEquals(NEW_LOCATION_UUID, patientIdentifierType.getLocation().getUuid());
 	}
 	
 	@Test
@@ -146,19 +146,19 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		assertEquals(false, service.getPatientIdentifierByUuid(getUuid()).isVoided());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getPatientIdentifierByUuid(getUuid()).isVoided());
-		assertEquals(reason, service.getPatientIdentifierByUuid(getUuid()).getVoidReason());
+		assertEquals(REASON, service.getPatientIdentifierByUuid(getUuid()).getVoidReason());
 	}
 	
 	@Test
 	public void shouldListAllPatientIdentifiersWithVoidedIdentifiersForAPatient() throws Exception {
 		assertEquals(false, service.getPatientIdentifierByUuid(getUuid()).isVoided());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getPatientIdentifierByUuid(getUuid()).isVoided());
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(

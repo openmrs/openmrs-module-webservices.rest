@@ -14,6 +14,10 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.TaskAction;
@@ -33,9 +37,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.TaskDefinition;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Resource(name = RestConstants.VERSION_1 + "/taskaction", supportedClass = TaskAction.class, supportedOpenmrsVersions = {
         "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -129,8 +130,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		}
 		catch (SchedulerException e) {
 			throw new APIException("Errors occurred while rescheduling all tasks", e);
-		}
-		
+		}	
 	}
 	
 	private void deleteTasks(Collection<TaskDefinition> taskDefs) {
@@ -214,5 +214,4 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 	public Boolean isAllModules(TaskAction action) {
 		return action.isAllTasks();
 	}
-	
 }

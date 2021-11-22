@@ -150,5 +150,4 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		int after = service.getConceptByUuid(conceptUuid).getDescriptions().size();
 		Assert.assertEquals(before - 1, after);
 	}
-	
 }

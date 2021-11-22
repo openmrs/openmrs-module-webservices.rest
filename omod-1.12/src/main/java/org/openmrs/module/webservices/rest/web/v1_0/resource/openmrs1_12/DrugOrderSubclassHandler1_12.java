@@ -30,11 +30,11 @@ public class DrugOrderSubclassHandler1_12 extends DrugOrderSubclassHandler1_10 {
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		DelegatingResourceDescription d = super.getRepresentationDescription(rep);
+		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			d.addProperty("drugNonCoded");
+			description.addProperty("drugNonCoded");
 		}
-		return d;
+		return description;
 	}
 	
 	/**
@@ -42,8 +42,8 @@ public class DrugOrderSubclassHandler1_12 extends DrugOrderSubclassHandler1_10 {
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = super.getCreatableProperties();
-		d.addProperty("drugNonCoded");
-		return d;
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("drugNonCoded");
+		return description;
 	}
 }

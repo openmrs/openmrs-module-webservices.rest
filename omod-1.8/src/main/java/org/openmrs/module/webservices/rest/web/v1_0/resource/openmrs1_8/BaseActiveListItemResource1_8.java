@@ -15,6 +15,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.activelist.ActiveListItem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -43,10 +44,9 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		        
 		        .required("person").required("startDate");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"))
-			        .property("startObs", new RefProperty("#/definitions/ObsCreate"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsCreate"));
+			model.property("person", new RefProperty("#/definitions/PersonCreate"))
+			     .property("startObs", new RefProperty("#/definitions/ObsCreate"))
+			     .property("stopObs", new RefProperty("#/definitions/ObsCreate"));
 		}
 		return model;
 	}
@@ -99,17 +99,15 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		        .property("comments", new StringProperty())
 		        .property("voided", new BooleanProperty());
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGet"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
+			model.property("person", new RefProperty("#/definitions/PersonGet"))
+			     .property("activeListType", new StringProperty()) //FIXME type
+			     .property("startObs", new RefProperty("#/definitions/ObsGet"))
+			     .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGetRef"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
+			model.property("person", new RefProperty("#/definitions/PersonGetRef"))
+			     .property("activeListType", new StringProperty()) //FIXME type
+			     .property("startObs", new RefProperty("#/definitions/ObsGetRef"))
+			     .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
 		}
 		return model;
 	}
@@ -173,5 +171,4 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 	// TODO: add these lines into a "stop" method call.  RESTWS-296
 	//delegate.setComments("Stopped from a REST web service call");
 	//Context.getActiveListService().removeActiveListItem(delegate, null);
-	
 }

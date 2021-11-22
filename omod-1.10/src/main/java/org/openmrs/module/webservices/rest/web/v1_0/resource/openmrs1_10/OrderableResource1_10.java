@@ -78,8 +78,7 @@ public class OrderableResource1_10 extends BaseDelegatingResource<ConceptSearchR
 				if (cc != null) {
 					if (conceptClasses == null) {
 						conceptClasses = new ArrayList<ConceptClass>();
-					}
-					
+					}		
 					conceptClasses.add(cc);
 				}
 			}
@@ -181,13 +180,12 @@ public class OrderableResource1_10 extends BaseDelegatingResource<ConceptSearchR
 			description.addProperty("word");
 			description.addProperty("transientWeight");
 		}
-		
 		return description;
 	}
 	
 	@PropertyGetter("display")
-	public String getDisplayString(ConceptSearchResult csr) {
-		ConceptName cn = csr.getConcept().getName();
-		return cn == null ? null : cn.getName();
+	public String getDisplayString(ConceptSearchResult conceptSearchResult) {
+		ConceptName conceptName = conceptSearchResult.getConcept().getName();
+		return conceptName == null ? null : conceptName.getName();
 	}
 }

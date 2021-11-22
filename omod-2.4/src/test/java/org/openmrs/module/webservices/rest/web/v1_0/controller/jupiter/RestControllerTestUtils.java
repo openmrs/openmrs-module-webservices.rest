@@ -11,6 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -22,9 +26,6 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
@@ -202,7 +203,6 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 	 * @throws TransformerException
 	 */
 	protected void printXML(String xml) throws TransformerException {
-
 		Source xmlInput = new StreamSource(new StringReader(xml));
 		StringWriter stringWriter = new StringWriter();
 

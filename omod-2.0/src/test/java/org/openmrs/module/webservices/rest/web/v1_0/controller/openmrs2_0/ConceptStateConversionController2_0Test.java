@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -20,10 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class ConceptStateConversionController2_0Test extends MainResourceControllerTest {
 
@@ -87,8 +87,7 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 		Context.flushSession();
 
-		String json =
-				"{\"concept\": \"" + concept.getUuid() + "\",\"programWorkflow\": \"" + workflow.getUuid()
+		String json = "{\"concept\": \"" + concept.getUuid() + "\",\"programWorkflow\": \"" + workflow.getUuid()
 						+ "\",\"programWorkflowState\": \"" + state.getUuid() + "\"}";
 
 		SimpleObject newStateConversion = deserialize(handle(newPostRequest(getURI(), json)));

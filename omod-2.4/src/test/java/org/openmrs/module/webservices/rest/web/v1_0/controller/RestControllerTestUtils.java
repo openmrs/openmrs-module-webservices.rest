@@ -199,7 +199,6 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 	 * @throws TransformerException
 	 */
 	protected void printXML(String xml) throws TransformerException {
-
 		Source xmlInput = new StreamSource(new StringReader(xml));
 		StringWriter stringWriter = new StringWriter();
 

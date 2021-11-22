@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -70,13 +71,12 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("hl7Abbreviation", new StringProperty())
-			        .property("retired", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("name", new StringProperty())
+			     .property("description", new StringProperty())
+			     .property("hl7Abbreviation", new StringProperty())
+			     .property("retired", new BooleanProperty());
 		}
 		return model;
 	}
@@ -142,8 +142,6 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 	 */
 	@Override
 	protected NeedsPaging<ConceptDatatype> doGetAll(RequestContext context) {
-		return new NeedsPaging<ConceptDatatype>(Context.getConceptService().getAllConceptDatatypes(context.getIncludeAll()),
-		        context);
-	}
-	
+		return new NeedsPaging<ConceptDatatype>(Context.getConceptService().getAllConceptDatatypes(context.getIncludeAll()), context);
+	}	
 }

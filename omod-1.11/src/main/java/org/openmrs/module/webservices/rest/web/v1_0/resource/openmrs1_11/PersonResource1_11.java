@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
+
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;

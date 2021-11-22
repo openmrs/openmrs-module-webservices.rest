@@ -15,6 +15,10 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -34,9 +38,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sub-resource for {@link AlertRecipient}
@@ -106,28 +107,24 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 				.property(DISPLAY, new StringProperty());
 
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGetRef"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
+			modelImpl.property(RECIPIENT, new RefProperty("#/definitions/UserGetRef"))
+					 .property(ALERT_READ, new BooleanProperty())
+					 .property(DATE_CHANGED, new DateTimeProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGet"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
+			modelImpl.property(RECIPIENT, new RefProperty("#/definitions/UserGet"))
+					 .property(ALERT_READ, new BooleanProperty())
+					 .property(DATE_CHANGED, new DateTimeProperty());
 		}
 		return modelImpl;
 	}
 
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl modelImpl = new ModelImpl()
-				.property(RECIPIENT, new StringProperty().example("uuid"));
+		ModelImpl modelImpl = new ModelImpl().property(RECIPIENT, new StringProperty().example("uuid"));
 
 		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserCreate"));
+			modelImpl.property(RECIPIENT, new RefProperty("#/definitions/UserCreate"));
 		}
 		return modelImpl;
 	}

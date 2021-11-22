@@ -15,6 +15,9 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.PatientService;
@@ -32,8 +35,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "1.8.*, 1.9.*" }, order = 1)
 public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<PatientProgram> {
@@ -115,38 +116,35 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("patient");
-		d.addRequiredProperty("program");
-		d.addRequiredProperty("dateEnrolled");
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("patient");
+		description.addRequiredProperty("program");
+		description.addRequiredProperty("dateEnrolled");
 		
-		d.addProperty("dateCompleted");
-		d.addProperty("location");
-		d.addProperty("voided");
-		return d;
+		description.addProperty("dateCompleted");
+		description.addProperty("location");
+		description.addProperty("voided");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("dateEnrolled", new DateProperty())
-			        .property("dateCompleted", new DateProperty())
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("dateEnrolled", new DateProperty())
+			     .property("dateCompleted", new DateProperty())
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("program", new RefProperty("#/definitions/ProgramGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"));
+			model.property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			     .property("program", new RefProperty("#/definitions/ProgramGetRef"))
+			     .property("location", new RefProperty("#/definitions/LocationGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("program", new RefProperty("#/definitions/ProgramGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"));
+			model.property("patient", new RefProperty("#/definitions/PatientGet"))
+			     .property("program", new RefProperty("#/definitions/ProgramGet"))
+			     .property("location", new RefProperty("#/definitions/LocationGet"));
 		}
 		return model;
 	}
@@ -163,10 +161,9 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		        
 		        .required("patient").required("program").required("dateEnrolled");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("program", new RefProperty("#/definitions/ProgramCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"));
+			model.property("patient", new RefProperty("#/definitions/PatientCreate"))
+			     .property("program", new RefProperty("#/definitions/ProgramCreate"))
+			     .property("location", new RefProperty("#/definitions/LocationCreate"));
 		}
 		return model;
 	}

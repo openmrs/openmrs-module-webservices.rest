@@ -9,14 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DoubleProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.api.context.Context;
@@ -89,19 +90,16 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("strength", new DoubleProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("strength", new DoubleProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("units", new RefProperty("#/definitions/ConceptGetRef"));
+			modelImpl.property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
+			         .property("units", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("ingredient", new RefProperty("#/definitions/ConceptGet"))
-			        .property("units", new RefProperty("#/definitions/ConceptGet"));
+			modelImpl.property("ingredient", new RefProperty("#/definitions/ConceptGet"))
+			         .property("units", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return modelImpl;
 	}
@@ -170,8 +168,8 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public DrugIngredient save(DrugIngredient newIngredient) {
 		// make sure that the ingredient has actually been added to the drug
 		boolean needToAdd = true;
-		for (DrugIngredient di : newIngredient.getDrug().getIngredients()) {
-			if (di.equals(newIngredient)) {
+		for (DrugIngredient drugIngredient : newIngredient.getDrug().getIngredients()) {
+			if (drugIngredient.equals(newIngredient)) {
 				needToAdd = false;
 				break;
 			}

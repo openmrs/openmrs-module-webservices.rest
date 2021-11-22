@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.MapProperty;
+import io.swagger.models.properties.ObjectProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,14 +47,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for User, supporting standard CRUD operations
@@ -140,24 +140,21 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 		//FIXME check valid supportedClass
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("username", new StringProperty())
-			        .property("systemId", new StringProperty())
-			        .property("userProperties", new MapProperty()); //FIXME type
+			model.property("username", new StringProperty())
+			     .property("systemId", new StringProperty())
+			     .property("userProperties", new MapProperty()); //FIXME type
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+			model.property("person", new RefProperty("#/definitions/PersonGetRef"))
+			     .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
+			     .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
-			        .property("secretQuestion", new StringProperty());
+			model.property("person", new RefProperty("#/definitions/PersonGet"))
+			     .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
+			     .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+			     .property("allRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+			     .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
+			     .property("secretQuestion", new StringProperty());
 		}
 		return model;
 	}
@@ -249,28 +246,28 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	protected NeedsPaging<UserAndPassword1_8> doSearch(RequestContext context) {
 		// determine roles 
 		List<Role> foundRoles = null;
-		final String requestedRolesParameter = context.getParameter(PARAMETER_ROLES);
-		if (requestedRolesParameter != null) {
-			foundRoles = getRequestedRoles(requestedRolesParameter);
+		final String REQUEST_ROLES_PARAMETER = context.getParameter(PARAMETER_ROLES);
+		if (REQUEST_ROLES_PARAMETER != null) {
+			foundRoles = getRequestedRoles(REQUEST_ROLES_PARAMETER);
 		}
 		
 		// forward query
-		final List<User> users;
+		final List<User> USERS;
 		if (isNoRequestedRoleFound(foundRoles)) {
 			// for an empty role list there shall be no results
-			users = Collections.emptyList();
+			USERS = Collections.emptyList();
 		} else {
 			// Note: a null value for roles is interpreted as 'no restriction to roles'
-			users = Context.getUserService().getUsers(context.getParameter("q"), foundRoles, context.getIncludeAll());
+			USERS = Context.getUserService().getUsers(context.getParameter("q"), foundRoles, context.getIncludeAll());
 		}
 		
 		// convert to UserAndPassword class
-		final List<UserAndPassword1_8> usersResult = new ArrayList<UserAndPassword1_8>();
-		for (User user : users) {
-			usersResult.add(new UserAndPassword1_8(user));
+		final List<UserAndPassword1_8> USERS_RESULT = new ArrayList<UserAndPassword1_8>();
+		for (User user : USERS) {
+			USERS_RESULT.add(new UserAndPassword1_8(user));
 		}
 		
-		return new NeedsPaging<UserAndPassword1_8>(usersResult, context);
+		return new NeedsPaging<UserAndPassword1_8>(USERS_RESULT, context);
 	}
 	
 	private boolean isNoRequestedRoleFound(List<Role> roles) {
@@ -283,10 +280,10 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 *         found.
 	 */
 	private List<Role> getRequestedRoles(final String rolesParameter) {
-		final List<Role> result = new ArrayList<Role>();
+		final List<Role> RESULT = new ArrayList<Role>();
 		
-		final List<String> roleStrings = Arrays.asList(StringUtils.split(rolesParameter, ","));
-		for (String roleString : roleStrings) {
+		final List<String> ROLE_STRINGS = Arrays.asList(StringUtils.split(rolesParameter, ","));
+		for (String roleString : ROLE_STRINGS) {
 			// try with uuid
 			Role role = Context.getUserService().getRoleByUuid(roleString);
 			
@@ -297,10 +294,10 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 			
 			// add if found
 			if (role != null) {
-				result.add(role);
+				RESULT.add(role);
 			}
 		}
-		return result;
+		return RESULT;
 	}
 	
 	/**
@@ -389,8 +386,8 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	@PropertyGetter("display")
 	public String getDisplayString(UserAndPassword1_8 user) {
 		StringBuilder ret = new StringBuilder();
-		User u = user.getUser();
-		ret.append(StringUtils.isNotEmpty(u.getUsername()) ? u.getUsername() : u.getSystemId());
+		User object = user.getUser();
+		ret.append(StringUtils.isNotEmpty(object.getUsername()) ? object.getUsername() : object.getSystemId());
 		return ret.toString();
 	}
 	

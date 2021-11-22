@@ -62,5 +62,4 @@ public class OrderGroupResource1_12Test extends BaseDelegatingResourceTest<Order
 		assertPropPresent("orderSet");
 		assertPropPresent("auditInfo");
 	}
-	
 }

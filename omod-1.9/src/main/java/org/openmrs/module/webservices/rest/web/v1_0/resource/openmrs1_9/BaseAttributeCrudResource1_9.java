@@ -9,13 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.Arrays;
-import java.util.List;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
@@ -121,12 +122,11 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("attributeType", new StringProperty()) //FIXME type
-			        .property("value", new StringProperty()) //FIXME type
-			        .property("voided", new BooleanProperty());
+			model.property("display", new StringProperty())
+			     .property("uuid", new StringProperty())
+			     .property("attributeType", new StringProperty()) //FIXME type
+			     .property("value", new StringProperty()) //FIXME type
+			     .property("voided", new BooleanProperty());
 		}
 		return model;
 	}

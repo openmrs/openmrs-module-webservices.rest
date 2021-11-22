@@ -13,7 +13,9 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.StringProperty;
-import liquibase.changelog.ChangeSet;
+
+import java.util.List;
+
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,8 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.util.DatabaseUpdater;
 
-import java.util.ArrayList;
-import java.util.List;
+import liquibase.changelog.ChangeSet;
 
 /**
  * {@link Resource} for {@link DatabaseUpdater.OpenMRSChangeSet}, supporting Read operation.
@@ -120,25 +121,22 @@ public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<Da
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class));
+			model.property(UUID, new StringProperty())
+				 .property(DISPLAY, new StringProperty())
+				 .property(AUTHOR, new StringProperty())
+				 .property(DESCRIPTION, new StringProperty())
+				 .property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class));
 		} else if (rep instanceof FullRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class))
-					.property(COMMENTS, new StringProperty())
-					.property(RAN_DATE, new DateProperty());
+			model.property(UUID, new StringProperty())
+				 .property(DISPLAY, new StringProperty())
+				 .property(AUTHOR, new StringProperty())
+				 .property(DESCRIPTION, new StringProperty())
+				 .property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class))
+				 .property(COMMENTS, new StringProperty())
+				 .property(RAN_DATE, new DateProperty());
 		} else if (rep instanceof RefRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty());
+			model.property(UUID, new StringProperty())
+				 .property(DISPLAY, new StringProperty());
 		}
 		return model;
 	}
@@ -163,5 +161,3 @@ public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<Da
 		return getDatabaseChanges().stream().filter(e -> e.getId().equals(id)).findFirst().orElse(null);
 	}
 }
-
-

@@ -57,5 +57,4 @@ public class HL7MessageResource1_8Test extends BaseDelegatingResourceTest<HL7Mes
 	public String getUuidProperty() {
 		return getObject().getUuid();
 	}
-	
 }

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -23,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests functionality of OrderSet CRUD by MainResourceController
@@ -64,8 +65,7 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldListAllUnRetiredOrderSets() throws Exception {
-		
+	public void shouldListAllUnRetiredOrderSets() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -74,8 +74,7 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetAnOrderSetByUuid() throws Exception {
-		
+	public void shouldGetAnOrderSetByUuid() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -129,9 +128,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditAnOrderSet() throws Exception {
-		
-		final String editedName = "OrderSet Edited";
-		String json = "{ \"name\":\"" + editedName + "\" }";
+		final String EDITED_NAME = "OrderSet Edited";
+		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
@@ -139,7 +137,7 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		OrderSet editedOrderSet = orderSetService.getOrderSetByUuid(getUuid());
 		
 		Assert.assertNotNull(editedOrderSet);
-		Assert.assertEquals(editedName, editedOrderSet.getName());
+		Assert.assertEquals(EDITED_NAME, editedOrderSet.getName());
 	}
 	
 	@Test
@@ -156,5 +154,4 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		Assert.assertTrue(retiredOrderSet.isRetired());
 		Assert.assertEquals("random reason", retiredOrderSet.getRetireReason());
 	}
-	
 }

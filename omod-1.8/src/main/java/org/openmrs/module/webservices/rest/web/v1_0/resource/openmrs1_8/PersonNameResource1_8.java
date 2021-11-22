@@ -13,6 +13,12 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -30,11 +36,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * {@link Resource} for PersonNames, supporting standard CRUD operations
@@ -109,22 +110,20 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("givenName", new StringProperty())
-			        .property("middleName", new StringProperty())
-			        .property("familyName", new StringProperty())
-			        .property("familyName2", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			model.property("display", new StringProperty())
+			     .property("uuid", new StringProperty())
+			     .property("givenName", new StringProperty())
+			     .property("middleName", new StringProperty())
+			     .property("familyName", new StringProperty())
+			     .property("familyName2", new StringProperty())
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("preferred", new BooleanProperty())
-			        .property("prefix", new StringProperty())
-			        .property("familyNamePrefix", new StringProperty())
-			        .property("familyNameSuffix", new StringProperty())
-			        .property("degree", new StringProperty());
+			model.property("preferred", new BooleanProperty())
+			     .property("prefix", new StringProperty())
+			     .property("familyNamePrefix", new StringProperty())
+			     .property("familyNameSuffix", new StringProperty())
+			     .property("degree", new StringProperty());
 		}
 		return model;
 	}
@@ -193,12 +192,12 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(PersonName pn, String reason, RequestContext context) throws ResponseException {
-		pn.setVoided(true);
-		pn.setVoidedBy(Context.getAuthenticatedUser());
-		pn.setVoidReason(reason);
-		pn.setDateVoided(new Date());
-		Context.getPersonService().savePerson(pn.getPerson());
+	public void delete(PersonName personName, String reason, RequestContext context) throws ResponseException {
+		personName.setVoided(true);
+		personName.setVoidedBy(Context.getAuthenticatedUser());
+		personName.setVoidReason(reason);
+		personName.setDateVoided(new Date());
+		Context.getPersonService().savePerson(personName.getPerson());
 	}
 	
 	/**
@@ -255,7 +254,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 				return (String) format.invoke(nameTemplate, personName);
 			}
 		}
-		catch (Exception e) {
+		catch (Exception exception) {
 			// fall through to just returning full name if no format method found or format fails
 		}
 		

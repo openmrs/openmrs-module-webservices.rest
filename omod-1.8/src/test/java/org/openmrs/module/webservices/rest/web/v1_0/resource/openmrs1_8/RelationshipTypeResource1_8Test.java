@@ -77,6 +77,5 @@ public class RelationshipTypeResource1_8Test extends BaseDelegatingResourceTest<
 		
 		// This line should not throw exception.
 		getResource().create(relationshipTypeSimpleObject, new RequestContext());
-	}
-	
+	}	
 }

@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,11 +28,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-
-import javax.servlet.http.HttpServletResponse;
 
 public class ClobDatatypeStorageControllerTest extends MainResourceControllerTest {
 	
@@ -63,21 +63,18 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 	
 	@Test
 	public void shouldReturnClobDataAsFileByUuid() throws Exception {
-		ClobDatatypeStorage clob = datatypeService
-		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
+		ClobDatatypeStorage clob = datatypeService.getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 		
 		Assert.assertNotNull(clob);
 		int size = clob.getValue().getBytes().length;
-		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
-		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/" + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
 		
 		Assert.assertEquals(size, response.getContentAsByteArray().length);
 	}
 	
 	@Test
 	public void shouldDeleteAnExistingClobData() throws Exception {
-		ClobDatatypeStorage clob = datatypeService
-		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
+		ClobDatatypeStorage clob = datatypeService.getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 		
 		Assert.assertNotNull(clob);
 		

@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptReferenceTerm;
@@ -28,10 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Returns concepts which map to term (uuid)
  */
@@ -48,9 +48,7 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("byTerm", RestConstants.VERSION_1 + "/concept",
 	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-	        new SearchQuery.Builder(
-	                "Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters(
-	            "term").build());
+	        new SearchQuery.Builder("Allows you to find concepts which map to term, uuid of term given as input").withRequiredParameters("term").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -85,6 +83,5 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 			}
 			return new NeedsPaging<Concept>(concepts, context);
 		}
-	}
-	
+	}	
 }

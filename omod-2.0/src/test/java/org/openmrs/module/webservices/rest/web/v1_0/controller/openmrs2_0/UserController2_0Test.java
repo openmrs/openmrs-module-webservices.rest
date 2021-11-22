@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,10 +30,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class UserController2_0Test extends MainResourceControllerTest {
 	
@@ -52,7 +47,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createUser_shouldCreateANewUser() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
@@ -79,7 +73,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createUser_shouldCreateANewUserWithRoles() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
@@ -111,8 +104,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getUser_shouldGetADefaultRepresentationOfAUser() throws Exception {
-		
-		final String userName = "butch";
+		final String USER_NAME = "butch";
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
@@ -123,7 +115,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		
-		Assert.assertEquals(userName, PropertyUtils.getProperty(result, "username"));
+		Assert.assertEquals(USER_NAME, PropertyUtils.getProperty(result, "username"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
@@ -134,7 +126,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getUser_shouldGetAFullRepresentationOfAPatient() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		
@@ -154,7 +145,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void updateUser_shouldChangeAPropertyOnAUser() throws Exception {
-		
 		User user = service.getUserByUuid(getUuid());
 		Assert.assertNotNull(user);
 		Assert.assertFalse("5-6".equals(user.getSystemId()));
@@ -178,7 +168,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void retireUser_shouldRetireAUser() throws Exception {
-		
 		User user = service.getUserByUuid(getUuid());
 		Assert.assertFalse(user.isRetired());
 		
@@ -199,7 +188,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void findUsers_shouldReturnNoResultsIfThereAreNoMatchingUsers() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "foo-bar-baz");
 		
@@ -217,7 +205,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void findUsers_shouldFindMatchingUsers() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "but");
 		
@@ -245,7 +232,6 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getUser_shouldListAllUsers() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		

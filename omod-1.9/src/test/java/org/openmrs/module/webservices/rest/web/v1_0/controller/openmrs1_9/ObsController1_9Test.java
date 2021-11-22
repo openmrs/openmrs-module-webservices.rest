@@ -9,7 +9,21 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import javax.xml.bind.DatatypeConverter;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -38,19 +52,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
 
@@ -99,7 +100,6 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		obs = obsService.getObsByUuid(getUuid());
 		Assert.assertFalse(obs.isVoided());
 		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-
 	}
 
 	/**
@@ -134,7 +134,6 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 	@Test
 	public void searchByEncounter_shouldGetVoidedObsIfIncludeAllIsTrue() throws Exception {
-
 		executeDataSet("encounterWithObsGroup1_9.xml");
 
 		final String ENCOUNTER_UUID = "62967e68-96bb-11e0-8d6b-9b9415a91465";
@@ -168,23 +167,23 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 	@Test
 	public void shouldSubmitProperValueCodedWhenBooleanConceptUuidIsPassedAsValue() throws Exception {
-		final String yesConceptUuid = "b055abd8-a420-4a11-8b98-02ee170a7b54";
-		final String yesConceptId = "7";
-		final String noConceptUuid = "934d8ef1-ea43-4f98-906e-dd03d5faaeb4";
-		final String noConceptId = "8";
+		final String YES_CONCEPT_UUID = "b055abd8-a420-4a11-8b98-02ee170a7b54";
+		final String YES_CONCEPT_ID= "7";
+		final String NO_CONCEPT_UUID = "934d8ef1-ea43-4f98-906e-dd03d5faaeb4";
+		final String NO_CONCEPT_ID = "8";
 
 		AdministrationService as = Context.getAdministrationService();
 
-		as.saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT, yesConceptId));
-		as.saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_FALSE_CONCEPT, noConceptId));
+		as.saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT, YES_CONCEPT_ID));
+		as.saveGlobalProperty(new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_FALSE_CONCEPT, NO_CONCEPT_ID));
 
 		long before = getAllCount();
 
-		String yesPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," + "\"value\":\"" + yesConceptUuid
+		String yesPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," + "\"value\":\"" + YES_CONCEPT_UUID
 		        + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
 		        + "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
 
-		String noPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," + "\"value\":\"" + noConceptUuid
+		String noPayload = "{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\"," + "\"value\":\"" + NO_CONCEPT_UUID
 		        + "\",\"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
 		        + "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
 
@@ -195,8 +194,8 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		Object noValue = PropertyUtils.getProperty(noCreated, "value");
 
 		Assert.assertEquals(before + 2, getAllCount());
-		Assert.assertEquals(yesConceptUuid, PropertyUtils.getProperty(yesValue, "uuid"));
-		Assert.assertEquals(noConceptUuid, PropertyUtils.getProperty(noValue, "uuid"));
+		Assert.assertEquals(YES_CONCEPT_UUID, PropertyUtils.getProperty(yesValue, "uuid"));
+		Assert.assertEquals(NO_CONCEPT_UUID, PropertyUtils.getProperty(noValue, "uuid"));
 	}
 
 	@Test

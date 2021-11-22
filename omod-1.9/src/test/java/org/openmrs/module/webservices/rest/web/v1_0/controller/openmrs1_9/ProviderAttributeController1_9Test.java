@@ -58,8 +58,7 @@ public class ProviderAttributeController1_9Test extends MainResourceControllerTe
 	@Test
 	public void shouldAddAttributeToProvider() throws Exception {
 		int before = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
-		String json = "{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID
-		        + "\", \"value\":\"2012-05-05\"}";
+		String json = "{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID  + "\", \"value\":\"2012-05-05\"}";
 		
 		handle(newPostRequest(getURI(), json));
 		int after = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
@@ -90,5 +89,4 @@ public class ProviderAttributeController1_9Test extends MainResourceControllerTe
 		Assert.assertTrue(providerAttribute.isVoided());
 		Assert.assertEquals("unit test", providerAttribute.getVoidReason());
 	}
-	
 }

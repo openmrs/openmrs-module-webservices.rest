@@ -11,6 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,8 +26,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 /**
  * Contains tests for the {@link VisitTypeController}
@@ -60,8 +60,7 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 			if (!type.isRetired()) {
 				count++;
 			}
-		}
-		
+		}	
 		return count;
 	}
 	
@@ -123,19 +122,17 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		List<Object> hits = Util.getResultsList(result);
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
-		
 	}
 	
 	@Test
 	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryStringExcludingRetiredOnes() throws Exception {
-		final String searchString = "Hos";
+		final String SEARCH_STRING = "Hos";
 		//sanity check
-		Assert.assertEquals(1, Context.getVisitService().getVisitTypes(searchString).size());
+		Assert.assertEquals(1, Context.getVisitService().getVisitTypes(SEARCH_STRING).size());
 		
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", searchString))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", SEARCH_STRING))));
 		List<Object> hits = Util.getResultsList(result);
 		Assert.assertEquals(0, hits.size());
-		
 	}
 	
 	@Test
@@ -147,5 +144,4 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		assertEquals(visitType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(visitType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
-	
 }

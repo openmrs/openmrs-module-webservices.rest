@@ -55,20 +55,17 @@ public class OrderUtil {
 		if (INACTIVE.equals(status)) {
 			removeActiveOrders(orders, asOfDate);
 		}
-		
 		return orders;
 	}
 	
 	private static void removeActiveOrders(List<Order> orders, final Date asOfDate) {
-		
 		CollectionUtils.filter(orders, new Predicate() {
 			
 			@Override
 			public boolean evaluate(Object object) {
 				Order order = (Order) object;
 				return order.isDiscontinued(asOfDate) || order.isExpired(asOfDate);
-			}
-			
+			}	
 		});
 	}
 }

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Map;
+
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -19,8 +21,6 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
-
-import java.util.Map;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Obs, supporting standard
@@ -53,7 +53,6 @@ public class ObsResource1_9 extends ObsResource1_8 {
 		obs.setConcept(ConversionUtil.getConverter(Concept.class).getByUniqueId((String) identifier));
 	}
 
-
     @Override
     protected SimpleObject convertDelegateToRepresentation(Obs delegate, DelegatingResourceDescription rep) {
         try {
@@ -72,5 +71,4 @@ public class ObsResource1_9 extends ObsResource1_8 {
             }
         }
     }
-
 }

@@ -47,5 +47,4 @@ public class Activator extends BaseModuleActivator {
 		ReflectionUtil.clearCaches();
 		SwaggerSpecificationCreator.clearCache();
 	}
-	
 }

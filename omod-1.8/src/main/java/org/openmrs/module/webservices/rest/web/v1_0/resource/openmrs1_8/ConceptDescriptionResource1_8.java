@@ -9,12 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
@@ -70,21 +72,18 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof RefRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty());
 		} else if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("locale", new StringProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("description", new StringProperty())
+			         .property("locale", new StringProperty());
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("locale", new StringProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("description", new StringProperty())
+			         .property("locale", new StringProperty());
 		}
 		return modelImpl;
 	}
@@ -154,9 +153,9 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(ConceptDescription cd, String reason, RequestContext context) throws ResponseException {
+	public void delete(ConceptDescription conceptDescription, String reason, RequestContext context) throws ResponseException {
 		//concept descriptions are neither voidable nor retireable, so delegate to purge
-		purge(cd, context);
+		purge(conceptDescription, context);
 	}
 	
 	/**
@@ -164,9 +163,9 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptDescription cd, RequestContext context) throws ResponseException {
-		cd.getConcept().removeDescription(cd);
-		Context.getConceptService().saveConcept(cd.getConcept());
+	public void purge(ConceptDescription conceptDescription, RequestContext context) throws ResponseException {
+		conceptDescription.getConcept().removeDescription(conceptDescription);
+		Context.getConceptService().saveConcept(conceptDescription.getConcept());
 	}
 	
 	/**

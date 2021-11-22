@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,12 +35,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Tests functionality of {@link ConditionController2_2}.
@@ -170,83 +170,83 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUpdateANonCodedCondition() throws Exception {
-		final String newNonCoded = "Updated non coded condition";
-		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
-		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
-		final Date newOnsetDate = new Date();
-		final Date newEndDate = new Date();
-		final String newAdditionalDetail = "Some extra details.";
+		final String NEW_NON_CODED = "Updated non coded condition";
+		final ConditionClinicalStatus NEW_CLINICAL_STATUS = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus NEW_VERIFICATION_STATUS = ConditionVerificationStatus.PROVISIONAL;
+		final Date NEW_ONSET_DATE = new Date();
+		final Date NEW_END_DATE = new Date();
+		final String NEW_ADDITIONAL_DETAIL = "Some extra details.";
 		
 		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
 		
 		Assert.assertNotNull(condition);
 		//sanity checks
-		Assert.assertFalse(newNonCoded.equalsIgnoreCase(condition.getCondition().getNonCoded()));
-		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
-		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
-		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
-		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
-		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		Assert.assertFalse(NEW_NON_CODED.equalsIgnoreCase(condition.getCondition().getNonCoded()));
+		Assert.assertFalse(NEW_CLINICAL_STATUS.equals(condition.getClinicalStatus()));
+		Assert.assertFalse(NEW_VERIFICATION_STATUS.equals(condition.getVerificationStatus()));
+		Assert.assertFalse(NEW_ONSET_DATE.equals(condition.getOnsetDate()));
+		Assert.assertFalse(NEW_END_DATE.equals(condition.getEndDate()));
+		Assert.assertFalse(NEW_ADDITIONAL_DETAIL.equalsIgnoreCase(condition.getAdditionalDetail()));
 		
-		String json = "{ \"condition\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + newNonCoded
-		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
-		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
-		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
-		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		String json = "{ \"condition\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + NEW_NON_CODED
+		        + "\"},\"clinicalStatus\":\"" + NEW_CLINICAL_STATUS
+		        + "\",\"verificationStatus\":\"" + NEW_VERIFICATION_STATUS + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(NEW_ONSET_DATE) + "\",\"endDate\":\"" + DATE_FORMAT.format(NEW_END_DATE)
+		        + "\",\"additionalDetail\":\"" + NEW_ADDITIONAL_DETAIL + "\"}";
 		
 		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.NON_CODED_CONDITION_UUID, json));
 		
 		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
 		
 		Assert.assertNotNull(updatedCondition);
-		Assert.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
-		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
-		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
-		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
-		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
-		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+		Assert.assertEquals(NEW_NON_CODED, updatedCondition.getCondition().getNonCoded());
+		Assert.assertEquals(NEW_CLINICAL_STATUS, updatedCondition.getClinicalStatus());
+		Assert.assertEquals(NEW_VERIFICATION_STATUS, updatedCondition.getVerificationStatus());
+		Assert.assertEquals(NEW_ONSET_DATE.toString(), updatedCondition.getOnsetDate().toString());
+		Assert.assertEquals(NEW_END_DATE.toString(), updatedCondition.getEndDate().toString());
+		Assert.assertEquals(NEW_ADDITIONAL_DETAIL, updatedCondition.getAdditionalDetail());
 	}
 	
 	@Test
 	public void shouldUpdateACodedCondition() throws Exception {
-		final String newCoded = concept2.getUuid();
-		final String newSpecificName = conceptName2.getUuid();
-		final ConditionClinicalStatus newClinicalStatus = ConditionClinicalStatus.INACTIVE;
-		final ConditionVerificationStatus newVerificationStatus = ConditionVerificationStatus.PROVISIONAL;
-		final Date newOnsetDate = new Date();
-		final Date newEndDate = new Date();
-		final String newAdditionalDetail = "Some extra details.";
+		final String NEW_CODED = concept2.getUuid();
+		final String NEW_SPECIFICATION_NAME = conceptName2.getUuid();
+		final ConditionClinicalStatus NEW_CLINICAL_STATUS = ConditionClinicalStatus.INACTIVE;
+		final ConditionVerificationStatus NEW_VERIFICATION_STATUS = ConditionVerificationStatus.PROVISIONAL;
+		final Date NEW_ONSET_DATE = new Date();
+		final Date NEW_END_DATE = new Date();
+		final String NEW_ADDITIONAL_DETAIL = "Some extra details.";
 		
 		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
 		
 		Assert.assertNotNull(condition);
 		//sanity checks
-		Assert.assertFalse(newCoded.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
-		Assert.assertFalse(newSpecificName.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
-		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
-		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
-		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
-		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
-		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		Assert.assertFalse(NEW_CODED.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
+		Assert.assertFalse(NEW_SPECIFICATION_NAME.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
+		Assert.assertFalse(NEW_CLINICAL_STATUS.equals(condition.getClinicalStatus()));
+		Assert.assertFalse(NEW_VERIFICATION_STATUS.equals(condition.getVerificationStatus()));
+		Assert.assertFalse(NEW_ONSET_DATE.equals(condition.getOnsetDate()));
+		Assert.assertFalse(NEW_END_DATE.equals(condition.getEndDate()));
+		Assert.assertFalse(NEW_ADDITIONAL_DETAIL.equalsIgnoreCase(condition.getAdditionalDetail()));
 		
-		String json = "{\"condition\":{\"coded\":\"" + newCoded + "\",\"specificName\":\"" + newSpecificName
-		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
-		        + "\",\"verificationStatus\":\"" + newVerificationStatus + "\",\"onsetDate\":\""
-		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
-		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
+		String json = "{\"condition\":{\"coded\":\"" + NEW_CODED + "\",\"specificName\":\"" + NEW_SPECIFICATION_NAME
+		        + "\"},\"clinicalStatus\":\"" + NEW_CLINICAL_STATUS
+		        + "\",\"verificationStatus\":\"" + NEW_VERIFICATION_STATUS + "\",\"onsetDate\":\""
+		        + DATE_FORMAT.format(NEW_ONSET_DATE) + "\",\"endDate\":\"" + DATE_FORMAT.format(NEW_END_DATE)
+		        + "\",\"additionalDetail\":\"" + NEW_ADDITIONAL_DETAIL + "\"}";
 		
 		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.CODED_CONDITION_UUID, json));
 		
 		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
 		
 		Assert.assertNotNull(updatedCondition);
-		Assert.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
-		Assert.assertEquals(newSpecificName, updatedCondition.getCondition().getSpecificName().getUuid());
-		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
-		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
-		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
-		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
-		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+		Assert.assertEquals(NEW_CODED, updatedCondition.getCondition().getCoded().getUuid());
+		Assert.assertEquals(NEW_SPECIFICATION_NAME, updatedCondition.getCondition().getSpecificName().getUuid());
+		Assert.assertEquals(NEW_CLINICAL_STATUS, updatedCondition.getClinicalStatus());
+		Assert.assertEquals(NEW_VERIFICATION_STATUS, updatedCondition.getVerificationStatus());
+		Assert.assertEquals(NEW_ONSET_DATE.toString(), updatedCondition.getOnsetDate().toString());
+		Assert.assertEquals(NEW_END_DATE.toString(), updatedCondition.getEndDate().toString());
+		Assert.assertEquals(NEW_ADDITIONAL_DETAIL, updatedCondition.getAdditionalDetail());
 	}
 	
 	@Test
@@ -267,7 +267,6 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUnvoidACondition() throws Exception {
-		
 		String voidedUuid = RestTestConstants2_2.VOIDED_CONDITION_UUID;
 		
 		Condition condition = conditionService.getConditionByUuid(voidedUuid);
@@ -288,7 +287,6 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldPurgeCondition() throws Exception {
-		
 		Assert.assertNotNull(conditionService.getConditionByUuid(getUuid()));
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());

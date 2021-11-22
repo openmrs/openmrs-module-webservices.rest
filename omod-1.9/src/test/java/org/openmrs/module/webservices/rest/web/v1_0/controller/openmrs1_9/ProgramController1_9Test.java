@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -23,10 +26,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Date;
 
 /**
  * Tests functionality of Program CRUD by MainResourceController
@@ -70,7 +69,6 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAProgramByUuid() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -82,7 +80,6 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAProgramByName() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getName());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -94,7 +91,6 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldListAllUnRetiredPrograms() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -119,28 +115,25 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject newProgram = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID,
-		    ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
+		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID, ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	@Test
 	public void shouldEditAProgram() throws Exception {
-		
-		final String editedName = "Malaria Program Edited";
-		String json = "{ \"name\":\"" + editedName + "\" }";
+		final String EDITED_NAME = "Malaria Program Edited";
+		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
 		Program editedProgram = service.getProgramByUuid(getUuid());
 		Assert.assertNotNull(editedProgram);
-		Assert.assertEquals(editedName, editedProgram.getName());
+		Assert.assertEquals(EDITED_NAME, editedProgram.getName());
 	}
 	
 	@Test
 	public void shouldRetireAProgram() throws Exception {
-		
 		Program program = service.getProgram(2);
 		Assert.assertFalse(program.isRetired());
 		
@@ -168,13 +161,11 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		program = service.getProgramByUuid(getUuid());
 		Assert.assertFalse(program.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
 	
 	@Test
 	public void shouldPurgeARetiredProgram() throws Exception {
-		
 		Program program = service.getProgram(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + program.getUuid());
 		req.addParameter("purge", "true");
@@ -185,7 +176,6 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldSearchAndReturnAListOfProgramsMatchingTheQueryString() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "mal");
 		SimpleObject result = deserialize(handle(req));
@@ -197,7 +187,6 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldNotListRetiredProgramWorkflowsInResultDataset() throws Exception {
-		
 		// there is no retired workflows in the standard test dataset, so add some test data with one
 		executeDataSet("programDataset1_9.xml");
 		
@@ -206,12 +195,10 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
 		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "workflows")).size());
-		
 	}
 	
 	@Test
 	public void shouldNotListRetiredProgramWorkflowStatesInResultDataset() throws Exception {
-		
 		// there is no retired workflows in the standard test dataset, so add some test data with one
 		executeDataSet("programDataset1_9.xml");
 		
@@ -222,7 +209,5 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		List<Object> workflows = (List<Object>) PropertyUtils.getProperty(result, "workflows");
 		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(workflows.get(0), "states")).size());
-		
 	}
-	
 }

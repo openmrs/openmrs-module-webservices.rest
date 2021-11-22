@@ -15,6 +15,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,7 +37,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import java.util.LinkedHashMap;
 
 public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -91,10 +91,10 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void validationException_shouldReturnBadRequestResponse() throws Exception {
-		Errors ex = new BindException(new Person(), "");
-		ex.reject("error.message");
+		Errors exceptions = new BindException(new Person(), "");
+		exceptions.reject("error.message");
 		
-		SimpleObject responseSimpleObject = controller.validationExceptionHandler(new ValidationException(ex), request,
+		SimpleObject responseSimpleObject = controller.validationExceptionHandler(new ValidationException(exceptions), request,
 		    response);
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 		
@@ -103,31 +103,26 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	}
 	
 	@Test
-	public void handleException_shouldLogUnannotatedAsErrors() throws Exception {
-		
+	public void handleException_shouldLogUnannotatedAsErrors() throws Exception {	
 		String message = "ErrorMessage";
 		Exception ex = new Exception(message);
 		controller.handleException(ex, request, response);
 		
-		verify(spyOnLog).error(message, ex);
-		
+		verify(spyOnLog).error(message, ex);	
 	}
 	
 	@Test
-	public void handleException_shouldLog500AndAboveAsErrors() throws Exception {
-		
+	public void handleException_shouldLog500AndAboveAsErrors() throws Exception {	
 		String message = "ErrorMessage";
 		Exception ex = new GenericRestException(message);
 		
 		controller.handleException(ex, request, response);
 		
-		verify(spyOnLog).error(message, ex);
-		
+		verify(spyOnLog).error(message, ex);	
 	}
 	
 	@Test
-	public void handleException_shouldLogBelow500AsInfo() throws Exception {
-		
+	public void handleException_shouldLogBelow500AsInfo() throws Exception {	
 		String message = "ErrorMessage";
 		Exception ex = new IllegalPropertyException(message);
 		
@@ -138,7 +133,6 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Test
 	public void handleConversionException_shouldLogConversionErrorAsInfo() throws Exception {
-		
 		String message = "conversion error";
 		ConversionException ex = new ConversionException(message);
 		SimpleObject responseSimpleObject = controller.conversionExceptionHandler(ex, request, response);

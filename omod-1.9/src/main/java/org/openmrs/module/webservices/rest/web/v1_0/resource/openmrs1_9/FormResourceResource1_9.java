@@ -9,10 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.List;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Form;
 import org.openmrs.FormResource;
@@ -37,8 +40,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormResource1_8;
 
-import java.util.List;
-
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @SubResource(parent = FormResource1_8.class, path = "resource", supportedClass = FormResource.class, supportedOpenmrsVersions = {
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -46,40 +47,40 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject convertToRef(FormResource delegate) throws ConversionException {
-		DelegatingResourceDescription rep = new DelegatingResourceDescription();
-		rep.addProperty("uuid");
-		rep.addProperty("display");
-		addValueLink(rep, delegate);
-		rep.addSelfLink();
-		return convertDelegateToRepresentation(delegate, rep);
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("display");
+		addValueLink(description, delegate);
+		description.addSelfLink();
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 	@RepHandler(DefaultRepresentation.class)
 	public SimpleObject asDefaultRep(FormResource delegate) throws Exception {
-		DelegatingResourceDescription rep = new DelegatingResourceDescription();
-		rep.addProperty("uuid");
-		rep.addProperty("name");
-		rep.addProperty("valueReference");
-		rep.addProperty("display");
-		addValueLink(rep, delegate);
-		rep.addSelfLink();
-		rep.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-		return convertDelegateToRepresentation(delegate, rep);
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("name");
+		description.addProperty("valueReference");
+		description.addProperty("display");
+		addValueLink(description, delegate);
+		description.addSelfLink();
+		description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 	@RepHandler(FullRepresentation.class)
 	public SimpleObject asFullRep(FormResource delegate) throws Exception {
-		DelegatingResourceDescription rep = new DelegatingResourceDescription();
-		rep.addProperty("uuid");
-		rep.addProperty("name");
-		rep.addProperty("valueReference");
-		rep.addProperty("dataType");
-		rep.addProperty("handler");
-		rep.addProperty("handlerConfig");
-		rep.addProperty("display");
-		addValueLink(rep, delegate);
-		rep.addSelfLink();
-		return convertDelegateToRepresentation(delegate, rep);
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addProperty("uuid");
+		description.addProperty("name");
+		description.addProperty("valueReference");
+		description.addProperty("dataType");
+		description.addProperty("handler");
+		description.addProperty("handlerConfig");
+		description.addProperty("display");
+		addValueLink(description, delegate);
+		description.addSelfLink();
+		return convertDelegateToRepresentation(delegate, description);
 	}
 	
 	@PropertyGetter("display")
@@ -148,15 +149,13 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		        .property("display", new StringProperty());
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("name", new StringProperty())
-			        .property("valueReference", new StringProperty());
+			modelImpl.property("name", new StringProperty())
+			         .property("valueReference", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("dataType", new StringProperty())
-			        .property("handler", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
+			modelImpl.property("dataType", new StringProperty())
+			         .property("handler", new StringProperty())
+			         .property("handlerConfig", new StringProperty());
 		}
 		return modelImpl;
 	}
@@ -172,8 +171,7 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		        .property("value", new StringProperty())
 		        .property("valueReference", new StringProperty());
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("form", new RefProperty("#/definitions/FormCreate"));
+			model.property("form", new RefProperty("#/definitions/FormCreate"));
 		}
 		return model;
 	}

@@ -16,6 +16,10 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -28,9 +32,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * {@link Resource} for {@link Form}, supporting standard CRUD operations
@@ -100,24 +101,21 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("version", new StringProperty())
-			        .property("build", new IntegerProperty())
-			        .property("published", new BooleanProperty()._default(false))
-			        .property("retired", new BooleanProperty());
+			modelImpl.property("uuid", new StringProperty())
+			         .property("display", new StringProperty())
+			         .property("name", new StringProperty())
+			         .property("description", new StringProperty())
+			         .property("version", new StringProperty())
+			         .property("build", new IntegerProperty())
+			         .property("published", new BooleanProperty()._default(false))
+			         .property("retired", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGetRef")));
+			modelImpl.property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef"))
+			         .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGetRef")));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGet")));
+			modelImpl.property("encounterType", new RefProperty("#/definitions/EncountertypeGet"))
+			         .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGet")));
 		}
 		return modelImpl;
 	}
@@ -135,9 +133,8 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 		        
 		        .required("version");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldCreate")));
+			model.property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
+			     .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldCreate")));
 		}
 		return model;
 	}
@@ -204,6 +201,5 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 	@Override
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("formFields");
-	}
-	
+	}	
 }

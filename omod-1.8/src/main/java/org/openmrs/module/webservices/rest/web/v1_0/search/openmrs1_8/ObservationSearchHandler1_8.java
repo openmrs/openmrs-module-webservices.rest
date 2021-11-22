@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -27,12 +33,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * The contents of this file are subject to the OpenMRS Public License Version 1.0 (the "License");
@@ -56,8 +56,7 @@ public class ObservationSearchHandler1_8 implements SearchHandler {
 	}
 	
 	@Override
-	public PageableResult search(RequestContext context) throws ResponseException {
-		
+	public PageableResult search(RequestContext context) throws ResponseException {	
 		String patientUuid = context.getRequest().getParameter("patient");
 		List<String> questionConceptUuids = new ArrayList<String>();
 		List<String> answerConceptUuids = new ArrayList<String>();
@@ -109,20 +108,17 @@ public class ObservationSearchHandler1_8 implements SearchHandler {
 				
 				// limit by grouping concept, if present... this could potentially be a heavy call if not limiting by question or answer conept
 				if (!groupingConceptUuids.isEmpty()) {
-					Iterator<Obs> i = obs.iterator();
-					while (i.hasNext()) {
-						Obs o = i.next();
-						if (o.getObsGroup() == null
-						        || !groupingConceptUuids.contains(o.getObsGroup().getConcept().getUuid())) {
-							i.remove();
+					Iterator<Obs> iterator = obs.iterator();
+					while (iterator.hasNext()) {
+						Obs object = iterator.next();
+						if (object.getObsGroup() == null || !groupingConceptUuids.contains(object.getObsGroup().getConcept().getUuid())) {
+							iterator.remove();
 						}
 					}
-				}
-				
+				}	
 				return new NeedsPaging<Obs>(obs, context);
 			}
-		}
-		
+		}	
 		return new EmptySearchResult();
 	}
 }

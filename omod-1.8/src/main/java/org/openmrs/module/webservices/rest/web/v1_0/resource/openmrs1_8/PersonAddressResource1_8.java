@@ -14,6 +14,11 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
@@ -29,10 +34,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
@@ -147,24 +148,23 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 		        .property("display", new StringProperty());
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("address1", new StringProperty())
-			        .property("address2", new StringProperty())
-			        .property("cityVillage", new StringProperty())
-			        .property("stateProvince", new StringProperty())
-			        .property("country", new StringProperty())
-			        .property("postalCode", new StringProperty())
-			        .property("countyDistrict", new StringProperty())
-			        .property("address3", new StringProperty())
-			        .property("address4", new StringProperty())
-			        .property("address5", new StringProperty())
-			        .property("address6", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("latitude", new StringProperty())
-			        .property("longitude", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			model.property("preferred", new BooleanProperty()._default(false))
+			     .property("address1", new StringProperty())
+			     .property("address2", new StringProperty())
+			     .property("cityVillage", new StringProperty())
+			     .property("stateProvince", new StringProperty())
+			     .property("country", new StringProperty())
+	             .property("postalCode", new StringProperty())
+	    	     .property("countyDistrict", new StringProperty())
+			     .property("address3", new StringProperty())
+			     .property("address4", new StringProperty())
+			     .property("address5", new StringProperty())
+			     .property("address6", new StringProperty())
+			     .property("startDate", new DateProperty())
+			     .property("endDate", new DateProperty())
+			     .property("latitude", new StringProperty())
+			     .property("longitude", new StringProperty())
+			     .property("voided", new BooleanProperty());
 		}
 		return model;
 	}
@@ -237,8 +237,8 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public PersonAddress save(PersonAddress newAddress) {
 		// make sure that the address has actually been added to the person
 		boolean needToAdd = true;
-		for (PersonAddress pa : newAddress.getPerson().getAddresses()) {
-			if (pa.equals(newAddress)) {
+		for (PersonAddress personAddress : newAddress.getPerson().getAddresses()) {
+			if (personAddress.equals(newAddress)) {
 				needToAdd = false;
 				break;
 			}
@@ -250,9 +250,9 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 		
 		// if this address is marked preferred, then we need to clear any others that are marked as preferred
 		if (newAddress.isPreferred()) {
-			for (PersonAddress pa : newAddress.getPerson().getAddresses()) {
-				if (!pa.equals(newAddress)) {
-					pa.setPreferred(false);
+			for (PersonAddress personAddress : newAddress.getPerson().getAddresses()) {
+				if (!personAddress.equals(newAddress)) {
+					personAddress.setPreferred(false);
 				}
 			}
 		}

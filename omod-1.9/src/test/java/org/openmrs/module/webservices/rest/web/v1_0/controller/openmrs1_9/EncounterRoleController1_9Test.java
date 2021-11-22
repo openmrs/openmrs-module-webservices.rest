@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -23,9 +26,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests functionality of {@link EncounterRoleController}.
@@ -95,16 +95,16 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditingAnEncounterRole() throws Exception {
-		final String newName = "updated name";
+		final String NEW_NAME = "updated name";
 		SimpleObject encounterRole = new SimpleObject();
-		encounterRole.add("name", newName);
+		encounterRole.add("name", NEW_NAME);
 		
 		String json = new ObjectMapper().writeValueAsString(encounterRole);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newName, service.getEncounterRoleByUuid(getUuid()).getName());
+		assertEquals(NEW_NAME, service.getEncounterRoleByUuid(getUuid()).getName());
 	}
 	
 	@Test
@@ -112,11 +112,11 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 		assertEquals(false, service.getEncounterRoleByUuid(getUuid()).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getEncounterRoleByUuid(getUuid()).isRetired());
-		assertEquals(reason, service.getEncounterRoleByUuid(getUuid()).getRetireReason());
+		assertEquals(REASON, service.getEncounterRoleByUuid(getUuid()).getRetireReason());
 	}
 	
 	@Test

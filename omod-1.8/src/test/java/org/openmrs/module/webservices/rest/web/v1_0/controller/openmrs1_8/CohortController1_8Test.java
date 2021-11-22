@@ -68,7 +68,6 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void createCohort_shouldCreateANewCohort() throws Exception {
-		
 		SimpleObject cohort = new SimpleObject();
 		cohort.add("name", "New cohort");
 		cohort.add("description", "New cohort description");
@@ -88,8 +87,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {
-		
+	public void getCohort_shouldGetADefaultRepresentationOfACohort() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -99,8 +97,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void getCohort_shouldGetADefaultRepresentationInXML() throws Exception {
-		
+	public void getCohort_shouldGetADefaultRepresentationInXML() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addHeader("Accept", "application/xml");
 		MockHttpServletResponse result = handle(req);
@@ -112,7 +109,6 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getCohortByExactName_shouldGetADefaultRepresentationOfACohort() throws Exception {
-		
 		String cohortName = "B13 deficit";
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + cohortName);
 		SimpleObject result = deserialize(handle(req));
@@ -124,7 +120,6 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getCohorts_shouldSearchForCohortsByName() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "B13");
 		SimpleObject result = deserialize(handle(req));
@@ -150,7 +145,6 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void updateCohort_shouldChangeAPropertyOnACohort() throws Exception {
-		
 		SimpleObject attributes = new SimpleObject();
 		attributes.add("name", "Updated cohort name");
 		
@@ -174,18 +168,15 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
-		handle(req);
-		
+		handle(req);	
 	}
 	
 	@Test
-	public void purgeCohort_shouldPurgeCohort() throws Exception {
-		
+	public void purgeCohort_shouldPurgeCohort() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("purge", "true");
 		handle(req);
 		
 		Assert.assertNull(service.getCohortByUuid(getUuid()));
 	}
-	
 }

@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.LinkedHashMap;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -197,7 +196,6 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldFetchExistingDiagnosis() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -207,8 +205,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldVoidDiagnosis() throws Exception {
-		
+	public void shouldVoidDiagnosis() throws Exception {	
 		Diagnosis diagnosis = diagnosisService.getDiagnosisByUuid(getUuid());
 		
 		Assert.assertFalse(diagnosis.isVoided());
@@ -227,7 +224,6 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUnVoidDiagnosis() throws Exception {
-		
 		Diagnosis diagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.VOIDED_DIAGNOSIS_UUID);
 		
 		Assert.assertTrue(diagnosis.isVoided());
@@ -246,8 +242,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		Assert.assertFalse(diagnosis.isVoided());
 		Assert.assertNull(diagnosis.getDateVoided());
 		Assert.assertNull(diagnosis.getVoidedBy());
-		Assert.assertNull(diagnosis.getVoidReason());
-		
+		Assert.assertNull(diagnosis.getVoidReason());	
 	}
 	
 	@Test
@@ -269,8 +264,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		
 		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.UPDATABLE_NON_CODED_DIAGNOSIS_UUID, json));
 		
-		Diagnosis newDiagnosis = diagnosisService
-		        .getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_NON_CODED_DIAGNOSIS_UUID);
+		Diagnosis newDiagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_NON_CODED_DIAGNOSIS_UUID);
 		
 		Assert.assertTrue(newDiagnosis.getVoided());
 		Assert.assertEquals(concept.getUuid(), newDiagnosis.getDiagnosis().getCoded().getUuid());
@@ -281,9 +275,8 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldUpdateACodedDiagnosis() throws Exception {
-		
-		final String nonCoded = "Some condition";
+	public void shouldUpdateACodedDiagnosis() throws Exception {	
+		final String NON_CODED = "Some condition";
 		Diagnosis diagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID);
 		
 		Assert.assertTrue(diagnosis.getVoided());
@@ -293,7 +286,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		Assert.assertEquals("54444-fcdb-4a5b-97ea-0d5c4b4315a1", diagnosis.getEncounter().getUuid());
 		Assert.assertEquals("PROVISIONAL", diagnosis.getCertainty().toString());
 		
-		String json = "{ \"diagnosis\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + nonCoded
+		String json = "{ \"diagnosis\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + NON_CODED
 		        + "\"},\"condition\":\"" + condition.getUuid()
 		        + "\",\"certainty\":\"" + "CONFIRMED" + "\",\"encounter\":\""
 		        + encounter.getUuid() + "\",\"rank\":\"" + 2

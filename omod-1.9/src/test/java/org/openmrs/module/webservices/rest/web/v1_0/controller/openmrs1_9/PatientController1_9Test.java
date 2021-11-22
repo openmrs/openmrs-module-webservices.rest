@@ -119,14 +119,14 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldVoidAPatient() throws Exception {
 		Patient patient = service.getPatientByUuid(getUuid());
-		final String reason = "some random reason";
+		final String REASON = "some random reason";
 		assertEquals(false, patient.isVoided());
 		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", ""),
-		    new Parameter("reason", reason));
+		    new Parameter("reason", REASON));
 		handle(req);
 		patient = service.getPatientByUuid(getUuid());
 		assertTrue(patient.isVoided());
-		assertEquals(reason, patient.getVoidReason());
+		assertEquals(REASON, patient.getVoidReason());
 	}
 	
 	@Test
@@ -142,17 +142,16 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		
 		patient = service.getPatientByUuid(getUuid());
 		assertFalse(patient.isVoided());
-		assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-		
+		assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());	
 	}
 	
 	@Test
 	public void shouldPurgeAPatient() throws Exception {
-		final String uuid = "86526ed6-3c11-11de-a0ba-001e378eb67e";
-		assertNotNull(service.getPatientByUuid(uuid));
-		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true"));
+		final String UUID = "86526ed6-3c11-11de-a0ba-001e378eb67e";
+		assertNotNull(service.getPatientByUuid(UUID));
+		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + UUID, new Parameter("purge", "true"));
 		handle(req);
-		assertNull(service.getPatientByUuid(uuid));
+		assertNull(service.getPatientByUuid(UUID));
 	}
 	
 	@Test
@@ -171,12 +170,11 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		String customRep = "custom:(uuid,identifiers:(identifierType:(name),identifier),person:(preferredName,age,gender))";
 		req.addParameter("v", customRep);
 		SimpleObject result = deserialize(handle(req));
+		
 		assertEquals(1, Util.getResultsSize(result));
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
-		assertEquals("Horatio",
-		    PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.givenName"));
-		assertEquals("Hornblower",
-		    PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.familyName"));
+		assertEquals("Horatio", PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.givenName"));
+		assertEquals("Hornblower",PropertyUtils.getProperty(Util.getResultsList(result).get(0), "person.preferredName.familyName"));
 	}
 	
 	@Test

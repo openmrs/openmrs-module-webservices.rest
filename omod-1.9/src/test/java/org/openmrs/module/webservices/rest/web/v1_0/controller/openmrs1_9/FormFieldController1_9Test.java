@@ -40,5 +40,4 @@ public class FormFieldController1_9Test extends MainResourceControllerTest {
 	public long getAllCount() {
 		return 3;
 	}
-	
 }

@@ -49,6 +49,5 @@ public class FulfillerDetails2_2 {
 	
 	public void setOrder(Order order) {
 		this.order = order;
-	}
-	
+	}	
 }

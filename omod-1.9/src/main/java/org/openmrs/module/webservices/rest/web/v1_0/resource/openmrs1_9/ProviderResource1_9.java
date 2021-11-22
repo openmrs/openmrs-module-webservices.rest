@@ -15,6 +15,10 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
@@ -33,9 +37,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link Resource} for Provider, supporting standard CRUD operations
@@ -117,16 +118,14 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("identifier", new StringProperty())
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGetRef")))
-			        .property("preferredHandlerClassname", new StringProperty());
+			model.property("person", new RefProperty("#/definitions/PersonGetRef"))
+			     .property("identifier", new StringProperty())
+			     .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGetRef")))
+			     .property("preferredHandlerClassname", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGet")));
+			model.property("person", new RefProperty("#/definitions/PersonGet"))
+			     .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGet")));
 		}
 		return model;
 	}
@@ -146,8 +145,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		        
 		        .required("person").required("identifier");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"));
+			model.property("person", new RefProperty("#/definitions/PersonCreate"));
 		}
 		return model;
 	}
@@ -228,8 +226,7 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	 */
 	@Override
 	protected NeedsPaging<Provider> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<Provider>(Context.getProviderService()
-		        .getAllProviders(context.getIncludeAll()), context);
+		return new NeedsPaging<Provider>(Context.getProviderService().getAllProviders(context.getIncludeAll()), context);
 	}
 	
 	/**

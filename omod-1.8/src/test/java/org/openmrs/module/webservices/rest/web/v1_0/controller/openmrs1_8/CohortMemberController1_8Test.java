@@ -71,8 +71,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
-		
+	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/" + patientUuid);
 		SimpleObject result = deserialize(handle(req));
 		
@@ -104,8 +103,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void addCohortMember_shouldAddCohortMember() throws Exception {
-		
+	public void addCohortMember_shouldAddCohortMember() throws Exception {	
 		String patientId = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		
 		SimpleObject attributes = new SimpleObject();
@@ -122,16 +120,13 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
-		
+	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + patientUuid);
 		req.addParameter("!purge", "");
 		handle(req);
 		
 		Cohort cohort = service.getCohortByUuid(getUuid());
 		Patient patient = patientService.getPatientByUuid(patientUuid);
-		Assert.assertTrue(!cohort.contains(patient));
-		
-	}
-	
+		Assert.assertTrue(!cohort.contains(patient));		
+	}	
 }

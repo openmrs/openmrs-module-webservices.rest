@@ -16,6 +16,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -122,16 +123,13 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof RefRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty());
+			modelImpl.property("display", new StringProperty());
 		} else if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"));
+			modelImpl.property("display", new StringProperty())
+			         .property("patient", new RefProperty("#/definitions/PatientGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"));
+			modelImpl.property("display", new StringProperty())
+			         .property("patient", new RefProperty("#/definitions/PatientGetRef"));
 		}
 		return modelImpl;
 	}
@@ -142,8 +140,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 		        .property("patient", new StringProperty().example("uuid"))
 		        .required("patient");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"));
+			model.property("patient", new RefProperty("#/definitions/PatientCreate"));
 		}
 		return model;
 	}
@@ -271,8 +268,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	 * @return string that contains cohort member's identifier and full name
 	 */
 	@PropertyGetter("display")
-	public String getDisplayString(CohortMember1_8 member) {
-		
+	public String getDisplayString(CohortMember1_8 member) {	
 		if (member.getPatient().getPatientIdentifier() == null)
 			return "";
 		

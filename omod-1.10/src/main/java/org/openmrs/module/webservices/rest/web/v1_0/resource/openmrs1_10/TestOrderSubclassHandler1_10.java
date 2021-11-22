@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,12 +40,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
@@ -80,25 +80,23 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("specimenSource", Representation.REF);
-			d.addProperty("laterality");
-			d.addProperty("clinicalHistory");
-			d.addProperty("frequency", Representation.REF);
-			d.addProperty("numberOfRepeats");
-			return d;
+			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("specimenSource", Representation.REF);
+			description.addProperty("laterality");
+			description.addProperty("clinicalHistory");
+			description.addProperty("frequency", Representation.REF);
+			description.addProperty("numberOfRepeats");
+			return description;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("specimenSource", Representation.REF);
-			d.addProperty("laterality");
-			d.addProperty("clinicalHistory");
-			d.addProperty("frequency", Representation.DEFAULT);
-			d.addProperty("numberOfRepeats");
-			return d;
+			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("specimenSource", Representation.REF);
+			description.addProperty("laterality");
+			description.addProperty("clinicalHistory");
+			description.addProperty("frequency", Representation.DEFAULT);
+			description.addProperty("numberOfRepeats");
+			return description;
 		}
 		return null;
 	}
@@ -108,15 +106,14 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		DelegatingResourceDescription d = orderResource.getCreatableProperties();
-		d.addProperty("specimenSource");
-		d.addProperty("laterality");
-		d.addProperty("clinicalHistory");
-		d.addProperty("frequency");
-		d.addProperty("numberOfRepeats");
-		return d;
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		DelegatingResourceDescription description = orderResource.getCreatableProperties();
+		description.addProperty("specimenSource");
+		description.addProperty("laterality");
+		description.addProperty("clinicalHistory");
+		description.addProperty("frequency");
+		description.addProperty("numberOfRepeats");
+		return description;
 	}
 	
 	/**
@@ -124,51 +121,43 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		//this actually throws a ResourceDoesNotSupportOperationException
 		return orderResource.getUpdatableProperties();
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getGETModel(rep);
-		orderModel
-		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
-		        .property("clinicalHistory", new StringProperty())
-		        .property("numberOfRepeats", new IntegerProperty());
+		orderModel.property("laterality", new EnumProperty(TestOrder.Laterality.class))
+		          .property("clinicalHistory", new StringProperty())
+		          .property("numberOfRepeats", new IntegerProperty());
 		
 		if (rep instanceof DefaultRepresentation) {
-			orderModel
-			        .property("specimenSource", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGetRef"));
+			orderModel.property("specimenSource", new RefProperty("#/definitions/ConceptGetRef"))
+			          .property("frequency", new RefProperty("#/definitions/OrderfrequencyGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			orderModel
-			        .property("specimenSource", new RefProperty("#/definitions/ConceptGet"))
-			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGet"));
+			orderModel.property("specimenSource", new RefProperty("#/definitions/ConceptGet"))
+			          .property("frequency", new RefProperty("#/definitions/OrderfrequencyGet"));
 		}
 		return orderModel;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getCREATEModel(rep);
-		return orderModel
-		        .property("specimenSource", new StringProperty().example("uuid"))
-		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
-		        .property("clinicalHistory", new StringProperty())
-		        .property("frequency", new StringProperty().example("uuid"))
-		        .property("numberOfRepeats", new IntegerProperty());
+		return orderModel.property("specimenSource", new StringProperty().example("uuid"))
+		                 .property("laterality", new EnumProperty(TestOrder.Laterality.class))
+		                 .property("clinicalHistory", new StringProperty())
+		                 .property("frequency", new StringProperty().example("uuid"))
+		                 .property("numberOfRepeats", new IntegerProperty());
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		return orderResource.getUPDATEModel(rep);
 	}
 	
@@ -189,14 +178,11 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		String status = context.getRequest().getParameter("status");
 		OrderService os = Context.getOrderService();
 		OrderType orderType = os.getOrderTypeByName("Test order");
-		List<Order> testOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
-		    context.getIncludeAll());
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		List<Order> testOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate, context.getIncludeAll());
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		
 		if (StringUtils.isNotBlank(sortParam)) {
-			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(testOrders, sortParam,
-			    status);
+			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(testOrders, sortParam, status);
 			return new NeedsPaging<Order>(sortedOrder, context);
 		}
 		else {
@@ -212,8 +198,7 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 	 */
 	@PropertyGetter("display")
 	public static String getDisplay(TestOrder delegate) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		return orderResource.getDisplayString(delegate);
 	}
 }

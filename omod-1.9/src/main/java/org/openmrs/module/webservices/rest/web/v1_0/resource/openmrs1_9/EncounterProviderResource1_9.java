@@ -14,6 +14,12 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
@@ -34,11 +40,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for EncounterProvider,
@@ -94,16 +95,14 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("provider", new RefProperty("#/definitions/ProviderGetRef"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleGetRef"))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("provider", new RefProperty("#/definitions/ProviderGetRef"))
+			     .property("encounterRole", new RefProperty("#/definitions/EncounterroleGetRef"))
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("provider", new RefProperty("#/definitions/ProviderGet"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleGet"));
+			model.property("provider", new RefProperty("#/definitions/ProviderGet"))
+			     .property("encounterRole", new RefProperty("#/definitions/EncounterroleGet"));
 		}
 		return model;
 	}
@@ -115,10 +114,9 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		        .property("encounterRole", new StringProperty().example("uuid"))
 		        .property("encounter", new StringProperty()); //FIXME remove if not needed
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("provider", new RefProperty("#/definitions/ProviderCreate"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleCreate"));
+			model.property("provider", new RefProperty("#/definitions/ProviderCreate"))
+			     .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
+			     .property("encounterRole", new RefProperty("#/definitions/EncounterroleCreate"));
 		}
 		return model;
 	}
@@ -181,7 +179,6 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 	
 	@Override
 	public EncounterProvider save(EncounterProvider delegate) {
-		
 		delegate.getEncounter().addProvider(delegate.getEncounterRole(), delegate.getProvider());
 		Context.getEncounterService().saveEncounter(delegate.getEncounter());
 		

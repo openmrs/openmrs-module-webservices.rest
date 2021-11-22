@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DoubleProperty;
 import io.swagger.models.properties.RefProperty;
+
 import org.openmrs.Patient;
 import org.openmrs.activelist.Problem;
 import org.openmrs.activelist.ProblemModifier;
@@ -42,17 +43,14 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("modifier", new EnumProperty(ProblemModifier.class))
-			        .property("sortWeight", new DoubleProperty());
+			model.property("modifier", new EnumProperty(ProblemModifier.class))
+			     .property("sortWeight", new DoubleProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("problem", new RefProperty("#/definitions/ConceptGetRef"));
+			model.property("problem", new RefProperty("#/definitions/ConceptGetRef"));
 			
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("problem", new RefProperty("#/definitions/ConceptGet"));
+			model.property("problem", new RefProperty("#/definitions/ConceptGet"));
 			
 		}
 		return model;
@@ -156,6 +154,5 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 		
 		//currently this is not supported since the superclass throws an exception
 		return super.doSearch(context);
-	}
-	
+	}	
 }

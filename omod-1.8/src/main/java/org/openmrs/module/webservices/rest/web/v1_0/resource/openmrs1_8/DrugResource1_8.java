@@ -15,6 +15,9 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DoubleProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,8 +32,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.List;
 
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
@@ -123,23 +124,20 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("doseStrength", new DoubleProperty())
-			        .property("maximumDailyDose", new DoubleProperty())
-			        .property("minimumDailyDose", new DoubleProperty())
-			        .property("units", new StringProperty())
-			        .property("combination", new BooleanProperty()._default(false));
+			modelImpl.property("doseStrength", new DoubleProperty())
+			         .property("maximumDailyDose", new DoubleProperty())
+			         .property("minimumDailyDose", new DoubleProperty())
+			         .property("units", new StringProperty())
+			         .property("combination", new BooleanProperty()._default(false));
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("route", new RefProperty("#/definitions/ConceptGetRef"));
+			modelImpl.property("dosageForm", new RefProperty("#/definitions/ConceptGetRef"))
+			         .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
+			         .property("route", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("route", new RefProperty("#/definitions/ConceptGet"));
+			modelImpl.property("dosageForm", new RefProperty("#/definitions/ConceptGet"))
+			         .property("concept", new RefProperty("#/definitions/ConceptGet"))
+			         .property("route", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return modelImpl;
 	}
@@ -158,10 +156,9 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		        
 		        .required("combination").required("concept");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("route", new RefProperty("#/definitions/ConceptCreate"));
+			model.property("concept", new RefProperty("#/definitions/ConceptCreate"))
+			     .property("dosageForm", new RefProperty("#/definitions/ConceptCreate"))
+			     .property("route", new RefProperty("#/definitions/ConceptCreate"));
 		}
 		return model;
 	}

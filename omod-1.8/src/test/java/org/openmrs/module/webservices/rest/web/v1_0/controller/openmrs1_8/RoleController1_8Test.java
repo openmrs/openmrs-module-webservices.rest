@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,7 +70,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createRole_shouldCreateANewRole() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject location = new SimpleObject();
@@ -87,7 +85,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newRole, "uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
-		
 	}
 	
 	/**
@@ -96,13 +93,11 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getRole_shouldGetADefaultRepresentationOfARole() throws Exception {
-		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));	
 	}
 	
 	/**
@@ -111,14 +106,12 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getRole_shouldGetAFullRepresentationOfARole() throws Exception {
-		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-		
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));	
 	}
 	
 	/**
@@ -128,17 +121,15 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void updateRole_shouldChangeAPropertyOnARole() throws Exception {
-		
-		final String editedDescription = "Role description edited";
-		String json = "{ \"description\":\"" + editedDescription + "\" }";
+		final String EDITED_DESCRIPTION = "Role description edited";
+		String json = "{ \"description\":\"" + EDITED_DESCRIPTION + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
 		Role editedRole = service.getRoleByUuid(getUuid());
 		Assert.assertNotNull(editedRole);
-		Assert.assertEquals(editedDescription, editedRole.getDescription());
-		
+		Assert.assertEquals(EDITED_DESCRIPTION, editedRole.getDescription());	
 	}
 	
 	/**
@@ -148,7 +139,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void retireRole_shouldRetireARole() throws Exception {
-		
 		Role role = service.getRoleByUuid(getUuid());
 		Assert.assertFalse(role.isRetired());
 		
@@ -159,8 +149,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		
 		Role retiredRole = service.getRoleByUuid(getUuid());
 		Assert.assertTrue(retiredRole.isRetired());
-		Assert.assertEquals("random reason", retiredRole.getRetireReason());
-		
+		Assert.assertEquals("random reason", retiredRole.getRetireReason());	
 	}
 	
 	@Test
@@ -177,8 +166,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		
 		role = service.getRoleByUuid(getUuid());
 		Assert.assertFalse(role.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
 	
 	/**
@@ -188,14 +176,12 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void findRoles_shouldReturnNoResultsIfThereAreNoMatchingRoles() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Missing Name");
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(0, hits.size());
-		
+		Assert.assertEquals(0, hits.size());	
 	}
 	
 	/**
@@ -206,7 +192,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	@Test
 	@Ignore("Roles do not support searching yet.")
 	public void findRoles_shouldFindMatchingRoles() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Provider");
 		SimpleObject result = deserialize(handle(req));
@@ -215,7 +200,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getRoleByUuid("3480cb6d-c291-46c8-8d3a-96dc33d199fb"),
 		    PropertyUtils.getProperty(hits.get(0), "uuid"));
-		
 	}
 	
 	/**
@@ -224,13 +208,10 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void shouldListAllRoles() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
-		
-	}
-	
+		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));	
+	}	
 }

@@ -14,6 +14,15 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
@@ -33,13 +42,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.web.WebUtil;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/module", supportedClass = Module.class, supportedOpenmrsVersions = { "1.8.*",
         "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -112,26 +114,23 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("started", new BooleanProperty()) //FIXME check type
-			        .property("startupErrorMessage", new StringProperty()); //FIXME add-link: action
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("name", new StringProperty())
+			     .property("description", new StringProperty())
+			     .property("started", new BooleanProperty()) //FIXME check type
+			     .property("startupErrorMessage", new StringProperty()); //FIXME add-link: action
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("packageName", new StringProperty())
-			        .property("author", new StringProperty())
-			        .property("version", new StringProperty())
-			        .property("requireOpenmrsVersion", new StringProperty())
-			        .property("awareOfModules", new ArrayProperty(new StringProperty())) //FIXME check type
-			        .property("requiredModules", new ArrayProperty(new StringProperty()));
+			model.property("packageName", new StringProperty())
+			     .property("author", new StringProperty())
+			     .property("version", new StringProperty())
+			     .property("requireOpenmrsVersion", new StringProperty())
+			     .property("awareOfModules", new ArrayProperty(new StringProperty())) //FIXME check type
+			     .property("requiredModules", new ArrayProperty(new StringProperty()));
 		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty());
 		}
 		return model;
 	}

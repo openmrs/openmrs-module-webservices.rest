@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptMap;
@@ -32,11 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
 /**
  * Allows for finding concepts by mapping or by name
  */
@@ -49,8 +49,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept",
 	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-	        Arrays.asList(
-	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
+	        Arrays.asList(new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
 	                    "Allows you to find concepts by name and class").withRequiredParameters("name")
 	                    .withOptionalParameters("class", "searchType").build()));
@@ -143,6 +142,5 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
-	}
-	
+	}	
 }

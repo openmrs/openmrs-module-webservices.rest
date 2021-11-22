@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +37,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * Sub-resource for patient identifiers
@@ -139,21 +139,18 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifier", new StringProperty())
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("identifier", new StringProperty())
+			     .property("preferred", new BooleanProperty()._default(false))
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"));
+			model.property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGetRef"))
+			     .property("location", new RefProperty("#/definitions/LocationGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"));
+			model.property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGet"))
+			     .property("location", new RefProperty("#/definitions/LocationGet"));
 		}
 		return model;
 	}
@@ -168,9 +165,8 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		        
 		        .required("identifier").required("identifierType");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"));
+			model.property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeCreate"))
+			     .property("location", new RefProperty("#/definitions/LocationCreate"));
 		}
 		return model;
 	}
@@ -215,16 +211,16 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	@Override
 	public PatientIdentifier save(PatientIdentifier delegate) {
 		if (delegate.isPreferred()) {
-			for (PatientIdentifier pI : delegate.getPatient().getActiveIdentifiers()) {
-				if (!pI.equals(delegate)) {
-					pI.setPreferred(false);
+			for (PatientIdentifier patientIdentifier : delegate.getPatient().getActiveIdentifiers()) {
+				if (!patientIdentifier.equals(delegate)) {
+					patientIdentifier.setPreferred(false);
 				}
 			}
 		}
 		
 		boolean needToAdd = true;
-		for (PatientIdentifier pi : delegate.getPatient().getActiveIdentifiers()) {
-			if (pi.equals(delegate)) {
+		for (PatientIdentifier patientIdentifier : delegate.getPatient().getActiveIdentifiers()) {
+			if (patientIdentifier.equals(delegate)) {
 				needToAdd = false;
 				break;
 			}

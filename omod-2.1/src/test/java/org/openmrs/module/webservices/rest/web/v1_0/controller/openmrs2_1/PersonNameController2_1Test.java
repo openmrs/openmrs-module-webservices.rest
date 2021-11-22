@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_1;
 
+import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_NAME_UUID;
+import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_UUID;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -20,9 +23,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_NAME_UUID;
-import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_UUID;
 
 /**
  * Tests functionality of {@link PersonNameController}.

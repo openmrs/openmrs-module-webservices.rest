@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,8 +22,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import java.util.List;
 
 /**
  * Contains tests for {@link RelationshipTypeController} CRUD operations
@@ -117,8 +116,7 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		
 		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
 		Assert.assertFalse(relationshipType.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
 	
 	@Test
@@ -136,8 +134,6 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Doc"))));
 		List<Object> hits = Util.getResultsList(result);
 		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
-		
-	}
-	
+		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));	
+	}	
 }

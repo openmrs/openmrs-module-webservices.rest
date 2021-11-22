@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,12 +32,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests functionality of Program CRUD by MainResourceController
@@ -125,10 +125,8 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
 		Assert.assertNotNull(result);
 		Assert.assertEquals(patientProgram.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(patientProgram.getPatient().getUuid(),
-		    ((Map) PropertyUtils.getProperty(result, "patient")).get("uuid"));
-		Assert.assertEquals(patientProgram.getProgram().getUuid(),
-		    ((Map) PropertyUtils.getProperty(result, "program")).get("uuid"));
+		Assert.assertEquals(patientProgram.getPatient().getUuid(), ((Map) PropertyUtils.getProperty(result, "patient")).get("uuid"));
+		Assert.assertEquals(patientProgram.getProgram().getUuid(), ((Map) PropertyUtils.getProperty(result, "program")).get("uuid"));
 	}
 	
 	@Test
@@ -212,7 +210,6 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		patientProgram = service.getPatientProgramByUuid(getUuid());
 		Assert.assertFalse(patientProgram.isVoided());
 		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-		
 	}
 	
 	@Test
@@ -221,5 +218,4 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		Assert.assertNull(service.getPatientProgramByUuid(getUuid()));
 	}
-	
 }

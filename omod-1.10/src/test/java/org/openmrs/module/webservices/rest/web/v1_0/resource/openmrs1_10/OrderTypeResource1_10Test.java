@@ -52,8 +52,6 @@ public class OrderTypeResource1_10Test extends BaseDelegatingResourceTest<OrderT
 		assertPropEquals("retired", getObject().isRetired());
 		assertPropPresent("parent");
 		assertPropPresent("conceptClasses");
-		assertPropPresent("auditInfo");
-		
-	}
-	
+		assertPropPresent("auditInfo");		
+	}	
 }

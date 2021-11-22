@@ -9,6 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -19,17 +29,6 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class ConversionUtil1_12Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -56,11 +55,9 @@ public class ConversionUtil1_12Test extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject converted = (SimpleObject) ConversionUtil.convertToRepresentation(toConvert, Representation.REF);
 		
-		assertThat(converted,
-		    (Matcher) hasEntry(is("date"), is(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date))));
+		assertThat(converted, (Matcher) hasEntry(is("date"), is(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(date))));
 		assertThat(converted, (Matcher) hasEntry(is("string"), is("a string")));
 		assertThat(converted, (Matcher) hasEntry(is("1"), is(hasEntry(is("uuid"), is(user.getUuid())))));
-		assertThat(converted,
-		    (Matcher) hasEntry(is("map"), is(hasEntry(is("concept"), is(hasEntry(is("uuid"), is(concept.getUuid())))))));
+		assertThat(converted, (Matcher) hasEntry(is("map"), is(hasEntry(is("concept"), is(hasEntry(is("uuid"), is(concept.getUuid())))))));
 	}
 }

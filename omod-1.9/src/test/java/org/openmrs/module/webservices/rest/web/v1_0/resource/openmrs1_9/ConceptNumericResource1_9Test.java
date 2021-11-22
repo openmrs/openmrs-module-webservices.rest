@@ -71,5 +71,4 @@ public class ConceptNumericResource1_9Test extends BaseDelegatingResourceTest<Co
 	public String getUuidProperty() {
 		return RestTestConstants1_8.CONCEPT_NUMERIC_UUID;
 	}
-	
 }

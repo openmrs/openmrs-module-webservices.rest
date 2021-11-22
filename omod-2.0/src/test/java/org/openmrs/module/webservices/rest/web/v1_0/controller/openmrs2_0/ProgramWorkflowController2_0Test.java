@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -16,9 +19,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class ProgramWorkflowController2_0Test extends MainResourceControllerTest {
 
@@ -46,8 +46,7 @@ public class ProgramWorkflowController2_0Test extends MainResourceControllerTest
 
 	@Test
 	public void shouldCreateWorkflow() throws Exception {
-		String json =
-				"{\"program\": \"" + RestTestConstants1_8.PROGRAM_UUID + "\",\"concept\": \"" + RestTestConstants1_8.CONCEPT_UUID + "\"}";
+		String json = "{\"program\": \"" + RestTestConstants1_8.PROGRAM_UUID + "\",\"concept\": \"" + RestTestConstants1_8.CONCEPT_UUID + "\"}";
 
 		SimpleObject newWorkflow = deserialize(handle(newPostRequest(getURI(), json)));
 

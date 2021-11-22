@@ -68,9 +68,9 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		CacheImpl cache = (CacheImpl) sessionFactory.getCache();
 		assertEquals(1, cache.getQueryCache(QUERY_REGION).getRegion().getElementCountInMemory());
 		
-		final String data = "{\"resource\": \"person\", \"subResource\": \"name\", \"uuid\": \"" + name.getUuid() + "\"}";
+		final String DATA = "{\"resource\": \"person\", \"subResource\": \"name\", \"uuid\": \"" + name.getUuid() + "\"}";
 		
-		MockHttpServletResponse response = handle(newPostRequest(CLEAR_DB_CACHE_URI, data));
+		MockHttpServletResponse response = handle(newPostRequest(CLEAR_DB_CACHE_URI, DATA));
 		
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertFalse(sessionFactory.getCache().containsEntity(PERSON_NAME_CLASS, ID_2));
@@ -104,9 +104,9 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		CacheImpl cache = (CacheImpl) sessionFactory.getCache();
 		assertEquals(1, cache.getQueryCache(QUERY_REGION).getRegion().getElementCountInMemory());
 		
-		final String data = "{\"resource\": \"person\", \"subResource\": \"name\"}";
+		final String DATA = "{\"resource\": \"person\", \"subResource\": \"name\"}";
 		
-		MockHttpServletResponse response = handle(newPostRequest(CLEAR_DB_CACHE_URI, data));
+		MockHttpServletResponse response = handle(newPostRequest(CLEAR_DB_CACHE_URI, DATA));
 		
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 		assertFalse(sessionFactory.getCache().containsEntity(PERSON_NAME_CLASS, ID_2));
@@ -159,5 +159,4 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		//All query result caches should have been discarded
 		assertEquals(0, cache.getQueryCache(QUERY_REGION).getRegion().getElementCountInMemory());
 	}
-	
 }

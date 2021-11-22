@@ -76,6 +76,5 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 			return new NeedsPaging<Encounter>(encounters, context);
 		}
 		return new EmptySearchResult();
-	}
-	
+	}	
 }

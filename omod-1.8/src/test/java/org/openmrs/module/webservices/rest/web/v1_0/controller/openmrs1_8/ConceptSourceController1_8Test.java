@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -63,8 +62,7 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetAConceptSourceByUuid() throws Exception {
-		
+	public void shouldGetAConceptSourceByUuid() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -77,11 +75,11 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAConceptSourceByName() throws Exception {
-		final String name = "ICD-10";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = "ICD-10";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		ConceptSource conceptSource = service.getConceptSourceByName(name);
+		ConceptSource conceptSource = service.getConceptSourceByName(NAME);
 		Assert.assertEquals(conceptSource.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertEquals(conceptSource.getName(), PropertyUtils.getProperty(result, "name"));
 	}
@@ -116,16 +114,16 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditAConceptSource() throws Exception {
-		final String newName = "updated name";
+		final String NEW_NAME = "updated name";
 		SimpleObject conceptSource = new SimpleObject();
-		conceptSource.add("name", newName);
+		conceptSource.add("name", NEW_NAME);
 		
 		String json = new ObjectMapper().writeValueAsString(conceptSource);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		Assert.assertEquals(newName, service.getConceptSourceByUuid(getUuid()).getName());
+		Assert.assertEquals(NEW_NAME, service.getConceptSourceByUuid(getUuid()).getName());
 	}
 	
 	@Test
@@ -133,11 +131,11 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(false, service.getConceptSourceByUuid(getUuid()).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		Assert.assertEquals(true, service.getConceptSourceByUuid(getUuid()).isRetired());
-		Assert.assertEquals(reason, service.getConceptSourceByUuid(getUuid()).getRetireReason());
+		Assert.assertEquals(REASON, service.getConceptSourceByUuid(getUuid()).getRetireReason());
 	}
 	
 	@Test
@@ -154,8 +152,7 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		
 		conceptSource = service.getConceptSourceByUuid(getUuid());
 		Assert.assertFalse(conceptSource.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
 	
 	@Test
@@ -182,6 +179,5 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 		req.addParameter("q", "ome");
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertEquals(2, Util.getResultsSize(result));
-	}
-	
+	}	
 }

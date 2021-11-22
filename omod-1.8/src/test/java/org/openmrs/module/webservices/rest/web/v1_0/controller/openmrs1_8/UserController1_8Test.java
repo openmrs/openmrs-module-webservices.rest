@@ -76,8 +76,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-first-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
 			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-			        new SearchQuery.Builder(
-			                "Allows you to find users by username")
+			        new SearchQuery.Builder("Allows you to find users by username")
 			                .withRequiredParameters(new SearchParameter("username", "admin"))
 			                .withOptionalParameters("preferredLocales").build());
 		}
@@ -103,8 +102,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-second-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
 			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-			        new SearchQuery.Builder(
-			                "Allows you to find users by username").withRequiredParameters(new SearchParameter("systemId"))
+			        new SearchQuery.Builder("Allows you to find users by username").withRequiredParameters(new SearchParameter("systemId"))
 			                .withOptionalParameters(new SearchParameter("username", "bruno")).build());
 		}
 		
@@ -129,10 +127,8 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		public SearchConfig getSearchConfig() {
 			return new SearchConfig("config-for-third-test", RestConstants.VERSION_1 + "/user", Arrays.asList("1.8.*",
 			    "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-			        new SearchQuery.Builder(
-			                "Allows you to find users by username").withOptionalParameters(
-			            new SearchParameter("username", "bruno"))
-			                .build());
+			        new SearchQuery.Builder("Allows you to find users by username").withOptionalParameters(
+			            new SearchParameter("username", "bruno")).build());
 		}
 		
 		@Override
@@ -152,7 +148,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createUser_shouldCreateANewUser() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
@@ -179,7 +174,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void createUser_shouldCreateANewUserWithRoles() throws Exception {
-		
 		long originalCount = getAllCount();
 		
 		SimpleObject user = new SimpleObject();
@@ -211,8 +205,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getUser_shouldGetADefaultRepresentationOfAUser() throws Exception {
-		
-		final String userName = "butch";
+		final String USER_NAME = "butch";
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
@@ -223,7 +216,7 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		
-		assertEquals(userName, PropertyUtils.getProperty(result, "username"));
+		assertEquals(USER_NAME, PropertyUtils.getProperty(result, "username"));
 		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
@@ -234,7 +227,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getUser_shouldGetAFullRepresentationOfAPatient() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		
@@ -255,7 +247,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void updateUser_shouldChangeAPropertyOnAUser() throws Exception {
-		
 		User user = service.getUserByUuid(getUuid());
 		Assert.assertNotNull(user);
 		Assert.assertFalse("5-6".equals(user.getSystemId()));
@@ -279,7 +270,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void retireUser_shouldRetireAUser() throws Exception {
-		
 		User user = service.getUserByUuid(getUuid());
 		Assert.assertFalse(user.isRetired());
 		
@@ -318,7 +308,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void findUsers_shouldFindMatchingUsers() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "but");
 		
@@ -426,7 +415,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getUser_shouldListAllUsers() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -442,23 +430,23 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		User user = service.getUserByUuid(getUuid());
 		assertNotNull(user);
 		assertNotEquals(user, Context.getAuthenticatedUser());
-		final String username = user.getUsername();
-		final String newPassword = "SomeOtherPassword123";
+		final String USER_NAME = user.getUsername();
+		final String NEW_PASSWORD = "SomeOtherPassword123";
 		
 		ContextAuthenticationException exception = null;
 		try {
-			Context.authenticate(username, newPassword);
+			Context.authenticate(USER_NAME, NEW_PASSWORD);
 		}
 		catch (ContextAuthenticationException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
-		assertEquals("Invalid username and/or password: " + username, exception.getMessage());
+		assertEquals("Invalid username and/or password: " + USER_NAME, exception.getMessage());
 		
-		handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + newPassword + "\"}"));
+		handle(newPostRequest(getURI() + "/" + user.getUuid(), "{\"password\":\"" + NEW_PASSWORD + "\"}"));
 		Context.logout();
 		
-		Context.authenticate(username, newPassword);
+		Context.authenticate(USER_NAME, NEW_PASSWORD);
 		assertEquals(user, Context.getAuthenticatedUser());
 	}
 	

@@ -14,6 +14,10 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Field;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,9 +31,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * {@link Resource} for {@link Field}, supporting standard CRUD operations
  */
@@ -40,20 +41,17 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("tableName", new StringProperty())
-			        .property("attributeName", new StringProperty())
-			        .property("defaultValue", new StringProperty())
-			        .property("selectMultiple", new BooleanProperty()._default(false));
+			modelImpl.property("tableName", new StringProperty())
+			         .property("attributeName", new StringProperty())
+			         .property("defaultValue", new StringProperty())
+			         .property("selectMultiple", new BooleanProperty()._default(false));
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("fieldType", new RefProperty("#/definitions/FieldtypeGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			modelImpl.property("fieldType", new RefProperty("#/definitions/FieldtypeGetRef"))
+			         .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("fieldType", new RefProperty("#/definitions/FieldtypeGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
+			modelImpl.property("fieldType", new RefProperty("#/definitions/FieldtypeGet"))
+			         .property("concept", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return modelImpl;
 	}

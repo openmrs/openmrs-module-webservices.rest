@@ -48,5 +48,4 @@ public class PatientResource1_9Test extends BaseDelegatingResourceTest<PatientRe
 	public String getUuidProperty() {
 		return RestTestConstants1_8.PATIENT_UUID;
 	}
-	
 }

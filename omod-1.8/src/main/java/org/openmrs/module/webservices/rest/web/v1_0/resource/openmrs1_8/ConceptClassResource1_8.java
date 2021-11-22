@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import io.swagger.models.Model;
+
 import org.openmrs.ConceptClass;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -79,6 +80,5 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 	protected NeedsPaging<ConceptClass> doGetAll(RequestContext context) {
 		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(context.getIncludeAll()),
 		        context);
-	}
-	
+	}	
 }

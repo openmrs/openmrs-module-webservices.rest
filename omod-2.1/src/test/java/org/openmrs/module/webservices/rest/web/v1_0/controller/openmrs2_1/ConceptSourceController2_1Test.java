@@ -76,6 +76,5 @@ public class ConceptSourceController2_1Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newConceptSource, "uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
-	}
-	
+	}	
 }

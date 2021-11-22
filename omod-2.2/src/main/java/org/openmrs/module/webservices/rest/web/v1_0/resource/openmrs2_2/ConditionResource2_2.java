@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Condition;
 import org.openmrs.api.ConditionService;
 import org.openmrs.api.context.Context;
@@ -82,18 +83,17 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("condition", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("clinicalStatus", new StringProperty())
-			        .property("verificationStatus", new StringProperty())
-			        .property("previousVersion", new StringProperty())
-			        .property("onsetDate", new StringProperty())
-			        .property("endDate", new StringProperty())
-			        .property("additionalDetail", new StringProperty())
-			        .property("voided", new StringProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("condition", new StringProperty())
+			     .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			     .property("clinicalStatus", new StringProperty())
+			     .property("verificationStatus", new StringProperty())
+			     .property("previousVersion", new StringProperty())
+			     .property("onsetDate", new StringProperty())
+			     .property("endDate", new StringProperty())
+			     .property("additionalDetail", new StringProperty())
+			     .property("voided", new StringProperty());
 		}
 		return model;
 	}

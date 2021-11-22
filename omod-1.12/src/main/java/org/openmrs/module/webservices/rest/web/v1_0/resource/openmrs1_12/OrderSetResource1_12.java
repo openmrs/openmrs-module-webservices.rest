@@ -9,10 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
+import java.util.List;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OrderSet;
@@ -31,8 +34,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/orderset", supportedClass = OrderSet.class, supportedOpenmrsVersions = {
         "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -102,27 +103,22 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = super.getCreatableProperties();
-		d.addProperty("operator");
-		d.addProperty("orderSetMembers");
-		return d;
+		DelegatingResourceDescription description = super.getCreatableProperties();
+		description.addProperty("operator");
+		description.addProperty("orderSetMembers");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("operator", new EnumProperty(OrderSet.Operator.class));
+			modelImpl.property("operator", new EnumProperty(OrderSet.Operator.class));
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(new RefProperty(
-			                "#/definitions/OrdersetOrdersetmemberGetRef")));
+			modelImpl.property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberGetRef")));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(
-			                new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
+			modelImpl.property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
 		}
 		return modelImpl;
 	}
@@ -131,7 +127,6 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 	public Model getCREATEModel(Representation representation) {
 		return new ModelImpl()
 		        .property("operator", new EnumProperty(OrderSet.Operator.class))
-		        .property("orderSetMembers",
-		            new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
+		        .property("orderSetMembers", new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
 	}
 }

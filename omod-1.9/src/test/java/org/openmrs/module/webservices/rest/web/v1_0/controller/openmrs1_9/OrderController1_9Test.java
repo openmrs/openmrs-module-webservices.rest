@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -29,9 +32,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Integration tests for the Order resource
@@ -78,8 +78,7 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetOrderAsRef() throws Exception {
-		
+	public void shouldGetOrderAsRef() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, Representation.REF.getRepresentation());
 		SimpleObject result = deserialize(handle(req));
@@ -126,32 +125,27 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAllOrders() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
 		int count = service.getOrders(Order.class, null, null, null, null, null, null).size();
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
-		
 	}
 	
 	@Test
 	public void shouldGetAllDrugOrders() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder");
 		SimpleObject result = deserialize(handle(req));
 		
 		int count = service.getOrders(DrugOrder.class, null, null, null, null, null, null).size();
 		
-		Assert.assertEquals(count, Util.getResultsSize(result));
-		
+		Assert.assertEquals(count, Util.getResultsSize(result));	
 	}
 	
 	@Test
 	public void shouldGetAllOrdersByPatient() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter("patient", PATIENT_UUID);
 		SimpleObject result = deserialize(handle(req));
@@ -159,12 +153,10 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		List<Order> orders = service.getOrdersByPatient(patient);
 		Assert.assertEquals(orders.size(), Util.getResultsSize(result));
-		
 	}
 	
 	@Test
 	public void shouldGetAllDrugOrdersByPatient() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder");
 		req.setParameter("patient", PATIENT_UUID);
@@ -178,7 +170,6 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldCreateOrder() throws Exception {
-		
 		SimpleObject order = new SimpleObject();
 		order.add("type", "order");
 		order.add("patient", PATIENT_UUID);
@@ -196,7 +187,6 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldCreateDrugOrder() throws Exception {
-		
 		SimpleObject order = new SimpleObject();
 		order.add("type", "drugorder");
 		order.add("patient", PATIENT_UUID);
@@ -217,7 +207,6 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldUpdateOrder() throws Exception {
-		
 		SimpleObject content = new SimpleObject();
 		content.add("instructions", "Updated instructions");
 		
@@ -241,12 +230,10 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		order = service.getOrderByUuid(getUuid());
 		Assert.assertFalse(order.isVoided());
 		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-		
 	}
 	
 	@Test
 	public void shouldUpdateDrugOrder() throws Exception {
-		
 		SimpleObject content = new SimpleObject();
 		content.add("dose", "500");
 		
@@ -277,13 +264,11 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailToChangeOrderType() throws Exception {
-		
 		SimpleObject content = new SimpleObject();
 		content.add("type", "order");
 		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), content);
-		handle(req);
-		
+		handle(req);	
 	}
 	
 	@Test
@@ -321,5 +306,4 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		Assert.assertNull(service.getOrderByUuid(DRUG_ORDER_UUID));
 	}
-	
 }

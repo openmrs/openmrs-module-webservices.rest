@@ -13,7 +13,6 @@ import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormResource1_8;
 
 public class FormResource1_8Test extends BaseDelegatingResourceTest<FormResource1_8, Form> {
 	
@@ -67,5 +66,4 @@ public class FormResource1_8Test extends BaseDelegatingResourceTest<FormResource
 		assertPropPresent("formFields");
 		assertPropPresent("auditInfo");
 	}
-	
 }

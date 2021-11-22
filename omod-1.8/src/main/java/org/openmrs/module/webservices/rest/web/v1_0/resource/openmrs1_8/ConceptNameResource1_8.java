@@ -9,14 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
@@ -76,11 +77,10 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		        .property("display", new StringProperty());
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("name", new StringProperty())
-			        .property("locale", new StringProperty().example("en"))
-			        .property("localePreferred", new BooleanProperty())
-			        .property("conceptNameType", new EnumProperty(ConceptNameType.class));
+			model.property("name", new StringProperty())
+			     .property("locale", new StringProperty().example("en"))
+			     .property("localePreferred", new BooleanProperty())
+			     .property("conceptNameType", new EnumProperty(ConceptNameType.class));
 		}
 		return model;
 	}
@@ -97,8 +97,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	
 	@Override
 	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new StringProperty()); //FIXME missing props
+		return new ModelImpl().property("name", new StringProperty()); //FIXME missing props
 	}
 	
 	/**
@@ -160,12 +159,12 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void delete(ConceptName cn, String reason, RequestContext context) throws ResponseException {
-		cn.setVoided(true);
-		cn.setVoidedBy(Context.getAuthenticatedUser());
-		cn.setVoidReason(reason);
-		cn.setDateVoided(new Date());
-		Context.getConceptService().saveConcept(cn.getConcept());
+	public void delete(ConceptName conceptName, String reason, RequestContext context) throws ResponseException {
+		conceptName.setVoided(true);
+		conceptName.setVoidedBy(Context.getAuthenticatedUser());
+		conceptName.setVoidReason(reason);
+		conceptName.setDateVoided(new Date());
+		Context.getConceptService().saveConcept(conceptName.getConcept());
 	}
 	
 	/**
@@ -173,9 +172,9 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public void purge(ConceptName cn, RequestContext context) throws ResponseException {
-		cn.getConcept().removeName(cn);
-		Context.getConceptService().saveConcept(cn.getConcept());
+	public void purge(ConceptName conceptName, RequestContext context) throws ResponseException {
+		conceptName.getConcept().removeName(conceptName);
+		Context.getConceptService().saveConcept(conceptName.getConcept());
 	}
 	
 	/**
@@ -185,14 +184,13 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	public ConceptName save(ConceptName newName) {
 		// make sure that the name has actually been added to the concept
 		boolean needToAdd = true;
-		for (ConceptName cn : newName.getConcept().getNames()) {
-			if (cn.equals(newName)) {
+		for (ConceptName conceptName : newName.getConcept().getNames()) {
+			if (conceptName.equals(newName)) {
 				needToAdd = false;
 				break;
 			}
 		}
-		if (needToAdd)
-			newName.getConcept().addName(newName);
+		if (needToAdd) newName.getConcept().addName(newName);
 		Context.getConceptService().saveConcept(newName.getConcept());
 		return newName;
 	}
@@ -223,8 +221,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	 * @return
 	 */
 	@PropertyGetter("locale")
-	public String getLocaleAsString(ConceptName instance) {
-		
+	public String getLocaleAsString(ConceptName instance) {	
 		if (instance.getLocale() == null)
 			return "";
 		

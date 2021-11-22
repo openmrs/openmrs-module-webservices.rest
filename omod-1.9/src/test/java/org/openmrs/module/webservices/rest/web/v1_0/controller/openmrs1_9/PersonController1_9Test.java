@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -34,8 +40,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests CRUD operations for {@link Person}s via web service calls
@@ -95,8 +99,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		
 		Map<String, String> auditInfo = (Map<String, String>) PropertyUtils.getProperty(result, "auditInfo");
 		
-		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL),
-		    auditInfo.get("dateCreated"));
+		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL), auditInfo.get("dateCreated"));
 	}
 	
 	@Test
@@ -127,17 +130,17 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldCreateAPersonWithAttributes() throws Exception {
 		long originalCount = service.getPeople("", false).size();
-		final String birthPlace = "Nsambya";
+		final String BIRTH_PLACE = "Nsambya";
 		String json = "{ \"names\": [{ \"givenName\":\"Helen\", \"familyName\":\"of Troy\" }], "
 		        + "\"birthdate\":\"2003-01-01\", \"gender\":\"F\", \"attributes\":"
-		        + "[{\"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\",\"value\": \"" + birthPlace + "\"}] }";
+		        + "[{\"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\",\"value\": \"" + BIRTH_PLACE + "\"}] }";
 		
 		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
 		
 		String uuid = PropertyUtils.getProperty(newPerson, "uuid").toString();
 		Person person = Context.getPersonService().getPersonByUuid(uuid);
 		assertEquals(++originalCount, service.getPeople("", false).size());
-		assertEquals(birthPlace, person.getAttribute("Birthplace").getValue());
+		assertEquals(BIRTH_PLACE, person.getAttribute("Birthplace").getValue());
 	}
 	
 	@Test
@@ -211,14 +214,14 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldVoidAPerson() throws Exception {
 		Person person = service.getPersonByUuid(getUuid());
-		final String reason = "some random reason";
+		final String REASON = "some random reason";
 		assertEquals(false, person.isVoided());
 		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", ""),
-		    new Parameter("reason", reason));
+		    new Parameter("reason", REASON));
 		handle(req);
 		person = service.getPersonByUuid(getUuid());
 		assertTrue(person.isVoided());
-		assertEquals(reason, person.getVoidReason());
+		assertEquals(REASON, person.getVoidReason());
 	}
 	
 	@Test
@@ -234,16 +237,15 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		person = service.getPersonByUuid(getUuid());
 		assertFalse(person.isVoided());
 		assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
-		
 	}
 	
 	@Test
 	public void shouldPurgeAPerson() throws Exception {
-		final String uuid = "86526ed6-3c11-11de-a0ba-001e378eb67e";
-		assertNotNull(service.getPersonByUuid(uuid));
-		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true"));
+		final String UUID = "86526ed6-3c11-11de-a0ba-001e378eb67e";
+		assertNotNull(service.getPersonByUuid(UUID));
+		MockHttpServletRequest req = newDeleteRequest(getURI() + "/" + UUID, new Parameter("purge", "true"));
 		handle(req);
-		assertNull(service.getPersonByUuid(uuid));
+		assertNull(service.getPersonByUuid(UUID));
 	}
 	
 	@Test

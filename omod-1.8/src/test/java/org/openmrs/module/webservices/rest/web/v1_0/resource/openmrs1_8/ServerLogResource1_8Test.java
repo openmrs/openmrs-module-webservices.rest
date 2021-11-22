@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
+
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,8 +23,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.ArrayList;
 
 /**
  * Integration tests for the ServerLogResource class
@@ -44,8 +44,7 @@ public class ServerLogResource1_8Test extends BaseModuleWebContextSensitiveTest 
 
 	@Test
 	public void testGetAll() {
-		ServerLogResource1_8 serverLogResource = (ServerLogResource1_8) restService
-				.getResourceBySupportedClass(ServerLogActionWrapper.class);
+		ServerLogResource1_8 serverLogResource = (ServerLogResource1_8) restService.getResourceBySupportedClass(ServerLogActionWrapper.class);
 		serverLogResource.setServerLogActionWrapper(mockServerLogActionWrapper);
 
 		MockHttpServletRequest request = new MockHttpServletRequest();

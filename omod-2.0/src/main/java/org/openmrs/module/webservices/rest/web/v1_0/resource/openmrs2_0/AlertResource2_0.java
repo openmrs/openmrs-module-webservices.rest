@@ -19,6 +19,12 @@ import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.ObjectProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,11 +42,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link Resource} for {@link Alert}, supporting standard CRUD operations
@@ -157,24 +158,22 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 				.property(ALERT_ID, new IntegerProperty());
 
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
+			modelImpl.property(TEXT, new StringProperty())
+					 .property(SATISFIED_BY_ANY, new BooleanProperty())
+					 .property(ALERT_READ, new BooleanProperty())
+					 .property(DATE_TO_EXPIRE, new DateProperty())
+					 .property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
 		}
 		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(CREATOR, new ObjectProperty())
-					.property(DATE_CREATED, new DateTimeProperty())
-					.property(CHANGED_BY, new ObjectProperty())
-					.property(DATE_CHANGED, new DateTimeProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
+			modelImpl.property(TEXT, new StringProperty())
+					 .property(SATISFIED_BY_ANY, new BooleanProperty())
+					 .property(ALERT_READ, new BooleanProperty())
+					 .property(DATE_TO_EXPIRE, new DateProperty())
+				   	 .property(CREATOR, new ObjectProperty())
+					 .property(DATE_CREATED, new DateTimeProperty())
+					 .property(CHANGED_BY, new ObjectProperty())
+					 .property(DATE_CHANGED, new DateTimeProperty())
+					 .property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
 		}
 		return modelImpl;
 	}

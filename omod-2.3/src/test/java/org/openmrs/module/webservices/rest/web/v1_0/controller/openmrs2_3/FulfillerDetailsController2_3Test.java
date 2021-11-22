@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_3;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
@@ -18,8 +20,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_3;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
-
 public class FulfillerDetailsController2_3Test extends MainResourceControllerTest {
 
 	@Test
@@ -27,8 +27,7 @@ public class FulfillerDetailsController2_3Test extends MainResourceControllerTes
 		Order.FulfillerStatus fulfillerStatus = Order.FulfillerStatus.RECEIVED;
 		String accessionNumber = "123-abc";
 		String fillerComment = "An example comment from a filler";
-		SimpleObject post = new SimpleObject().add("fulfillerStatus", fulfillerStatus)
-		        .add("fulfillerComment", fillerComment)
+		SimpleObject post = new SimpleObject().add("fulfillerStatus", fulfillerStatus).add("fulfillerComment", fillerComment)
                 .add("accessionNumber", accessionNumber);
 		MockHttpServletRequest request = newPostRequest(getURI(), post);
 

@@ -62,8 +62,6 @@ public class ProgramAttributeTypeResource2_2 extends BaseAttributeTypeCrudResour
 	
 	@Override
 	protected NeedsPaging<ProgramAttributeType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<ProgramAttributeType>(Context.getProgramWorkflowService()
-		        .getAllProgramAttributeTypes(),
-		        context);
+		return new NeedsPaging<ProgramAttributeType>(Context.getProgramWorkflowService().getAllProgramAttributeTypes(), context);
 	}
 }

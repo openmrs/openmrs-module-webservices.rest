@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.MapProperty;
+
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -46,8 +47,7 @@ public class ServerLogResource1_8 extends BaseDelegatingResource<ServerLogAction
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return ((ModelImpl) super.getGETModel(rep))
-		        .property("serverLog", new MapProperty());
+		return ((ModelImpl) super.getGETModel(rep)).property("serverLog", new MapProperty());
 	}
 	
 	@Override

@@ -40,5 +40,4 @@ public class OrderResource2_2Test extends BaseDelegatingResourceTest<OrderResour
 		assertPropPresent("fulfillerStatus");
 		assertPropPresent("fulfillerComment");
 	}
-	
 }

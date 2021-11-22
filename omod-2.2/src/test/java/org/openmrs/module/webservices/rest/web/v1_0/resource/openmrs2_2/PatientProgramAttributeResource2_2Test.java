@@ -13,7 +13,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 import org.openmrs.PatientProgramAttribute;
 import org.openmrs.api.ProgramWorkflowService;
 import org.junit.Before;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;

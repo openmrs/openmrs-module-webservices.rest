@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -23,10 +27,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  * Tests CRUD operations for {@link ConceptMapType}s via web service calls
@@ -69,11 +69,11 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldGetAConceptMapTypeByName() throws Exception {
-		final String name = "related-to";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = "related-to";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		ConceptMapType conceptMapTypeType = service.getConceptMapTypeByName(name);
+		ConceptMapType conceptMapTypeType = service.getConceptMapTypeByName(NAME);
 		assertEquals(conceptMapTypeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(conceptMapTypeType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
@@ -107,16 +107,16 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldEditingAConceptMapType() throws Exception {
-		final String newName = "updated name";
+		final String NEW_NAME = "updated name";
 		SimpleObject conceptMapTypeType = new SimpleObject();
-		conceptMapTypeType.add("name", newName);
+		conceptMapTypeType.add("name", NEW_NAME);
 		
 		String json = new ObjectMapper().writeValueAsString(conceptMapTypeType);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newName, service.getConceptMapTypeByUuid(getUuid()).getName());
+		assertEquals(NEW_NAME, service.getConceptMapTypeByUuid(getUuid()).getName());
 	}
 	
 	@Test
@@ -124,11 +124,11 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 		assertEquals(false, service.getConceptMapTypeByUuid(getUuid()).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getConceptMapTypeByUuid(getUuid()).isRetired());
-		assertEquals(reason, service.getConceptMapTypeByUuid(getUuid()).getRetireReason());
+		assertEquals(REASON, service.getConceptMapTypeByUuid(getUuid()).getRetireReason());
 	}
 	
 	@Test

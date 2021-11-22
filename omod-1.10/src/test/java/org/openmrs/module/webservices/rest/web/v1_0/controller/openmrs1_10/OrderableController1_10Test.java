@@ -164,5 +164,4 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 	@Ignore
 	public void shouldGetRefByUuid() throws Exception {
 	}
-	
 }

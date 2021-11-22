@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
 import org.openmrs.CareSetting;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
@@ -74,8 +75,7 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("careSettingType", new EnumProperty(CareSetting.CareSettingType.class));
+			model.property("careSettingType", new EnumProperty(CareSetting.CareSettingType.class));
 		}
 		return model;
 	}
@@ -103,11 +103,11 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	 */
 	@Override
 	public CareSetting getByUniqueId(String uniqueId) {
-		CareSetting cs = Context.getOrderService().getCareSettingByUuid(uniqueId);
-		if (cs == null) {
-			cs = Context.getOrderService().getCareSettingByName(uniqueId);
+		CareSetting careCareSetting = Context.getOrderService().getCareSettingByUuid(uniqueId);
+		if (careCareSetting == null) {
+			careCareSetting = Context.getOrderService().getCareSettingByName(uniqueId);
 		}
-		return cs;
+		return careCareSetting;
 	}
 	
 	/**
@@ -134,9 +134,8 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	protected NeedsPaging<CareSetting> doSearch(RequestContext context) {
 		List<CareSetting> careSettings = Context.getOrderService().getCareSettings(context.getIncludeAll());
 		for (Iterator<CareSetting> iterator = careSettings.iterator(); iterator.hasNext();) {
-			CareSetting cs = iterator.next();
-			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(cs.getName())
-			        .find()) {
+			CareSetting setting = iterator.next();
+			if (!Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE).matcher(setting.getName()).find()) {
 				iterator.remove();
 			}
 		}

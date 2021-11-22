@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.resource;
 
 import io.swagger.models.Model;
+
 import org.openmrs.GlobalProperty;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RequestContext;

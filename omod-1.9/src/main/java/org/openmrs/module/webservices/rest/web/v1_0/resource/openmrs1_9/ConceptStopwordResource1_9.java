@@ -12,6 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,8 +29,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.ConceptStopWord;
-
-import java.util.List;
 
 /**
  * {@link Resource} for {@link ConceptStopWord}, supporting standard CRUD operations
@@ -91,9 +92,8 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		        .property("display", new StringProperty());
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("value", new StringProperty())
-			        .property("locale", new StringProperty().example("en")); //FIXME type
+			modelImpl.property("value", new StringProperty())
+			         .property("locale", new StringProperty().example("en")); //FIXME type
 		}
 		return modelImpl;
 	}

@@ -30,5 +30,4 @@ public class CareSettingResource1_10Test extends BaseDelegatingResourceTest<Care
 	public String getUuidProperty() {
 		return RestTestConstants1_10.CARE_SETTING_UUID;
 	}
-	
 }

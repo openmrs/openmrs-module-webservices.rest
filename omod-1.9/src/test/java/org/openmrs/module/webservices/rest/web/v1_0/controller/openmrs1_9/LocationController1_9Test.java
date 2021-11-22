@@ -9,8 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import java.util.Collection;
 import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -26,9 +30,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Tests functionality of {@link LocationController}.
@@ -70,20 +71,17 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetALocationByUuid() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
 		Location location = service.getLocationByUuid(getUuid());
 		Assert.assertNotNull(result);
 		Assert.assertEquals(location.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));
-		
+		Assert.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));	
 	}
 	
 	@Test
-	public void shouldGetALocationByName() throws Exception {
-		
+	public void shouldGetALocationByName() throws Exception {	
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/Xanadu");
 		SimpleObject result = deserialize(handle(req));
 		
@@ -95,13 +93,11 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldListAllUnRetiredLocations() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
-		
+		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));	
 	}
 	
 	@Test
@@ -121,22 +117,19 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newLocation, "uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
-		
 	}
 	
 	@Test
 	public void shouldEditALocation() throws Exception {
-		
-		final String editedName = "Xanadu edited";
-		String json = "{ \"name\":\"" + editedName + "\" }";
+		final String EDITED_NAME = "Xanadu edited";
+		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		
 		Location editedLocation = service.getLocationByUuid(getUuid());
 		Assert.assertNotNull(editedLocation);
-		Assert.assertEquals(editedName, editedLocation.getName());
-		
+		Assert.assertEquals(EDITED_NAME, editedLocation.getName());	
 	}
 	
 	/**
@@ -158,7 +151,6 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldOverwriteAListOfChildLocations() throws Exception {
-		
 		Location location = service.getLocationByUuid(getUuid());
 		location.addChildLocation(service.getLocation(2));
 		service.saveLocation(location);
@@ -170,12 +162,10 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Location updatedLocation = service.getLocationByUuid(getUuid());
 		Assert.assertNotNull(updatedLocation);
 		Assert.assertTrue(updatedLocation.getChildLocations().isEmpty());
-		
 	}
 	
 	@Test
 	public void shouldRetireALocation() throws Exception {
-		
 		Location location = service.getLocation(2);
 		Assert.assertFalse(location.isRetired());
 		
@@ -187,12 +177,10 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Location retiredLocation = service.getLocation(2);
 		Assert.assertTrue(retiredLocation.isRetired());
 		Assert.assertEquals("random reason", retiredLocation.getRetireReason());
-		
 	}
 	
 	@Test
 	public void shouldUnretireALocation() throws Exception {
-		
 		Location location = service.getLocation(3);
 		Assert.assertTrue(location.isRetired());
 		
@@ -201,25 +189,21 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Location updatedLocation = service.getLocationByUuid(getUuid());
-		Assert.assertTrue(!updatedLocation.isRetired());
-		
+		Assert.assertTrue(!updatedLocation.isRetired());	
 	}
 	
 	@Test
 	public void shouldPurgeARetiredLocation() throws Exception {
-		
 		Location location = service.getLocation(3);
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + location.getUuid());
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getLocation(3));
-		
+		Assert.assertNull(service.getLocation(3));	
 	}
 	
 	@Test
 	public void shouldIncludeTheParentLocation() throws Exception {
-		
 		Location location = service.getLocationByUuid(getUuid());
 		location.setParentLocation(service.getLocation(2));
 		service.saveLocation(location);
@@ -230,12 +214,10 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));
-		
 	}
 	
 	@Test
 	public void shouldIncludeTheListOfChildLocations() throws Exception {
-		
 		Location location = service.getLocationByUuid(getUuid());
 		Assert.assertEquals(0, location.getChildLocations().size());
 		location.addChildLocation(service.getLocation(2));
@@ -246,24 +228,20 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
-		
 	}
 	
 	@Test
 	public void shouldReturnTheAuditInfoForTheFullRepresentation() throws Exception {
-		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-		
 	}
 	
 	@Test
 	public void shouldSearchAndReturnAListOfLocationsMatchingTheQueryString() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "xan");
 		SimpleObject result = deserialize(handle(req));
@@ -271,12 +249,10 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
-		
 	}
 	
 	@Test
 	public void shouldSearchAndReturnListOfLocationsWithSpecifiedTag() throws Exception {
-		
 		executeDataSet(LOCATION_TAG_INITIAL_XML);
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -290,7 +266,6 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldSearchAndReturnListOfLocationsWithSpecifiedTagAndQueryString() throws Exception {
-		
 		executeDataSet(LOCATION_TAG_INITIAL_XML);
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -305,7 +280,6 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldSearchAndReturnNothingIfTagDoesNotMatchEvenIfQueryDoes() throws Exception {
-		
 		executeDataSet(LOCATION_TAG_INITIAL_XML);
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -315,6 +289,5 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(0, hits.size()); // should ignore retired location?
-	}
-	
+	}	
 }

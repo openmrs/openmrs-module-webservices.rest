@@ -49,8 +49,8 @@ public class DrugsSearchByMappingHandler1_10 implements SearchHandler {
 	
 	SearchQuery searchQuery = new SearchQuery.Builder(
 	        "Allows you to find drugs by source, code and preferred map types(comma delimited). "
-	                + "Gets the best matching drug, i.e. matching the earliest ConceptMapType passed if there are "
-	                + "multiple matches for the highest-priority ConceptMapType")
+	        + "Gets the best matching drug, i.e. matching the earliest ConceptMapType passed if there are "
+	        + "multiple matches for the highest-priority ConceptMapType")
 	        .withRequiredParameters(REQUEST_PARAM_SOURCE)
 	        .withOptionalParameters(REQUEST_PARAM_CODE, REQUEST_PARAM_MAP_TYPES).build();
 	
@@ -96,8 +96,7 @@ public class DrugsSearchByMappingHandler1_10 implements SearchHandler {
 			}
 		}
 		
-		List<Drug> drugs = conceptService.getDrugsByMapping(code, source, mapTypesInOrderOfPreference,
-		    context.getIncludeAll());
+		List<Drug> drugs = conceptService.getDrugsByMapping(code, source, mapTypesInOrderOfPreference, context.getIncludeAll());
 		return new NeedsPaging<Drug>(drugs, context);
 	}
 }

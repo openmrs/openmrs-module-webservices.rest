@@ -63,49 +63,47 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("display");
-			d.addProperty("drug", Representation.REF);
-			d.addProperty("dosingType");
-			d.addProperty("dose");
-			d.addProperty("doseUnits", Representation.REF);
-			d.addProperty("frequency", Representation.REF);
-			d.addProperty("asNeeded");
-			d.addProperty("asNeededCondition");
-			d.addProperty("quantity");
-			d.addProperty("quantityUnits", Representation.REF);
-			d.addProperty("numRefills");
-			d.addProperty("dosingInstructions");
-			d.addProperty("duration");
-			d.addProperty("durationUnits", Representation.REF);
-			d.addProperty("route", Representation.REF);
-			d.addProperty("brandName");
-			d.addProperty("dispenseAsWritten");
-			return d;
+			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("display");
+			description.addProperty("drug", Representation.REF);
+			description.addProperty("dosingType");
+			description.addProperty("dose");
+			description.addProperty("doseUnits", Representation.REF);
+			description.addProperty("frequency", Representation.REF);
+			description.addProperty("asNeeded");
+			description.addProperty("asNeededCondition");
+			description.addProperty("quantity");
+			description.addProperty("quantityUnits", Representation.REF);
+			description.addProperty("numRefills");
+			description.addProperty("dosingInstructions");
+			description.addProperty("duration");
+			description.addProperty("durationUnits", Representation.REF);
+			description.addProperty("route", Representation.REF);
+			description.addProperty("brandName");
+			description.addProperty("dispenseAsWritten");
+			return description;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("display");
-			d.addProperty("drug", Representation.REF);
-			d.addProperty("dosingType");
-			d.addProperty("dose");
-			d.addProperty("doseUnits", Representation.DEFAULT);
-			d.addProperty("frequency", Representation.REF);
-			d.addProperty("asNeeded");
-			d.addProperty("asNeededCondition");
-			d.addProperty("quantity");
-			d.addProperty("quantityUnits", Representation.DEFAULT);
-			d.addProperty("numRefills");
-			d.addProperty("dosingInstructions");
-			d.addProperty("duration");
-			d.addProperty("durationUnits", Representation.DEFAULT);
-			d.addProperty("route", Representation.REF);
-			d.addProperty("brandName");
-			d.addProperty("dispenseAsWritten");
-			return d;
+			OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("display");
+			description.addProperty("drug", Representation.REF);
+			description.addProperty("dosingType");
+			description.addProperty("dose");
+			description.addProperty("doseUnits", Representation.DEFAULT);
+			description.addProperty("frequency", Representation.REF);
+			description.addProperty("asNeeded");
+			description.addProperty("asNeededCondition");
+			description.addProperty("quantity");
+			description.addProperty("quantityUnits", Representation.DEFAULT);
+			description.addProperty("numRefills");
+			description.addProperty("dosingInstructions");
+			description.addProperty("duration");
+			description.addProperty("durationUnits", Representation.DEFAULT);
+			description.addProperty("route", Representation.REF);
+			description.addProperty("brandName");
+			description.addProperty("dispenseAsWritten");
+			return description;
 		}
 		return null;
 	}
@@ -115,27 +113,26 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		DelegatingResourceDescription d = orderResource.getCreatableProperties();
-		d.addProperty("drug");
-		d.addProperty("dosingType");
-		d.addProperty("dose");
-		d.addProperty("doseUnits");
-		d.addProperty("frequency");
-		d.addProperty("asNeeded");
-		d.addProperty("asNeededCondition");
-		d.addProperty("quantity");
-		d.addProperty("quantityUnits");
-		d.addProperty("numRefills");
-		d.addProperty("administrationInstructions");
-		d.addProperty("dosingInstructions");
-		d.addProperty("duration");
-		d.addProperty("durationUnits");
-		d.addProperty("route");
-		d.addProperty("brandName");
-		d.addProperty("dispenseAsWritten");
-		return d;
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		DelegatingResourceDescription description = orderResource.getCreatableProperties();
+		description.addProperty("drug");
+		description.addProperty("dosingType");
+		description.addProperty("dose");
+		description.addProperty("doseUnits");
+		description.addProperty("frequency");
+		description.addProperty("asNeeded");
+		description.addProperty("asNeededCondition");
+		description.addProperty("quantity");
+		description.addProperty("quantityUnits");
+		description.addProperty("numRefills");
+		description.addProperty("administrationInstructions");
+		description.addProperty("dosingInstructions");
+		description.addProperty("duration");
+		description.addProperty("durationUnits");
+		description.addProperty("route");
+		description.addProperty("brandName");
+		description.addProperty("dispenseAsWritten");
+		return description;
 	}
 	
 	/**
@@ -143,8 +140,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		//this actually throws a ResourceDoesNotSupportOperationException
 		return orderResource.getUpdatableProperties();
 	}
@@ -166,13 +162,10 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		String status = context.getRequest().getParameter("status");
 		OrderService os = Context.getOrderService();
 		OrderType orderType = os.getOrderTypeByName("Drug order");
-		List<Order> drugOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate,
-		    context.getIncludeAll());
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		List<Order> drugOrders = OrderUtil.getOrders(patient, careSetting, orderType, status, asOfDate, context.getIncludeAll());
+		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		if (StringUtils.isNotBlank(sortParam)) {
-			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(drugOrders, sortParam,
-			    status);
+			List<Order> sortedOrder = orderResource.sortOrdersBasedOnDateActivatedOrDateStopped(drugOrders, sortParam, status);
 			return new NeedsPaging<Order>(sortedOrder, context);
 		}
 		else {
@@ -194,12 +187,10 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		}
 		if (Order.Action.DISCONTINUE != delegate.getAction() && delegate.getDosingType() != null
 		        && delegate.getDosingInstructionsInstance() != null) {
-			String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(
-			    Context.getLocale());
+			String dosingInstructionsAsString = delegate.getDosingInstructionsInstance().getDosingInstructionsAsString(Context.getLocale());
 			ret.append(": ");
 			ret.append(dosingInstructionsAsString);
-		}
-		
+		}		
 		return ret.toString();
 	}
 }

@@ -18,7 +18,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 
 public class OrderResource1_8Test extends BaseDelegatingResourceTest<OrderResource1_8, Order> {
 	
@@ -59,14 +58,12 @@ public class OrderResource1_8Test extends BaseDelegatingResourceTest<OrderResour
 		ctx.setIncludeAll(true);
 		
 		orderList = (List) or.getAll(ctx).get("results");
-		Assert.assertEquals("getAll should return all orders from sample data", 5, orderList.size());
-		
+		Assert.assertEquals("getAll should return all orders from sample data", 5, orderList.size());		
 	}
 	
 	private void voidOneOrder() {
 		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants1_8.ORDER_UUID);
 		order.setVoided(true);
 		Context.getOrderService().saveOrder(order);
-	}
-	
+	}	
 }

@@ -66,11 +66,11 @@ public class SystemSettingController2_0Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetASystemSettingWithDotByName() throws Exception {
-		final String name = "concept.defaultConceptMapType";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = "concept.defaultConceptMapType";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		GlobalProperty gp = service.getGlobalPropertyObject(name);
+		GlobalProperty gp = service.getGlobalPropertyObject(NAME);
 		assertEquals(gp.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(gp.getProperty(), PropertyUtils.getProperty(result, "property"));
 		assertEquals(gp.getDescription(), PropertyUtils.getProperty(result, "description"));

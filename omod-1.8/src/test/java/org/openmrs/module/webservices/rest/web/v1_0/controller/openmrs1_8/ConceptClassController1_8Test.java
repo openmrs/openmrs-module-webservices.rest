@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
-import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
@@ -109,8 +108,7 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		
 		conceptClass = service.getConceptClassByUuid(getUuid());
 		Assert.assertFalse(conceptClass.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());		
 	}
 	
 	@Test
@@ -162,6 +160,5 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	@Override
 	public long getAllCount() {
 		return Context.getConceptService().getAllConceptClasses().size();
-	}
-	
+	}	
 }

@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
+
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RestConstants;

@@ -53,11 +53,8 @@ public class AdminSection extends AdministrationSectionExt {
 		
 		if (Context.hasPrivilege(RestConstants.PRIV_VIEW_RESTWS) || Context.hasPrivilege(RestConstants.PRIV_MANAGE_RESTWS)) {
 			map.put("module/webservices/rest/test.htm", RestConstants.MODULE_ID + ".test");
-			map.put("module/webservices/rest/apiDocs.htm", RestConstants.MODULE_ID + ".swaggerDocumentation");
-			
-		}
-		
+			map.put("module/webservices/rest/apiDocs.htm", RestConstants.MODULE_ID + ".swaggerDocumentation");		
+		}		
 		return map;
-	}
-	
+	}	
 }

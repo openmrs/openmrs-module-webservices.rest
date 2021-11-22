@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.User;
@@ -24,9 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Allows for finding providers by mapping
  */
@@ -35,8 +35,7 @@ public class ProviderSearchHandler1_9 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/provider",
 	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-	        new SearchQuery.Builder(
-	                "Allows you to find providers by user uuid").withRequiredParameters("user").build());
+	        new SearchQuery.Builder("Allows you to find providers by user uuid").withRequiredParameters("user").build());
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -62,5 +61,4 @@ public class ProviderSearchHandler1_9 implements SearchHandler {
 		List<Provider> providers = (List<Provider>) Context.getProviderService().getProvidersByPerson(person);
 		return new NeedsPaging<Provider>(providers, context);
 	}
-	
 }

@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.StringProperty;
+
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,10 +37,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link GlobalProperty}, supporting standard CRUD operations
@@ -115,19 +115,17 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("property", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("display", new StringProperty());
+			model.property("uuid", new StringProperty())
+			     .property("property", new StringProperty())
+			     .property("value", new StringProperty())
+			     .property("description", new StringProperty())
+			     .property("display", new StringProperty());
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("datatypeClassname", new StringProperty())
-			        .property("datatypeConfig", new StringProperty())
-			        .property("preferredHandlerClassname", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
+			model.property("datatypeClassname", new StringProperty())
+			     .property("datatypeConfig", new StringProperty())
+			     .property("preferredHandlerClassname", new StringProperty())
+			     .property("handlerConfig", new StringProperty());
 		}
 		return model;
 	}
@@ -177,13 +175,13 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 	 */
 	@Override
 	public GlobalProperty getByUniqueId(String uuid) {
-		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyByUuid(uuid);
-		if (gp == null) {
+		GlobalProperty globalProperty = Context.getAdministrationService().getGlobalPropertyByUuid(uuid);
+		if (globalProperty == null) {
 			//We assume the caller is fetching by name
-			gp = Context.getAdministrationService().getGlobalPropertyObject(uuid);
+			globalProperty = Context.getAdministrationService().getGlobalPropertyObject(uuid);
 		}
 		
-		return gp;
+		return globalProperty;
 	}
 	
 	/**
@@ -317,8 +315,7 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 			return globalProperty.getValue();
 		} else {
 			return globalProperty.getPropertyValue();
-		}
-		
+		}		
 	}
 	
 	/**

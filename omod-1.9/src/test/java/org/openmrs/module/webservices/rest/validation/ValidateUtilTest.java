@@ -30,5 +30,4 @@ public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 		Location loc = new Location();
 		ValidateUtil.validate(loc);
 	}
-	
 }

@@ -9,6 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -18,13 +25,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class LoggedInUsersController2_0Test extends RestControllerTestUtils {
 
@@ -54,5 +54,4 @@ public class LoggedInUsersController2_0Test extends RestControllerTestUtils {
 		assertEquals(1, result.size());
 		assertEquals("username", result.get(0));
 	}
-
 }

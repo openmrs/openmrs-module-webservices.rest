@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 
 public class DrugOrderSubclassHandler1_10Test {
 	

@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.HashMap;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,8 +27,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashMap;
 
 public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiveTest {
 	
@@ -46,14 +46,12 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	@Before
 	public void beforeEachTests() throws Exception {
 		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON, HashMap.class));
-		resource = (PersonAttributeResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-		    PersonAttribute.class);
+		resource = (PersonAttributeResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(PersonAttribute.class);
 	}
 	
 	@Test
 	public void shouldCreatePersonAttribute() throws Exception {
-		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
-		    personAttributeSimpleObject, new RequestContext());
+		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5", personAttributeSimpleObject, new RequestContext());
 		Assert.assertEquals("Bangalore", created.get("value"));
 	}
 	

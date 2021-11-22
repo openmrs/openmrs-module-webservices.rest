@@ -9,11 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.poi.hssf.record.formula.functions.Proper;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.GlobalProperty;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.VisitService;
@@ -25,12 +29,6 @@ import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class VisitConfigurationController2_0Test extends RestControllerTestUtils {
 

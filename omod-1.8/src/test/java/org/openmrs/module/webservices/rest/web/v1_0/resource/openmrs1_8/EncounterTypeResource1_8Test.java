@@ -13,7 +13,6 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterTypeResource1_8;
 
 public class EncounterTypeResource1_8Test extends BaseDelegatingResourceTest<EncounterTypeResource1_8, EncounterType> {
 	
@@ -48,5 +47,4 @@ public class EncounterTypeResource1_8Test extends BaseDelegatingResourceTest<Enc
 	public String getUuidProperty() {
 		return RestTestConstants1_8.ENCOUNTER_TYPE_UUID;
 	}
-	
 }

@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import java.util.Date;
+import java.util.Locale;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,9 +26,6 @@ import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
-
-import java.util.Date;
-import java.util.Locale;
 
 public class ConditionResource2_2Test extends BaseDelegatingResourceTest<ConditionResource2_2, Condition> {
 	

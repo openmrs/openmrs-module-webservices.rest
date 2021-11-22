@@ -9,6 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,20 +44,6 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Integration tests for the Order resource
@@ -181,15 +181,13 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
-		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-		    outPatient, null);
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"), outPatient, null);
 		assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
 		assertEquals("NEW", Util.getByPath(newOrder, "action"));
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
-		final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString())
-		        .getConcept().getUuid();
+		final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString()).getConcept().getUuid();
 		assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
 		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
@@ -266,8 +264,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order.add("type", "testorder");
 		order.add("orderType", testOrderType.getUuid());
 		order.add("patient", PATIENT_UUID);
-		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
-		order.add("concept", cd4CountUuid);
+		final String CD4COUNT_UUID = "a09ab2c5-878e-4905-b25d-5784167d0216";
+		order.add("concept", CD4COUNT_UUID);
 		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
@@ -280,8 +278,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
-		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"),
-		    outPatient, null);
+		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"), outPatient, null);
 		assertEquals(++originalActiveTestOrderCount, activeTestOrders.size());
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
@@ -393,17 +390,14 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        PropertyUtils.getProperty(resultList.get(2), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(3), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(4), "uuid").toString() });
-		assertThat(
-		    uuids,
-		    contains(orderService.getOrder(7).getUuid(), orderService.getOrder(5).getUuid(), orderService.getOrder(444)
-		            .getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(222).getUuid()));
+		assertThat(uuids, contains(orderService.getOrder(7).getUuid(), orderService.getOrder(5).getUuid(), orderService.getOrder(444)
+				.getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(222).getUuid()));
 	}
 	
 	@Test
 	public void shouldGetTheActiveOrdersForAPatientInTheSpecifiedCareSetting() throws Exception {
 		String expectedOrderUuid = orderService.getOrder(222).getUuid();
-		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
-		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
 		    new Parameter("careSetting", "c365e560-c3ec-11e3-9c1a-0800200c9a66"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
@@ -411,14 +405,13 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetTheActiveOrdersForAPatientAsOfTheSpecifiedDate() throws Exception {
-		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientService
-		        .getPatient(2).getUuid()), new Parameter("asOfDate", "2007-12-10"))));
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), 
+			new Parameter("patient", patientService.getPatient(2).getUuid()), new Parameter("asOfDate", "2007-12-10"))));
 		
 		assertEquals(2, Util.getResultsSize(results));
 		
 		results = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("patient", patientService.getPatient(2).getUuid()), new Parameter("asOfDate",
-		            "2007-12-10 00:01:00"))));
+		    new Parameter("patient", patientService.getPatient(2).getUuid()), new Parameter("asOfDate", "2007-12-10 00:01:00"))));
 		
 		assertEquals(1, Util.getResultsSize(results));
 	}
@@ -436,18 +429,15 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(2), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(3), "uuid").toString(), });
-		assertThat(
-		    uuids,
-		    contains(orderService.getOrder(222).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(444)
-		            .getUuid(), orderService.getOrder(5).getUuid()));
+		assertThat(uuids, contains(orderService.getOrder(222).getUuid(), orderService.getOrder(3).getUuid(), orderService.getOrder(444)
+				.getUuid(), orderService.getOrder(5).getUuid()));
 	}
 	
 	@Test
 	public void shouldGetTheActiveTestOrdersForAPatient() throws Exception {
 		String expectedOrderUuid = orderService.getOrder(7).getUuid();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter(
-		        RestConstants.REQUEST_PROPERTY_FOR_TYPE, "testorder"), new Parameter("patient",
-		        "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
+		        RestConstants.REQUEST_PROPERTY_FOR_TYPE, "testorder"), new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(expectedOrderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
@@ -462,8 +452,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		String orderUuid = "dfca4077-493c-496b-8312-856ee5d1cc26";
 		results = deserialize(handle(newGetRequest(getURI(),
 		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"),
-		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
-		            "2007-12-10 00:00:01"))));
+		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-10 00:00:01"))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(orderUuid, PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 		
@@ -475,8 +464,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		
 		results = deserialize(handle(newGetRequest(getURI(),
 		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "inactive"),
-		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate",
-		            "2007-12-17 00:00:01"))));
+		    new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID), new Parameter("asOfDate", "2007-12-17 00:00:01"))));
 		assertEquals(2, Util.getResultsSize(results));
 		
 		String[] expectedOrderUuids = new String[] { orderUuid, "4c96f25c-4949-4f72-9931-d808fbc226dh" };
@@ -546,8 +534,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		order = new SimpleObject();
 		order.add("type", "testorder");
 		order.add("patient", PATIENT_UUID);
-		final String cd4CountUuid = "a09ab2c5-878e-4905-b25d-5784167d0216";
-		order.add("concept", cd4CountUuid);
+		final String CD4COUNT_UUID = "a09ab2c5-878e-4905-b25d-5784167d0216";
+		order.add("concept", CD4COUNT_UUID);
 		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
 		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
 		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
@@ -559,23 +547,18 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		req = newPostRequest(getURI(), order);
 		SimpleObject newTest = deserialize(handle(req));
 		
-		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"),
-		    outPatient, null);
+		List<Order> activeTestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Test order"),  outPatient, null);
 		int activeTestOrderCount = activeTestOrders.size();
 		
 		// order service should return all orders when no order type filter specified
-		req = newGetRequest(getURI(),
-		    new Parameter("patient", PATIENT_UUID)
-		        );
+		req = newGetRequest(getURI(), new Parameter("patient", PATIENT_UUID));
 		SimpleObject orders = deserialize(handle(req));
 		ArrayList<Object> resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
 		assertEquals(activeTestOrderCount + activeDrugOrderCount, resp.size());
 		
 		// order service should filter by test order type
-		req = newGetRequest(getURI(),
-		    new Parameter("patient", PATIENT_UUID),
-		    new Parameter("orderType", RestTestConstants1_10.TEST_ORDER_TYPE_UUID)
-		        );
+		req = newGetRequest(getURI(), new Parameter("patient", PATIENT_UUID),
+		    new Parameter("orderType", RestTestConstants1_10.TEST_ORDER_TYPE_UUID));
 		orders = deserialize(handle(req));
 		resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
 		assertEquals(activeTestOrderCount, resp.size());
@@ -583,10 +566,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	@Test(expected = ObjectNotFoundException.class)
 	public void invalidCareCenterShouldThrowException() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI(),
-		    new Parameter("patient", PATIENT_UUID),
-		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID")
-		        );
+		MockHttpServletRequest req = newGetRequest(getURI(), new Parameter("patient", PATIENT_UUID),
+		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID"));
 		handle(req);
 	}
 }

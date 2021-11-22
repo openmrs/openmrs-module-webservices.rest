@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import org.junit.Assert;
-
 import org.junit.Before;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;

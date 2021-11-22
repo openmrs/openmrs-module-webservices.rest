@@ -15,6 +15,13 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -28,12 +35,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProgramEnrollmentResource1_8;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {
         "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -87,16 +88,16 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 	
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("patient");
-		d.addRequiredProperty("program");
-		d.addRequiredProperty("dateEnrolled");
-		d.addProperty("dateCompleted");
-		d.addProperty("states");
-		d.addProperty("outcome");
-		d.addProperty("location");
-		d.addProperty("voided");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("patient");
+		description.addRequiredProperty("program");
+		description.addRequiredProperty("dateEnrolled");
+		description.addProperty("dateCompleted");
+		description.addProperty("states");
+		description.addProperty("outcome");
+		description.addProperty("location");
+		description.addProperty("voided");
+		return description;
 	}
 	
 	@Override
@@ -114,22 +115,19 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"))
 		        .property("location", new RefProperty("#/definitions/LocationCreate"))
 		        .property("voided", new BooleanProperty())
-		        .property("dateCompleted", new DateProperty())
-		        
-		        .required("dateEnrolled");
-		
+		        .property("dateCompleted", new DateProperty()).required("dateEnrolled");	
 	}
 	
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("dateEnrolled");
-		d.addProperty("states");
-		d.addProperty("outcome");
-		d.addProperty("location");
-		d.addProperty("voided");
-		d.addProperty("dateCompleted");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("dateEnrolled");
+		description.addProperty("states");
+		description.addProperty("outcome");
+		description.addProperty("location");
+		description.addProperty("voided");
+		description.addProperty("dateCompleted");
+		return description;
 	}
 	
 	/**
@@ -169,6 +167,5 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 				return existingState;
 		}
 		return null;
-	}
-	
+	}	
 }

@@ -74,8 +74,7 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 	public SimpleObject asRepresentation(AllergyReaction instance, Representation rep) throws ConversionException {
 		SimpleObject allergenReactionObject = new SimpleObject();
 		Concept reaction = instance.getReaction();
-		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Concept.class);
+		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class).getResourceBySupportedClass(Concept.class);
 		allergenReactionObject.add("reaction", conceptResource.asRepresentation(reaction, rep));
 		allergenReactionObject.add("reactionNonCoded", instance.getReactionNonCoded());
 		return allergenReactionObject;

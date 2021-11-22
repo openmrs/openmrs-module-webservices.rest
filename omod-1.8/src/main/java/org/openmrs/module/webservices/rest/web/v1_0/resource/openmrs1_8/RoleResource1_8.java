@@ -14,6 +14,9 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
@@ -31,8 +34,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Set;
 
 /**
  * {@link Resource} for Role, supporting standard CRUD operations
@@ -130,15 +131,13 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+			model.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
+			     .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
 		}
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
+			model.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
+			     .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+			     .property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
 		}
 		return model;
 	}
@@ -248,6 +247,5 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	@Override
 	protected NeedsPaging<Role> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<Role>(Context.getUserService().getAllRoles(), context);
-	}
-	
+	}	
 }

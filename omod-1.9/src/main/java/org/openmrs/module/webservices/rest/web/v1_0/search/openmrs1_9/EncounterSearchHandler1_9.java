@@ -9,8 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -27,8 +36,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptR
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * Allow searching for encounters based on an obs, matching the input patient and concept, within
@@ -137,8 +144,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 				}
 			} else {
 				throw new ObjectNotFoundException();
-			}
-			
+			}		
 		}
 		
 		return new EmptySearchResult();

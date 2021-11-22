@@ -69,8 +69,7 @@ public class DrugReferenceMapController1_10Test extends MainResourceControllerTe
 		Assert.assertEquals(2, updatedMaps.size());
 		
 		SimpleObject result = deserialize(resp);
-		Assert.assertEquals(RestTestConstants1_10.CONCEPT_REF_TERM_UUID,
-		    Util.getByPath(result, "conceptReferenceTerm/uuid"));
+		Assert.assertEquals(RestTestConstants1_10.CONCEPT_REF_TERM_UUID, Util.getByPath(result, "conceptReferenceTerm/uuid"));
 		Assert.assertEquals(RestTestConstants1_10.CONCEPT_MAP_TYPE_UUID, Util.getByPath(result, "conceptMapType/uuid"));
 		Assert.assertEquals(RestTestConstants1_10.DRUG_REFERENCE_DRUG_UUID, Util.getByPath(result, "drug/uuid"));
 		Assert.assertEquals("Panadol - concept_map_type2", Util.getByPath(result, "display"));
@@ -78,8 +77,7 @@ public class DrugReferenceMapController1_10Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldGetAdrugReferenceMapByUuid() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET,
-		    getURI() + "/" + RestTestConstants1_10.DRUG_REFERENCE_MAP_UUID);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + RestTestConstants1_10.DRUG_REFERENCE_MAP_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertEquals(RestTestConstants1_10.DRUG_REFERENCE_MAP_UUID, Util.getByPath(result, "uuid"));

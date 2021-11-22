@@ -75,10 +75,10 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAnOrderTypeByName() throws Exception {
-		final String name = "Test order";
-		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + name)));
+		final String NAME = "Test order";
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + NAME)));
 		
-		OrderType expectedOrderType = service.getOrderTypeByName(name);
+		OrderType expectedOrderType = service.getOrderTypeByName(NAME);
 		assertEquals(expectedOrderType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(expectedOrderType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
@@ -124,9 +124,7 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 		        PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(Util.getResultsList(result).get(1), "uuid").toString(),
 		        PropertyUtils.getProperty(Util.getResultsList(result).get(2), "uuid").toString() });
-		assertThat(
-		    uuids,
-		    hasItems("90a1e5b0-ac05-11e3-a5e2-0800200c9a66", "9b6cf570-ac05-11e3-a5e2-0800200c9a66",
+		assertThat(uuids, hasItems("90a1e5b0-ac05-11e3-a5e2-0800200c9a66", "9b6cf570-ac05-11e3-a5e2-0800200c9a66",
 		        "a4ebaf10-ac05-11e3-a5e2-0800200c9a66"));
 		
 	}
@@ -164,16 +162,16 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldEditAnOrderType() throws Exception {
-		final String newName = "Updated name";
+		final String NEW_NAME = "Updated name";
 		SimpleObject conceptMapTypeType = new SimpleObject();
-		conceptMapTypeType.add("name", newName);
+		conceptMapTypeType.add("name", NEW_NAME);
 		
 		String json = new ObjectMapper().writeValueAsString(conceptMapTypeType);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newName, service.getOrderTypeByUuid(getUuid()).getName());
+		assertEquals(NEW_NAME, service.getOrderTypeByUuid(getUuid()).getName());
 	}
 	
 	@Test
@@ -181,10 +179,10 @@ public class OrderTypeController1_10Test extends MainResourceControllerTest {
 		assertEquals(false, service.getOrderTypeByUuid(getUuid()).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getOrderTypeByUuid(getUuid()).isRetired());
-		assertEquals(reason, service.getOrderTypeByUuid(getUuid()).getRetireReason());
+		assertEquals(REASON, service.getOrderTypeByUuid(getUuid()).getRetireReason());
 	}
 }

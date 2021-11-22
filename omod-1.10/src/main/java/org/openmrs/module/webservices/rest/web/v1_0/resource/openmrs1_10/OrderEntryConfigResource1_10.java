@@ -31,33 +31,27 @@ public class OrderEntryConfigResource1_10 implements Listable {
 		SimpleObject ret = new SimpleObject();
 		// try/catch each of these to avoid failing in the case where one of these is not configured
 		try {
-			ret.put("drugRoutes",
-			    ConversionUtil.convertToRepresentation(orderService.getDrugRoutes(), context.getRepresentation()));
+			ret.put("drugRoutes", ConversionUtil.convertToRepresentation(orderService.getDrugRoutes(), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		try {
-			ret.put("drugDosingUnits",
-			    ConversionUtil.convertToRepresentation(orderService.getDrugDosingUnits(), context.getRepresentation()));
+			ret.put("drugDosingUnits", ConversionUtil.convertToRepresentation(orderService.getDrugDosingUnits(), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		try {
-			ret.put("drugDispensingUnits",
-			    ConversionUtil.convertToRepresentation(orderService.getDrugDispensingUnits(), context.getRepresentation()));
+			ret.put("drugDispensingUnits", ConversionUtil.convertToRepresentation(orderService.getDrugDispensingUnits(), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		try {
-			ret.put("durationUnits",
-			    ConversionUtil.convertToRepresentation(orderService.getDurationUnits(), context.getRepresentation()));
+			ret.put("durationUnits", ConversionUtil.convertToRepresentation(orderService.getDurationUnits(), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		try {
-			ret.put("testSpecimenSources",
-			    ConversionUtil.convertToRepresentation(orderService.getTestSpecimenSources(), context.getRepresentation()));
+			ret.put("testSpecimenSources", ConversionUtil.convertToRepresentation(orderService.getTestSpecimenSources(), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		try {
-			ret.put("orderFrequencies",
-			    ConversionUtil.convertToRepresentation(orderService.getOrderFrequencies(false), context.getRepresentation()));
+			ret.put("orderFrequencies", ConversionUtil.convertToRepresentation(orderService.getOrderFrequencies(false), context.getRepresentation()));
 		}
 		catch (Exception ex) {}
 		return ret;

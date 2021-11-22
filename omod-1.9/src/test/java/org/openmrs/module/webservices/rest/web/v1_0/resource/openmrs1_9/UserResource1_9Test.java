@@ -83,19 +83,19 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	@Test
 	public void testCorrectResourceForUser() throws Exception {
 		// prepare
-		final MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addParameter("q", ""); // query for all
-		final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
+		final MockHttpServletRequest REQUEST = new MockHttpServletRequest();
+		REQUEST.addParameter("q", ""); // query for all
+		final RequestContext CONTEXT = RestUtil.getRequestContext(REQUEST, new MockHttpServletResponse());
 		
 		// search
-		final SimpleObject simple = getResource().search(context);
-		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
+		final SimpleObject OBJECT = getResource().search(CONTEXT);
+		final List<SimpleObject> RESULTS = (List<SimpleObject>) OBJECT.get("results");
 		
 		// verify
-		Assert.assertFalse("A non-empty list is expected.", results.isEmpty());
-		for (SimpleObject result : results) {
-			final String selfLink = findSelfLink(result);
-			Assert.assertTrue("Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
+		Assert.assertFalse("A non-empty list is expected.", RESULTS.isEmpty());
+		for (SimpleObject result : RESULTS) {
+			final String SELF_LINK = findSelfLink(result);
+			Assert.assertTrue("Resource should be user, but is " + SELF_LINK, SELF_LINK.contains("/user/"));
 		}
 	}
 	
@@ -108,25 +108,25 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	 * @throws ResponseException
 	 */
 	@SuppressWarnings("unchecked")
-	private void assertSearch(final String userName, final Collection<String> roles, final int expectedResultCount)
+	private void assertSearch(final String USER_NAME, final Collection<String> roles, final int EXPECTED_RESULT_COUNT)
 	        throws ResponseException {
 		// input
-		final MockHttpServletRequest request = new MockHttpServletRequest();
-		request.addParameter("q", userName);
+		final MockHttpServletRequest REQUEST = new MockHttpServletRequest();
+		REQUEST.addParameter("q", USER_NAME);
 		if (roles != null) {
-			final String rolesAsCommaSeparatedString = StringUtils.join(roles, ",");
-			request.addParameter(UserResource1_8.PARAMETER_ROLES, rolesAsCommaSeparatedString);
+			final String ROLES_AS_COMMA_SEPERATED_STRING = StringUtils.join(roles, ",");
+			REQUEST.addParameter(UserResource1_8.PARAMETER_ROLES, ROLES_AS_COMMA_SEPERATED_STRING);
 		}
-		final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
+		final RequestContext CONTEXT = RestUtil.getRequestContext(REQUEST, new MockHttpServletResponse());
 		
 		// search
-		final SimpleObject simple = getResource().search(context);
-		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
+		final SimpleObject OBJECT = getResource().search(CONTEXT);
+		final List<SimpleObject> RESULTS = (List<SimpleObject>) OBJECT.get("results");
 		
 		// verify
-		final String errorMessage = "Number of results does not match for: userName=" + userName + ", roles=" + roles
-		        + ", Results=" + results;
-		Assert.assertEquals(errorMessage, expectedResultCount, results.size());
+		final String ERROR_MESSAGE = "Number of results does not match for: userName=" + USER_NAME + ", roles=" + roles
+		        + ", Results=" + RESULTS;
+		Assert.assertEquals(ERROR_MESSAGE, EXPECTED_RESULT_COUNT, RESULTS.size());
 	}
 	
 	/**
@@ -196,5 +196,4 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		// only role matches
 		assertSearch("doesNotExist", Arrays.asList("System Developer"), 0);
 	}
-	
 }

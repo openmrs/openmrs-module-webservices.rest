@@ -9,14 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.List;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService.ORDER_STATUS;
@@ -193,56 +194,53 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		DelegatingResourceDescription d = new DelegatingResourceDescription();
-		d.addRequiredProperty("orderType");
-		d.addRequiredProperty("patient");
-		d.addRequiredProperty("concept");
-		d.addProperty("instructions");
-		d.addProperty("startDate");
-		d.addProperty("autoExpireDate");
-		d.addProperty("encounter");
-		d.addProperty("orderer");
-		d.addProperty("discontinuedBy");
-		d.addProperty("discontinuedDate");
-		d.addProperty("discontinuedReason");
-		d.addProperty("discontinuedReasonNonCoded");
-		d.addProperty("accessionNumber");
-		return d;
+		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("orderType");
+		description.addRequiredProperty("patient");
+		description.addRequiredProperty("concept");
+		description.addProperty("instructions");
+		description.addProperty("startDate");
+		description.addProperty("autoExpireDate");
+		description.addProperty("encounter");
+		description.addProperty("orderer");
+		description.addProperty("discontinuedBy");
+		description.addProperty("discontinuedDate");
+		description.addProperty("discontinuedReason");
+		description.addProperty("discontinuedReasonNonCoded");
+		description.addProperty("accessionNumber");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("instructions", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("accessionNumber", new StringProperty())
-			        .property("discontinuedDate", new DateProperty())
-			        .property("discontinuedReasonNonCoded", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("instructions", new StringProperty())
+			     .property("startDate", new DateProperty())
+			     .property("autoExpireDate", new DateProperty())
+			     .property("accessionNumber", new StringProperty())
+			     .property("discontinuedDate", new DateProperty())
+			     .property("discontinuedReasonNonCoded", new StringProperty())
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("orderer", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGetRef"));
+			model.property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
+			     .property("patient", new RefProperty("#/definitions/PatientGetRef"))
+			     .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
+			     .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
+			     .property("orderer", new RefProperty("#/definitions/UserGetRef"))
+			     .property("discontinuedBy", new RefProperty("#/definitions/UserGetRef"))
+			     .property("discontinuedReason", new RefProperty("#/definitions/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGet"))
-			        .property("orderer", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGet"));
+			model.property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
+			     .property("patient", new RefProperty("#/definitions/PatientGet"))
+			     .property("concept", new RefProperty("#/definitions/ConceptGet"))
+			     .property("encounter", new RefProperty("#/definitions/EncounterGet"))
+			     .property("orderer", new RefProperty("#/definitions/UserGet"))
+			     .property("discontinuedBy", new RefProperty("#/definitions/UserGet"))
+			     .property("discontinuedReason", new RefProperty("#/definitions/ConceptGet"));
 		}
 		return model;
 	}
@@ -266,14 +264,13 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		        
 		        .required("orderType").required("patient").required("concept");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeCreate"))
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"));
+			model.property("orderType", new RefProperty("#/definitions/OrdertypeCreate"))
+			     .property("patient", new RefProperty("#/definitions/PatientCreate"))
+			     .property("concept", new RefProperty("#/definitions/ConceptCreate"))
+			     .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
+			     .property("orderer", new RefProperty("#/definitions/UserCreate"))
+			     .property("discontinuedBy", new RefProperty("#/definitions/UserCreate"))
+			     .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"));
 		}
 		//FIXME missing prop: type
 		return model;
@@ -319,6 +316,5 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		
 		//currently this is not supported since the superclass throws an exception
 		return super.doSearch(context);
-	}
-	
+	}	
 }

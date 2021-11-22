@@ -56,6 +56,5 @@ public class PatientAllergyResource2_0Test extends BaseDelegatingResourceTest<Pa
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants2_0.ALLERGY_UUID;
-	}
-	
+	}	
 }

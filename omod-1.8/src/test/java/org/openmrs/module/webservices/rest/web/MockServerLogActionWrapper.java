@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
-import org.openmrs.util.MemoryAppender;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
+import org.openmrs.util.MemoryAppender;
 
 /**
  * MockServerLogActionWrapper used to run the Unit tests for ServerLogResource

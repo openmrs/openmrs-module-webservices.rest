@@ -86,5 +86,4 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 		resource.setConvertedProperties(drug, propertyMap, resource.getUpdatableProperties(), false);
 		Assert.isNull(drug.getRoute());
 	}
-	
 }

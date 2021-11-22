@@ -52,8 +52,6 @@ public class ImplementationIdController2_0 extends BaseRestController {
 		if (exceptions.hasErrors()) {
 			throw new IllegalRequestException(exceptions);
 		}
-
 		administrationService.setImplementationId(implementationId);
 	}
-
 }

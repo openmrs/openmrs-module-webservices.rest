@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,8 +25,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.Assert.assertEquals;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -154,13 +154,13 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	 */
 	@Test
 	public void purge_shouldPurgeAVisitAttributeType() throws Exception {
-		final String visitAttributeTypeUuid = "6770f6d6-7673-11e0-8f03-001e378eb67g";
-		Assert.assertNotNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
+		final String VISIT_ATTRIBUTE_TYPE_UUID = "6770f6d6-7673-11e0-8f03-001e378eb67g";
+		Assert.assertNotNull(service.getVisitAttributeTypeByUuid(VISIT_ATTRIBUTE_TYPE_UUID));
 		int originalCount = service.getAllVisitAttributeTypes().size();
 		
-		handle(newDeleteRequest(getURI() + "/" + visitAttributeTypeUuid, new Parameter("purge", "true")));
+		handle(newDeleteRequest(getURI() + "/" + VISIT_ATTRIBUTE_TYPE_UUID, new Parameter("purge", "true")));
 		
-		Assert.assertNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
+		Assert.assertNull(service.getVisitAttributeTypeByUuid(VISIT_ATTRIBUTE_TYPE_UUID));
 		Assert.assertEquals(originalCount - 1, service.getAllVisitAttributeTypes().size());
 	}
 	

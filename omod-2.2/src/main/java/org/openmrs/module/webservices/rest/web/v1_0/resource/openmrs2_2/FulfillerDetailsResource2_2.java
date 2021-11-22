@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;

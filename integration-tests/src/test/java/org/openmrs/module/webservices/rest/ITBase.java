@@ -9,7 +9,15 @@
  */
 package org.openmrs.module.webservices.rest;
 
+import static io.restassured.RestAssured.basic;
+
 import io.restassured.RestAssured;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
@@ -17,13 +25,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.junit.BeforeClass;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
-import static io.restassured.RestAssured.basic;
 
 public abstract class ITBase {
 	
@@ -58,32 +59,32 @@ public abstract class ITBase {
 	public static void waitForServerToStart() {
 		synchronized (serverStartupLock) {
 			if (!serverStarted) {
-				final long time = System.currentTimeMillis();
-				final int timeout = 300000;
-				final int retryAfter = 10000;
+				final long TIME = System.currentTimeMillis();
+				final int TIME_OUT = 300000;
+				final int RETRY_AFTER = 10000;
 				
-				final RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(retryAfter)
-				        .setConnectTimeout(retryAfter).build();
+				final RequestConfig REQUEST_CONFIG = RequestConfig.custom().setSocketTimeout(RETRY_AFTER)
+				        .setConnectTimeout(RETRY_AFTER).build();
 				
-				final String startupUri = TEST_URL.getScheme() + "://" + TEST_URL.getHost() + ":"
+				final String STARTUP_URI = TEST_URL.getScheme() + "://" + TEST_URL.getHost() + ":"
 				        + TEST_URL.getPort() + TEST_URL.getPath();
-				System.out.println("Waiting for server at " + startupUri + " for " + timeout / 1000 + " more seconds...");
+				System.out.println("Waiting for server at " + STARTUP_URI + " for " + TIME_OUT / 1000 + " more seconds...");
 				
-				while (System.currentTimeMillis() - time < timeout) {
+				while (System.currentTimeMillis() - TIME < TIME_OUT) {
 					try {
-						final HttpClient client = HttpClientBuilder.create().disableAutomaticRetries().build();
-						final HttpGet sessionGet = new HttpGet(startupUri);
-						sessionGet.setConfig(requestConfig);
-						final HttpClientContext context = HttpClientContext.create();
-						final HttpResponse response = client.execute(sessionGet, context);
+						final HttpClient CLIENT = HttpClientBuilder.create().disableAutomaticRetries().build();
+						final HttpGet SESSION_GET = new HttpGet(STARTUP_URI);
+						SESSION_GET.setConfig(REQUEST_CONFIG);
+						final HttpClientContext CONTEXT = HttpClientContext.create();
+						final HttpResponse RESPONSE = CLIENT.execute(SESSION_GET, CONTEXT);
 						
-						int status = response.getStatusLine().getStatusCode();
+						int status = RESPONSE.getStatusLine().getStatusCode();
 						if (status >= 400) {
-							throw new RuntimeException(status + " " + response.getStatusLine().getReasonPhrase());
+							throw new RuntimeException(status + " " + RESPONSE.getStatusLine().getReasonPhrase());
 						}
 						
-						URI finalUri = sessionGet.getURI();
-						List<URI> redirectLocations = context.getRedirectLocations();
+						URI finalUri = SESSION_GET.getURI();
+						List<URI> redirectLocations = CONTEXT.getRedirectLocations();
 						if (redirectLocations != null) {
 							finalUri = redirectLocations.get(redirectLocations.size() - 1);
 						}
@@ -99,18 +100,15 @@ public abstract class ITBase {
 					}
 					
 					try {
-						System.out.println("Waiting for "
-						        + (timeout - (System.currentTimeMillis() - time)) / 1000 + " more seconds...");
-						Thread.sleep(retryAfter);
+						System.out.println("Waiting for " + (TIME_OUT - (System.currentTimeMillis() - TIME)) / 1000 + " more seconds...");
+						Thread.sleep(RETRY_AFTER);
 					}
 					catch (InterruptedException e) {
 						throw new RuntimeException(e);
 					}
 				}
-				
 				throw new RuntimeException("Server startup took longer than 5 minutes!");
 			}
 		}
 	}
-	
 }

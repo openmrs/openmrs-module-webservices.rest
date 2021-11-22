@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.List;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
@@ -18,6 +16,9 @@ import io.swagger.models.properties.DoubleProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.List;
+
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.Patient;
@@ -68,9 +69,9 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	 */
 	@Override
 	public DrugOrder newDelegate() {
-		DrugOrder o = new DrugOrder();
-		o.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
-		return o;
+		DrugOrder drugOrder = new DrugOrder();
+		drugOrder.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
+		return drugOrder;
 	}
 	
 	/**
@@ -88,29 +89,27 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
-			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("dose");
-			d.addProperty("units");
-			d.addProperty("frequency");
-			d.addProperty("prn");
-			d.addProperty("complex");
-			d.addProperty("quantity");
-			d.addProperty("drug", Representation.REF);
-			return d;
+			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("dose");
+			description.addProperty("units");
+			description.addProperty("frequency");
+			description.addProperty("prn");
+			description.addProperty("complex");
+			description.addProperty("quantity");
+			description.addProperty("drug", Representation.REF);
+			return description;
 		} else if (rep instanceof FullRepresentation) {
-			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Order.class);
-			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
-			d.addProperty("dose");
-			d.addProperty("units");
-			d.addProperty("frequency");
-			d.addProperty("prn");
-			d.addProperty("complex");
-			d.addProperty("quantity");
-			d.addProperty("drug");
-			return d;
+			OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+			DelegatingResourceDescription description = orderResource.getRepresentationDescription(rep);
+			description.addProperty("dose");
+			description.addProperty("units");
+			description.addProperty("frequency");
+			description.addProperty("prn");
+			description.addProperty("complex");
+			description.addProperty("quantity");
+			description.addProperty("drug");
+			return description;
 		}
 		return null;
 	}
@@ -120,58 +119,51 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
-		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		DelegatingResourceDescription d = orderResource.getCreatableProperties();
-		d.addProperty("dose");
-		d.addProperty("units");
-		d.addProperty("frequency");
-		d.addProperty("prn");
-		d.addProperty("complex");
-		d.addProperty("quantity");
-		d.addRequiredProperty("drug");
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		DelegatingResourceDescription description = orderResource.getCreatableProperties();
+		description.addProperty("dose");
+		description.addProperty("units");
+		description.addProperty("frequency");
+		description.addProperty("prn");
+		description.addProperty("complex");
+		description.addProperty("quantity");
+		description.addRequiredProperty("drug");
 		
 		// DrugOrders have a specific hardcoded value for this property
-		d.removeProperty("orderType");
-		return d;
+		description.removeProperty("orderType");
+		return description;
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getGETModel(rep);
-		orderModel
-		        .property("dose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("frequency", new StringProperty())
-		        .property("prn", new BooleanProperty())
-		        .property("complex", new BooleanProperty())
-		        .property("quantity", new IntegerProperty());
+		orderModel.property("dose", new DoubleProperty())
+		          .property("units", new StringProperty())
+		          .property("frequency", new StringProperty())
+		          .property("prn", new BooleanProperty())
+		          .property("complex", new BooleanProperty())
+		          .property("quantity", new IntegerProperty());
 		
 		if (rep instanceof DefaultRepresentation) {
-			orderModel
-			        .property("drug", new RefProperty("#/definitions/DrugGetRef"));
+			orderModel.property("drug", new RefProperty("#/definitions/DrugGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			orderModel
-			        .property("drug", new RefProperty("#/definitions/DrugGet"));
+			orderModel.property("drug", new RefProperty("#/definitions/DrugGet"));
 		}
 		return orderModel;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 		ModelImpl orderModel = (ModelImpl) orderResource.getCREATEModel(rep);
-		orderModel
-		        .property("dose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("frequency", new StringProperty())
-		        .property("prn", new BooleanProperty())
-		        .property("complex", new BooleanProperty())
-		        .property("quantity", new IntegerProperty())
-		        .property("drug", new RefProperty("#/definitions/DrugCreate"));
+		orderModel.property("dose", new DoubleProperty())
+		          .property("units", new StringProperty())
+		          .property("frequency", new StringProperty())
+		          .property("prn", new BooleanProperty())
+		          .property("complex", new BooleanProperty())
+		          .property("quantity", new IntegerProperty())
+		          .property("drug", new RefProperty("#/definitions/DrugCreate"));
 		
 		// DrugOrders have a specific hardcoded value for this property
 		orderModel.getProperties().remove("orderType");

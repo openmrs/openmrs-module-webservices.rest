@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import org.openmrs.module.webservices.helper.TaskServiceWrapper;
-import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.TaskDefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.openmrs.module.webservices.helper.TaskServiceWrapper;
+import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.TaskDefinition;
 
 /**
  * This is the Mock TaskServiceWrapper class which will act as a TaskService for the test cases
@@ -139,6 +140,5 @@ public class MockTaskServiceWrapper extends TaskServiceWrapper {
 			scheduledTasks.remove(task);
 		}
 		scheduledTasks.add(task);
-	}
-	
+	}	
 }

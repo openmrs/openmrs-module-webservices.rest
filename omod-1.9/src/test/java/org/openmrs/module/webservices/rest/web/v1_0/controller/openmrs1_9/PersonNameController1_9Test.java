@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.junit.Assert;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
@@ -58,31 +59,26 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAPersonName() throws Exception {
-		
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(httpReq));
 		
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "givenName"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "familyName"));
-		
+		Assert.assertNotNull(PropertyUtils.getProperty(result, "familyName"));	
 	}
 	
 	@Test
 	public void shouldListNamesForPerson() throws Exception {
-		
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		List<Object> resultsList = Util.getResultsList(response);
 		
 		Assert.assertEquals(2, resultsList.size());
 		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "givenName"));
 		Assert.assertTrue(names.get(0).equals("Collet"));
-		
 	}
 	
 	@Test
 	public void shouldAddNameToPerson() throws Exception {
-		
 		int before = service.getPersonByUuid(personUuid).getNames().size();
 		String json = "{ \"givenName\":\"name1\", \"middleName\":\"name2\", \"familyName\":\"name3\" }";
 		
@@ -90,12 +86,10 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		
 		int after = service.getPersonByUuid(personUuid).getNames().size();
 		Assert.assertEquals(before + 1, after);
-		
 	}
 	
 	@Test
 	public void shouldEditName() throws Exception {
-		
 		PersonName personName = service.getPersonNameByUuid(getUuid());
 		Assert.assertEquals("Chebaskwony", personName.getFamilyName());
 		String json = "{ \"familyName\":\"newName\" }";
@@ -105,12 +99,10 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals("newName", PropertyUtils.getProperty(response, "familyName").toString());
 		PersonName editedPersonName = service.getPersonNameByUuid(getUuid());
 		Assert.assertEquals("newName", editedPersonName.getFamilyName());
-		
 	}
 	
 	@Test
 	public void shouldVoidName() throws Exception {
-		
 		PersonName personName = service.getPersonNameByUuid(getUuid());
 		Assert.assertTrue(!personName.isVoided());
 		
@@ -118,12 +110,10 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		
 		PersonName voidedPersonName = service.getPersonNameByUuid(getUuid());
 		Assert.assertTrue(voidedPersonName.isVoided());
-		
 	}
 	
 	@Test
 	public void shouldPurgeName() throws Exception {
-		
 		int before = service.getPersonByUuid(personUuid).getNames().size();
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
@@ -131,7 +121,5 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		int after = service.getPersonByUuid(personUuid).getNames().size();
 		Assert.assertNull(service.getPersonNameByUuid(getUuid()));
 		Assert.assertEquals(before - 1, after);
-		
 	}
-	
 }

@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import static org.junit.Assert.assertFalse;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Person;
@@ -21,10 +25,6 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import java.util.List;
-
-import static org.junit.Assert.assertFalse;
 
 public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonResource1_8, Person> {
 	
@@ -110,5 +110,4 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 			assertFalse("Resource should be person, but is " + selfLink, selfLink.contains("/patient/"));
 		}
 	}
-	
 }

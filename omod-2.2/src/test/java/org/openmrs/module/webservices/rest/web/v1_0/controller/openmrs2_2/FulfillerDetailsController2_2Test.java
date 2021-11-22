@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
@@ -17,8 +19,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import static org.junit.Assert.assertEquals;
 
 public class FulfillerDetailsController2_2Test extends MainResourceControllerTest {
 

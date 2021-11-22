@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_2;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Order;
@@ -21,8 +23,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 	
@@ -83,8 +83,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 	public void getSearchConfig_shouldReturnDrugAndTestOrders() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
-		req.addParameter("orderTypes", RestTestConstants1_10.DRUG_ORDER_TYPE_UUID
-		        + "," + RestTestConstants1_10.TEST_ORDER_TYPE_UUID);
+		req.addParameter("orderTypes", RestTestConstants1_10.DRUG_ORDER_TYPE_UUID + "," + RestTestConstants1_10.TEST_ORDER_TYPE_UUID);
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
@@ -99,8 +98,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 	public void getSearchConfig_shouldReturnOrdersByConcepts() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
-		req.addParameter("concepts", RestTestConstants1_10.COUGH_SYRUP_UUID
-		        + "," + RestTestConstants1_10.ASPIRIN_UUID);
+		req.addParameter("concepts", RestTestConstants1_10.COUGH_SYRUP_UUID + "," + RestTestConstants1_10.ASPIRIN_UUID);
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");

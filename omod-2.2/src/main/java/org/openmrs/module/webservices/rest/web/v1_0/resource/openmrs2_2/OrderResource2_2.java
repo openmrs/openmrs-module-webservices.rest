@@ -33,6 +33,5 @@ public class OrderResource2_2 extends OrderResource1_10 {
 			delegatingResourceDescription.addProperty("fulfillerComment");
 		}
 		return delegatingResourceDescription;
-	}
-	
+	}	
 }

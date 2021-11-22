@@ -12,6 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.openmrs.ConceptMapType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -25,10 +30,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * {@link Resource} for {@link ConceptMapType}, supporting standard CRUD operations
@@ -86,16 +87,14 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("isHidden", new BooleanProperty());
+			model.property("isHidden", new BooleanProperty());
 		}
 		return model;
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("isHidden", new BooleanProperty());
+		return ((ModelImpl) super.getCREATEModel(rep)).property("isHidden", new BooleanProperty());
 	}
 	
 	/**

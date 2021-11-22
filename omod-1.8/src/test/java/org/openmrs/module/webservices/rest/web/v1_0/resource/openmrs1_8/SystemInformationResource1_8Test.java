@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Map;
+
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +19,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.beans.factory.annotation.Autowired;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.openmrs.api.AdministrationService;
-import java.util.Map;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class SystemInformationResource1_8Test extends BaseModuleWebContextSensitiveTest {
@@ -33,7 +34,6 @@ public class SystemInformationResource1_8Test extends BaseModuleWebContextSensit
 	
 	@Test
 	public void testGetAll() throws Exception {
-		
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.setMethod("GET");
 		MockHttpServletResponse response = new MockHttpServletResponse();

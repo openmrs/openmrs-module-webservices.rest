@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,14 +34,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
 import org.openmrs.util.OpenmrsConstants;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_9, Obs> {
 	
@@ -55,11 +55,9 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		        "Concept id of the concept defining the FALSE boolean concept");
 		Context.getAdministrationService().saveGlobalProperty(trueConceptGlobalProperty);
 		Context.getAdministrationService().saveGlobalProperty(falseConceptGlobalProperty);
-		trueConcept = Context.getConceptService().getConcept(
-		    Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
+		trueConcept = Context.getConceptService().getConcept(Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
 		        OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT)));
-		falseConcept = Context.getConceptService().getConcept(
-		    Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
+		falseConcept = Context.getConceptService().getConcept(Integer.parseInt(Context.getAdministrationService().getGlobalProperty(
 		        OpenmrsConstants.GLOBAL_PROPERTY_FALSE_CONCEPT)));
 		
 	}
@@ -165,7 +163,6 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Assert.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
 		Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));
-		;
 		
 		// location referenced by uuid
 		location = Context.getLocationService().getLocation(2);
@@ -191,8 +188,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Obs groupMemberParent = resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423");
 		
 		Set<Obs> groupMembersBefore = groupMemberParent.getGroupMembers();
-		Set<Obs> groupMembersAfter = (Set<Obs>) ObsResource1_8.getGroupMembers(resource
-		        .getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+		Set<Obs> groupMembersAfter = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
 		
 		ObsResource1_8.setGroupMembers(groupMemberParent, groupMembersAfter);
 		assertNotEquals(groupMembersBefore, groupMemberParent.getGroupMembers());
@@ -205,14 +201,11 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		
 		ObsResource1_8 resource = getResource();
 		
-		Set<Obs> groupMembers1 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource
-		        .getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423"));
+		Set<Obs> groupMembers1 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("47f18998-96cc-11e0-8d6b-9b9415a91423"));
 		assertEquals(1, groupMembers1.size());
 		
-		Set<Obs> groupMembers2 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource
-		        .getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
+		Set<Obs> groupMembers2 = (Set<Obs>) ObsResource1_8.getGroupMembers(resource.getByUniqueId("5117f5d4-96cc-11e0-8d6b-9b9415a91433"));
 		assertEquals(2, groupMembers2.size());
-		
 	}
 	
 	@Test

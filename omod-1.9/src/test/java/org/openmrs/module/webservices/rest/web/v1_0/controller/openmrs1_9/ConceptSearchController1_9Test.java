@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import org.azeckoski.reflectutils.refmap.FinalizableReference;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -82,9 +81,7 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		assertThat(
-		    hits,
-		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
 		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
@@ -105,15 +102,12 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		result = deserialize(handle(req));
 		
 		hits = (List<Object>) result.get("results");
-		assertThat(
-		    hits,
-		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		assertThat(hits, containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
 		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
 	
 	private Matcher<? super Object> isConceptWithUuid(final String uuid) {
-		return new TypeSafeMatcher<Object>(
-		                                   Object.class) {
+		return new TypeSafeMatcher<Object>(Object.class) {
 			
 			@Override
 			public void describeTo(Description description) {
@@ -153,6 +147,5 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	@Ignore
 	public void shouldGetRefByUuid() throws Exception {
 		//The super test class does some unnecessary crazy stuff not supported by the resource
-	}
-	
+	}	
 }

@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.openmrs.FormResource;
 import org.openmrs.api.FormService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -22,9 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller("webservices.rest.formResourceController")
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")

@@ -23,7 +23,6 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.ConceptClass;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -65,12 +64,10 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugByMapping_shouldReturnADrugThatMatchesTheCodeAndSourceAndTheBestMapType() throws Exception {
 		executeDataSet(DRUG_MAPPINGS);
-		final String sourceUuid = conceptService.getConceptSource(2).getUuid();
-		String mapTypeUuids = conceptService.getConceptMapType(1).getUuid() + ","
-		        + conceptService.getConceptMapType(2).getUuid();
+		final String SOURCE_UUID = conceptService.getConceptSource(2).getUuid();
+		String mapTypeUuids = conceptService.getConceptMapType(1).getUuid() + "," + conceptService.getConceptMapType(2).getUuid();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugByMapping"),
-		    new Parameter("code", "WGT234"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes",
-		            mapTypeUuids))));
+		    new Parameter("code", "WGT234"), new Parameter("source", SOURCE_UUID), new Parameter("preferredMapTypes", mapTypeUuids))));
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 		
 		//Lets switch the order of the map types in the list to make sure that
@@ -78,12 +75,12 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		//sanity check that actually there will be no match on the first map type in the list
 		mapTypeUuids = conceptService.getConceptMapType(2).getUuid();
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugByMapping"), new Parameter("code",
-		        "WGT234"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes", mapTypeUuids))));
+		        "WGT234"), new Parameter("source", SOURCE_UUID), new Parameter("preferredMapTypes", mapTypeUuids))));
 		assertEquals(0, Util.getResultsSize(results));
 		
 		mapTypeUuids = conceptService.getConceptMapType(1).getUuid();
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugByMapping"), new Parameter("code",
-		        "WGT234"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes", mapTypeUuids))));
+		        "WGT234"), new Parameter("source", SOURCE_UUID), new Parameter("preferredMapTypes", mapTypeUuids))));
 		assertEquals(1, Util.getResultsSize(results));
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
@@ -91,18 +88,18 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugsByMapping_shouldReturnADrugThatMatchesTheCodeAndSourceAndTheBestMapType() throws Exception {
 		executeDataSet(DRUG_MAPPINGS);
-		final String sourceUuid = conceptService.getConceptSource(1).getUuid();
+		final String SOURCE_UUID = conceptService.getConceptSource(1).getUuid();
 		String expectedDrugUuid = conceptService.getDrug(3).getUuid();
 		String mapTypeUuids = conceptService.getConceptMapType(3).getUuid();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugsByMapping"),
-		    new Parameter("code", "CD41003"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes",
+		    new Parameter("code", "CD41003"), new Parameter("source", SOURCE_UUID), new Parameter("preferredMapTypes",
 		            mapTypeUuids))));
 		
 		assertEquals(0, Util.getResultsSize(results));
 		
 		mapTypeUuids = conceptService.getConceptMapType(2).getUuid();
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "getDrugsByMapping"), new Parameter("code",
-		        "CD41003"), new Parameter("source", sourceUuid), new Parameter("preferredMapTypes", mapTypeUuids))));
+		        "CD41003"), new Parameter("source", SOURCE_UUID), new Parameter("preferredMapTypes", mapTypeUuids))));
 		
 		Set<Object> actualDrugs = new HashSet<Object>();
 		for (Object drug : Util.getResultsList(results)) {
@@ -118,8 +115,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getDrugs_shouldGetDrugsLinkedToConceptsWithNamesThatMatchThePhrase() throws Exception {
-		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
-		        "amiv"))));
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q", "amiv"))));
 		Assert.assertEquals(1, Util.getResultsSize(results));
 		Assert.assertEquals(conceptService.getDrug(2).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
@@ -166,15 +162,15 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugs_shouldGetDrugsLinkedToConceptsWithNamesThatMatchThePhraseAndRelatedLocales() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);
-		final String searchPhrase = "another";
+		final String SEARCH_PHRASE = "another";
 		//Should look only in the exact locale if exactLocale is set to true
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
-		        searchPhrase), new Parameter("locale", "fr_CA"), new Parameter("exactLocale", "true"))));
+				SEARCH_PHRASE ), new Parameter("locale", "fr_CA"), new Parameter("exactLocale", "true"))));
 		Assert.assertEquals(0, Util.getResultsSize(results));
 		
 		//Should look in broader locale if exactLocale is set to false
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"),
-		    new Parameter("q", searchPhrase), new Parameter("locale", "fr_CA"))));
+		    new Parameter("q", SEARCH_PHRASE ), new Parameter("locale", "fr_CA"))));
 		Assert.assertEquals(1, Util.getResultsSize(results));
 		Assert.assertEquals(conceptService.getDrug(3).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));

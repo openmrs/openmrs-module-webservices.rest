@@ -9,6 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.DateTimeProperty;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -54,15 +63,6 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.obs.ComplexData;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -281,13 +281,13 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public static Object getValue(Obs obs) throws ConversionException {
 		if (obs.isComplex()) {
 			//Note that complex obs value is handled by ObsComplexValueController1_8
-			SimpleObject so = new SimpleObject();
-			so.put("display", "raw file");
+			SimpleObject simpleObject = new SimpleObject();
+			simpleObject.put("display", "raw file");
 			SimpleObject links = new SimpleObject();
 			links.put("rel", "self");
 			links.put("uri", new ObsResource1_8().getUri(obs) + "/value");
-			so.put("links", links);
-			return so;
+			simpleObject.put("links", links);
+			return simpleObject;
 		}
 		
 		if (obs.isObsGrouping())
@@ -528,5 +528,4 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
 	}
-	
 }

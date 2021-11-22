@@ -64,8 +64,8 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		
 		Person person = service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID);
 		
-		for (PersonAddress addr : person.getAddresses()) {
-			if (!addr.isVoided()) {
+		for (PersonAddress personAddress : person.getAddresses()) {
+			if (!personAddress.isVoided()) {
 				count++;
 			}
 		}
@@ -83,7 +83,6 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAnAddressOfAPerson() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -97,7 +96,6 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldIncludeLatitudeLongituteAndAuditInfoForFullRepresentation() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(req));
@@ -109,7 +107,6 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldGetAllNonVoidedAddressesOfAPerson() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -164,8 +161,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldEditAnAddress() throws Exception {
-		
+	public void shouldEditAnAddress() throws Exception {	
 		SimpleObject address = new SimpleObject();
 		address.add("address1", "new address1");
 		address.add("address2", "new address2");
@@ -180,7 +176,6 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldVoidADeletedPersonAddress() throws Exception {
-		
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
 		Assert.assertFalse(address.isVoided());
 		
@@ -194,7 +189,6 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldPurgeAPersonAddress() throws Exception {
-		
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
 		Assert.assertNotNull(address);
 		
@@ -229,9 +223,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		PersonAddress updated = service.getPersonAddressByUuid(getUuid());
 		assertThat(updated.isPreferred(), is(true));
 		// the one that was originally preferred should now not be preferred
-		assertThat(updated.getPerson().getAddresses(), (Matcher) hasItem(allOf(
-		    hasProperty("preferred", is(false)),
-		    hasProperty("cityVillage", is("Seattle"))
-		    )));
+		assertThat(updated.getPerson().getAddresses(), (Matcher) hasItem(allOf(hasProperty("preferred", is(false)),
+		    hasProperty("cityVillage", is("Seattle")))));
 	}
 }

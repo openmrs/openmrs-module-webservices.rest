@@ -12,11 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-import java.util.Date;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
@@ -71,11 +69,11 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 	
 	@Test
 	public void shouldGetAPatientIdentifierTypeByName() throws Exception {
-		final String name = "OpenMRS Identification Number";
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + name);
+		final String NAME = "OpenMRS Identification Number";
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + NAME);
 		SimpleObject result = deserialize(handle(req));
 		
-		PatientIdentifierType patientIdentifierType = service.getPatientIdentifierTypeByName(name);
+		PatientIdentifierType patientIdentifierType = service.getPatientIdentifierTypeByName(NAME);
 		assertEquals(patientIdentifierType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		assertEquals(patientIdentifierType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
@@ -110,16 +108,16 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 	
 	@Test
 	public void shouldEditingAPatientIdentifierType() throws Exception {
-		final String newName = "updated name";
+		final String NEW_NAME = "updated name";
 		SimpleObject patientIdentifierType = new SimpleObject();
-		patientIdentifierType.add("name", newName);
+		patientIdentifierType.add("name", NEW_NAME);
 		
 		String json = new ObjectMapper().writeValueAsString(patientIdentifierType);
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		assertEquals(newName, service.getPatientIdentifierTypeByUuid(getUuid()).getName());
+		assertEquals(NEW_NAME, service.getPatientIdentifierTypeByUuid(getUuid()).getName());
 	}
 	
 	@Test
@@ -127,11 +125,11 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		assertEquals(false, service.getPatientIdentifierTypeByUuid(getUuid()).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("!purge", "");
-		final String reason = "none";
-		req.addParameter("reason", reason);
+		final String REASON = "none";
+		req.addParameter("reason", REASON);
 		handle(req);
 		assertEquals(true, service.getPatientIdentifierTypeByUuid(getUuid()).isRetired());
-		assertEquals(reason, service.getPatientIdentifierTypeByUuid(getUuid()).getRetireReason());
+		assertEquals(REASON, service.getPatientIdentifierTypeByUuid(getUuid()).getRetireReason());
 	}
 	
 	@Test
@@ -148,18 +146,17 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		
 		patientIdentifierType = service.getPatientIdentifierTypeByUuid(getUuid());
 		assertFalse(patientIdentifierType.isRetired());
-		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
+		assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());	
 	}
 	
 	@Test
 	public void shouldPurgeAPatientIdentifierType() throws Exception {
-		final String uuid = "158d6b17-a8ab-435b-8fe3-952a04bda757";
-		assertNotNull(service.getPatientIdentifierTypeByUuid(uuid));
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
+		final String UUID = "158d6b17-a8ab-435b-8fe3-952a04bda757";
+		assertNotNull(service.getPatientIdentifierTypeByUuid(UUID));
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
 		req.addParameter("purge", "true");
 		handle(req);
-		assertNull(service.getPatientIdentifierTypeByUuid(uuid));
+		assertNull(service.getPatientIdentifierTypeByUuid(UUID));
 	}
 	
 	@Test

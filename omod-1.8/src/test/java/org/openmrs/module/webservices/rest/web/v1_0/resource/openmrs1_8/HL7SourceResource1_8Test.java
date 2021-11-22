@@ -14,7 +14,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.HL7SourceResource1_8;
 
 public class HL7SourceResource1_8Test extends BaseDelegatingResourceTest<HL7SourceResource1_8, HL7Source> {
 	
@@ -54,5 +53,4 @@ public class HL7SourceResource1_8Test extends BaseDelegatingResourceTest<HL7Sour
 	public String getUuidProperty() {
 		return getObject().getUuid();
 	}
-	
 }

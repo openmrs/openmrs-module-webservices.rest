@@ -57,8 +57,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldCreateNewOrderGroup() throws Exception {
-		
+	public void shouldCreateNewOrderGroup() throws Exception {	
 		final String JSON = "{\n" + "  \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "  \"encounter\": \"" + RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID + "\",\n" + "  \"orders\": [\n"
 		        + "    {\n"
@@ -105,8 +104,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldGetOrderGroupByUuid() throws Exception {
-		
+	public void shouldGetOrderGroupByUuid() throws Exception {		
 		OrderGroup orderGroup = Context.getOrderService().getOrderGroupByUuid(RestTestConstants1_12.ORDER_GROUP_UUID);
 		Patient patient = orderGroup.getPatient();
 		Encounter encounter = orderGroup.getEncounter();

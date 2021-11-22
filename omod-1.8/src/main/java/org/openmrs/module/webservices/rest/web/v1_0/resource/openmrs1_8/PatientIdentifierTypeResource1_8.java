@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -119,14 +120,13 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("format", new StringProperty())
-			        .property("formatDescription", new StringProperty())
-			        .property("required", new BooleanProperty())
-			        .property("checkDigit", new BooleanProperty())
-			        .property("validator", new StringProperty())
-			        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
-			        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+			model.property("format", new StringProperty())
+			     .property("formatDescription", new StringProperty())
+			     .property("required", new BooleanProperty())
+			     .property("checkDigit", new BooleanProperty())
+			     .property("validator", new StringProperty())
+			     .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
+			     .property("uniquenessBehavior", new StringProperty()); //FIXME check type
 		}
 		return model;
 	}
@@ -164,8 +164,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	 */
 	@Override
 	protected NeedsPaging<PatientIdentifierType> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<PatientIdentifierType>(service().getAllPatientIdentifierTypes(context.getIncludeAll()),
-		        context);
+		return new NeedsPaging<PatientIdentifierType>(service().getAllPatientIdentifierTypes(context.getIncludeAll()), context);
 	}
 	
 	/**
@@ -192,5 +191,4 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public void purge(PatientIdentifierType delegate, RequestContext context) throws ResponseException {
 		service().purgePatientIdentifierType(delegate);
 	}
-	
 }

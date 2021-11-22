@@ -9,6 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
+import static org.hamcrest.core.IsNot.not;
+
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.Module;
@@ -21,16 +31,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
-import static org.hamcrest.core.IsNot.not;
 
 public class ModuleActionController1_8Test extends MainResourceControllerTest {
 	

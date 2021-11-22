@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +27,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.Assert.assertEquals;
 
 public class EncounterController2_0Test extends MainResourceControllerTest {
 	
@@ -62,24 +60,24 @@ public class EncounterController2_0Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldReturnEncounterAsComplexCustomRepresentation() throws Exception {
-		final String customRep = "custom:(uuid,display,patient:(uuid,display),location:(name,tags:(display)))";
+		final String CUSTOM_REP = "custom:(uuid,display,patient:(uuid,display),location:(name,tags:(display)))";
 		
-		final String encounterUuid = "62967e68-96bb-11e0-8d6b-9b9415a91465";
-		final String encounterDisplay = "sample encounter a 01/08/2008";
-		final String patientUuid = "41c6b35e-c093-11e3-be87-005056821db0";
-		final String patientDisplay = "";
-		final String locationName = "Unknown Location";
+		final String ENCOUNTER_UUID = "62967e68-96bb-11e0-8d6b-9b9415a91465";
+		final String ENCOUNTER_DISPLAY = "sample encounter a 01/08/2008";
+		final String PATIENT_UUID = "41c6b35e-c093-11e3-be87-005056821db0";
+		final String PATIENT_DISPLAY = "";
+		final String LOCATION_NAME = "Unknown Location";
 		
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
-		        "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("v", customRep))));
+		        "41c6b35e-c093-11e3-be87-005056821db0"), new Parameter("v", CUSTOM_REP))));
 		
 		assertEquals(2, Util.getResultsSize(result));
 		List<?> encounters = result.get("results");
-		assertEquals(encounterUuid, PropertyUtils.getProperty(encounters.get(0), "uuid"));
-		assertEquals(encounterDisplay, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "display"));
-		assertEquals(patientUuid, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.uuid"));
-		assertEquals(patientDisplay, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.display"));
-		assertEquals(locationName, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "location.name"));
+		assertEquals(ENCOUNTER_UUID, PropertyUtils.getProperty(encounters.get(0), "uuid"));
+		assertEquals(ENCOUNTER_DISPLAY, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "display"));
+		assertEquals(PATIENT_UUID, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.uuid"));
+		assertEquals(PATIENT_DISPLAY, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "patient.display"));
+		assertEquals(LOCATION_NAME, PropertyUtils.getProperty(Util.getResultsList(result).get(0), "location.name"));
 	}
 	
 	/**

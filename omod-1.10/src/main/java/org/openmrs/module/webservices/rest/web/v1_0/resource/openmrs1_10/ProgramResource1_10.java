@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
 import org.openmrs.Program;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -66,11 +67,9 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("outcomesConcept", new StringProperty().example("uuid"));
+		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep)).property("outcomesConcept", new StringProperty().example("uuid"));
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("outcomesConcept", new RefProperty("#/definitions/ConceptCreate"));
+			model.property("outcomesConcept", new RefProperty("#/definitions/ConceptCreate"));
 		}
 		return model;
 	}
@@ -85,6 +84,5 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		description.addProperty("outcomesConcept");
 		description.addProperty("retired");
 		return description;
-	}
-	
+	}	
 }

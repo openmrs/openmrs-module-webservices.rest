@@ -172,6 +172,5 @@ public class SettingsFormController {
 		public void setProperties(List<GlobalProperty> properties) {
 			this.properties = properties;
 		}
-	}
-	
+	}	
 }

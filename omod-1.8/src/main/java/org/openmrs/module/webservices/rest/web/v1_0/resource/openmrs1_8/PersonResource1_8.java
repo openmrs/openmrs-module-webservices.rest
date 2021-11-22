@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
@@ -23,6 +18,12 @@ import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -146,30 +147,27 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("gender", new StringProperty()._enum("M")._enum("F"))
-			        .property("age", new IntegerProperty())
-			        .property("birthdate", new DateTimeProperty())
-			        .property("birthdateEstimated", new BooleanProperty())
-			        .property("dead", new BooleanProperty())
-			        .property("deathDate", new DateProperty())
-			        .property("causeOfDeath", new StringProperty())
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeGetRef")))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("gender", new StringProperty()._enum("M")._enum("F"))
+			     .property("age", new IntegerProperty())
+			     .property("birthdate", new DateTimeProperty())
+			     .property("birthdateEstimated", new BooleanProperty())
+			     .property("dead", new BooleanProperty())
+			     .property("deathDate", new DateProperty())
+			     .property("causeOfDeath", new StringProperty())
+			     .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeGetRef")))
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGetRef"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGetRef"));
+			model.property("preferredName", new RefProperty("#/definitions/PersonNameGetRef"))
+			     .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGetRef"));
 			
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGet"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGet"))
-			        .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameGet")))
-			        .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressGet")));
+			model.property("preferredName", new RefProperty("#/definitions/PersonNameGet"))
+			     .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGet"))
+			     .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameGet")))
+			     .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressGet")));
 		}
 		return model;
 	}

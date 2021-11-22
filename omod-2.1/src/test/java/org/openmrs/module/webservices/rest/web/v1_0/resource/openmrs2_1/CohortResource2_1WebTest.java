@@ -81,6 +81,5 @@ public class CohortResource2_1WebTest extends MainResourceControllerTest {
 	@Override
 	public long getAllCount() {
 		return 1;
-	}
-	
+	}	
 }

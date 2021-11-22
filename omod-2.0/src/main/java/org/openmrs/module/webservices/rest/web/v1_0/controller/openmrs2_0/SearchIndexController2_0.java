@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Controller("webservices.rest.searchIndexController2_0")
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/searchindexupdate", method = RequestMethod.POST)
@@ -84,6 +84,5 @@ public class SearchIndexController2_0 extends BaseRestController {
 				Context.updateSearchIndexForObject(object);
 			}
 		}
-	}
-	
+	}	
 }

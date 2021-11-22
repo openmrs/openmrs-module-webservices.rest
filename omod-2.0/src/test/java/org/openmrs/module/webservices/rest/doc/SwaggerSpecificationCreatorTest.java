@@ -9,7 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.doc;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertTrue;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.swagger.converter.ModelConverterContextImpl;
 import io.swagger.converter.ModelConverters;
 import io.swagger.jackson.ModelResolver;
@@ -22,18 +27,6 @@ import io.swagger.models.Swagger;
 import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.util.Json;
-import org.dbunit.database.DatabaseConnection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Patient;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResource;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -46,9 +39,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import org.dbunit.database.DatabaseConnection;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openmrs.GlobalProperty;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResource;
+import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -80,24 +82,24 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void modelResolveTest() {
-		final ModelResolver modelResolver = new ModelResolver(new ObjectMapper());
-		final ModelConverterContextImpl context = new ModelConverterContextImpl(modelResolver);
-		final Model model = context.resolve(Patient.class);
-		assertNotNull(model);
+		final ModelResolver MODEL_RESOLVER = new ModelResolver(new ObjectMapper());
+		final ModelConverterContextImpl CONTEXT = new ModelConverterContextImpl(MODEL_RESOLVER);
+		final Model MODEL = CONTEXT.resolve(Patient.class);
+		assertNotNull(MODEL);
 	}
 	
 	@Test
 	public void swaggerSerializeTest() {
-		final Info info = new Info().version("1.0.0").title("Swagger WebServices REST");
+		final Info INFO = new Info().version("1.0.0").title("Swagger WebServices REST");
 		
-		Swagger swagger = new Swagger().info(info).securityDefinition("basicAuth", new BasicAuthDefinition())
+		Swagger swagger = new Swagger().info(INFO).securityDefinition("basicAuth", new BasicAuthDefinition())
 		        .scheme(Scheme.HTTP).consumes("application/json").produces("application/json");
 		
-		final Model patientModel = ModelConverters.getInstance().read(Patient.class).get("Patient");
-		swagger.addDefinition("Patient", patientModel);
+		final Model PATIENT_MODEL = ModelConverters.getInstance().read(Patient.class).get("Patient");
+		swagger.addDefinition("Patient", PATIENT_MODEL);
 		
-		final String swaggerJson = Json.pretty(swagger);
-		assertNotNull(swaggerJson);
+		final String SWAGGER_JSON = Json.pretty(swagger);
+		assertNotNull(SWAGGER_JSON);
 	}
 	
 	Map<String, Integer> beforeCounts;
@@ -105,9 +107,9 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	public Map<String, Integer> getRowCounts() throws Exception {
 		Map<String, Integer> ret = new HashMap<String, Integer>();
 		
-		Connection con = this.getConnection();
-		DatabaseMetaData metaData = con.getMetaData();
-		DatabaseConnection dbcon = new DatabaseConnection(con);
+		Connection connection = this.getConnection();
+		DatabaseMetaData metaData = connection.getMetaData();
+		DatabaseConnection dbcon = new DatabaseConnection(connection);
 		
 		ResultSet rs = metaData.getTables(null, "PUBLIC", "%", null);
 		while (rs.next()) {
@@ -124,8 +126,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		// init REST
 		Context.getService(RestService.class).initialize();
 		
-		Context.getAdministrationService().saveGlobalProperty(
-		    new GlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
+		Context.getAdministrationService().saveGlobalProperty(new GlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
 		
 		// ensure GP is written to database before we count the rows
 		Context.flushSession();
@@ -135,14 +136,13 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	
 	@Test
 	public void checkNoDatabaseChanges() throws Exception {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.getJSON();
+		SwaggerSpecificationCreator swaggerSpecificationCreator = new SwaggerSpecificationCreator();
+		swaggerSpecificationCreator.getJSON();
 		
 		Map<String, Integer> afterCounts = getRowCounts();
 		
 		Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
-		Assert.assertTrue("Ensure that no data was added or removed from any tables",
-		    ensureCountsEqual(beforeCounts, afterCounts));
+		Assert.assertTrue("Ensure that no data was added or removed from any tables", ensureCountsEqual(beforeCounts, afterCounts));
 	}
 	
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
@@ -163,14 +163,14 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	public void checkOperationIdsSet() {
 		List<String> operationIds = new ArrayList<String>();
 		
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.getJSON();
-		Swagger spec = ssc.getSwagger();
+		SwaggerSpecificationCreator swaggerSpecificationCreator = new SwaggerSpecificationCreator();
+		swaggerSpecificationCreator.getJSON();
+		Swagger swagger = swaggerSpecificationCreator.getSwagger();
 		
-		for (Path p : spec.getPaths().values()) {
-			for (Operation o : p.getOperations()) {
-				Assert.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
-				operationIds.add(o.getOperationId());
+		for (Path path : swagger.getPaths().values()) {
+			for (Operation operation : path.getOperations()) {
+				Assert.assertFalse("Ensure each operation has a unique ID", operationIds.contains(operation.getOperationId()));
+				operationIds.add(operation.getOperationId());
 			}
 		}
 	}
@@ -178,23 +178,22 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	// makes sure that every GET operation has the "v" parameter
 	@Test
 	public void checkRepresentationParamExists() {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.getJSON();
-		Swagger spec = ssc.getSwagger();
+		SwaggerSpecificationCreator swaggerSpecificationCreator = new SwaggerSpecificationCreator();
+		swaggerSpecificationCreator.getJSON();
+		Swagger swagger = swaggerSpecificationCreator.getSwagger();
 		
-		for (Path p : spec.getPaths().values()) {
-			if (p.getGet() != null) {
-				Assert.assertTrue("Ensure each GET operation has the 'v' query parameter",
-				    operationHasRepresentationParam(p.getGet()));
+		for (Path path : swagger.getPaths().values()) {
+			if (path.getGet() != null) {
+				Assert.assertTrue("Ensure each GET operation has the 'v' query parameter", operationHasRepresentationParam(path.getGet()));
 			}
 		}
 	}
 	
-	private boolean operationHasRepresentationParam(Operation o) {
+	private boolean operationHasRepresentationParam(Operation operation) {
 		boolean ret = false;
 		
-		for (Parameter p : o.getParameters()) {
-			if (p.getName().equals("v")) {
+		for (Parameter parameter : operation.getParameters()) {
+			if (parameter.getName().equals("v")) {
 				ret = !ret;
 			}
 		}
@@ -205,27 +204,27 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 	// make sure each operation that supports paging has the limit and startIndex parameters
 	@Test
 	public void checkPagingParamsExist() {
-		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-		ssc.getJSON();
-		Swagger spec = ssc.getSwagger();
+		SwaggerSpecificationCreator swaggerSpecificationCreator = new SwaggerSpecificationCreator();
+		swaggerSpecificationCreator.getJSON();
+		Swagger swagger = swaggerSpecificationCreator.getSwagger();
 		
-		for (Path p : spec.getPaths().values()) {
-			for (Operation o : p.getOperations()) {
-				if (o.getOperationId().matches("^getAll[A-Z].*")) {
+		for (Path path : swagger.getPaths().values()) {
+			for (Operation operation : path.getOperations()) {
+				if (operation.getOperationId().matches("^getAll[A-Z].*")) {
 					Assert.assertTrue("Ensure each operation that supports paging has both paging parameters",
-					    operationHasPagingParams(o));
+					    operationHasPagingParams(operation));
 				}
 			}
 		}
 	}
 	
-	private boolean operationHasPagingParams(Operation o) {
+	private boolean operationHasPagingParams(Operation operation) {
 		boolean limit = false, startIndex = false;
 		
-		for (Parameter p : o.getParameters()) {
-			if (p.getName().equals("limit")) {
+		for (Parameter parameter : operation.getParameters()) {
+			if (parameter.getName().equals("limit")) {
 				limit = !limit;
-			} else if (p.getName().equals("startIndex")) {
+			} else if (parameter.getName().equals("startIndex")) {
 				startIndex = !startIndex;
 			}
 		}

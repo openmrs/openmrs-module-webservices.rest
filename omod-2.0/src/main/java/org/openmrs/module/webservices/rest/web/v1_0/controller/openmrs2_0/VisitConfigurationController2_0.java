@@ -9,11 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.GlobalProperty;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
@@ -39,11 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/visitconfiguration")
@@ -100,14 +99,12 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 	}
 
 	private Boolean getEnableVisitsValue(AdministrationService administrationService) {
-		String enableVisits = administrationService
-				.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, "true");
+		String enableVisits = administrationService.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ENABLE_VISITS, "true");
 		return Boolean.parseBoolean(enableVisits);
 	}
 
 	private Boolean getAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService) {
-		TaskDefinition autoCloseVisitsTaskStarted = schedulerService
-				.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
+		TaskDefinition autoCloseVisitsTaskStarted = schedulerService.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
 
 		if (autoCloseVisitsTaskStarted != null) {
 			return autoCloseVisitsTaskStarted.getStarted();
@@ -157,8 +154,7 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 				.collect(Collectors.toList());
 		List<VisitType> visitTypesToAutoCloseFull = getVisitTypesByUuids(visitTypesToAutoCloseUuids, visitService);
 
-		String visitTypeNames = visitTypesToAutoCloseFull.stream().map(BaseOpenmrsMetadata::getName)
-				.collect(Collectors.joining(","));
+		String visitTypeNames = visitTypesToAutoCloseFull.stream().map(BaseOpenmrsMetadata::getName).collect(Collectors.joining(","));
 
 		administrationService.setGlobalProperty(OpenmrsConstants.GP_VISIT_TYPES_TO_AUTO_CLOSE, visitTypeNames);
 	}

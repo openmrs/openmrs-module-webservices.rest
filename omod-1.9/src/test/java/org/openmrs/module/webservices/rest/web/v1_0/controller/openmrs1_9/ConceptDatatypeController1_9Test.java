@@ -64,7 +64,6 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldGetAConceptDatatypeByUuid() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
@@ -75,7 +74,6 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldGetAConceptDatatypeByName() throws Exception {
-		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/Coded");
 		SimpleObject result = deserialize(handle(req));
 		
@@ -109,7 +107,6 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldNotSupportEditingAConceptDatatype() throws Exception {
-		
 		SimpleObject conceptDataType = new SimpleObject();
 		conceptDataType.add("name", "updated name");
 		
@@ -118,7 +115,6 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
-		
 	}
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
@@ -143,5 +139,4 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
-	
 }

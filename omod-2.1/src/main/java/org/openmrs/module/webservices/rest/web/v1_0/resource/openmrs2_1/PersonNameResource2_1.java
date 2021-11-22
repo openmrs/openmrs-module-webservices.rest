@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import io.swagger.models.Model;
+
 import org.openmrs.PersonName;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;

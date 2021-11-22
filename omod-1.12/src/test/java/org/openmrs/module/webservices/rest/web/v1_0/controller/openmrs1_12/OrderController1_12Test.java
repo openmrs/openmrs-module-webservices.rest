@@ -110,16 +110,14 @@ public class OrderController1_12Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), order);
 		SimpleObject newOrder = deserialize(handle(req));
 		
-		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-		    outPatient, null);
+		List<Order> activeDrugOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"), outPatient, null);
 		assertEquals(++originalActiveDrugOrderCount, activeDrugOrders.size());
 		
 		assertNotNull(PropertyUtils.getProperty(newOrder, "orderNumber"));
 		assertEquals("NEW", Util.getByPath(newOrder, "action"));
 		assertEquals(order.get("patient"), Util.getByPath(newOrder, "patient/uuid"));
-		final String expectedConceptUuid = Context.getConceptService().getDrugByUuid(order.get("drug").toString())
-		        .getConcept().getUuid();
-		assertEquals(expectedConceptUuid, Util.getByPath(newOrder, "concept/uuid"));
+		final String EXPECTED_CONCEPT_UUID = Context.getConceptService().getDrugByUuid(order.get("drug").toString()).getConcept().getUuid();
+		assertEquals(EXPECTED_CONCEPT_UUID, Util.getByPath(newOrder, "concept/uuid"));
 		assertEquals(order.get("careSetting"), Util.getByPath(newOrder, "careSetting/uuid"));
 		assertNotNull(PropertyUtils.getProperty(newOrder, "dateActivated"));
 		assertEquals(order.get("encounter"), Util.getByPath(newOrder, "encounter/uuid"));

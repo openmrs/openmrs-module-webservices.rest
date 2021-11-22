@@ -15,6 +15,13 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -40,12 +47,6 @@ import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
-
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * {@link Resource} for Patients, supporting standard CRUD operations
@@ -148,19 +149,16 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		//FIXME check uuid, display in ref rep
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierGetRef")))
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
+			model.property("uuid", new StringProperty())
+			     .property("display", new StringProperty())
+			     .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierGetRef")))
+			     .property("preferred", new BooleanProperty()._default(false))
+			     .property("voided", new BooleanProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"));
+			model.property("person", new RefProperty("#/definitions/PersonGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"));
+			model.property("person", new RefProperty("#/definitions/PersonGet"));
 		}
 		return model;
 	}
@@ -173,18 +171,14 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		        
 		        .required("person").required("identifiers");
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"));
+			model.property("person", new RefProperty("#/definitions/PersonCreate"));
 		}
 		return model;
 	}
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("person", new RefProperty("#/definitions/PersonGet"))
-		        
-		        .required("person");
+		return new ModelImpl().property("person", new RefProperty("#/definitions/PersonGet")).required("person");
 	}
 	
 	/**
@@ -360,11 +354,8 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	
 	public Patient getPatientForUpdate(String uuid, Map<String, Object> propertiesToUpdate) {
 		Patient patient = getByUniqueId(uuid);
-		PersonResource1_8 personResource = (PersonResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Person.class);
-		personResource.setConvertedProperties(patient, (Map<String, Object>) propertiesToUpdate.get("person"),
-		    personResource.getUpdatableProperties(), false);
+		PersonResource1_8 personResource = (PersonResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Person.class);
+		personResource.setConvertedProperties(patient, (Map<String, Object>) propertiesToUpdate.get("person"), personResource.getUpdatableProperties(), false);
 		return patient;
-	}
-	
+	}	
 }

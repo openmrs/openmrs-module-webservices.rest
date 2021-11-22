@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import static org.hamcrest.core.Is.is;
+import static org.hibernate.validator.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
@@ -20,20 +28,11 @@ import org.openmrs.module.webservices.rest.web.representation.CustomRepresentati
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
-import java.util.List;
-
-import static org.hamcrest.core.Is.is;
-import static org.hibernate.validator.util.Contracts.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
 
 
     @Test
     public void convertToRepresentation_shouldConvertObsDrugValueAsNull() {
-
         String codedObsUuid = "9f868194-c88a-458e-9b4d-3b9a716cb0d4";
         String drugObsUuid = "1479068f-4a96-4c2f-8aba-aa32192e946f";
 
@@ -80,6 +79,5 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         else {
             assertNull(resultObs2.get("value"));
         }
-
     }
 }
