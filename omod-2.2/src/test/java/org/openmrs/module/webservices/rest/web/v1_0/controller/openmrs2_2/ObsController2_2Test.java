@@ -21,8 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class ObsController2_2Test extends MainResourceControllerTest {
 
@@ -65,6 +64,7 @@ public class ObsController2_2Test extends MainResourceControllerTest {
 
         Obs existingObs = obsService.getObsByUuid("2f616900-5e7c-4667-9a7f-dcb260abf1de");
         assertNotNull(existingObs);
+        assertNull(obsService.getRevisionObs(existingObs));
 
         String json = "{ \"value\":\"" + UPDATED_VALUE + "\"}";
 
