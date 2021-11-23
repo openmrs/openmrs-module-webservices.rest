@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Encounter;
-import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;

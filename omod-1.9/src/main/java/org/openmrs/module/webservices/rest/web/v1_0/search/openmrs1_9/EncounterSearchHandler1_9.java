@@ -28,7 +28,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 
 /**
  * Allow searching for encounters based on an obs, matching the input patient and concept, within

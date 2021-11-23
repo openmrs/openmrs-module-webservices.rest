@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import static org.junit.Assert.*;
-
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;

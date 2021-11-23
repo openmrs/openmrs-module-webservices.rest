@@ -14,7 +14,6 @@ import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ProviderAttributeTypeResource1_9;
 
 public class ProviderAttributeTypeResource1_9Test extends BaseDelegatingResourceTest<ProviderAttributeTypeResource1_9, ProviderAttributeType> {
 	

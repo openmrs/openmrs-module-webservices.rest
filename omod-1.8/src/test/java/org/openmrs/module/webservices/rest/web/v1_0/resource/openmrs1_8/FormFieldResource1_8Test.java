@@ -13,7 +13,6 @@ import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormFieldResource1_8;
 
 public class FormFieldResource1_8Test extends BaseDelegatingResourceTest<FormFieldResource1_8, FormField> {
 	

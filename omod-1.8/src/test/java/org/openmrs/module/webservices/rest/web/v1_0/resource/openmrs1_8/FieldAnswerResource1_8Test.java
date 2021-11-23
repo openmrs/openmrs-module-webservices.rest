@@ -14,7 +14,6 @@ import org.openmrs.FieldAnswer;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FieldAnswerResource1_8;
 
 public class FieldAnswerResource1_8Test extends BaseDelegatingResourceTest<FieldAnswerResource1_8, FieldAnswer> {
 	

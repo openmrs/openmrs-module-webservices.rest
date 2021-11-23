@@ -14,7 +14,6 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierTypeResource1_8;
 
 public class PatientIdentifierTypeResource1_8Test extends BaseDelegatingResourceTest<PatientIdentifierTypeResource1_8, PatientIdentifierType> {
 	
