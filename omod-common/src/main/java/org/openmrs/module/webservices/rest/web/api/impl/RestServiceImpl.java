@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.module.ModuleUtil;
+import org.openmrs.module.webservices.rest.util.UniqueIdentifierUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -48,6 +49,8 @@ import org.openmrs.util.OpenmrsConstants;
 public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
+
+	volatile Map<String, ResourceDefinition> resourceDefinitionsByUuids;
 	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
@@ -420,6 +423,30 @@ public class RestServiceImpl implements RestService {
 	}
 	
 	/**
+	 * Gets a resource by name or uuid
+	 *
+	 * @param str the name or uuid
+	 * @return resource
+	 * @throws APIException unknown resource exception if the resource with
+	 * the given uuid or name cannot be found
+	 */
+	@Override
+	public Resource getResourceByNameOrUuid(String str) throws APIException {
+		initializeResources();
+		if (UniqueIdentifierUtil.isValidUUID(str)) {
+			ResourceDefinition resourceByUuid = resourceDefinitionsByUuids.get(str);
+			return resourceByUuid.resource;
+		}
+		else if (!str.isEmpty()) {
+			ResourceDefinition resourceByName = resourceDefinitionsByNames.get(str);
+			return resourceByName.resource;
+		}
+		else {
+			throw new UnknownResourceException("Unknown resource: " + str);
+		}
+	}
+	
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestService#getResourceBySupportedClass(Class)
 	 * <strong>Should</strong> return resource supporting given class and current openmrs version
 	 * <strong>Should</strong> fail if no resource supporting given class and current openmrs version was found
@@ -470,7 +497,7 @@ public class RestServiceImpl implements RestService {
 	/**
 	 * @throws InstantiationException
 	 */
-	private Resource newResource(Class<? extends Resource> resourceClass) {
+	protected Resource newResource(Class<? extends Resource> resourceClass) {
 		try {
 			return resourceClass.newInstance();
 		}

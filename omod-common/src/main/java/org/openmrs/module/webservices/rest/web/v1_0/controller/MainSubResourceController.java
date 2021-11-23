@@ -127,23 +127,25 @@ public class MainSubResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * @param parentUuid
-	 * @param uuid
-	 * @param post
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
+	 * @param resource the resource
+	 * @param parentUuid the parent uuid
+	 * @param subResource the sub
+	 * @param uuid the uuid
+	 * @param post the post
+	 * @param request the request
+	 * @param response the response
+	 * @return resource
+	 * @throws ResponseException the api exception
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
-	        @PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
-	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+			@PathVariable("subResource") String subResource, @PathVariable("uuid") String uuid,
+			@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+			throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
 		Object updated = res.update(parentUuid, uuid, post, context);
 		return RestUtil.updated(response, updated);
 	}
@@ -225,21 +227,21 @@ public class MainSubResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * @param parentUuid
-	 * @param post
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
+	 * @param parentUuid the parent uuid
+	 * @param post the post
+	 * @param request the request
+	 * @param response the response
+	 * @return the resource
+	 * @throws ResponseException the response exception
 	 */
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.PUT)
 	@ResponseBody
 	public Object put(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
-	        @PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
-	        HttpServletResponse response) throws ResponseException {
+			@PathVariable("subResource") String subResource, @RequestBody SimpleObject post, HttpServletRequest request,
+			HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
 		res.put(parentUuid, post, context);
 		return RestUtil.noContent(response);
 	}

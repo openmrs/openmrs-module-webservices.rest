@@ -101,7 +101,7 @@ public class TaskServiceWrapper {
 	/**
 	 * It will run the task from the service
 	 * 
-	 * @param task will contain the taskDefinition to be run
+	 * @param taskDefinition will contain the taskDefinition to be run
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {

@@ -108,28 +108,29 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * @param uuid
-	 * @param post
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
+	 * @param resource the resource
+	 * @param uuid the uuid
+	 * @param post the post
+	 * @param request the request
+	 * @param response the response
+	 * @return updated resource
+	 * @throws ResponseException the response exception
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
-	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+			@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+			throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		
+
 		if (post.get("deleted") != null && "false".equals(post.get("deleted")) && post.size() == 1) {
-			Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
+			Deletable res = (Deletable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 			Object undeletedRes = res.undelete(uuid, context);
 			return RestUtil.updated(response, undeletedRes);
 		}
 		else {
-			Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
+			Updatable res = (Updatable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 			Object updated = res.update(uuid, post, context);
 			return RestUtil.updated(response, updated);
 		}

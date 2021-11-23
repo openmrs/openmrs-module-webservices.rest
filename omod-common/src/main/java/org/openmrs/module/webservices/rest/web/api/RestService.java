@@ -27,42 +27,57 @@ public interface RestService {
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
-	 * @param requested
+	 * @param requested representation
 	 * @return
 	 * <strong>Should</strong> get ref representation when specified
 	 * <strong>Should</strong> get default representation when specified
 	 * <strong>Should</strong> get full representation when specified
 	 * <strong>Should</strong> get a named representation when specified
 	 */
-	public Representation getRepresentation(String requested);
+	Representation getRepresentation(String requested);
 	
+	/**
+	 * Gets resource by name.
+	 *
+	 * @param name the name
+	 * @return the resource by name
+	 * @throws APIException the api exception
+	 */
 	Resource getResourceByName(String name) throws APIException;
 	
 	/**
-	 * Auto generated method comment
+	 * Gets resource by name or uuid.
 	 * 
-	 * @param supportedClass
-	 * @return
-	 * @throws APIException
+	 * @param str the name or uuid
+	 * @return the resource by name or uuid
+	 * @throws APIException the api exception
+	 */
+	Resource getResourceByNameOrUuid(String str) throws APIException;
+	
+	/**
+	 * Gets resource by supported class
+	 * 
+	 * @param supportedClass the supported class
+	 * @return resource by supported class
+	 * @throws APIException the api exception
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
 	 * Returns a search handler, which supports the given resource and the map of parameters and
 	 * values.
-	 * 
-	 * @param resourceName
-	 * @param parameters
+     * @param resourceName the resource name
+     * @param parameters   the parameters
 	 * @return searchHandler or <code>null</code> if no match
-	 * @throws APIException
+	 * @throws APIException the api exception
 	 */
 	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
 	 * Returns all search handlers supporting a resource
 	 * 
-	 * @param resourceName
-	 * @return
+	 * @param resourceName the resource name
+	 * @return search handlers
 	 */
 	Set<SearchHandler> getSearchHandlers(String resourceName);
 	
@@ -70,19 +85,19 @@ public interface RestService {
 	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
 	 * @return list of {@link DelegatingResourceHandler}s
-	 * @throws APIException
+	 * @throws APIException the api exception
 	 */
-	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
+	List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
 	
 	/**
 	 * Initializes all Resources and Search handlers for use; called after module startup
 	 */
-	public void initialize();
+	void initialize();
 	
 	/**
 	 * Returns all search handlers.
 	 * 
 	 * @return all search handlers or <code>null</code> if none registered
 	 */
-	public List<SearchHandler> getAllSearchHandlers();
+	List<SearchHandler> getAllSearchHandlers();
 }

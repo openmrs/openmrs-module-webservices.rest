@@ -13,12 +13,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockingbird.test.Animal;
+import org.mockingbird.test.rest.resource.IdentifiedAnimal;
 import org.mockingbird.test.Cat;
 import org.mockingbird.test.HibernateProxyAnimal;
 import org.mockingbird.test.MockingBird;
 import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.mockingbird.test.rest.resource.AnimalResource_1_11;
 import org.mockingbird.test.rest.resource.AnimalResource_1_9;
+import org.mockingbird.test.rest.resource.AnimalResource_2_4;
 import org.mockingbird.test.rest.resource.BirdResource_1_9;
 import org.mockingbird.test.rest.resource.CatSubclassHandler_1_11;
 import org.mockingbird.test.rest.resource.CatSubclassHandler_1_9;
@@ -190,6 +192,28 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		setCurrentOpenmrsVersion("1.9.10");
 		
 		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
+	}
+
+	/**
+	 * @verifies return resource for given name or uuid
+	 * @see RestServiceImpl#getResourceByNameOrUuid(String)
+	 */
+	@Test
+	public void getResourceByNameOrUuid_shouldReturnResourceForGivenNameOrUuid() throws Exception {
+		IdentifiedAnimal identifiedAnimal = new IdentifiedAnimal("Mountain Lion", "819b8f7a-8e8d-4f1c-814f-2832308df5c1");
+		RestServiceImpl animalRestService = mock(RestServiceImpl.class);
+		when(animalRestService.getResourceByNameOrUuid("819b8f7a-8e8d-4f1c-814f-2832308df5c1"))
+				.thenReturn(identifiedAnimal);
+
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_2_4.class);
+		resources.add(AnimalResource_1_9.class);
+
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+		setCurrentOpenmrsVersion("2.4.0");
+		
+		assertThat(restService.getResourceByNameOrUuid("v1/animal"), instanceOf(AnimalResource_2_4.class));
+		assertThat(animalRestService.getResourceByNameOrUuid("819b8f7a-8e8d-4f1c-814f-2832308df5c1"), instanceOf(IdentifiedAnimal.class));
 	}
 	
 	/**
