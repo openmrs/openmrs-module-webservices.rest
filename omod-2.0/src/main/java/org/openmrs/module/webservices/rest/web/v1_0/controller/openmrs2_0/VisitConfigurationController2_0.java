@@ -13,7 +13,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.GlobalProperty;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;

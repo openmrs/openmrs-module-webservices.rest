@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
-import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;

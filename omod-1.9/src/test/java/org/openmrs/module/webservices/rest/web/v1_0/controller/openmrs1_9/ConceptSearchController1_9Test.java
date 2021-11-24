@@ -15,7 +15,6 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import org.azeckoski.reflectutils.refmap.FinalizableReference;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

@@ -13,7 +13,6 @@ import org.openmrs.FieldType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FieldTypeResource1_8;
 
 public class FieldTypeResource1_8Test extends BaseDelegatingResourceTest<FieldTypeResource1_8, FieldType> {
 	

@@ -9,19 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSearchResult;
-import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 public class OrderableResource1_10Test extends BaseDelegatingResourceTest<OrderableResource1_10, ConceptSearchResult> {
 	

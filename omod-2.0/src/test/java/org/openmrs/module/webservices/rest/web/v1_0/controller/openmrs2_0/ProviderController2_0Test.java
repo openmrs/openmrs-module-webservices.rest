@@ -10,23 +10,18 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ProviderController2_0Test extends MainResourceControllerTest {
 	

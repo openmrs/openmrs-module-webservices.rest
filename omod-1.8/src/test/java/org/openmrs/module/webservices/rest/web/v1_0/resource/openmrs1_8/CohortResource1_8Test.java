@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8;
 import org.junit.Before;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;

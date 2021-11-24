@@ -10,12 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugResource1_10;
 
 public class DrugResource1_10Test extends BaseDelegatingResourceTest<DrugResource1_10, Drug> {
 	

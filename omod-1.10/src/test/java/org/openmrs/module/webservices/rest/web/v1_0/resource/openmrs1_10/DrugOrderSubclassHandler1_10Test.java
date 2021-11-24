@@ -15,7 +15,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class DrugOrderSubclassHandler1_10Test {
 	

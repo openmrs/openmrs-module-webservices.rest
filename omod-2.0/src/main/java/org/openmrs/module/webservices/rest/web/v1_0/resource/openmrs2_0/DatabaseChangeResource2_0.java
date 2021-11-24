@@ -31,7 +31,6 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.util.DatabaseUpdater;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

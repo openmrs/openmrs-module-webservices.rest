@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
 
-import javax.validation.constraints.AssertTrue;
 import java.util.LinkedHashMap;
 
 import org.apache.commons.beanutils.PropertyUtils;

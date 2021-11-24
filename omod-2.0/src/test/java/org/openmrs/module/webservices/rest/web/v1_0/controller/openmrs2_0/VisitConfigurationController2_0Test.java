@@ -10,10 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.poi.hssf.record.formula.functions.Proper;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.GlobalProperty;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.VisitService;

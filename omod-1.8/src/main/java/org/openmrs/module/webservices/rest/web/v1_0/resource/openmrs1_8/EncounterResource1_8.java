@@ -44,8 +44,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.hibernate.criterion.Projections.property;
-
 /**
  * Resource for Encounters, supporting standard CRUD operations
  */

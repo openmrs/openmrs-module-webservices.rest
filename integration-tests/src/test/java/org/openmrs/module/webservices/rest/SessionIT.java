@@ -11,8 +11,10 @@ package org.openmrs.module.webservices.rest;
 
 import org.junit.Test;
 
-import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.empty;
 
 public class SessionIT extends ITBase {
 	
