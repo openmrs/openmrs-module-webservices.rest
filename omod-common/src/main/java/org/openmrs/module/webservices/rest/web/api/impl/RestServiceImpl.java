@@ -497,7 +497,7 @@ public class RestServiceImpl implements RestService {
 	/**
 	 * @throws InstantiationException
 	 */
-	protected Resource newResource(Class<? extends Resource> resourceClass) {
+	private Resource newResource(Class<? extends Resource> resourceClass) {
 		try {
 			return resourceClass.newInstance();
 		}

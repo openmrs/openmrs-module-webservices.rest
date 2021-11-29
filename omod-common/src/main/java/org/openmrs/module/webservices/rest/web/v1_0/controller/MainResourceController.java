@@ -59,10 +59,14 @@ public class MainResourceController extends BaseRestController {
 	BaseUriSetup baseUriSetup;
 	
 	/**
-	 * @param uuid
-	 * @param request
-	 * @return
-	 * @throws ResponseException
+	 * Retrieve object.
+	 *
+	 * @param resource the resource
+	 * @param uuid the uuid
+	 * @param request the request
+	 * @param response the response
+	 * @return Object
+	 * @throws ResponseException the ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
@@ -70,16 +74,19 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Retrievable res = (Retrievable) restService.getResourceByName(buildResourceName(resource));
+		Retrievable res = (Retrievable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 		return res.retrieve(uuid, context);
 	}
 	
 	/**
-	 * @param post
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
+	 * Create object.
+	 *
+	 * @param resource the resource
+	 * @param post the post
+	 * @param request the request
+	 * @param response the response
+	 * @return Object
+	 * @throws ResponseException the ResponseException
 	 */
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST)
 	@ResponseBody
@@ -87,18 +94,29 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
+		Creatable res = (Creatable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
 	}
 	
+	/**
+	 * Upload object.
+	 *
+	 * @param resource the resource
+	 * @param file the file
+	 * @param request the request
+	 * @param response the response
+	 * @return Object
+	 * @throws IOException the IOException
+	 * @throws ResponseException the ResponseException
+	 */
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST, headers = "Content-Type=multipart/form-data")
 	@ResponseBody
 	public Object upload(@PathVariable("resource") String resource, @RequestParam("file") MultipartFile file,
 	        HttpServletRequest request, HttpServletResponse response) throws IOException, ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Resource res = restService.getResourceByName(buildResourceName(resource));
+		Resource res = restService.getResourceByNameOrUuid(buildResourceName(resource));
 		if (res instanceof Uploadable) {
 			Object updated = ((Uploadable) res).upload(file, context);
 			return RestUtil.created(response, updated);
@@ -108,13 +126,15 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
+	 * Update object.
+	 *
 	 * @param resource the resource
 	 * @param uuid the uuid
 	 * @param post the post
 	 * @param request the request
 	 * @param response the response
-	 * @return updated resource
-	 * @throws ResponseException the response exception
+	 * @return Object
+	 * @throws ResponseException the ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
@@ -137,10 +157,15 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * @param uuid
-	 * @param reason
-	 * @param request
-	 * @throws Exception
+	 * Delete object.
+	 *
+	 * @param resource the resource
+	 * @param uuid the uuid
+	 * @param reason the reason
+	 * @param request the request
+	 * @param response the response
+	 * @return Object
+	 * @throws ResponseException the ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
@@ -149,16 +174,20 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
+		Deletable res = (Deletable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
 	
 	/**
-	 * @param uuid
-	 * @param request
-	 * @param response
-	 * @throws Exception
+	 * Purge object.
+	 *
+	 * @param resource the resource
+	 * @param uuid the uuid
+	 * @param request the request
+	 * @param response the response
+	 * @return Object
+	 * @throws ResponseException the ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge=true")
 	@ResponseBody
@@ -166,16 +195,19 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Purgeable res = (Purgeable) restService.getResourceByName(buildResourceName(resource));
+		Purgeable res = (Purgeable) restService.getResourceByNameOrUuid(buildResourceName(resource));
 		res.purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
 	
 	/**
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws ResponseException
+	 * Get simple object.
+	 *
+	 * @param resource the resource
+	 * @param request the request
+	 * @param response the response
+	 * @return SimpleObject
+	 * @throws ResponseException the ResponseException
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
@@ -183,7 +215,7 @@ public class MainResourceController extends BaseRestController {
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
-		Object res = restService.getResourceByName(buildResourceName(resource));
+		Object res = restService.getResourceByNameOrUuid(buildResourceName(resource));
 		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
 		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
@@ -211,5 +243,4 @@ public class MainResourceController extends BaseRestController {
 			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not listable");
 		}
 	}
-	
 }

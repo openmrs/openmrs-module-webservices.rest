@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.resource.openmrs2_4;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
 import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.RestConstants;

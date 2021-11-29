@@ -27,7 +27,7 @@ public interface RestService {
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
-	 * @param requested representation
+	 * @param requested the requested representation
 	 * @return
 	 * <strong>Should</strong> get ref representation when specified
 	 * <strong>Should</strong> get default representation when specified
@@ -41,7 +41,7 @@ public interface RestService {
 	 *
 	 * @param name the name
 	 * @return the resource by name
-	 * @throws APIException the api exception
+	 * @throws APIException the APIException
 	 */
 	Resource getResourceByName(String name) throws APIException;
 	
@@ -50,26 +50,26 @@ public interface RestService {
 	 * 
 	 * @param str the name or uuid
 	 * @return the resource by name or uuid
-	 * @throws APIException the api exception
+	 * @throws APIException the APIException
 	 */
 	Resource getResourceByNameOrUuid(String str) throws APIException;
 	
 	/**
 	 * Gets resource by supported class
 	 * 
-	 * @param supportedClass the supported class
+	 * @param supportedClass the supportedClass
 	 * @return resource by supported class
-	 * @throws APIException the api exception
+	 * @throws APIException the APIException
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
 	 * Returns a search handler, which supports the given resource and the map of parameters and
 	 * values.
-     * @param resourceName the resource name
-     * @param parameters   the parameters
+     * @param resourceName the resourceName
+     * @param parameters the parameters
 	 * @return searchHandler or <code>null</code> if no match
-	 * @throws APIException the api exception
+	 * @throws APIException the APIException
 	 */
 	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
@@ -85,7 +85,7 @@ public interface RestService {
 	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
 	 * @return list of {@link DelegatingResourceHandler}s
-	 * @throws APIException the api exception
+	 * @throws APIException the APIException
 	 */
 	List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
 	
