@@ -55,29 +55,30 @@ public interface RestService {
 	Resource getResourceByNameOrUuid(String str) throws APIException;
 	
 	/**
-	 * Gets resource by supported class
+	 * Auto generated method comment
 	 * 
-	 * @param supportedClass the supportedClass
-	 * @return resource by supported class
-	 * @throws APIException the APIException
+	 * @param supportedClass
+	 * @return
+	 * @throws APIException
 	 */
 	Resource getResourceBySupportedClass(Class<?> supportedClass) throws APIException;
 	
 	/**
 	 * Returns a search handler, which supports the given resource and the map of parameters and
 	 * values.
-     * @param resourceName the resourceName
-     * @param parameters the parameters
+	 *
+	 * @param resourceName
+	 * @param parameters
 	 * @return searchHandler or <code>null</code> if no match
-	 * @throws APIException the APIException
+	 * @throws APIException
 	 */
 	SearchHandler getSearchHandler(String resourceName, Map<String, String[]> parameters) throws APIException;
 	
 	/**
 	 * Returns all search handlers supporting a resource
 	 * 
-	 * @param resourceName the resource name
-	 * @return search handlers
+	 * @param resourceName
+	 * @return
 	 */
 	Set<SearchHandler> getSearchHandlers(String resourceName);
 	
@@ -85,19 +86,19 @@ public interface RestService {
 	 * Returns all {@link DelegatingResourceHandler}s
 	 * 
 	 * @return list of {@link DelegatingResourceHandler}s
-	 * @throws APIException the APIException
+	 * @throws APIException
 	 */
-	List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
+	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
 	
 	/**
 	 * Initializes all Resources and Search handlers for use; called after module startup
 	 */
-	void initialize();
+	public void initialize();
 	
 	/**
 	 * Returns all search handlers.
 	 * 
 	 * @return all search handlers or <code>null</code> if none registered
 	 */
-	List<SearchHandler> getAllSearchHandlers();
+	public List<SearchHandler> getAllSearchHandlers();
 }

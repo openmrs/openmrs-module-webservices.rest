@@ -15,8 +15,8 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskDefinitionResource1_8;
 import org.openmrs.scheduler.TaskDefinition;
 
-@Resource(name = RestConstants.VERSION_1 + "/taskdefinition", order = 2, supportedClass = TaskDefinition.class, supportedOpenmrsVersions = {
-		"1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+@Resource(name = RestConstants.VERSION_1 + "/taskdefinition", order = 2, supportedClass = TaskDefinition.class,
+		supportedOpenmrsVersions = { "2.4.*", "2.5.*", "2.6.*" })
 public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
 
 	private TaskServiceWrapper2_4 taskServiceWrapper = new TaskServiceWrapper2_4();
