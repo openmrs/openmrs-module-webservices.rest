@@ -64,7 +64,7 @@ public class MainSubResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		return res.retrieve(parentUuid, uuid, context);
 	}
 	
@@ -81,7 +81,7 @@ public class MainSubResourceController extends BaseRestController {
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		baseUriSetup.setup(request);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		RequestContext context = RestUtil.getRequestContext(request, response);
 		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
@@ -121,7 +121,7 @@ public class MainSubResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object created = res.create(parentUuid, post, context);
 		return RestUtil.created(response, created);
 	}
@@ -145,7 +145,7 @@ public class MainSubResourceController extends BaseRestController {
 			throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		Object updated = res.update(parentUuid, uuid, post, context);
 		return RestUtil.updated(response, updated);
 	}
@@ -165,7 +165,7 @@ public class MainSubResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.delete(parentUuid, uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
@@ -184,7 +184,7 @@ public class MainSubResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.purge(parentUuid, uuid, context);
 		return RestUtil.noContent(response);
 	}
@@ -203,7 +203,7 @@ public class MainSubResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.delete(parentUuid, null, reason, context);
 		return RestUtil.noContent(response);
 	}
@@ -221,7 +221,7 @@ public class MainSubResourceController extends BaseRestController {
 	        throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.purge(parentUuid, null, context);
 		return RestUtil.noContent(response);
 	}
@@ -241,7 +241,7 @@ public class MainSubResourceController extends BaseRestController {
 			HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		SubResource res = (SubResource) restService.getResourceByNameOrUuid(buildResourceName(resource) + "/" + subResource);
+		SubResource res = (SubResource) restService.getResourceByName(buildResourceName(resource) + "/" + subResource);
 		res.put(parentUuid, post, context);
 		return RestUtil.noContent(response);
 	}

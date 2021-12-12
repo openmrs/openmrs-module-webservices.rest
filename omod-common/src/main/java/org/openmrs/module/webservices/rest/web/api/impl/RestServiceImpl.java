@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.module.ModuleUtil;
-import org.openmrs.module.webservices.rest.util.UniqueIdentifierUtil;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -50,8 +49,6 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 
-	volatile Map<String, ResourceDefinition> resourceDefinitionsByUuids;
-	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
@@ -419,30 +416,6 @@ public class RestServiceImpl implements RestService {
 			throw new UnknownResourceException("Unknown resource: " + name);
 		} else {
 			return resourceDefinition.resource;
-		}
-	}
-	
-	/**
-	 * Gets a resource by name or uuid
-	 *
-	 * @param str the name or uuid
-	 * @return resource
-	 * @throws APIException unknown resource exception if the resource with
-	 * the given uuid or name cannot be found
-	 */
-	@Override
-	public Resource getResourceByNameOrUuid(String str) throws APIException {
-		initializeResources();
-		if (UniqueIdentifierUtil.isValidUUID(str)) {
-			ResourceDefinition resourceByUuid = resourceDefinitionsByUuids.get(str);
-			return resourceByUuid.resource;
-		}
-		else if (!str.isEmpty()) {
-			ResourceDefinition resourceByName = resourceDefinitionsByNames.get(str);
-			return resourceByName.resource;
-		}
-		else {
-			throw new UnknownResourceException("Unknown resource: " + str);
 		}
 	}
 	

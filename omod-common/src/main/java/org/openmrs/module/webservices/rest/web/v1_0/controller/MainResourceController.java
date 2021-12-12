@@ -74,7 +74,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Retrievable res = (Retrievable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Retrievable res = (Retrievable) restService.getResourceByName(buildResourceName(resource));
 		return res.retrieve(uuid, context);
 	}
 	
@@ -94,7 +94,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Creatable res = (Creatable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
 	}
@@ -116,7 +116,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws IOException, ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Resource res = restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Resource res = restService.getResourceByName(buildResourceName(resource));
 		if (res instanceof Uploadable) {
 			Object updated = ((Uploadable) res).upload(file, context);
 			return RestUtil.created(response, updated);
@@ -145,12 +145,12 @@ public class MainResourceController extends BaseRestController {
 		RequestContext context = RestUtil.getRequestContext(request, response);
 
 		if (post.get("deleted") != null && "false".equals(post.get("deleted")) && post.size() == 1) {
-			Deletable res = (Deletable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+			Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 			Object undeletedRes = res.undelete(uuid, context);
 			return RestUtil.updated(response, undeletedRes);
 		}
 		else {
-			Updatable res = (Updatable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+			Updatable res = (Updatable) restService.getResourceByName(buildResourceName(resource));
 			Object updated = res.update(uuid, post, context);
 			return RestUtil.updated(response, updated);
 		}
@@ -174,7 +174,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Deletable res = (Deletable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 		res.delete(uuid, reason, context);
 		return RestUtil.noContent(response);
 	}
@@ -195,7 +195,7 @@ public class MainResourceController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-		Purgeable res = (Purgeable) restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Purgeable res = (Purgeable) restService.getResourceByName(buildResourceName(resource));
 		res.purge(uuid, context);
 		return RestUtil.noContent(response);
 	}
@@ -215,7 +215,7 @@ public class MainResourceController extends BaseRestController {
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
-		Object res = restService.getResourceByNameOrUuid(buildResourceName(resource));
+		Object res = restService.getResourceByName(buildResourceName(resource));
 		Converter conv = res instanceof Converter ? (Converter) res : null;
 		
 		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);

@@ -46,15 +46,6 @@ public interface RestService {
 	Resource getResourceByName(String name) throws APIException;
 	
 	/**
-	 * Gets resource by name or uuid.
-	 * 
-	 * @param str the name or uuid
-	 * @return the resource by name or uuid
-	 * @throws APIException the APIException
-	 */
-	Resource getResourceByNameOrUuid(String str) throws APIException;
-	
-	/**
 	 * Auto generated method comment
 	 * 
 	 * @param supportedClass

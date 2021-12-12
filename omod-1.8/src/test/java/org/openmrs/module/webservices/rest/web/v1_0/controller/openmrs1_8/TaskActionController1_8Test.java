@@ -33,7 +33,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	@Autowired
 	RestService restService;
 	
-	static int count = 1;
+	public static int count = 1;
 	
 	private TaskDefinition testTask = new TaskDefinition(1, "TestTask", "TestTask Description",
 	        "org.openmrs.scheduler.tasks.TestTask");

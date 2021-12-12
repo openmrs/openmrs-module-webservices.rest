@@ -26,10 +26,10 @@ public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
 	}
 	
 	@Override
-	public TaskDefinition getByUniqueId(String str) {
-		TaskDefinition taskDefinition = taskServiceWrapper.getTaskByUuid(str);
+	public TaskDefinition getByUniqueId(String nameOrUuid) {
+		TaskDefinition taskDefinition = taskServiceWrapper.getTaskByUuid(nameOrUuid);
 		if (taskDefinition == null) {
-			taskDefinition = taskServiceWrapper.getTaskByName(str);
+			taskDefinition = super.getByUniqueId(nameOrUuid);
 		}
 		return taskDefinition;
 	}

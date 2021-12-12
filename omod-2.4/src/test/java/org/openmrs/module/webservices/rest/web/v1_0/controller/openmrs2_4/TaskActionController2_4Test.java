@@ -11,194 +11,111 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.webservices.helper.TaskAction;
-import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper2_4;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskActionResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
-import org.openmrs.scheduler.Task;
+import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Arrays;
-import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.CHRONIC_CARE_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.EQUIPMENT_MAINTENANCE_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSE_PRECEPTING_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSING_EDUCATION_UUID;
+import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.TASK_SCHEDULER_XML;
 
-public class TaskActionController2_4Test extends MainResourceControllerTest {
+public class TaskActionController2_4Test extends TaskActionController1_8Test {
 
 	@Autowired
 	RestService restService;
 
-	static int count = 1;
+    private SchedulerService schedulerService;
 
-	public static final String POST_TASK_DEFINITION_UUID = "9a34d170-5f63-4f36-996c-24674107ae73";
-
-	private final IdentifiedTask IDENTIFIED_TASK = new IdentifiedTask();
-
-	private final TaskDefinition TASK_ONE = IDENTIFIED_TASK.getTaskDefinition();
-
-	private final TaskDefinition TASK_TWO = new TaskDefinition(34, "TaskTwo", "TaskTwoDescription",
-			"org.openmrs.scheduler.tasks.TestTask");
-	
-	private final MockTaskServiceWrapper2_4 MOCK_TASK_SERVICE_WRAPPER = new MockTaskServiceWrapper2_4();
-
-	/**
-	 * @return the URI of the resource
-	 */
-	@Override
-	public String getURI() {
-		return "taskaction";
-	}
-	
-	/**
-	 * @return the uuid of an existing object
-	 */
-	@Override
-	public String getUuid() {
-		return null;
-	}
-	
-	/**
-	 * @return the count of all not retired/voided objects
-	 */
-	@Override
-	public long getAllCount() {
-		return 0;
-	}
+	private final TaskServiceWrapper2_4 TASK_SERVICE_WRAPPER = new TaskServiceWrapper2_4();
 	
 	@Before
 	public void setUp() throws Exception {
-		MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks().addAll(Arrays.asList(TASK_ONE, TASK_TWO));
-		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
-				.getResourceBySupportedClass(TaskAction.class);
-		taskActionResource.setTaskServiceWrapper(MOCK_TASK_SERVICE_WRAPPER);
+		executeDataSet(TASK_SCHEDULER_XML);
+		this.schedulerService = Context.getSchedulerService();
 		TaskDefinitionResource2_4 taskResource = (TaskDefinitionResource2_4) restService
 				.getResourceBySupportedClass(TaskDefinition.class);
-		taskResource.setTaskServiceWrapper(MOCK_TASK_SERVICE_WRAPPER);
+		taskResource.setTaskServiceWrapper(TASK_SERVICE_WRAPPER);
+	}
+
+	private TaskDefinition getTaskByUuid(String uuid) {
+		return TASK_SERVICE_WRAPPER.getTaskByUuid(uuid);
 	}
 
 	@Test
 	public void shouldScheduleTask() throws Exception {
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), not(hasItem(TASK_ONE)));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(EQUIPMENT_MAINTENANCE_UUID))));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"scheduletask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
+				"{\"action\": \"scheduletask\", \"tasks\":[\"" + EQUIPMENT_MAINTENANCE_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(EQUIPMENT_MAINTENANCE_UUID)));
 	}
 
 	@Test
-	public void scheduleTask_shouldDoNothingIfTaskIsAlreadyScheduled() throws Exception {
-		MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks().add(TASK_ONE);
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), hasItem(TASK_ONE));
+	public void scheduleTask_shouldDoNothingIfTaskAlreadyScheduled() throws Exception {
+		schedulerService.scheduleTask(getTaskByUuid(NURSE_PRECEPTING_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"scheduletask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), hasItem(TASK_ONE));
+				"{\"action\": \"scheduletask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 	}
 
 	@Test
 	public void shouldShutdownTask() throws Exception {
-		MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks().add(TASK_ONE);
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), hasItem(TASK_ONE));
+		schedulerService.scheduleTask(getTaskByUuid(NURSE_PRECEPTING_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), not(hasItem(TASK_ONE)));
+				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
 	}
 
 	@Test
 	public void shutdownTask_shouldDoNothingIfTaskAlreadyShutdown() throws Exception {
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), not(hasItem(TASK_ONE)));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), not(hasItem(TASK_ONE)));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
+				"{\"action\": \"shutdowntask\", \"tasks\":[\"" + NURSE_PRECEPTING_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 	}
 	
 	@Test
 	public void shouldRunTask() throws Exception {
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
-		assertEquals(2, MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks().size());
+		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
+		taskDefinition.setTaskClass(TaskActionController1_8Test.DummyTask.class.getName());
+		assertEquals(4, schedulerService.getRegisteredTasks().size());
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"runtask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
-		assertEquals(2, MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks().size());
+				"{\"action\": \"runtask\", \"tasks\":[\"" + CHRONIC_CARE_UUID + "\"]}")));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(CHRONIC_CARE_UUID)));
+		assertEquals(4, schedulerService.getRegisteredTasks().size());
 		int countAfter = count;
 		assertEquals(++countBefore, countAfter);
 	}
 
 	@Test
 	public void shouldRescheduleTask() throws Exception {
-		MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks().add(TASK_ONE);
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getScheduledTasks(), hasItem(TASK_ONE));
+		schedulerService.scheduleTask(getTaskByUuid(NURSING_EDUCATION_UUID));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"rescheduletask\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
+				"{\"action\": \"rescheduletask\", \"tasks\":[\"" + NURSING_EDUCATION_UUID + "\"]}")));
+		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
 	}
 
 	@Test
 	public void shouldDeleteTask() throws Exception {
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), hasItem(TASK_ONE));
+		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
 		deserialize(handle(newPostRequest(getURI(),
-				"{\"action\": \"delete\", \"tasks\":[\"" + POST_TASK_DEFINITION_UUID + "\"]}")));
-		assertThat(MOCK_TASK_SERVICE_WRAPPER.getRegisteredTasks(), not(hasItem(TASK_ONE)));
-	}
-
-	@Override
-	@Test(expected = Exception.class)
-	public void shouldGetDefaultByUuid() throws Exception {
-		super.shouldGetDefaultByUuid();
-	}
-
-	@Override
-	@Test(expected = Exception.class)
-	public void shouldGetRefByUuid() throws Exception {
-		super.shouldGetRefByUuid();
-	}
-
-	@Override
-	@Test(expected = Exception.class)
-	public void shouldGetFullByUuid() throws Exception {
-		super.shouldGetFullByUuid();
-	}
-
-	@Override
-	@Test(expected = Exception.class)
-	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
-	}
-
-	public static class IdentifiedTask implements Task {
-		@Override
-		public void execute() {
-			count = count + 1;
-		}
-
-		@Override
-		public void initialize(TaskDefinition taskDefinition) {}
-		
-		public TaskDefinition getTaskDefinition() {
-			TaskDefinition taskDefinition = new TaskDefinition();
-			taskDefinition.setId(31);
-			taskDefinition.setUuid(POST_TASK_DEFINITION_UUID);
-			taskDefinition.setName("Identified Task");
-			taskDefinition.setTaskClass(IdentifiedTask.class.getName());
-			taskDefinition.setStartOnStartup(false);
-			taskDefinition.setStartTime(new Date());
-			return taskDefinition;
-		}
-
-		@Override
-		public boolean isExecuting() {
-			return false;
-		}
-
-		@Override
-		public void shutdown() {}
+				"{\"action\": \"delete\", \"tasks\":[\"" + NURSING_EDUCATION_UUID + "\"]}")));
+		assertThat(schedulerService.getRegisteredTasks(), not(hasItem(getTaskByUuid(NURSING_EDUCATION_UUID))));
 	}
 }
