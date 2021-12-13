@@ -59,14 +59,10 @@ public class MainResourceController extends BaseRestController {
 	BaseUriSetup baseUriSetup;
 	
 	/**
-	 * Retrieve object.
-	 *
-	 * @param resource the resource
-	 * @param uuid the uuid
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws ResponseException the ResponseException
+	 * @param uuid
+	 * @param request
+	 * @return
+	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.GET)
 	@ResponseBody
@@ -79,14 +75,11 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * Create object.
-	 *
-	 * @param resource the resource
-	 * @param post the post
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws ResponseException the ResponseException
+	 * @param post
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST)
 	@ResponseBody
@@ -99,17 +92,6 @@ public class MainResourceController extends BaseRestController {
 		return RestUtil.created(response, created);
 	}
 	
-	/**
-	 * Upload object.
-	 *
-	 * @param resource the resource
-	 * @param file the file
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws IOException the IOException
-	 * @throws ResponseException the ResponseException
-	 */
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST, headers = "Content-Type=multipart/form-data")
 	@ResponseBody
 	public Object upload(@PathVariable("resource") String resource, @RequestParam("file") MultipartFile file,
@@ -126,24 +108,21 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * Update object.
-	 *
-	 * @param resource the resource
-	 * @param uuid the uuid
-	 * @param post the post
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws ResponseException the ResponseException
+	 * @param uuid
+	 * @param post
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.POST)
 	@ResponseBody
 	public Object update(@PathVariable("resource") String resource, @PathVariable("uuid") String uuid,
-			@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-			throws ResponseException {
+	        @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
 		baseUriSetup.setup(request);
 		RequestContext context = RestUtil.getRequestContext(request, response);
-
+		
 		if (post.get("deleted") != null && "false".equals(post.get("deleted")) && post.size() == 1) {
 			Deletable res = (Deletable) restService.getResourceByName(buildResourceName(resource));
 			Object undeletedRes = res.undelete(uuid, context);
@@ -157,15 +136,10 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * Delete object.
-	 *
-	 * @param resource the resource
-	 * @param uuid the uuid
-	 * @param reason the reason
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws ResponseException the ResponseException
+	 * @param uuid
+	 * @param reason
+	 * @param request
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "!purge")
 	@ResponseBody
@@ -180,14 +154,10 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * Purge object.
-	 *
-	 * @param resource the resource
-	 * @param uuid the uuid
-	 * @param request the request
-	 * @param response the response
-	 * @return Object
-	 * @throws ResponseException the ResponseException
+	 * @param uuid
+	 * @param request
+	 * @param response
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/{resource}/{uuid}", method = RequestMethod.DELETE, params = "purge=true")
 	@ResponseBody
@@ -201,13 +171,10 @@ public class MainResourceController extends BaseRestController {
 	}
 	
 	/**
-	 * Get simple object.
-	 *
-	 * @param resource the resource
-	 * @param request the request
-	 * @param response the response
-	 * @return SimpleObject
-	 * @throws ResponseException the ResponseException
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
 	 */
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
@@ -243,4 +210,5 @@ public class MainResourceController extends BaseRestController {
 			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not listable");
 		}
 	}
+	
 }

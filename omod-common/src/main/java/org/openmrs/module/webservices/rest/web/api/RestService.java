@@ -27,22 +27,15 @@ public interface RestService {
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
-	 * @param requested the requested representation
+	 * @param requested
 	 * @return
 	 * <strong>Should</strong> get ref representation when specified
 	 * <strong>Should</strong> get default representation when specified
 	 * <strong>Should</strong> get full representation when specified
 	 * <strong>Should</strong> get a named representation when specified
 	 */
-	Representation getRepresentation(String requested);
+	public Representation getRepresentation(String requested);
 	
-	/**
-	 * Gets resource by name.
-	 *
-	 * @param name the name
-	 * @return the resource by name
-	 * @throws APIException the APIException
-	 */
 	Resource getResourceByName(String name) throws APIException;
 	
 	/**
@@ -57,7 +50,7 @@ public interface RestService {
 	/**
 	 * Returns a search handler, which supports the given resource and the map of parameters and
 	 * values.
-	 *
+	 * 
 	 * @param resourceName
 	 * @param parameters
 	 * @return searchHandler or <code>null</code> if no match

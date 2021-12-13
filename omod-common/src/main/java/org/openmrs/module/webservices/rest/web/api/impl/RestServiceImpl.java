@@ -48,7 +48,7 @@ import org.openmrs.util.OpenmrsConstants;
 public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
-
+	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
