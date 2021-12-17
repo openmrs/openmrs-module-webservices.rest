@@ -87,22 +87,25 @@ public class AuthorizationFilter implements Filter {
 				if (basicAuth != null) {
 					if (basicAuth != null && basicAuth.startsWith("Basic")) {
 						// this is "Basic ${base64encode(username + ":" + password)}"
-						if (StringUtils.isBlank(basicAuth) || !basicAuth.contains(":")) {
-							HttpServletResponse httpResponse = (HttpServletResponse) response;
-							httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
-							return;
-						}
 						try {
 							basicAuth = basicAuth.substring(6); // remove the leading "Basic "
 							String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
+							if (StringUtils.isBlank(decoded) || !decoded.contains(":")) {
+								HttpServletResponse httpResponse = (HttpServletResponse) response;
+								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
+								return;
+							}
+							if (StringUtils.isBlank(basicAuth) || !basicAuth.contains(":")) {
+								HttpServletResponse httpResponse = (HttpServletResponse) response;
+								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
+								return;
+							}
 							String[] userAndPass = decoded.split(":");
 							Context.authenticate(userAndPass[0], userAndPass[1]);
-							if (log.isDebugEnabled())
-								log.debug("authenticated " + userAndPass[0]);
+							log.debug("authenticated {}" + userAndPass[0]);
 						}
 						catch (Exception ex) {
-							// This filter never stops execution. If the user failed to
-							// authenticate, that will be caught later.
+							log.debug("authentication exception "+ex.getMessage());
 						}
 					}
 				} else {
