@@ -85,6 +85,16 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 
+	@Test
+   	public void shouldPurgeConceptAttributeType() throws Exception {
+    	final String uuid = "9516cc50-6f9f-11e0-8414-001e378eb67f";
+       	Assert.assertNotNull(service.getConceptAttributeTypeByUuid(uuid));
+   		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
+   		req.addParameter("purge", "true");
+   		handle(req);
+   		Assert.assertNull(service.getConceptAttributeTypeByUuid(uuid));
+   	}
+
     @Test
     public void shouldUpdateConceptAttributeType() throws Exception {
         final String CONCEPT_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
