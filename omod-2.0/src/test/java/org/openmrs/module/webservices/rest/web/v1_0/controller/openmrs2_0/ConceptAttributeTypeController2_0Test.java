@@ -17,6 +17,7 @@ import org.openmrs.ConceptAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -74,6 +75,15 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         Assert.assertEquals(originalCount + 1 , getAllCount());
 
     }
+    
+	@Test
+	public void shouldListAllConceptAttributeTypes() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		Assert.assertNotNull(result);
+		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+	}
 
     @Test
     public void shouldUpdateConceptAttributeType() throws Exception {
