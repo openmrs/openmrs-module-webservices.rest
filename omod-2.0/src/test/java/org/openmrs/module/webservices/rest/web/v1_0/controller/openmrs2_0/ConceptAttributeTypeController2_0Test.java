@@ -121,4 +121,25 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
     	Assert.assertEquals(conceptAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
     	Assert.assertEquals(conceptAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
     }
+
+    @Test
+    public void shouldRetireAConceptAttributeType() throws Exception {
+        final String UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
+        ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
+        Assert.assertNotNull(conceptAttributeType);
+        Assert.assertFalse(conceptAttributeType.getRetired());
+        Assert.assertNull(conceptAttributeType.getDateRetired());
+        Assert.assertNull(conceptAttributeType.getRetiredBy());
+
+        MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
+        req.addParameter("!purge", "");
+        req.addParameter("reason", "let it retire for a time");
+        handle(req);
+
+        conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
+        Assert.assertTrue(conceptAttributeType.getRetired());
+        Assert.assertNotNull(conceptAttributeType.getDateRetired());
+        Assert.assertNotNull(conceptAttributeType.getRetiredBy());
+        Assert.assertEquals("let it retire for a time", conceptAttributeType.getRetireReason());
+    }
 }
