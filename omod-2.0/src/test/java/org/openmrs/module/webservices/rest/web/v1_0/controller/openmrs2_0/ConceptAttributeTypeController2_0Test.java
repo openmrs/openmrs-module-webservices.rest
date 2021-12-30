@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.ConceptAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -120,5 +121,22 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
     	ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(getUuid());
     	Assert.assertEquals(conceptAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
     	Assert.assertEquals(conceptAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
+    }
+
+    @Test
+    public void shouldRetireAConceptAttributeType() throws Exception {
+        final String UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
+        ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
+        Assert.assertNotNull(conceptAttributeType);
+        Assert.assertFalse(conceptAttributeType.isRetired());
+
+        MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
+        req.addParameter("!purge", "");
+        req.addParameter("reason", "let it retire for a time");
+        handle(req);
+
+        conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
+        Assert.assertTrue(conceptAttributeType.isRetired());
+        Assert.assertEquals("let it retire for a time", conceptAttributeType.getRetireReason());
     }
 }
