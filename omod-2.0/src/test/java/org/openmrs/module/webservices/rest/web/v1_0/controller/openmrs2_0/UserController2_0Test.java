@@ -18,9 +18,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -165,7 +167,43 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		Assert.assertEquals("5-6", editedUser.getSystemId());
 		Util.log("Edited User SystemId: ", editedUser.getSystemId());
 	}
-	
+
+	@Test
+	public void updateUser_shouldNotRefreshAuthenticatedUser() throws Exception {
+		// given
+		final UserContext spyUserContext = Mockito.spy(Context.getUserContext());
+		this.contextMockHelper.setUserContext(spyUserContext);
+
+		final String json = "{}";
+		final MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+
+		// when
+		handle(req);
+
+		// then
+		Mockito.verify(spyUserContext, Mockito.never()).refreshAuthenticatedUser();
+	}
+
+	@Test
+	public void updateUser_shouldRefreshAuthenticatedUser() throws Exception {
+		// given
+		final UserContext spyUserContext = Mockito.spy(Context.getUserContext());
+		this.contextMockHelper.setUserContext(spyUserContext);
+
+		final String currentAuthenticatedUserUuid = Context.getAuthenticatedUser().getUuid();
+
+		final String json = "{}";
+		final MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + currentAuthenticatedUserUuid);
+		req.setContent(json.getBytes());
+
+		// when
+		handle(req);
+
+		// then
+		Mockito.verify(spyUserContext, Mockito.times(1)).refreshAuthenticatedUser();
+	}
+
 	/**
 	 * @see UserController#retireUser(User,String,WebRequest)
 	 * @throws Exception
