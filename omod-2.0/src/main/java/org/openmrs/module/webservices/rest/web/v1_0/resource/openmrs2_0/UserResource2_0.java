@@ -42,15 +42,27 @@ public class UserResource2_0 extends UserResource1_8 {
 	 */
 	@Override
 	public UserAndPassword1_8 save(UserAndPassword1_8 user) {
-		User openmrsUser = new User();
+		final User savedUser = createOrUpdateUser(user);
+		refreshAuthenticatedUserIfNeeded(savedUser);
+		return new UserAndPassword1_8(savedUser);
+	}
+
+	private User createOrUpdateUser(UserAndPassword1_8 user) {
+		final User openmrsUser;
+
 		if (user.getUser().getUserId() == null) {
 			openmrsUser = Context.getUserService().createUser(user.getUser(), user.getPassword());
 		} else {
 			openmrsUser = Context.getUserService().saveUser(user.getUser());
+		}
+
+		return openmrsUser;
+	}
+
+	private void refreshAuthenticatedUserIfNeeded(User savedUser) {
+		final User authenticatedUser = Context.getAuthenticatedUser();
+		if (authenticatedUser != null && authenticatedUser.getId().equals(savedUser.getId())) {
 			Context.refreshAuthenticatedUser();
 		}
-		
-		return new UserAndPassword1_8(openmrsUser);
-		
 	}
 }
