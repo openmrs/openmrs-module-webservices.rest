@@ -10,6 +10,8 @@
 package org.openmrs.module.webservices.rest.web;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 import org.openmrs.api.context.Context;
 import org.springframework.context.annotation.Bean;
@@ -56,36 +58,41 @@ public class DynamicBeanConfiguration {
 	@Bean
 	public AbstractHandlerExceptionResolver getHandlerExceptionResolver() throws Exception {
 		
-		boolean setConverters = false;
+		AbstractHandlerExceptionResolver bean = null;
 		
-		Class<?> clazz;
+		HttpMessageConverter<?> stringHttpMessageConverter = Context.getRegisteredComponent(
+			    "stringHttpMessageConverter", HttpMessageConverter.class);
+		
+		HttpMessageConverter<?> jsonHttpMessageConverter = Context.getRegisteredComponent("jsonHttpMessageConverter",
+			    HttpMessageConverter.class);
+		
+		HttpMessageConverter<?> xmlMarshallingHttpMessageConverter = Context.getRegisteredComponent(
+			    "xmlMarshallingHttpMessageConverter", HttpMessageConverter.class);
+		
 		try {
-			clazz = Context
+			Class<?> clazz = Context
 			        .loadClass("org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver");
 			
-			setConverters = true;
-		}
-		catch (ClassNotFoundException e) {
-			clazz = Context
-			        .loadClass("org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver");
-		}
-		
-		AbstractHandlerExceptionResolver bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
-		bean.setOrder(1);
-		
-		if (setConverters) {
-			HttpMessageConverter<?> stringHttpMessageConverter = Context.getRegisteredComponent(
-			    "stringHttpMessageConverter",
-			    HttpMessageConverter.class);
-			HttpMessageConverter<?> jsonHttpMessageConverter = Context.getRegisteredComponent("jsonHttpMessageConverter",
-			    HttpMessageConverter.class);
-			HttpMessageConverter<?> xmlMarshallingHttpMessageConverter = Context.getRegisteredComponent(
-			    "xmlMarshallingHttpMessageConverter", HttpMessageConverter.class);
+			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
 			
 			Method method = bean.getClass().getMethod("setMessageConverters", new Class[] { HttpMessageConverter[].class });
 			method.invoke(bean, new Object[] { new HttpMessageConverter[] { stringHttpMessageConverter,
-			        jsonHttpMessageConverter,
-			        xmlMarshallingHttpMessageConverter } });
+			        jsonHttpMessageConverter, xmlMarshallingHttpMessageConverter } });
+		}
+		catch (ClassNotFoundException e) {
+			Class<?> clazz = Context
+			        .loadClass("org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver");
+			
+			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
+			
+			Method method = bean.getClass().getMethod("setMessageConverters", new Class[] { List.class });
+			method.invoke(bean, new Object[] { Arrays.asList( stringHttpMessageConverter,
+			        jsonHttpMessageConverter, xmlMarshallingHttpMessageConverter ) });
+		}
+		
+		if (bean != null) {
+			bean.setOrder(1);
+			
 		}
 		
 		return bean;

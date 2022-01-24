@@ -21,6 +21,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.validation.ValidationException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -90,6 +91,14 @@ public class BaseRestController {
 	        HttpServletResponse response) {
 		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 		return RestUtil.wrapErrorResponse(conversionException, "");
+	}
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseBody
+	public SimpleObject httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException httpMessageNotReadableException, HttpServletRequest request,
+	        HttpServletResponse response) {
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return RestUtil.wrapErrorResponse(httpMessageNotReadableException, "");
 	}
 	
 	@ExceptionHandler(Exception.class)
