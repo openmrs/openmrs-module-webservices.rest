@@ -160,4 +160,15 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		assertEquals(0, cache.getQueryCache(QUERY_REGION).getRegion().getElementCountInMemory());
 	}
 	
+	@Test
+	public void clearDbCache_shouldNotFailIfNoEntityIsFoundMatchingTheSpecifiedUuid() throws Exception {
+		final String uuid = "some-uuid";
+		assertNull(personService.getPersonNameByUuid(uuid));
+		final String data = "{\"resource\": \"person\", \"subResource\": \"name\", \"uuid\": \"" + uuid + "\"}";
+		
+		MockHttpServletResponse response = handle(newPostRequest(CLEAR_DB_CACHE_URI, data));
+		
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+	}
+	
 }
