@@ -75,16 +75,25 @@ public class ClearDbCacheController2_0 extends BaseRestController {
 			Resource resource = restService.getResourceByName(buildResourceName(resourceName));
 			Class<?> supportedClass = RestUtil.getSupportedClass(resource);
 			if (StringUtils.isBlank(uuid)) {
-				log.debug("Clearing DB cache via REST for resource: {} ({})", resourceName, supportedClass);
+				if (log.isDebugEnabled()) {
+					log.debug("Clearing DB cache via REST for resource: {} ({})", resourceName, supportedClass);
+				}
 				
 				sf.getCache().evictEntityRegion(supportedClass);
 			} else {
-				log.debug("Clearing DB cache via REST for resource: {} ({}) with uuid: {}",
-				    new Object[] { resourceName, supportedClass, uuid });
+				if (log.isDebugEnabled()) {
+					log.debug("Clearing DB cache via REST for resource: {} ({}) with uuid: {}",
+					    new Object[] { resourceName, supportedClass, uuid });
+				}
 				
 				OpenmrsObject object = (OpenmrsObject) ((BaseDelegatingResource) resource).getByUniqueId(uuid);
 				if ("user".equals(resourceName)) {
 					supportedClass = User.class;
+				}
+				
+				if (object == null) {
+					log.info("No {} found with uuid: {}", supportedClass.getSimpleName(), uuid);
+					return;
 				}
 				
 				sf.getCache().evictEntity(supportedClass, object.getId());
