@@ -23,11 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter intended for all /ws/rest calls that allows the user to authenticate via Basic
@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
  */
 public class AuthorizationFilter implements Filter {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	private static final Logger log = LoggerFactory.getLogger(AuthorizationFilter.class);
 	
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -96,7 +96,7 @@ public class AuthorizationFilter implements Filter {
 								return;
 							}
 							
-							String decoded = new String(Base64.decodeBase64(basicAuth), StandardCharsets.UTF_8);
+							String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
 							if (StringUtils.isBlank(decoded) || !decoded.contains(":")) {
 								HttpServletResponse httpResponse = (HttpServletResponse) response;
 								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
@@ -124,11 +124,5 @@ public class AuthorizationFilter implements Filter {
 		
 		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
-		
-		if (!Context.isAuthenticated()) {
-			if (response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED && response.getHeader("WWW-Authenticate") == null) {
-				response.setHeader("WWW-Authenticate", "OpenMRS-Cookie");
-			}
-		}
 	}
 }
