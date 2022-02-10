@@ -85,23 +85,27 @@ public class AuthorizationFilter implements Filter {
 			if (!Context.isAuthenticated()) {
 				String basicAuth = httpRequest.getHeader("Authorization");
 				if (basicAuth != null) {
-					if (basicAuth != null && basicAuth.startsWith("Basic")) {
+					// check that header is in format "Basic ${base64encode(username + ":" + password)}"
+					if (basicAuth.startsWith("Basic")) {
 						try {
-							basicAuth = basicAuth.substring(6); // remove the leading "Basic "
+							// remove the leading "Basic "
+							basicAuth = basicAuth.substring(6);
 							if (StringUtils.isBlank(basicAuth)) {
 								HttpServletResponse httpResponse = (HttpServletResponse) response;
 								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
 								return;
 							}
-							String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8")); // this is "Basic ${base64encode(username + ":" + password)}"
+							
+							String decoded = new String(Base64.decodeBase64(basicAuth), StandardCharsets.UTF_8);
 							if (StringUtils.isBlank(decoded) || !decoded.contains(":")) {
 								HttpServletResponse httpResponse = (HttpServletResponse) response;
 								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
 								return;
 							}
+							
 							String[] userAndPass = decoded.split(":");
 							Context.authenticate(userAndPass[0], userAndPass[1]);
-							log.debug("authenticated [" + userAndPass[0] + "]");
+							log.debug("authenticated [{}]", userAndPass[0]);
 						}
 						catch (Exception ex) {
 							// This filter never stops execution. If the user failed to
@@ -120,5 +124,11 @@ public class AuthorizationFilter implements Filter {
 		
 		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
+		
+		if (!Context.isAuthenticated()) {
+			if (response.getStatus() == HttpServletResponse.SC_UNAUTHORIZED && response.getHeader("WWW-Authenticate") == null) {
+				response.setHeader("WWW-Authenticate", "OpenMRS-Cookie");
+			}
+		}
 	}
 }
