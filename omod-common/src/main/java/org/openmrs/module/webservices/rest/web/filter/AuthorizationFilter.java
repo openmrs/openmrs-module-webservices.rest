@@ -22,11 +22,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filter intended for all /ws/rest calls that allows the user to authenticate via Basic
@@ -38,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
  */
 public class AuthorizationFilter implements Filter {
 	
-	protected final Log log = LogFactory.getLog(getClass());
+	private static final Logger log = LoggerFactory.getLogger(AuthorizationFilter.class);
 	
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -57,19 +58,19 @@ public class AuthorizationFilter implements Filter {
 	}
 	
 	/**
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
+	 *      javax.servlet.FilterChain)
 	 */
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-	        ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	        throws IOException, ServletException {
 		
 		// check the IP address first.  If its not valid, return a 403
 		if (!RestUtil.isIpAllowed(request.getRemoteAddr())) {
 			// the ip address is not valid, set a 403 http error code
 			HttpServletResponse httpresponse = (HttpServletResponse) response;
-			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN, "IP address '" + request.getRemoteAddr()
-			        + "' is not authorized");
+			httpresponse.sendError(HttpServletResponse.SC_FORBIDDEN,
+			    "IP address '" + request.getRemoteAddr() + "' is not authorized");
 			return;
 		}
 		
@@ -84,19 +85,39 @@ public class AuthorizationFilter implements Filter {
 			if (!Context.isAuthenticated()) {
 				String basicAuth = httpRequest.getHeader("Authorization");
 				if (basicAuth != null) {
-					// this is "Basic ${base64encode(username + ":" + password)}"
-					try {
-						basicAuth = basicAuth.substring(6); // remove the leading "Basic "
-						String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
-						String[] userAndPass = decoded.split(":");
-						Context.authenticate(userAndPass[0], userAndPass[1]);
-						if (log.isDebugEnabled())
-							log.debug("authenticated " + userAndPass[0]);
+					// check that header is in format "Basic ${base64encode(username + ":" + password)}"
+					if (basicAuth.startsWith("Basic")) {
+						try {
+							// remove the leading "Basic "
+							basicAuth = basicAuth.substring(6);
+							if (StringUtils.isBlank(basicAuth)) {
+								HttpServletResponse httpResponse = (HttpServletResponse) response;
+								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
+								return;
+							}
+							
+							String decoded = new String(Base64.decodeBase64(basicAuth), Charset.forName("UTF-8"));
+							if (StringUtils.isBlank(decoded) || !decoded.contains(":")) {
+								HttpServletResponse httpResponse = (HttpServletResponse) response;
+								httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credentials provided");
+								return;
+							}
+							
+							String[] userAndPass = decoded.split(":");
+							Context.authenticate(userAndPass[0], userAndPass[1]);
+							log.debug("authenticated [{}]", userAndPass[0]);
+						}
+						catch (Exception ex) {
+							// This filter never stops execution. If the user failed to
+							// authenticate, that will be caught later.
+							log.debug("authentication exception ", ex);
+						}
 					}
-					catch (Exception ex) {
-						// This filter never stops execution. If the user failed to
-						// authenticate, that will be caught later.
-					}
+				} else {
+					HttpServletResponse httpResponse = (HttpServletResponse) response;
+					httpResponse.setHeader("WWW-Authenticate", "Basic, OpenMRS-Cookie");
+					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials provided");
+					return;
 				}
 			}
 		}
