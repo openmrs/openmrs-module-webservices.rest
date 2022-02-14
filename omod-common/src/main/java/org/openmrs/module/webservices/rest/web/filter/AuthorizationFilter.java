@@ -79,7 +79,8 @@ public class AuthorizationFilter implements Filter {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()) {
 				HttpServletResponse httpResponse = (HttpServletResponse) response;
-				httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "Session timed out");
+				httpResponse.setHeader("WWW-Authenticate", "Basic, OpenMRS-Cookie");
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session timed out");
 			}
 			
 			if (!Context.isAuthenticated()) {
