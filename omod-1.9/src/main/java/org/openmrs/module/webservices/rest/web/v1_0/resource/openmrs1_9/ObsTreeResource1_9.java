@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSet;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -156,12 +157,12 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("display", concept.getDisplayString());
+		map.put("conceptUuid", concept.getUuid());
+		map.put("datatype", concept.getDatatype().getName());
 		
 		if (concept.isNumeric()) {
-			String units = conceptService.getConceptNumeric(concept.getConceptId()).getUnits();
-			if (StringUtils.isNotBlank(units)) {
-				map.put("units", units);
-			}
+			ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(concept.getConceptId());
+			fillConceptNumericMetadata(map, conceptNumeric);
 		}
 		
 		map.put("obs", mapList);
@@ -175,5 +176,36 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		map.put("display", concept.getDisplayString());
 		map.put("subSets", subSets);
 		return map;
+	}
+	
+	private void fillConceptNumericMetadata(HashMap<String, Object> map, ConceptNumeric conceptNumeric) {
+		String units = conceptNumeric.getUnits();
+		if (StringUtils.isNotBlank(units)) {
+			map.put("units", units);
+		}
+		Double hiAbsolute = conceptNumeric.getHiAbsolute();
+		if (hiAbsolute != null) {
+			map.put("hiAbsolute", hiAbsolute);
+		}
+		Double hiCritical = conceptNumeric.getHiCritical();
+		if (hiCritical != null) {
+			map.put("hiCritical", hiCritical);
+		}
+		Double hiNormal = conceptNumeric.getHiNormal();
+		if (hiNormal != null) {
+			map.put("hiNormal", hiNormal);
+		}
+		Double lowAbsolute = conceptNumeric.getLowAbsolute();
+		if (lowAbsolute != null) {
+			map.put("lowAbsolute", lowAbsolute);
+		}
+		Double lowCritical = conceptNumeric.getLowCritical();
+		if (lowCritical != null) {
+			map.put("lowCritical", lowCritical);
+		}
+		Double lowNormal = conceptNumeric.getLowNormal();
+		if (lowNormal != null) {
+			map.put("lowNormal", lowNormal);
+		}
 	}
 }
