@@ -54,9 +54,17 @@ public class FormSearchHandlerTest extends MainResourceControllerTest {
 	 * @see FormSearchHandler1_8#getSearchConfig()
 	 */
 	@Test
-	public void getSearchConfig_shouldReturnFormByPublishedStatus() throws Exception {
+	public void getSearchConfig_shouldReturnPublishedForms() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("published", "true");
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = result.get("results");
+		Assert.assertEquals(3, hits.size());
+	}
+	@Test
+	public void GetSearchConfig_ShouldReturnUnpublishedForms() throws Exception{
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("published", "false");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = result.get("results");
 		Assert.assertEquals(2, hits.size());

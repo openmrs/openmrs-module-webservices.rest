@@ -32,7 +32,7 @@ public class FormSearchHandler1_8 implements SearchHandler {
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/form", Collections.singletonList("1.8 - 2.*"),
 
 			new SearchQuery.Builder(
-					"Allows you to find form by published and unpublished status")
+					"Allows you to filter forms by published status")
 					.withRequiredParameters("published").build());
 
 	@Override
@@ -42,11 +42,16 @@ public class FormSearchHandler1_8 implements SearchHandler {
 
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
-		boolean formStatus = Boolean.parseBoolean(context.getParameter("published"));
-		List<Form> forms = Context.getFormService().getForms(null, formStatus, null, false, null, null, null);
-		if (forms == null) {
-			return new EmptySearchResult();
+
+		String publishedStatus = context.getParameter("published");
+		if (publishedStatus != null && !publishedStatus.isEmpty()) {
+			boolean formStatus = Boolean.parseBoolean(publishedStatus);
+			List<Form> forms = Context.getFormService().getForms(null, formStatus, null, false, null, null, null);
+			if (forms == null) {
+				return new EmptySearchResult();
+			}
+			return new NeedsPaging<Form>(forms, context);
 		}
-		return new NeedsPaging<Form>(forms, context);
+		return new EmptySearchResult();
 	}
 }
