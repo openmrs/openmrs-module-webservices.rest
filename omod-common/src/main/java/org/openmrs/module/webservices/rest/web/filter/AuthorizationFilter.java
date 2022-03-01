@@ -114,11 +114,6 @@ public class AuthorizationFilter implements Filter {
 							log.debug("authentication exception ", ex);
 						}
 					}
-				} else {
-					HttpServletResponse httpResponse = (HttpServletResponse) response;
-					httpResponse.setHeader("WWW-Authenticate", "Basic, OpenMRS-Cookie");
-					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid credentials provided");
-					return;
 				}
 			}
 		}
