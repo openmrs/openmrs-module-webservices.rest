@@ -59,14 +59,15 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	/**
-	 * @see SessionController1_9#delete()
+	 * @see SessionController1_9#delete(HttpServletRequest) 
 	 * @verifies log the client out
 	 */
 	@Test
 	public void delete_shouldLogTheClientOut() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		controller.delete();
+		controller.delete(hsr);
 		Assert.assertFalse(Context.isAuthenticated());
+		Assert.assertNull(hsr.getSession(false));
 	}
 	
 	/**

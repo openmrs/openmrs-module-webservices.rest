@@ -123,8 +123,9 @@ public class SessionController1_9 extends BaseRestController {
 	@RequestMapping(method = RequestMethod.DELETE)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
-	public void delete() {
+	public void delete(HttpServletRequest request) {
 		Context.logout();
+		request.getSession().invalidate();
 	}
 
 	/**
