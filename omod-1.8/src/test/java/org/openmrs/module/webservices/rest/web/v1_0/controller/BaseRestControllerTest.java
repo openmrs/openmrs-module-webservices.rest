@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
@@ -145,5 +146,11 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 		LinkedHashMap errors = (LinkedHashMap) responseSimpleObject.get("error");
 		Assert.assertEquals("[" + message + "]", errors.get("message"));
+	}
+	
+	@Test
+	public void httpMessageNotReadableExceptionHandler_shouldReturnBadRequestIfEmptyBody() throws Exception {
+		controller.httpMessageNotReadableExceptionHandler(new HttpMessageNotReadableException(""), request, response);
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 	}
 }
