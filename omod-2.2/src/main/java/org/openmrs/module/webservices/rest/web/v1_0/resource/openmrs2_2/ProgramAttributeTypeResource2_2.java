@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ProgramAttributeType;
 import org.openmrs.api.context.Context;
@@ -25,8 +26,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeTypeCrudResource1_9;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.regex.Pattern;
 
 @Resource(name = RestConstants.VERSION_1 + "/programattributetype", supportedClass = ProgramAttributeType.class, supportedOpenmrsVersions = {
         "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
@@ -80,7 +79,7 @@ public class ProgramAttributeTypeResource2_2 extends BaseAttributeTypeCrudResour
 		{
 			Concept concept;
 			String id = delegate.getDatatypeConfig();
-			if (Pattern.compile("\\d+").matcher(id).matches()) {
+			if (StringUtils.isNumeric(id)) {
 				concept = Context.getConceptService().getConcept(Integer.valueOf(id));
 			} else {
 				concept = Context.getConceptService().getConceptByUuid(id);
