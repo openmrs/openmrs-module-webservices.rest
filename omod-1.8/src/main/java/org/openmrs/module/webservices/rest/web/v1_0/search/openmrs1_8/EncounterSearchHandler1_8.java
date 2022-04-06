@@ -41,10 +41,11 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 	private static final String DATE_TO = "todate";
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/encounter",
-	        Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"), Arrays.asList(new SearchQuery.Builder(
-	                "Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
-	                .withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
-	                .build()));
+			Collections.singletonList("1.8.* - 1.12.*"),
+			Collections.singletonList(new SearchQuery.Builder(
+					"Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
+					.withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
+					.build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {
@@ -63,12 +64,12 @@ public class EncounterSearchHandler1_8 implements SearchHandler {
 		Date toDate = dateTo != null ? (Date) ConversionUtil.convert(dateTo, Date.class) : null;
 		
 		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-		    Patient.class)).getByUniqueId(patientUuid);
+				Patient.class)).getByUniqueId(patientUuid);
 		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
+				.getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 		if (patient != null) {
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, fromDate, toDate, null,
-			    encounterType != null ? Arrays.asList(encounterType) : null, null, context.getIncludeAll());
+					encounterType != null ? Arrays.asList(encounterType) : null, null, context.getIncludeAll());
 			String order = context.getRequest().getParameter("order");
 			if ("desc".equals(order)) {
 				Collections.reverse(encounters);

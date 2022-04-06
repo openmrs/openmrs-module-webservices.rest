@@ -42,7 +42,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.CohortMem
  * Sub-resource for cohort members
  */
 @SubResource(parent = CohortResource1_8.class, path = "member", supportedClass = CohortMember1_8.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
+        "1.8.* - 2.0.*" })
 public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1_8, Cohort, CohortResource1_8> {
 	
 	/**

@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 @Resource(name = RestConstants.VERSION_1 + "/administrationlinks", supportedClass = AdministrationSectionLinks.class,
-		supportedOpenmrsVersions = { "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+		supportedOpenmrsVersions = { "2.0.* - 9.*" })
 public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResource<AdministrationSectionLinks> {
 
 	private static final String UUID = "uuid";

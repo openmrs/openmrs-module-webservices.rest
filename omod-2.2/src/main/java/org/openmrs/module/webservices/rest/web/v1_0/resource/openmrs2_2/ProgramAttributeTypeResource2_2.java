@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
 import org.openmrs.util.OpenmrsUtil;
 
 @Resource(name = RestConstants.VERSION_1 + "/programattributetype", supportedClass = ProgramAttributeType.class, supportedOpenmrsVersions = {
-        "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+        "2.2.* - 9.*" })
 public class ProgramAttributeTypeResource2_2 extends BaseAttributeTypeCrudResource1_9<ProgramAttributeType> {
 
 	@Override

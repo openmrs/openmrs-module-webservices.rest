@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
  * {@link Resource} for {@link ConceptProposal}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptproposal", supportedClass = ConceptProposal.class, supportedOpenmrsVersions = {
-		"2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+		"2.0.* - 9.*" })
 public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptProposal> {
 
 	@Override

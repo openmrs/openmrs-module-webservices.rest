@@ -45,8 +45,7 @@ import io.swagger.models.properties.StringProperty;
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8}
  */
-@SubClassHandler(supportedClass = TestOrder.class, supportedOpenmrsVersions = { "1.10.*", "1.11.*", "1.12.*", "2.0.*",
-        "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+@SubClassHandler(supportedClass = TestOrder.class, supportedOpenmrsVersions = { "1.10.* - 9.*" })
 public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<Order, TestOrder> implements DelegatingSubclassHandler<Order, TestOrder> {
 	
 	/**

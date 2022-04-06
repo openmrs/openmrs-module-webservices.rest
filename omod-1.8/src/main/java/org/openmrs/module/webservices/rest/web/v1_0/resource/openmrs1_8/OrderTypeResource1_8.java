@@ -22,7 +22,7 @@ import org.openmrs.util.OpenmrsConstants;
  *
  */
 @Resource(name = RestConstants.VERSION_1 + "/ordertype", supportedClass = OrderType.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*" })
+        "1.8.* - 1.9.*" })
 public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderType> {
 	
 	/**

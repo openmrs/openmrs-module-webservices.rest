@@ -27,7 +27,7 @@ import java.util.List;
  * {@link Resource} for ConceptAttributes, supporting standard CRUD operations
  */
 @SubResource(parent = ConceptResource2_0.class, path = "attribute", supportedClass = ConceptAttribute.class, supportedOpenmrsVersions = {
-        "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+        "2.0.* - 9.*" })
 public class ConceptAttributeResource2_0 extends BaseAttributeCrudResource1_9<ConceptAttribute, Concept, ConceptResource2_0> {
 	
 	/**

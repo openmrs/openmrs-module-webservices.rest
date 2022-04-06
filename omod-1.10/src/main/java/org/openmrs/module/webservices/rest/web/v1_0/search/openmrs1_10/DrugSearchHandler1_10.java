@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_10;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,8 +53,8 @@ public class DrugSearchHandler1_10 implements SearchHandler {
 	        + " drug reference term mappings").withRequiredParameters(REQUEST_PARAM_QUERY)
 	        .withOptionalParameters(REQUEST_PARAM_LOCALE, REQUEST_PARAM_EXACT_LOCALE).build();
 	
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/drug", Arrays.asList(
-	    "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"), searchQuery);
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/drug",
+			Collections.singletonList("1.10.* - 9.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
 
 @Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {
-        "1.11.*", "1.12.*" })
+        "1.11.* - 1.12.*" })
 public class ConceptResource1_11 extends ConceptResource1_9 {
 	
 	/**

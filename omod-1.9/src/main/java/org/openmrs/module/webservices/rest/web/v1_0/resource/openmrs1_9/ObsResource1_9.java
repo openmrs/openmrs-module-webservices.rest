@@ -27,7 +27,7 @@ import java.util.Map;
  * CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*" })
+        "1.9.* - 1.10.*" })
 public class ObsResource1_9 extends ObsResource1_8 {
 
 	/**
