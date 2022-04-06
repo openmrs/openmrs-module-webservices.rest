@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.openmrs.ConceptMapType;
@@ -47,8 +48,7 @@ public class ConceptReferenceTermMapSearchHandler1_9 implements SearchHandler {
 	RestHelperService restHelperService;
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/conceptreferencetermmap", Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*",
-	    "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
+	        + "/conceptreferencetermmap", Collections.singletonList("1.9.* - 9.*"),
 	        Arrays.asList(new SearchQuery.Builder(
 	                "Allows you to find term maps by reference 'termA' (uuid) and 'maptype' (uuid or name)")
 	                .withRequiredParameters("termA").withOptionalParameters("maptype").build(), new SearchQuery.Builder(

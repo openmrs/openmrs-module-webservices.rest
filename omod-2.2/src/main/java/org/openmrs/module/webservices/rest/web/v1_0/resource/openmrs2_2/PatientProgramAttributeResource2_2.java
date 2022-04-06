@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 
 @SubResource(parent = ProgramEnrollmentResource2_2.class, path = "attribute", supportedClass = PatientProgramAttribute.class, supportedOpenmrsVersions = {
-        "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+        "2.2.* - 9.*" })
 public class PatientProgramAttributeResource2_2 extends BaseAttributeCrudResource1_9<PatientProgramAttribute, PatientProgram, ProgramEnrollmentResource2_2> {
 	
 	@PropertySetter("attributeType")

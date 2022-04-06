@@ -52,7 +52,7 @@ import io.swagger.models.properties.StringProperty;
  * {@link Resource} for User, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
-        "1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*" })
+        "1.8.* - 1.12.*" })
 public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
 	
 	/**

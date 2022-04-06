@@ -40,7 +40,7 @@ import org.openmrs.util.OpenmrsConstants;
 /**
  * Exposes the {@link DrugOrder} subclass as a type in {@link OrderResource1_8}
  */
-@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.*", "1.9.*" })
+@SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" })
 public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<Order, DrugOrder> implements DelegatingSubclassHandler<Order, DrugOrder> {
 	
 	public DrugOrderSubclassHandler1_8() {

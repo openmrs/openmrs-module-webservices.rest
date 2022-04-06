@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FormSearchHandler1_8 implements SearchHandler {
 
-	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/form", Collections.singletonList("1.8 - 2.*"),
+	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/form", Collections.singletonList("1.8 - 9.*"),
 
 			new SearchQuery.Builder(
 					"Allows you to filter forms by published status")

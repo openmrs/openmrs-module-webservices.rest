@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_11;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,10 +33,10 @@ import org.springframework.stereotype.Component;
 public class LivingPatientSearchHandler1_11 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/patient",
-	        Arrays.asList("1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-	        Arrays.asList(
-	                new SearchQuery.Builder("Allows you to find all patients including the dead or only living patients")
-	                        .withRequiredParameters("q").withOptionalParameters("includeDead").build()));
+			Collections.singletonList("1.11.* - 9.*"),
+			Collections.singletonList(
+					new SearchQuery.Builder("Allows you to find all patients including the dead or only living patients")
+							.withRequiredParameters("q").withOptionalParameters("includeDead").build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {

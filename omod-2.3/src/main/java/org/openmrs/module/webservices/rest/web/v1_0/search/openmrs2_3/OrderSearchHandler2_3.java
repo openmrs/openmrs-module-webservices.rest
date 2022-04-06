@@ -36,6 +36,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class OrderSearchHandler2_3 implements SearchHandler {
 	            REQUEST_PARAM_INCLUDE_VOIDED).build();
 
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/order", Arrays.asList("2.3.*", "2.4.*", "2.5.*", "2.6.*"), searchQuery);
+	        + "/order", Collections.singletonList("2.3.* - 9.*"), searchQuery);
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

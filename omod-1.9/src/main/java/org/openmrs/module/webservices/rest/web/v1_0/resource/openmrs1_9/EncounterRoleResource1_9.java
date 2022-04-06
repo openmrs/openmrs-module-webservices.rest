@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link Resource} for {@link EncounterRole}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/encounterrole", supportedClass = EncounterRole.class, supportedOpenmrsVersions = {
-        "1.9.*", "1.10.*" })
+        "1.9.* - 1.10.*" })
 public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<EncounterRole> {
 	
 	/**

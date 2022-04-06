@@ -29,7 +29,7 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,8 +64,7 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("byObs",
 	        RestConstants.VERSION_1 + "/encounter",
-	        Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"),
-	        searchQuery);
+			Collections.singletonList("1.9.* - 9.*"), searchQuery);
 	
 	@Override
 	public SearchConfig getSearchConfig() {

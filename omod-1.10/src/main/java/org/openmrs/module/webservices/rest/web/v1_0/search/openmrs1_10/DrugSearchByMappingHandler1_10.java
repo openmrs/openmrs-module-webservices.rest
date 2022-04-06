@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_10;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -56,7 +56,7 @@ public class DrugSearchByMappingHandler1_10 implements SearchHandler {
 	        .withOptionalParameters(REQUEST_PARAM_CODE, REQUEST_PARAM_MAP_TYPES).build();
 	
 	private final SearchConfig searchConfig = new SearchConfig("getDrugByMapping", RestConstants.VERSION_1 + "/drug",
-	        Arrays.asList("1.10.*", "1.11.*", "1.12.*", "2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*"), searchQuery);
+			Collections.singletonList("1.10.* - 9.*"), searchQuery);
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()

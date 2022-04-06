@@ -32,7 +32,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderRes
  * updating fulfiller_comment and fulfiller_status)
  */
 @SubResource(parent = OrderResource2_2.class, path = "fulfillerdetails", supportedClass = FulfillerDetails2_3.class, supportedOpenmrsVersions = {
-        "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+        "2.3.* - 9.*" })
 public class FulfillerDetailsResource2_3 extends DelegatingSubResource<FulfillerDetails2_3, Order, OrderResource2_2> {
 
     @Override

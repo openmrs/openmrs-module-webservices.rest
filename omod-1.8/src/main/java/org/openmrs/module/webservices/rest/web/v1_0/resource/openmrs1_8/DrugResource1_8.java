@@ -35,8 +35,7 @@ import java.util.List;
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*" })
+@Resource(name = RestConstants.VERSION_1 + "/drug", supportedClass = Drug.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" })
 public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 	
 	/**

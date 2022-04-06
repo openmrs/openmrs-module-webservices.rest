@@ -33,8 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for Cohorts, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = { "1.8.*",
-        "1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*" })
+@Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = { "1.8.* - 2.0.*" })
 public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 	
 	/**

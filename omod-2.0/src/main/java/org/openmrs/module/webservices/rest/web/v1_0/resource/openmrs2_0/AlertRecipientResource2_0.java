@@ -42,7 +42,7 @@ import java.util.List;
  * Sub-resource for {@link AlertRecipient}
  */
 @SubResource(parent = AlertResource2_0.class, path = "recipient", supportedClass = AlertRecipient.class, supportedOpenmrsVersions = {
-		"2.0.*", "2.1.*", "2.2.*", "2.3.*", "2.4.*", "2.5.*", "2.6.*" })
+		"2.0.* - 9.*" })
 public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipient, Alert, AlertResource2_0> {
 
 	private static final String UUID = "uuid";
