@@ -40,15 +40,15 @@ public class EncounterRoleController1_11Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldGetAnEncounterRoleByName() throws Exception {
-		final String ROLE_NAME = "Unknown";
+		final String roleName = "Unknown";
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("q", ROLE_NAME);
+		req.setParameter("q", roleName);
 		req.setParameter("v", "default");
 		SimpleObject result = deserialize(handle(req));
 		Object encounterRoleObject = Util.getResultsList(result).get(0);
 		
-		EncounterRole encounterRole = Context.getEncounterService().getEncounterRoleByName(ROLE_NAME);
+		EncounterRole encounterRole = Context.getEncounterService().getEncounterRoleByName(roleName);
 		Assert.assertEquals(encounterRole.getUuid(), PropertyUtils.getProperty(encounterRoleObject, "uuid"));
 		Assert.assertEquals(encounterRole.getName(), PropertyUtils.getProperty(encounterRoleObject, "name"));
 		Assert.assertEquals(encounterRole.getDescription(), PropertyUtils.getProperty(encounterRoleObject, "description"));
