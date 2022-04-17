@@ -35,9 +35,9 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 	@Autowired
 	private RestService restService;
 
-	private static final String log1 = "INFO - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
+	private static final String LOG_1 = "INFO - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 
-	private static final String log2 = "ERROR - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
+	private static final String LOG_2 = "ERROR - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 
 	private final MockServerLogActionWrapper<ServerLogActionWrapper2_4> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper2_4>(
 			new ServerLogActionWrapper2_4());
@@ -68,7 +68,7 @@ public class ServerLogController2_4Test extends MainResourceControllerTest {
 		List<String[]> mockServerLogs = mockServerLogActionWrapper.getServerLogs();
 		assertEquals(mockServerLogs.size(), 0);
 
-		mockServerLogActionWrapper.mockMemoryAppenderBuffer.addAll(Arrays.asList(log1, log2));
+		mockServerLogActionWrapper.mockMemoryAppenderBuffer.addAll(Arrays.asList(LOG_1, LOG_2));
 
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		ArrayList<String[]> results = response.get("serverLog");

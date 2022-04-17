@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "The Resource Does not Support the Requested Operation")
 public class ResourceDoesNotSupportOperationException extends ResponseException {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long SERIAL_VERSION_UID = 1L;
 	
 	public ResourceDoesNotSupportOperationException() {
 		

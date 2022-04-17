@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "The search with the given parameters is not valid")
 public class InvalidSearchException extends ResponseException {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long SERIAL_VERSION_UID = 1L;
 	
 	public InvalidSearchException() {
 		super();

@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class CohortController1_8Test extends MainResourceControllerTest {
 	
-	private static final String datasetFilename = "customTestDataset.xml";
+	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
 	private CohortService service;
 	

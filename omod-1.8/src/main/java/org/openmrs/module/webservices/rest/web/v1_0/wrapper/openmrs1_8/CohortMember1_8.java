@@ -22,7 +22,7 @@ import org.openmrs.Patient;
  */
 public class CohortMember1_8 implements Serializable {
 	
-	public static final long serialVersionUID = 1L;
+	public static final long SERIAL_VERSION_UID = 1L;
 	
 	private static final Log log = LogFactory.getLog(UserAndPassword1_8.class);
 	

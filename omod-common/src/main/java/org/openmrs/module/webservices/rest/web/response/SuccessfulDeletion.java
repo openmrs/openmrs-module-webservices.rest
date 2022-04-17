@@ -20,6 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "Object deleted successfully")
 public class SuccessfulDeletion extends ResponseException {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long SERIAL_VERSION_UID = 1L;
 	
 }

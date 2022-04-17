@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Unable to convert object into response content")
 public class ConversionException extends ResponseException {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long SERIAL_VERSION_UID = 1L;
 	
 	public ConversionException() {
 		super();
