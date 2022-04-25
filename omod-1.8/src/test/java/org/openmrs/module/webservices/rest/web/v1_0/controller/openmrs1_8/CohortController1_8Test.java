@@ -39,7 +39,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	@Before
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
-		executeDataSet(datasetFilename);
+		executeDataSet(DATASET_FILENAME);
 	}
 	
 	/**
