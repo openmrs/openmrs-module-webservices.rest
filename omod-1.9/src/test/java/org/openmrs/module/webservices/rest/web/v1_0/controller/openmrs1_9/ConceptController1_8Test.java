@@ -13,11 +13,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -42,13 +40,11 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -250,7 +246,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		result = deserialize(handle(req));
 		hits = result.get("results");
-		
 		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
 		
 		//Should not find it when it has partial name:
@@ -259,7 +254,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		result = deserialize(handle(req));
 		hits = result.get("results");
-		
 		assertThat(hits, is(empty()));
 	}
 	
@@ -291,6 +285,16 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		hits = result.get("results");
 		
 		assertThat(hits, is(empty()));
+
+		//Should not find it when it exactly matches
+		name = "CD4 COUNT";
+		searchType = "equals";
+		req.setParameter("name", name);
+		req.setParameter("searchType", searchType);
+
+		result = deserialize(handle(req));
+		hits = result.get("results");
+		assertThat(hits, is(empty()));
 	}
 	
 	@Test
@@ -312,6 +316,32 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		hits = result.get("results");
 		
 		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+	}
+
+	@Test
+	public void shouldSearchAndReturnAllConceptsFromConceptClassUuid() throws Exception {
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+
+		req.addParameter("class", conceptClassUuid);
+
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = result.get("results");
+		assertThat(hits.size(), is(3));
+	}
+
+	@Test
+	public void shouldSearchAndReturnAllConceptsFromConceptClassUuidFuzzy() throws Exception {
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+
+		// it should ignore searchType parameter if only searching by concept class
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("searchType", "fuzzy");
+
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = result.get("results");
+		assertThat(hits.size(), is(3));
 	}
 	
 	@Test(expected = IllegalStateException.class)

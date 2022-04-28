@@ -50,10 +50,14 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept",
 	        Arrays.asList("1.8.* - 9.*"),
 	        Arrays.asList(
-	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
-	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
-	                    "Allows you to find concepts by name and class").withRequiredParameters("name")
-	                    .withOptionalParameters("class", "searchType").build()));
+	            new SearchQuery.Builder("Allows you to find concepts by source and code")
+					.withRequiredParameters("source")
+					.withOptionalParameters("code")
+					.build(),
+				new SearchQuery.Builder("Allows you to find concepts by name and class")
+					.withOptionalParameters("class", "name", "searchType")
+					.build()
+			));
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -68,60 +72,70 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	 */
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
-		String source = context.getParameter("source");
-		String code = context.getParameter("code");
 		String name = context.getParameter("name");
 		String conceptClass = context.getParameter("class");
 		String searchType = context.getParameter("searchType");
-		
-		List<Concept> concepts = new ArrayList<Concept>();
-		
-		// If there's class parameter in query
-		if ("fuzzy".equals(searchType)) {
-			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
-			List<ConceptClass> classes = null;
-			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
-			
-			if (responseConceptClass != null) {
-				classes = Arrays.asList(responseConceptClass);
-			}
-			
-			List<ConceptSearchResult> searchResults = conceptService.getConcepts(name, locales, context.getIncludeAll(),
-			    classes, null, null, null, null, context.getStartIndex(), context.getLimit());
-			List<Concept> results = new ArrayList<Concept>(searchResults.size());
-			for (ConceptSearchResult csr : searchResults) {
-				results.add(csr.getConcept());
-			}
-			return new NeedsPaging<Concept>(results, context);
-		} else if (searchType == null || "equals".equals(searchType)) {
-			
-			if (name != null) {
+
+		// filter results by name
+		if ( name != null ) {
+			// optional filter by the class
+			ConceptClass conceptClassResult = conceptService.getConceptClassByUuid(conceptClass);
+			if ("fuzzy".equals(searchType)) {
+				// optional additional filter
+				List<ConceptClass> classes = null;
+				if (conceptClassResult != null) {
+					classes = Arrays.asList(conceptClassResult) ;
+				}
+				List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
+				List<ConceptSearchResult> searchResults = conceptService.getConcepts(
+					name, locales, context.getIncludeAll(), classes,
+					null, null, null, null, context.getStartIndex(), context.getLimit()
+				);
+				List<Concept> concepts = new ArrayList<Concept>(searchResults.size());
+				for (ConceptSearchResult csr : searchResults) {
+					concepts.add(csr.getConcept());
+				}
+				return new NeedsPaging<Concept>(concepts, context);
+			} else if (searchType == null || "equals".equals(searchType)) {
 				Concept concept = conceptService.getConceptByName(name);
-				concepts.add(concept);
-				if (concept != null) {
-					boolean isPreferredOrFullySpecified = false;
-					for (ConceptName conceptname : concept.getNames()) {
-						if (conceptname.getName().equalsIgnoreCase(name)
-						        && (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
-							isPreferredOrFullySpecified = true;
-							break;
-						}
-					}
-					if (!isPreferredOrFullySpecified) {
-						throw new APIException(
-						        "The concept name should be either a fully specified or locale preferred name");
-					}
-					
-					return new NeedsPaging<Concept>(concepts, context);
-				} else {
+				// No concept by that name
+				if (concept == null) {
 					return new EmptySearchResult();
 				}
-			}
-		} else {
-			throw new InvalidSearchException("Invalid searchType: " + searchType
+				// Found the name, but if it doesn't have the same concept class ( if supplied ) it should be filtered out
+				if (conceptClassResult != null && !concept.getConceptClass().equals(conceptClassResult)) {
+					return new EmptySearchResult();
+				}
+				// Check concept name is fully specified
+				boolean isPreferredOrFullySpecified = false;
+				for (ConceptName conceptname : concept.getNames()) {
+					if (conceptname.getName().equalsIgnoreCase(name)
+							&& (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
+						isPreferredOrFullySpecified = true;
+						break;
+					}
+				}
+				if (!isPreferredOrFullySpecified) {
+					throw new APIException("The concept name should be either a fully specified or locale preferred name");
+				}
+				List<Concept> concepts = Arrays.asList(concept);
+				return new NeedsPaging<Concept>(concepts, context);
+			} else {
+				throw new InvalidSearchException("Invalid searchType: " + searchType
 			        + ". Allowed values: \"equals\" and \"fuzzy\"");
+			}
+		} else if (conceptClass != null) { // searchType doesn't apply
+			ConceptClass conceptClassResult = conceptService.getConceptClassByUuid(conceptClass);
+			if (conceptClassResult == null) {
+				return new EmptySearchResult();
+			}
+			List<Concept> concepts = conceptService.getConceptsByClass(conceptClassResult);
+			return new NeedsPaging<Concept>(concepts, context);
 		}
 		
+		String source = context.getParameter("source");
+		String code = context.getParameter("code");
+
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
 		if (conceptSource == null) {
 			conceptSource = conceptService.getConceptSourceByName(source);
@@ -131,6 +145,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		}
 		
 		if (code == null) {
+			List<Concept> concepts = new ArrayList<Concept>();
 			List<ConceptMap> conceptMaps = conceptService.getConceptMappingsToSource(conceptSource);
 			for (ConceptMap conceptMap : conceptMaps) {
 				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
