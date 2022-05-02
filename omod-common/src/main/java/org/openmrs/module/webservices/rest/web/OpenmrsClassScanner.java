@@ -32,7 +32,7 @@ public class OpenmrsClassScanner {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
-	private static final OpenmrsClassScanner INSTANCE = new OpenmrsClassScanner();
+	private static final OpenmrsClassScanner instance = new OpenmrsClassScanner();
 	
 	private final MetadataReaderFactory metadataReaderFactory;
 	
@@ -52,7 +52,7 @@ public class OpenmrsClassScanner {
 	
 	public static OpenmrsClassScanner getInstance() {
 		
-		return INSTANCE;
+		return instance;
 		
 	}
 	

@@ -27,7 +27,7 @@ import static io.restassured.RestAssured.basic;
 
 public abstract class ITBase {
 	
-	private static final Object SERVER_STARTUP_LOCK = new Object();
+	private static final Object serverStartupLock = new Object();
 	
 	private static boolean serverStarted = false;
 	
@@ -56,7 +56,7 @@ public abstract class ITBase {
 	
 	@BeforeClass
 	public static void waitForServerToStart() {
-		synchronized (SERVER_STARTUP_LOCK) {
+		synchronized (serverStartupLock) {
 			if (!serverStarted) {
 				final long time = System.currentTimeMillis();
 				final int timeout = 300000;
