@@ -26,7 +26,7 @@ import io.swagger.models.properties.RefProperty;
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Drug},
  * supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/drug", order = 3, supportedClass = Drug.class, supportedOpenmrsVersions = { "1.10.* - 9.*" })
+@Resource(name = RestConstants.VERSION_1 + "/drug", order = 3, supportedClass = Drug.class, supportedOpenmrsVersions = { "1.10.*" })
 public class DrugResource1_10 extends DrugResource1_8 {
 	
 	/**
