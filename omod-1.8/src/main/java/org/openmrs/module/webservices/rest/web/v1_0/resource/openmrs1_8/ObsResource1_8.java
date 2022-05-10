@@ -412,7 +412,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 						obs.setValueCoded(valueDrug.getConcept());
 						obs.setValueDrug(valueDrug);
 					} else {
-						throw new ObjectNotFoundException();
+						throw new ObjectNotFoundException(value.toString());
 					}
 					
 				} else {
