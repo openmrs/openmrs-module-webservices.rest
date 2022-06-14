@@ -9,8 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
+import org.junit.Test;
+import org.openmrs.Obs;
 import org.openmrs.OrderType;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -59,5 +65,22 @@ public class OrderTypeResource1_8 extends MetadataDelegatingCrudResource<OrderTy
 			throw new IllegalArgumentException("You are not allowed to delete the Drug ordertype");
 		}
 		Context.getOrderService().purgeOrderType(delegate);
+	}
+
+	@Test
+	public void shouldUnVoidAnObs() throws Exception {
+		ObsService obsService = Context.getObsService();
+		Obs obs = obsService.getObsByUuid(getUuid());
+		obsService.voidObs(obs, "some random reason");
+		obs = obsService.getObsByUuid(getUuid());
+		Assert.assertTrue(obs.isVoided());
+	
+		String json = "{\"deleted\": \"false\"}";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+	
+		obs = obsService.getObsByUuid(getUuid());
+		Assert.assertFalse(obs.isVoided());
+		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+	
 	}
 }
