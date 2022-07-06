@@ -18,6 +18,7 @@ import org.openmrs.ConceptSearchResult;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -111,12 +112,12 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 					}
 				}
 			}
-
 			if (concepts.size() == 0) {
 				return new EmptySearchResult();
 			}
-
-			return new NeedsPaging<Concept>(concepts, context);
+			List<Concept> listOfConcepts = Context.getConceptService().getAllConcepts();
+	
+			return new NeedsPaging<Concept>(listOfConcepts, context);
 		}
 
 		concepts = new ArrayList<Concept>();
