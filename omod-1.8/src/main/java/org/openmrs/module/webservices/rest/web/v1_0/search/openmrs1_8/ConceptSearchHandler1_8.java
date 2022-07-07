@@ -89,7 +89,6 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 				if (StringUtils.isBlank(conceptReference)) {
 					continue;
 				}
-
 				// handle UUIDs
 				if (isValidUuid(conceptReference)) {
 					Concept concept = conceptService.getConceptByUuid(conceptReference);
@@ -98,13 +97,11 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 						continue;
 					}
 				}
-
 				// handle mappings
 				int idx = conceptReference.indexOf(':');
 				if (idx >= 0 && idx < conceptReference.length() - 1) {
 					String conceptSource = conceptReference.substring(0, idx);
 					String conceptCode = conceptReference.substring(idx + 1);
-
 					Concept concept = conceptService.getConceptByMapping(conceptCode, conceptSource, false);
 					if (concept != null) {
 						concepts.add(concept);
@@ -115,9 +112,8 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			if (concepts.size() == 0) {
 				return new EmptySearchResult();
 			}
-			List<Concept> listOfConcepts = Context.getConceptService().getAllConcepts();
 	
-			return new NeedsPaging<Concept>(listOfConcepts, context);
+			return new NeedsPaging<Concept>(concepts, context);
 		}
 
 		concepts = new ArrayList<Concept>();
@@ -190,7 +186,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
 	}
-
+	
 	private static boolean isValidUuid(String uuid) {
 		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
