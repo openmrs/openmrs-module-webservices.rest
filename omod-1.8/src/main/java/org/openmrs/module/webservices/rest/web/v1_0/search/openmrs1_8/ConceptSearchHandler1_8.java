@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptMap;
@@ -53,7 +54,9 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
 	                    "Allows you to find concepts by name and class").withRequiredParameters("name")
-	                    .withOptionalParameters("class", "searchType").build()));
+	                    .withOptionalParameters("class", "searchType").build(), new SearchQuery.Builder(
+	                    		"Allows you to find a list of concepts by passing references")
+	                    .withRequiredParameters("references").build()));
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#getSearchConfig()
@@ -73,9 +76,51 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		String name = context.getParameter("name");
 		String conceptClass = context.getParameter("class");
 		String searchType = context.getParameter("searchType");
+		String conceptReferences = context.getParameter("references");
 		
-		List<Concept> concepts = new ArrayList<Concept>();
-		
+		List<Concept> concepts;
+
+		if (StringUtils.isNotBlank(conceptReferences)) {
+			String[] conceptReferenceStrings = conceptReferences.split(",");
+			concepts = new ArrayList<Concept>(conceptReferenceStrings.length);
+
+			for (String conceptReference : conceptReferenceStrings) {
+				if (StringUtils.isBlank(conceptReference)) {
+					continue;
+				}
+
+				// handle UUIDs
+				if (isValidUuid(conceptReference)) {
+					Concept concept = conceptService.getConceptByUuid(conceptReference);
+					if (concept != null) {
+						concepts.add(concept);
+						continue;
+					}
+				}
+
+				// handle mappings
+				int idx = conceptReference.indexOf(':');
+				if (idx >= 0 && idx < conceptReference.length() - 1) {
+					String conceptSource = conceptReference.substring(0, idx);
+					String conceptCode = conceptReference.substring(idx + 1);
+
+					Concept concept = conceptService.getConceptByMapping(conceptCode, conceptSource, false);
+					if (concept != null) {
+						concepts.add(concept);
+						continue;
+					}
+				}
+			}
+
+			if (concepts.size() == 0) {
+				return new EmptySearchResult();
+			}
+
+			return new NeedsPaging<Concept>(concepts, context);
+		}
+
+		concepts = new ArrayList<Concept>();
+
 		// If there's class parameter in query
 		if ("fuzzy".equals(searchType)) {
 			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
@@ -144,5 +189,8 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
 	}
-	
+
+	private static boolean isValidUuid(String uuid) {
+		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
+	}
 }
