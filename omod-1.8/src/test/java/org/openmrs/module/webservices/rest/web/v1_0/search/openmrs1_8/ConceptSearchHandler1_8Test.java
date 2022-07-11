@@ -48,9 +48,9 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 	 * @see ConceptSearchHandler1_8#search(GetConceptByReference)
 	 */
 	@Test
-	public void getConceptByReference_shouldReturnAListOfConceptsMatchingTheGivenReference() throws Exception {
+	public void getConceptByReference_shouldReturnAListOfConceptsMatchingTheGivenReferences() throws Exception {
 		final String searchString = "b9dbde07-2a0e-426e-b7d6-c8417fe82665";
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", searchString))));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("references", searchString))));
 		List<Object> lists = Util.getResultsList(result);
 		Assert.assertEquals(1, lists.size());
 		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID, PropertyUtils.getProperty(lists.get(0), "uuid"));
@@ -69,4 +69,5 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 	public String getUuid() {
 		return RestTestConstants1_8.CONCEPT_UUID;
 	}
+
 }
