@@ -28,9 +28,12 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 
 	private ConceptService service;
 
+	private static final String CONCEPT_DATASET_XML = "conceptTestDataSet.xml";
+
 	@Before
 	public void init() throws Exception {
 		service = Context.getConceptService();
+		executeDataSet(CONCEPT_DATASET_XML);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 
 	@Override
 	public long getAllCount() {
-		return Context.getConceptService().getAllConcepts().size();
+		return service.getAllConcepts().size();
 	}
 
 	/**
@@ -48,7 +51,7 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getConceptByReference_shouldReturnAListOfConceptsMatchingTheGivenReferences() throws Exception {
-		final String searchString = "b9dbde07-2a0e-426e-b7d6-c8417fe82665";
+		final String searchString = "92b910bd-298c-4ecf-a632-661ae2f446bf";
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("references", searchString))));
 		List<Object> lists = Util.getResultsList(result);
 		Assert.assertEquals(1, lists.size());
