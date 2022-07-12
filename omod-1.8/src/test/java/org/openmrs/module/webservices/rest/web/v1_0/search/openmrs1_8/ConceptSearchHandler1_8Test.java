@@ -33,7 +33,6 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 	@Before
 	public void init() throws Exception {
 		service = Context.getConceptService();
-		executeDataSet(CONCEPT_DATASET_XML);
 	}
 
 	@Override
@@ -51,7 +50,8 @@ public class ConceptSearchHandler1_8Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getConceptByReference_shouldReturnAListOfConceptsMatchingTheGivenReferences() throws Exception {
-		final String searchString = "92b910bd-298c-4ecf-a632-661ae2f446bf";
+		executeDataSet(CONCEPT_DATASET_XML);
+		final String searchString = "947eba27-2b38-43e8-91a9-4dfe3956a32d";
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("references", searchString))));
 		List<Object> lists = Util.getResultsList(result);
 		Assert.assertEquals(1, lists.size());
