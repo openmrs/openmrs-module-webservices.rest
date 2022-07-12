@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
+import java.util.Map;
 
 public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	
@@ -36,22 +41,48 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Override
+	public String getUuid() {
+		return "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
+	}
+	
+	@Override
 	public long getAllCount() {
-		return 24;
+		return service.getAllConcepts(null, false, false).size();
 	}
 	
 	@Test
-	public void getSearchConfig_shouldReturnConcepyByReferenceTermUuid() throws Exception {
+	public void getSearchConfig_shouldReturnConceptByReferenceTermUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("term", "SSTRM-WGT234");
 		SimpleObject result = deserialize(handle(req));
-		List<Object> hits = (List<Object>) result.get("results");
+		List<Object> hits = result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getConcept(5089).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
-	@Override
-	public String getUuid() {
-		return "c607c80f-1ea9-4da3-bb88-6276ce8868dd";
+	@Test
+	public void shouldAllowSearchingByReferences() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("references", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa,Some Standardized Terminology:WGT234");
+		
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = result.get("results");
+		
+		assertThat(hits, hasSize(2));
+		assertThat((Map<String, String>) hits.get(0), hasEntry("uuid", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa"));
+		assertThat((Map<String, String>) hits.get(1), hasEntry("uuid", "c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+	}
+	
+	@Test
+	public void shouldAllowSearchingByNoReferences() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("references", "");
+		
+		SimpleObject result = deserialize(handle(req));
+		
+		List<Object> hits = result.get("results");
+		
+		assertThat(hits, hasSize(0));
 	}
 }
