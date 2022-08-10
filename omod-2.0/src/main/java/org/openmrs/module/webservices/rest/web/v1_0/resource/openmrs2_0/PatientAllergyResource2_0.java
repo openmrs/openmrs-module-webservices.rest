@@ -38,6 +38,7 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
+import org.springframework.http.HttpStatus;
 
 @SubResource(parent = PatientResource1_9.class, path = "allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
@@ -156,8 +157,9 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 * <strong>Should</strong> return 404 status if Allergy Status is UNKNOWN
+	 * <strong>Should</strong> return 204 status if Allergy Status is UNKNOWN
 	 * <strong>Should</strong> return empty list if Allergy Status is NO_KNOWN_ALLERGIES
+	 * <strong>Should</strong> return list if Allergy Status is KNOWN
 	 * <strong>Should</strong> throw new ResourceDoesNotSupportOperationException if patient is null
 	 */
 	@Override
@@ -167,8 +169,8 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		if (parent != null) {
 			allergies = Context.getPatientService().getAllergies(parent);
 			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
-				// return 404 status for a patient whoose allergy status is unknown
-				throw new ObjectNotFoundException();
+				// return 204 status for a patient whose allergy status is unknown
+				throw new ObjectNotFoundException("No Content Found");
 			} else if (allergies.getAllergyStatus().equals(Allergies.NO_KNOWN_ALLERGIES)) {
 				// empty list
 			} else if (allergies.getAllergyStatus().equals(Allergies.SEE_LIST)) {

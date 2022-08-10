@@ -9,26 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
-import java.util.Date;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-/**
- * This exception should be thrown from controllers when passed a uuid that does not represent an
- * existing resource.
- */
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Object with given uuid doesn't exist")
-public class ObjectNotFoundException extends ResponseException {
+@Controller
+public class ResponseStatusException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
+	
+	    @ExceptionHandler
+	    public ResponseEntity<Object> handleAuthenticationException(ObjectNotFoundException e) {
 
-	public ObjectNotFoundException() {
-		
-	}
-
-	public ObjectNotFoundException(String message) {
-		super(message);
-	}
-
+	        return new ResponseEntity<Object>("There is no content", HttpStatus.NO_CONTENT);
+	    }
+	
 }
