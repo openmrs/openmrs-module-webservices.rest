@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ObjectNotFoundException extends ResponseException {
 	
 	private static final long serialVersionUID = 1L;
-
+	
 	public ObjectNotFoundException() {
 		
 	}
@@ -28,5 +28,4 @@ public class ObjectNotFoundException extends ResponseException {
 	public ObjectNotFoundException(String message) {
 		super(message);
 	}
-
 }
