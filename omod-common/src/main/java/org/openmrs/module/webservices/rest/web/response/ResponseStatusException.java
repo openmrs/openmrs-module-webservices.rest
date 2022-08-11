@@ -9,20 +9,26 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import java.util.Date;
 
-@Controller
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "No Content Found")
 public class ResponseStatusException extends ResponseException {
-	
+
 	private static final long serialVersionUID = 1L;
 	
-	    @ExceptionHandler
-	    public ResponseEntity<Object> handleAuthenticationException(ObjectNotFoundException e) {
+	private Date timestamp;
+	private HttpStatus httpStatus;
+	private String message;
 
-	        return new ResponseEntity<Object>("There is no content", HttpStatus.NO_CONTENT);
-	    }
-	
+	public ResponseStatusException() {}
+
+	public ResponseStatusException(Date timestamp, HttpStatus httpStatus, String message) {
+		this.timestamp = timestamp;
+		this.httpStatus = httpStatus;
+		this.message = message;
+	}
+
 }
