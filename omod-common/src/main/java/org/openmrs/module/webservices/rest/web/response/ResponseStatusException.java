@@ -9,26 +9,25 @@
  */
 package org.openmrs.module.webservices.rest.web.response;
 
-import java.util.Date;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "No Content Found")
-public class ResponseStatusException extends ResponseException {
+public class ResponseStatusException extends ResourceDoesNotSupportOperationException {
 
 	private static final long serialVersionUID = 1L;
-	
-	private Date timestamp;
-	private HttpStatus httpStatus;
-	private String message;
 
-	public ResponseStatusException() {}
+	private final String message;
+	private final HttpStatus httpStatus;
 
-	public ResponseStatusException(Date timestamp, HttpStatus httpStatus, String message) {
-		this.timestamp = timestamp;
-		this.httpStatus = httpStatus;
+	public ResponseStatusException(HttpStatus httpStatus, String message) {
 		this.message = message;
+		this.httpStatus = httpStatus;
 	}
 
+	@ExceptionHandler(ObjectNotFoundException.class)
+	public ResponseEntity<ResponseStatusException> handleException(ObjectNotFoundException e) {
+	    ResponseStatusException exception = new ResponseStatusException(HttpStatus.NO_CONTENT, e.getLocalizedMessage());
+	    return new ResponseEntity<ResponseStatusException>(exception, null);
+	}
 }

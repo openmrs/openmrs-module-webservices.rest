@@ -172,7 +172,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			allergies = Context.getPatientService().getAllergies(parent);
 			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
 				// return 204 status for a patient whose allergy status is unknown
-				throw new ResponseStatusException(new Date(), HttpStatus.NO_CONTENT, "No Content Found");
+				throw new ObjectNotFoundException("No Content Found");
 			} else if (allergies.getAllergyStatus().equals(Allergies.NO_KNOWN_ALLERGIES)) {
 				// empty list
 			} else if (allergies.getAllergyStatus().equals(Allergies.SEE_LIST)) {
