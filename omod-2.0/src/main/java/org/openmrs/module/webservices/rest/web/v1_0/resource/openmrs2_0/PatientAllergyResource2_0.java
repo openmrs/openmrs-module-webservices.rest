@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -40,7 +39,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.response.ResponseStatusException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
-import org.springframework.http.HttpStatus;
 
 @SubResource(parent = PatientResource1_9.class, path = "allergy", supportedClass = Allergy.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
@@ -172,7 +170,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			allergies = Context.getPatientService().getAllergies(parent);
 			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
 				// return 204 status for a patient whose allergy status is unknown
-				throw new ObjectNotFoundException("No Content Found");
+				throw new ResponseStatusException();
 			} else if (allergies.getAllergyStatus().equals(Allergies.NO_KNOWN_ALLERGIES)) {
 				// empty list
 			} else if (allergies.getAllergyStatus().equals(Allergies.SEE_LIST)) {

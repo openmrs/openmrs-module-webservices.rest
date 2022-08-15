@@ -10,24 +10,21 @@
 package org.openmrs.module.webservices.rest.web.response;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class ResponseStatusException extends ResourceDoesNotSupportOperationException {
+/**
+ * This exception should be thrown from controllers when passed a uuid of a patient
+ * whose allergy status is UNKNOWN
+ */
+@ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "Content Not Found")
+public class ResponseStatusException extends ResponseException {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String message;
-	private final HttpStatus httpStatus;
+	public ResponseStatusException() {}
 
-	public ResponseStatusException(HttpStatus httpStatus, String message) {
-		this.message = message;
-		this.httpStatus = httpStatus;
+	public ResponseStatusException(String message) {
+		super(message);
 	}
 
-	@ExceptionHandler(ObjectNotFoundException.class)
-	public ResponseEntity<ResponseStatusException> handleException(ObjectNotFoundException e) {
-	    ResponseStatusException exception = new ResponseStatusException(HttpStatus.NO_CONTENT, e.getLocalizedMessage());
-	    return new ResponseEntity<ResponseStatusException>(exception, null);
-	}
 }
