@@ -10,23 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.openmrs.Allergy;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.response.ResponseStatusException;
 
 public class PatientAllergyResource2_0Test extends BaseDelegatingResourceTest<PatientAllergyResource2_0, Allergy> {
 	
-	@Autowired
-	private MainResourceController mainResourceController;
-
 	@Before
 	public void init() throws Exception {
 		executeDataSet(RestTestConstants2_0.ALLERGY_TEST_DATA_XML);
@@ -68,10 +58,4 @@ public class PatientAllergyResource2_0Test extends BaseDelegatingResourceTest<Pa
 		return RestTestConstants2_0.ALLERGY_UUID;
 	}
 	
-	@Test(expected = ResponseStatusException.class)
-	public void testResponseStatusException() {
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		SimpleObject patientAllergy = mainResourceController.get("allergy", new MockHttpServletRequest(), response);
-	}
-
 }

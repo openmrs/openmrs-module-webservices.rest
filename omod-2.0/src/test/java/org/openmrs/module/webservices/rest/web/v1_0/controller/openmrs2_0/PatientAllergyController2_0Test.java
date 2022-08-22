@@ -245,6 +245,21 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		handle(newPutRequest(getURI(), json));
 	}
 	
+	@Test
+	public void shouldThrowExceptionWhenGettingAllergiesOfPatientWhoseAllergyStatusIsUnknown() throws Exception {
+		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
+		Patient patient = allergy.getPatient();
+		Allergies allergies = Context.getPatientService().getAllergies(patient);
+
+		if (patient != null) {
+			allergies = Context.getPatientService().getAllergies(patient);
+			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
+				Assert.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
+				SimpleObject patientAllergy = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
+			}
+		}
+	}
+
 	/**
 	 * Set No Known Allergies correctly using empty post body and List of Allergies is empty
 	 * achieved with PUT with empty post body when list of allergies is empty
