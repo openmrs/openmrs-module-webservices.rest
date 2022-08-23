@@ -247,17 +247,15 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	
 	@Test
 	public void shouldThrowExceptionWhenGettingAllergiesOfPatientWhoseAllergyStatusIsUnknown() throws Exception {
+		// remove all the known allergies
+		handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
+
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
-		Allergies allergies = Context.getPatientService().getAllergies(patient);
+		Allergies allergiesc = Context.getPatientService().getAllergies(allergy.getPatient());
 
-		if (patient != null) {
-			allergies = Context.getPatientService().getAllergies(patient);
-			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
-				Assert.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
-				SimpleObject patientAllergy = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
-			}
-		}
+		Assert.assertEquals(Allergies.UNKNOWN, allergiesc.getAllergyStatus());
+		SimpleObject savedAllergy = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
 	}
 
 	/**
