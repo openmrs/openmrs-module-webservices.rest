@@ -38,7 +38,6 @@ public class CohortResource2_1Test extends BaseDelegatingResourceTest<CohortReso
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropEquals("size", getObject().size());
-		assertPropNotPresent("memberIds");
 	}
 	
 	@Override

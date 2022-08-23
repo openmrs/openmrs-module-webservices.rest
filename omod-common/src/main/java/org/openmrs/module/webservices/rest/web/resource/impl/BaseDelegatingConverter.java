@@ -117,6 +117,7 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 				Collection collection = (Collection) oldValue;
 				collection.clear();
 				collection.addAll(newCollection);
+				PropertyUtils.setProperty(instance, propertyName, collection);
 			} else {
 				PropertyUtils.setProperty(instance, propertyName, value);
 			}

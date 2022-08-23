@@ -36,7 +36,6 @@ public class CohortResource2_1 extends CohortResource1_8 {
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		model.getProperties().remove("memberIds");
 		model.property("size", new IntegerProperty());
 		return model;
 	}
@@ -51,6 +50,7 @@ public class CohortResource2_1 extends CohortResource1_8 {
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("memberIds");
 			description.addProperty("voided");
 			description.addProperty("size");
 			description.addSelfLink();
@@ -62,6 +62,7 @@ public class CohortResource2_1 extends CohortResource1_8 {
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
+			description.addProperty("memberIds");
 			description.addProperty("voided");
 			description.addProperty("size");
 			description.addProperty("auditInfo");
