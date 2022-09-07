@@ -70,6 +70,11 @@
             }
         ]
     ],
+    "lineByLineFormat": [
+        "address1",
+        "address2",
+        "cityVillage stateProvince country postalCode"
+    ],
     "nameMappings": {
         "address2": "Location.address2",
         "stateProvince": "Location.stateProvince",
