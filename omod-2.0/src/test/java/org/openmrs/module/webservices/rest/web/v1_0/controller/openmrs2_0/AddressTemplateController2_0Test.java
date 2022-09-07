@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -29,18 +30,21 @@ public class AddressTemplateController2_0Test extends MainResourceControllerTest
 	
 	@Test
 	public void shouldGetAddressTemplate() throws Exception {
-		
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("addressTemplate.xml");
-		String xml = IOUtils.toString(inputStream, "UTF-8");
+		String xml;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("addressTemplate.xml")) {
+			xml = IOUtils.toString(inputStream, "UTF-8");
+		}
 		Context.getAdministrationService().setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_ADDRESS_TEMPLATE, xml);
 		
 		MockHttpServletRequest req = newGetRequest(getURI());
 		
 		SimpleObject result = deserialize(handle(req));
 		
-		inputStream = getClass().getClassLoader().getResourceAsStream("addressTemplate.json");
-		String json = IOUtils.toString(inputStream, "UTF-8");
-		Assert.assertEquals(result, SimpleObject.parseJson(json));
+		String json;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("addressTemplate.json")) {
+			json = IOUtils.toString(inputStream, "UTF-8");
+		}
+		Assert.assertThat(result, Matchers.is(SimpleObject.parseJson(json)));
 	}
 	
 	@Override
