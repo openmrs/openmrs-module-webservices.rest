@@ -35,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
+import org.openmrs.module.webservices.rest.web.response.NoContentFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
@@ -167,8 +168,8 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		if (parent != null) {
 			allergies = Context.getPatientService().getAllergies(parent);
 			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
-				// return 404 status for a patient whoose allergy status is unknown
-				throw new ObjectNotFoundException();
+				// return 204 status for a patient whoose allergy status is unknown
+				throw new NoContentFoundException();
 			} else if (allergies.getAllergyStatus().equals(Allergies.NO_KNOWN_ALLERGIES)) {
 				// empty list
 			} else if (allergies.getAllergyStatus().equals(Allergies.SEE_LIST)) {
