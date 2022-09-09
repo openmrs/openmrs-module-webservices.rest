@@ -157,7 +157,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SubResource#doGetAll(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
-	 * <strong>Should</strong> return 404 status if Allergy Status is UNKNOWN
+	 * <strong>Should</strong> return 204 status if Allergy Status is UNKNOWN
 	 * <strong>Should</strong> return empty list if Allergy Status is NO_KNOWN_ALLERGIES
 	 * <strong>Should</strong> throw new ResourceDoesNotSupportOperationException if patient is null
 	 */
@@ -168,7 +168,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		if (parent != null) {
 			allergies = Context.getPatientService().getAllergies(parent);
 			if (allergies.getAllergyStatus().equals(Allergies.UNKNOWN)) {
-				// return 204 status for a patient whoose allergy status is unknown
+				// return 204 status for a patient whose allergy status is unknown
 				throw new NoContentFoundException();
 			} else if (allergies.getAllergyStatus().equals(Allergies.NO_KNOWN_ALLERGIES)) {
 				// empty list

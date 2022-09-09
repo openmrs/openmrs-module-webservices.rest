@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This exception should be thrown from controllers when passed a uuid that does not represent an
- * existing resource.
+ * This exception should be thrown from controllers when a resource is fetched using a uuid(
+ * for example uuid of a patient)but the resource being fetched is empty or unknown (like allergy).
  */
 @ResponseStatus(value = HttpStatus.NO_CONTENT, reason = "Object with given uuid is empty")
 public class NoContentFoundException extends ResponseException {
@@ -27,5 +27,4 @@ public class NoContentFoundException extends ResponseException {
 	public NoContentFoundException(String message) {
 		super(message);
 	}
-
 }
