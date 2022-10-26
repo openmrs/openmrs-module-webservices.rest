@@ -10,8 +10,11 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
@@ -31,7 +34,9 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	protected RequestContext context;
 	
 	public abstract List<T> getPageOfResults();
-	
+
+	public abstract List<String> getReferenceObjects();
+
 	public abstract boolean hasMoreResults();
 	
 	/**
@@ -51,9 +56,17 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	@Override
 	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
-		for (T match : getPageOfResults()) {
-			results.add(ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter));
-		}
+
+		if (!CollectionUtils.isEmpty(getReferenceObjects()) && getReferenceObjects().size() > 1) {
+			for (int i = 0; i < getPageOfResults().size(); i++) {
+				Map<String, Object> ref = new HashMap<String, Object>();
+				ref.put("reference", getReferenceObjects().get(i));
+				ref.put("concept", ConversionUtil.convertToRepresentation(getPageOfResults().get(i), context.getRepresentation(), preferredConverter));
+				results.add(ref);
+			}
+		} else
+			for (T match : getPageOfResults())
+				results.add(ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter));
 		
 		SimpleObject ret = new SimpleObject().add("results", results);
 		boolean hasMore = hasMoreResults();

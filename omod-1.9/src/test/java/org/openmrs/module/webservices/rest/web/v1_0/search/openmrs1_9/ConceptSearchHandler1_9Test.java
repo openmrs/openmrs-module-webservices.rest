@@ -62,6 +62,7 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldAllowSearchingByReferences() throws Exception {
+		//request with two references
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("references", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa,Some Standardized Terminology:WGT234");
 		
@@ -70,8 +71,19 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 		List<Object> hits = result.get("results");
 		
 		assertThat(hits, hasSize(2));
-		assertThat((Map<String, String>) hits.get(0), hasEntry("uuid", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa"));
-		assertThat((Map<String, String>) hits.get(1), hasEntry("uuid", "c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+		assertThat((Map<String, String>) hits.get(0), hasEntry("reference", "uuid: 0a9afe04-088b-44ca-9291-0a8c3b5c96fa"));
+		assertThat((Map<String, String>) hits.get(1), hasEntry("reference", "mapping: Some Standardized Terminology:WGT234"));
+
+		//request with one reference
+		MockHttpServletRequest req1 = request(RequestMethod.GET, getURI());
+		req1.addParameter("references", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa");
+
+		SimpleObject result1 = deserialize(handle(req1));
+
+		List<Object> hits1 = result1.get("results");
+
+		assertThat(hits1, hasSize(1));
+		assertThat((Map<String, String>) hits1.get(0), hasEntry("uuid", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa"));
 	}
 	
 	@Test

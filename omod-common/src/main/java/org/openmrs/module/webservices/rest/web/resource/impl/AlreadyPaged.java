@@ -47,7 +47,15 @@ public class AlreadyPaged<T> extends BasePageableResult<T> {
 	public List<T> getPageOfResults() {
 		return results;
 	}
-	
+
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#getReferenceObjects()
+	 */
+	@Override
+	public List<String> getReferenceObjects() {
+		return null;
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#hasMoreResults()
 	 */

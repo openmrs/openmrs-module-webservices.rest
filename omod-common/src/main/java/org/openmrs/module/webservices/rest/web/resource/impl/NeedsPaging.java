@@ -25,12 +25,23 @@ import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 public class NeedsPaging<T> extends BasePageableResult<T> {
 	
 	private List<T> unpagedResults;
-	
+	private List<String> referenceObjects;
+
 	public NeedsPaging(List<T> unpagedResults, RequestContext context) {
 		this.unpagedResults = unpagedResults;
 		this.context = context;
 	}
-	
+
+	public NeedsPaging(List<T> unpagedResults, List<String> referenceObjects, RequestContext context) {
+		this(unpagedResults, context);
+		this.referenceObjects = referenceObjects;
+	}
+
+	@Override
+	public List<String> getReferenceObjects() {
+		return referenceObjects;
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BasePageableResult#getPageOfResults()
 	 */
