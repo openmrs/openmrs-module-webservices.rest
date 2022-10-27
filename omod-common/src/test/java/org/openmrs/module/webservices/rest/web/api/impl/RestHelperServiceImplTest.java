@@ -46,7 +46,6 @@ public class RestHelperServiceImplTest extends BaseModuleWebContextSensitiveTest
 		String email = "jamespeter@test.com";
 		User user = restHelperService.getUserByUsernameOrEmail(email);
 		assertNotNull(user);
-		assertEquals("jamespeter@test.com", user.getEmail());
 		assertEquals("c0092c57-fa6d-4a19-b502-3042f57f2379", user.getUuid());
 		assertFalse(user.getRetired());
 	}
