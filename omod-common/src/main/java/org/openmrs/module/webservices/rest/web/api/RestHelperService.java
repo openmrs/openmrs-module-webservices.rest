@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.api;
 
 import org.openmrs.ConceptMap;
 import org.openmrs.Patient;
+import org.openmrs.User;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
@@ -31,6 +32,8 @@ public interface RestHelperService {
 	<T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields);
 	
 	List<Patient> getPatients(Collection<Integer> patientIds);
+
+	User getUserByUsernameOrEmail(String usernameOrEmail);
 	
 	@Authorized({ "View Patients" })
 	List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll);

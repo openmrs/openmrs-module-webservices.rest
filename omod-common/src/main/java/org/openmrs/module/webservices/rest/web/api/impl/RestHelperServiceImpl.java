@@ -11,16 +11,22 @@ package org.openmrs.module.webservices.rest.web.api.impl;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
+import org.openmrs.api.db.hibernate.HibernateUserDAO;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -35,15 +41,17 @@ import static org.openmrs.api.context.Context.getRegisteredComponents;
  * REST helper service, which must not be used outside of the REST module.
  */
 public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHelperService {
-	
+
+	private static final Logger log = LoggerFactory.getLogger(HibernateUserDAO.class);
+
 	DbSessionFactory sessionFactory;
-	
+
 	Method method;
-	
+
 	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByUuid(Class,
 	 *      String)
@@ -53,7 +61,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	public <T> T getObjectByUuid(Class<? extends T> type, String uuid) {
 		return type.cast(getSession().createCriteria(type).add(Restrictions.eq("uuid", uuid)).uniqueResult());
 	}
-	
+
 	private DbSession getSession() {
 		if (method == null) {
 			try {
@@ -78,7 +86,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 			}
 		}
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(Class,
 	 *      Serializable)
@@ -87,7 +95,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
 		return type.cast(getSession().get(type, id));
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectsByFields(Class,
 	 *      Field...)
@@ -103,7 +111,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		}
 		return criteria.list();
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getPatients(Collection)
 	 */
@@ -111,7 +119,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	@SuppressWarnings("unchecked")
 	public List<Patient> getPatients(Collection<Integer> patientIds) {
 		List<Patient> ret = new ArrayList<Patient>();
-		
+
 		if (!patientIds.isEmpty()) {
 			Criteria criteria = getSession().createCriteria(Patient.class);
 			criteria.setCacheMode(CacheMode.IGNORE);
@@ -122,10 +130,30 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 				ret.add(p);
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
+	@Override
+	public User getUserByUsernameOrEmail(String usernameOrEmail) {
+
+		Criteria criteria = getSession().createCriteria(User.class);
+
+		Criterion username = Restrictions.eq("username", usernameOrEmail).ignoreCase();
+		Criterion email = Restrictions.eq("email",usernameOrEmail).ignoreCase();
+
+		LogicalExpression orExp = Restrictions.or(username, email);
+		criteria.add(orExp);
+		criteria.add(Restrictions.eq("retired", false));
+		User user = (User) criteria.uniqueResult();
+
+		if (user == null) {
+			log.warn("request for user with '" + usernameOrEmail + "' cannot be found");
+			return null;
+		}
+		return  user;
+	}
+
 	@Override
 	public List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll) {
 		Criteria criteria = getSession().createCriteria(Patient.class);
@@ -137,7 +165,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		}
 		return criteria.list();
 	}
-	
+
 	/**
 	 * @see RestHelperService#getRegisteredSearchHandlers()
 	 */
@@ -146,7 +174,7 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		final List<SearchHandler> result = Context.getRegisteredComponents(SearchHandler.class);
 		return result != null ? result : new ArrayList<SearchHandler>();
 	}
-	
+
 	/**
 	 * @see RestHelperService#getRegisteredRegisteredSubclassHandlers()
 	 */

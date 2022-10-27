@@ -15,7 +15,10 @@ import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.ValidationException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.api.RestHelperService;
+import org.openmrs.module.webservices.rest.web.response.PasswordResetInvalidException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.notification.MessageException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +43,11 @@ public class PasswordResetController2_2 extends BaseRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void requestPasswordReset(@RequestBody Map<String, String> body) throws MessageException {
 		String usernameOrEmail = body.get("usernameOrEmail");
-		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
-		if (user != null) {
-			userService.setUserActivationKey(user);
+		User user = Context.getService(RestHelperService.class).getUserByUsernameOrEmail(usernameOrEmail);
+		if (user == null) {
+			 throw new PasswordResetInvalidException();
 		}
+	   userService.setUserActivationKey(user);
 	}
 	
 	@RequestMapping(value = "/{activationkey}", method = RequestMethod.POST)
