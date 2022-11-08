@@ -135,26 +135,6 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	}
 
 	@Override
-	public User getUserByUsernameOrEmail(String usernameOrEmail) {
-
-		Criteria criteria = getSession().createCriteria(User.class);
-
-		Criterion username = Restrictions.eq("username", usernameOrEmail).ignoreCase();
-		Criterion email = Restrictions.eq("email",usernameOrEmail).ignoreCase();
-
-		LogicalExpression orExp = Restrictions.or(username, email);
-		criteria.add(orExp);
-		criteria.add(Restrictions.eq("retired", false));
-		User user = (User) criteria.uniqueResult();
-
-		if (user == null) {
-			log.warn("request for user with '" + usernameOrEmail + "' cannot be found");
-			return null;
-		}
-		return  user;
-	}
-
-	@Override
 	public List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll) {
 		Criteria criteria = getSession().createCriteria(Patient.class);
 		criteria.createAlias("identifiers", "identifiers");

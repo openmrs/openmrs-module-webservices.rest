@@ -33,8 +33,6 @@ public interface RestHelperService {
 	
 	List<Patient> getPatients(Collection<Integer> patientIds);
 
-	User getUserByUsernameOrEmail(String usernameOrEmail);
-	
 	@Authorized({ "View Patients" })
 	List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll);
 	

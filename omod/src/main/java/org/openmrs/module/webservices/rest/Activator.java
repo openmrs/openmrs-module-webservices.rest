@@ -13,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
+import org.openmrs.module.DaemonToken;
+import org.openmrs.module.DaemonTokenAware;
 import org.openmrs.module.ModuleActivator;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
@@ -22,13 +24,16 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 /**
  * {@link ModuleActivator} for the webservices.rest module
  */
-public class Activator extends BaseModuleActivator {
+public class Activator extends BaseModuleActivator implements DaemonTokenAware {
 	
 	private Log log = LogFactory.getLog(this.getClass());
+
+	private DaemonToken daemonToken;
 	
 	@Override
 	public void started() {
 		log.info("Started the REST Web Service module");
+		Context.getRegisteredComponent("ResetPasswordComponent", DaemonTokenAware.class).setDaemonToken(daemonToken);
 	}
 	
 	@Override
@@ -47,5 +52,9 @@ public class Activator extends BaseModuleActivator {
 		ReflectionUtil.clearCaches();
 		SwaggerSpecificationCreator.clearCache();
 	}
-	
+
+	@Override
+	public void setDaemonToken(DaemonToken daemonToken) {
+		this.daemonToken = daemonToken;
+	}
 }
