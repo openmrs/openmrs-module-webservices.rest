@@ -34,6 +34,10 @@ public class SimpleObject extends LinkedHashMap<String, Object> {
 		super();
 	}
 	
+	public SimpleObject(int initialCapacity) {
+		super(initialCapacity);
+	}
+	
 	/**
 	 * Puts a property in this map, and returns the map itself (for chained method calls)
 	 * 
