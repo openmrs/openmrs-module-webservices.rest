@@ -13,19 +13,27 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Condition;
+import org.openmrs.Patient;
 import org.openmrs.api.ConditionService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
  * {@link Resource} for Condition, supporting standard CRUD operations
@@ -222,6 +230,32 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 				return condition.getCondition().getCoded().getName().getName();
 			
 			return condition.getCondition().getNonCoded();
+		}
+	}
+
+	@Override
+	protected PageableResult doSearch(RequestContext context) {
+		String patientUuid = context.getRequest().getParameter("patientUuid");
+		String includeInactive = context.getRequest().getParameter("includeInactive");
+		ConditionService conditionService = Context.getConditionService();
+		if (StringUtils.isBlank(patientUuid)) {
+			return new EmptySearchResult();
+		}
+		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+				Patient.class)).getByUniqueId(patientUuid);
+		if (patient == null) {
+			return new EmptySearchResult();
+		}
+		if (StringUtils.isNotBlank(includeInactive)) {
+			boolean isIncludeInactive = BooleanUtils.toBoolean(includeInactive);
+			if (isIncludeInactive) {
+				return new NeedsPaging<Condition>(conditionService.getAllConditions(patient), context);
+			} else {
+				return new NeedsPaging<Condition>(conditionService.getActiveConditions(patient), context);
+			}
+		}
+		else {
+			return new NeedsPaging<Condition>(conditionService.getActiveConditions(patient), context);
 		}
 	}
 }

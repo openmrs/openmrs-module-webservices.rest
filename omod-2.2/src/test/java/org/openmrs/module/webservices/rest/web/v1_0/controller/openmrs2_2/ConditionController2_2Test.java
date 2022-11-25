@@ -306,4 +306,23 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
 	}
+
+	@Test
+	public void shouldReturnActiveConditions() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "false");
+		SimpleObject result = deserialize(handle(request));
+		List<Condition> conditions = result.get("results");
+		Assert.assertEquals(2, conditions.size());
+	}
+	@Test
+	public void shouldReturnAllConditions() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "true");
+		SimpleObject result = deserialize(handle(request));
+		List<Condition> conditions = result.get("results");
+		Assert.assertEquals(3, conditions.size());
+	}
 }

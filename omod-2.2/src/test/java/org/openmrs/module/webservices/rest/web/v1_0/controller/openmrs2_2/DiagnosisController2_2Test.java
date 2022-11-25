@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -319,5 +320,15 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Assert.assertNull(diagnosisService.getDiagnosisByUuid(getUuid()));
+	}
+
+	@Test
+	public void shouldReturnPatientDiagnosis() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
+		request.addParameter("fromDate", "2017-08-11");
+		SimpleObject result = deserialize(handle(request));
+		List<Diagnosis> diagnoses = result.get("results");
+		Assert.assertEquals(2, diagnoses.size());
 	}
 }
