@@ -58,19 +58,14 @@ public class SessionController1_9 extends BaseRestController {
 	RestService restService;
 
 	/**
-	 * Tells the user their sessionId, and whether or not they are authenticated.
-	 *
-	 * @param request
-	 * @return
-	 * <strong>Should</strong> return the session id if the user is authenticated
-	 * <strong>Should</strong> return the session id if the user is not authenticated
+	 * Tells the user whether they are authenticated and provides details on the logged-in user
 	 */
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public Object get(WebRequest request) {
+	public Object get() {
 		boolean authenticated = Context.isAuthenticated();
 		SimpleObject session = new SimpleObject();
-		session.add("sessionId", request.getSessionId()).add("authenticated", authenticated);
+		session.add("authenticated", authenticated);
 		if (authenticated) {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
 			    new CustomRepresentation(USER_CUSTOM_REP)));

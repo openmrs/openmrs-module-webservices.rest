@@ -33,17 +33,15 @@ import java.util.Locale;
 
 public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest {
 	
-	private String SESSION_ID = "test-session-id";
+	private static final String SESSION_ID = "test-session-id";
 	
-	private String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f"; // Unknown Location
+	private static final String UNKNOWN_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f"; // Unknown Location
 	
-	private String XANADU_UUID = "9356400c-a5a2-4532-8f2b-2361b3446eb8"; // Xanadu
+	private static final String XANADU_UUID = "9356400c-a5a2-4532-8f2b-2361b3446eb8"; // Xanadu
 	
 	private SessionController1_9 controller;
 	
 	private HttpServletRequest hsr;
-	
-	private WebRequest request;
 	
 	@Before
 	public void before() {
@@ -51,7 +49,6 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		MockHttpServletRequest mockHsr = new MockHttpServletRequest();
 		mockHsr.setSession(new MockHttpSession(new MockServletContext(), SESSION_ID));
 		hsr = mockHsr;
-		request = new ServletWebRequest(hsr);
 		
 		Context.getAdministrationService().saveGlobalProperty(
 		    new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LOCALE_ALLOWED_LIST, "en_GB, sp, fr"));
@@ -71,18 +68,17 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	/**
-	 * @see SessionController1_9#get(WebRequest)
+	 * @see SessionController1_9#get()
 	 * @verifies return the session id if the user is authenticated
 	 */
 	@Test
-	public void get_shouldReturnTheSessionIdAndUserIfTheUserIsAuthenticated() throws Exception {
+	public void get_shouldReturnTheUserIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get();
 		Object userProp = PropertyUtils.getProperty(ret, "user");
 		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp,
 		    "roles");
 		Assert.assertEquals("System Developer", userRoles.get(0).get("name"));
-		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
 		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
 		Object personProp = PropertyUtils.getProperty(userProp, "person");
@@ -93,7 +89,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	@Test
 	public void get_shouldReturnLocaleInfoIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get();
 		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
 		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 		    ((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
@@ -102,36 +98,23 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	@Test
 	public void get_shouldReturnLocationIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get();
 		Object loc = PropertyUtils.getProperty(ret, "sessionLocation");
 		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'",
 		    loc.toString().contains("display=Unknown Location"));
 	}
 
 	/**
-	 * @see SessionController1_9#get(WebRequest)
+	 * @see SessionController1_9#get()
 	 * @verifies return the session with current provider if the user is authenticated
 	 */
 	@Test
 	public void get_shouldReturnCurrentProviderIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
-		Object ret = controller.get(request);
+		Object ret = controller.get();
 		Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
 		Assert.assertNotNull(currentProvider);
 		Assert.assertTrue(currentProvider.toString().contains("Super User"));
-	}
-
-	/**
-	 * @see SessionController1_9#get(WebRequest)
-	 * @verifies return the session id if the user is not authenticated
-	 */
-	@Test
-	public void get_shouldReturnTheSessionIdIfTheUserIsNotAuthenticated() throws Exception {
-		Context.logout();
-		Assert.assertFalse(Context.isAuthenticated());
-		Object ret = controller.get(request);
-		Assert.assertEquals(SESSION_ID, PropertyUtils.getProperty(ret, "sessionId"));
-		Assert.assertEquals(false, PropertyUtils.getProperty(ret, "authenticated"));
 	}
 	
 	@Test
