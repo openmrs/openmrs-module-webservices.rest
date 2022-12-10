@@ -33,4 +33,7 @@
 			   date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED"
 			   onset_date="2017-01-12 00:00:00" voided="true" date_voided="2018-02-23 00:00:00.0" void_reason="Testing void"
 			   uuid="2e7563eb-0dca-46c9-8ba3-7c5945f673fc"/>
+	<conditions condition_id="4" patient_id="2" creator="1" condition_non_coded="Non coded condition 3"
+				date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED"
+				onset_date="2017-01-12 00:00:00" voided="false" uuid="d91e3696-6cd5-11ed-a1eb-0242ac120002" end_date="2017-01-22 00:00:00"/>
 </dataset>

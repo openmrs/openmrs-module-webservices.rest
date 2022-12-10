@@ -9,19 +9,28 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
@@ -31,6 +40,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
@@ -215,5 +225,21 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
 		        .property("rank", new IntegerProperty())
 		        .property("voided", new BooleanProperty());
+	}
+
+	@Override
+	protected PageableResult doSearch(RequestContext context) {
+		String patientUuid = context.getRequest().getParameter("patientUuid");
+		String fromDate = context.getRequest().getParameter("fromDate");
+		if(StringUtils.isBlank(patientUuid) || StringUtils.isBlank(fromDate)) {
+			return new EmptySearchResult();
+		}
+		Date dateFrom = (Date) ConversionUtil.convert(fromDate, Date.class);
+		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+				Patient.class)).getByUniqueId(patientUuid);
+		if (patient == null) {
+			return new EmptySearchResult();
+		}
+		return new NeedsPaging<Diagnosis>(Context.getDiagnosisService().getDiagnoses(patient, dateFrom), context);
 	}
 }
