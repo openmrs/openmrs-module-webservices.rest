@@ -74,3 +74,4 @@ nb-configuration.xml
 #############
 
 !omod/src/main/webapp/resources/js/swagger-ui/*
+!.env.example

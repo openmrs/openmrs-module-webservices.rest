@@ -1,0 +1,50 @@
+version: "3.8"
+
+#    This Source Code Form is subject to the terms of the Mozilla Public License,
+#    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+#    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+#    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+#
+#    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+#    graphic logo is a trademark of OpenMRS Inc.
+
+services:
+  db:
+    image: mariadb:10.3
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+    environment:
+      MYSQL_DATABASE: ${OPENMRS_DB_NAME:-openmrs}
+      MYSQL_USER: ${OPENMRS_DB_USER:-openmrs}
+      MYSQL_PASSWORD: ${OPENMRS_DB_PASSWORD:-openmrs}
+      MYSQL_ROOT_PASSWORD: ${OPENMRS_DB_ROOT_PASSWORD:-openmrs}
+    deploy:
+      replicas: '${OPENMRS_DB_REPLICAS:-1}'
+      restart_policy:
+        max_attempts: 3
+    volumes:
+      - db-data:/var/lib/mysql
+
+  openmrs-core:
+    image: openmrs-core:dev
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    restart: "no"
+    environment:
+      OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
+      OMRS_CONFIG_CREATE_TABLES: "true"
+      OMRS_CONFIG_CONNECTION_SERVER: ${OPENMRS_DB_SERVER:-db}
+      OMRS_CONFIG_CONNECTION_DATABASE: ${OPENMRS_DB_NAME:-openmrs}
+      OMRS_CONFIG_CONNECTION_USERNAME: ${OPENMRS_DB_USER:-openmrs}
+      OMRS_CONFIG_CONNECTION_PASSWORD: ${OPENMRS_DB_PASSWORD:-openmrs}
+      OMRS_REFRESH_MODULES: ${OMRS_REFRESH_MODULES:-false}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/openmrs" ]
+      timeout: 5s
+    volumes:
+      - ${PWD}:/openmrs/module/source
+      # mount local m2 repository
+      - ~/.m2:/root/.m2
+volumes:
+  db-data:
