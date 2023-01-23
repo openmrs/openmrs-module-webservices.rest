@@ -33,9 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -120,7 +120,10 @@ public class SessionController1_9 extends BaseRestController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void delete(HttpServletRequest request) {
 		Context.logout();
-		request.getSession().invalidate();
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+		}
 	}
 
 	/**
