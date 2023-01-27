@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 @XStreamConverter(SimpleObjectConverter.class)
 public class SimpleObject extends LinkedHashMap<String, Object> {
 	
-	private static final long SERIAL_VERSION_UID = 1L;
+	private static final long serialVersionUID = 1L;
 	
 	public SimpleObject() {
 		super();
