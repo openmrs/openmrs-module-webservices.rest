@@ -805,11 +805,28 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @return
 	 */
 	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
+		
+		String message = ex.getMessage();
+		Throwable cause = ex.getCause();
+		while (cause != null) {
+			String msg = cause.getMessage();
+			if (StringUtils.isNotBlank(msg)) {
+				if (StringUtils.isNotBlank(message)) {
+					message += " => ";
+				}
+				else {
+					message = "";
+				}
+				message += msg;
+			}
+			cause = cause.getCause();
+		}
+		
 		LinkedHashMap map = new LinkedHashMap();
 		if (reason != null && !reason.isEmpty()) {
-			map.put("message", reason + " [" + ex.getMessage() + "]");
+			map.put("message", reason + " [" + message + "]");
 		} else {
-			map.put("message", "[" + ex.getMessage() + "]");
+			map.put("message", "[" + message + "]");
 		}
 		StackTraceElement[] steElements = ex.getStackTrace();
 		if (steElements.length > 0) {

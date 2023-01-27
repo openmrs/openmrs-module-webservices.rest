@@ -20,6 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
+import org.openmrs.module.webservices.rest.web.response.NoContentFoundException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -243,6 +244,17 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		
 		// attempt to set no known allergies with PUT
 		handle(newPutRequest(getURI(), json));
+	}
+
+	/**
+	 * Return no response body with a 204 http response status code for a patient with UNKNOWN Allergies
+	 */
+	@Test(expected = NoContentFoundException.class)
+	public void shouldEnsureFetchingAllergiesForPatientThrowsNoContentFoundException() throws Exception {
+		handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
+		
+		//fetch allergies for a patient with no allergies
+		handle(newGetRequest(getURI()));
 	}
 	
 	/**
