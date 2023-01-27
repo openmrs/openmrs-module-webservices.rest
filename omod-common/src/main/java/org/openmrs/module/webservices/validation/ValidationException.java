@@ -23,7 +23,7 @@ import org.springframework.validation.Errors;
  */
 public class ValidationException extends APIException {
 	
-	public static final long SERIAL_VERSION_UID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	private Errors errors;
 	
