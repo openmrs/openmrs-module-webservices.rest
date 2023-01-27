@@ -22,7 +22,7 @@ import org.openmrs.hl7.HL7Source;
  */
 public class IncomingHl7Message1_8 extends BaseOpenmrsData implements Serializable {
 	
-	private static final long SERIAL_VERSION_UID = 1L;
+	private static final long serialVersionUID = 1L;
 	
 	private HL7Source source;
 	
