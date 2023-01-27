@@ -23,7 +23,7 @@ import org.openmrs.User;
  */
 public class UserAndPassword1_8 extends BaseOpenmrsMetadata implements Serializable {
 	
-	public static final long SERIAL_VERSION_UID = 1L;
+	public static final long serialVersionUID = 1L;
 	
 	//Fields
 	private String password;
