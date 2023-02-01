@@ -121,7 +121,7 @@ public class SessionController1_9 extends BaseRestController {
 	public void delete(HttpServletRequest request) {
 		Context.logout();
 		HttpSession session = request.getSession(false);
-		if (session != null) {
+		if (session != null && request.isRequestedSessionIdValid()) {
 			session.invalidate();
 		}
 	}
