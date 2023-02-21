@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
 import org.openmrs.EncounterRole;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -21,6 +20,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
 
 /**
  * {@link Resource} for {@link EncounterRole}, supporting standard CRUD operations
@@ -40,6 +42,11 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 		description.addRequiredProperty("description");
 		
 		return description;
+	}
+	
+	@Override
+	public Model getCREATEModel(Representation rep) {
+		return ((ModelImpl) super.getCREATEModel(rep)).required("description");
 	}
 	
 	@Override
