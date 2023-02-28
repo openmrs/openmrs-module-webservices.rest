@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 public class EncounterController2_0Test extends MainResourceControllerTest {
 	
-	public static final String currentTimezone = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
+	public static final String CURRENT_TIMEZONE = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
 	
 	@Before
 	public void setup() throws Exception {

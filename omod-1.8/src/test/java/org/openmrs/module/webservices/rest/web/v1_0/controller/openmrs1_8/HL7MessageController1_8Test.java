@@ -27,18 +27,18 @@ import org.springframework.mock.web.MockHttpServletRequest;
  */
 public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	
-	private static final String hl7Data = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.5";
+	private static final String HL7_DATA = "MSH|^~\\&|NES|AMRS.ELD|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.5";
 	
-	private static final String hl7InvalidSourceData = "MSH|^~\\&|NES|nonexistingsource|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
+	private static final String HL7_INVALID_SOURCE_DATA = "MSH|^~\\&|NES|nonexistingsource|TESTSYSTEM|TESTFACILITY|20010101000000||ADT^A04|REl7wt78q9Pzlqe9ecJB|P|2.3";
 	
 	private HL7Service service;
 	
-	private static final String datasetFilename = "customTestDataset.xml";
+	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
 	@Before
 	public void before() throws Exception {
 		this.service = Context.getHL7Service();
-		executeDataSet(datasetFilename);
+		executeDataSet(DATASET_FILENAME);
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	public void enqueHl7Message_shouldEnqueueHl7InQueueMessageInPlainFormat() throws Exception {
 		int before = service.getAllHL7InQueues().size();
 		
-		MockHttpServletRequest req = newPostRequest(getURI(), hl7Data);
+		MockHttpServletRequest req = newPostRequest(getURI(), HL7_DATA);
 		SimpleObject newHl7Message = deserialize(handle(req));
 		
 		Util.log("Enqued hl7 message", newHl7Message);
@@ -68,7 +68,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(hl7Data, hl7InQueue.getHL7Data());
+				Assert.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		int before = service.getAllHL7InQueues().size();
 		
 		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("hl7", hl7Data);
+		hl7Message.add("hl7", HL7_DATA);
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
 		SimpleObject newHl7Message = deserialize(handle(req));
@@ -86,7 +86,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(hl7Data, hl7InQueue.getHL7Data());
+				Assert.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
 			}
 		}
 	}
@@ -132,7 +132,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	@Test(expected = ConversionException.class)
 	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
 		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("hl7", hl7InvalidSourceData);
+		hl7Message.add("hl7", HL7_INVALID_SOURCE_DATA);
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
 		deserialize(handle(req));

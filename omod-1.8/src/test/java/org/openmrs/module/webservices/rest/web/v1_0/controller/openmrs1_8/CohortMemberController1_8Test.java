@@ -31,9 +31,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	
-	private static final String patientUuid = "a7e04421-525f-442f-8138-05b619d16def";
+	private static final String PATIENT_UUID = "a7e04421-525f-442f-8138-05b619d16def";
 	
-	private static final String datasetFilename = "customTestDataset.xml";
+	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
 	private CohortService service;
 	
@@ -43,7 +43,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
 		this.patientService = Context.getPatientService();
-		executeDataSet(datasetFilename);
+		executeDataSet(DATASET_FILENAME);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	@Test
 	public void getCohortMember_shouldGetADefaultRepresentationOfACohortMember() throws Exception {
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/" + patientUuid);
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid() + "/member/" + PATIENT_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
 		Assert.assertNotNull(result);
@@ -124,12 +124,12 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 	@Test
 	public void removeCohortMember_shouldRemoveCohortMember() throws Exception {
 		
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + patientUuid);
+		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid() + "/member/" + PATIENT_UUID);
 		req.addParameter("!purge", "");
 		handle(req);
 		
 		Cohort cohort = service.getCohortByUuid(getUuid());
-		Patient patient = patientService.getPatientByUuid(patientUuid);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
 		Assert.assertTrue(!cohort.contains(patient));
 		
 	}

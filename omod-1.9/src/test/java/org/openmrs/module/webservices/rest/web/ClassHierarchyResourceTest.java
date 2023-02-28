@@ -27,7 +27,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  */
 public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTest {
 	
-	private static final String datasetFilename = "customTestDataset.xml";
+	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
 	private static final String PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
 	
@@ -47,7 +47,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	@Before
 	public void beforeEachTests() throws Exception {
-		executeDataSet(datasetFilename);
+		executeDataSet(DATASET_FILENAME);
 		context = new RequestContext();
 		resource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 	}
