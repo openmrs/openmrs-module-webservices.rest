@@ -206,7 +206,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		}
 		
 		for (Module module : modules) {
-			if (moduleFactoryWrapper.isModuleStopped(module) && module.getModuleId() != existingModule.getModuleId()) {
+			if (moduleFactoryWrapper.isModuleStopped(module) && !module.getModuleId().equals(existingModule.getModuleId())) {
 				needsRefresh = moduleFactoryWrapper.startModuleSkipRefresh(module, servletContext) || needsRefresh;
 			}
 		}
