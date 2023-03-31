@@ -15,7 +15,9 @@ import org.openmrs.ConceptName;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -30,25 +32,37 @@ public class CodedOrFreeTextConverter extends BaseDelegatingConverter<CodedOrFre
 	
 	@Override
 	public SimpleObject asRepresentation(CodedOrFreeText instance, Representation rep) throws ConversionException {
-		SimpleObject codedOfFreeText = new SimpleObject();
-		
-		if (instance.getSpecificName() != null) {
-			ConceptNameResource1_9 conceptNameResource = (ConceptNameResource1_9) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(ConceptName.class);
-			codedOfFreeText.add("specificName", conceptNameResource.asRepresentation(instance.getSpecificName(), rep));
+		SimpleObject codedOrFreeText = new SimpleObject();
+		if (rep instanceof CustomRepresentation) {
+			CustomRepresentation customRep = (CustomRepresentation) rep;
+			DelegatingResourceDescription drd = ConversionUtil.getCustomRepresentationDescription(customRep);
+			for (String propertyName : drd.getProperties().keySet()) {
+				DelegatingResourceDescription.Property property = drd.getProperties().get(propertyName);
+				Object o = ConversionUtil.getPropertyWithRepresentation(instance, propertyName, property.getRep());
+				if (o != null) {
+					codedOrFreeText.add(propertyName, o);
+				}
+			}
+		}
+		else {
+			if (instance.getSpecificName() != null) {
+				ConceptNameResource1_9 conceptNameResource = (ConceptNameResource1_9) Context.getService(RestService.class)
+						.getResourceBySupportedClass(ConceptName.class);
+				codedOrFreeText.add("specificName", conceptNameResource.asRepresentation(instance.getSpecificName(), rep));
+			}
+
+			if (instance.getCoded() != null) {
+				ConceptResource2_0 conceptResource = (ConceptResource2_0) Context.getService(RestService.class)
+						.getResourceBySupportedClass(Concept.class);
+				codedOrFreeText.add("coded", conceptResource.asRepresentation(instance.getCoded(), rep));
+			}
+
+			if (instance.getNonCoded() != null) {
+				codedOrFreeText.add("nonCoded", instance.getNonCoded());
+			}
 		}
 		
-		if (instance.getCoded() != null) {
-			ConceptResource2_0 conceptResource = (ConceptResource2_0) Context.getService(RestService.class)
-			        .getResourceBySupportedClass(Concept.class);
-			codedOfFreeText.add("coded", conceptResource.asRepresentation(instance.getCoded(), rep));
-		}
-		
-		if (instance.getNonCoded() != null) {
-			codedOfFreeText.add("nonCoded", instance.getNonCoded());
-		}
-		
-		return codedOfFreeText;
+		return codedOrFreeText;
 	}
 	
 	@Override

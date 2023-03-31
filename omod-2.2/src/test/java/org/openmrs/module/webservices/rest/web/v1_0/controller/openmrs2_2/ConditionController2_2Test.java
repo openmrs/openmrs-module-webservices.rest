@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Tests functionality of {@link ConditionController2_2}.
@@ -316,6 +317,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		List<Condition> conditions = result.get("results");
 		Assert.assertEquals(2, conditions.size());
 	}
+
 	@Test
 	public void shouldReturnAllConditions() throws Exception {
 		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
@@ -324,5 +326,31 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(request));
 		List<Condition> conditions = result.get("results");
 		Assert.assertEquals(3, conditions.size());
+	}
+
+	@Test
+	public void shouldGetACustomRepresentation() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		request.addParameter("includeInactive", "true");
+		request.addParameter("v", "custom:(uuid,display,clinicalStatus,onsetDate,endDate,additionalDetail,condition:(coded:(id,uuid)))");
+		SimpleObject result = deserialize(handle(request));
+		List<Map<String, Object>> conditions = result.get("results");
+		Assert.assertEquals(3, conditions.size());
+		Map<String, Object> c1 = conditions.get(0);
+		Assert.assertEquals(7, c1.size());
+		Assert.assertEquals("c1d4185b-0364-4978-a635-3165a82a3178", c1.get("uuid"));
+		Assert.assertEquals("Concept 1", c1.get("display"));
+		Assert.assertEquals("ACTIVE", c1.get("clinicalStatus"));
+		Assert.assertNotNull(c1.get("onsetDate"));
+		Assert.assertNull(c1.get("endDate"));
+		Assert.assertNull(c1.get("additionalDetail"));
+		Map<String, Object> codedOrNonCoded = (Map<String, Object>) c1.get("condition");
+		Assert.assertNotNull(codedOrNonCoded);
+		Assert.assertEquals(1, codedOrNonCoded.size());
+		Map<String, Object> conditionCoded = (Map<String, Object>) codedOrNonCoded.get("coded");
+		Assert.assertEquals(2, conditionCoded.size());
+		Assert.assertEquals(111, conditionCoded.get("id"));
+		Assert.assertEquals("62a26128-006f-4e77-859b-4aa502e3dd62", conditionCoded.get("uuid"));
 	}
 }

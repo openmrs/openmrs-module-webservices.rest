@@ -41,6 +41,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
@@ -504,5 +505,70 @@ public class ConversionUtil {
 		
 		return ret;
 	}
-	
+
+	/**
+	 * <strong>Should</strong> return delegating resource description
+	 */
+	public static DelegatingResourceDescription getCustomRepresentationDescription(CustomRepresentation representation) {
+		DelegatingResourceDescription desc = new DelegatingResourceDescription();
+
+		String def = representation.getRepresentation();
+		def = def.startsWith("(") ? def.substring(1) : def;
+		def = def.endsWith(")") ? def.substring(0, def.length() - 1) : def;
+		String[] fragments = def.split(",");
+		for (int i = 0; i < fragments.length; i++) {
+			String[] field = fragments[i].split(":"); //split into field and representation
+			if (field.length == 1) {
+				if (!field[0].equals("links"))
+					desc.addProperty(field[0]);
+				if (field[0].equals("links")) {
+					desc.addSelfLink();
+					desc.addLink("default", ".?v=" + RestConstants.REPRESENTATION_DEFAULT);
+				}
+			} else {
+				String property = field[0];
+				String rep = field[1];
+
+				// if custom representation
+				if (rep.startsWith("(")) {
+					StringBuilder customRep = new StringBuilder();
+					customRep.append(rep);
+					if (!rep.endsWith(")")) {
+						for (int j = 2; j < field.length; j++) {
+							customRep.append(":").append(field[j]);
+						}
+						int open = 1;
+						for (i = i + 1; i < fragments.length; i++) {
+							for (char fragment : fragments[i].toCharArray()) {
+								if (fragment == '(') {
+									open++;
+								} else if (fragment == ')') {
+									open--;
+								}
+							}
+
+							customRep.append(",");
+							customRep.append(fragments[i]);
+
+							if (open == 0) {
+								break;
+							}
+						}
+					}
+					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
+				} else {
+					rep = rep.toUpperCase(); //normalize
+					if (rep.equals("REF")) {
+						desc.addProperty(property, Representation.REF);
+					} else if (rep.equals("FULL")) {
+						desc.addProperty(property, Representation.FULL);
+					} else if (rep.equals("DEFAULT")) {
+						desc.addProperty(property, Representation.DEFAULT);
+					}
+				}
+			}
+		}
+
+		return desc;
+	}
 }
