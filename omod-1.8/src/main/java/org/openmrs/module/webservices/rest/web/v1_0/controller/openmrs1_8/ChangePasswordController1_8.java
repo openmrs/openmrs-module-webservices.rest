@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,7 +49,7 @@ public class ChangePasswordController1_8 extends BaseRestController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void changeOwnPassword(@RequestBody Map<String, String> body) {
+	public void changeOwnPassword(@RequestBody Map<String, String> body) throws IOException {
 		String oldPassword = body.get("oldPassword");
 		String newPassword = body.get("newPassword");
 		if (!Context.isAuthenticated()) {
@@ -53,6 +57,12 @@ public class ChangePasswordController1_8 extends BaseRestController {
 		}
 		try {
 			userService.changePassword(oldPassword, newPassword);
+
+			URL url=new URL("http://localhost:8080/openmrs/ws/rest/v1/session");
+			HttpURLConnection connection=(HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("DELETE");
+			connection.setRequestProperty("Accept","application/json");
+			connection.setRequestProperty("Authorization","Basic Auth");
 		}
 		catch (APIException ex) {
 			// this happens if they give the wrong oldPassword
