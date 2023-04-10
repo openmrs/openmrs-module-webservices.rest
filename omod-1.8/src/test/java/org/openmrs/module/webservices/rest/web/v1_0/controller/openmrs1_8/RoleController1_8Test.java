@@ -141,46 +141,6 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest,
-	 *      HttpServletResponse)
-	 * @verifies void a Role
-	 */
-	@Test
-	public void retireRole_shouldRetireARole() throws Exception {
-		
-		Role role = service.getRoleByUuid(getUuid());
-		Assert.assertFalse(role.isRetired());
-		
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + role.getUuid());
-		req.addParameter("!purge", "");
-		req.addParameter("reason", "random reason");
-		handle(req);
-		
-		Role retiredRole = service.getRoleByUuid(getUuid());
-		Assert.assertTrue(retiredRole.isRetired());
-		Assert.assertEquals("random reason", retiredRole.getRetireReason());
-		
-	}
-	
-	@Test
-	public void shouldUnRetireARole() throws Exception {
-		Role role = service.getRoleByUuid(getUuid());
-		role.setRetired(true);
-		role.setRetireReason("random reason");
-		service.saveRole(role);
-		role = service.getRoleByUuid(getUuid());
-		Assert.assertTrue(role.isRetired());
-		
-		String json = "{\"deleted\": \"false\"}";
-		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
-		
-		role = service.getRoleByUuid(getUuid());
-		Assert.assertFalse(role.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
-		
-	}
-	
-	/**
 	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies return no results if there are no matching Roles

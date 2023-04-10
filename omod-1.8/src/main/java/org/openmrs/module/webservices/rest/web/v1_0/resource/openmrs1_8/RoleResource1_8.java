@@ -12,24 +12,30 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
+import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.Set;
@@ -38,12 +44,11 @@ import java.util.Set;
  * {@link Resource} for Role, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/role", supportedClass = Role.class, supportedOpenmrsVersions = { "1.8.* - 9.*" })
-public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
+public class RoleResource1_8 extends DelegatingCrudResource<Role> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
-	@Override
 	public Role getByUniqueId(String uniqueId) {
 		return Context.getUserService().getRoleByUuid(uniqueId);
 	}
@@ -51,7 +56,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */
-	@Override
 	public Role newDelegate() {
 		return new Role();
 	}
@@ -59,7 +63,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save(java.lang.Object)
 	 */
-	@Override
 	public Role save(Role delegate) {
 		return Context.getUserService().saveRole(delegate);
 	}
@@ -68,7 +71,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
-	@Override
 	public void purge(Role delegate, RequestContext context) throws ResponseException {
 		if (delegate == null) {
 			// DELETE is idempotent, so we return success here
@@ -80,7 +82,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
-	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
@@ -88,7 +89,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
-			description.addProperty("retired");
 			description.addProperty("privileges", Representation.REF);
 			description.addProperty("inheritedRoles", Representation.REF);
 			description.addSelfLink();
@@ -100,7 +100,6 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("description");
-			description.addProperty("retired");
 			description.addProperty("privileges", Representation.DEFAULT);
 			description.addProperty("inheritedRoles", Representation.DEFAULT);
 			description.addProperty("allInheritedRoles", Representation.DEFAULT);
@@ -110,11 +109,43 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		}
 		return null;
 	}
+
+	@RepHandler(RefRepresentation.class)
+	public SimpleObject convertToRef(Role delegate) throws ConversionException {
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("display");
+		rep.addSelfLink();
+		return convertDelegateToRepresentation(delegate, rep);
+	}
+	
+	@RepHandler(DefaultRepresentation.class)
+	public SimpleObject asDefaultRep(Role delegate) throws Exception {
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("display");
+		rep.addProperty("name");
+		rep.addProperty("description");
+		rep.addSelfLink();
+		rep.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
+		return convertDelegateToRepresentation(delegate, rep);
+	}
+	
+	@RepHandler(FullRepresentation.class)
+	public SimpleObject asFullRep(Role delegate) throws Exception {
+		DelegatingResourceDescription rep = new DelegatingResourceDescription();
+		rep.addProperty("uuid");
+		rep.addProperty("display");
+		rep.addProperty("name");
+		rep.addProperty("description");
+		rep.addProperty("auditInfo");
+		rep.addSelfLink();
+		return convertDelegateToRepresentation(delegate, rep);
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
-	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		// you cannot edit the name of an existing role, since that is the PK
@@ -125,42 +156,58 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		return description;
 	}
 	
-	@Override
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getGETModel(Representation)
+	 */
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+					.property("uuid", new StringProperty())
+					.property("display", new StringProperty())
+					.property("name", new StringProperty())
+					.property("description", new StringProperty())
+					.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
+					.property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
 		}
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
+					.property("uuid", new StringProperty())
+					.property("display", new StringProperty())
+					.property("name", new StringProperty())
+					.property("description", new StringProperty())
+					.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
+					.property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
+					.property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
 		}
 		return model;
 	}
 	
-	@Override
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCREATEModel(Representation)
+	 */
 	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
+		return new ModelImpl()
+				.property("name", new StringProperty())
+				.property("description", new StringProperty())
+				.required("name")
+				.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
+				.property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
 	}
 	
-	@Override
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUPDATEModel(Representation) ()
+	 */
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
-		        .property("description", new StringProperty())
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
+				.property("description", new StringProperty())
+				.property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
+				.property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
-	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
@@ -202,7 +249,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	 */
 	@PropertyGetter("allInheritedRoles")
 	public Set<Role> getAllInheritedRoles(Role role) {
-		return RestUtil.removeRetiredData(role.getAllParentRoles());
+		return role.getAllParentRoles();
 	}
 	
 	/**
@@ -216,7 +263,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		if (role.getInheritedRoles() == null)
 			return null;
 		
-		return RestUtil.removeRetiredData(role.getInheritedRoles());
+		return role.getInheritedRoles();
 	}
 	
 	/**
@@ -232,11 +279,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		
 		return RestUtil.removeRetiredData(role.getPrivileges());
 	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
-	 */
-	@Override
+
 	@PropertyGetter("display")
 	public String getDisplayString(Role delegate) {
 		// TODO can we delegate to superclass for message-based i18n?
@@ -248,5 +291,9 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	protected NeedsPaging<Role> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<Role>(Context.getUserService().getAllRoles(), context);
 	}
-	
+
+	@Override
+	protected void delete(Role delegate, String reason, RequestContext context) throws ResponseException {
+		throw new ResourceDoesNotSupportOperationException();
+	}
 }

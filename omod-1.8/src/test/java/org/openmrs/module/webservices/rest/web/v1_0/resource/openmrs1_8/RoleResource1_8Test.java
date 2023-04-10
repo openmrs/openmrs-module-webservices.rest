@@ -27,7 +27,6 @@ public class RoleResource1_8Test extends BaseDelegatingResourceTest<RoleResource
 		super.validateDefaultRepresentation();
 		assertPropPresent("privileges");
 		assertPropPresent("inheritedRoles");
-		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
@@ -36,7 +35,6 @@ public class RoleResource1_8Test extends BaseDelegatingResourceTest<RoleResource
 		assertPropPresent("privileges");
 		assertPropPresent("inheritedRoles");
 		assertPropPresent("allInheritedRoles");
-		assertPropEquals("retired", getObject().getRetired());
 	}
 	
 	@Override
