@@ -22,6 +22,7 @@ public class DiagnosisResource2_5Test extends DiagnosisResource2_2Test {
 		super.validateDefaultRepresentation();
 		assertPropPresent("formNamespace");
 		assertPropPresent("formPath");
+		assertPropPresent("formNamespaceAndPath");
 	}
 	
 	@Override
@@ -29,5 +30,6 @@ public class DiagnosisResource2_5Test extends DiagnosisResource2_2Test {
 		super.validateDefaultRepresentation();
 		assertPropPresent("formNamespace");
 		assertPropPresent("formPath");
+		assertPropPresent("formNamespaceAndPath");
 	}
 }
