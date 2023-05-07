@@ -570,8 +570,4 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
-	<modules>
-		<module>webservices.rest-omod-2.5</module>
-	</modules>
 </project>

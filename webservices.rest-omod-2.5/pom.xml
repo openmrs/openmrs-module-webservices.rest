@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
-  <parent>
-	  	<artifactId>webservices.rest</artifactId>
-    	<groupId>org.openmrs.module</groupId>
-    	<version>2.40.0-SNAPSHOT</version>
-  </parent>
+  	<parent>
+	   <artifactId>webservices.rest</artifactId>
+       <groupId>org.openmrs.module</groupId>
+       <version>2.40.0-SNAPSHOT</version>
+  	</parent>
   
-  <artifactId>webservices.rest-omod-2.5</artifactId>
-  <name>Rest Web Services 2.5 OMOD</name>
+  	<artifactId>webservices.rest-omod-2.5</artifactId>
+  	<name>Rest Web Services 2.5 OMOD</name>
   
    	<properties>
         <openmrs.version.2.5.0>2.5.0</openmrs.version.2.5.0>
@@ -215,5 +215,5 @@
             </plugin>
         </plugins>
     </build>
-  
+     
 </project>

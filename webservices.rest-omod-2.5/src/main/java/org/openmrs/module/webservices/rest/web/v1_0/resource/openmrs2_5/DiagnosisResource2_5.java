@@ -35,11 +35,16 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 			DelegatingResourceDescription description = super.getRepresentationDescription(representation);
 			description.addProperty("formNamespace");
 			description.addProperty("formPath");
+			description.addProperty("formNamespaceAndPath");
+			
 			return description;
+			
 		} else if (representation instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(representation);
 			description.addProperty("formNamespace");
 			description.addProperty("formPath");
+			description.addProperty("formNamespaceAndPath");
+			
 			return description;
 		}
 		
@@ -55,6 +60,7 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 		
 		description.addRequiredProperty("formNamespace");
 		description.addRequiredProperty("formPath");
+		description.addProperty("formNamespaceAndPath");
 		
 		return description;
 		
@@ -69,6 +75,7 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 		
 		description.addRequiredProperty("formNamespace");
 		description.addRequiredProperty("formPath");
+		description.addProperty("formNamespaceAndPath");
 		
 		return description;
 	}
