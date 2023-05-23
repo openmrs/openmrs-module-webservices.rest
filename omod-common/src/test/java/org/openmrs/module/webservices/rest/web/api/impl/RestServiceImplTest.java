@@ -695,7 +695,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	 * @see RestServiceImpl#getSearchHandler(String, Map)
 	 */
 	@Test
-	public void getSearchHandler_shouldFailIfTwoSearchHandlersMatchGivenResourceAndParametersAndNoSearchHandlerIdIsSpecified()
+	public void getSearchHandler_shouldReturnDefaultSearchHandlerIfDefaultAndCustomSearchHandlersMatchGivenResourceAndParametersAndNoSearchHandlerIdIsSpecified()
 	        throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
@@ -717,7 +717,34 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		parameters.put("source", new String[] { "some name" });
 		parameters.put("code", new String[] { "some code" });
-		
+
+		assertThat(restService.getSearchHandler("v1/concept", parameters), is(searchHandler1));
+	}
+
+	@Test
+	public void getSearchHandler_shouldFailIfTwoSearchHandlersMatchGivenResourceAndParametersAndNoSearchHandlerIdIsSpecified()
+			throws Exception {
+
+		SearchHandler searchHandler1 = mock(SearchHandler.class);
+		SearchConfig searchConfig1 = new SearchConfig("conceptByName", "v1/concept", "1.8.*", new SearchQuery.Builder(
+				"description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
+
+		SearchHandler searchHandler2 = mock(SearchHandler.class);
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+				"description").withRequiredParameters("source").withOptionalParameters("code").build());
+		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
+
+		setCurrentOpenmrsVersion("1.8.10");
+
+		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
+
+		RestUtil.disableContext(); //to avoid a Context call
+
+		Map<String, String[]> parameters = new HashMap<String, String[]>();
+		parameters.put("source", new String[] { "some name" });
+		parameters.put("code", new String[] { "some code" });
+
 		expectedException.expect(InvalidSearchException.class);
 		expectedException.expectMessage("The search is ambiguous. Please specify s=");
 		restService.getSearchHandler("v1/concept", parameters);

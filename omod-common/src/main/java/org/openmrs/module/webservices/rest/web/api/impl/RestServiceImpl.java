@@ -508,8 +508,10 @@ public class RestServiceImpl implements RestService {
 	 *         required parameters
 	 * <strong>Should</strong> return null if given parameters are missing a parameter required by search handlers
 	 *         eligible for given resource name and parameters
+	 * <strong>Should</strong> return default search handler if two search handlers match given resource and parameters and no search handler
+	 * 	       id is specified and one of the matching search handlers is the default
 	 * <strong>Should</strong> fail if two search handlers match given resource and parameters and no search handler
-	 *         id is specified
+	 *         id is specified and neither matching search hander is the default
 	 * <strong>Should</strong> return null if a non special request parameter in given parameters cannot be found in
 	 *         any search handler
 	 * <strong>Should</strong> return null if no search handler is found for given resource name
@@ -568,15 +570,23 @@ public class RestServiceImpl implements RestService {
 				return null;
 			} else if (candidateSearchHandlers.size() == 1) {
 				return candidateSearchHandlers.iterator().next();
-			} else {
-				List<String> candidateSearchHandlerIds = new ArrayList<String>();
-				for (SearchHandler candidateSearchHandler : candidateSearchHandlers) {
-					candidateSearchHandlerIds.add(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID + "="
-					        + candidateSearchHandler.getSearchConfig().getId());
-				}
-				throw new InvalidSearchException("The search is ambiguous. Please specify "
-				        + StringUtils.join(candidateSearchHandlerIds, " or "));
 			}
+			// if multiple, return default
+			for (SearchHandler candidateSearchHandler : candidateSearchHandlers) {
+				if ("default".equals(candidateSearchHandler.getSearchConfig().getId())) {
+					return candidateSearchHandler;
+				}
+			}
+
+			// multiple and no default, throw exception
+			List<String> candidateSearchHandlerIds = new ArrayList<String>();
+			for (SearchHandler candidateSearchHandler : candidateSearchHandlers) {
+				candidateSearchHandlerIds.add(RestConstants.REQUEST_PROPERTY_FOR_SEARCH_ID + "="
+						+ candidateSearchHandler.getSearchConfig().getId());
+			}
+			throw new InvalidSearchException("The search is ambiguous. Please specify "
+					+ StringUtils.join(candidateSearchHandlerIds, " or "));
+
 		}
 	}
 	
