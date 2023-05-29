@@ -52,10 +52,10 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	        Arrays.asList("1.8.* - 9.*"),
 	        Arrays.asList(
 	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
-	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
-	                    "Allows you to find concepts by name and class").withRequiredParameters("name")
-	                    .withOptionalParameters("class", "searchType").build(), new SearchQuery.Builder(
-	                    		"Allows you to find a list of concepts by passing references")
+	                    .withOptionalParameters("code").build(),
+	            new SearchQuery.Builder("Allows you to find concepts by name and class")
+	                    .withOptionalParameters("class", "name", "searchType").build(),
+	            new SearchQuery.Builder("Allows you to find a list of concepts by passing references")
 	                    .withRequiredParameters("references").build()));
 	
 	/**
@@ -79,11 +79,11 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		String conceptReferences = context.getParameter("references");
 		
 		List<Concept> concepts;
-
+		
 		if (StringUtils.isNotBlank(conceptReferences)) {
 			String[] conceptReferenceStrings = conceptReferences.split(",");
 			concepts = new ArrayList<Concept>(conceptReferenceStrings.length);
-
+			
 			for (String conceptReference : conceptReferenceStrings) {
 				if (StringUtils.isBlank(conceptReference)) {
 					continue;
@@ -111,12 +111,12 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			if (concepts.size() == 0) {
 				return new EmptySearchResult();
 			}
-	
+			
 			return new NeedsPaging<Concept>(concepts, context);
 		}
-
+		
 		concepts = new ArrayList<Concept>();
-
+		
 		// If there's class parameter in query
 		if ("fuzzy".equals(searchType)) {
 			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
@@ -159,8 +159,20 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 				}
 			}
 		} else {
-			throw new InvalidSearchException("Invalid searchType: " + searchType
-			        + ". Allowed values: \"equals\" and \"fuzzy\"");
+			throw new InvalidSearchException(
+			        "Invalid searchType: " + searchType + ". Allowed values: \"equals\" and \"fuzzy\"");
+		}
+		
+		// getting concepts by classUuid
+		if (conceptClass != null) {
+			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
+			if (responseConceptClass != null) {
+				
+				List<Concept> concept = conceptService.getConceptsByClass(responseConceptClass);
+				concepts.addAll(concept);
+				return new NeedsPaging<Concept>(concepts, context);
+				
+			}
 		}
 		
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
@@ -187,6 +199,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	}
 	
 	private static boolean isValidUuid(String uuid) {
-		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
+		return uuid != null
+		        && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
 }
