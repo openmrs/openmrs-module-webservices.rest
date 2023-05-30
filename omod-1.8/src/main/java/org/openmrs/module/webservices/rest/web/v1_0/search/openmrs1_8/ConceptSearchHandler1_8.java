@@ -160,8 +160,8 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 				}
 			}
 		} else {
-			throw new InvalidSearchException(
-					"Invalid searchType: " + searchType + ". Allowed values: \"equals\" and \"fuzzy\"");
+			throw new InvalidSearchException("Invalid searchType: " + searchType
+					+ ". Allowed values: \"equals\" and \"fuzzy\"");
 		}
 
 		// getting concepts by classUuid
