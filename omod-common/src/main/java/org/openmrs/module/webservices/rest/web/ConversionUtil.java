@@ -61,11 +61,11 @@ public class ConversionUtil {
 	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
-	private static Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
+	private static final Map<String, Type> typeVariableMap = new ConcurrentHashMap<String, Type>();
 	
 	private static ConcurrentMap<Class<?>, Converter> converterCache;
 	
-	private static Converter nullConverter;
+	private static final Converter nullConverter;
 	
 	static {
 		converterCache = new ConcurrentHashMap<Class<?>, Converter>();
@@ -170,8 +170,9 @@ public class ConversionUtil {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object convert(Object object, Type toType) throws ConversionException {
-		if (object == null)
-			return object;
+		if (object == null) {
+			return null;
+		}
 		
 		Class<?> toClass = toType instanceof Class ? ((Class<?>) toType) : (Class<?>) (((ParameterizedType) toType)
 		        .getRawType());
@@ -188,7 +189,7 @@ public class ConversionUtil {
 				Object ret = Array.newInstance(targetElementType, input.size());
 				
 				int i = 0;
-				for (Object element : (Collection) object) {
+				for (Object element : input) {
 					Array.set(ret, i, convert(element, targetElementType));
 					++i;
 				}
@@ -210,8 +211,9 @@ public class ConversionUtil {
 				// if we have generic type information for the target collection, we can use it to do conversion
 				ParameterizedType toParameterizedType = (ParameterizedType) toType;
 				Type targetElementType = toParameterizedType.getActualTypeArguments()[0];
-				for (Object element : (Collection) object)
+				for (Object element : (Collection) object) {
 					ret.add(convert(element, targetElementType));
+				}
 			} else {
 				// otherwise we must just add all items in a non-type-safe manner
 				ret.addAll((Collection) object);
@@ -221,8 +223,9 @@ public class ConversionUtil {
 		
 		// otherwise we're converting _to_ a non-collection type
 		
-		if (toClass.isAssignableFrom(object.getClass()))
+		if (toClass.isAssignableFrom(object.getClass())) {
 			return object;
+		}
 		
 		// Numbers with a decimal are always assumed to be Double, so convert to Float, if necessary
 		if (toClass.isAssignableFrom(Float.class) && object instanceof Double) {
