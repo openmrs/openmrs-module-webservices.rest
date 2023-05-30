@@ -42,19 +42,6 @@ public class DynamicBeanConfiguration {
 		Class<?> clazz;
 		try {
 			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJackson2HttpMessageConverter");
-			try {
-				Object converter = ServiceContext.getInstance().getRegisteredComponent("jacksonMessageConverter", clazz);
-				if (converter instanceof HttpMessageConverter) {
-					return (HttpMessageConverter<?>) converter;
-				}
-			} catch (APIException ignored) {}
-			
-			try {
-				List<?> converters = ServiceContext.getInstance().getRegisteredComponents(clazz);
-				if (converters != null && converters.size() > 0 && converters.get(0) instanceof HttpMessageConverter) {
-					return (HttpMessageConverter<?>) converters.get(0);
-				}
-			} catch (APIException ignored) {}
 		}
 		catch (ClassNotFoundException e) {
 			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJacksonHttpMessageConverter");
