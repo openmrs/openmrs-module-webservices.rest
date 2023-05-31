@@ -78,11 +78,11 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		String conceptReferences = context.getParameter("references");
 
 		List<Concept> concepts;
-
+		
 		if (StringUtils.isNotBlank(conceptReferences)) {
 			String[] conceptReferenceStrings = conceptReferences.split(",");
 			concepts = new ArrayList<Concept>(conceptReferenceStrings.length);
-
+			
 			for (String conceptReference : conceptReferenceStrings) {
 				if (StringUtils.isBlank(conceptReference)) {
 					continue;
@@ -110,12 +110,12 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			if (concepts.size() == 0) {
 				return new EmptySearchResult();
 			}
-
+	
 			return new NeedsPaging<Concept>(concepts, context);
 		}
-
+		
 		concepts = new ArrayList<Concept>();
-
+		
 		// If there's class parameter in query
 		if ("fuzzy".equals(searchType)) {
 			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
@@ -198,7 +198,6 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	}
 
 	private static boolean isValidUuid(String uuid) {
-		return uuid != null
-				&& (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
+		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
 }
