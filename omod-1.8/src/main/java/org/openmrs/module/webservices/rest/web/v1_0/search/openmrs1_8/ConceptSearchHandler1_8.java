@@ -43,11 +43,11 @@ import java.util.Locale;
  */
 @Component
 public class ConceptSearchHandler1_8 implements SearchHandler {
-	
+
 	@Autowired
 	@Qualifier("conceptService")
 	ConceptService conceptService;
-	
+
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/concept",
 	        Arrays.asList("1.8.* - 9.*"),
 	        Arrays.asList(
@@ -64,7 +64,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	public SearchConfig getSearchConfig() {
 		return searchConfig;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.SearchHandler#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -76,7 +76,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		String conceptClass = context.getParameter("class");
 		String searchType = context.getParameter("searchType");
 		String conceptReferences = context.getParameter("references");
-		
+
 		List<Concept> concepts;
 
 		if (StringUtils.isNotBlank(conceptReferences)) {
@@ -110,7 +110,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			if (concepts.size() == 0) {
 				return new EmptySearchResult();
 			}
-	
+
 			return new NeedsPaging<Concept>(concepts, context);
 		}
 
@@ -121,20 +121,20 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 			List<ConceptClass> classes = null;
 			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
-			
+
 			if (responseConceptClass != null) {
 				classes = Arrays.asList(responseConceptClass);
 			}
-			
+
 			List<ConceptSearchResult> searchResults = conceptService.getConcepts(name, locales, context.getIncludeAll(),
-			    classes, null, null, null, null, context.getStartIndex(), context.getLimit());
+					classes, null, null, null, null, context.getStartIndex(), context.getLimit());
 			List<Concept> results = new ArrayList<Concept>(searchResults.size());
 			for (ConceptSearchResult csr : searchResults) {
 				results.add(csr.getConcept());
 			}
 			return new NeedsPaging<Concept>(results, context);
 		} else if (searchType == null || "equals".equals(searchType)) {
-			
+
 			if (name != null) {
 				Concept concept = conceptService.getConceptByName(name);
 				concepts.add(concept);
@@ -142,16 +142,16 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 					boolean isPreferredOrFullySpecified = false;
 					for (ConceptName conceptname : concept.getNames()) {
 						if (conceptname.getName().equalsIgnoreCase(name)
-						        && (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
+								&& (conceptname.isPreferred() || conceptname.isFullySpecifiedName())) {
 							isPreferredOrFullySpecified = true;
 							break;
 						}
 					}
 					if (!isPreferredOrFullySpecified) {
 						throw new APIException(
-						        "The concept name should be either a fully specified or locale preferred name");
+								"The concept name should be either a fully specified or locale preferred name");
 					}
-					
+
 					return new NeedsPaging<Concept>(concepts, context);
 				} else {
 					return new EmptySearchResult();
@@ -159,7 +159,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			}
 		} else {
 			throw new InvalidSearchException("Invalid searchType: " + searchType
-			        + ". Allowed values: \"equals\" and \"fuzzy\"");
+					+ ". Allowed values: \"equals\" and \"fuzzy\"");
 		}
 
 		// getting concepts by classUuid
@@ -181,7 +181,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		if (conceptSource == null) {
 			return new EmptySearchResult();
 		}
-		
+
 		if (code == null) {
 			List<ConceptMap> conceptMaps = conceptService.getConceptMappingsToSource(conceptSource);
 			for (ConceptMap conceptMap : conceptMaps) {
@@ -192,12 +192,13 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			return new NeedsPaging<Concept>(concepts, context);
 		} else {
 			List<Concept> conceptsByMapping = conceptService.getConceptsByMapping(code, source, false);
-			
+
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
 	}
-	
+
 	private static boolean isValidUuid(String uuid) {
-		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
+		return uuid != null
+				&& (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
 }
