@@ -53,9 +53,8 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	        Arrays.asList(
 	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
-	                    "Allows you to find concepts by name and class").withRequiredParameters("name")
-	                    .withOptionalParameters("class", "searchType").build(), new SearchQuery.Builder(
-	                    		"Allows you to find a list of concepts by passing references")
+	                    "Allows you to find concepts by name and class").withOptionalParameters("name","class", "searchType").build(), 
+						new SearchQuery.Builder("Allows you to find a list of concepts by passing references")
 	                    .withRequiredParameters("references").build()));
 	
 	/**
@@ -161,6 +160,18 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		} else {
 			throw new InvalidSearchException("Invalid searchType: " + searchType
 			        + ". Allowed values: \"equals\" and \"fuzzy\"");
+		}
+
+		// getting concepts by classUuid
+		if (conceptClass != null) {
+			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
+			if (responseConceptClass != null) {
+
+				List<Concept> concept = conceptService.getConceptsByClass(responseConceptClass);
+				concepts.addAll(concept);
+				return new NeedsPaging<Concept>(concepts, context);
+
+			}
 		}
 		
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
