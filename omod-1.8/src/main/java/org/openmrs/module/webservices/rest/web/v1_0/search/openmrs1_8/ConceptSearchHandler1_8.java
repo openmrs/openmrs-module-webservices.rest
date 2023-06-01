@@ -53,8 +53,9 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 	        Arrays.asList(
 	            new SearchQuery.Builder("Allows you to find concepts by source and code").withRequiredParameters("source")
 	                    .withOptionalParameters("code").build(), new SearchQuery.Builder(
-	                    "Allows you to find concepts by name and class").withOptionalParameters("name","class", "searchType").build(), 
-						new SearchQuery.Builder("Allows you to find a list of concepts by passing references")
+	                    "Allows you to find concepts by name and class")
+	                    .withOptionalParameters("name","class", "searchType").build(), new SearchQuery.Builder(
+	                    		"Allows you to find a list of concepts by passing references")
 	                    .withRequiredParameters("references").build()));
 	
 	/**

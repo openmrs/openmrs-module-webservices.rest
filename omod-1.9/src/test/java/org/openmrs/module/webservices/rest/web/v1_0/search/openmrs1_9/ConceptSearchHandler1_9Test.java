@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
-
+	
 	private ConceptService service;
 
 	@Before
@@ -49,7 +49,7 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	public long getAllCount() {
 		return service.getAllConcepts(null, false, false).size();
 	}
-
+	
 	@Test
 	public void getSearchConfig_shouldReturnConceptByReferenceTermUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
@@ -59,26 +59,26 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals(service.getConcept(5089).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
-
+	
 	@Test
 	public void shouldAllowSearchingByReferences() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("references", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa,Some Standardized Terminology:WGT234");
-
+		
 		SimpleObject result = deserialize(handle(req));
-
+		
 		List<Object> hits = result.get("results");
-
+		
 		assertThat(hits, hasSize(2));
 		assertThat((Map<String, String>) hits.get(0), hasEntry("uuid", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa"));
 		assertThat((Map<String, String>) hits.get(1), hasEntry("uuid", "c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
-
+	
 	@Test
 	public void shouldAllowSearchingByNoReferences() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("references", "");
-
+		
 		SimpleObject result = deserialize(handle(req));
 
 		List<Object> hits = result.get("results");
