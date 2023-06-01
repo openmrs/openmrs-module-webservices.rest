@@ -32,21 +32,20 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests functionality of searching for concepts and return concept search
- * results
+ * Tests functionality of searching for concepts and return concept search results
  * 
  * @see org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptSearchResource1_9
  */
 public class ConceptSearchController1_9Test extends MainResourceControllerTest {
-
+	
 	private ConceptService service;
-
+	
 	private boolean isIndexUpToDate = false;
-
+	
 	private static final String MARRIED_CONCEPT_UUID = "92afda7c-78c9-47bd-a841-0de0817027d4";
-
+	
 	private static final String MALARIA_PROGRAM_CONCEPT_UUID = "f923524a-b90c-4870-a948-4125638606fd";
-
+	
 	@Before
 	public void before() {
 		service = Context.getConceptService();
@@ -56,7 +55,7 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 			isIndexUpToDate = true;
 		}
 	}
-
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest#getURI()
 	 */
@@ -64,98 +63,95 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	public String getURI() {
 		return "conceptsearch";
 	}
-
+	
 	@Override
 	public String getUuid() {
 		return "";
 	}
-
+	
 	@Override
 	public long getAllCount() {
 		return 0;
 	}
-
+	
 	@Test
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "ma");
 		SimpleObject result = deserialize(handle(req));
-
+		
 		List<Object> hits = (List<Object>) result.get("results");
 		assertThat(
-				hits,
-				containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
-						isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
+		    hits,
+		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
-
+	
 	@Test
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryStringAndConceptClass() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "ma");
 		req.addParameter("conceptClasses", "2a3738f5-26f0-4f97-ae7a-f99e42fa6d44");
 		SimpleObject result = deserialize(handle(req));
-
+		
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 		Assert.assertEquals("MALARIA PROGRAM", Util.getByPath(hits.get(0), "display"));
 		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(0), "concept/uuid"));
-
-		// Try multiple concept classes
+		
+		//Try multiple concept classes
 		req.addParameter("conceptClasses", "ecdee8a7-d741-4fe7-8e01-f79cacbe97bc");
 		result = deserialize(handle(req));
-
+		
 		hits = (List<Object>) result.get("results");
 		assertThat(
-				hits,
-				containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
-						isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
+		    hits,
+		    containsInAnyOrder(isConceptWithUuid("92afda7c-78c9-47bd-a841-0de0817027d4"),
+		        isConceptWithUuid("f923524a-b90c-4870-a948-4125638606fd")));
 	}
-
+	
 	private Matcher<? super Object> isConceptWithUuid(final String uuid) {
 		return new TypeSafeMatcher<Object>(
-				Object.class) {
-
+		                                   Object.class) {
+			
 			@Override
 			public void describeTo(Description description) {
 			}
-
+			
 			@Override
 			protected boolean matchesSafely(Object item) {
 				@SuppressWarnings("unchecked")
 				Map<String, Object> safeItem = (Map<String, Object>) item;
 				@SuppressWarnings("unchecked")
 				Map<String, Object> concept = (Map<String, Object>) safeItem.get("concept");
-
+				
 				return uuid.equals(concept.get("uuid"));
 			}
 		};
 	}
-
+	
 	@Override
 	@Test(expected = ResourceDoesNotSupportOperationException.class)
 	public void shouldGetAll() throws Exception {
 		super.shouldGetAll();
 	}
-
+	
 	@Override
 	@Ignore
 	public void shouldGetDefaultByUuid() throws Exception {
-		// The super test class does some unnecessary crazy stuff not supported by the
-		// resource
+		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
-
+	
 	@Override
 	@Ignore
 	public void shouldGetFullByUuid() throws Exception {
-		// The super test class does some unnecessary crazy stuff not supported by the
-		// resource
+		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
-
+	
 	@Override
 	@Ignore
 	public void shouldGetRefByUuid() throws Exception {
-		// The super test class does some unnecessary crazy stuff not supported by the
-		// resource
+		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
-
+	
 }
