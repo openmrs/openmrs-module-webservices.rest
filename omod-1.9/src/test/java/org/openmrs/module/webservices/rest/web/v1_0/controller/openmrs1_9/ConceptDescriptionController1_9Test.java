@@ -24,7 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource1_8;
 
 public class ConceptDescriptionController1_9Test extends MainResourceControllerTest {
 	

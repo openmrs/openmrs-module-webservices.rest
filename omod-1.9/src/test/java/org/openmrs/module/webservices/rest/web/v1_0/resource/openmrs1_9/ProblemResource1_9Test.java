@@ -16,7 +16,7 @@ import org.openmrs.Concept;
 import org.openmrs.activelist.Problem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -76,7 +76,7 @@ public class ProblemResource1_9Test extends BaseDelegatingResourceTest<ProblemRe
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.PROBLEM_UUID;
+		return RestTestConstants1_9.PROBLEM_UUID;
 	}
 	
 	@Test

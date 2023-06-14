@@ -25,12 +25,29 @@ public class FormResource1_9Test extends BaseDelegatingResourceTest<FormResource
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("encounterType");
+		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("build", getObject().getBuild());
+		assertPropEquals("published", getObject().getPublished());
+		assertPropPresent("formFields");
 		assertPropPresent("resources");
 	}
 	
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
+		assertPropEquals("name", getObject().getName());
+		assertPropEquals("description", getObject().getDescription());
+		assertPropEquals("retired", getObject().isRetired());
+		assertPropPresent("encounterType");
+		assertPropEquals("version", getObject().getVersion());
+		assertPropEquals("build", getObject().getBuild());
+		assertPropEquals("published", getObject().getPublished());
+		assertPropPresent("formFields");
+		assertPropPresent("auditInfo");
 		assertPropPresent("resources");
 	}
 	

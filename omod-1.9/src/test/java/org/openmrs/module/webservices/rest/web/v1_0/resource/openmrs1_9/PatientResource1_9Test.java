@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PatientResource1_9Test extends BaseDelegatingResourceTest<PatientResource1_9, Patient> {
@@ -25,6 +25,18 @@ public class PatientResource1_9Test extends BaseDelegatingResourceTest<PatientRe
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("attributes");
+		assertPropPresent("display");
 		assertPropPresent("identifiers");
 		assertPropPresent("person");
 		assertPropEquals("voided", getObject().getVoided());
@@ -33,6 +45,18 @@ public class PatientResource1_9Test extends BaseDelegatingResourceTest<PatientRe
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
+		assertPropPresent("uuid");
+		assertPropEquals("gender", getObject().getGender());
+		assertPropEquals("age", getObject().getAge());
+		assertPropEquals("birthdate", getObject().getBirthdate());
+		assertPropEquals("birthdateEstimated", getObject().getBirthdateEstimated());
+		assertPropEquals("dead", getObject().getDead());
+		assertPropEquals("deathDate", getObject().getDeathDate());
+		assertPropPresent("causeOfDeath");
+		assertPropPresent("preferredName");
+		assertPropPresent("preferredAddress");
+		assertPropPresent("attributes");
+		assertPropPresent("display");
 		assertPropPresent("identifiers");
 		assertPropPresent("person");
 		assertPropEquals("voided", getObject().getVoided());
@@ -46,7 +70,7 @@ public class PatientResource1_9Test extends BaseDelegatingResourceTest<PatientRe
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.PATIENT_UUID;
+		return RestTestConstants1_9.PATIENT_UUID;
 	}
 	
 }
