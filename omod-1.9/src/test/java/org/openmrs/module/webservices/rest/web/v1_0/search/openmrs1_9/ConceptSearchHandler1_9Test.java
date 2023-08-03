@@ -85,4 +85,17 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 		
 		assertThat(hits, hasSize(0));
 	}
+	
+	@Test
+	public void shouldAllowSearchingByclass() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("class", "ecdee8a7-d741-4fe7-8e01-f79cacbe97bc");
+
+		SimpleObject result = deserialize(handle(req));
+
+		List<Object> hits = result.get("results");
+
+		assertThat((Map<String, String>) hits.get(0), hasEntry("uuid", "32d3611a-6699-4d52-823f-b4b788bac3e3"));
+
+	}
 }
