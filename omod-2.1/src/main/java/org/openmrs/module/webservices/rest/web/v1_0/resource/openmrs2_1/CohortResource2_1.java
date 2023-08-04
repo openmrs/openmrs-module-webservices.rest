@@ -19,14 +19,14 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.CohortResource1_9;
 
 /**
  * In openmrs-core 2.1 we did a complete rewrite of cohort membership, so although the Cohort class
  * itself didn't change we update the resource here.
  */
 @Resource(name = RestConstants.VERSION_1 + "/cohort", supportedClass = Cohort.class, supportedOpenmrsVersions = { "2.1.* - 9.*" })
-public class CohortResource2_1 extends CohortResource1_8 {
+public class CohortResource2_1 extends CohortResource1_9 {
 	
 	@Override
 	public String getResourceVersion() {

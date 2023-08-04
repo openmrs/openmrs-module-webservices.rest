@@ -85,7 +85,7 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 		
 		assertThat(hits, hasSize(0));
 	}
-	
+
 	@Test
 	public void shouldAllowSearchingByclass() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());

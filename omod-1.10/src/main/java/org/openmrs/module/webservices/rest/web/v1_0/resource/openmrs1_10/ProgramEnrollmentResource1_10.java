@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProgramEnrollmentResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ProgramEnrollmentResource1_9;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.util.Collections;
@@ -37,7 +37,7 @@ import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = {
         "1.10.* - 9.*" })
-public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 {
+public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_9 {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {

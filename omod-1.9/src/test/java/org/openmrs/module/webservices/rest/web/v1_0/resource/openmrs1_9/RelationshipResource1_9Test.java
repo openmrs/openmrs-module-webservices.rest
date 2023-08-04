@@ -17,7 +17,7 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 import java.util.List;
@@ -73,7 +73,7 @@ public class RelationshipResource1_9Test extends BaseDelegatingResourceTest<Rela
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.RELATIONSHIP_UUID;
+		return RestTestConstants1_9.RELATIONSHIP_UUID;
 	}
 	
 	@Test

@@ -14,7 +14,7 @@ import org.openmrs.ConceptStateConversion;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptStateConversionResource2_0Test
@@ -22,8 +22,8 @@ public class ConceptStateConversionResource2_0Test
 
 	@Override
 	public ConceptStateConversion newObject() {
-		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID);
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants1_9.CONCEPT2_UUID);
+		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
 		state.setConcept(concept);

@@ -35,14 +35,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.FormResource1_8;
-
 import java.util.List;
 
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
-@SubResource(parent = FormResource1_8.class, path = "resource", supportedClass = FormResource.class, supportedOpenmrsVersions = {
+@SubResource(parent = FormResource1_9.class, path = "resource", supportedClass = FormResource.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
-public class FormResourceResource1_9 extends DelegatingSubResource<FormResource, Form, FormResource1_8> {
+public class FormResourceResource1_9 extends DelegatingSubResource<FormResource, Form, FormResource1_9> {
 	
 	@RepHandler(RefRepresentation.class)
 	public SimpleObject convertToRef(FormResource delegate) throws ConversionException {

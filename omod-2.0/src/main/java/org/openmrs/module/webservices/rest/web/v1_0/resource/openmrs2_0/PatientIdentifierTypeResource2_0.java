@@ -14,14 +14,14 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierTypeResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientIdentifierTypeResource1_9;
 
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientidentifiertype", supportedClass = PatientIdentifierType.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
-public class PatientIdentifierTypeResource2_0 extends PatientIdentifierTypeResource1_8 {
+public class PatientIdentifierTypeResource2_0 extends PatientIdentifierTypeResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

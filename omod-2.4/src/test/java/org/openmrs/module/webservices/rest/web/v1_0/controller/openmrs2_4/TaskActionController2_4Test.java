@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9.TaskActionController1_9Test;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
@@ -30,7 +30,7 @@ import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.
 import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSING_EDUCATION_UUID;
 import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.TASK_SCHEDULER_XML;
 
-public class TaskActionController2_4Test extends TaskActionController1_8Test {
+public class TaskActionController2_4Test extends TaskActionController1_9Test {
 
 	@Autowired
 	RestService restService;
@@ -91,7 +91,7 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 	@Test
 	public void shouldRunTask() throws Exception {
 		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
-		taskDefinition.setTaskClass(TaskActionController1_8Test.DummyTask.class.getName());
+		taskDefinition.setTaskClass(TaskActionController1_9Test.DummyTask.class.getName());
 		assertEquals(4, schedulerService.getRegisteredTasks().size());
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(),
