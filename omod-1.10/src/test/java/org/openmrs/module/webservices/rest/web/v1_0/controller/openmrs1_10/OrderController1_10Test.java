@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -361,7 +362,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		revisedOrder.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
 		revisedOrder.add("instructions", "To be taken after a meal");
 		revisedOrder.add("orderReasonNonCoded", "Changed instructions");
-		
+
 		SimpleObject savedOrder = deserialize(handle(newPostRequest(getURI(), revisedOrder)));
 		
 		List<Order> newActiveOrders = orderService.getActiveOrders(patient, null, null, null);
@@ -587,6 +588,14 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		    new Parameter("patient", PATIENT_UUID),
 		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID")
 		        );
+		handle(req);
+	}
+
+	@Test(expected = InvalidSearchException.class)
+	public void doSearch_shouldThrowExceptionIfNoPatientUuidIsSpecified() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+				new Parameter("status", "active")
+		);
 		handle(req);
 	}
 }
