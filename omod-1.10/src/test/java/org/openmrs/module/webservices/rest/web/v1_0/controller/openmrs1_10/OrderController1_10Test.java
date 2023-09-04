@@ -592,7 +592,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	}
 
 	@Test(expected = InvalidSearchException.class)
-	public void doSearch_shouldThrowExceptionIfNoPatientUuidIsSpecified() throws Exception {
+	public void doSearch_shouldReturnExceptionIfNoPatientUuidIsSpecified() throws Exception {
 		MockHttpServletRequest req = newGetRequest(getURI(),
 				new Parameter("status", "active")
 		);

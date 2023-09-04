@@ -275,7 +275,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				return new NeedsPaging<Order>(orders, context);
 			}
 		} else {
-			throw new InvalidSearchException("Please specify patient parameter with valid patientUuid");
+			throw new InvalidSearchException("Please provide patientUuid in the patient parameter");
 		}
 
 	}
