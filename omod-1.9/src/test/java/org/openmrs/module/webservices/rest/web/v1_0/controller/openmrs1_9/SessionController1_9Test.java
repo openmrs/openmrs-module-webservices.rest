@@ -116,14 +116,26 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assert.assertNotNull(currentProvider);
 		Assert.assertTrue(currentProvider.toString().contains("Super User"));
 	}
+
+	@Test
+	public void post_shouldReturnTheCurrentSession() throws Exception{
+		String content = "{}";
+		Object ret = controller.post(hsr,new ObjectMapper().readValue(content, HashMap.class));
+		Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
+		Assert.assertNotNull(currentProvider);
+		Assert.assertTrue(currentProvider.toString().contains("Super User"));
+	}
 	
 	@Test
 	public void post_shouldSetTheUserLocale() throws Exception {
 		Locale newLocale = new Locale("sp");
 		String content = "{\"locale\":\"" + newLocale.toString() + "\"}";
 		Assert.assertNotEquals(newLocale, Context.getLocale());
-		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 		Assert.assertEquals(newLocale, Context.getLocale());
+		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
 	@Test(expected = APIException.class)
@@ -145,8 +157,11 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		String content = "{\"sessionLocation\":\"" + XANADU_UUID + "\"}";
 		Location loc = Context.getLocationService().getLocationByUuid(XANADU_UUID);
 		Assert.assertNotEquals(loc, Context.getUserContext().getLocation());
-		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 		Assert.assertEquals(loc, Context.getUserContext().getLocation());
+		Object responseLoc = PropertyUtils.getProperty(ret, "sessionLocation");
+		Assert.assertTrue(responseLoc.toString() + " should contain 'display=Xanadu'",
+				responseLoc.toString().contains("display=Xanadu"));
 	}
 	
 	@Test(expected = APIException.class)
@@ -154,5 +169,4 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		String content = "{\"sessionLocation\":\"fake-nonexistant-uuid\"}";
 		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 	}
-
 }

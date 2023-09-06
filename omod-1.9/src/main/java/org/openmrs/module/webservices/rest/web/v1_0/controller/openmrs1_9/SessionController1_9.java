@@ -80,7 +80,7 @@ public class SessionController1_9 extends BaseRestController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(value = HttpStatus.OK)
-	public void post(HttpServletRequest request, @RequestBody Map<String, String> body) {
+	public Object post(HttpServletRequest request, @RequestBody Map<String, String> body) {
 		String localeStr = body.get("locale");
 		if (localeStr != null) {
 			Locale locale = null;
@@ -108,6 +108,7 @@ public class SessionController1_9 extends BaseRestController {
 				request.getSession().setAttribute("emrContext.sessionLocationId", location.getId());
 			}
 		}
+		return get();
 	}
 
 	/**
