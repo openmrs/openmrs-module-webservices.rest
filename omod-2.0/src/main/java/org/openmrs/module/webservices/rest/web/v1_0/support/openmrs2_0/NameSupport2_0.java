@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.GlobalPropertyListener;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0;
 import org.openmrs.serialization.SerializationException;
 import org.slf4j.Logger;
@@ -31,15 +31,17 @@ public class NameSupport2_0 extends LayoutSupport<NameTemplate2_0> implements Gl
     static Logger log = LoggerFactory.getLogger(NameSupport2_0.class);
 
     private NameSupport2_0() {
-        if (Objects.isNull(singleton))
+        if (Objects.isNull(singleton)) {
             singleton = this;
+        }
         log.debug("Setting singleton: {}", singleton);
     }
 
     public static NameSupport2_0 getInstance() {
         synchronized (NameSupport2_0.class) {
-            if (Objects.isNull(singleton))
+            if (Objects.isNull(singleton)) {
                 singleton = new NameSupport2_0();
+            }
         }
 
         singleton.init();
@@ -49,7 +51,7 @@ public class NameSupport2_0 extends LayoutSupport<NameTemplate2_0> implements Gl
     private void init() {
         if (!this.initialized) {
             Context.getAdministrationService().addGlobalPropertyListener(singleton);
-            String layoutTemplateXml = getNameFormat();
+            String layoutTemplateXml = RestConstants.LAYOUT_NAME_FORMAT;
             this.setNameTemplate(layoutTemplateXml);
             List<String> specialTokens = new ArrayList<String>();
             specialTokens.add("familyName");
@@ -71,24 +73,25 @@ public class NameSupport2_0 extends LayoutSupport<NameTemplate2_0> implements Gl
     }
 
     public List<NameTemplate2_0> getNameTemplate() {
-        if (CollectionUtils.isEmpty(this.layoutTemplates))
+        if (this.layoutTemplates == null) {
             try {
-                String xml = getNameFormat();
+                String xml = RestConstants.LAYOUT_NAME_FORMAT;
                 this.setNameTemplate(xml);
             } catch (Exception ignored) {
             }
+        }
 
         return this.layoutTemplates;
     }
 
     @Override
     public boolean supportsPropertyName(String s) {
-        return getNameFormat().equals(s);
+        return RestConstants.LAYOUT_NAME_FORMAT.equals(s);
     }
 
     @Override
     public void globalPropertyChanged(GlobalProperty globalProperty) {
-        if (getNameFormat().equals(globalProperty.getProperty())) {
+        if (RestConstants.LAYOUT_NAME_FORMAT.equals(globalProperty.getProperty())) {
             try {
                 this.setNameTemplate(globalProperty.getPropertyValue());
             } catch (Exception var3) {
@@ -114,25 +117,8 @@ public class NameSupport2_0 extends LayoutSupport<NameTemplate2_0> implements Gl
 
     @Override
     public void globalPropertyDeleted(String s) {
-        if (getNameFormat().equals(s))
+        if (RestConstants.LAYOUT_NAME_FORMAT.equals(s)) {
             this.setNameTemplate((List)(new Vector()));
-    }
-
-    public String getNameFormat() {
-        return "<org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0>" +
-                "    <nameMappings class=\"properties\">" +
-                "        <property name=\"familyName\" value=\"Person.familyName\"/>" +
-                "        <property name=\"middleName\" value=\"Person.middleName\"/>" +
-                "        <property name=\"givenName\" value=\"Person.givenName\"/>" +
-                "    </nameMappings>" +
-                "    <sizeMappings class=\"properties\">" +
-                "        <property name=\"familyName\" value=\"40\"/>" +
-                "        <property name=\"middleName\" value=\"40\"/>" +
-                "        <property name=\"givenName\" value=\"40\"/>" +
-                "    </sizeMappings>" +
-                "    <lineByLineFormat>" +
-                "        <string>familyName middleName givenName</string>" +
-                "    </lineByLineFormat>" +
-                "</org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0>";
+        }
     }
 }

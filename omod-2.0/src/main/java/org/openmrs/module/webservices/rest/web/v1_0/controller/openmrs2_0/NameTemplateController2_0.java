@@ -55,7 +55,7 @@ public class NameTemplateController2_0  extends BaseRestController {
                     String name = pair[0];
                     String val = pair[1];
 
-                    if (elementDefaults.isEmpty()) {
+                    if (elementDefaults == null) {
                         elementDefaults = new HashMap<String, String>();
                     }
                     elementDefaults.put(name, val);
@@ -70,8 +70,8 @@ public class NameTemplateController2_0  extends BaseRestController {
         MessageSource messageSource = Context.getMessageSourceService();
         List<List<Map<String, String>>> lines = nameTemplate.getLines();
         Map<String, String> nameMappings = nameTemplate.getNameMappings();
-        for (List<Map<String, String>> line : lines)
-            for (Map<String, String> elements : line)
+        for (List<Map<String, String>> line : lines) {
+            for (Map<String, String> elements : line) {
                 if (elements.containsKey("displayText")) {
                     String displayCode = elements.get("displayText");
                     if (StringUtils.isNotBlank(displayCode)) {
@@ -90,6 +90,8 @@ public class NameTemplateController2_0  extends BaseRestController {
                         }
                     }
                 }
+            }
+        }
 
         SimpleObject nameTemplateSO = new SimpleObject();
         nameTemplateSO.put("displayName", nameTemplate.getDisplayName());
