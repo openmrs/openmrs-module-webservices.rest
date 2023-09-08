@@ -15,10 +15,8 @@ import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class NameTemplateController2_0Test extends MainResourceControllerTest {
@@ -30,12 +28,6 @@ public class NameTemplateController2_0Test extends MainResourceControllerTest {
 
     @Test
     public void shouldGetNameTemplate() throws Exception {
-        String xml;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("nameTemplate.xml")) {
-            xml = IOUtils.toString(inputStream, "UTF-8");
-        }
-
-        Context.getAdministrationService().setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, xml);
         MockHttpServletRequest req = newGetRequest(getURI());
         SimpleObject result = deserialize(handle(req));
 

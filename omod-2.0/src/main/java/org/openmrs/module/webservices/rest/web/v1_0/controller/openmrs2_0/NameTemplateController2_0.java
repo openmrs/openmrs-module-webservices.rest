@@ -15,11 +15,11 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
+import org.openmrs.layout.name.NameSupport;
+import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.openmrs.module.webservices.rest.web.v1_0.support.openmrs2_0.NameSupport2_0;
-import org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0;
 import org.openmrs.serialization.SerializationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class NameTemplateController2_0  extends BaseRestController {
     @ResponseBody
     public Object get(WebRequest request) throws SerializationException {
 
-        NameTemplate2_0 nameTemplate = NameSupport2_0.getInstance().getDefaultLayoutTemplate();
+        NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
 
         // Check global properties for defaults/overrides in the form of n=v,n1=v1, etc
         String customDefaults = Context.getAdministrationService().getGlobalProperty("layout.name.defaults");

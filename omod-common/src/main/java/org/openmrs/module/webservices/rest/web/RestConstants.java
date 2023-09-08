@@ -202,8 +202,6 @@ public class RestConstants {
 	
 	public static boolean SWAGGER_LOGS_OFF = false;
 
-	public static final String LAYOUT_NAME_FORMAT = "<org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0><nameMappings class=\"properties\"><property name=\"familyName\" value=\"Person.familyName\"/><property name=\"middleName\" value=\"Person.middleName\"/><property name=\"givenName\" value=\"Person.givenName\"/></nameMappings><sizeMappings class=\"properties\"><property name=\"familyName\" value=\"40\"/><property name=\"middleName\" value=\"40\"/><property name=\"givenName\" value=\"40\"/></sizeMappings><lineByLineFormat><string>familyName middleName givenName</string></lineByLineFormat></org.openmrs.module.webservices.rest.web.v1_0.template.openmrs2_0.NameTemplate2_0>";
-
 	/**
 	 * Constants used for the Server Log REST Service privilege checking
 	 */
