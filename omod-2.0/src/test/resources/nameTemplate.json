@@ -1,0 +1,62 @@
+{
+  "displayName": "Short Name Format",
+  "codeName": "short",
+  "country": null,
+  "lines": [
+    [
+      {
+        "isToken": "IS_NOT_NAME_TOKEN",
+        "displayText": ""
+      },
+      {
+        "isToken": "IS_NAME_TOKEN",
+        "displayText": "PersonName.givenName",
+        "codeName": "givenName",
+        "displaySize": "30"
+      }
+    ],
+    [
+      {
+        "isToken": "IS_NOT_NAME_TOKEN",
+        "displayText": ""
+      },
+      {
+        "isToken": "IS_NAME_TOKEN",
+        "displayText": "PersonName.middleName",
+        "codeName": "middleName",
+        "displaySize": "30"
+      }
+    ],
+    [
+      {
+        "isToken": "IS_NOT_NAME_TOKEN",
+        "displayText": ""
+      },
+      {
+        "isToken": "IS_NAME_TOKEN",
+        "displayText": "PersonName.familyName",
+        "codeName": "familyName",
+        "displaySize": "30"
+      }
+    ]
+  ],
+  "lineByLineFormat": [
+    "givenName",
+    "middleName",
+    "familyName"
+  ],
+  "nameMappings": {
+    "familyName": "PersonName.familyName",
+    "givenName": "PersonName.givenName",
+    "middleName": "PersonName.middleName"
+  },
+  "sizeMappings": {
+    "familyName": "30",
+    "givenName": "30",
+    "middleName": "30"
+  },
+  "elementDefaults": null,
+  "elementRegex": null,
+  "elementRegexFormats": null,
+  "requiredElements": null
+}

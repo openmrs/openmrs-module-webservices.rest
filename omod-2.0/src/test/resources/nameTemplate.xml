@@ -1,0 +1,17 @@
+<org.openmrs.layout.name.NameTemplate>
+    <nameMappings class="properties">
+        <property name="givenName" value="PersonName.givenName"/>
+        <property name="middleName" value="PersonName.middleName"/>
+        <property name="familyName" value="PersonName.familyName"/>
+    </nameMappings>
+    <sizeMappings class="properties">
+        <property name="givenName" value="40"/>
+        <property name="middleName" value="40"/>
+        <property name="familyName" value="40"/>
+    </sizeMappings>
+    <lineByLineFormat>
+        <string>givenName</string>
+        <string>middleName</string>
+        <string>familyName</string>
+    </lineByLineFormat>
+</org.openmrs.layout.name.NameTemplate>
