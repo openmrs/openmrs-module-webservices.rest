@@ -17,8 +17,11 @@ import org.openmrs.OrderAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.RestTestConstants2_5;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class OrderAttributeResource2_5Test extends BaseDelegatingResourceTest<OrderAttributeResource2_5, OrderAttribute> {
+	protected final Log log = LogFactory.getLog(this.getClass());
 	
 	@Before
 	public void before() throws Exception {
@@ -53,7 +56,7 @@ public class OrderAttributeResource2_5Test extends BaseDelegatingResourceTest<Or
 			return "Dispensing Location: " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
 		}
 		catch (ParseException ex) {
-			ex.printStackTrace();
+			log.error(ex);
 			return null;
 		}
 	}
