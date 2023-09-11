@@ -35,6 +35,7 @@ public class ServerLogResource2_4Test extends BaseModuleWebContextSensitiveTest 
 	private final MockServerLogActionWrapper<ServerLogActionWrapper2_4> mockServerLogActionWrapper = new MockServerLogActionWrapper<>(
 			new ServerLogActionWrapper2_4());
 
+
 	@Autowired
 	RestService restService;
 
