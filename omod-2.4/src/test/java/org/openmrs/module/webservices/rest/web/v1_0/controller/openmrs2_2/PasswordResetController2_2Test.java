@@ -68,6 +68,16 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
+
+	@Test(expected = MessageException.class)
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameOrEmail() throws Exception {
+		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		user.setEmail("fanyuih@gmail.com");
+		userService.saveUser(user);
+		assertNotNull(user.getEmail());
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+	}
 	
 	@Test
 	public void resetPassword_shouldResetUserPasswordIfActivationKeyIsCorrect() throws Exception {
