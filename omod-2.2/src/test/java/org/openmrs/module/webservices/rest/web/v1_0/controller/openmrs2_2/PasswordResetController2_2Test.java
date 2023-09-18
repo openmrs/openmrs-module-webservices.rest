@@ -69,13 +69,36 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 
-	@Test(expected = MessageException.class)
-	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameOrEmail() throws Exception {
-		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
-		user.setEmail("fanyuih@gmail.com");
-		userService.saveUser(user);
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmailForAnyUser() throws Exception {
+		User user = setUpUser("butch");
+		user.setEmail("butch@gmail.com");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
 		assertNotNull(user.getEmail());
-		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+
+		MessageException exception = null;
+		try {
+			handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+		} catch (MessageException me) {
+			exception = me;
+		}
+		assertNotNull(exception);
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+	}
+
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameForAnyUser() throws Exception {
+		User user = setUpUser("butch");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		assertNotNull(user.getUsername());
+
+		MessageException exception2 = null;
+		try {
+			handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
+		} catch (MessageException me) {
+			exception2 = me;
+		}
+		assertNotNull(exception2);
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
 	
@@ -96,5 +119,18 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		assertEquals(200, response.getStatus());
 		Context.authenticate(user.getUsername(), newPassword);
 		
+	}
+
+	private User setUpUser(String userName) throws Exception {
+		User user = userService.getUserByUsername(userName);
+		final String newPassword = "SomeOtherPassword123";
+
+		userService.changePassword(user, newPassword);
+
+		// Logout Admin User with Privileges
+		Context.logout();
+
+		Context.authenticate(userName, newPassword);
+		return Context.getAuthenticatedUser();
 	}
 }
