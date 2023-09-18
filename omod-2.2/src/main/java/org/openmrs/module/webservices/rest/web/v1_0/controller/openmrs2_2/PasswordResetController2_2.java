@@ -15,9 +15,11 @@ import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
 import org.openmrs.api.ValidationException;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.notification.MessageException;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -40,8 +42,17 @@ public class PasswordResetController2_2 extends BaseRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void requestPasswordReset(@RequestBody Map<String, String> body) throws MessageException {
 		String usernameOrEmail = body.get("usernameOrEmail");
-		User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
-		if (user != null) {
+		Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
+		User user;
+		try {
+			user = userService.getUserByUsernameOrEmail(usernameOrEmail);
+		} finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
+		}
+
+		if (user == null || user.getUserId() == null ) {
+			throw new NullPointerException();
+		} else {
 			userService.setUserActivationKey(user);
 		}
 	}
