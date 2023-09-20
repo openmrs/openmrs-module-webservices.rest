@@ -59,63 +59,63 @@ import org.springframework.web.context.request.WebRequest;
  * Convenient helper methods for the Rest Web Services module.
  */
 public class RestUtil implements GlobalPropertyListener {
-	
+
 	private static Log log = LogFactory.getLog(RestUtil.class);
-	
+
 	private static boolean contextEnabled = true;
-	
+
 	/**
 	 * Looks up the admin defined global property for the system limit
-	 * 
+	 *
 	 * @return Integer limit
 	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
 		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
+				.getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
 				log.error(
-				    RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
+						RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_DEFAULT;
 			}
 		} else {
 			return RestConstants.MAX_RESULTS_DEFAULT;
 		}
 	}
-	
+
 	/**
 	 * Looks up the admin defined global property for the absolute limit to results of REST calls
-	 * 
+	 *
 	 * @return Integer limit
 	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getAbsoluteLimit() {
 		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+				.getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
 			}
 			catch (NumberFormatException nfex) {
 				log.error(
-				    RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
+						RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME + " must be an integer. " + nfex.getMessage());
 				return RestConstants.MAX_RESULTS_ABSOLUTE;
 			}
 		} else {
 			return RestConstants.MAX_RESULTS_ABSOLUTE;
 		}
 	}
-	
+
 	/**
 	 * Tests whether or not a client's IP address is allowed to have access to the REST API (based on a
 	 * admin-settable global property).
-	 * 
+	 *
 	 * @param ip address of the client
 	 * @return <code>true</code> if client should be allowed access
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
@@ -123,10 +123,10 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean isIpAllowed(String ip) {
 		return ipMatches(ip, getAllowedIps());
 	}
-	
+
 	/**
 	 * Tests whether or not there is a match between the given IP address and the candidates.
-	 * 
+	 *
 	 * @param ip
 	 * @param candidateIps
 	 * @return <code>true</code> if there is a match <strong>Should</strong> return true if list is
@@ -140,7 +140,7 @@ public class RestUtil implements GlobalPropertyListener {
 		if (candidateIps.isEmpty()) {
 			return true;
 		}
-		
+
 		InetAddress address;
 		try {
 			address = InetAddress.getByName(ip);
@@ -148,11 +148,11 @@ public class RestUtil implements GlobalPropertyListener {
 		catch (UnknownHostException e) {
 			throw new IllegalArgumentException("Invalid IP in the ip parameter" + ip, e);
 		}
-		
+
 		for (String candidateIp : candidateIps) {
 			// split IP and mask
 			String[] candidateIpPattern = candidateIp.split("/");
-			
+
 			InetAddress candidateAddress;
 			try {
 				candidateAddress = InetAddress.getByName(candidateIpPattern[0]);
@@ -160,7 +160,7 @@ public class RestUtil implements GlobalPropertyListener {
 			catch (UnknownHostException e) {
 				throw new IllegalArgumentException("Invalid IP in the candidateIps parameter", e);
 			}
-			
+
 			if (candidateIpPattern.length == 1) { // there's no mask
 				if (address.equals(candidateAddress)) {
 					return true;
@@ -169,13 +169,13 @@ public class RestUtil implements GlobalPropertyListener {
 				if (address.getAddress().length != candidateAddress.getAddress().length) {
 					continue;
 				}
-				
+
 				int bits = Integer.parseInt(candidateIpPattern[1]);
 				if (candidateAddress.getAddress().length < Math.ceil((double) bits / 8)) {
 					throw new IllegalArgumentException(
-					        "Invalid mask " + bits + " for IP " + candidateIp + " in the candidateIps parameter");
+							"Invalid mask " + bits + " for IP " + candidateIp + " in the candidateIps parameter");
 				}
-				
+
 				// compare bytes based on the given mask
 				boolean matched = true;
 				for (int bytes = 0; bits > 0; bytes++, bits -= 8) {
@@ -193,11 +193,11 @@ public class RestUtil implements GlobalPropertyListener {
 					return true;
 				}
 			}
-			
+
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns a list of IPs which can access the REST API based on a global property. In case the
 	 * property is empty, returns an empty list.
@@ -205,14 +205,14 @@ public class RestUtil implements GlobalPropertyListener {
 	 * IPs should be separated by a whitespace or a comma. IPs can be declared with bit masks e.g.
 	 * <code>10.0.0.0/30</code> matches <code>10.0.0.0 - 10.0.0.3</code> and <code>10.0.0.0/24</code>
 	 * matches <code>10.0.0.0 - 10.0.0.255</code>.
-	 * 
+	 *
 	 * @see RestConstants#ALLOWED_IPS_GLOBAL_PROPERTY_NAME
 	 * @return the list of IPs
 	 */
 	public static List<String> getAllowedIps() {
 		String allowedIpsProperty = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
-		
+				.getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
+
 		if (allowedIpsProperty.isEmpty()) {
 			return Collections.emptyList();
 		} else {
@@ -220,7 +220,7 @@ public class RestUtil implements GlobalPropertyListener {
 			return Arrays.asList(allowedIps);
 		}
 	}
-	
+
 	/*
 	 * TODO - move logic from here to a method to deal with custom
 	 * representations Converts the given <code>openmrsObject</code> into a
@@ -382,7 +382,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 *
 	 * return simpleObject; }
 	 */
-	
+
 	/*
 	 * Used by code commented out above. Ready for possible deletion.
 	 *
@@ -411,12 +411,12 @@ public class RestUtil implements GlobalPropertyListener {
 	 * return null; // throw new NoSuchMethodException("No method on class " + c
 	 * + // " with name " + name + " with param " + param); }
 	 */
-	
+
 	/**
 	 * Determines the request representation, if not provided, uses default. <br/>
 	 * Determines number of results to limit to, if not provided, uses default set by admin. <br/>
 	 * Determines how far into a list to start with given the startIndex param. <br/>
-	 * 
+	 *
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @param defaultView the representation to use if none specified
@@ -427,14 +427,14 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @see RestConstants#REQUEST_PROPERTY_FOR_INCLUDE_ALL
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response,
-	                                               Representation defaultView) {
+												   Representation defaultView) {
 		if (defaultView == null)
 			defaultView = Representation.DEFAULT;
-		
+
 		RequestContext ret = new RequestContext();
 		ret.setRequest(request);
 		ret.setResponse(response);
-		
+
 		// get the "v" param for the representations
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if ("".equals(temp)) {
@@ -443,42 +443,42 @@ public class RestUtil implements GlobalPropertyListener {
 			ret.setRepresentation(defaultView);
 		} else if (temp.equals(defaultView.getRepresentation())) {
 			throw new IllegalArgumentException(
-			        "Do not specify ?v=" + temp + " because it is the default behavior for this request");
+					"Do not specify ?v=" + temp + " because it is the default behavior for this request");
 		} else {
 			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}
-		
+
 		// get the "t" param for subclass-specific requests
 		temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE);
 		if ("".equals(temp)) {
 			throw new IllegalArgumentException(
-			        "?" + RestConstants.REQUEST_PROPERTY_FOR_TYPE + "=(empty string) is not allowed");
+					"?" + RestConstants.REQUEST_PROPERTY_FOR_TYPE + "=(empty string) is not allowed");
 		} else {
 			ret.setType(temp);
 		}
-		
+
 		// fetch the "limit" param
 		Integer limit = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_LIMIT);
 		if (limit != null) {
 			ret.setLimit(limit);
 		}
-		
+
 		// fetch the startIndex param
 		Integer startIndex = getIntegerParam(request, RestConstants.REQUEST_PROPERTY_FOR_START_INDEX);
 		if (startIndex != null) {
 			ret.setStartIndex(startIndex);
 		}
-		
+
 		Boolean includeAll = getBooleanParam(request, RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL);
 		if (includeAll != null) {
 			ret.setIncludeAll(includeAll);
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * Determines the request representation with Representation.DEFAULT as the default view.
-	 * 
+	 *
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @return a {@link RequestContext} object filled with all the necessary values
@@ -488,17 +488,17 @@ public class RestUtil implements GlobalPropertyListener {
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
 		return getRequestContext(request, response, Representation.DEFAULT);
 	}
-	
+
 	/**
 	 * Convenience method to get the given param out of the given request.
-	 * 
+	 *
 	 * @param request the WebRequest to look in
 	 * @param param the string name to fetch
 	 * @return null if the param doesn't exist or is not a valid integer
 	 */
 	private static Integer getIntegerParam(HttpServletRequest request, String param) {
 		String paramString = request.getParameter(param);
-		
+
 		if (paramString != null) {
 			try {
 				return new Integer(paramString);// return the valid value
@@ -507,13 +507,13 @@ public class RestUtil implements GlobalPropertyListener {
 				log.debug("unable to parse '" + param + "' parameter into a valid integer: " + paramString);
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Convenience method to get the given param out of the given request as a boolean.
-	 * 
+	 *
 	 * @param request the WebRequest to look in
 	 * @param param the string name to fetch
 	 * @return <code>true</code> if the param is equal to 'true', <code>false</code> for any empty
@@ -528,10 +528,10 @@ public class RestUtil implements GlobalPropertyListener {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Sets the HTTP status on the response according to the exception
-	 * 
+	 *
 	 * @param ex
 	 * @param response
 	 */
@@ -547,11 +547,11 @@ public class RestUtil implements GlobalPropertyListener {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	/**
 	 * Sets the HTTP status on the response to no content, and returns an empty value, suitable for
 	 * returning from a @ResponseBody annotated Spring controller method.
-	 * 
+	 *
 	 * @param response
 	 * @return
 	 */
@@ -559,10 +559,10 @@ public class RestUtil implements GlobalPropertyListener {
 		response.setStatus(HttpServletResponse.SC_NO_CONTENT);
 		return "";
 	}
-	
+
 	/**
 	 * Sets the HTTP status for CREATED and (if 'created' has a uri) the Location header attribute
-	 * 
+	 *
 	 * @param response
 	 * @param created
 	 * @return the object passed in
@@ -576,10 +576,10 @@ public class RestUtil implements GlobalPropertyListener {
 		catch (Exception ex) {}
 		return created;
 	}
-	
+
 	/**
 	 * Sets the HTTP status for UPDATED and (if 'updated' has a uri) the Location header attribute
-	 * 
+	 *
 	 * @param response
 	 * @param updated
 	 * @return the object passed in
@@ -593,41 +593,41 @@ public class RestUtil implements GlobalPropertyListener {
 		catch (Exception ex) {}
 		return updated;
 	}
-	
+
 	/**
 	 * Updates the Uri prefix through which clients consuming web services will connect to the web app
-	 * 
+	 *
 	 * @return the webapp's Url prefix
 	 */
 	public static void setUriPrefix() {
 		if (contextEnabled) {
 			RestConstants.URI_PREFIX = Context.getAdministrationService()
-			        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+					.getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
 		}
-		
+
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
 			RestConstants.URI_PREFIX = "";
 		}
-		
+
 		// append the trailing slash in case the user forgot it
 		if (!RestConstants.URI_PREFIX.endsWith("/")) {
 			RestConstants.URI_PREFIX += "/";
 		}
-		
+
 		RestConstants.URI_PREFIX = RestConstants.URI_PREFIX + "ws/rest/";
 	}
-	
+
 	/**
 	 * It allows to disable calls to Context. It should be used in TESTS ONLY.
 	 */
 	public static void disableContext() {
 		contextEnabled = false;
 	}
-	
+
 	/**
 	 * A Set is returned by removing voided data from passed Collection. The Collection passed as
 	 * parameter is not modified
-	 * 
+	 *
 	 * @param input collection of OpenmrsData
 	 * @return non-voided OpenmrsData
 	 */
@@ -640,11 +640,11 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		return data;
 	}
-	
+
 	/**
 	 * A Set is returned by removing retired data from passed Collection. The Collection passed as
 	 * parameter is not modified
-	 * 
+	 *
 	 * @param input collection of OpenmrsMetadata
 	 * @return non-retired OpenmrsMetaData
 	 */
@@ -657,7 +657,7 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 		return data;
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#supportsPropertyName(java.lang.String)
 	 */
@@ -665,7 +665,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public boolean supportsPropertyName(String propertyName) {
 		return propertyName.equals(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyChanged(org.openmrs.GlobalProperty)
 	 */
@@ -673,7 +673,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public void globalPropertyChanged(GlobalProperty newValue) {
 		setUriPrefix();
 	}
-	
+
 	/**
 	 * @see org.openmrs.api.GlobalPropertyListener#globalPropertyDeleted(java.lang.String)
 	 */
@@ -681,11 +681,11 @@ public class RestUtil implements GlobalPropertyListener {
 	public void globalPropertyDeleted(String propertyName) {
 		setUriPrefix();
 	}
-	
+
 	/**
 	 * Inspects the cause chain for the given throwable, looking for an exception of the given class
 	 * (e.g. to find an APIAuthenticationException wrapped in an InvocationTargetException)
-	 * 
+	 *
 	 * @param throwable
 	 * @param causeClassToLookFor
 	 * @return whether any exception in the cause chain of throwable is an instance of
@@ -694,53 +694,53 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean hasCause(Throwable throwable, Class<? extends Throwable> causeClassToLookFor) {
 		return ExceptionUtils.indexOfType(throwable, causeClassToLookFor) >= 0;
 	}
-	
+
 	/**
 	 * Gets a list of classes in a given package. Note that interfaces are not returned.
-	 * 
+	 *
 	 * @param pkgname the package name.
 	 * @param suffix the ending text on name. eg "Resource.class"
 	 * @return the list of classes.
 	 */
 	public static ArrayList<Class<?>> getClassesForPackage(String pkgname, String suffix) throws IOException {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-		
+
 		//Get a File object for the package
 		File directory = null;
 		String relPath = pkgname.replace('.', '/');
 		Enumeration<URL> resources = OpenmrsClassLoader.getInstance().getResources(relPath);
 		while (resources.hasMoreElements()) {
-			
+
 			URL resource = resources.nextElement();
 			if (resource == null) {
 				throw new RuntimeException("No resource for " + relPath);
 			}
-			
+
 			try {
 				directory = new File(resource.toURI());
 			}
 			catch (URISyntaxException e) {
 				throw new RuntimeException(
-				        pkgname + " (" + resource
-				                + ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...",
-				        e);
+						pkgname + " (" + resource
+								+ ") does not appear to be a valid URL / URI.  Strange, since we got it from the system...",
+						e);
 			}
 			catch (IllegalArgumentException ex) {}
-			
+
 			//If folder exists, look for all resource class files in it.
 			if (directory != null && directory.exists()) {
-				
+
 				//Get the list of the files contained in the package
 				String[] files = directory.list();
-				
+
 				for (int i = 0; i < files.length; i++) {
-					
+
 					//We are only interested in Resource.class files
 					if (files[i].endsWith(suffix)) {
-						
+
 						//Remove the .class extension
 						String className = pkgname + '.' + files[i].substring(0, files[i].length() - 6);
-						
+
 						try {
 							Class<?> cls = Class.forName(className);
 							if (!cls.isInterface())
@@ -752,26 +752,26 @@ public class RestUtil implements GlobalPropertyListener {
 					}
 				}
 			} else {
-				
+
 				//Directory does not exist, look in jar file.
 				JarFile jarFile = null;
 				try {
 					String fullPath = resource.getFile();
 					String jarPath = fullPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");
 					jarFile = new JarFile(jarPath);
-					
+
 					Enumeration<JarEntry> entries = jarFile.entries();
 					while (entries.hasMoreElements()) {
 						JarEntry entry = entries.nextElement();
-						
+
 						String entryName = entry.getName();
-						
+
 						if (!entryName.endsWith(suffix))
 							continue;
-						
+
 						if (entryName.startsWith(relPath) && entryName.length() > (relPath.length() + "/".length())) {
 							String className = entryName.replace('/', '.').replace('\\', '.').replace(".class", "");
-							
+
 							try {
 								Class<?> cls = Class.forName(className);
 								if (!cls.isInterface())
@@ -793,19 +793,19 @@ public class RestUtil implements GlobalPropertyListener {
 				}
 			}
 		}
-		
+
 		return classes;
 	}
-	
+
 	/**
 	 * Wraps the exception message as a SimpleObject to be sent to client
-	 * 
+	 *
 	 * @param ex
 	 * @param reason
 	 * @return
 	 */
 	public static SimpleObject wrapErrorResponse(Exception ex, String reason) {
-		
+
 		String message = ex.getMessage();
 		Throwable cause = ex.getCause();
 		while (cause != null) {
@@ -821,7 +821,7 @@ public class RestUtil implements GlobalPropertyListener {
 			}
 			cause = cause.getCause();
 		}
-		
+
 		LinkedHashMap map = new LinkedHashMap();
 		if (reason != null && !reason.isEmpty()) {
 			map.put("message", reason + " [" + message + "]");
@@ -831,74 +831,80 @@ public class RestUtil implements GlobalPropertyListener {
 		StackTraceElement[] steElements = ex.getStackTrace();
 		if (steElements.length > 0) {
 			StackTraceElement ste = ex.getStackTrace()[0];
+			String stackTraceDetailsenabled_gp = Context.getAdministrationService()
+					.getGlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME);
 			map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
-			map.put("detail", ExceptionUtils.getStackTrace(ex));
+			if ("true".equalsIgnoreCase(stackTraceDetailsenabled_gp)) {
+				map.put("detail", ExceptionUtils.getStackTrace(ex));
+			} else {
+				map.put("detail", "");
+			}
 		} else {
 			map.put("code", "");
 			map.put("detail", "");
 		}
-		
+
 		return new SimpleObject().add("error", map);
 	}
-	
+
 	/**
 	 * Creates a SimpleObject to sent to the client with all validation errors (with message codes
 	 * resolved)
-	 * 
+	 *
 	 * @param ex
 	 * @return
 	 */
 	public static SimpleObject wrapValidationErrorResponse(ValidationException ex) {
-		
+
 		MessageSourceService messageSourceService = Context.getMessageSourceService();
-		
+
 		SimpleObject errors = new SimpleObject();
 		errors.add("message", messageSourceService.getMessage("webservices.rest.error.invalid.submission"));
 		errors.add("code", "webservices.rest.error.invalid.submission");
-		
+
 		List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
 		SimpleObject fieldErrors = new SimpleObject();
-		
+
 		if (ex.getErrors().hasGlobalErrors()) {
-			
+
 			for (Object errObj : ex.getErrors().getGlobalErrors()) {
-				
+
 				ObjectError err = (ObjectError) errObj;
 				String message = messageSourceService.getMessage(err.getCode());
-				
+
 				SimpleObject globalError = new SimpleObject();
 				globalError.put("code", err.getCode());
 				globalError.put("message", message);
 				globalErrors.add(globalError);
 			}
-			
+
 		}
-		
+
 		if (ex.getErrors().hasFieldErrors()) {
-			
+
 			for (Object errObj : ex.getErrors().getFieldErrors()) {
 				FieldError err = (FieldError) errObj;
 				String message = messageSourceService.getMessage(err.getCode());
-				
+
 				SimpleObject fieldError = new SimpleObject();
 				fieldError.put("code", err.getCode());
 				fieldError.put("message", message);
-				
+
 				if (!fieldErrors.containsKey(err.getField())) {
 					fieldErrors.put(err.getField(), new ArrayList<SimpleObject>());
 				}
-				
+
 				((List<SimpleObject>) fieldErrors.get(err.getField())).add(fieldError);
 			}
-			
+
 		}
-		
+
 		errors.put("globalErrors", globalErrors);
 		errors.put("fieldErrors", fieldErrors);
-		
+
 		return new SimpleObject().add("error", errors);
 	}
-	
+
 	/**
 	 * Gets the supported type for the specified resource object
 	 *
@@ -909,10 +915,10 @@ public class RestUtil implements GlobalPropertyListener {
 		Class<? extends Resource> resourceClass = resource.getClass();
 		if (resource instanceof SubResource) {
 			return resourceClass.getAnnotation(org.openmrs.module.webservices.rest.web.annotation.SubResource.class)
-			        .supportedClass();
+					.supportedClass();
 		} else {
 			return resourceClass.getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class)
-			        .supportedClass();
+					.supportedClass();
 		}
 	}
 }
