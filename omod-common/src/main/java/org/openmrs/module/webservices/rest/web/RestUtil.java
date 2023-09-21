@@ -832,7 +832,7 @@ public class RestUtil implements GlobalPropertyListener {
 		if (steElements.length > 0) {
 			StackTraceElement ste = ex.getStackTrace()[0];
 			String stackTraceDetailsenabled_gp = Context.getAdministrationService()
-					.getGlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME);
+					.getGlobalPropertyValue(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false");
 			map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
 			if ("true".equalsIgnoreCase(stackTraceDetailsenabled_gp)) {
 				map.put("detail", ExceptionUtils.getStackTrace(ex));
