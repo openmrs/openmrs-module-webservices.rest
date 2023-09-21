@@ -82,6 +82,11 @@
 		<defaultValue>true</defaultValue>
 		<description>If the value of this setting is "true", then nothing is logged while the Swagger specification is being generated.</description>
 	</globalProperty>
+	<globalProperty>
+		<property>@MODULE_ID@.enableStackTraceDetails</property>
+		<defaultValue>true</defaultValue>
+		<description>If the value of this setting is "true",then details of stackTrace would be shown in the error response</description>
+	</globalProperty>
 
     <!-- DWR -->
 	

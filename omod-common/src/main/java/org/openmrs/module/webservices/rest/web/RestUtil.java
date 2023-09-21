@@ -831,13 +831,18 @@ public class RestUtil implements GlobalPropertyListener {
 		StackTraceElement[] steElements = ex.getStackTrace();
 		if (steElements.length > 0) {
 			StackTraceElement ste = ex.getStackTrace()[0];
+			String stackTraceDetailsenabled_gp = Context.getAdministrationService()
+					.getGlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME);
 			map.put("code", ste.getClassName() + ":" + ste.getLineNumber());
-			map.put("detail", ExceptionUtils.getStackTrace(ex));
+			if ("true".equalsIgnoreCase(stackTraceDetailsenabled_gp)) {
+				map.put("detail", ExceptionUtils.getStackTrace(ex));
+			} else {
+				map.put("detail", "");
+			}
 		} else {
 			map.put("code", "");
 			map.put("detail", "");
 		}
-		
 		return new SimpleObject().add("error", map);
 	}
 	

@@ -206,4 +206,8 @@ public class RestConstants {
 	 * Constants used for the Server Log REST Service privilege checking
 	 */
 	public static final String PRIV_GET_SERVER_LOGS = "Get Server Logs";
+	/**
+	 * Constants used for the StackTrace Details in error response
+	 */
+	public static String ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".enableStackTraceDetails";
 }
