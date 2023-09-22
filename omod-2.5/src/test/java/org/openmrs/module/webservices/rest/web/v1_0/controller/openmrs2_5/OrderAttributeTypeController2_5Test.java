@@ -119,7 +119,7 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
 	 */
 	@Test
 	public void findOrderAttributeTypes_shouldFindMatchingOrderAttributeTypes() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Audit"))));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Dispensing Location"))));
 		
 		List<Object> results = Util.getResultsList(response);
 		

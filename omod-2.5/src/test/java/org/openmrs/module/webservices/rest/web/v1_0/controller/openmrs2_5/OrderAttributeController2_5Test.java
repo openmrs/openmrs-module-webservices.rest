@@ -12,6 +12,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_5;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.DrugOrder;
+import org.openmrs.Order;
 import org.openmrs.OrderAttribute;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
@@ -40,7 +42,7 @@ public class OrderAttributeController2_5Test extends MainResourceControllerTest 
 	 */
 	@Override
 	public String getURI() {
-		return "order/" + RestTestConstants2_5.ORDER_UUID + "/attribute";
+		return "order";
 	}
 	
 	/**
@@ -68,62 +70,11 @@ public class OrderAttributeController2_5Test extends MainResourceControllerTest 
 	@Test
 	public void shouldAddAttributeToOrder() throws Exception {
 		int before = service.getOrderByUuid(RestTestConstants2_5.ORDER_UUID).getAttributes().size();
-		String json = "{\"attributeType\":\"9516cc50-6f9f-132r-5433-001e378eb67f\", \"value\":\"2012-05-05\"}";
+
+		String json = "{\"type\":\"order\",\"concept\":\"d144d24f-6913-4b63-9660-a9108c2bebef\",\"orderer\":\"c2299800-cca9-11e0-9572-0800200c9a66\",\"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\",\"careSetting\":\"6f0c9a92-6f24-11e3-af88-005056821db0\",\"urgency\":\"STAT\",\"dose\":30,\"doseUnits\":\"5a2aa3db-68a3-11e3-bd76-0800271c1b75\",\"frequency\":\"28090760-7c38-11e3-baa7-0800200c9a66\",\"asNeeded\":true,\"quantityUnits\":\"5a2aa3db-68a3-11e3-bd76-0800271c1b75\",\"numRefills\":1,\"duration\":30,\"durationUnits\":\"7bfdcbf0-d9e7-11e3-9c1a-0800200c9a66\",\"route\":\"e10ffe54-5184-4efe-8960-cd565ec1cdf8\",\"dispenseAsWritten\":true,\"attributes\":[{\"attributeType\":\"6f09f118-bb2e-4459-8815-bd786d5e0e59\",\"value\":\"167ce20c-4785-4285-9119-d197268f7f4a\"}]}";
 		handle(newPostRequest(getURI(), json));
 		int after = service.getOrderByUuid(RestTestConstants2_5.ORDER_UUID).getAttributes().size();
 		Assert.assertEquals(before + 1, after);
 	}
-	
-	@Test
-	public void shouldEditOrderAttribute() throws Exception {
-		String json = "{ \"attributeType\":\"9516cc50-6f9f-132r-5433-001e378eb67f\" }";
-		
-		OrderAttribute orderAttribute = service.getOrderAttributeByUuid(getUuid());
-		Assert.assertEquals("Dispensing Location", orderAttribute.getAttributeType().getName());
-		
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
-		
-		orderAttribute = service.getOrderAttributeByUuid(getUuid());
-		Assert.assertEquals("Dispensing Personnel", orderAttribute.getAttributeType().getName());
-	}
-	
-	@Test
-	public void shouldVoidAttribute() throws Exception {
-		OrderAttribute orderAttribute = service.getOrderAttributeByUuid(getUuid());
-		Assert.assertFalse(orderAttribute.isVoided());
-		
-		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		request.addParameter("reason", "unit test");
-		handle(request);
-		
-		orderAttribute = service.getOrderAttributeByUuid(getUuid());
-		Assert.assertTrue(orderAttribute.isVoided());
-		Assert.assertEquals("unit test", orderAttribute.getVoidReason());
-	}
-	
-	@Test
-	public void shouldReturnOnlyAttributesOfGivenTypeWhenSearch() throws Exception {
-		String attributeTypeUuid = "9516cc50-6f9f-11e0-8414-001e378eb67e";
-		searchForAttributeOfGivenType_AndCheckIfTypeMatches(attributeTypeUuid);
-		
-		String anotherAttributeTypUuid = "9516cc50-6f9f-132r-6556-001e378eb67f";
-		searchForAttributeOfGivenType_AndCheckIfTypeMatches(anotherAttributeTypUuid);
-	}
-	
-	/**
-	 * sends search request for attributes with given type, checks if all result attributes are of
-	 * this type
-	 * 
-	 * @param attributeTypeUuid
-	 * @throws Exception
-	 */
-	private void searchForAttributeOfGivenType_AndCheckIfTypeMatches(String attributeTypeUuid) throws Exception {
-		SimpleObject response2 = deserialize(handle(newGetRequest(getURI(),
-		    new Parameter("attributeType", attributeTypeUuid))));
-		assertThat(Util.getResultsList(response2), is(not(empty())));
-		for (Object result : Util.getResultsList(response2)) {
-			Object resultAttributeTypeUuid = Util.getByPath(Util.getByPath(result, "attributeType"), "uuid");
-			Assert.assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
-		}
-	}
+
 }

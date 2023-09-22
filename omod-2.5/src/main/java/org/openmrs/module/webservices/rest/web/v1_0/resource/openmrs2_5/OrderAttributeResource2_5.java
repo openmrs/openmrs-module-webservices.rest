@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
 import org.openmrs.Order;
-import org.openmrs.OrderType;
 import org.openmrs.OrderAttribute;
 import org.openmrs.OrderAttributeType;
 import org.openmrs.api.context.Context;
@@ -21,7 +20,6 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeCrudResource1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
 import java.util.List;
@@ -31,7 +29,7 @@ import java.util.List;
  */
 @SubResource(parent = OrderResource2_2.class, path = "attribute", supportedClass = OrderAttribute.class, supportedOpenmrsVersions = {
         "2.5.* - 9.*"})
-public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<OrderAttribute, Order, OrderResource2_2> {
+public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<OrderAttribute, Order, OrderResource2_2> {
 
     /**
      * Sets attributeType on the given OrderAttribute.
@@ -116,14 +114,7 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
      */
     @Override
     protected void delete(OrderAttribute delegate, String reason, RequestContext context) throws ResponseException {
-        delegate.setVoided(true);
-        delegate.setVoidReason(reason);
-
-        OrderContext orderContext = new OrderContext();
-        orderContext.setCareSetting(delegate.getOrder().getCareSetting());
-        orderContext.setOrderType(delegate.getOrder().getOrderType());
-
-        Context.getOrderService().saveOrder(delegate.getOrder(),orderContext);
+        throw new UnsupportedOperationException("Cannot purge OrderAttribute");
     }
 
     /**
@@ -133,5 +124,13 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
     @Override
     public void purge(OrderAttribute delegate, RequestContext context) throws ResponseException {
         throw new UnsupportedOperationException("Cannot purge OrderAttribute");
+    }
+
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+     */
+    @Override
+    public String getResourceVersion() {
+        return "2.5";
     }
 }
