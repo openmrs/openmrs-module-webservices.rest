@@ -37,9 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.contains;
@@ -508,7 +506,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		List<String> statusList = new LinkedList<String>();
 		for (Map<String, Object> m : resultMap) {
 			for (String key : m.keySet()) {
-				if (key.equals("status")) {
+				if (key.equals(RestConstants.PROPERTY_FOR_STATUS)) {
 					statusList.add((String) m.get(key));
 				}
 			}

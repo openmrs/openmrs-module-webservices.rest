@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,14 +25,11 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.OpenmrsObject;
-import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -401,8 +397,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 					simple = (SimpleObject) meth.invoke(handler, delegate);
 				else
 					simple = (SimpleObject) meth.invoke(handler, delegate, representation);
-
-				maybeDecorateWithStatus(simple, delegate);
+				
 				maybeDecorateWithType(simple, delegate);
 				decorateWithResourceVersion(simple, representation);
 				
@@ -445,46 +440,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	private void maybeDecorateWithType(SimpleObject simple, T delegate) {
 		if (hasTypesDefined())
 			simple.add(RestConstants.PROPERTY_FOR_TYPE, getTypeName(delegate));
-	}
-
-	/**
-	 * If this resource is an Order, add a STATUS field to the REST response which indicates whether the order is ACTIVE or INACTIVE.
-	 *
-	 * @param simple simplified representation which will be decorated with the status
-	 * @param delegate the object that simple represents
-	 */
-
-	private void maybeDecorateWithStatus(SimpleObject simple, T delegate) {
-		if (delegate instanceof Order) {
-			Date asOfDate = new Date();
-			Order order = (Order) delegate;
-			if (order.isDiscontinued(asOfDate) || isExpired(order, asOfDate)) {
-				simple.add("status", "inactive");
-			} else {
-				simple.add("status", "active");
-			}
-		}
-	}
-
-	/**
-	 * @param order to check the autoExpireDate
-	 * @param checkDate to check against the order.autoExpireDate
-	 * @return boolean true or false if the order.autoExpireDate is passed or not
-	 */
-	private boolean isExpired(Order order, Date checkDate) {
-		if (order.isVoided()) {
-			return false;
-		} else {
-			if (checkDate == null) {
-				checkDate = new Date();
-			}
-
-			if (checkDate.after(order.getDateCreated())) {
-				return order.getAutoExpireDate() != null && checkDate.after(order.getAutoExpireDate());
-			} else {
-				return false;
-			}
-		}
 	}
 	
 	/**
