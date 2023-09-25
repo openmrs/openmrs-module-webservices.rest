@@ -212,7 +212,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
 
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertNotEquals("",errorResponseMap.get("detail"));
+		Assert.assertNotEquals("", errorResponseMap.get("detail"));
 	}
 	@Test
 	public void wrapErrorResponse_shouldSetNoStackTraceDetailsIfGlobalPropDisabled() throws Exception {
@@ -222,6 +222,6 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
 
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("",errorResponseMap.get("detail"));
+		Assert.assertEquals("", errorResponseMap.get("detail"));
 	}
 }

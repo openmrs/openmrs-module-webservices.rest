@@ -207,7 +207,11 @@ public class RestConstants {
 	 */
 	public static final String PRIV_GET_SERVER_LOGS = "Get Server Logs";
 	/**
-	 * Constants used for the StackTrace Details in error response
+	 * Global property name used to enable or disable the inclusion of stack trace details
+	 * in the error response.
+	 *
+	 * When this property is set to 'true', stack trace details will be included in error
+	 * responses. When set to 'false', stack trace details will be omitted.
 	 */
 	public static String ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".enableStackTraceDetails";
 }
