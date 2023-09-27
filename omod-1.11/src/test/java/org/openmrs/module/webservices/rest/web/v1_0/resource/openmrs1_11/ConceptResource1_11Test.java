@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptResource1_11Test extends BaseDelegatingResourceTest<ConceptResource1_11, Concept> {
@@ -36,6 +36,6 @@ public class ConceptResource1_11Test extends BaseDelegatingResourceTest<ConceptR
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.CONCEPT_NUMERIC_UUID;
+		return RestTestConstants1_9.CONCEPT_NUMERIC_UUID;
 	}
 }

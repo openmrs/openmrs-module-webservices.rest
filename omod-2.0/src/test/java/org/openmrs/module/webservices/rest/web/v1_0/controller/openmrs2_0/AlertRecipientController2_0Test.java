@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
@@ -38,7 +38,7 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 	public void setUp() {
 		this.service = Context.getAlertService();
 
-		User alertRecipient = Context.getUserService().getUserByUuid(RestTestConstants1_8.USER_UUID);
+		User alertRecipient = Context.getUserService().getUserByUuid(RestTestConstants1_9.USER_UUID);
 		AlertRecipient recipient = new AlertRecipient(alertRecipient, false);
 		recipient.setUuid(getUuid());
 
@@ -77,7 +77,7 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 		assertNotNull(existingAlert);
 		assertNull(existingAlert.getRecipients());
 
-		String json = "{\"recipient\": \"" + RestTestConstants1_8.USER_UUID + "\"}";
+		String json = "{\"recipient\": \"" + RestTestConstants1_9.USER_UUID + "\"}";
 		handle(newPostRequest("alert/" + EMPTY_ALERT_UUID + "/recipient", json));
 
 		existingAlert = getAlertByUuid(EMPTY_ALERT_UUID);

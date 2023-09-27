@@ -27,7 +27,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -55,7 +55,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PERSON_UUID;
+		return RestTestConstants1_9.PERSON_UUID;
 	}
 	
 	@Override

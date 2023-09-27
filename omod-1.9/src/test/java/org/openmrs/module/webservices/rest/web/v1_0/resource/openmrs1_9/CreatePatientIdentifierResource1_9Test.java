@@ -20,16 +20,15 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContextSensitiveTest {
 	
-	private PatientIdentifierResource1_8 resource;
+	private PatientIdentifierResource1_9 resource;
 	
 	@Before
 	public void beforeEachTests() throws Exception {
-		resource = (PatientIdentifierResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		resource = (PatientIdentifierResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 		    PatientIdentifier.class);
 	}
 	

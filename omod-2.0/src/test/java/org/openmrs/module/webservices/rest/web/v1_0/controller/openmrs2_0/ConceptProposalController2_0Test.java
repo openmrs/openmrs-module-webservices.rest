@@ -15,7 +15,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptProposal;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.OpenmrsConstants;
 
@@ -36,7 +36,7 @@ public class ConceptProposalController2_0Test extends MainResourceControllerTest
 		proposal.setFinalText("final text");
 		proposal.setState(OpenmrsConstants.CONCEPT_PROPOSAL_UNMAPPED);
 		proposal.setComments("comments");
-		proposal.setMappedConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT_UUID));
+		proposal.setMappedConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_9.CONCEPT3_UUID));
 		Context.getConceptService().saveConceptProposal(proposal);
 	}
 
@@ -78,12 +78,12 @@ public class ConceptProposalController2_0Test extends MainResourceControllerTest
 
 	@Test
 	public void shouldUpdateProposal() throws Exception {
-		String json = "{\"mappedConcept\": \"" + RestTestConstants1_8.CONCEPT2_UUID + "\"}";
+		String json = "{\"mappedConcept\": \"" + RestTestConstants1_9.CONCEPT2_UUID + "\"}";
 
 		handle(newPostRequest(getURI() + "/" + proposal.getUuid(), json));
 
 		ConceptProposal mappedProposal = Context.getConceptService().getConceptProposalByUuid(proposal.getUuid());
-		assertEquals(RestTestConstants1_8.CONCEPT2_UUID, mappedProposal.getMappedConcept().getUuid());
+		assertEquals(RestTestConstants1_9.CONCEPT2_UUID, mappedProposal.getMappedConcept().getUuid());
 	}
 
 	@Test
