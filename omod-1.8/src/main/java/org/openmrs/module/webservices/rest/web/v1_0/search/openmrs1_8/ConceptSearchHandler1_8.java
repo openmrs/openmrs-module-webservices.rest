@@ -163,16 +163,23 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			        + ". Allowed values: \"equals\" and \"fuzzy\"");
 		}
 
-		// getting concepts by classUuid
+		// getting concepts by classUuid and other parameters
 		if (conceptClass != null) {
+			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
+			List<ConceptClass> classes = null;
 			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
+			
 			if (responseConceptClass != null) {
-
-				List<Concept> concept = conceptService.getConceptsByClass(responseConceptClass);
-				concepts.addAll(concept);
-				return new NeedsPaging<Concept>(concepts, context);
-
+				classes = Arrays.asList(responseConceptClass);
 			}
+			
+			List<ConceptSearchResult> searchResults = conceptService.getConcepts(name, locales, context.getIncludeAll(),
+			    classes, null, null, null, null, context.getStartIndex(), context.getLimit());
+			List<Concept> results = new ArrayList<Concept>(searchResults.size());
+			for (ConceptSearchResult csr : searchResults) {
+				results.add(csr.getConcept());
+			}
+			return new NeedsPaging<Concept>(results, context);
 		}
 		
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
