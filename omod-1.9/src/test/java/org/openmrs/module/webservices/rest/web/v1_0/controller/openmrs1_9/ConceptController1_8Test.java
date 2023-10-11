@@ -314,6 +314,26 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
 	}
 	
+	@Test
+	public void shouldSearchAndReturnConceptsThatContainsNameAndClassPartInRequest() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
+		
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Asp"; //ASPIRIN
+		
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		
+		result = deserialize(handle(req));
+		hits = result.get("results");
+		
+		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+	}
+
+
 	@Test(expected = IllegalStateException.class)
 	public void shouldThrowExceptionWhenSearchRequiredParametersAreCalledTwice() throws Exception {
 		new SearchQuery.Builder("Some search description").withRequiredParameters("source").withRequiredParameters("name") // <- Exception
@@ -342,7 +362,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 	// 	result = deserialize(handle(req));
 	// }
-	
+
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
