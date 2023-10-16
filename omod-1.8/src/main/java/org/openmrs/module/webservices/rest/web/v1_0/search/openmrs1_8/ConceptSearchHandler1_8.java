@@ -118,7 +118,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 		concepts = new ArrayList<Concept>();
 
 		// If there's class parameter in query
-		if ("fuzzy".equals(searchType) || conceptClass != null) {
+		if ("fuzzy".equals(searchType)) {
 			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
 			List<ConceptClass> classes = null;
 			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
@@ -163,24 +163,24 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			        + ". Allowed values: \"equals\" and \"fuzzy\"");
 		}
 
-		// getting concepts by classUuid and other parameters
-		// if (conceptClass != null) {
-		// 	List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
-		// 	List<ConceptClass> classes = null;
-		// 	ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
+		//getting concepts by classUuid and other parameters
+		if (conceptClass != null) {
+			List<Locale> locales = new ArrayList<Locale>(LocaleUtility.getLocalesInOrder());
+			List<ConceptClass> classes = null;
+			ConceptClass responseConceptClass = conceptService.getConceptClassByUuid(conceptClass);
 			
-		// 	if (responseConceptClass != null) {
-		// 		classes = Arrays.asList(responseConceptClass);
-		// 	}
+			if (responseConceptClass != null) {
+				classes = Arrays.asList(responseConceptClass);
+			}
 			
-		// 	List<ConceptSearchResult> searchResults = conceptService.getConcepts(name, locales, context.getIncludeAll(),
-		// 	    classes, null, null, null, null, context.getStartIndex(), context.getLimit());
-		// 	List<Concept> results = new ArrayList<Concept>(searchResults.size());
-		// 	for (ConceptSearchResult csr : searchResults) {
-		// 		results.add(csr.getConcept());
-		// 	}
-		// 	return new NeedsPaging<Concept>(results, context);
-		// }
+			List<ConceptSearchResult> searchResults = conceptService.getConcepts(name, locales, context.getIncludeAll(),
+			    classes, null, null, null, null, context.getStartIndex(), context.getLimit());
+			List<Concept> results = new ArrayList<Concept>(searchResults.size());
+			for (ConceptSearchResult csr : searchResults) {
+				results.add(csr.getConcept());
+			}
+			return new NeedsPaging<Concept>(results, context);
+		}
 		
 		ConceptSource conceptSource = conceptService.getConceptSourceByUuid(source);
 		if (conceptSource == null) {

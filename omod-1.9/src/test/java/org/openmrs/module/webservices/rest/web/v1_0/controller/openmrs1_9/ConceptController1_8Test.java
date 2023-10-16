@@ -233,35 +233,35 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		};
 	}
 	
-	// @Test
-	// public void shouldSearchAndReturnConceptsThatEqualsToClassAndName() throws Exception {
-	// 	service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
-	// 	MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-	// 	SimpleObject result;
-	// 	List<Object> hits;
+	@Test
+	public void shouldSearchAndReturnConceptsThatEqualsToClassAndName() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
 		
-	// 	String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
-	// 	String name = "Aspirin"; //ASPIRIN
-	// 	String searchType = "equals";
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Aspirin"; //ASPIRIN
+		String searchType = "equals";
 		
-	// 	req.addParameter("class", conceptClassUuid);
-	// 	req.addParameter("name", name);
-	// 	req.addParameter("searchType", searchType);
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
 		
-	// 	result = deserialize(handle(req));
-	// 	hits = result.get("results");
+		result = deserialize(handle(req));
+		hits = result.get("results");
 		
-	// 	assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
 		
-	// 	//Should not find it when it has partial name:
-	// 	name = "Asp";
-	// 	req.setParameter("name", name);
+		//Should not find it when it has partial name:
+		name = "Asp";
+		req.setParameter("name", name);
 		
-	// 	result = deserialize(handle(req));
-	// 	hits = result.get("results");
+		result = deserialize(handle(req));
+		hits = result.get("results");
 		
-	// 	assertThat(hits, is(empty()));
-	// }
+		assertThat(hits, is(empty()));
+	}
 	
 	@Test
 	public void shouldNotReturnAnythingWhenConceptDoesntMatchClass() throws Exception {
@@ -322,7 +322,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		List<Object> hits;
 		
 		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
-		String name = "Asp"; //ASPIRIN
+		String name = "Aspirin"; //ASPIRIN
 		
 		req.addParameter("class", conceptClassUuid);
 		req.addParameter("name", name);
@@ -357,22 +357,22 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		        .withOptionalParameters("code").build();
 	}
 	
-	// @Test(expected = InvalidSearchException.class)
-	// public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
+	@Test(expected = InvalidSearchException.class)
+	public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
 		
-	// 	MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-	// 	SimpleObject result;
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
 		
-	// 	String conceptClassUuid = "ggy4657978090809"; // DRUG
-	// 	String name = "Aspirin"; //ASPIRIN
-	// 	String searchType = "equalz";
+		String conceptClassUuid = "ggy4657978090809"; // DRUG
+		String name = "Aspirin"; //ASPIRIN
+		String searchType = "equalz";
 		
-	// 	req.addParameter("class", conceptClassUuid);
-	// 	req.addParameter("name", name);
-	// 	req.addParameter("searchType", searchType);
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		req.addParameter("searchType", searchType);
 		
-	// 	result = deserialize(handle(req));
-	// }
+		result = deserialize(handle(req));
+	}
 
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
