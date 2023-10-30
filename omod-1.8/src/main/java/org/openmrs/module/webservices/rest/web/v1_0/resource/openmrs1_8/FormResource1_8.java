@@ -16,7 +16,10 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.EncounterType;
+import org.openmrs.Field;
 import org.openmrs.Form;
+import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -194,7 +197,15 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 	 */
 	@Override
 	protected NeedsPaging<Form> doSearch(RequestContext context) {
-		return new NeedsPaging<Form>(Context.getFormService().getForms(context.getParameter("q"), false), context);
+		String fuzzyName = context.getParameter("q");
+		String retiredQueryParam = context.getParameter("retired");
+		Boolean retired = null;
+		if (retiredQueryParam != null) {
+			retired = Boolean.parseBoolean(retiredQueryParam);
+		}
+
+		return new NeedsPaging<Form>(Context.getFormService().getForms(fuzzyName, null, null, retired,
+				null, null, null), context);
 	}
 	
 	/**
