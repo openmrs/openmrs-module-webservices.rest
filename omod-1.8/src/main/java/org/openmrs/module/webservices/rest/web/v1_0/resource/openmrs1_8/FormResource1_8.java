@@ -198,14 +198,10 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 	@Override
 	protected NeedsPaging<Form> doSearch(RequestContext context) {
 		String fuzzyName = context.getParameter("q");
-		String retiredQueryParam = context.getParameter("retired");
-		Boolean retired = null;
-		if (retiredQueryParam != null) {
-			retired = Boolean.parseBoolean(retiredQueryParam);
-		}
+		boolean includeRetired = context.getIncludeAll();
 
-		return new NeedsPaging<Form>(Context.getFormService().getForms(fuzzyName, null, null, retired,
-				null, null, null), context);
+		return new NeedsPaging<Form>(Context.getFormService().getForms(fuzzyName, null, null,
+				includeRetired, null, null, null), context);
 	}
 	
 	/**
