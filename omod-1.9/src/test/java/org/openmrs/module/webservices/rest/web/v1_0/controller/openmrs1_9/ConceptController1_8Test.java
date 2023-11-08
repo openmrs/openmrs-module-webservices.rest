@@ -314,6 +314,37 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
 	}
 	
+	@Test
+	public void shouldSearchAndReturnConceptsThatContainsNameAndClassPartInRequest() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		SimpleObject result;
+		List<Object> hits;
+		
+		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String name = "Aspirin"; //ASPIRIN
+		
+		req.addParameter("class", conceptClassUuid);
+		req.addParameter("name", name);
+		
+		result = deserialize(handle(req));
+		hits = result.get("results");
+		
+		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
+	}
+
+	@Test
+	public void shouldSearchAndReturnConceptsByClass() throws Exception {
+		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("class", "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"))));
+		List<Object> results = Util.getResultsList(response);
+		
+		Assert.assertEquals(2, results.size());
+		Object next = results.iterator().next();
+		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		System.out.println(results);
+	}
+
 	@Test(expected = IllegalStateException.class)
 	public void shouldThrowExceptionWhenSearchRequiredParametersAreCalledTwice() throws Exception {
 		new SearchQuery.Builder("Some search description").withRequiredParameters("source").withRequiredParameters("name") // <- Exception
@@ -332,7 +363,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result;
 		
-		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+		String conceptClassUuid = "ggy4657978090809"; // DRUG
 		String name = "Aspirin"; //ASPIRIN
 		String searchType = "equalz";
 		
@@ -342,7 +373,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		result = deserialize(handle(req));
 	}
-	
+
 	@Test
 	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
