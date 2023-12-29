@@ -75,4 +75,15 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         assertTrue(person.isDead());
         assertNotNull(person.getCauseOfDeathNonCoded());
     }
+    
+    @Test
+   	public void shouldCreatePersonWithBirthtime() throws Exception {
+   		String json = "{ \"gender\": \"M\", " + "\"age\": 47, " + "\"birthdate\": \"1970-01-01T00:00:00.000+0100\", "
+   		        + "\"birthdateEstimated\": false, " + "\"dead\": false, " + "\"deathDate\": null, "+ "\"birthtime\": \"1970-01-01T18:18:00.000\", "
+   		        + "\"causeOfDeath\": null, " + "\"names\": [{\"givenName\": \"Thomas\", \"familyName\": \"Smith\"}] " + "}}";
+   		
+   		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
+   		
+   		assertNotNull(PropertyUtils.getProperty(newPerson, "uuid"));
+   	}
 }
