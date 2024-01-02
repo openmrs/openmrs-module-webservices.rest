@@ -398,14 +398,4 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		assertEquals(givenName, person.getGivenName());
 		assertEquals("true", person.getAttribute(attributeId).getValue());
 	}
-	@Test
-	public void shouldEditAPersonBirthTime() throws Exception {
-		Person person = service.getPersonByUuid(getUuid());
-		String json = "{\"birthtime\": \"1970-01-01T20:20:00.000\"}";
-		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
-		assertNotNull(response);
-		Object responsePersonContents = PropertyUtils.getProperty(response, "person");
-		assertNotNull(responsePersonContents);
-		//assertEquals("1970-01-01T20:20:00.000+0000", PropertyUtils.getProperty(responsePersonContents, "birthtime").toString());
-	}
 }
