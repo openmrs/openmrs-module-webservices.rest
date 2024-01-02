@@ -131,7 +131,6 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		description.addProperty("gender");
 		description.addProperty("birthdate");
 		description.addProperty("birthdateEstimated");
-		description.addProperty("birthtime");
 		description.addProperty("preferredName");
 		description.addProperty("preferredAddress");
 		description.addProperty("addresses");
