@@ -83,7 +83,6 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         assertNotNull(response);
         Object responsePersonContents = PropertyUtils.getProperty(response, "person");
         assertNotNull(responsePersonContents);
-        //assertEquals("1970-01-01T20:20:00.000+0000", PropertyUtils.getProperty(responsePersonContents, "birthtime").toString());
     }
     @Test
    	public void shouldCreatePersonWithBirthtime() throws Exception {
