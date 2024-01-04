@@ -20,6 +20,8 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
+import java.text.SimpleDateFormat;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -78,11 +80,13 @@ public class PersonController2_2Test extends MainResourceControllerTest {
     @Test
     public void shouldEditAPersonBirthTime() throws Exception {
         Person person = service.getPersonByUuid(getUuid());
-        String json = "{\"birthtime\": \"1975-04-08T20:20:00.000\"}";
+        assertNull(person.getBirthtime());
+        String json = "{\"birthtime\": \"1971-02-08T20:20:00.000\"}";
         SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
         assertNotNull(response);
         Object responsePersonContents = PropertyUtils.getProperty(response, "person");
+        assertNotNull(person.getBirthtime());
         assertNotNull(responsePersonContents);
-        assertEquals("1975-04-08T20:20:00.000+0530", PropertyUtils.getProperty(responsePersonContents, "birthtime").toString());
+        assertEquals("1971-02-08 08:20:00", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(person.getBirthtime()));
     }
 }
