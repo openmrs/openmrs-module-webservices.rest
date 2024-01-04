@@ -75,6 +75,7 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         assertTrue(person.isDead());
         assertNotNull(person.getCauseOfDeathNonCoded());
     }
+    
     @Test
     public void shouldEditAPersonBirthTime() throws Exception {
         Person person = service.getPersonByUuid(getUuid());
@@ -85,6 +86,7 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         assertNotNull(responsePersonContents);
         assertEquals("1975-04-08T20:20:00.000+0000", PropertyUtils.getProperty(responsePersonContents, "birthtime").toString());
     }
+    
     @Test
    	public void shouldCreatePersonWithBirthtime() throws Exception {
    		String json = "{ \"gender\": \"M\", " + "\"age\": 47, " + "\"birthdate\": \"1970-01-01T00:00:00.000+0100\", "
