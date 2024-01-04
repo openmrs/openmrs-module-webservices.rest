@@ -20,8 +20,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
-import java.text.SimpleDateFormat;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -77,16 +75,26 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         assertTrue(person.isDead());
         assertNotNull(person.getCauseOfDeathNonCoded());
     }
+    
     @Test
     public void shouldEditAPersonBirthTime() throws Exception {
         Person person = service.getPersonByUuid(getUuid());
-        assertNull(person.getBirthtime());
-        String json = "{\"birthtime\": \"1971-02-08T20:20:00.000\"}";
+        String json = "{\"birthtime\": \"1975-04-08T20:20:00.000\"}";
         SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
         assertNotNull(response);
         Object responsePersonContents = PropertyUtils.getProperty(response, "person");
-        assertNotNull(person.getBirthtime());
         assertNotNull(responsePersonContents);
-        assertEquals("1971-02-08 08:20:00", new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(person.getBirthtime()));
+        assertEquals("1975-04-08T20:20:00.000+0000", PropertyUtils.getProperty(responsePersonContents, "birthtime").toString());
     }
+    
+    @Test
+   	public void shouldCreatePersonWithBirthtime() throws Exception {
+   		String json = "{ \"gender\": \"M\", " + "\"age\": 47, " + "\"birthdate\": \"1970-01-01T00:00:00.000+0100\", "
+   		        + "\"birthdateEstimated\": false, " + "\"dead\": false, " + "\"deathDate\": null, "+ "\"birthtime\": \"1970-01-01T18:18:00.000\", "
+   		        + "\"causeOfDeath\": null, " + "\"names\": [{\"givenName\": \"Thomas\", \"familyName\": \"Smith\"}] " + "}}";
+   		
+   		SimpleObject newPerson = deserialize(handle(newPostRequest(getURI(), json)));
+   		
+   		assertNotNull(PropertyUtils.getProperty(newPerson, "uuid"));
+   	}
 }
