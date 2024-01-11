@@ -16,6 +16,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
 
 /**
@@ -46,11 +47,18 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		description.addProperty("birthtime");
 		return description;
 	}
-	
+
+
 	/**
 	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.addProperty("birthtime");
+		return description;
+	}
 	@Override
 	public Model getGETModel(Representation rep) {
 		return addNewProperties(super.getGETModel(rep), rep);
