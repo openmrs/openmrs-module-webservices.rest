@@ -34,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -52,7 +53,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
         File jsonConfigFile = getJsonConfigFile();
         if (!jsonConfigFile.exists()) {
             log.debug("Configuration file does not exist");
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Configuration file does not exist");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Configuration file does not exist");
         }
         try {
             InputStream inputStream = new FileInputStream(jsonConfigFile);
@@ -74,7 +75,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
         User user = Context.getAuthenticatedUser();
         if (user == null || !user.isSuperUser()) {
             log.error("Authorization error while creating a config.json file");
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization error while creating a config.json file");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization error while saving a config.json file");
             return;
         }
         saveJsonConfigFile(request, response);
@@ -83,18 +84,12 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     private void saveJsonConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File jsonConfigFile = getJsonConfigFile();
         try {
-            BufferedReader reader = request.getReader();
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-            String requestBody = stringBuilder.toString();
+            InputStream inputStream = request.getInputStream();
+            String requestBody = IOUtils.toString( inputStream , "UTF-8");
 
             // verify that is in a valid JSON format
             new ObjectMapper().readTree(requestBody);
-
-            InputStream inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
+            inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
             OutputStream outStream = Files.newOutputStream(jsonConfigFile.toPath());
             OpenmrsUtil.copyFile(inputStream, outStream);
 
@@ -120,8 +115,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     }
 
     private File getSpaStaticFilesDir() {
-        AdministrationService as = Context.getAdministrationService();
-        String folderName = as.getGlobalProperty(GP_LOCAL_DIRECTORY, DEFAULT_FRONTEND_DIRECTORY);
+        String folderName = Context.getAdministrationService().getGlobalProperty(GP_LOCAL_DIRECTORY, DEFAULT_FRONTEND_DIRECTORY);
 
         // try to load the repository folder straight away.
         File folder = new File(folderName);
