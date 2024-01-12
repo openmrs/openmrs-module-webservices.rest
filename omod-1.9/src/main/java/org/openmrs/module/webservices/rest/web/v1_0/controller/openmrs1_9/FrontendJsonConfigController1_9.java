@@ -45,7 +45,6 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     private static final String DEFAULT_FRONTEND_DIRECTORY = "frontend";
     private static final String GP_LOCAL_DIRECTORY = "spa.local.directory";
     private static final String JSON_CONFIG_FILE_NAME = "config.json";
-
     private static final Logger log = LoggerFactory.getLogger(FrontendJsonConfigController1_9.class);
 
     @RequestMapping(method = RequestMethod.GET)
