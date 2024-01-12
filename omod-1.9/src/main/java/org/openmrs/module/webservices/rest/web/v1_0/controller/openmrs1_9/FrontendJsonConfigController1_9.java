@@ -75,7 +75,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
         User user = Context.getAuthenticatedUser();
         if (user == null || !user.isSuperUser()) {
             log.error("Authorization error while creating a config.json file");
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization error while saving a config.json file");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization error. Admin privileges required to save the config.json file");
             return;
         }
         saveJsonConfigFile(request, response);
