@@ -82,23 +82,22 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
 
     private void saveJsonConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         File jsonConfigFile = getJsonConfigFile();
+        InputStream inputStream = request.getInputStream();
+        String requestBody = IOUtils.toString( inputStream , "UTF-8");
         try {
-            InputStream inputStream = request.getInputStream();
-            String requestBody = IOUtils.toString( inputStream , "UTF-8");
-
             // verify that is in a valid JSON format
             new ObjectMapper().readTree(requestBody);
-            inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
-            OutputStream outStream = Files.newOutputStream(jsonConfigFile.toPath());
-            OpenmrsUtil.copyFile(inputStream, outStream);
-
-            if (jsonConfigFile.exists()) {
-                log.debug("file: '{}' written successfully", jsonConfigFile.getAbsolutePath());
-                response.setStatus(HttpServletResponse.SC_OK);
-            }
         } catch (JsonProcessingException e) {
             log.error("Invalid JSON format", e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+        }
+        inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
+        OutputStream outStream = Files.newOutputStream(jsonConfigFile.toPath());
+        OpenmrsUtil.copyFile(inputStream, outStream);
+
+        if (jsonConfigFile.exists()) {
+            log.debug("file: '{}' written successfully", jsonConfigFile.getAbsolutePath());
+            response.setStatus(HttpServletResponse.SC_OK);
         }
     }
 
