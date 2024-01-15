@@ -87,7 +87,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     }
 
     private void saveJsonConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String requestBody = IOUtils.toString( request.getInputStream() , "UTF-8");
+        String requestBody = IOUtils.toString(request.getInputStream() , "UTF-8");
 
         try {
             // verify that is in a valid JSON format
