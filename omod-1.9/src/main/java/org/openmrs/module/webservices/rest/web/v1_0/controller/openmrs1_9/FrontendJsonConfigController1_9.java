@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.File;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.User;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -33,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonProcessingException;
@@ -48,23 +47,29 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     private static final Logger log = LoggerFactory.getLogger(FrontendJsonConfigController1_9.class);
 
     @RequestMapping(method = RequestMethod.GET)
-	public void getFrontendConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File jsonConfigFile = getJsonConfigFile();
-        if (!jsonConfigFile.exists()) {
-            log.debug("Configuration file does not exist");
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Configuration file does not exist");
-        }
+	public void getFrontendConfigFile(HttpServletRequest request, HttpServletResponse response,
+            @RequestParam(value = "download", required = false) String download) throws IOException {
         try {
+            File jsonConfigFile = getJsonConfigFile();
+            if (!jsonConfigFile.exists()) {
+                log.warn("Configuration file does not exist");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Configuration file does not exist");
+            }
             InputStream inputStream = new FileInputStream(jsonConfigFile);
             OutputStream outStream = response.getOutputStream();
             OpenmrsUtil.copyFile(inputStream, outStream);
-    
-            response.setContentType("application/json");
-            response.setHeader("Content-Disposition", "attachment; filename=" + jsonConfigFile.getName());
+            boolean isDownloadRequested = Boolean.parseBoolean(download);
+             if (isDownloadRequested | download != null && download.isEmpty()) {
+                 response.setContentType("application/x-download");
+                 response.setHeader("Content-Disposition", "attachment; filename=" + jsonConfigFile.getName());
+             } else {
+                 response.setContentType("application/json");
+             }
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
-            log.error("Error reading Configuration file: " + jsonConfigFile.getAbsolutePath(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error reading Configuration file: " + jsonConfigFile.getPath());
+            log.error("Error reading Configuration file {}", JSON_CONFIG_FILE_NAME, e);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			    "Error reading Configuration file: " + JSON_CONFIG_FILE_NAME);
         }
 	}
 
@@ -73,31 +78,33 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     public void saveFrontendConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
         User user = Context.getAuthenticatedUser();
         if (user == null || !user.isSuperUser()) {
-            log.error("Authorization error while creating a config.json file");
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authorization error. Admin privileges required to save the config.json file");
+            log.error("Authorization error while saving a config.json file");
+			response.sendError(HttpServletResponse.SC_FORBIDDEN,
+			    "Authorization error. Admin privileges required to save the " + JSON_CONFIG_FILE_NAME + " file");
             return;
         }
         saveJsonConfigFile(request, response);
     }
 
     private void saveJsonConfigFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File jsonConfigFile = getJsonConfigFile();
-        InputStream inputStream = request.getInputStream();
-        String requestBody = IOUtils.toString( inputStream , "UTF-8");
+        String requestBody = IOUtils.toString( request.getInputStream() , "UTF-8");
+
         try {
             // verify that is in a valid JSON format
             new ObjectMapper().readTree(requestBody);
-        } catch (JsonProcessingException e) {
-            log.error("Invalid JSON format", e);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
-        }
-        inputStream = new ByteArrayInputStream(requestBody.getBytes(StandardCharsets.UTF_8));
-        OutputStream outStream = Files.newOutputStream(jsonConfigFile.toPath());
-        OpenmrsUtil.copyFile(inputStream, outStream);
-
-        if (jsonConfigFile.exists()) {
+            File jsonConfigFile = getJsonConfigFile();
+            OutputStream outStream = Files.newOutputStream(jsonConfigFile.toPath());
+            outStream.write(requestBody.getBytes(StandardCharsets.UTF_8));
             log.debug("file: '{}' written successfully", jsonConfigFile.getAbsolutePath());
             response.setStatus(HttpServletResponse.SC_OK);
+        }
+        catch (JsonProcessingException e) {
+            log.error("Invalid JSON format when reading: {}", requestBody, e);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JSON format");
+        }
+        catch (IOException e) {
+            log.error("Error while saving a config.json file: {}", JSON_CONFIG_FILE_NAME, e);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error while saving a config.json file");
         }
     }
 
@@ -106,6 +113,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
         if (!folder.isDirectory()) {
             log.debug("Unable to find the OpenMRS SPA module frontend directory hence creating it at: " + folder.getAbsolutePath());
             if (!folder.mkdirs()) {
+                log.debug("Failed to create the OpenMRS SPA module frontend directory at: " + folder.getPath());
                 throw new IOException("Failed to create the OpenMRS SPA module frontend directory at: " + folder.getPath());
             }
         }
@@ -120,7 +128,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
 
         // if the property wasn't a full path already, assume it was intended to be a
         // folder in the application directory
-        if (!folder.exists()) {
+        if (!folder.isAbsolute()) {
             folder = new File(OpenmrsUtil.getApplicationDataDirectory(), folderName);
         }
         return folder;
