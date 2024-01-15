@@ -59,12 +59,10 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
             OutputStream outStream = response.getOutputStream();
             OpenmrsUtil.copyFile(inputStream, outStream);
             boolean isDownloadRequested = Boolean.parseBoolean(download);
-             if (isDownloadRequested | download != null && download.isEmpty()) {
-                 response.setContentType("application/x-download");
-                 response.setHeader("Content-Disposition", "attachment; filename=" + jsonConfigFile.getName());
-             } else {
-                 response.setContentType("application/json");
-             }
+            if (isDownloadRequested | download != null && download.isEmpty()) {
+                response.setHeader("Content-Disposition", "attachment; filename=" + jsonConfigFile.getName());
+            }
+            response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             log.error("Error reading Configuration file {}", JSON_CONFIG_FILE_NAME, e);
