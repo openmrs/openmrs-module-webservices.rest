@@ -47,7 +47,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
     private static final Logger log = LoggerFactory.getLogger(FrontendJsonConfigController1_9.class);
 
     @RequestMapping(method = RequestMethod.GET)
-	public void getFrontendConfigFile(HttpServletRequest request, HttpServletResponse response,
+    public void getFrontendConfigFile(HttpServletRequest request, HttpServletResponse response,
             @RequestParam(value = "download", required = false) String download) throws IOException {
         try {
             File jsonConfigFile = getJsonConfigFile();
@@ -69,7 +69,7 @@ public class FrontendJsonConfigController1_9 extends BaseRestController {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 			    "Error reading Configuration file: " + JSON_CONFIG_FILE_NAME);
         }
-	}
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
