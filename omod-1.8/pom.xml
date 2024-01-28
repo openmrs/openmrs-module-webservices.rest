@@ -61,7 +61,13 @@
 			<type>pom</type>
 			<version>${openmrs.version.1.8}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
