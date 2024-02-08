@@ -69,7 +69,7 @@ public class SessionController1_9 extends BaseRestController {
 		if (authenticated) {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
 			    new CustomRepresentation(USER_CUSTOM_REP)));
-			session.add("locale", Context.getLocale());
+			session.add("locale", Context.getLocale().toLanguageTag());
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 			session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
 			session.add("currentProvider", ConversionUtil.convertToRepresentation(getCurrentProvider(), Representation.REF));
