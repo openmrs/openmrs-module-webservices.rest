@@ -90,7 +90,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	public void get_shouldReturnLocaleInfoIfTheUserIsAuthenticated() throws Exception {
 		Assert.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assert.assertEquals(Context.getLocale().toLanguageTag(), PropertyUtils.getProperty(ret, "locale"));
 		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 		    ((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
@@ -129,11 +129,11 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	@Test
 	public void post_shouldSetTheUserLocale() throws Exception {
 		Locale newLocale = new Locale("sp");
-		String content = "{\"locale\":\"" + newLocale.toString() + "\"}";
+		String content = "{\"locale\":\"" + newLocale.toLanguageTag() + "\"}";
 		Assert.assertNotEquals(newLocale, Context.getLocale());
 		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 		Assert.assertEquals(newLocale, Context.getLocale());
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assert.assertEquals(Context.getLocale().toLanguageTag(), PropertyUtils.getProperty(ret, "locale"));
 		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
