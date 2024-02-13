@@ -101,7 +101,8 @@ public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.we
 		for (EncounterProvider newEncounterProvider : encounterProviders) {
 			boolean isProviderAlreadyPresent = false;
 			for (EncounterProvider existingProvider : instance.getEncounterProviders()) {
-				if (existingProvider.getProvider().getUuid().equals(newEncounterProvider.getProvider().getUuid())) {
+				if (existingProvider.getProvider().getUuid().equals(newEncounterProvider.getProvider().getUuid())
+						&& existingProvider.getEncounterRole().getUuid().equals(newEncounterProvider.getEncounterRole().getUuid())) {
 					isProviderAlreadyPresent = true;
 					break;
 				}
