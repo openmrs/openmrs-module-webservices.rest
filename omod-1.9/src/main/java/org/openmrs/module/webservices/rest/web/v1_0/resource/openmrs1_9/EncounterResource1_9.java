@@ -14,6 +14,7 @@ import org.openmrs.EncounterProvider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -23,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -92,6 +94,22 @@ public class EncounterResource1_9 extends org.openmrs.module.webservices.rest.we
 			}
 		}
 		return providers;
+	}
+
+	@PropertySetter("encounterProviders")
+	public void setEncounterProviders(Encounter instance, List<EncounterProvider> encounterProviders) {
+		for (EncounterProvider newEncounterProvider : encounterProviders) {
+			boolean isProviderAlreadyPresent = false;
+			for (EncounterProvider existingProvider : instance.getEncounterProviders()) {
+				if (existingProvider.getProvider().getUuid().equals(newEncounterProvider.getProvider().getUuid())) {
+					isProviderAlreadyPresent = true;
+					break;
+				}
+			}
+			if (!isProviderAlreadyPresent) {
+				instance.getEncounterProviders().add(newEncounterProvider);
+			}
+		}
 	}
 	
 	/**
