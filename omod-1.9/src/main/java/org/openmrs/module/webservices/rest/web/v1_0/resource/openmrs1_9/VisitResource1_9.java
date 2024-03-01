@@ -9,9 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
 import org.openmrs.Location;
@@ -323,29 +325,49 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
 		String fromStartDate = context.getRequest().getParameter("fromStartDate");
+		String toStartDate = context.getRequest().getParameter("toStartDate");
 		String visitTypeParameter = context.getRequest().getParameter("visitType");
+		String includeParentLocations = context.getRequest().getParameter("includeParentLocations");
 		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null
 		        || visitTypeParameter != null) {
 			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter,
-			    visitTypeParameter);
+			Date maxStartDate = toStartDate != null ? (Date) ConversionUtil.convert(toStartDate, Date.class) : null;
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, maxStartDate, locationParameter,
+			    visitTypeParameter, includeParentLocations);
 		} else {
 			return super.search(context);
 		}
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, String locationParameter, String visitTypeParameter) {
+	        Date minStartDate, Date maxStartDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
-		Collection<Location> locations = locationParameter == null ? null : Arrays.asList(getLocation(locationParameter));
+		Collection<Location> locations = locationParameter == null ? null :
+				Boolean.parseBoolean(includeParentLocations) ?
+						getLocationAndParents(getLocation(locationParameter), null) :
+				Arrays.asList(getLocation(locationParameter));
 		Collection<VisitType> visitTypes = visitTypeParameter == null ? null : Arrays
 		        .asList(getVisitType(visitTypeParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(visitTypes, patients, locations, null,
 		    minStartDate,
-		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
+		    maxStartDate, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
-	
+
+	/**
+	 * Recursively builds a list that includes the passed-in location and all it's ancestors
+	 */
+	protected List<Location> getLocationAndParents(Location location, List<Location> locations) {
+		if (locations == null) {
+			locations = new ArrayList<Location>();
+		}
+		locations.add(location);
+		if (location.getParentLocation() != null) {
+			locations = getLocationAndParents(location.getParentLocation(), locations);
+		}
+		return locations;
+	}
+
 	/**
 	 * Get all the visits
 	 * 
