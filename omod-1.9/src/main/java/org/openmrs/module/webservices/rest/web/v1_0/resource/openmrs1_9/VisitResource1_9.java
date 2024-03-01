@@ -357,7 +357,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	/**
 	 * Recursively builds a list that includes the passed-in location and all it's ancestors
 	 */
-	protected List<Location> getLocationAndParents(Location location, List<Location> locations) {
+	private List<Location> getLocationAndParents(Location location, List<Location> locations) {
 		if (locations == null) {
 			locations = new ArrayList<Location>();
 		}
