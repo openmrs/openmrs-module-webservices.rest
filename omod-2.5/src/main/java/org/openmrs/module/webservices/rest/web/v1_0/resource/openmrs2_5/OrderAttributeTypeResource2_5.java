@@ -98,6 +98,6 @@ public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource
 	 */
 	@Override
 	public String getResourceVersion() {
-		return "2.5";
+		return RestConstants2_5.RESOURCE_VERSION;
 	}
 }

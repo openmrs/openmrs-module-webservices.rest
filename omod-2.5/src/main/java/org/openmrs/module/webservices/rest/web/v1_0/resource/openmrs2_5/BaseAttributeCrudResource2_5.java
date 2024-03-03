@@ -149,7 +149,7 @@ public abstract class BaseAttributeCrudResource2_5<T extends Attribute<?, ?>, P,
 	 */
 	@Override
 	public String getResourceVersion() {
-		return "2.5";
+		return RestConstants2_5.RESOURCE_VERSION;
 	}
 	
 	/**

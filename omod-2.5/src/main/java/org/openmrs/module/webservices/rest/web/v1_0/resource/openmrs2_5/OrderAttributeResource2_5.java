@@ -91,8 +91,8 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<Orde
     public OrderAttribute save(OrderAttribute delegate) {
         // make sure it has not already been added to the order
         boolean needToAdd = true;
-        for (OrderAttribute pa : delegate.getOrder().getActiveAttributes()) {
-            if (pa.equals(delegate)) {
+        for (OrderAttribute orderAttribute : delegate.getOrder().getActiveAttributes()) {
+            if (orderAttribute.equals(delegate)) {
                 needToAdd = false;
                 break;
             }
@@ -131,6 +131,6 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<Orde
      */
     @Override
     public String getResourceVersion() {
-        return "2.5";
+        return RestConstants2_5.RESOURCE_VERSION;
     }
 }

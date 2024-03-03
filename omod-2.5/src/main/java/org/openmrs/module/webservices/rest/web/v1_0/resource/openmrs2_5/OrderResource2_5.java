@@ -20,7 +20,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class OrderResource2_5 extends OrderResource2_2 {
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-			description.addProperty("attributes", Representation.DEFAULT);
+			description.addProperty("attributes", Representation.FULL);
 			return description;
 		}
 		return null;
@@ -68,10 +67,25 @@ public class OrderResource2_5 extends OrderResource2_2 {
 	}
 
 	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
+	 */
+	@Override
+	public DelegatingResourceDescription getUpdatableProperties() {
+		DelegatingResourceDescription description = super.getUpdatableProperties();
+		description.addProperty("attributes");
+		return description;
+	}
+
+	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
 	 */
 	@Override
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Arrays.asList("attributes");
+	}
+
+	@Override
+	public String getResourceVersion() {
+		return RestConstants2_5.RESOURCE_VERSION;
 	}
 }
