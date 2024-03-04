@@ -53,7 +53,7 @@ public class OrderAttributeResource2_5Test extends BaseDelegatingResourceTest<Or
 	@Override
 	public String getDisplayProperty() {
 		try {
-			return "Dispensing Location: " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
+			return "Dispensing Date: " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
 		}
 		catch (ParseException ex) {
 			log.error(ex);

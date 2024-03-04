@@ -54,7 +54,7 @@ public class OrderAttributeTypeResource2_5Test extends BaseDelegatingResourceTes
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Dispensing Location";
+		return "Dispensing Date";
 	}
 	
 	@Override
