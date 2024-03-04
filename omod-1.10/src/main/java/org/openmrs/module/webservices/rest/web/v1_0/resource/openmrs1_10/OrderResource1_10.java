@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -273,9 +274,10 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			else {
 				return new NeedsPaging<Order>(orders, context);
 			}
+		} else {
+			throw new InvalidSearchException("Please provide patientUuid in the patient parameter");
 		}
-		
-		return new EmptySearchResult();
+
 	}
 	
 	private static Date getUsableDate(Order order) {
