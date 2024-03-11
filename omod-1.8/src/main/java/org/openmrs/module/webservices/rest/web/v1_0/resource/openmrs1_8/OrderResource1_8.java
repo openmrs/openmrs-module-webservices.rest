@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Date;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -133,6 +134,43 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		if (order.getConcept() == null)
 			return "[No Concept]";
 		return order.getConcept().getName().getName();
+	}
+
+	/**
+	 * Status field for {@link Order}
+	 *
+	 * @param order to check if ACTIVE or INACTIVE.
+	 * @return Status
+	 */
+	@PropertyGetter("status")
+	public String getStatus(Order order) {
+		Date asOfDate = new Date();
+		if (order.isDiscontinued(asOfDate) || isExpired(order, asOfDate)) {
+			return "inactive";
+		} else {
+			return "active";
+		}
+	}
+
+	/**
+	 * @param order to check the autoExpireDate
+	 * @param checkDate to check against the order.autoExpireDate
+	 * @return boolean true or false if the order.autoExpireDate is passed or not
+	 */
+	private boolean isExpired(Order order, Date checkDate) {
+		if (order.isVoided()) {
+			return false;
+		} else {
+			if (checkDate == null) {
+				checkDate = new Date();
+			}
+
+			if (checkDate.after(order.getDateCreated())) {
+				return order.getAutoExpireDate() != null && checkDate.after(order.getAutoExpireDate());
+			} else {
+				return false;
+			}
+		}
 	}
 	
 	/**
