@@ -325,14 +325,12 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
 		String fromStartDate = context.getRequest().getParameter("fromStartDate");
-		String toStartDate = context.getRequest().getParameter("toStartDate");
 		String visitTypeParameter = context.getRequest().getParameter("visitType");
 		String includeParentLocations = context.getRequest().getParameter("includeParentLocations");
 		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null
 		        || visitTypeParameter != null) {
 			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-			Date maxStartDate = toStartDate != null ? (Date) ConversionUtil.convert(toStartDate, Date.class) : null;
-			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, maxStartDate, locationParameter,
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter,
 			    visitTypeParameter, includeParentLocations);
 		} else {
 			return super.search(context);
@@ -340,7 +338,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, Date maxStartDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
+	        Date minStartDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null :
 				Boolean.parseBoolean(includeParentLocations) ?
@@ -351,7 +349,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(visitTypes, patients, locations, null,
 		    minStartDate,
-		    maxStartDate, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
+		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 
 	/**
