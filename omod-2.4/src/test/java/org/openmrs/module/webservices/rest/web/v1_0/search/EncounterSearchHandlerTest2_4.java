@@ -31,7 +31,7 @@ public class EncounterSearchHandlerTest2_4  extends RestControllerTestUtils {
 
     @Before
     public void init() throws Exception {
-        service = Context.getEncounterService();
+        EncounterService service = Context.getEncounterService();
         executeDataSet(ENCOUNTER_TEST_INITIAL_XML);
     }
 
