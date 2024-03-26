@@ -216,7 +216,6 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	 */
 	@Override
 	public PersonName save(PersonName newName) {
-		// make sure that the name has actually been added to the person
 		if (newName.isPreferred()){
 			for (PersonName pN : newName.getPerson().getNames()){
 				if (!pN.equals(newName)){
@@ -224,7 +223,8 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 				}
 			}
 		}
-		
+
+		// make sure that the name has actually been added to the person
 		boolean needToAdd = true;
 		for (PersonName pn : newName.getPerson().getNames()) {
 			if (pn.equals(newName)) {
