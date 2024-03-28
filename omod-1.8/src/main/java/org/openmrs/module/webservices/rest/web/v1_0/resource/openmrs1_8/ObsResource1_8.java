@@ -366,7 +366,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * @param obs
 	 * @param value
 	 */
-	@PropertySetter("concept")
 	public static void setConcept(Obs obs, Object value) {
 		obs.setConcept(Context.getConceptService().getConceptByUuid((String) value));
 	}
