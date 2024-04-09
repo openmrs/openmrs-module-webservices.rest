@@ -1,19 +1,16 @@
 <org.openmrs.layout.name.NameTemplate>
     <codeName>customXmlTemplate</codeName>
-    <displayName>Custom Name Format</displayName>
     <nameMappings class="properties">
         <property name="givenName" value="PersonName.givenName"/>
         <property name="middleName" value="PersonName.middleName"/>
         <property name="familyName" value="PersonName.familyName"/>
     </nameMappings>
     <sizeMappings class="properties">
-        <property name="prefix" value="10"/>
-        <property name="givenName" value="40"/>
-        <property name="middleName" value="40"/>
-        <property name="familyName" value="40"/>
+        <property name="givenName" value="30"/>
+        <property name="middleName" value="30"/>
+        <property name="familyName" value="30"/>
     </sizeMappings>
     <lineByLineFormat>
-        <string>prefix</string>
         <string>givenName</string>
         <string>middleName</string>
         <string>familyName</string>

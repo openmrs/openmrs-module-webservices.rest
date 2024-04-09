@@ -31,7 +31,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -251,8 +250,8 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 			
 			if (nameTemplate != null) {
 				// need to use reflection since the format method was not added until later versions of openmrs
-				Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
-				return (String) format.invoke(nameTemplate, personName);
+				//Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
+				return nameTemplate.format(personName);
 			}
 		}
 		catch (Exception e) {
