@@ -1,5 +1,4 @@
 <org.openmrs.layout.name.NameTemplate>
-    <codeName>customXmlTemplate</codeName>
     <nameMappings class="properties">
         <property name="givenName" value="PersonName.givenName"/>
         <property name="middleName" value="PersonName.middleName"/>
@@ -15,8 +14,4 @@
         <string>middleName</string>
         <string>familyName</string>
     </lineByLineFormat>
-    <requiredElements>
-        <string>givenName</string>
-        <string>familyName</string>
-    </requiredElements>
 </org.openmrs.layout.name.NameTemplate>

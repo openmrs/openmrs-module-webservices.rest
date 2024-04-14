@@ -462,7 +462,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(Person person) {
-		// TODO copy what is done in PatientResource to use configured name layout
+		//Uses configured name template format via getFullName()
 		if (person.getPersonName() == null)
 			return "";
 		
