@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -267,7 +268,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		
 		if (tagUuid != null) {
 			LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
-			locationsByTag = locationService.getLocationsByTag(locationTag);
+			locationsByTag = locationService.getLocationsHavingAllTags(Arrays.asList(locationTag));
 		}
 		
 		if (query != null) {

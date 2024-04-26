@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class LocationSearchHandler implements SearchHandler {
 			}
 			
 			if (locationTag != null) {
-				locations = Context.getLocationService().getLocationsByTag(locationTag);
+				locations = Context.getLocationService().getLocationsHavingAllTags(Arrays.asList(locationTag));
 			}
 		}
 		finally {
