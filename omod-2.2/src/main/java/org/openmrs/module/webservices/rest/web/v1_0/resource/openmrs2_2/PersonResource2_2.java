@@ -17,14 +17,14 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PersonResource2_0;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/person", supportedClass = Person.class, supportedOpenmrsVersions = {
         "2.2.* - 9.*" })
-public class PersonResource2_2 extends PersonResource1_11 {
+public class PersonResource2_2 extends PersonResource2_0 {
 	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)

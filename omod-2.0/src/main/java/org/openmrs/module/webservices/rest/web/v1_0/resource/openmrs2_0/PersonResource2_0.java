@@ -7,44 +7,41 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
+
+import java.lang.reflect.Method;
 
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
 
 @Resource(name = RestConstants.VERSION_1 + "/person", order = 0, supportedClass = Person.class, supportedOpenmrsVersions = {
-        "2.7.* - 9.*" })
-public class PersonResource2_7 extends PersonResource1_11 {
+        "2.0.* - 2.1.*" })
+public class PersonResource2_0 extends PersonResource1_11 {
 
-    /**
-     * Gets the display string for a person name.
-     *
-     * @param person the person whose person name will be displayed.
-     * @return fullName (for concise display purposes)
-     */
-    @PropertyGetter("display")
+    @Override
     public String getDisplayString(Person person) {
-        if (person.getPersonName() == null) {
+        if (person.getPersonName() == null)
             return "";
-        }
 
         PersonName personName = person.getPersonName();
         try {
             NameTemplate nameTemplate = NameSupport.getInstance().getDefaultLayoutTemplate();
+
             if (nameTemplate != null) {
-                return nameTemplate.format(personName);
+                // need to use reflection since the format method was not added until later versions of openmrs
+                Method format = NameTemplate.class.getDeclaredMethod("format", PersonName.class);
+                return (String) format.invoke(nameTemplate, personName);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // fall through to just returning full name if no format method found or format fails
         }
 
-        // otherwise, just return full name
-        return person.getPersonName().getFullName();
+        return personName.getFullName();
     }
 }

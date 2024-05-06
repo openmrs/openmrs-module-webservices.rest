@@ -61,7 +61,7 @@ public class PatientResource1_8Test extends BaseDelegatingResourceTest<PatientRe
 
 	@Override
 	public String getDisplayProperty() {
-		return "Mr. Horatio Test Hornblower Esq.";
+		return "Horatio Test Hornblower";
 	}
 
 	@Override
