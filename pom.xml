@@ -33,7 +33,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>1.9.10</openmrs.version>
+		<openmrs.version>1.11.6</openmrs.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 
