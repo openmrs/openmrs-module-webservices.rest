@@ -48,6 +48,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.api.SubResource;
 import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.openmrs.util.PrivilegeConstants;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -210,8 +211,16 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @return the list of IPs
 	 */
 	public static List<String> getAllowedIps() {
-		String allowedIpsProperty = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, "");
+		String allowedIpsProperty = "";
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			allowedIpsProperty = Context.getAdministrationService()
+					.getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, allowedIpsProperty);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		}
+
 		
 		if (allowedIpsProperty.isEmpty()) {
 			return Collections.emptyList();
