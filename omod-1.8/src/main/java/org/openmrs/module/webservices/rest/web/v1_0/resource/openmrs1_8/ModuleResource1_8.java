@@ -46,7 +46,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	
 	private ModuleFactoryWrapper moduleFactoryWrapper = new ModuleFactoryWrapper();
 	
-	private String moduleActionLink = ModuleActionResource1_8.class.getAnnotation(Resource.class).name();
+	private final String moduleActionLink = ModuleActionResource1_8.class.getAnnotation(Resource.class).name();
 	
 	public void setModuleFactoryWrapper(ModuleFactoryWrapper moduleFactoryWrapper) {
 		this.moduleFactoryWrapper = moduleFactoryWrapper;
@@ -54,7 +54,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	
 	@Override
 	public Module getByUniqueId(String uniqueId) {
-		moduleFactoryWrapper.checkPrivilege();
+		moduleFactoryWrapper.checkReadonlyPrivilege();
 		return moduleFactoryWrapper.getModuleById(uniqueId);
 	}
 	
@@ -136,11 +136,11 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingReadableResource#doGetAll(RequestContext)
 	 */
 	@Override
 	public NeedsPaging<Module> doGetAll(RequestContext context) throws ResponseException {
-		moduleFactoryWrapper.checkPrivilege();
+		moduleFactoryWrapper.checkReadonlyPrivilege();
 		return new NeedsPaging<Module>(new ArrayList<Module>(moduleFactoryWrapper.getLoadedModules()), context);
 	}
 	
@@ -185,7 +185,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 				module = moduleFactoryWrapper.loadModule(moduleFile);
 				moduleFactoryWrapper.startModule(module, servletContext);
 				
-				if (existingModule != null && dependentModulesStopped.size() > 0
+				if (existingModule != null && !dependentModulesStopped.isEmpty()
 				        && moduleFactoryWrapper.isModuleStarted(module)) {
 					startModules(dependentModulesStopped, existingModule, servletContext);
 				}
