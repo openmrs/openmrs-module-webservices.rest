@@ -161,4 +161,10 @@ public class ModuleFactoryWrapper {
 			throw new APIAuthenticationException("Privilege required: " + PrivilegeConstants.MANAGE_MODULES);
 		}
 	}
+
+	public void checkReadonlyPrivilege() throws APIAuthenticationException {
+		if (!Context.isAuthenticated()) {
+			throw new APIAuthenticationException("User must be authenticated");
+		}
+	}
 }
