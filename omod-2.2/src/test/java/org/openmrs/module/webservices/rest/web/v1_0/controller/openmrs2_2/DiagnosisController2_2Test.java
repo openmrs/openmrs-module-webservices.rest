@@ -11,14 +11,19 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Condition;
@@ -27,10 +32,14 @@ import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.api.DiagnosisService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.ModuleFactory;
+import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -50,6 +59,9 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	private Concept concept;
 	
 	private ConceptName conceptName;
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 	
 	@Before
 	public void before() throws Exception {
@@ -60,6 +72,11 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		this.condition = Context.getConditionService().getCondition(1);
 		this.concept = Context.getConceptService().getConcept(1);
 		this.conceptName = Context.getConceptService().getConceptName(1);
+	}
+
+	@After
+	public void after() throws Exception {
+		setCurrentOpenmrsVersion("2.2");
 	}
 	
 	/**
@@ -330,5 +347,40 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(request));
 		List<Diagnosis> diagnoses = result.get("results");
 		Assert.assertEquals(2, diagnoses.size());
+	}
+
+	/**
+	 * Helper method to set the current OpenMRS version for tests.
+	 *
+	 * @param currentOpenmrsVersion the openmrs version to set the current version to
+	 */
+	private void setCurrentOpenmrsVersion(final String currentOpenmrsVersion) throws NoSuchFieldException,
+			IllegalAccessException {
+
+		Field versionField = OpenmrsConstants.class.getDeclaredField("OPENMRS_VERSION_SHORT");
+
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(versionField, versionField.getModifiers() & ~Modifier.FINAL);
+		versionField.set(null, currentOpenmrsVersion);
+	}
+
+	@Test
+	public void testFormNamespaceAndPath() throws Exception {
+		final String nonCoded = "Some condition";
+		String json = "{ \"diagnosis\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + nonCoded
+				+ "\"},\"condition\":\"" + condition.getUuid()
+				+ "\",\"certainty\":\"" + "CONFIRMED" + "\",\"encounter\":\""
+				+ encounter.getUuid() + "\",\"rank\":\"" + 2
+				+ "\",\"voided\":\"" + false + "\"}";
+
+		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID, json));
+		Diagnosis newDiagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID);
+		Assert.assertNotNull(newDiagnosis);
+		Assert.assertEquals("Some condition", newDiagnosis.getDiagnosis().getNonCoded());
+
+		setCurrentOpenmrsVersion("2.5.0");
+		expectedException.expect(ConversionException.class);
+		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID, json));
 	}
 }
