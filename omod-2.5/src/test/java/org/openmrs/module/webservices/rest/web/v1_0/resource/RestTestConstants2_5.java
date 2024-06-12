@@ -17,6 +17,6 @@ public class RestTestConstants2_5 {
 	
 	public final static String ORDER_ATTRIBUTE_UUID = "3a2bdb18-6faa-11e0-8414-001e378eb67e";
 	
-	public final static String ORDER_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
+	public final static String ORDER_ATTRIBUTE_TYPE_UUID = "c0de4f5c-6626-418e-9f4f-5396a31e68fb";
 	
 }
