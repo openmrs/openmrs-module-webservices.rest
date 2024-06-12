@@ -70,7 +70,7 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 		Map preferredAddress = (Map) person.get("preferredAddress");
 		Assert.assertEquals("address 1", preferredAddress.get("display"));
 		List<Map> attributes = (List<Map>) person.get("attributes");
-		Assert.assertEquals("Race = Muslim", attributes.get(0).get("display"));
+		Assert.assertEquals("Muslim", attributes.get(0).get("display"));
 	}
 	
 }

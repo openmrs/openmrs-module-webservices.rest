@@ -14,9 +14,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Attributable;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -28,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+
 public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiveTest {
 	
 	public static final String PERSON_ATTRIBUTE_JSON = "{" + "    \"value\": \"Bangalore\"," + "    \"attributeType\": {"
@@ -36,6 +41,9 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	private SimpleObject personAttributeSimpleObject = new SimpleObject();
 	
 	private PersonAttributeResource1_8 resource;
+
+	@Autowired
+	private ConceptService conceptService;
 	
 	@Autowired
 	private PersonService personService;
@@ -55,6 +63,64 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
 		Assert.assertEquals("Bangalore", created.get("value"));
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForConcept() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Concept");
+		type.setName("Some Concept");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		Concept trueConcept = conceptService.getTrueConcept();
+
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(trueConcept.getId()));
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Yes"));
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForLocation() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("org.openmrs.Location");
+		type.setName("Some Location");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		Location location = locationService.getLocation(1);
+
+		PersonAttribute attribute = new PersonAttribute(type, String.valueOf(location.getId()));
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("Unknown Location"));
+	}
+
+	@Test
+	public void getDisplayString_shouldGetDisplayStringForString() {
+		// arrange
+		PersonAttributeType type = new PersonAttributeType();
+		type.setFormat("java.lang.String");
+		type.setName("Some String");
+		type.setDescription("Some Attribute Type Description");
+		type.setSearchable(false);
+		type = personService.savePersonAttributeType(type);
+
+		PersonAttribute attribute = new PersonAttribute(type, "A Value");
+
+		// act
+		String displayString = resource.getDisplayString(attribute);
+
+		assertThat(displayString, equalToIgnoringCase("A Value"));
 	}
 	
 	@Test

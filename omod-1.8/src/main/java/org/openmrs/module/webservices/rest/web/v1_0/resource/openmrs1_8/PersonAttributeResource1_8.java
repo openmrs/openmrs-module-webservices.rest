@@ -65,7 +65,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			description.addProperty("display");
 			description.addProperty("uuid");
 			description.addProperty("value");
-			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("attributeType", Representation.FULL);
 			description.addProperty("voided");
 			description.addProperty("auditInfo");
 			description.addProperty("hydratedObject");
@@ -284,17 +284,18 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * Gets the display string for a person attribute.
 	 * 
 	 * @param pa the person attribute.
-	 * @return attribute type + value (for concise display purposes)
+	 * @return value (for concise display purposes)
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(PersonAttribute pa) {
-		if (pa.getAttributeType() == null)
-			return "";
-		if (Concept.class.getName().equals(pa.getAttributeType().getFormat()) && pa.getValue() != null) {
-			Concept concept = Context.getConceptService().getConcept(pa.getValue());
-			return concept == null ? null : concept.getDisplayString();
+		// a PersonAttribute without a type cannot really be converted
+		if (pa.getAttributeType() == null) {
+			return pa.getValue() != null ? pa.getValue() : "";
 		}
-		return pa.getAttributeType().getName() + " = " + pa.getValue();
+
+		// PersonAttribute#toString() calls PersonAttribute#hydrateObject() and Attributable#getDisplayString()
+		String value = pa.toString();
+		return value == null ? "" : value;
 	}
 	
 	/**

@@ -88,7 +88,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 			throw new IllegalRequestException("Cannot execute action " + action.getAction() + " on empty set of modules.");
 		} else {
 			if (action.getAction() == Action.INSTALL) {
-				if (installUri == null || !ResourceUtils.isUrl(installUri)) {
+				if (!ResourceUtils.isUrl(installUri)) {
 					throw new IllegalRequestException("The installUri needs to be a URL for this action to be performed");
 				}
 			}
@@ -171,11 +171,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		}
 		catch (MalformedURLException e) {
 			throw new APIException(e.getMessage(), e);
-		}
-		catch (IOException e) {
-			throw new APIException(e.getMessage(), e);
-		}
-		finally {
+		} finally {
 			if (tempModule == null && moduleFile != null) {
 				FileUtils.deleteQuietly(moduleFile);
 			}
