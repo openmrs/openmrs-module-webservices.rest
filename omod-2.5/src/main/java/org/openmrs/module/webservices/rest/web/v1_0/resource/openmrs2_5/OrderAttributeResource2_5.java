@@ -27,9 +27,9 @@ import java.util.List;
 /**
  * {@link Resource} for OrderAttributes, supporting standard CRUD operations
  */
-@SubResource(parent = OrderResource2_2.class, path = "attribute", supportedClass = OrderAttribute.class, supportedOpenmrsVersions = {
+@SubResource(parent = OrderResource2_5.class, path = "attribute", supportedClass = OrderAttribute.class, supportedOpenmrsVersions = {
         "2.5.* - 9.*"})
-public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<OrderAttribute, Order, OrderResource2_2> {
+public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<OrderAttribute, Order, OrderResource2_5> {
 
     /**
      * Sets attributeType on the given OrderAttribute.
