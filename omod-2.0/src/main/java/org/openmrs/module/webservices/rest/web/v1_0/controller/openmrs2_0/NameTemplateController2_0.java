@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.name.NameSupport;
-import org.openmrs.layout.name.NameTemplate;
+import org.openmrs.layout.name.NameTemplate; 
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
