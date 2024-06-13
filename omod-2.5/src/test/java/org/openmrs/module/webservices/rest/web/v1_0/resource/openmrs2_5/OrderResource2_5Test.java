@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
+import org.junit.Before;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 
@@ -16,6 +17,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.v1_0.resource.RestTestConstants2_5;
 
 public class OrderResource2_5Test extends BaseDelegatingResourceTest<OrderResource2_5, Order> {
+
+	@Before
+	public void before() throws Exception {
+		executeDataSet(RestTestConstants2_5.TEST_DATASET);
+	}
 	
 	@Override
 	public Order newObject() {
@@ -30,7 +36,7 @@ public class OrderResource2_5Test extends BaseDelegatingResourceTest<OrderResour
 	
 	@Override
 	public String getDisplayProperty() {
-		return "CD4 COUNT";
+		return "ASPIRIN";
 	}
 
 	@Override

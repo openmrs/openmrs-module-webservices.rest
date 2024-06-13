@@ -19,9 +19,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 
 
 /**
- * Tests functionality of {@link OrderAttributeController}.
+ * Tests functionality of {@link OrderController}.
  */
-public class OrderAttributeController2_5Test extends MainResourceControllerTest {
+public class OrderController2_5Test extends MainResourceControllerTest {
 	
 	private OrderService service;
 	

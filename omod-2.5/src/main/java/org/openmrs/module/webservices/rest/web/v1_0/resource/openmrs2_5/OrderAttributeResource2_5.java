@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeCrudResource1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @SubResource(parent = OrderResource2_5.class, path = "attribute", supportedClass = OrderAttribute.class, supportedOpenmrsVersions = {
         "2.5.* - 9.*"})
-public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<OrderAttribute, Order, OrderResource2_5> {
+public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<OrderAttribute, Order, OrderResource2_5> {
 
     /**
      * Sets attributeType on the given OrderAttribute.
@@ -91,11 +92,8 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<Orde
     public OrderAttribute save(OrderAttribute delegate) {
         // make sure it has not already been added to the order
         boolean needToAdd = true;
-        for (OrderAttribute orderAttribute : delegate.getOrder().getActiveAttributes()) {
-            if (orderAttribute.equals(delegate)) {
-                needToAdd = false;
-                break;
-            }
+        if (delegate.getOrder().getActiveAttributes().contains(delegate)) {
+            delegate.getOrder().addAttribute(delegate);
         }
         if (needToAdd) {
             delegate.getOrder().addAttribute(delegate);
@@ -103,6 +101,7 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource2_5<Orde
         OrderContext orderContext = new OrderContext();
         orderContext.setCareSetting(delegate.getOrder().getCareSetting());
         orderContext.setOrderType(delegate.getOrder().getOrderType());
+        delegate.getOrder().setAction(Order.Action.REVISE);
 
         Context.getOrderService().saveOrder(delegate.getOrder(), orderContext);
         return delegate;

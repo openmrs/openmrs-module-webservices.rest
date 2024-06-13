@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeTypeCrudResource1_9;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
  */
 @Resource(name = RestConstants.VERSION_1 + "/orderattributetype", supportedClass = OrderAttributeType.class, supportedOpenmrsVersions = {
         "2.5.* - 9.*" })
-public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource2_5<OrderAttributeType> {
+public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource1_9<OrderAttributeType> {
 	
 	public OrderAttributeTypeResource2_5() {
 	}
