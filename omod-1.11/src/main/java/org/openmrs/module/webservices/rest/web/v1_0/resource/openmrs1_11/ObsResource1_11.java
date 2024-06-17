@@ -12,7 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
+import org.apache.commons.lang.BooleanUtils;
+import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.Obs;
+import org.openmrs.api.db.hibernate.HibernateUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -91,5 +95,23 @@ public class ObsResource1_11 extends ObsResource1_9 {
 	@Override
 	public String getResourceVersion() {
 		return RestConstants1_11.RESOURCE_VERSION;
+	}
+
+	/**
+	 * @return a Double if the ConceptNumeric is configured as allowDecimal, but an Integer otherwise
+	 * This changes the implementation from the pre-1.11 field named precise.
+	 */
+	protected Number getValueNumeric(Obs obs) {
+		if (obs.getValueNumeric() == null) {
+			return null;
+		}
+		Concept concept = HibernateUtil.getRealObjectFromProxy(obs.getConcept());
+		if (concept instanceof ConceptNumeric) {
+			ConceptNumeric conceptNumeric = (ConceptNumeric) concept;
+			if (BooleanUtils.isFalse(conceptNumeric.getAllowDecimal())) {
+				return obs.getValueNumeric().intValue();
+			}
+		}
+		return obs.getValueNumeric();
 	}
 }
