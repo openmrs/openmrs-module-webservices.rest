@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web;
 
 import static org.hamcrest.core.Is.is;
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
@@ -25,8 +25,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.ConceptNameType;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
@@ -143,6 +146,26 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 		String input = "java.lang.String";
 		Class converted = (Class) ConversionUtil.convert(input, Class.class);
 		Assert.assertTrue(converted.isAssignableFrom(String.class));
+	}
+	
+	@Test
+	public void convert_shouldConvertSimpleObjectToCustomRepresentation() throws Exception {
+		
+		SimpleObject child = new SimpleObject();
+		child.put("child_key_1", "child_val_1");
+		child.put("child_key_2", "child_val_2");
+		SimpleObject parent = new SimpleObject();
+		parent.put("parent_key_1", child);
+		parent.put("parent_key_2", "parent_val_2");
+		
+		Object o = ConversionUtil.convertToRepresentation(parent, new CustomRepresentation("parent_key_1:(child_key_1)"));
+		
+		SimpleObject expectedChild = new SimpleObject();
+		expectedChild.put("child_key_1", "child_val_1");
+		SimpleObject expectedParent = new SimpleObject();
+		expectedParent.put("parent_key_1", expectedChild);
+		
+		assertEquals(expectedParent, o);
 	}
 	
 	public void convert_shouldConvertIntToDouble() throws Exception {

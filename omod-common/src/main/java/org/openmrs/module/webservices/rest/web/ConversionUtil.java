@@ -389,6 +389,9 @@ public class ConversionUtil {
 			}
 			return ret;
 		} else if (o instanceof Map) {
+			if (rep instanceof CustomRepresentation) {
+				return convertToCustomRepresentation(o, (CustomRepresentation) rep);
+			}
 			SimpleObject ret = new SimpleObject();
 			for (Map.Entry<?, ?> entry : ((Map<?, ?>) o).entrySet()) {
 				ret.put(entry.getKey().toString(),
@@ -412,6 +415,24 @@ public class ConversionUtil {
 				throw new ConversionException("converting " + o.getClass() + " to " + rep, ex);
 			}
 		}
+	}
+	
+	/**
+	 * Converts an object to its custom representation
+	 * This could be used to convert any domain objects that does not have any specific converter associated with them
+	 * such as SimpleObject's, Map's, etc
+	 */
+	private static SimpleObject convertToCustomRepresentation(Object o, CustomRepresentation rep) {
+		DelegatingResourceDescription drd = ConversionUtil.getCustomRepresentationDescription(rep);
+		
+		SimpleObject result = new SimpleObject();
+		for (String propertyName : drd.getProperties().keySet()) {
+			DelegatingResourceDescription.Property property = drd.getProperties().get(propertyName);
+			Object propertyValue = ConversionUtil.getPropertyWithRepresentation(o, propertyName, property.getRep());
+			result.add(propertyName, propertyValue);
+		}
+		
+		return result;
 	}
 	
 	/**

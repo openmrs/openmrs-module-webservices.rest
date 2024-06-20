@@ -168,4 +168,21 @@ public class PatientIdentifierTypeController1_8Test extends MainResourceControll
 		
 		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
+	
+	@Test
+	public void shouldReturnCustomRepresentationForAuditInfo() throws Exception {
+		SimpleObject result = deserialize(
+				handle(newGetRequest(getURI() + "/" + getUuid(),
+						new Parameter("v", "custom:(auditInfo:(creator:(uuid),dateCreated))"))));
+		
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo.creator"));
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo.creator.uuid"));
+		assertNotNull(PropertyUtils.getProperty(result, "auditInfo.dateCreated"));
+		
+		assertNull(PropertyUtils.getProperty(result, "name"));
+		assertNull(PropertyUtils.getProperty(result, "links"));
+		assertNull(PropertyUtils.getProperty(result, "auditInfo.creator.display"));
+		assertNull(PropertyUtils.getProperty(result, "auditInfo.creator.links"));
+	}
 }
