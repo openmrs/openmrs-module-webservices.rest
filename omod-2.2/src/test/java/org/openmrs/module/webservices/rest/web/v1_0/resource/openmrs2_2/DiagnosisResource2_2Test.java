@@ -52,7 +52,6 @@ public class DiagnosisResource2_2Test extends BaseDelegatingResourceTest<Diagnos
 		assertPropEquals("rank", getObject().getRank());
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("display");
-		assertPropNotPresent("formNamespaceAndPath");
 	}
 	
 	@Override
@@ -67,6 +66,5 @@ public class DiagnosisResource2_2Test extends BaseDelegatingResourceTest<Diagnos
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("auditInfo");
 		assertPropPresent("display");
-		assertPropNotPresent("formNamespaceAndPath");
 	}
 }
