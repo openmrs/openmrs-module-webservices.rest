@@ -16,7 +16,6 @@ import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -47,7 +46,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
-        "2.2.* - 9.*" })
+        "2.2.* - 2.4.*" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**
@@ -99,9 +98,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		if (representation instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			if (supportsFormNamespaceAndPath()) {
-				description.addProperty("formNamespaceAndPath");
-			}
 			description.addProperty("uuid");
 			description.addProperty("diagnosis", Representation.REF);
 			description.addProperty("condition", Representation.REF);
@@ -116,9 +112,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 			return description;
 		} else if (representation instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			if (supportsFormNamespaceAndPath()) {
-				description.addProperty("formNamespaceAndPath");
-			}
 			description.addProperty("uuid");
 			description.addProperty("diagnosis");
 			description.addProperty("patient", Representation.REF);
@@ -142,9 +135,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			if (supportsFormNamespaceAndPath()) {
-				model.property("formNamespaceAndPath", new StringProperty());
-			}
 			model
 			        .property("uuid", new StringProperty())
 			        .property("diagnosis", new StringProperty())
@@ -179,9 +169,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		if (supportsFormNamespaceAndPath()) {
-			description.addProperty("formNamespaceAndPath");
-		}
 
 		description.addRequiredProperty("diagnosis");
 		description.addRequiredProperty("encounter");
@@ -198,18 +185,15 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	 */
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getCREATEModel(rep);
-		if (supportsFormNamespaceAndPath()) {
-			model.property("formNamespaceAndPath", new StringProperty());
-		}
-		model
+
+		return new ModelImpl()
 		        .property("diagnosis", new StringProperty())
 		        .property("encounter", new StringProperty())
 		        .property("condition", new StringProperty())
 		        .property("certainty", new StringProperty())
 		        .property("patient", new StringProperty().example("uuid"))
 		        .property("rank", new IntegerProperty());
-		return model;
+
 	}
 	
 	/**
@@ -218,9 +202,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		if (supportsFormNamespaceAndPath()) {
-			description.addProperty("formNamespaceAndPath");
-		}
 		description.addRequiredProperty("diagnosis");
 		description.addRequiredProperty("condition");
 		description.addRequiredProperty("rank");
@@ -237,18 +218,13 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	 */
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getUPDATEModel(rep);
-		if (supportsFormNamespaceAndPath()) {
-			model.property("formNamespaceAndPath", new StringProperty());
-		}
-		model
+		return new ModelImpl()
 		        .property("diagnosis", new StringProperty())
 		        .property("condition", new StringProperty())
 		        .property("encounter", new StringProperty())
 		        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
 		        .property("rank", new IntegerProperty())
 		        .property("voided", new BooleanProperty());
-		return model;
 	}
 
 	@Override
@@ -265,14 +241,5 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 			return new EmptySearchResult();
 		}
 		return new NeedsPaging<Diagnosis>(Context.getDiagnosisService().getDiagnoses(patient, dateFrom), context);
-	}
-
-	/**
-	 * Helper method to check if openmrs version running is form recordable
-	 *
-	 * @return boolean value after check
-	 */
-	private boolean supportsFormNamespaceAndPath() {
-		return ModuleUtil.isOpenmrsVersionInVersions("2.5.* - 9.*");
 	}
 }
