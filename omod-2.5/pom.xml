@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
-  	<parent>
-		<artifactId>webservices.rest</artifactId>
-    	<groupId>org.openmrs.module</groupId>
-    	<version>2.40.0-SNAPSHOT</version>
-  	</parent>
-  	<modelVersion>4.0.0</modelVersion>
-  
-  	<artifactId>webservices.rest-omod-2.5</artifactId>
-  	<name>Rest Web Services 2.5 OMOD</name>
-  
-   	<properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>webservices.rest</artifactId>
+        <groupId>org.openmrs.module</groupId>
+        <version>2.40.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>webservices.rest-omod-2.5</artifactId>
+    <name>Rest Web Services 2.5 OMOD</name>
+
+    <properties>
         <openmrs.version.2.5.0>2.5.0</openmrs.version.2.5.0>
     </properties>
 
@@ -119,7 +120,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>${project.parent.artifactId}-omod-2.4</artifactId>
@@ -159,7 +160,7 @@
         <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
-            <version>${openmrs.version.2.5.0}</version> 
+            <version>${openmrs.version.2.5.0}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
@@ -173,7 +174,7 @@
             <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> 
+            <version>${openmrs.version.2.5.0}</version>
         </dependency>
 
         <dependency>
@@ -181,7 +182,7 @@
             <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> 
+            <version>${openmrs.version.2.5.0}</version>
         </dependency>
 
         <dependency>
@@ -190,14 +191,14 @@
             <version>${javaxVersion}</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-		      <groupId>org.apache.tomcat</groupId>
-		      <artifactId>jasper</artifactId>
-		      <version>6.0.18</version>
-		      <scope>provided</scope>
-	     </dependency>
-	     
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>jasper</artifactId>
+            <version>6.0.18</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
