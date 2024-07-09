@@ -33,16 +33,12 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 	public DelegatingResourceDescription getRepresentationDescription(Representation representation) {
 		if (representation instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(representation);
-			description.addProperty("formNamespace");
-			description.addProperty("formPath");
 			description.addProperty("formNamespaceAndPath");
 			
 			return description;
 			
 		} else if (representation instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(representation);
-			description.addProperty("formNamespace");
-			description.addProperty("formPath");
 			description.addProperty("formNamespaceAndPath");
 			
 			return description;
@@ -58,9 +54,7 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getCreatableProperties();
 		
-		description.addRequiredProperty("formNamespace");
-		description.addRequiredProperty("formPath");
-		description.addProperty("formNamespaceAndPath");
+		description.addRequiredProperty("formNamespaceAndPath");
 		
 		return description;
 		
@@ -73,9 +67,7 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		
-		description.addRequiredProperty("formNamespace");
-		description.addRequiredProperty("formPath");
-		description.addProperty("formNamespaceAndPath");
+		description.addRequiredProperty("formNamespaceAndPath");
 		
 		return description;
 	}

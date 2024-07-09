@@ -145,7 +145,7 @@
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
-            <version>${openmrs.version.2.5.0}</version><!--$NO-MVN-MAN-VER$-->
+            <version>${openmrs.version.2.5.0}</version>
         </dependency>
 
         <dependency>
@@ -153,13 +153,13 @@
             <artifactId>openmrs-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version><!--$NO-MVN-MAN-VER$-->
+            <version>${openmrs.version.2.5.0}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$ -->
+            <version>${openmrs.version.2.5.0}</version> 
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
@@ -173,7 +173,7 @@
             <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$-->
+            <version>${openmrs.version.2.5.0}</version> 
         </dependency>
 
         <dependency>
@@ -181,7 +181,7 @@
             <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$ -->
+            <version>${openmrs.version.2.5.0}</version> 
         </dependency>
 
         <dependency>
@@ -215,5 +215,4 @@
             </plugin>
         </plugins>
     </build>
-     
 </project>
