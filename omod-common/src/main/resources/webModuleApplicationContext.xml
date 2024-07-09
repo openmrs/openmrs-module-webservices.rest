@@ -17,19 +17,15 @@
 
 	<bean id="restService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager">
-			<ref bean="transactionManager" />
-		</property>
+		<property name="transactionManager" ref="transactionManager" />
 		<property name="target">
 			<bean
 				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl">
-				<property name="restHelperService" ref="restHelperService"></property>
-				<property name="openmrsClassScanner" ref="openmrsClassScanner"></property>
+				<property name="restHelperService" ref="restHelperService" />
+				<property name="openmrsClassScanner" ref="openmrsClassScanner" />
 			</bean>
 		</property>
-		<property name="preInterceptors">
-			<ref bean="serviceInterceptors" />
-		</property>
+		<property name="preInterceptors" ref="serviceInterceptors" />
 		<property name="transactionAttributeSource">
 			<bean
 				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
@@ -47,17 +43,13 @@
 	
 	<bean id="restHelperService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager">
-			<ref bean="transactionManager" />
-		</property>
+		<property name="transactionManager" ref="transactionManager" />
 		<property name="target">
 			<bean class="org.openmrs.module.webservices.rest.web.api.impl.RestHelperServiceImpl">
 				<property name="sessionFactory" ref="dbSessionFactory" />
 			</bean>
 		</property>
-		<property name="preInterceptors">
-			<ref bean="serviceInterceptors" />
-		</property>
+		<property name="preInterceptors" ref="serviceInterceptors" />
 		<property name="transactionAttributeSource">
 			<bean
 				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />

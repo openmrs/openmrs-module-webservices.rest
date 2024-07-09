@@ -18,13 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openmrs.GlobalProperty;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
  * Tests for the {@link RestUtil} class.
  */
-public class RestUtilTest {
+public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	
 	/**
 	 * @see RestUtil#ipMatches(String,List)
@@ -201,5 +204,24 @@ public class RestUtilTest {
 		Assert.assertEquals("", errorResponseMap.get("code"));
 		Assert.assertEquals("", errorResponseMap.get("detail"));
 	}
-	
+	@Test
+	public void wrapErrorResponse_shouldSetStackTraceDetailsIfGlobalPropEnabled() throws Exception {
+		Context.getAdministrationService().saveGlobalProperty(
+				new GlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "true"));
+		Exception ex = new Exception("exceptionmessage");
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
+
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertNotEquals("", errorResponseMap.get("detail"));
+	}
+	@Test
+	public void wrapErrorResponse_shouldSetNoStackTraceDetailsIfGlobalPropDisabled() throws Exception {
+		Context.getAdministrationService().saveGlobalProperty(
+				new GlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false"));
+		Exception ex = new Exception("exceptionmessage");
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
+
+		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
+		Assert.assertEquals("", errorResponseMap.get("detail"));
+	}
 }

@@ -13,7 +13,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ServiceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -35,17 +37,17 @@ public class DynamicBeanConfiguration {
 	 * otherwise it falls back to the old one.
 	 */
 	@Bean(name = "jsonHttpMessageConverter")
-	public HttpMessageConverter getMappingJacksonHttpMessageConverter() throws Exception {
+	public HttpMessageConverter<?> getMappingJacksonHttpMessageConverter() throws Exception {
 		
 		Class<?> clazz;
 		try {
-			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJacksonHttpMessageConverter");
-		}
-		catch (ClassNotFoundException e) {
 			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJackson2HttpMessageConverter");
 		}
+		catch (ClassNotFoundException e) {
+			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJacksonHttpMessageConverter");
+		}
 		
-		return (HttpMessageConverter) clazz.newInstance();
+		return (HttpMessageConverter<?>) clazz.newInstance();
 	}
 	
 	/**
@@ -75,7 +77,7 @@ public class DynamicBeanConfiguration {
 			
 			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
 			
-			Method method = bean.getClass().getMethod("setMessageConverters", new Class[] { HttpMessageConverter[].class });
+			Method method = bean.getClass().getMethod("setMessageConverters", HttpMessageConverter[].class);
 			method.invoke(bean, new Object[] { new HttpMessageConverter[] { stringHttpMessageConverter,
 			        jsonHttpMessageConverter, xmlMarshallingHttpMessageConverter } });
 		}
@@ -85,15 +87,12 @@ public class DynamicBeanConfiguration {
 			
 			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
 			
-			Method method = bean.getClass().getMethod("setMessageConverters", new Class[] { List.class });
-			method.invoke(bean, new Object[] { Arrays.asList( stringHttpMessageConverter,
-			        jsonHttpMessageConverter, xmlMarshallingHttpMessageConverter ) });
+			Method method = bean.getClass().getMethod("setMessageConverters", List.class);
+			method.invoke(bean, Arrays.asList(stringHttpMessageConverter,
+			        jsonHttpMessageConverter, xmlMarshallingHttpMessageConverter));
 		}
 		
-		if (bean != null) {
-			bean.setOrder(1);
-			
-		}
+		bean.setOrder(1);
 		
 		return bean;
 	}
@@ -110,10 +109,10 @@ public class DynamicBeanConfiguration {
 		
 		Class<?> clazz;
 		try {
-			clazz = Context.loadClass("org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping");
+			clazz = Context.loadClass("org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping");
 		}
 		catch (ClassNotFoundException e) {
-			clazz = Context.loadClass("org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping");
+			clazz = Context.loadClass("org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping");
 		}
 		
 		return (AbstractHandlerMapping) clazz.newInstance();

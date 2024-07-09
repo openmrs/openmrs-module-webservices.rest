@@ -220,7 +220,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
 		ObsResource1_8.setValue(obs, trueConcept);
-		assertEquals(trueConcept, ObsResource1_8.getValue(obs));
+		assertEquals(trueConcept, new ObsResource1_8().getValue(obs));
 	}
 	
 	@Test
@@ -232,7 +232,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		String drugUuid = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
 		Drug drug = Context.getConceptService().getDrugByUuid(drugUuid);
 		ObsResource1_8.setValue(obs, drugUuid);
-		assertEquals(drug, ObsResource1_8.getValue(obs));
+		assertEquals(drug, new ObsResource1_8().getValue(obs));
 	}
 	
 	@Test
@@ -240,7 +240,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
 		ObsResource1_8.setValue(obs, falseConcept);
-		assertEquals(falseConcept, ObsResource1_8.getValue(obs));
+		assertEquals(falseConcept, new ObsResource1_8().getValue(obs));
 	}
 	
 	@Test(expected = ConversionException.class)
@@ -255,7 +255,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
 		ObsResource1_8.setValue(obs, true);
-		assertEquals(trueConcept, ObsResource1_8.getValue(obs));
+		assertEquals(trueConcept, new ObsResource1_8().getValue(obs));
 	}
 	
 	@Test
@@ -263,7 +263,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
 		ObsResource1_8.setValue(obs, false);
-		assertEquals(falseConcept, ObsResource1_8.getValue(obs));
+		assertEquals(falseConcept, new ObsResource1_8().getValue(obs));
 	}
 	
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
@@ -287,6 +287,6 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		propertyMap.put("obsDatetime", "2013-12-09T00:00:00.000+0100");
 		
 		resource.setConvertedProperties(obs, propertyMap, resource.getUpdatableProperties(), false);
-		org.springframework.util.Assert.isTrue(((Double) ObsResource1_8.getValue(obs)) == 10.0);
+		org.springframework.util.Assert.isTrue(((Double) new ObsResource1_8().getValue(obs)) == 10.0);
 	}
 }
