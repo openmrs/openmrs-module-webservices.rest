@@ -91,13 +91,9 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
     @Override
     public OrderAttribute save(OrderAttribute delegate) {
         // make sure it has not already been added to the order
-        boolean needToAdd = true;
-        if (delegate.getOrder().getActiveAttributes().contains(delegate)) {
-            delegate.getOrder().addAttribute(delegate);
-        }
-        if (needToAdd) {
-            delegate.getOrder().addAttribute(delegate);
-        }
+
+        delegate.getOrder().addAttribute(delegate);
+
         OrderContext orderContext = new OrderContext();
         orderContext.setCareSetting(delegate.getOrder().getCareSetting());
         orderContext.setOrderType(delegate.getOrder().getOrderType());
@@ -113,7 +109,11 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
      */
     @Override
     protected void delete(OrderAttribute delegate, String reason, RequestContext context) throws ResponseException {
-        throw new UnsupportedOperationException("Cannot purge OrderAttribute");
+        OrderContext orderContext = new OrderContext();
+        orderContext.setCareSetting(delegate.getOrder().getCareSetting());
+        orderContext.setOrderType(delegate.getOrder().getOrderType());
+        delegate.getOrder().setAction(Order.Action.REVISE);
+        Context.getOrderService().saveOrder(delegate.getOrder(), orderContext);
     }
 
     /**

@@ -35,6 +35,7 @@ public class OrderResource2_5 extends OrderResource2_2 {
 	@PropertySetter("attributes")
 	public static void setAttributes(Order instance, List<OrderAttribute> attrs) {
 		for (OrderAttribute attr : attrs) {
+			attr.setValueReferenceInternal(attr.getValue().toString());
 			instance.addAttribute(attr);
 		}
 	}

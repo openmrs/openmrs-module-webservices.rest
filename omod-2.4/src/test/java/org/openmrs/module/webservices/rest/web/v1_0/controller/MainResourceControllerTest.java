@@ -67,7 +67,6 @@ public abstract class MainResourceControllerTest extends RestControllerTestUtils
 	@Test
 	public void shouldGetAll() throws Exception {
 		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI())));
-
 		Assert.assertNotNull(result);
 		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}

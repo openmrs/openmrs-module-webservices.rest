@@ -86,8 +86,7 @@ public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource
 		List<OrderAttributeType> allAttrs = service().getAllOrderAttributeTypes();
 		List<OrderAttributeType> queryResult = new ArrayList<OrderAttributeType>();
 		for (OrderAttributeType locAttr : allAttrs) {
-			if (Pattern.compile(Pattern.quote(context.getParameter("q")), Pattern.CASE_INSENSITIVE)
-			        .matcher(locAttr.getName()).find()) {
+			if (locAttr.getName().toLowerCase().contains(context.getParameter("q").toLowerCase())) {
 				queryResult.add(locAttr);
 			}
 		}
