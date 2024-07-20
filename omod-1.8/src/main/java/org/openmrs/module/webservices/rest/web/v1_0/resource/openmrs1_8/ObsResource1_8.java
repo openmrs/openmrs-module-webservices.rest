@@ -278,7 +278,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * @return
 	 */
 	@PropertyGetter("value")
-	public static Object getValue(Obs obs) throws ConversionException {
+	public Object getValue(Obs obs) throws ConversionException {
 		if (obs.isComplex()) {
 			//Note that complex obs value is handled by ObsComplexValueController1_8
 			SimpleObject so = new SimpleObject();
@@ -322,12 +322,19 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			}
 			
 		}
-		
+
 		if (obs.getValueNumeric() != null) {
-			return obs.getValueNumeric();
+			return getValueNumeric(obs);
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @return the valueNumeric from the obs
+	 */
+	protected Number getValueNumeric(Obs obs) {
+		return obs.getValueNumeric();
 	}
 	
 	/**
