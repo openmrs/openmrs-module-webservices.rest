@@ -132,7 +132,7 @@ public class SessionController1_9 extends BaseRestController {
 	 *
 	 * @return Provider if the user is authenticated
 	 */
-	private Provider getCurrentProvider() {
+	protected Provider getCurrentProvider() {
 		Provider currentProvider = null;
 		User currentUser = Context.getAuthenticatedUser();
 		if (currentUser != null) {
