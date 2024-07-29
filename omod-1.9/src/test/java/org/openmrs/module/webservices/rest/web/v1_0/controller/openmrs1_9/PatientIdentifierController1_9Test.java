@@ -15,12 +15,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -188,5 +190,38 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		SimpleObject result = deserialize(handle(req));
 		
 		assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+	}
+
+	@Test
+	public void shouldNotAddIdentifierInUseByAnotherPatient() throws Exception {
+		SimpleObject patientIdentifier = new SimpleObject();
+		patientIdentifier.add("identifier", "123456789qwerty");
+		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
+		patientIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+
+		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+
+		SimpleObject newPatientIdentifier = deserialize(handle(req));
+
+		assertNotNull(PropertyUtils.getProperty(newPatientIdentifier, "uuid"));
+
+		final String OTHER_PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
+		final String REQUEST_URI = "patient/" + OTHER_PATIENT_UUID + "/identifier";
+
+		int otherPatientActiveIdentifiersSize = service.getPatientByUuid(OTHER_PATIENT_UUID).getActiveIdentifiers()
+				.size();
+		req = request(RequestMethod.POST, REQUEST_URI);
+		req.setContent(json.getBytes());
+		try {
+			handle(req);
+			fail();
+		} catch (Exception ex) {
+			assertTrue(ex instanceof APIException);
+		}
+		assertEquals(otherPatientActiveIdentifiersSize, service.getPatientByUuid(OTHER_PATIENT_UUID)
+				.getActiveIdentifiers().size());
 	}
 }
