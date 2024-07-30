@@ -224,4 +224,28 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		assertEquals(otherPatientActiveIdentifiersSize, service.getPatientByUuid(OTHER_PATIENT_UUID)
 				.getActiveIdentifiers().size());
 	}
+
+	@Test
+	public void shouldUpdateAnExistingPatientIdentifier() throws Exception {
+		final String patientIdentifierNewValue = "omrs12-34-00";
+		PatientIdentifier patientIdentifier = service.getPatientIdentifierByUuid(getUuid());
+		final String patientIdentifierUuidThatShouldNotChange = patientIdentifier.getUuid();
+
+		assertFalse(patientIdentifierNewValue.equals(patientIdentifier.getIdentifier()));
+
+		SimpleObject simpleObject = new SimpleObject();
+		simpleObject.add("identifier", patientIdentifierNewValue);
+		String json = new ObjectMapper().writeValueAsString(simpleObject);
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+		req.setContent(json.getBytes());
+
+		SimpleObject updatedPatientIdentifier = deserialize(handle(req));
+		Object uuid = PropertyUtils.getProperty(updatedPatientIdentifier, "uuid");
+		Object identifierValue = PropertyUtils.getProperty(updatedPatientIdentifier, "identifier");
+
+		assertEquals(patientIdentifierUuidThatShouldNotChange, uuid);
+		assertEquals(patientIdentifierNewValue, identifierValue);
+		assertEquals(patientIdentifierNewValue, patientIdentifier.getIdentifier());
+	}
 }
