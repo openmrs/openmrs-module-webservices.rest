@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.CustomDatatype;
 import org.openmrs.customdatatype.CustomDatatypeHandler;
@@ -129,6 +130,9 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 	}
 	
 	private List<CustomDatatypeRepresentation> getAllCustomDatatypes() {
+		if(!Context.isAuthenticated()) {
+			throw new APIAuthenticationException("User must be authenticated!");
+		}
 		List<String> datatypeClassnames = CustomDatatypeUtil.getDatatypeClassnames();
 		
 		List<CustomDatatypeRepresentation> datatypes = new ArrayList<CustomDatatypeRepresentation>();
