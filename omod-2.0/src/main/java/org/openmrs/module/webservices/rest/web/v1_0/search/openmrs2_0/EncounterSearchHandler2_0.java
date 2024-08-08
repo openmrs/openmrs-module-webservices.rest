@@ -9,7 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_0;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Date;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -29,7 +33,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterTypeResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.VisitResource1_9;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.stereotype.Component;
@@ -45,7 +48,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 			Collections.singletonList("2.0.* - 9.*"),
 			Collections.singletonList(new SearchQuery.Builder(
 					"Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
-					.withRequiredParameters("patient").withOptionalParameters("encounterType", DATE_FROM, DATE_TO, "order")
+					.withRequiredParameters("patient").withOptionalParameters("visit", "encounterType", DATE_FROM, DATE_TO, "order")
 					.build()));
 	
 	@Override
@@ -57,7 +60,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 	public PageableResult search(RequestContext context) throws ResponseException {
 		String patientUuid = context.getRequest().getParameter("patient");
 		String encounterTypeUuid = context.getRequest().getParameter("encounterType");
-		String[] visitsUuid=context.getRequest().getParameter("visits").split(",");
+		String[] visitUuids = context.getRequest().getParameterValues("visit");
 
 		String dateFrom = context.getRequest().getParameter(DATE_FROM);
 		String dateTo = context.getRequest().getParameter(DATE_TO);
@@ -70,23 +73,20 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
 				.getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 
-		Collection<Visit> visits = new ArrayList<>();
-		if(visitsUuid.length>0) {
-
-			for (String uuid : visitsUuid) {
-				Visit visit = ((VisitResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(Visit.class)).getByUniqueId(uuid);
-				visits.add(visit);
-			}
-		}
 		if (patient != null) {
 			EncounterSearchCriteriaBuilder encounterSearchCriteriaBuilder = new EncounterSearchCriteriaBuilder()
 					.setPatient(patient).setFromDate(fromDate).setToDate(toDate).setIncludeVoided(false);
 			if (encounterType != null) {
 				encounterSearchCriteriaBuilder.setEncounterTypes(Arrays.asList(encounterType));
 			}
-			if (!visits.isEmpty()){
+			if (visitUuids != null && visitUuids.length > 0) {
+				List<Visit> visits = new ArrayList<>();
+				for (String visitUuid : visitUuids) {
+					visits.add(Context.getVisitService().getVisitByUuid(visitUuid));
+				}
 				encounterSearchCriteriaBuilder.setVisits(visits);
 			}
+
 			EncounterSearchCriteria encounterSearchCriteria = encounterSearchCriteriaBuilder.createEncounterSearchCriteria();
 			
 			List<Encounter> encounters = Context.getEncounterService().getEncounters(encounterSearchCriteria);
