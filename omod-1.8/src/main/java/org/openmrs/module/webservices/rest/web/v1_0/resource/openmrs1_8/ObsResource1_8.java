@@ -439,7 +439,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			// special case for Location
 			String potentialLocationUuid = null;
 
-			// if this is a representation of an object, so get uuid property as potential location uuid
+			// if this is a representation of an object, get the uuid property as potential location uuid
 			if (value instanceof Map) {
 				Object uuid = ((Map) value).get(RestConstants.PROPERTY_UUID);
 				if (uuid != null) {
@@ -447,11 +447,11 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 				}
 			}
 			else {
-				// otherwise, could this just uuid value
+				// otherwise, we will test if the value itself is a location uuid
 				potentialLocationUuid = value.toString();
 			}
 
-			// if there is a potential uuid, see if there is a matching location and set
+			// if there is a potential uuid, see if there is a matching location, and,if so, set the value text as the primary key
 			if (RestUtil.isUuid(potentialLocationUuid)) {
 				Location location = Context.getLocationService().getLocationByUuid(potentialLocationUuid);
 				if (location != null) {
