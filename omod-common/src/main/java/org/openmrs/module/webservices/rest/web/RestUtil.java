@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,6 +65,9 @@ public class RestUtil implements GlobalPropertyListener {
 	private static Log log = LogFactory.getLog(RestUtil.class);
 	
 	private static boolean contextEnabled = true;
+
+	private static final Pattern UUID_REGEX =
+			Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 	
 	/**
 	 * Looks up the admin defined global property for the system limit
@@ -935,5 +939,9 @@ public class RestUtil implements GlobalPropertyListener {
 			return resourceClass.getAnnotation(org.openmrs.module.webservices.rest.web.annotation.Resource.class)
 			        .supportedClass();
 		}
+	}
+
+	public static boolean isUuid(String str) {
+		return StringUtils.isNotBlank(str) && UUID_REGEX.matcher(str).matches();
 	}
 }

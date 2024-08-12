@@ -234,7 +234,46 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		ObsResource1_8.setValue(obs, drugUuid);
 		assertEquals(drug, new ObsResource1_8().getValue(obs));
 	}
-	
+
+	@Test
+	public void setValue_shouldSupportPassingInFullConceptRep() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid("89ca642a-dab6-4f20-b712-e12ca4fc6d36"));
+		Concept valueCoded = Context.getConceptService().getConceptByUuid("32d3611a-6699-4d52-823f-b4b788bac3e3");
+		ObsResource1_8.setValue(obs, ConversionUtil.convertToRepresentation(valueCoded, Representation.FULL));
+		assertEquals(valueCoded, new ObsResource1_8().getValue(obs));
+	}
+
+	@Test
+	public void setValue_shouldReturnLocation() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = Context.getConceptService().getConceptByUuid("96408258-000b-424e-af1a-403919332938");
+		obs.setConcept(concept);
+		String locationUuid = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
+		Location location = Context.getLocationService().getLocationByUuid(locationUuid);
+		ObsResource1_8.setValue(obs, locationUuid);
+		assertEquals(location, new ObsResource1_8().getValue(obs));
+	}
+
+	@Test
+	public void setValue_shouldSupportPassingInFullLocationRep() throws Exception {
+		Obs obs = new Obs();
+		obs.setConcept(Context.getConceptService().getConceptByUuid("96408258-000b-424e-af1a-403919332938"));
+		String locationUuid = "8d6c993e-c2cc-11de-8d13-0010c6dffd0f";
+		Location location = Context.getLocationService().getLocationByUuid(locationUuid);
+		ObsResource1_8.setValue(obs, ConversionUtil.convertToRepresentation(location, Representation.FULL));
+		assertEquals(location, new ObsResource1_8().getValue(obs));
+	}
+
+	@Test
+	public void setValue_shouldReturnValueText() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = Context.getConceptService().getConceptByUuid("96408258-000b-424e-af1a-403919332938");
+		obs.setConcept(concept);
+		ObsResource1_8.setValue(obs, "cheesecake");
+		assertEquals("cheesecake", new ObsResource1_8().getValue(obs));
+	}
+
 	@Test
 	public void setValue_shouldReturnUuidForConceptFalse() throws Exception {
 		Obs obs = new Obs();
