@@ -452,7 +452,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			}
 
 			// if there is a potential uuid, see if there is a matching location, and,if so, set the value text as the primary key
-			if (RestUtil.isUuid(potentialLocationUuid)) {
+			if (RestUtil.isValidUuid(potentialLocationUuid)) {
 				Location location = Context.getLocationService().getLocationByUuid(potentialLocationUuid);
 				if (location != null) {
 					obs.setValueText(location.getLocationId().toString());

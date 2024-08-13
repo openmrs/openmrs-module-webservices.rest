@@ -61,7 +61,7 @@ public class ConceptReferenceController1_9 extends BaseRestController {
 					continue;
 				}
 				// handle UUIDs
-				if (isValidUuid(conceptReference)) {
+				if (RestUtil.isValidUuid(conceptReference)) {
 					Concept concept = conceptService.getConceptByUuid(conceptReference);
 					if (concept != null) {
 						addResult(results, conceptReference, concept, requestContext.getRepresentation());
@@ -95,8 +95,5 @@ public class ConceptReferenceController1_9 extends BaseRestController {
 				ConversionUtil.convertToRepresentation(concept, rep == null ? new DefaultRepresentation() : rep));
 	}
 	
-	private static boolean isValidUuid(String uuid) {
-		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0
-				|| uuid.indexOf('.') < 0);
-	}
+
 }
