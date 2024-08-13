@@ -65,9 +65,6 @@ public class RestUtil implements GlobalPropertyListener {
 	private static Log log = LogFactory.getLog(RestUtil.class);
 	
 	private static boolean contextEnabled = true;
-
-	private static final Pattern UUID_REGEX =
-			Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
 	
 	/**
 	 * Looks up the admin defined global property for the system limit
@@ -941,7 +938,7 @@ public class RestUtil implements GlobalPropertyListener {
 		}
 	}
 
-	public static boolean isUuid(String str) {
-		return StringUtils.isNotBlank(str) && UUID_REGEX.matcher(str).matches();
+	public static boolean isValidUuid(String uuid) {
+		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
 }
