@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -72,7 +72,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.USER_UUID;
+		return RestTestConstants1_9.USER_UUID;
 	}
 	
 	/**

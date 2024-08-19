@@ -20,7 +20,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -111,7 +111,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.OBS_UUID;
+		return RestTestConstants1_9.OBS2_UUID;
 	}
 	
 	@Test
@@ -321,7 +321,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		
 		Map<String, Object> propertyMap = new HashMap<String, Object>();
 		propertyMap.put("value", 10.0);
-		propertyMap.put("person", RestTestConstants1_8.PERSON_UUID);
+		propertyMap.put("person", RestTestConstants1_9.PERSON_UUID);
 		propertyMap.put("concept", "c607c80f-1ea9-4da3-bb88-6276ce8868dd");
 		propertyMap.put("obsDatetime", "2013-12-09T00:00:00.000+0100");
 		

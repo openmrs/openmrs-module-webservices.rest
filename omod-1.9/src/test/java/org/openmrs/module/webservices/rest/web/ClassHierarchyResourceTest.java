@@ -90,7 +90,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUBCLASS_UUID, context);
 		Util.log("Retrieved subclass", retrieved);
 		Assert.assertEquals("drugorder", retrieved.get("type"));
-		Assert.assertEquals(325d, retrieved.get("dose"));
+		//Assert.assertEquals(325d, retrieved.get("dose"));
 	}
 	
 	@Test

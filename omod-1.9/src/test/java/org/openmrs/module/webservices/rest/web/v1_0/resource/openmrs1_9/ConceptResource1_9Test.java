@@ -24,7 +24,7 @@ import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -77,7 +77,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.CONCEPT_UUID;
+		return RestTestConstants1_9.CONCEPT3_UUID;
 	}
 	
 	@Test

@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonNameResource1_8;
 
@@ -55,7 +55,7 @@ public class PersonNameResource1_9Test extends BaseDelegatingResourceTest<Person
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.PERSON_NAME_UUID;
+		return RestTestConstants1_9.PERSON_NAME_UUID;
 	}
 	
 }

@@ -19,7 +19,7 @@ import org.openmrs.Field;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.FormService;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.apache.commons.beanutils.PropertyUtils;
 
@@ -43,7 +43,7 @@ public class FieldController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.FIELD_UUID;
+		return RestTestConstants1_9.FIELD_UUID;
 	}
 	
 	/**

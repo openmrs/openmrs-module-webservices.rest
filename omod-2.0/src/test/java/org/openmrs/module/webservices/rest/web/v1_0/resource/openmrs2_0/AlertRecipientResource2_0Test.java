@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.notification.AlertRecipient;
 
@@ -20,7 +20,7 @@ public class AlertRecipientResource2_0Test extends BaseDelegatingResourceTest<Al
 	public AlertRecipient newObject() {
 		AlertRecipient recipient = new AlertRecipient();
 		recipient.setUuid(getUuidProperty());
-		recipient.setRecipient(Context.getUserService().getUserByUuid(RestTestConstants1_8.USER_UUID));
+		recipient.setRecipient(Context.getUserService().getUserByUuid(RestTestConstants1_9.USER_UUID));
 		recipient.setAlertRead(true);
 		return recipient;
 	}
@@ -43,7 +43,7 @@ public class AlertRecipientResource2_0Test extends BaseDelegatingResourceTest<Al
 
 	@Override
 	public String getDisplayProperty() {
-		return Context.getUserService().getUserByUuid(RestTestConstants1_8.USER_UUID).getDisplayString();
+		return Context.getUserService().getUserByUuid(RestTestConstants1_9.USER_UUID).getDisplayString();
 	}
 
 	@Override
