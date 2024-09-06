@@ -20,7 +20,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ServerLogResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ServerLogResource1_9;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,9 +46,9 @@ public class ServerLogController1_9Test extends MainResourceControllerTest {
 
 	@Before
 	public void setUp() {
-		ServerLogResource1_8 serverLogResource1_8 = (ServerLogResource1_8) restService
+		ServerLogResource1_9 serverLogResource1_9 = (ServerLogResource1_9) restService
 				.getResourceBySupportedClass(ServerLogActionWrapper.class);
-		serverLogResource1_8.setServerLogActionWrapper(mockServerLogActionWrapper);
+		serverLogResource1_9.setServerLogActionWrapper(mockServerLogActionWrapper);
 	}
 
 	@Test(expected = Exception.class)

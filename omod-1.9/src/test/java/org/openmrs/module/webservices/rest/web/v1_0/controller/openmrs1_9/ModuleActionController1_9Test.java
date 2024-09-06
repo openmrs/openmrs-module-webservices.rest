@@ -18,8 +18,8 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleActionResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ModuleActionResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ModuleResource1_9;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -53,11 +53,11 @@ public class ModuleActionController1_9Test extends MainResourceControllerTest {
 	public void setUp() throws Exception {
 		mockModuleFactory.loadedModules.addAll(Arrays.asList(atlasModule, conceptLabModule, webservicesRestModule));
 		
-		ModuleActionResource1_8 moduleActionResource = (ModuleActionResource1_8) restService
+		ModuleActionResource1_9 moduleActionResource = (ModuleActionResource1_9) restService
 		        .getResourceBySupportedClass(ModuleAction.class);
 		moduleActionResource.setModuleFactoryWrapper(mockModuleFactory);
 		
-		ModuleResource1_8 moduleResource = (ModuleResource1_8) restService.getResourceBySupportedClass(Module.class);
+		ModuleResource1_9 moduleResource = (ModuleResource1_9) restService.getResourceBySupportedClass(Module.class);
 		moduleResource.setModuleFactoryWrapper(mockModuleFactory);
 	}
 	

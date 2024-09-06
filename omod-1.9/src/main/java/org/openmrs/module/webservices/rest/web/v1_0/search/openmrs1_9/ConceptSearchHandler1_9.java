@@ -9,12 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService.Field;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -66,6 +68,49 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 	@Override
 	public PageableResult search(RequestContext context) throws ResponseException {
 		String uuid = context.getParameter("term");
+		String source = context.getParameter("source");
+		String code = context.getParameter("code");
+		String name = context.getParameter("name");
+		String conceptClass = context.getParameter("class");
+		String searchType = context.getParameter("searchType");
+		String conceptReferences = context.getParameter("references");
+		
+		List<Concept> concepts;
+
+		if (StringUtils.isNotBlank(conceptReferences)) {
+			String[] conceptReferenceStrings = conceptReferences.split(",");
+			concepts = new ArrayList<Concept>(conceptReferenceStrings.length);
+
+			for (String conceptReference : conceptReferenceStrings) {
+				if (StringUtils.isBlank(conceptReference)) {
+					continue;
+				}
+				// handle UUIDs
+				if (RestUtil.isValidUuid(conceptReference)) {
+					Concept concept = conceptService.getConceptByUuid(conceptReference);
+					if (concept != null) {
+						concepts.add(concept);
+						continue;
+					}
+				}
+				// handle mappings
+				int idx = conceptReference.indexOf(':');
+				if (idx >= 0 && idx < conceptReference.length() - 1) {
+					String conceptSource = conceptReference.substring(0, idx);
+					String conceptCode = conceptReference.substring(idx + 1);
+					Concept concept = conceptService.getConceptByMapping(conceptCode, conceptSource, false);
+					if (concept != null) {
+						concepts.add(concept);
+						continue;
+					}
+				}
+			}
+			if (concepts.size() == 0) {
+				return new EmptySearchResult();
+			}
+	
+			return new NeedsPaging<Concept>(concepts, context);
+		}
 		
 		ConceptReferenceTerm conceptReferenceTerm = conceptService.getConceptReferenceTermByUuid(uuid);
 		if (conceptReferenceTerm == null) {
@@ -76,7 +121,7 @@ public class ConceptSearchHandler1_9 implements SearchHandler {
 			List<ConceptMap> conceptMaps = new ArrayList<ConceptMap>();
 			conceptMaps.addAll(restHelperService.getObjectsByFields(ConceptMap.class, new Field("conceptReferenceTerm",
 			        conceptReferenceTerm)));
-			List<Concept> concepts = new ArrayList<Concept>();
+			concepts = new ArrayList<Concept>();
 			for (ConceptMap conceptMap : conceptMaps) {
 				if (!conceptMap.getConcept().isRetired() || context.getIncludeAll()) {
 					concepts.add(conceptMap.getConcept());

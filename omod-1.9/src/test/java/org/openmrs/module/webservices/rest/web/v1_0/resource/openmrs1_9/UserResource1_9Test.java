@@ -23,16 +23,15 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_9.UserAndPassword1_9;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource1_8, UserAndPassword1_8> {
+public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource1_9, UserAndPassword1_9> {
 	
 	@Override
-	public UserAndPassword1_8 newObject() {
-		UserAndPassword1_8 userAndPassword = new UserAndPassword1_8(Context.getUserService()
+	public UserAndPassword1_9 newObject() {
+		UserAndPassword1_9 userAndPassword = new UserAndPassword1_9(Context.getUserService()
 		        .getUserByUuid(getUuidProperty()));
 		userAndPassword.setPassword("topsecret");
 		return userAndPassword;
@@ -115,7 +114,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		request.addParameter("q", userName);
 		if (roles != null) {
 			final String rolesAsCommaSeparatedString = StringUtils.join(roles, ",");
-			request.addParameter(UserResource1_8.PARAMETER_ROLES, rolesAsCommaSeparatedString);
+			request.addParameter(UserResource1_9.PARAMETER_ROLES, rolesAsCommaSeparatedString);
 		}
 		final RequestContext context = RestUtil.getRequestContext(request, new MockHttpServletResponse());
 		

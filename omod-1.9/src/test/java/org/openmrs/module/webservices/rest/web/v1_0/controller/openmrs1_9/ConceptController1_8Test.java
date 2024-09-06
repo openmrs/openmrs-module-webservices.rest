@@ -386,7 +386,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * {@link ConceptResource1_8#getByUniqueId(String)}
+	 * {@link ConceptResource1_9#getByUniqueId(String)}
 	 * 
 	 * @throws Exception
 	 */

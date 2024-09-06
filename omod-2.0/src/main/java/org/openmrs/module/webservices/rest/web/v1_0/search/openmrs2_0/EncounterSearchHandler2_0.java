@@ -31,8 +31,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterTypeResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.EncounterTypeResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.stereotype.Component;
@@ -68,9 +68,9 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 		Date fromDate = dateFrom != null ? (Date) ConversionUtil.convert(dateFrom, Date.class) : null;
 		Date toDate = dateTo != null ? (Date) ConversionUtil.convert(dateTo, Date.class) : null;
 		
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 				Patient.class)).getByUniqueId(patientUuid);
-		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
+		EncounterType encounterType = ((EncounterTypeResource1_9) Context.getService(RestService.class)
 				.getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 
 		if (patient != null) {

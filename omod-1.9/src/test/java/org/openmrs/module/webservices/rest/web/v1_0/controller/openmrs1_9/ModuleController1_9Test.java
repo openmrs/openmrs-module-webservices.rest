@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ModuleResource1_9;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -56,7 +56,7 @@ public class ModuleController1_9Test extends MainResourceControllerTest {
 		mockModuleFactory.loadedModules.add(atlasModule);
 		mockModuleFactory.loadedModules.add(conceptLabModule);
 		
-		ModuleResource1_8 resource = (ModuleResource1_8) restService.getResourceBySupportedClass(Module.class);
+		ModuleResource1_9 resource = (ModuleResource1_9) restService.getResourceBySupportedClass(Module.class);
 		resource.setModuleFactoryWrapper(mockModuleFactory);
 	}
 	

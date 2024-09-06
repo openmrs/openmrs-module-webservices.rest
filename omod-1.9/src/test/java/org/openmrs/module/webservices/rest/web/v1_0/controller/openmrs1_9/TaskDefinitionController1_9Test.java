@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskDefinitionResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.TaskDefinitionResource1_9;
 import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -44,7 +44,7 @@ public class TaskDefinitionController1_9Test extends MainResourceControllerTest 
 		
 		mockTaskServiceWrapper.registeredTasks.add(testTask);
 		
-		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService
+		TaskDefinitionResource1_9 taskResource = (TaskDefinitionResource1_9) restService
 		        .getResourceBySupportedClass(TaskDefinition.class);
 		taskResource.setTaskServiceWrapper(mockTaskServiceWrapper);
 	}

@@ -13,9 +13,8 @@ import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonNameResource1_8;
 
-public class PersonNameResource1_9Test extends BaseDelegatingResourceTest<PersonNameResource1_8, PersonName> {
+public class PersonNameResource1_9Test extends BaseDelegatingResourceTest<PersonNameResource1_9, PersonName> {
 	
 	@Override
 	public PersonName newObject() {

@@ -26,7 +26,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.AllergyResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.WebRequest;
 
@@ -89,7 +88,7 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see AllergyResource1_8#getAllergyByPatient(String,
+	 * @see AllergyResource1_9#getAllergyByPatient(String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @throws Exception
 	 */

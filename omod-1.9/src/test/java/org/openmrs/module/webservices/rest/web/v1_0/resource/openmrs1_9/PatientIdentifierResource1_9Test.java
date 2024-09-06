@@ -10,13 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierResource1_8;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
-public class PatientIdentifierResource1_9Test extends BaseDelegatingResourceTest<PatientIdentifierResource1_8, PatientIdentifier> {
+public class PatientIdentifierResource1_9Test extends BaseDelegatingResourceTest<PatientIdentifierResource1_9, PatientIdentifier> {
 	
 	@Override
 	public PatientIdentifier newObject() {

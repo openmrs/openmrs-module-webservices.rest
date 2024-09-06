@@ -23,8 +23,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Component;
 
@@ -78,12 +78,12 @@ public class EncounterSearchHandler1_9 implements SearchHandler {
 		String values = context.getRequest().getParameter(REQUEST_PARAM_VALUES);
 		
 		if (StringUtils.isNotBlank(patientUuid) && StringUtils.isNotBlank(conceptUuid)) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+			Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
 			
 			// get all encounters matching patient and concept
 			if (patient != null) {
-				Concept concept = ((ConceptResource1_8) Context.getService(RestService.class)
+				Concept concept = ((ConceptResource1_9) Context.getService(RestService.class)
 				        .getResourceBySupportedClass(Concept.class)).getByUniqueId(conceptUuid);
 				if (concept != null) {
 					List<Obs> obs = Context.getObsService().getObservationsByPersonAndConcept(patient, concept);
