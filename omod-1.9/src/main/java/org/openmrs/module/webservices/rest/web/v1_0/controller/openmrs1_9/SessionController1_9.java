@@ -66,11 +66,11 @@ public class SessionController1_9 extends BaseRestController {
 		boolean authenticated = Context.isAuthenticated();
 		SimpleObject session = new SimpleObject();
 		session.add("authenticated", authenticated);
+		session.add("locale", Context.getLocale());
+		session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 		if (authenticated) {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
 			    new CustomRepresentation(USER_CUSTOM_REP)));
-			session.add("locale", Context.getLocale());
-			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 			session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
 			session.add("currentProvider", ConversionUtil.convertToRepresentation(getCurrentProvider(), Representation.REF));
 		}
