@@ -18,7 +18,7 @@ import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 import static org.junit.Assert.assertEquals;
@@ -31,8 +31,8 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 	@Before
 	public void setUp() {
-		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID);
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants1_9.CONCEPT2_UUID);
+		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
 		state.setConcept(concept);
@@ -75,7 +75,7 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		int countBefore = service.getAllConceptStateConversions().size();
 
 		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
-		ProgramWorkflow workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		ProgramWorkflow workflow = service.getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
 		state.setConcept(concept);
@@ -108,7 +108,7 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		ProgramWorkflowService service = Context.getProgramWorkflowService();
 
 		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
 		state.setConcept(concept);

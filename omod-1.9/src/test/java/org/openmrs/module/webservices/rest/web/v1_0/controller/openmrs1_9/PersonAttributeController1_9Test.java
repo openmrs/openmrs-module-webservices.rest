@@ -23,7 +23,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 import java.util.Iterator;
@@ -37,7 +37,7 @@ import static org.hamcrest.Matchers.not;
  */
 public class PersonAttributeController1_9Test extends MainResourceControllerTest {
 	
-	String personUuid = RestTestConstants1_8.PERSON_UUID;
+	String personUuid = RestTestConstants1_9.PERSON_UUID;
 	
 	private PersonService service;
 
@@ -169,7 +169,7 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	 */
 	@Override
 	public String getURI() {
-		return "person/" + RestTestConstants1_8.PERSON_UUID + "/attribute";
+		return "person/" + RestTestConstants1_9.PERSON_UUID + "/attribute";
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PERSON_ATTRIBUTE_UUID;
+		return RestTestConstants1_9.PERSON_ATTRIBUTE_UUID;
 	}
 	
 	/**
@@ -185,6 +185,6 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID).getAttributes().size();
+		return service.getPersonByUuid(RestTestConstants1_9.PERSON_UUID).getAttributes().size();
 	}
 }

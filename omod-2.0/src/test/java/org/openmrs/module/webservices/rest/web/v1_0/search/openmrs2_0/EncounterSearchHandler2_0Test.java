@@ -15,7 +15,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -56,7 +55,7 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
     public void search_shouldReturnEncountersWithTotalCountFilteredByPatientAndEncounterType() throws Exception {
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
         req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
-        req.addParameter("encounterType", RestTestConstants1_8.ENCOUNTER_TYPE_UUID);
+        req.addParameter("encounterType", RestTestConstants1_9.ENCOUNTER_TYPE_UUID);
         req.addParameter("totalCount", String.valueOf(Boolean.TRUE));
 
         SimpleObject result = deserialize(handle(req));

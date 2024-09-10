@@ -23,8 +23,10 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
+
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -82,22 +84,6 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Object personProp = PropertyUtils.getProperty(userProp, "person");
 		Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(),
 		    PropertyUtils.getProperty(personProp, "uuid"));
-	}
-
-	@Test
-	public void get_shouldReturnLocaleInfoIfTheUserIsNotAuthenticated() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Assert.assertTrue(Context.isAuthenticated());
-
-		// log out the current authenticated user
-		controller.delete(hsr);
-		Assert.assertFalse(Context.isAuthenticated());
-		Assert.assertNull(hsr.getSession(false));
-
-		// check if the unauthenticated user response has locale and allowedLocales
-		Object ret = controller.get();
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
-				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
 	@Test

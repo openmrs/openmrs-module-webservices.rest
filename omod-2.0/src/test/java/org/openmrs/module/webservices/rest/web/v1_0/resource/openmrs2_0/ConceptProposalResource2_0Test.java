@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 import org.junit.Before;
 import org.openmrs.ConceptProposal;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.util.OpenmrsConstants;
 
@@ -27,7 +27,7 @@ public class ConceptProposalResource2_0Test extends BaseDelegatingResourceTest<C
 		proposal.setFinalText("final text");
 		proposal.setState(OpenmrsConstants.CONCEPT_PROPOSAL_UNMAPPED);
 		proposal.setComments("comments");
-		proposal.setMappedConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT_UUID));
+		proposal.setMappedConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_9.CONCEPT3_UUID));
 		Context.getConceptService().saveConceptProposal(proposal);
 	}
 

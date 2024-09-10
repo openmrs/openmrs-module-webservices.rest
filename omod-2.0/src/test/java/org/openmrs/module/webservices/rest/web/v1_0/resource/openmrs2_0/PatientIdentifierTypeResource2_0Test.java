@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class PatientIdentifierTypeResource2_0Test extends BaseDelegatingResourceTest<PatientIdentifierTypeResource2_0, PatientIdentifierType> {
@@ -60,6 +60,6 @@ public class PatientIdentifierTypeResource2_0Test extends BaseDelegatingResource
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.PATIENT_IDENTIFIER_TYPE_UUID;
+		return RestTestConstants1_9.PATIENT_IDENTIFIER_TYPE_UUID;
 	}
 }

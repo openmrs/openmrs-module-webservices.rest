@@ -16,10 +16,10 @@ import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonNameResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PersonNameResource1_9;
 
 @SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = { "2.0.*" })
-public class PersonNameResource2_0 extends PersonNameResource1_8 {
+public class PersonNameResource2_0 extends PersonNameResource1_9 {
 	
 	@Override
 	public String getDisplayString(PersonName personName) {
