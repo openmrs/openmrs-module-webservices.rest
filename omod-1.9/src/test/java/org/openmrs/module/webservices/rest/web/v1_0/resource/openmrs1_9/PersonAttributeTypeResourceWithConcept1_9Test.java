@@ -15,6 +15,8 @@
  import org.openmrs.Concept;
  import org.openmrs.PersonAttributeType;
  import org.openmrs.api.context.Context;
+ import org.openmrs.module.webservices.rest.SimpleObject;
+ import org.openmrs.module.webservices.rest.web.ConversionUtil;
  import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
  public class PersonAttributeTypeResourceWithConcept1_9Test extends BaseDelegatingResourceTest<PersonAttributeTypeResource1_9, PersonAttributeType> {
@@ -33,12 +35,8 @@
 
  	@Override
  	public void validateFullRepresentation() throws Exception {
-		/*
-		 * this test throws a ClassCastException despite the correct approach to cast an instance of SimpleObject to an org.openmrs.Concept
-		 * i have commented it out for the time being till further asistance is given
-		 */
- 		// Concept concept = (Concept) getRepresentation().get("concept");
- 		// assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.getUuid());
+		SimpleObject concept = getRepresentation().get("concept");
+ 		 assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.get("uuid"));
  	}
 
  	@Override

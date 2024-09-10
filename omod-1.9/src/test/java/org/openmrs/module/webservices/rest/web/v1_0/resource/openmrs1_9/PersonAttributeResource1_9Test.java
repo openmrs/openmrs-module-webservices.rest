@@ -129,28 +129,28 @@ public class PersonAttributeResource1_9Test extends BaseModuleWebContextSensitiv
 	 * should it be modified for the expected result to match the actual result 
 	 * or should we remove it all together since  attribute.getValue() returns the correct value 
 	 */
-	// @Test
-	// public void setValue_shouldSetProperAttributableIdIfFound() {
-	// 	PersonAttributeType type = new PersonAttributeType();
-	// 	type.setFormat("org.openmrs.Location");
-	// 	type.setName("Second Home");
-	// 	type.setDescription("Testing Attributable domain objects");
-	// 	type.setSortWeight(5.5);
-	// 	type.setSearchable(false);
-	// 	type = personService.savePersonAttributeType(type);
+	 @Test
+	 public void setValue_shouldSetProperAttributableIdIfFound() {
+	 	PersonAttributeType type = new PersonAttributeType();
+	 	type.setFormat("org.openmrs.Location");
+	 	type.setName("Second Home");
+	 	type.setDescription("Testing Attributable domain objects");
+	 	type.setSortWeight(5.5);
+	 	type.setSearchable(false);
+	 	type = personService.savePersonAttributeType(type);
 		
-	// 	//Get the first location in from the list
-	// 	Location location = locationService.getAllLocations().get(0);
+	 	//Get the first location in from the list
+	 	Location location = locationService.getAllLocations().get(0);
 		
-	// 	PersonAttribute attribute = new PersonAttribute(type, null);
-	// 	attribute.setAttributeType(type);
+	 	PersonAttribute attribute = new PersonAttribute(type, null);
+	 	attribute.setAttributeType(type);
 		
-	// 	Assert.assertNull(attribute.getValue());
+	 	Assert.assertNull(attribute.getValue());
 		
-	// 	resource.setValue(attribute, location.getUuid());
+	 	resource.setValue(attribute, location.getUuid());
 		
-	// 	Assert.assertEquals(location.getUuid(), attribute.getValue());
-	// }
+	 	Assert.assertEquals(location.getId(), Integer.valueOf(attribute.getValue()));
+	 }
 	
 	@Test
 	public void setValue_shouldSetPassedValueIfCouldNotBeConvertedToAttributable() throws ClassNotFoundException {
