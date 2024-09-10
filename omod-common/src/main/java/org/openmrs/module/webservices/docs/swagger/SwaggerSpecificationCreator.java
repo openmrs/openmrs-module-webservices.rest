@@ -132,7 +132,6 @@ public class SwaggerSpecificationCreator {
 			try {
 				initSwagger();
 				addPaths();
-				//addDefaultDefinitions();
 				//				addSubclassOperations(); //FIXME uncomment after fixing the method
 			}
 			catch (Exception e) {
