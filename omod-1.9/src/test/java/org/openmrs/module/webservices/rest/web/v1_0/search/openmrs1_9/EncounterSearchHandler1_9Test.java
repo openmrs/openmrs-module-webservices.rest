@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -45,7 +44,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		req.addParameter("s", "byObs");
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
 		// CD4 count concept
-		req.addParameter("obsConcept", RestTestConstants1_8.CONCEPT_NUMERIC_UUID);
+		req.addParameter("obsConcept", RestTestConstants1_9.CONCEPT_NUMERIC_UUID);
 		req.addParameter("obsValues", "150,175");
 		
 		SimpleObject result = deserialize(handle(req));
@@ -161,7 +160,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		req.addParameter("s", "byObs");
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
 		// CD4 count concept
-		req.addParameter("obsConcept", RestTestConstants1_8.CONCEPT_NUMERIC_UUID);
+		req.addParameter("obsConcept", RestTestConstants1_9.CONCEPT_NUMERIC_UUID);
 		req.addParameter("obsValues", "abc,175");
 		
 		handle(req);

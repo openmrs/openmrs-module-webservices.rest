@@ -31,14 +31,14 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugOrderSubclassHandler1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.DrugOrderSubclassHandler1_9;
 
 /**
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
  * {@link org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugOrderSubclassHandler1_10}
  */
 @SubClassHandler(supportedClass = DrugOrder.class, supportedOpenmrsVersions = { "1.10.* - 1.11.*" })
-public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
+public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#newDelegate()

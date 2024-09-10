@@ -15,7 +15,7 @@ import org.openmrs.ConceptNumeric;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -47,7 +47,7 @@ public class ObsResource1_11Test extends BaseDelegatingResourceTest<ObsResource1
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.OBS_UUID;
+		return RestTestConstants1_9.OBS2_UUID;
 	}
 
 	@Test

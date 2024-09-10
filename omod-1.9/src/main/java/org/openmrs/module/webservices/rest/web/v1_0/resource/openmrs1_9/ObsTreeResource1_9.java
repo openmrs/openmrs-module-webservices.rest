@@ -40,7 +40,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 @Resource(name = RestConstants.VERSION_1 + "/obstree", supportedClass = SimpleObject.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
@@ -86,7 +85,7 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		Date fromDate = fromDateString != null ? (Date) ConversionUtil.convert(fromDateString, Date.class) : null;
 		Date toDate = toDateString != null ? (Date) ConversionUtil.convert(toDateString, Date.class) : null;
 		
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 		    Patient.class)).getByUniqueId(patientUuid);
 		if (patient == null) {
 			throw new ObjectNotFoundException("No patient found with uuid " + patientUuid);

@@ -17,7 +17,7 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.EncounterResource1_9;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
 
         // the custom rep is expecting a representation where all the values are concepts
         // our hack fix (see https://issues.openmrs.org/browse/RESTWS-816) is to simply to return null as the value for value drug
-        SimpleObject result = (SimpleObject) ConversionUtil.convertToRepresentation(encounter, new CustomRepresentation("uuid,obs:(uuid,value:(names))"), new EncounterResource1_8());
+        SimpleObject result = (SimpleObject) ConversionUtil.convertToRepresentation(encounter, new CustomRepresentation("uuid,obs:(uuid,value:(names))"), new EncounterResource1_9());
         List<SimpleObject> resultObsList = (List<SimpleObject>) result.get("obs");
         assertThat(resultObsList.size(), is(2));
         SimpleObject resultObs1 = resultObsList.get(0);

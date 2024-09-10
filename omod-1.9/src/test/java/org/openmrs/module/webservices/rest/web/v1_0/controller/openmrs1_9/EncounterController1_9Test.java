@@ -518,7 +518,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> encounters = result.get("results");
-		Assert.assertEquals(2, encounters.size());
+		Assert.assertEquals(1, encounters.size());
 	}
 	
 	@Test

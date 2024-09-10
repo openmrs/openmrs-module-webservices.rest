@@ -15,7 +15,7 @@ import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -38,7 +38,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 	public void getSearchConfig_shouldReturnOrdersByPatientIdentifier() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
-		req.addParameter("patient", RestTestConstants1_8.PATIENT_UUID);
+		req.addParameter("patient", RestTestConstants1_9.PATIENT_UUID);
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
@@ -160,7 +160,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 	public void getSearchConfig_shouldReturnOrdersMatchingAllCriteria() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("s", "default");
-		req.addParameter("patient", RestTestConstants1_8.PATIENT_UUID);
+		req.addParameter("patient", RestTestConstants1_9.PATIENT_UUID);
 		req.addParameter("careSetting", RestTestConstants2_2.OUTPATIENT_CARE_SETTING_UUID);
 		req.addParameter("orderTypes", RestTestConstants1_10.DRUG_ORDER_TYPE_UUID);
 		req.addParameter("concepts", RestTestConstants1_10.COUGH_SYRUP_UUID);

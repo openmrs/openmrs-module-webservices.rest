@@ -16,7 +16,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.DrugResource1_9;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -27,7 +27,7 @@ import io.swagger.models.properties.RefProperty;
  * supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/drug", order = 3, supportedClass = Drug.class, supportedOpenmrsVersions = { "1.10.*" })
-public class DrugResource1_10 extends DrugResource1_8 {
+public class DrugResource1_10 extends DrugResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()

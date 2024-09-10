@@ -17,7 +17,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
@@ -45,7 +45,7 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 	public void setUp() {
 		this.service = Context.getAlertService();
 
-		User alertRecipient = Context.getUserService().getUserByUuid(RestTestConstants1_8.USER_UUID);
+		User alertRecipient = Context.getUserService().getUserByUuid(RestTestConstants1_9.USER_UUID);
 
 		Alert activeAlert = new Alert();
 		activeAlert.setText("New Alert");
@@ -115,7 +115,7 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 	public void shouldCreateAlert() throws Exception {
 		long originalCount = service.getAllAlerts(true).size();
 		String json = "{\"text\": \"New alert\",\"satisfiedByAny\": true,\"recipients\": [{\"recipient\":\""
-				+ RestTestConstants1_8.USER_UUID + "\"}]}";
+				+ RestTestConstants1_9.USER_UUID + "\"}]}";
 
 		SimpleObject newAlert = deserialize(handle(newPostRequest(getURI(), json)));
 

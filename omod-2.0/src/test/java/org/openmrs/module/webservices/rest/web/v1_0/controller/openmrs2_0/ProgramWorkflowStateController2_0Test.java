@@ -14,7 +14,7 @@ import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +24,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 
 	@Override
 	public String getURI() {
-		return "workflow/" + RestTestConstants1_8.WORKFLOW_UUID + "/state/";
+		return "workflow/" + RestTestConstants1_9.WORKFLOW_UUID + "/state/";
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 	@Test
 	public void shouldCreateWorkflowState() throws Exception {
 		String json =
-				"{\"concept\": \"" + RestTestConstants1_8.CONCEPT_UUID + "\",\"initial\": true,\"terminal\": false}";
+				"{\"concept\": \"" + RestTestConstants1_9.CONCEPT3_UUID + "\",\"initial\": true,\"terminal\": false}";
 
 		SimpleObject newWorkflowState = deserialize(handle(newPostRequest(getURI(), json)));
 
@@ -48,7 +48,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 		String uuid = newWorkflowState.get("uuid");
 
 		ProgramWorkflowState createdWorkflowState = Context.getProgramWorkflowService().getStateByUuid(uuid);
-		assertEquals(RestTestConstants1_8.CONCEPT_UUID, createdWorkflowState.getConcept().getUuid());
+		assertEquals(RestTestConstants1_9.CONCEPT3_UUID, createdWorkflowState.getConcept().getUuid());
 		assertEquals(true, createdWorkflowState.getInitial());
 		assertEquals(false, createdWorkflowState.getTerminal());
 	}
@@ -56,10 +56,10 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 	@Test
 	public void shouldDeleteWorkflowState() throws Exception {
 		// create new state
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
-		state.setConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID));
+		state.setConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_9.CONCEPT2_UUID));
 		state.setInitial(true);
 		state.setTerminal(false);
 
@@ -72,7 +72,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 		handle(newDeleteRequest(getURI() + "/" + state.getUuid()));
 
 		// verify that state has been removed
-		workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_9.WORKFLOW_UUID);
 		assertEquals(workflowSizeBefore - 1, workflow.getStates().size());
 	}
 }

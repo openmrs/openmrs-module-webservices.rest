@@ -24,11 +24,10 @@ import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
 
 public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptResource1_9, Concept> {
 	
@@ -77,7 +76,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.CONCEPT_UUID;
+		return RestTestConstants1_9.CONCEPT3_UUID;
 	}
 	
 	@Test
@@ -91,21 +90,21 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		otherName.setUuid("newUuid");
 		otherNames.add(otherName);
 		
-		ConceptResource1_8.setNames(instance, otherNames);
+		ConceptResource1_9.setNames(instance, otherNames);
 		assertEquals(1, instance.getNames().size());
 		assertTrue(instance.getNames().contains(otherName));
 		
-		ConceptResource1_8.setNames(instance, getMockNamesList());
+		ConceptResource1_9.setNames(instance, getMockNamesList());
 		assertEquals(2, instance.getNames().size());
 		assertFalse(instance.getNames().contains(otherName));
 		
 		otherNames.addAll(getMockNamesList());
 		
-		ConceptResource1_8.setNames(instance, otherNames);
+		ConceptResource1_9.setNames(instance, otherNames);
 		assertEquals(3, instance.getNames().size());
 		assertTrue(instance.getNames().contains(otherName));
 		
-		ConceptResource1_8.setNames(instance, getMockNamesList());
+		ConceptResource1_9.setNames(instance, getMockNamesList());
 		assertEquals(2, instance.getNames().size());
 		assertFalse(instance.getNames().contains(otherName));
 	}

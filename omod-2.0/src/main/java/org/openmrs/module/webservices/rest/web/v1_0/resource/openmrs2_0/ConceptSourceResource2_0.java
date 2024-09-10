@@ -15,13 +15,13 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptSourceResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptSourceResource1_9;
 
 /**
  * {@link Resource} for {@link ConceptSource}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = { "2.0.*" })
-public class ConceptSourceResource2_0 extends ConceptSourceResource1_8 {
+public class ConceptSourceResource2_0 extends ConceptSourceResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)

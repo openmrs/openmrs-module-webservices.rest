@@ -14,14 +14,14 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDatatypeResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptDatatypeResource1_9;
 
 /**
  * {@link Resource} for {@link ConceptDatatype}, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/conceptdatatype", supportedClass = ConceptDatatype.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
-public class ConceptDatatypeResource2_0 extends ConceptDatatypeResource1_8 {
+public class ConceptDatatypeResource2_0 extends ConceptDatatypeResource1_9 {
 	
 	/**
 	 * @see DelegatingCrudResource#save(java.lang.Object)
