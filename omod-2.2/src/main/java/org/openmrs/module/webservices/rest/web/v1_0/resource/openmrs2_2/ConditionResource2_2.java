@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 
 /**
  * {@link Resource} for Condition, supporting standard CRUD operations
@@ -241,7 +241,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		if (StringUtils.isBlank(patientUuid)) {
 			return new EmptySearchResult();
 		}
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 				Patient.class)).getByUniqueId(patientUuid);
 		if (patient == null) {
 			return new EmptySearchResult();

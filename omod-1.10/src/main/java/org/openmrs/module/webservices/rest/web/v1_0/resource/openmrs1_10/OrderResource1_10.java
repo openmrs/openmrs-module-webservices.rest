@@ -37,8 +37,8 @@ import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.OrderResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +51,7 @@ import java.util.List;
  * , supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "1.10.* - 2.1.*" })
-public class OrderResource1_10 extends OrderResource1_8 {
+public class OrderResource1_10 extends OrderResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -218,7 +218,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	protected PageableResult doSearch(RequestContext context) throws ResponseException {
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+			Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 			    Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null) {
 				throw new ObjectNotFoundException();

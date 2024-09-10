@@ -16,15 +16,15 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonAddressResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PersonAddressResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PersonResource1_9;
 
 /**
  * {@link Resource} for PersonAddress, supporting standard CRUD operations
  */
-@SubResource(parent = PersonResource1_8.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {
+@SubResource(parent = PersonResource1_9.class, path = "address", supportedClass = PersonAddress.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
-public class PersonAddressResource2_0 extends PersonAddressResource1_8 {
+public class PersonAddressResource2_0 extends PersonAddressResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

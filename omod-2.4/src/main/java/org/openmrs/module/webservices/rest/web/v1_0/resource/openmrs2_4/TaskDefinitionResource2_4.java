@@ -12,12 +12,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskDefinitionResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.TaskDefinitionResource1_9;
 import org.openmrs.scheduler.TaskDefinition;
 
 @Resource(name = RestConstants.VERSION_1 + "/taskdefinition", order = 2, supportedClass = TaskDefinition.class,
 		supportedOpenmrsVersions = { "2.4.* - 9.*" })
-public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_8 {
+public class TaskDefinitionResource2_4 extends TaskDefinitionResource1_9 {
 
 	private TaskServiceWrapper2_4 taskServiceWrapper = new TaskServiceWrapper2_4();
 

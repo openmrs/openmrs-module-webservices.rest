@@ -21,11 +21,11 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ProgramResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ProgramResource1_9;
 
 @Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = {
         "1.10.* - 9.*" })
-public class ProgramResource1_10 extends ProgramResource1_8 {
+public class ProgramResource1_10 extends ProgramResource1_9 {
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {

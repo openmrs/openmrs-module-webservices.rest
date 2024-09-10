@@ -15,15 +15,15 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.UserResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_9.UserAndPassword1_9;
 
 /**
  * {@link Resource} for User, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
+@Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_9.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
-public class UserResource2_0 extends UserResource1_8 {
+public class UserResource2_0 extends UserResource1_9 {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
@@ -41,13 +41,13 @@ public class UserResource2_0 extends UserResource1_8 {
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */
 	@Override
-	public UserAndPassword1_8 save(UserAndPassword1_8 user) {
+	public UserAndPassword1_9 save(UserAndPassword1_9 user) {
 		final User savedUser = createOrUpdateUser(user);
 		refreshAuthenticatedUserIfNeeded(savedUser);
-		return new UserAndPassword1_8(savedUser);
+		return new UserAndPassword1_9(savedUser);
 	}
 
-	private User createOrUpdateUser(UserAndPassword1_8 user) {
+	private User createOrUpdateUser(UserAndPassword1_9 user) {
 		final User openmrsUser;
 
 		if (user.getUser().getUserId() == null) {

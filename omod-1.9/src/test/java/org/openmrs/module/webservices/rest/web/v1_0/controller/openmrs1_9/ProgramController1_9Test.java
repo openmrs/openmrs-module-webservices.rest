@@ -19,7 +19,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -60,7 +60,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PROGRAM_UUID;
+		return RestTestConstants1_9.PROGRAM_UUID;
 	}
 	
 	public String getName() {
@@ -108,7 +108,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject program = new SimpleObject();
 		program.add("name", "Program name");
 		program.add("description", "Program description");
-		program.add("concept", RestTestConstants1_8.CONCEPT_UUID);
+		program.add("concept", RestTestConstants1_9.CONCEPT3_UUID);
 		
 		String json = new ObjectMapper().writeValueAsString(program);
 		
@@ -118,7 +118,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject newProgram = deserialize(handle(req));
 		
 		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID,
+		Assert.assertEquals(RestTestConstants1_9.CONCEPT3_UUID,
 		    ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
 		Assert.assertEquals(originalCount + 1, getAllCount());
 	}

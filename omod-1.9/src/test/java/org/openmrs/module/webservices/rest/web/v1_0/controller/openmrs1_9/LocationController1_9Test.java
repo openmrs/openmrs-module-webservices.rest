@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,7 +65,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.LOCATION_UUID;
+		return RestTestConstants1_9.LOCATION2_UUID;
 	}
 	
 	@Test

@@ -24,7 +24,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptDescriptionResource1_8;
 
 public class ConceptDescriptionController1_9Test extends MainResourceControllerTest {
 	
@@ -64,7 +63,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource1_8#create(String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_9#create(String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -79,7 +78,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource1_8#doGetAll(Concept, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_9#doGetAll(Concept, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -104,7 +103,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource1_8#update(String, String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_9#update(String, String, SimpleObject, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -121,10 +120,10 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	
 	/**
 	 * This tests that delete always delegates to
-	 * {@link ConceptDescriptionResource1_8#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * {@link ConceptDescriptionResource1_9#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * since descriptions are not retirable/voidable
 	 * 
-	 * @see {@link ConceptDescriptionResource1_8#delete(ConceptDescription, String, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @see {@link ConceptDescriptionResource1_9#delete(ConceptDescription, String, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test
@@ -138,7 +137,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @See {@link ConceptDescriptionResource1_8#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
+	 * @See {@link ConceptDescriptionResource1_9#purge(ConceptDescription, org.openmrs.module.webservices.rest.web.RequestContext)}
 	 * @throws Exception
 	 */
 	@Test

@@ -26,7 +26,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -51,7 +51,7 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PROBLEM_UUID;
+		return RestTestConstants1_9.PROBLEM_UUID;
 	}
 	
 	/**
@@ -63,7 +63,7 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 	}
 	
 	private String getPatientUuid() {
-		return RestTestConstants1_8.PATIENT_UUID;
+		return RestTestConstants1_9.PATIENT_UUID;
 	}
 	
 	/**
@@ -114,7 +114,7 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 		
 		long originalCount = getAllCount();
 		SimpleObject problem = new SimpleObject();
-		problem.add("problem", RestTestConstants1_8.CONCEPT_UUID);
+		problem.add("problem", RestTestConstants1_9.CONCEPT3_UUID);
 		problem.add("person", getPatientUuid());
 		problem.add("startDate", "2013-01-01");
 		String json = new ObjectMapper().writeValueAsString(problem);
@@ -173,7 +173,7 @@ public class ProblemController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getProblem_shouldGetProblemByConceptMappings() throws Exception {
-		String json = "{\"person\":\"" + RestTestConstants1_8.PERSON_UUID
+		String json = "{\"person\":\"" + RestTestConstants1_9.PERSON_UUID
 		        + "\", \"problem\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\"}";
 		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
 		Assert.assertNotNull(PropertyUtils.getProperty(newObs, "problem"));

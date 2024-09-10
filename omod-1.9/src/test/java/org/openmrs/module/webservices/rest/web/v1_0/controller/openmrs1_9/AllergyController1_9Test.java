@@ -23,10 +23,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.AllergyResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.WebRequest;
 
@@ -45,10 +44,10 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getAllergy_shouldGetADefaultRepresentationOfAnAllergy() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + RestTestConstants1_8.ALLERGY_UUID)));
+		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + RestTestConstants1_9.ALLERGY_UUID)));
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
-		Assert.assertEquals(RestTestConstants1_8.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "allergen"));
@@ -61,12 +60,12 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 	 */
 	@Test
 	public void getAllergy_shouldGetAFullRepresentationOfAnAllergy() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + RestTestConstants1_8.ALLERGY_UUID, new Parameter(
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + RestTestConstants1_9.ALLERGY_UUID, new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Util.log("Allergy fetched (default)", result);
-		Assert.assertEquals(RestTestConstants1_8.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.ALLERGY_UUID, PropertyUtils.getProperty(result, "uuid"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "person"));
 		Assert.assertNotNull(PropertyUtils.getProperty(result, "allergen"));
@@ -82,14 +81,14 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 		Allergy allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertFalse(allergy.isVoided());
 		
-		handle(newDeleteRequest(getURI() + "/" + RestTestConstants1_8.ALLERGY_UUID, new Parameter("reason", "unit test")));
+		handle(newDeleteRequest(getURI() + "/" + RestTestConstants1_9.ALLERGY_UUID, new Parameter("reason", "unit test")));
 		allergy = Context.getPatientService().getAllergy(1);
 		Assert.assertTrue(allergy.isVoided());
 		Assert.assertEquals("unit test", allergy.getVoidReason());
 	}
 	
 	/**
-	 * @see AllergyResource1_8#getAllergyByPatient(String,
+	 * @see AllergyResource1_9#getAllergyByPatient(String,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
 	 * @throws Exception
 	 */
@@ -100,7 +99,7 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
 		Assert.assertEquals(1, results.size());
-		Assert.assertEquals(RestTestConstants1_8.ALLERGY_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
+		Assert.assertEquals(RestTestConstants1_9.ALLERGY_UUID, PropertyUtils.getProperty(results.get(0), "uuid"));
 	}
 	
 	/**
@@ -116,7 +115,7 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.ALLERGY_UUID;
+		return RestTestConstants1_9.ALLERGY_UUID;
 	}
 	
 	/**
@@ -138,7 +137,7 @@ public class AllergyController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void getAllergen_shouldGetAllergenByConceptMappings() throws Exception {
-		String json = "{\"person\":\"" + RestTestConstants1_8.PERSON_UUID
+		String json = "{\"person\":\"" + RestTestConstants1_9.PERSON_UUID
 		        + "\", \"allergen\":\"SNOMED CT:2332523\", \"startDate\":\"2013-12-09\", \"allergyType\":\""
 		        + AllergyType.DRUG + "\"}";
 		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));

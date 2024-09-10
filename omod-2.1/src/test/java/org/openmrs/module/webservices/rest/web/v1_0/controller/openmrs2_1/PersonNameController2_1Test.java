@@ -21,8 +21,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_NAME_UUID;
-import static org.openmrs.module.webservices.rest.web.RestTestConstants1_8.PERSON_UUID;
+import static org.openmrs.module.webservices.rest.web.RestTestConstants1_9.PERSON_NAME_UUID;
+import static org.openmrs.module.webservices.rest.web.RestTestConstants1_9.PERSON_UUID;
 
 /**
  * Tests functionality of {@link PersonNameController}.

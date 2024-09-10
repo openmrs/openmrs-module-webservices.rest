@@ -16,7 +16,7 @@ import org.openmrs.Concept;
 import org.openmrs.activelist.Allergy;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
@@ -78,7 +78,7 @@ public class AllergyResource1_9Test extends BaseDelegatingResourceTest<AllergyRe
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_8.ALLERGY_UUID;
+		return RestTestConstants1_9.ALLERGY_UUID;
 	}
 	
 	@Test

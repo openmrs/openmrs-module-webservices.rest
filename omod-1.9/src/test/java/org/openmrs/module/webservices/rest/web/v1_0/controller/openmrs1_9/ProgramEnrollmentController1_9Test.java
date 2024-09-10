@@ -21,7 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -69,17 +69,17 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PATIENT_PROGRAM_UUID;
+		return RestTestConstants1_9.PATIENT_PROGRAM_UUID;
 	}
 	
 	@Test
 	@Override
 	public void shouldGetAll() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("patient", RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
+		req.setParameter("patient", RestTestConstants1_9.PATIENT_IN_A_PROGRAM_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
-		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_9.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, true);
 		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
@@ -87,10 +87,10 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	@Test
 	public void shouldExcludeVoided() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("patient", RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		req.setParameter("patient", RestTestConstants1_9.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
-		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_9.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
 		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
@@ -135,14 +135,14 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	public void shouldEnrollAPatientToAProgram() throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 		SimpleObject params = new SimpleObject();
-		params.add("patient", RestTestConstants1_8.PATIENT_UUID);
-		params.add("program", RestTestConstants1_8.PROGRAM_UUID);
+		params.add("patient", RestTestConstants1_9.PATIENT_UUID);
+		params.add("program", RestTestConstants1_9.PROGRAM_UUID);
 		params.add("dateEnrolled", dateFormat.format(new Date()));
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), params);
 		SimpleObject result = deserialize(handle(req));
 		
-		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_9.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, true);
 		PatientProgram newEnrollment = patientPrograms.get(patientPrograms.size() - 1);
 		Assert.assertEquals(newEnrollment.getProgram().getUuid(), ((Map) result.get("program")).get("uuid"));

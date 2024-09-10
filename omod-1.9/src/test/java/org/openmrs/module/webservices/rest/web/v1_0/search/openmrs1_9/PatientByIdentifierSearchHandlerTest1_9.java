@@ -14,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8.LocationSearchHandler;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -45,7 +45,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PATIENT_UUID;
+		return RestTestConstants1_9.PATIENT_UUID;
 	}
 	
 	/**
