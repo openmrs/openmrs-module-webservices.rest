@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller("webservices.rest.formResourceController")
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form")
 public class FormResourceController1_9 extends MainResourceController {
 	
 	@Autowired
@@ -36,7 +36,7 @@ public class FormResourceController1_9 extends MainResourceController {
 	@Autowired
 	private FormService formService;
 	
-	@RequestMapping(method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
+	@RequestMapping(value = "/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
 	@ResponseBody
 	public Object createResourceValue(@PathVariable("uuid") String formUuid,
 	        @PathVariable("resourceUuid") String resourceUuid, @RequestParam("value") MultipartFile file,
@@ -56,7 +56,7 @@ public class FormResourceController1_9 extends MainResourceController {
 		return new FormResourceResource1_9().asDefaultRep(resource);
 	}
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value = "/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.GET)
 	public void getResourceValue(@PathVariable("uuid") String formUuid, @PathVariable("resourceUuid") String resourceUuid,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		//Get the resource
