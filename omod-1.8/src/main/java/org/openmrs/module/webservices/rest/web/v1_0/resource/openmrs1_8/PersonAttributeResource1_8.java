@@ -24,6 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -100,8 +101,12 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 
 	@PropertySetter("value")
 	public void setValue(PersonAttribute personAttribute, String value) {
-		if (setLocationIfUUID(personAttribute, value)) {
-			return;
+		if (RestUtil.isValidUuid(value)) {
+			Location location = Context.getLocationService().getLocationByUuid(value);
+			if (location != null) {
+				personAttribute.setValue(location.getUuid());
+				return;
+			}
 		}
 
 		PersonAttributeType attributeType = personAttribute.getAttributeType();
@@ -137,26 +142,6 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 				// Couldn't convert? just assign the string
 				personAttribute.setValue(value);
 			}
-		}
-	}
-
-	private boolean setLocationIfUUID(PersonAttribute personAttribute, String value) {
-		if (isValidUUID(value)) {
-			Location location = Context.getLocationService().getLocationByUuid(value);
-			if (location != null) {
-				personAttribute.setValue(location.getUuid());
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isValidUUID(String value) {
-		try {
-			UUID.fromString(value);
-			return true;
-		} catch (IllegalArgumentException e) {
-			return false;
 		}
 	}
 	
