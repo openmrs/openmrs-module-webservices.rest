@@ -15,7 +15,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Attributable;
-import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
@@ -37,6 +37,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsClassLoader;
+import java.util.UUID;
 
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
@@ -96,9 +97,13 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			throw new APIException("Could not convert value to Attributable", e);
 		}
 	}
-	
+
 	@PropertySetter("value")
 	public void setValue(PersonAttribute personAttribute, String value) {
+		if (setLocationIfUUID(personAttribute, value)) {
+			return;
+		}
+
 		PersonAttributeType attributeType = personAttribute.getAttributeType();
 		if (attributeType == null) {
 			personAttribute.setValue(value);
@@ -132,6 +137,26 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 				// Couldn't convert? just assign the string
 				personAttribute.setValue(value);
 			}
+		}
+	}
+
+	private boolean setLocationIfUUID(PersonAttribute personAttribute, String value) {
+		if (isValidUUID(value)) {
+			Location location = Context.getLocationService().getLocationByUuid(value);
+			if (location != null) {
+				personAttribute.setValue(location.getUuid());
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isValidUUID(String value) {
+		try {
+			UUID.fromString(value);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
 		}
 	}
 	
@@ -297,10 +322,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		String value = pa.toString();
 		return value == null ? "" : value;
 	}
-	
+
 	/**
 	 * Gets the hydrated object of person attribute.
-	 * 
+	 *
 	 * @param pa the person attribute.
 	 * @return an object containing the hydrated object.
 	 */
@@ -310,8 +335,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		if (value == null) {
 			return null;
 		}
-		
+
 		return ConversionUtil.convertToRepresentation(value, Representation.REF);
 	}
-	
 }
