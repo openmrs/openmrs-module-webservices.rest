@@ -48,8 +48,8 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 			Collections.singletonList("2.0.* - 9.*"),
 			Collections.singletonList(new SearchQuery.Builder(
 					"Allows you to find Encounter by patient and encounterType (and optionally by from and to date range)")
-					.withRequiredParameters("patient").withOptionalParameters("visit", "encounterType", DATE_FROM, DATE_TO, "order")
-					.build()));
+					.withRequiredParameters("patient").withOptionalParameters("visit", "encounterType", DATE_FROM, DATE_TO,
+							"order", "totalCount").build()));
 	
 	@Override
 	public SearchConfig getSearchConfig() {
