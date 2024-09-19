@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BaseUriSetup {
 	
-	public void setup(HttpServletRequest request) {
+	public synchronized void setup(HttpServletRequest request) {
 		if (!RestConstants.URI_PREFIX.startsWith("http://") && !RestConstants.URI_PREFIX.startsWith("https://")) {
 			StringBuilder uri = new StringBuilder();
 			uri.append(request.getScheme()).append("://").append(request.getServerName());
