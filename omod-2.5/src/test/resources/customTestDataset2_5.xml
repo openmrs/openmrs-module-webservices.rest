@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <order_type order_type_id="100" name="Drug Order Type" java_class_name="org.openmrs.DrugOrder" description="Some drug order" creator="1" date_created="2008-08-15 15:49:04.0"
+                retired="0" uuid="113fb1d0-ae06-22e3-a5e2-0800211c9a78"/>
+    <order_type order_type_id="100" name="Drug Order Type" java_class_name="org.openmrs.DrugOrder" description="Some drug order" creator="1" date_created="2008-08-15 15:49:04.0"
+                retired="0" uuid="113fb1d0-ae06-22e3-a5e2-0800211c9a78"/>
+    <order_type order_type_id="101" name="Lab Order Type" java_class_name="org.openmrs.Order" description="Some lab order" creator="1" date_created="2008-08-15 15:49:04.0"
+                retired="0" uuid="2d3fb1d0-ae06-22e3-a5e2-0140211c9a66"/>
+
+    <concept_reference_source  concept_source_id="100"  name="SNOMED CT"  description="SNOMED Preferred mapping"  hl7_code="SCT"  creator="1"  date_created="2009-11-19 20:19:16"  retired="0"  retired_by="1"   uuid="1ADDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"   changed_by="1"/>
+
+    <concept_reference_term  concept_reference_term_id="70"  concept_source_id="100"  name="Day"  code="258703001"  creator="1"  date_created="2020-02-20 10:36:02"  retired="0"    uuid="f05afff4-26f9-4fe6-9eaa-ed4a506da5bb"/>
+    <concept_reference_map  concept_map_id="70"  concept_reference_term_id="70"  concept_map_type_id="2"  creator="1"  date_created="2020-02-20 10:36:02"  concept_id="28"  uuid="371ad2c8-290e-421a-93d9-1282cdfd0901"/>
+
+    <order_attribute_type order_attribute_type_id="1" name="Dispensing Date" datatype="org.openmrs.customdatatype.datatype.DateDatatype" uuid="c0de4f5c-6626-418e-9f4f-5396a31e68fb" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" max_occurs="1" retired="false" />
+    <order_attribute_type order_attribute_type_id="2" name="Dispensing Unit" datatype="org.openmrs.customdatatype.datatype.DateDatatype" uuid="9516cc50-6f9f-11e0-8414-001e378eb67f" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" max_occurs="1" retired="true" retired_by="1" date_retired="2005-01-01 02:00:00.0" retire_reason="for fun and profit" />
+    <order_attribute_type order_attribute_type_id="3" name="Dispensing Personnel" datatype="org.openmrs.customdatatype.datatype.DateDatatype" uuid="9516cc50-6f9f-132r-5433-001e378eb67f" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" max_occurs="1" retired="false"/>
+    <order_attribute_type order_attribute_type_id="4" name="Dispensing Organization" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" uuid="9516cc50-6f9f-132r-6556-001e378eb67f" creator="1" date_created="2005-01-01 00:00:00.0" min_occurs="0" max_occurs="1" retired="false"/>
+
+    <visit  visit_id="1"  patient_id="2"  visit_type_id="1"  date_started="2023-08-14 17:11:39"  date_stopped="2023-08-14 17:47:54"   location_id="2"  creator="1"  date_created="2023-08-14 17:11:39"  changed_by="1"  date_changed="2023-08-14 17:47:55"  voided="0"   uuid="c50cef05-aa2d-4ba4-80ce-be8b34d75283"/>
+    <visit  visit_id="10005"  patient_id="7"  visit_type_id="1"  date_started="2023-08-14 17:11:39"  date_stopped="2023-08-14 17:47:54"   location_id="2"  creator="1"  date_created="2023-08-14 17:11:39"  changed_by="1"  date_changed="2023-08-14 17:47:55"  voided="0"   uuid="9cf0f0a0-71d6-4b79-8e15-200d3c633164"/>
+    <encounter  encounter_id="10000"  encounter_type="1"  patient_id="2"  location_id="2"  form_id="1"  encounter_datetime="2023-08-23 11:36:46"  creator="1"  date_created="2023-08-23 11:36:46"  voided="0"   changed_by="1"  date_changed="2023-08-23 11:36:46"  visit_id="1"  uuid="46ff6454-6447-4751-9d5d-8acd3d04dfd7"/>
+    <encounter  encounter_id="10005"  encounter_type="1"  patient_id="7"  location_id="2"  form_id="1"  encounter_datetime="2023-08-23 11:36:46"  creator="1"  date_created="2023-08-23 11:36:46"  voided="0"   changed_by="1"  date_changed="2023-08-23 11:36:46"  visit_id="1"  uuid="d2d69553-2247-414c-b0c5-46be893605af"/>
+
+    <orders  order_id="10000"  order_type_id="1"  concept_id="88"  orderer="1"  encounter_id="10000" date_activated="2023-08-23 11:36:46"  auto_expire_date="2023-09-22 11:36:45" creator="1"  date_created="2023-08-23 11:36:46"  voided="0"  patient_id="2" uuid="204897de-70c6-4d5f-9051-b269fbd0700c"  urgency="STAT"  order_number="ORD-3"  order_action="NEW"  care_setting="1" />
+    <drug_order  order_id="10000"  dose="30"  as_needed="0"  dosing_type="org.openmrs.SimpleDosingInstructions"  quantity="30"   num_refills="1"   duration="30"  duration_units="28"  quantity_units="51"  route="22"  dose_units="50"  frequency="1"   dispense_as_written="0" />
+
+    <order_attribute order_attribute_id="10" order_id="10000" attribute_type_id="1" value_reference="2011-04-25 00:00:00.0" uuid="3a2bdb18-6faa-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+    <order_attribute order_attribute_id="11" order_id="10000" attribute_type_id="4" value_reference="Dr. Batra" uuid="3a2bdb18-nadm-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+    <order_attribute order_attribute_id="12" order_id="10000" attribute_type_id="4" value_reference="Dr. Batra 2" uuid="1a2bdb18-nadm-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+</dataset>
