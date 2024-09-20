@@ -12,11 +12,16 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_5;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.openmrs.Order;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.RestTestConstants2_5;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
@@ -41,7 +46,7 @@ public class OrderController2_5Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants2_5.ORDER_ATTRIBUTE_UUID;
+		return RestTestConstants2_5.ORDER_UUID;
 	}
 
 	/**
@@ -67,5 +72,15 @@ public class OrderController2_5Test extends MainResourceControllerTest {
 		Assert.assertEquals(orderList.get(0).getAttributes().size(),1);
 		Assert.assertEquals(orderList.get(0).getAttributes().iterator().next().getAttributeType().getUuid(),"c0de4f5c-6626-418e-9f4f-5396a31e68fb");
 	}
+
+	@Test
+	@Override
+	public void shouldGetAll()  {
+		ThrowingRunnable throwingRunnable= () -> {
+			handle(request(RequestMethod.GET, getURI()));
+        };
+		Assert.assertThrows(ResponseException.class,throwingRunnable);
+	}
+
 
 }
