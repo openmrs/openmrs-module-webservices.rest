@@ -26,6 +26,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.api.APIException;
@@ -35,6 +36,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -315,6 +317,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 					return Context.getLocationService().getLocation(new Integer(obs.getValueText()));
 				}
 				catch (NumberFormatException e) {
+					// TDOO; we really shouldn't be supporting two ways of storing a location obs, should only use the location id
 					return Context.getLocationService().getLocationByUuid(obs.getValueText());
 				}
 			} else {
@@ -394,23 +397,28 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	@PropertySetter("value")
 	public static void setValue(Obs obs, Object value) throws ParseException, ConversionException, IOException {
 		if (value != null) {
+
+			// special case for complex obs
 			if (obs.isComplex()) {
 				byte[] bytes = DatatypeConverter.parseBase64Binary(value.toString());
-				
+
 				ComplexData complexData = new ComplexData(obs.getUuid() + ".raw", new ByteArrayInputStream(bytes));
 				obs.setComplexData(complexData);
-			} else if (obs.getConcept().getDatatype().isCoded()) {
-				// setValueAsString is not implemented for coded obs (in core)
-				
-				//We want clients to be able to fetch a coded value in one rest call
-				//and set the returned payload as the obs value
+				return;
+			}
+
+			// special case for data type coded (setValueAsString is not implemented for coded obs (in core))
+			if (obs.getConcept().getDatatype().isCoded()) {
+				// We want clients to be able to fetch a coded value in one rest call
+				// and set the returned payload as the obs value
+				// (ie support setting based on posting the entire REST rep or just the concept uuid)
 				if (value instanceof Map) {
 					Object uuid = ((Map) value).get(RestConstants.PROPERTY_UUID);
 					if (uuid != null) {
 						value = uuid.toString();
 					}
 				}
-				
+
 				Concept valueCoded = (Concept) ConversionUtil.convert(value, Concept.class);
 				if (valueCoded == null) {
 					//try checking if this this is value drug
@@ -421,58 +429,86 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 					} else {
 						throw new ObjectNotFoundException(obs.getConcept().getName().getName() + ":" + value.toString());
 					}
-					
+
 				} else {
 					obs.setValueCoded(valueCoded);
 				}
-				
-			} else {
-				if (obs.getConcept().isNumeric()) {
-					//get the actual persistent object rather than the hibernate proxy
-					ConceptNumeric concept = Context.getConceptService().getConceptNumeric(obs.getConcept().getId());
-					String units = concept.getUnits();
-					if (StringUtils.isNotBlank(units)) {
-						String originalValue = value.toString().trim();
-						if (originalValue.endsWith(units))
-							value = originalValue.substring(0, originalValue.indexOf(units)).trim();
-						else {
-							//check that that this value has no invalid units
-							try {
-								Double.parseDouble(originalValue);
-							}
-							catch (NumberFormatException e) {
-								throw new APIException(originalValue + " has invalid units", e);
-							}
+				return;
+			}
+
+			// special case for Location
+			String potentialLocationUuid = null;
+
+			// if this is a representation of an object, get the uuid property as potential location uuid
+			if (value instanceof Map) {
+				Object uuid = ((Map) value).get(RestConstants.PROPERTY_UUID);
+				if (uuid != null) {
+					potentialLocationUuid = uuid.toString();
+				}
+			}
+			else {
+				// otherwise, we will test if the value itself is a location uuid
+				potentialLocationUuid = value.toString();
+			}
+
+			// if there is a potential uuid, see if there is a matching location, and,if so, set the value text as the primary key
+			if (RestUtil.isValidUuid(potentialLocationUuid)) {
+				Location location = Context.getLocationService().getLocationByUuid(potentialLocationUuid);
+				if (location != null) {
+					obs.setValueText(location.getLocationId().toString());
+					obs.setComment("org.openmrs.Location");
+					return;
+				}
+			}
+
+			// handle all other types using obs.setValueAsString after special conversions for numeric and boolean
+			if (obs.getConcept().isNumeric()) {
+				//get the actual persistent object rather than the hibernate proxy
+				ConceptNumeric concept = Context.getConceptService().getConceptNumeric(obs.getConcept().getId());
+				String units = concept.getUnits();
+				if (StringUtils.isNotBlank(units)) {
+					String originalValue = value.toString().trim();
+					if (originalValue.endsWith(units))
+						value = originalValue.substring(0, originalValue.indexOf(units)).trim();
+					else {
+						//check that this value has no invalid units
+						try {
+							Double.parseDouble(originalValue);
 						}
-					}
-				} else if (obs.getConcept().getDatatype().isBoolean()) {
-					if (value instanceof Concept) {
-						value = ((Concept) value).getUuid();
-					}
-					if (value.equals(Context.getConceptService().getTrueConcept().getUuid())) {
-						value = true;
-					} else if (value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
-						value = false;
-					} else if (!value.getClass().isAssignableFrom(Boolean.class)) {
-						List<String> trueValues = Arrays.asList("true", "1", "on", "yes");
-						List<String> falseValues = Arrays.asList("false", "0", "off", "no");
-						
-						String val = value.toString().trim().toLowerCase();
-						if (trueValues.contains(val)) {
-							value = Boolean.TRUE;
-						} else if (falseValues.contains(val)) {
-							value = Boolean.FALSE;
-						}
-						
-						if (!(Boolean.TRUE.equals(value) || Boolean.FALSE.equals(value))) {
-							throw new ConversionException("Unexpected value: " + value + " set as the value of boolean. "
-							        + trueValues + falseValues + ", ConceptService.getTrueConcept or "
-							        + ", ConceptService.getFalseConcept expected");
+						catch (NumberFormatException e) {
+							throw new APIException(originalValue + " has invalid units", e);
 						}
 					}
 				}
-				obs.setValueAsString(value.toString());
+			} else if (obs.getConcept().getDatatype().isBoolean()) {
+				if (value instanceof Concept) {
+					value = ((Concept) value).getUuid();
+				}
+				if (value.equals(Context.getConceptService().getTrueConcept().getUuid())) {
+					value = true;
+				} else if (value.equals(Context.getConceptService().getFalseConcept().getUuid())) {
+					value = false;
+				} else if (!value.getClass().isAssignableFrom(Boolean.class)) {
+					List<String> trueValues = Arrays.asList("true", "1", "on", "yes");
+					List<String> falseValues = Arrays.asList("false", "0", "off", "no");
+
+					String val = value.toString().trim().toLowerCase();
+					if (trueValues.contains(val)) {
+						value = Boolean.TRUE;
+					} else if (falseValues.contains(val)) {
+						value = Boolean.FALSE;
+					}
+
+					if (!(Boolean.TRUE.equals(value) || Boolean.FALSE.equals(value))) {
+						throw new ConversionException("Unexpected value: " + value + " set as the value of boolean. "
+								+ trueValues + falseValues + ", ConceptService.getTrueConcept or "
+								+ ", ConceptService.getFalseConcept expected");
+					}
+				}
 			}
+			obs.setValueAsString(value.toString());
+
+
 		} else {
 			throw new APIException("The value for an observation cannot be null");
 		}

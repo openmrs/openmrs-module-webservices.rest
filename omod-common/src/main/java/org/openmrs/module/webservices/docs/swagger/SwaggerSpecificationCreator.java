@@ -132,7 +132,6 @@ public class SwaggerSpecificationCreator {
 			try {
 				initSwagger();
 				addPaths();
-				addDefaultDefinitions();
 				//				addSubclassOperations(); //FIXME uncomment after fixing the method
 			}
 			catch (Exception e) {
@@ -253,7 +252,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, new RequestContext());
+						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
 					}
 					
 					break;
@@ -1069,7 +1068,10 @@ public class SwaggerSpecificationCreator {
 			
 			operation.setSummary("Fetch all non-retired");
 			operation.setOperationId("getAll" + getOperationTitle(resourceHandler, true));
-			operation.addResponse("200", response200.schema(new RefProperty("#/definitions/FetchAll")));
+			operation.addResponse("200",
+					response200.schema(new ArrayProperty(
+						new RefProperty(getSchemaRef(resourceName, resourceParentName, OperationEnum.get)))));
+					
 			operation.setParameters(buildPagingParameters());
 			operation.parameter(v);
 			if (((BaseDelegatingResource<?>) resourceHandler).hasTypesDefined()) {

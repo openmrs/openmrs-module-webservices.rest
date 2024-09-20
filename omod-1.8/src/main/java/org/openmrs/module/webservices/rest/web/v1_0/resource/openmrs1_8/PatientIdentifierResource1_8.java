@@ -231,10 +231,10 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		}
 		
 		if (needToAdd) {
+			service().savePatientIdentifier(delegate);
 			delegate.getPatient().addIdentifier(delegate);
 		}
-		
-		service().savePatientIdentifier(delegate);
+
 		return delegate;
 		
 	}

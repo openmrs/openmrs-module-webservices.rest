@@ -20,6 +20,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
@@ -89,7 +90,7 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 					continue;
 				}
 				// handle UUIDs
-				if (isValidUuid(conceptReference)) {
+				if (RestUtil.isValidUuid(conceptReference)) {
 					Concept concept = conceptService.getConceptByUuid(conceptReference);
 					if (concept != null) {
 						concepts.add(concept);
@@ -184,9 +185,5 @@ public class ConceptSearchHandler1_8 implements SearchHandler {
 			
 			return new NeedsPaging<Concept>(conceptsByMapping, context);
 		}
-	}
-	
-	private static boolean isValidUuid(String uuid) {
-		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
 }

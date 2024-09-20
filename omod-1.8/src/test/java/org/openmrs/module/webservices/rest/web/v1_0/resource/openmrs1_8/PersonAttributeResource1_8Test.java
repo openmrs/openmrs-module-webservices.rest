@@ -34,10 +34,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 
 public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiveTest {
-	
-	public static final String PERSON_ATTRIBUTE_JSON = "{" + "    \"value\": \"Bangalore\"," + "    \"attributeType\": {"
-	        + "        \"uuid\": \"54fc8400-1683-4d71-a1ac-98d40836ff7c\"" + "    }" + "}";
-	
+
+	public static final String PERSON_ATTRIBUTE_JSON = "{\"value\": \"Bangalore\", \"uuid\": \"592349ed-d012-4552-a274-d5d8e73b9401\", \"attributeType\": { \"uuid\": \"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }}";
+
+	public static final String PERSON_ATTRIBUTE_JSON_WITHOUT_UUID = "{\"value\": \"Bangalore\", \"uuid\": \"\", \"attributeType\": { \"uuid\": \"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }}";
+
 	private SimpleObject personAttributeSimpleObject = new SimpleObject();
 	
 	private PersonAttributeResource1_8 resource;
@@ -62,6 +63,14 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	public void shouldCreatePersonAttribute() throws Exception {
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
+		Assert.assertEquals("Bangalore", created.get("value"));
+	}
+
+	@Test
+	public void getValue_shouldFallBackToHydratedObjectWhenUuidIsEmpty() throws Exception {
+		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON_WITHOUT_UUID, HashMap.class));
+		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
+				personAttributeSimpleObject, new RequestContext());
 		Assert.assertEquals("Bangalore", created.get("value"));
 	}
 
@@ -138,11 +147,9 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		
 		PersonAttribute attribute = new PersonAttribute(type, null);
 		attribute.setAttributeType(type);
-		
 		Assert.assertNull(attribute.getValue());
 		
 		resource.setValue(attribute, location.getUuid());
-		
 		Assert.assertEquals(location.getUuid(), attribute.getValue());
 	}
 	

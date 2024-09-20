@@ -46,7 +46,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
-        "2.2.* - 9.*" })
+        "2.2.* - 2.4.*" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**
@@ -169,7 +169,7 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addRequiredProperty("diagnosis");
 		description.addRequiredProperty("encounter");
 		description.addRequiredProperty("condition");
@@ -185,7 +185,7 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	 */
 	@Override
 	public Model getCREATEModel(Representation rep) {
-		
+
 		return new ModelImpl()
 		        .property("diagnosis", new StringProperty())
 		        .property("encounter", new StringProperty())
@@ -193,7 +193,7 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		        .property("certainty", new StringProperty())
 		        .property("patient", new StringProperty().example("uuid"))
 		        .property("rank", new IntegerProperty());
-		
+
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		description.addRequiredProperty("voided");
 		description.addRequiredProperty("certainty");
 		description.addRequiredProperty("encounter");
-		
+
 		return description;
 	}
 	
