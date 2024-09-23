@@ -20,18 +20,18 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests functionality of {@link DiagnosisResource2_5}.
  */
 public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<DiagnosisResource2_5, Diagnosis> {
-
 
     private DiagnosisService diagnosisService;
 
     private EncounterService encounterService;
 
     private PatientService patientService;
-
 
     @Before
     public void before() {
@@ -68,6 +68,22 @@ public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<Diagnos
     @Override
     public String getDisplayProperty() {
         return "";
+    }
+
+    @Test
+    public void setFormFieldPath_shouldSetFormFieldPath() {
+        Diagnosis diagnosis = new Diagnosis();
+        String formFieldPath = "form-field-path";
+        DiagnosisResource2_5.setFormFieldPath(diagnosis, formFieldPath);
+        assertEquals(formFieldPath, diagnosis.getFormFieldPath());
+    }
+
+    @Test
+    public void formFieldNamespace_shouldSetFormFieldNamespace() {
+        Diagnosis diagnosis = new Diagnosis();
+        String namespace = "o3forms";
+        DiagnosisResource2_5.setFormFieldNamespace(diagnosis, namespace);
+        assertEquals(namespace, diagnosis.getFormFieldNamespace());
     }
 
     @Test

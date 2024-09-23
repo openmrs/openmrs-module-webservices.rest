@@ -14,6 +14,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Diagnosis;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -88,5 +89,27 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
                     .property("formFieldPath", new StringProperty());
         }
         return model;
+    }
+
+    /**
+     * Annotated setter for formFieldPath
+     *
+     * @param diagnosis
+     * @param formFieldPath
+     */
+    @PropertySetter("formFieldPath")
+    public static void setFormFieldPath(Diagnosis diagnosis, Object formFieldPath) {
+        diagnosis.setFormField(diagnosis.getFormFieldNamespace(), (String)formFieldPath);
+    }
+
+    /**
+     * Annotated setter for formFieldNamespace
+     *
+     * @param diagnosis
+     * @param namespace
+     */
+    @PropertySetter("formFieldNamespace")
+    public static void setFormFieldNamespace(Diagnosis diagnosis, Object namespace) {
+        diagnosis.setFormField((String)namespace, diagnosis.getFormFieldPath());
     }
 }
