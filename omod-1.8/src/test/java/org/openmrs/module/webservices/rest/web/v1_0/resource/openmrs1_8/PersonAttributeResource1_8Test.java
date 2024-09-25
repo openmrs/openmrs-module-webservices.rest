@@ -115,6 +115,16 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	}
 
 	@Test
+	public void getValue_shouldGetValueForPersonAttributeWhenLocationUuidIsSet() {
+		Location location = locationService.getLocation(1);
+		PersonAttribute attribute = new PersonAttribute();
+
+		resource.setValue(attribute, location.getUuid());
+
+		Assert.assertEquals(location.getId().toString(), resource.getValue(attribute));
+	}
+
+	@Test
 	public void getDisplayString_shouldGetDisplayStringForString() {
 		// arrange
 		PersonAttributeType type = new PersonAttributeType();
@@ -150,7 +160,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		Assert.assertNull(attribute.getValue());
 		
 		resource.setValue(attribute, location.getUuid());
-		Assert.assertEquals(location.getUuid(), attribute.getValue());
+		Assert.assertEquals(location.getId().toString(), attribute.getValue());
 	}
 	
 	@Test

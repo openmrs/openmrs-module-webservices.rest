@@ -15,9 +15,12 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.PersonAttribute;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -38,10 +41,13 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	String personUuid = RestTestConstants1_8.PERSON_UUID;
 	
 	private PersonService service;
+
+	private LocationService locationService;
 	
 	@Before
 	public void before() throws Exception {
 		this.service = Context.getPersonService();
+		this.locationService = Context.getLocationService();
 	}
 	
 	@Test
@@ -138,6 +144,26 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 		Map<String, Object> value = (Map<String, Object>) personAttribute.get("value");
 		
 		assertThat(value.get("uuid"), is(notNullValue()));
+		assertThat((String) value.get("display"), is("Unknown Location"));
+		assertThat(value.get("links"), is(notNullValue()));
+	}
+
+	@Test
+	public void shouldSupportLocationPersonAttributeBySettingUuidAsValue() throws Exception {
+		String personAttributeTypeJson = "{\"name\": \"location\", \"description\": \"Points to a location\", \"format\": \"org.openmrs.Location\"}";
+		SimpleObject personAttributeType = deserialize(handle(newPostRequest("personattributetype", personAttributeTypeJson)));
+		String personAttributeTypeUuid = (String) personAttributeType.get("uuid");
+		assertThat(personAttributeTypeUuid, is(notNullValue()));
+
+		Location location = locationService.getLocation(1);
+
+		String personAttributeJson = "{ \"attributeType\":\"" + personAttributeTypeUuid + "\", \"value\":\"" + location.getUuid() + "\"}";
+		SimpleObject personAttribute = deserialize(handle(newPostRequest(getURI(), personAttributeJson)));
+
+		Map<String, Object> value = personAttribute.get("value");
+
+		assertThat(value.get("uuid"), is(notNullValue()));
+		Assert.assertEquals(value.get("uuid"), location.getUuid());
 		assertThat((String) value.get("display"), is("Unknown Location"));
 		assertThat(value.get("links"), is(notNullValue()));
 	}

@@ -38,7 +38,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsClassLoader;
-import java.util.UUID;
 
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
@@ -104,7 +103,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		if (RestUtil.isValidUuid(value)) {
 			Location location = Context.getLocationService().getLocationByUuid(value);
 			if (location != null) {
-				personAttribute.setValue(location.getUuid());
+				personAttribute.setValue(location.getId().toString());
 				return;
 			}
 		}
