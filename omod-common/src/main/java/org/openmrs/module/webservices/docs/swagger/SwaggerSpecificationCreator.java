@@ -132,7 +132,7 @@ public class SwaggerSpecificationCreator {
 			try {
 				initSwagger();
 				addPaths();
-				//				addSubclassOperations(); //FIXME uncomment after fixing the method
+				addSubclassOperations();
 			}
 			catch (Exception e) {
 				log.error("Error while creating Swagger specification", e);
@@ -802,45 +802,72 @@ public class SwaggerSpecificationCreator {
 			addIndividualPath(resourceParentName, resourceName, uuidPathPurge, "/{uuid}");
 		}
 	}
-	
+
 	private void addSubclassOperations() {
-		// FIXME: this needs to be improved a lot
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
 		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
-			
-			if (!(resourceHandler instanceof DelegatingSubclassHandler))
+			if (!(resourceHandler instanceof DelegatingSubclassHandler)) {
 				continue;
-			
+			}
+
 			Class<?> resourceClass = ((DelegatingSubclassHandler<?, ?>) resourceHandler).getSuperclass();
 			String resourceName = resourceClass.getSimpleName().toLowerCase();
-			
-			// 1. add non-optional enum property to model
+
 			Path path = swagger.getPath("/" + resourceName);
-			if (path == null)
+			if (path == null) {
 				continue;
-			
-			// FIXME: implement other operations when required
-			Operation post = path.getPost();
-			if (post == null)
-				continue;
-			
-			Model definition = swagger.getDefinitions().get(StringUtils.capitalize(resourceName) + "Create");
-			if (definition == null)
-				continue;
-			
-			Map<String, Property> properties = definition.getProperties();
-			
-			// 2. merge subclass properties into definition
-			for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties()
-			        .entrySet()) {
-				if (properties.get(prop.getKey()) == null) {
-					properties.put(prop.getKey(), prop.getValue());
-				}
 			}
-			
-			// 3. update description
-			post.setDescription("Certain properties may be required depending on type");
+
+			handleOperationForPath(path.getGet(), resourceName, resourceHandler, "Get");
+			handleOperationForPath(path.getPost(), resourceName, resourceHandler, "Create");
+			handleOperationForPath(path.getPut(), resourceName, resourceHandler, "Update");
+			handleOperationForPath(path.getDelete(), resourceName, resourceHandler, "Delete");
 		}
+	}
+
+	/**
+	 * Generalized method to handle different HTTP operations.
+	 */
+	private void handleOperationForPath(Operation operation, String resourceName, DelegatingResourceHandler<?> resourceHandler, String operationType) {
+		if (operation == null) {
+			return;
+		}
+
+		String modelKey = StringUtils.capitalize(resourceName) + operationType;
+		Model definition = swagger.getDefinitions().get(modelKey);
+
+		if (definition == null) {
+			return;
+		}
+
+		Map<String, Property> properties = definition.getProperties();
+
+		for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties().entrySet()) {
+			if (properties.get(prop.getKey()) == null) {
+				properties.put(prop.getKey(), prop.getValue());
+			}
+		}
+
+		operation.setDescription("This operation may require additional properties depending on the subclass type.");
+		if (operationType.equals("Get")) {
+			addResponseSchema(operation, resourceName, "Get");
+		} else if (operationType.equals("Create")) {
+			addResponseSchema(operation, resourceName, "Create");
+		} else if (operationType.equals("Update")) {
+			addResponseSchema(operation, resourceName, "Update");
+		}
+	}
+
+	/**
+	 * Adds a response schema for the specified operation.
+	 */
+	private void addResponseSchema(Operation operation, String resourceName, String operationType) {
+		String schemaRef = "#/definitions/" + StringUtils.capitalize(resourceName) + operationType;
+		Property responseProperty = new RefProperty(schemaRef);
+
+		operation.addResponse("200", new Response()
+				.description("Successful " + operationType.toLowerCase() + " operation")
+				.schema(responseProperty));
 	}
 	
 	@Deprecated
