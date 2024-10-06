@@ -132,7 +132,7 @@ public class SwaggerSpecificationCreator {
 			try {
 				initSwagger();
 				addPaths();
-				addSubclassOperations();
+//				addSubclassOperations();
 			}
 			catch (Exception e) {
 				log.error("Error while creating Swagger specification", e);
