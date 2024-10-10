@@ -13,6 +13,7 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import io.swagger.models.properties.UUIDProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
@@ -95,28 +96,26 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("code", new StringProperty())
-			        .property("version", new StringProperty());
-			
-		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
+			model.property("uuid", new UUIDProperty());
+			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
+			model.property("code", new StringProperty());
+			model.property("version", new StringProperty());
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceGet"));
+			model.property("uuid", new UUIDProperty());
+			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetFull"));
+			model.property("code", new StringProperty());
+			model.property("version", new StringProperty());
+			model.property("auditInfo", new StringProperty());
 		}
 		return model;
-		
 	}
 	
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
 		        .property("code", new StringProperty())
-		        .property("conceptSource", new StringProperty())
+		        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceCreate"))
 		        .property("version", new StringProperty())
 		        
 		        .required("code").required("conceptSource");

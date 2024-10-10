@@ -145,9 +145,11 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
 			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
 			        .property("previousOrder", new RefProperty("#/definitions/OrderCreate"))
-			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"));
+			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"))
+					.property("orderReasonNonCoded", new StringProperty())
+					.property("instructions", new StringProperty())
+					.property("commentToFulfiller", new StringProperty());
 		}
-		//FIXME missing prop: type
 		return model;
 	}
 	

@@ -229,7 +229,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return getCREATEModel(rep);
 	}
 	
 	/**
