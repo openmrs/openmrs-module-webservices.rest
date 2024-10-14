@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -72,21 +72,20 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("states", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGetRef")));
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet")));
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("states", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGet")));
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
+					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetFull")));
 		} else if (rep instanceof RefRepresentation) {
 			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("states", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGet")));
-			//FIXME should remove 'description'?
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet")));
 		}
 		return model;
 	}

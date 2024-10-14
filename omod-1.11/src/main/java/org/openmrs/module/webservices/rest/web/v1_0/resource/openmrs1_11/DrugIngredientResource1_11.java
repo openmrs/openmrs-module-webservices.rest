@@ -10,13 +10,14 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.api.context.Context;
@@ -86,39 +87,39 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema schema = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("strength", new DoubleProperty());
+			schema
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("strength", new NumberSchema().format("double"));
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("ingredient", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("units", new RefProperty("#/definitions/ConceptGetRef"));
+			schema
+					.addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
+					.addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("ingredient", new RefProperty("#/definitions/ConceptGet"))
-			        .property("units", new RefProperty("#/definitions/ConceptGet"));
+			schema
+					.addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
+					.addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
 		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("ingredient", new StringProperty().example("uuid"))
-		        .property("strength", new DoubleProperty())
-		        .property("units", new StringProperty().example("uuid"))
-		        
-		        .required("ingredient");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
+		        .addProperty("strength", new NumberSchema().format("double"))
+		        .addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
+		        .required(Collections.singletonList("ingredient"));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/relationshiptype", supportedClass = RelationshipType.class, supportedOpenmrsVersions = {
@@ -132,33 +133,32 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("aIsToB", new StringProperty())
-			        .property("bIsToA", new StringProperty());
+			        .addProperty("aIsToB", new StringSchema())
+			        .addProperty("bIsToA", new StringSchema());
 		}
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("weight", new IntegerProperty());
+			        .addProperty("weight", new IntegerSchema());
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("aIsToB", new StringProperty())
-		        .property("bIsToA", new StringProperty())
-		        .property("weight", new IntegerProperty())
+	public Schema<?> getCREATESchema(Representation rep) {
+		return super.getCREATESchema(rep)
+		        .addProperty("aIsToB", new StringSchema().required(Collections.singletonList("aIsToB")))
+		        .addProperty("bIsToA", new StringSchema().required(Collections.singletonList("bIsToA")))
+		        .addProperty("weight", new IntegerSchema());
 		        
-		        .required("aIsToB").required("bIsToA");
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

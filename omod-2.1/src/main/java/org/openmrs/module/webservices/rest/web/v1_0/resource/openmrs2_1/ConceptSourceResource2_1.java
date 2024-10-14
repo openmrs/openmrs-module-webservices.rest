@@ -9,9 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.ConceptSource;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -28,21 +27,23 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptS
 @Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {
         "2.1.* - 9.*" })
 public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uniqueId", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema.addProperty("uniqueId", new StringSchema());
 		}
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation representation) {
-		return ((ModelImpl) super.getCREATEModel(representation))
-		        .property("uniqueId", new StringProperty());
+	public Schema<?> getCREATESchema(Representation representation) {
+		Schema<?> schema = super.getCREATESchema(representation);
+		if (schema != null) {
+            schema.addProperty("uniqueId", new StringSchema());
+		}
+		return schema;
 	}
 	
 	/**

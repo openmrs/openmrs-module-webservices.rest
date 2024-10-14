@@ -14,15 +14,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -143,70 +141,72 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("gender", new StringProperty()._enum("M")._enum("F"))
-			        .property("age", new IntegerProperty())
-			        .property("birthdate", new DateTimeProperty())
-			        .property("birthdateEstimated", new BooleanProperty())
-			        .property("dead", new BooleanProperty())
-			        .property("deathDate", new DateProperty())
-			        .property("causeOfDeath", new StringProperty())
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeGetRef")))
-			        .property("voided", new BooleanProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("gender", new StringSchema()._enum(Arrays.asList("M", "F")))
+					.addProperty("age", new IntegerSchema())
+					.addProperty("birthdate", new DateTimeSchema())
+					.addProperty("birthdateEstimated", new BooleanSchema())
+					.addProperty("dead", new BooleanSchema())
+					.addProperty("deathDate", new DateTimeSchema())
+					.addProperty("causeOfDeath", new StringSchema())
+					.addProperty("attributes", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonAttributeGetRef")))
+					.addProperty("voided", new BooleanSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				objectSchema
+						.addProperty("preferredName", new Schema<Object>().$ref("#/components/schemas/PersonNameGetRef"))
+						.addProperty("preferredAddress", new Schema<Object>().$ref("#/components/schemas/PersonAddressGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				objectSchema
+						.addProperty("preferredName", new Schema<Object>().$ref("#/components/schemas/PersonNameGet"))
+						.addProperty("preferredAddress", new Schema<Object>().$ref("#/components/schemas/PersonAddressGet"))
+						.addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonNameGet")))
+						.addProperty("addresses", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonAddressGet")));
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGetRef"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGetRef"));
-			
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGet"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGet"))
-			        .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameGet")))
-			        .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressGet")));
-		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation representation) {
-		ModelImpl model = new ModelImpl()
-		        .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameCreate")))
-		        .property("gender", new StringProperty()._enum("M")._enum("F"))
-		        .property("age", new IntegerProperty())
-		        .property("birthdate", new DateProperty())
-		        .property("birthdateEstimated", new BooleanProperty()._default(false))
-		        .property("dead", new BooleanProperty()._default(false))
-		        .property("deathDate", new DateProperty())
-		        .property("causeOfDeath", new StringProperty())
-		        .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressCreate")))
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeCreate")));
-		
-		model.setRequired(Arrays.asList("names", "gender"));
-		return model;
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+				.addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonNameCreate")))
+                .addProperty("gender", new StringSchema()._enum(Arrays.asList("M", "F")))
+                .addProperty("age", new IntegerSchema())
+                .addProperty("birthdate", new DateTimeSchema())
+                .addProperty("birthdateEstimated", new BooleanSchema()._default(false))
+                .addProperty("dead", new BooleanSchema()._default(false))
+                .addProperty("deathDate", new DateTimeSchema())
+                .addProperty("causeOfDeath", new StringSchema())
+                .addProperty("addresses", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonAddressCreate")))
+                .addProperty("attributes", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonAttributeCreate")));
+		schema.setRequired(Arrays.asList("names", "gender"));
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("dead", new BooleanProperty())
-		        .property("causeOfDeath", new StringProperty())
-		        .property("deathDate", new DateProperty())
-		        .property("age", new IntegerProperty())
-		        .property("gender", new StringProperty()._enum("M")._enum("F"))
-		        .property("birthdate", new DateProperty())
-		        .property("birthdateEstimated", new BooleanProperty()._default(false))
-		        .property("preferredName", new StringProperty().example("uuid"))
-		        .property("preferredAddress", new StringProperty().example("uuid"))
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeCreate")))
-		        
-		        .required("dead").required("causeOfDeath");
+	public Schema<?> getUPDATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+				.addProperty("dead", new BooleanSchema())
+				.addProperty("causeOfDeath", new StringSchema())
+				.addProperty("deathDate", new DateTimeSchema())
+				.addProperty("age", new IntegerSchema())
+				.addProperty("gender", new StringSchema()._enum(Arrays.asList("M", "F")))
+				.addProperty("birthdate", new DateTimeSchema())
+				.addProperty("birthdateEstimated", new BooleanSchema()._default(false))
+				.addProperty("preferredName", new StringSchema().example("uuid"))
+				.addProperty("preferredAddress", new StringSchema().example("uuid"))
+				.addProperty("attributes", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PersonAttributeCreate")));
+		schema.setRequired((Arrays.asList("dead", "causeOfDeath")));
+		return schema;
 	}
 	
 	/**

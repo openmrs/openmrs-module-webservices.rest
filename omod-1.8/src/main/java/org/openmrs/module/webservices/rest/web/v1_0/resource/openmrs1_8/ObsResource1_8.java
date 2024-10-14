@@ -21,14 +21,24 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Obs;
+import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.Person;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
@@ -56,15 +66,6 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.obs.ComplexData;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -183,53 +184,55 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model.property("uuid", new StringProperty()).property("display", new StringProperty())
-			        .property("obsDatetime", new DateProperty()).property("accessionNumber", new StringProperty())
-			        .property("comment", new StringProperty()).property("voided", new BooleanProperty())
-			        .property("value", new StringProperty()).property("valueModifier", new StringProperty());
+			model.addProperty("uuid", new StringSchema()).addProperty("display", new StringSchema())
+			        .addProperty("obsDatetime", new DateSchema()).addProperty("accessionNumber", new StringSchema())
+			        .addProperty("comment", new StringSchema()).addProperty("voided", new BooleanSchema())
+			        .addProperty("value", new StringSchema()).addProperty("valueModifier", new StringSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("obsGroup", new RefProperty("#/definitions/ObsGetRef"))
-			        .property("groupMembers", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef")))
-			        .property("valueCodedName", new RefProperty("#/definitions/ConceptNameGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"))
-			        .property("order", new RefProperty("#/definitions/OrderGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
+			model
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
+					.addProperty("obsGroup", new Schema<Obs>().$ref("#/components/schemas/ObsGet"))
+					.addProperty("groupMembers", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGet")))
+					.addProperty("valueCodedName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGet"))
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"))
+					.addProperty("order", new Schema<Order>().$ref("#/components/schemas/OrderGet"))
+					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGet"));
 		} else if (rep instanceof FullRepresentation) {
-			model.property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("obsGroup", new RefProperty("#/definitions/ObsGet"))
-			        .property("groupMembers", new ArrayProperty(new RefProperty("#/definitions/ObsGet")))
-			        .property("valueCodedName", new RefProperty("#/definitions/ConceptNameGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"))
-			        .property("order", new RefProperty("#/definitions/OrderGet"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGet"));
+			model
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
+					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGetFull"))
+					.addProperty("obsGroup", new Schema<Obs>().$ref("#/components/schemas/ObsGetFull"))
+					.addProperty("groupMembers", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGetFull")))
+					.addProperty("valueCodedName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetFull"))
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetFull"))
+					.addProperty("order", new Schema<Order>().$ref("#/components/schemas/OrderGetFull"))
+					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetFull"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl().property("person", new StringProperty().example("uuid"))
-		        .property("obsDatetime", new DateTimeProperty()).property("concept", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty()).property("order", new StringProperty())
-		        .property("encounter", new StringProperty()).property("accessionNumber", new StringProperty())
-		        .property("groupMembers", new ArrayProperty(new StringProperty()))
-		        .property("valueCodedName", new StringProperty()).property("comment", new StringProperty())
-		        .property("voided", new BooleanProperty()).property("value", new StringProperty())
-		        .property("valueModifier", new StringProperty())
-		        
-		        .required("person").required("obsDatetime").required("concept");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema().addProperty("person", new StringSchema().example("uuid"))
+		        .addProperty("obsDatetime", new DateTimeSchema()).addProperty("concept", new StringSchema().example("uuid"))
+		        .addProperty("location", new StringSchema()).addProperty("order", new StringSchema())
+		        .addProperty("encounter", new StringSchema()).addProperty("accessionNumber", new StringSchema())
+		        .addProperty("groupMembers", new ArraySchema().items(new StringSchema()))
+		        .addProperty("valueCodedName", new StringSchema()).addProperty("comment", new StringSchema())
+		        .addProperty("voided", new BooleanSchema()).addProperty("value", new StringSchema())
+		        .addProperty("valueModifier", new StringSchema())
+				.required(Arrays.asList("person", "obsDatetime", "concept"));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

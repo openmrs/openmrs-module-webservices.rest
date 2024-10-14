@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -94,10 +94,10 @@ public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<Locat
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("retired", new BooleanProperty())
-		        .property("retiredReason", new StringProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return ((ObjectSchema) super.getCREATESchema(rep))
+		        .addProperty("retired", new BooleanSchema())
+		        .addProperty("retiredReason", new StringSchema());
 	}
 	
 	/**

@@ -9,12 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
@@ -34,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -112,44 +112,49 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("identifier", new StringProperty())
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGetRef")))
-			        .property("preferredHandlerClassname", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGetRef"))
+					.addProperty("identifier", new StringSchema())
+					.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeGetRef")))
+					.addProperty("preferredHandlerClassname", new StringSchema());
+
+			if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
+						.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeGet")));
+			}
 		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeGet")));
-		}
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("person", new StringProperty().example("uuid"))
-		        .property("identifier", new StringProperty())
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/ProviderAttributeCreate")))
-		        .property("retired", new BooleanProperty())
-		        
-		        .required("person").required("identifier");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"));
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		if (schema instanceof Schema) {
+            schema
+					.addProperty("person", new StringSchema().example("uuid"))
+					.addProperty("identifier", new StringSchema())
+					.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeCreate")))
+					.addProperty("retired", new BooleanSchema());
+
+			schema.setRequired(Arrays.asList("person", "identifier"));
+
+			if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonCreate"));
+			}
 		}
-		return model;
+		return schema;
 	}
 	
 	/**

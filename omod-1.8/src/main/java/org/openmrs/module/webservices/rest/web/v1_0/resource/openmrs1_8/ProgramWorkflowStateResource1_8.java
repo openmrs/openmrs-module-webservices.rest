@@ -9,11 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -33,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {
@@ -123,32 +125,37 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			        .addProperty("uuid", new UUIDSchema())
+			        .addProperty("description", new StringSchema())
+			        .addProperty("retired", new BooleanSchema())
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
+			        .addProperty("uuid", new UUIDSchema())
+			        .addProperty("description", new StringSchema())
+			        .addProperty("retired", new BooleanSchema())
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
 		} else if (rep instanceof RefRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			        .addProperty("uuid", new UUIDSchema())
+			        .addProperty("retired", new BooleanSchema())
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").required(Collections.singletonList("concept")))
+				.addProperty("initial", new BooleanSchema())
+				.addProperty("terminal", new BooleanSchema());
+
 	}
 
 	@Override

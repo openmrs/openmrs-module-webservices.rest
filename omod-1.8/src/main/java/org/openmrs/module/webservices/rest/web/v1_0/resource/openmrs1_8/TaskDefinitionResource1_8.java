@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.MapSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -25,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -102,7 +111,50 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		description.addRequiredProperty("properties");
 		return description;
 	}
-	
+
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema schema = (ObjectSchema) super.getGETSchema(rep);
+		if (rep instanceof DefaultRepresentation) {
+			schema.addProperty("uuid", new UUIDSchema());
+			schema.addProperty("name", new StringSchema());
+			schema.addProperty("description", new StringSchema());
+			schema.addProperty("taskClass", new StringSchema());
+			schema.addProperty("startTime", new DateTimeSchema());
+			schema.addProperty("started", new BooleanSchema());
+		} else if (rep instanceof FullRepresentation) {
+			schema.addProperty("uuid", new UUIDSchema());
+			schema.addProperty("name", new StringSchema());
+			schema.addProperty("description", new StringSchema());
+			schema.addProperty("taskClass", new StringSchema());
+			schema.addProperty("startTime", new DateTimeSchema());
+			schema.addProperty("lastExecutionTime", new DateTimeSchema());
+			schema.addProperty("repeatInterval", new IntegerSchema().format("long"));
+			schema.addProperty("startOnStartup", new BooleanSchema());
+			schema.addProperty("startTimePattern", new StringSchema());
+			schema.addProperty("started", new BooleanSchema());
+			schema.addProperty("properties", new MapSchema());
+		} else if (rep instanceof RefRepresentation) {
+			schema.addProperty("uuid", new UUIDSchema());
+			schema.addProperty("name", new StringSchema());
+			schema.addProperty("description", new StringSchema());
+			schema.addProperty("taskClass", new StringSchema());
+		}
+		return schema;
+	}
+
+	@Override
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		return schema
+				.addProperty("name", new StringSchema().required(Collections.singletonList("name")))
+				.addProperty("description", new StringSchema().required(Collections.singletonList("description")))
+				.addProperty("taskClass", new StringSchema().required(Collections.singletonList("taskClass")))
+				.addProperty("startTime", new DateTimeSchema().required(Collections.singletonList("startTime")))
+				.addProperty("repeatInterval", new IntegerSchema().format("long").required(Collections.singletonList("repeatInterval")))
+				.addProperty("properties", new MapSchema().required(Collections.singletonList("properties")));
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */

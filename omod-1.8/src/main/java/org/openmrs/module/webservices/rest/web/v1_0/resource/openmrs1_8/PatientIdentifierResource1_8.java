@@ -10,8 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -31,12 +36,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * Sub-resource for patient identifiers
@@ -136,48 +135,48 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<Object> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifier", new StringProperty())
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("identifier", new StringSchema())
+			        .addProperty("preferred", new BooleanSchema()._default(false))
+			        .addProperty("voided", new BooleanSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"));
+					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeGet"))
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"));
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"));
+					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeGetFull"))
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetFull"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("identifier", new StringProperty())
-		        .property("identifierType", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("preferred", new BooleanProperty()._default(false))
-		        
-		        .required("identifier").required("identifierType");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		        .addProperty("identifier", new StringSchema())
+		        .addProperty("identifierType", new StringSchema().example("uuid"))
+		        .addProperty("location", new StringSchema().example("uuid"))
+		        .addProperty("preferred", new BooleanSchema()._default(false))
+		        .required(Arrays.asList("identifier", "identifierType"));
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"));
+					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeCreate"))
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	private PatientService service() {

@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -65,14 +65,13 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("outcomesConcept", new StringProperty().example("uuid"));
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = (ObjectSchema) super.getCREATESchema(rep)
+		        .addProperty("outcomesConcept", new StringSchema().example("uuid"));
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("outcomesConcept", new RefProperty("#/definitions/ConceptCreate"));
+			schema.addProperty("outcomesConcept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
@@ -86,5 +85,4 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		description.addProperty("retired");
 		return description;
 	}
-	
 }

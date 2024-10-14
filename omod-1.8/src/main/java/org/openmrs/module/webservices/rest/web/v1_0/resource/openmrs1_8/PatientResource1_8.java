@@ -9,12 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -42,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -144,47 +144,48 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		//FIXME check uuid, display in ref rep
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierGetRef")))
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierGetRef")))
+					.addProperty("preferred", new BooleanSchema()._default(false))
+					.addProperty("voided", new BooleanSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				objectSchema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				objectSchema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"));
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"));
-		}
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("person", new StringProperty().example("uuid"))
-		        .property("identifiers", new ArrayProperty(new RefProperty("#/definitions/PatientIdentifierCreate")))
-		        
-		        .required("person").required("identifiers");
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
+				.addProperty("person", new StringSchema().example("uuid"))
+				.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierCreate")));
+		
+		schema.setRequired(Arrays.asList("person", "identifiers"));
+
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"));
+			schema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate"));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("person", new RefProperty("#/definitions/PersonGet"))
-		        
-		        .required("person");
+	public Schema<?> getUPDATESchema(Representation rep) {
+		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
+				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"));
+		
+		schema.setRequired(Collections.singletonList("person"));
+		
+		return schema;
 	}
 	
 	/**

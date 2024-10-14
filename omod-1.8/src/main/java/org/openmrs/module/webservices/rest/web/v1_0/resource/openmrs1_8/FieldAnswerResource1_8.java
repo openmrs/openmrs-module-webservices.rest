@@ -10,12 +10,14 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
+import org.openmrs.Concept;
 import org.openmrs.Field;
 import org.openmrs.FieldAnswer;
 import org.openmrs.api.context.Context;
@@ -79,35 +81,37 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("field", new RefProperty("#/definitions/FieldGetRef"));
+					.addProperty("uuid", new UUIDSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGetRef"));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("field", new RefProperty("#/definitions/FieldGet"));
+					.addProperty("uuid", new UUIDSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGet"));
 		}
 		return modelImpl;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("field", new StringProperty().example("uuid"))
-		        .required("field").required("concept");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
+				.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreate").example("uuid"))
+				.required(Arrays.asList("field", "concept"));
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("field", new RefProperty("#/definitions/FieldCreate"));
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreateFull"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreateFull"));
 		}
 		return model;
 	}

@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.unrelatedtest.rest.resource;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.module.unrelatedtest.UnrelatedGenericChild;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -33,25 +33,24 @@ public class UnrelatedGenericChildResource extends GenericChildResource {
 	
 	/*******************************
 	 * TEST METHOD IMPLEMENTATIONS * These methods are the ones we want to test against. There
-	 * implementaion is unimportant, they just set flags so we can assert the methods were called
+	 * implementation is unimportant, they just set flags so we can assert the methods were called
 	 * correctly by the reflector.
 	 */
-	
 	@Override
-	public Model getGETModel(Representation rep) {
+	public Schema<?> getGETSchema(Representation rep) {
 		getGETCalled = true;
-		return super.getGETModel(rep);
+		return super.getGETSchema(rep);
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
+	public Schema<?> getCREATESchema(Representation rep) {
 		getCREATECalled = true;
-		return super.getCREATEModel(rep);
+		return super.getCREATESchema(rep);
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
+	public Schema<?> getUPDATESchema(Representation rep) {
 		getUPDATECalled = true;
-		return super.getUPDATEModel(rep);
+		return super.getUPDATESchema(rep);
 	}
 }

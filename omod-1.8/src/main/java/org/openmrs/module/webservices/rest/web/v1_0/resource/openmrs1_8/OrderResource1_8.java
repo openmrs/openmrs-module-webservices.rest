@@ -9,16 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
+import org.openmrs.User;
 import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -210,77 +214,77 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("instructions", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("accessionNumber", new StringProperty())
-			        .property("discontinuedDate", new DateProperty())
-			        .property("discontinuedReasonNonCoded", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("instructions", new StringSchema())
+			        .addProperty("startDate", new DateSchema())
+			        .addProperty("autoExpireDate", new DateSchema())
+			        .addProperty("accessionNumber", new StringSchema())
+			        .addProperty("discontinuedDate", new DateSchema())
+			        .addProperty("discontinuedReasonNonCoded", new StringSchema())
+			        .addProperty("voided", new BooleanSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("orderer", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGetRef"));
+					.addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGet"))
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet"))
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGet"))
+					.addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserGet"))
+					.addProperty("discontinuedBy", new Schema<User>().$ref("#/components/schemas/UserGet"))
+					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptGet"));
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGet"))
-			        .property("orderer", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGet"));
+					.addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetFull"))
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetFull"))
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
+					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetFull"))
+					.addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserGetFull"))
+					.addProperty("discontinuedBy", new Schema<User>().$ref("#/components/schemas/UserGetFull"))
+					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptGetFull"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("orderType", new StringProperty().example("uuid"))
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("instructions", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("autoExpireDate", new DateProperty())
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("orderer", new StringProperty().example("uuid"))
-		        .property("discontinuedBy", new StringProperty().example("uuid"))
-		        .property("discontinuedDate", new DateProperty())
-		        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"))
-		        .property("discontinuedReasonNonCoded", new StringProperty())
-		        .property("accessionNumber", new StringProperty())
-		        
-		        .required("orderType").required("patient").required("concept");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		        .addProperty("orderType", new StringSchema().example("uuid"))
+		        .addProperty("patient", new StringSchema().example("uuid"))
+		        .addProperty("concept", new StringSchema().example("uuid"))
+		        .addProperty("instructions", new StringSchema())
+		        .addProperty("startDate", new DateSchema())
+		        .addProperty("autoExpireDate", new DateSchema())
+		        .addProperty("encounter", new StringSchema().example("uuid"))
+		        .addProperty("orderer", new StringSchema().example("uuid"))
+		        .addProperty("discontinuedBy", new StringSchema().example("uuid"))
+		        .addProperty("discontinuedDate", new DateSchema())
+				.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptCreate"))
+		        .addProperty("discontinuedReasonNonCoded", new StringSchema())
+		        .addProperty("accessionNumber", new StringSchema())
+		        .required(Arrays.asList("orderType", "patient", "concept"));
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeCreate"))
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"));
+			        .addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeCreate"))
+			        .addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate"))
+			        .addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
+			        .addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterCreate"))
+			        .addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserCreate"))
+			        .addProperty("discontinuedBy", new Schema<User>().$ref("#/components/schemas/UserCreate"))
+					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptCreate"));
 		}
 		//FIXME missing prop: type
 		return model;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	public Schema<Object> getUPDATESchema(Representation rep) {
+		return new ObjectSchema(); //FIXME missing props
 	}
 	
 	/**

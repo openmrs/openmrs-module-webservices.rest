@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
@@ -126,35 +125,35 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+			        .addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet")))
+			        .addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGet")));
 		}
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
+					.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull")))
+					.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGetFull")))
+					.addProperty("allInheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGetFull")));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
+	public Schema<?> getCREATESchema(Representation rep) {
+		return ((ObjectSchema) super.getCREATESchema(rep))
+				.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeCreate")))
+				.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("description", new StringProperty())
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("description", new StringSchema())
+				.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeCreate")))
+				.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")));
 	}
 	
 	/**

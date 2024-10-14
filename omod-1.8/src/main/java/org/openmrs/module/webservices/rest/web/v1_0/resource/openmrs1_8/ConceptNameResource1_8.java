@@ -10,18 +10,19 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -29,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
@@ -44,7 +46,13 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addSelfLink();
+			return description;
+		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("uuid");
@@ -57,8 +65,8 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display");
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("locale");
 			description.addProperty("localePreferred");
@@ -70,35 +78,41 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("name", new StringProperty())
-			        .property("locale", new StringProperty().example("en"))
-			        .property("localePreferred", new BooleanProperty())
-			        .property("conceptNameType", new EnumProperty(ConceptNameType.class));
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = new Schema<Object>();
+		if (rep instanceof RefRepresentation) {
+			schema
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema());
+		} else if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			schema
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("name", new StringSchema())
+			        .addProperty("locale", new StringSchema().example("en"))
+			        .addProperty("localePreferred", new BooleanSchema())
+			        .addProperty("conceptNameType", new Schema<ConceptNameType>()._enum(Arrays.asList(ConceptNameType.values())));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("locale", new StringProperty().example("en"))
-		        .property("localePreferred", new BooleanProperty()._default(false))
-		        .property("conceptNameType", new EnumProperty(ConceptNameType.class))
-		        .required("name").required("locale");
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+		        .addProperty("name", new StringSchema())
+		        .addProperty("locale", new StringSchema().example("en"))
+		        .addProperty("localePreferred", new BooleanSchema()._default(false))
+				.addProperty("conceptNameType", new Schema<ConceptNameType>()._enum(Arrays.asList(ConceptNameType.values())));
+		schema.setRequired(Arrays.asList("name", "locale"));
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new StringProperty()); //FIXME missing props
+	public Schema<?> getUPDATESchema(Representation representation) {
+		return new Schema<Object>()
+		        .addProperty("name", new StringSchema());
 	}
 	
 	/**

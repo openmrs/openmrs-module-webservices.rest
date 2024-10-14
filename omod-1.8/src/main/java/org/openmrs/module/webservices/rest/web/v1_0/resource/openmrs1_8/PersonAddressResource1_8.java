@@ -9,11 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
@@ -141,58 +142,58 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) ((ObjectSchema) super.getGETSchema(rep))
+		        .addProperty("uuid", new UUIDSchema())
+		        .addProperty("display", new StringSchema());
 		
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("address1", new StringProperty())
-			        .property("address2", new StringProperty())
-			        .property("cityVillage", new StringProperty())
-			        .property("stateProvince", new StringProperty())
-			        .property("country", new StringProperty())
-			        .property("postalCode", new StringProperty())
-			        .property("countyDistrict", new StringProperty())
-			        .property("address3", new StringProperty())
-			        .property("address4", new StringProperty())
-			        .property("address5", new StringProperty())
-			        .property("address6", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("latitude", new StringProperty())
-			        .property("longitude", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			        .addProperty("preferred", new BooleanSchema()._default(false))
+			        .addProperty("address1", new StringSchema())
+			        .addProperty("address2", new StringSchema())
+			        .addProperty("cityVillage", new StringSchema())
+			        .addProperty("stateProvince", new StringSchema())
+			        .addProperty("country", new StringSchema())
+			        .addProperty("postalCode", new StringSchema())
+			        .addProperty("countyDistrict", new StringSchema())
+			        .addProperty("address3", new StringSchema())
+			        .addProperty("address4", new StringSchema())
+			        .addProperty("address5", new StringSchema())
+			        .addProperty("address6", new StringSchema())
+			        .addProperty("startDate", new DateSchema())
+			        .addProperty("endDate", new DateSchema())
+			        .addProperty("latitude", new StringSchema())
+			        .addProperty("longitude", new StringSchema())
+			        .addProperty("voided", new BooleanSchema());
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("preferred", new BooleanProperty()._default(false))
-		        .property("address1", new StringProperty())
-		        .property("address2", new StringProperty())
-		        .property("cityVillage", new StringProperty())
-		        .property("stateProvince", new StringProperty())
-		        .property("country", new StringProperty())
-		        .property("postalCode", new StringProperty())
-		        .property("countyDistrict", new StringProperty())
-		        .property("address3", new StringProperty())
-		        .property("address4", new StringProperty())
-		        .property("address5", new StringProperty())
-		        .property("address6", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        .property("latitude", new StringProperty())
-		        .property("longitude", new StringProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("preferred", new BooleanSchema()._default(false))
+		        .addProperty("address1", new StringSchema())
+		        .addProperty("address2", new StringSchema())
+		        .addProperty("cityVillage", new StringSchema())
+		        .addProperty("stateProvince", new StringSchema())
+		        .addProperty("country", new StringSchema())
+		        .addProperty("postalCode", new StringSchema())
+		        .addProperty("countyDistrict", new StringSchema())
+		        .addProperty("address3", new StringSchema())
+		        .addProperty("address4", new StringSchema())
+		        .addProperty("address5", new StringSchema())
+		        .addProperty("address6", new StringSchema())
+		        .addProperty("startDate", new DateSchema())
+		        .addProperty("endDate", new DateSchema())
+		        .addProperty("latitude", new StringSchema())
+		        .addProperty("longitude", new StringSchema());
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

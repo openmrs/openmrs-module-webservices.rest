@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Concept;
 import org.openmrs.Order;
+import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -28,6 +29,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.util.OpenmrsConstants;
+
+import java.util.Arrays;
 
 /**
  * This is a contrived example for testing purposes
@@ -86,39 +89,39 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		return d;
 		
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = new ModelImpl();
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = new Schema<Object>();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("standardRegimenCode", new StringProperty());
+			schema
+					.addProperty("startDate", new DateTimeSchema())
+					.addProperty("autoExpireDate", new DateTimeSchema())
+					.addProperty("standardRegimenCode", new StringSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
+			schema
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
+			schema
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet"))
+					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
 		}
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("startDate", new DateProperty())
-		        .property("autoExpireDate", new DateProperty())
-		        .property("standardRegimenCode", new StringProperty())
-		        .property("instructions", new StringProperty())
-		        
-		        .required("patient").required("concept");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("patient", new StringSchema().example("uuid"))
+				.addProperty("concept", new StringSchema().example("uuid"))
+				.addProperty("startDate", new DateTimeSchema())
+				.addProperty("autoExpireDate", new DateTimeSchema())
+				.addProperty("standardRegimenCode", new StringSchema())
+				.addProperty("instructions", new StringSchema())
+				.required(Arrays.asList("patient", "concept"));
 	}
 	
 	/**

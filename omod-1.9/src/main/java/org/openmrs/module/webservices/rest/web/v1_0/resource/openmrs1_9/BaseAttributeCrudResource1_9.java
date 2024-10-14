@@ -12,10 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
@@ -109,24 +108,24 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("attributeType", new StringProperty().example("uuid"))
-		        .property("value", new StringProperty())
-		        
-		        .required("attributeType").required("value");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new Schema<Object>()
+		        .addProperty("attributeType", new StringSchema().example("uuid"))
+		        .addProperty("value", new StringSchema())
+		        .required(Arrays.asList("attributeType", "value"));
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("attributeType", new StringProperty()) //FIXME type
-			        .property("value", new StringProperty()) //FIXME type
-			        .property("voided", new BooleanProperty());
+					.addProperty("display", new StringSchema())
+					.addProperty("uuid", new StringSchema())
+					.addProperty("attributeType", new StringSchema())
+					.addProperty("value", new StringSchema())
+					.addProperty("voided", new BooleanSchema());
 		}
 		return model;
 	}

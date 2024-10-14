@@ -10,12 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -119,38 +120,31 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = new Schema<Object>();
 		if (rep instanceof RefRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty());
-		} else if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"));
+			schema
+			        .addProperty("display", new StringSchema());
+		} else if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+			schema
+			        .addProperty("display", new StringSchema())
+			        .addProperty("patient", new Schema<Object>().$ref("#/components/schemas/PatientGetRef"));
 		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .required("patient");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"));
-		}
-		return model;
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema.addProperty("patient", new StringSchema().example("uuid"));
+		schema.setRequired(Collections.singletonList("patient"));
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

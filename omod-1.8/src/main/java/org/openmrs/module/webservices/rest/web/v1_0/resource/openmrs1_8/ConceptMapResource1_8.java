@@ -10,11 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
@@ -65,31 +66,34 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("source", new StringProperty()) //FIXME
-			        .property("sourceCode", new StringProperty());
+			schema
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGetRef"))
+			        .addProperty("sourceCode", new StringSchema());
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("source", new StringProperty()) //FIXME
-			        .property("sourceCode", new StringProperty())
-			        .property("comment", new StringProperty());
+			schema
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGet"))
+			        .addProperty("sourceCode", new StringSchema())
+			        .addProperty("comment", new StringSchema());
 		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("source", new StringProperty())
-		        .property("sourceCode", new StringProperty())
-		        .required("source").required("sourceCode");
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+		        .addProperty("source", new StringSchema())
+		        .addProperty("sourceCode", new StringSchema());
+		schema.setRequired(Arrays.asList("source", "sourceCode"));
+		return schema;
 	}
 	
 	/**
