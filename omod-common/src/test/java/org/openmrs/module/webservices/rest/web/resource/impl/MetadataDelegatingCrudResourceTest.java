@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.ServiceContext;
@@ -101,19 +101,19 @@ public class MetadataDelegatingCrudResourceTest {
 		public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 			return null;
 		}
-		
+
 		@Override
-		public Model getGETModel(Representation representation) {
+		public Schema<?> getGETSchema(Representation rep) {
 			return null;
 		}
-		
+
 		@Override
-		public Model getCREATEModel(Representation representation) {
+		public Schema<?> getCREATESchema(Representation rep) {
 			return null;
 		}
-		
+
 		@Override
-		public Model getUPDATEModel(Representation representation) {
+		public Schema<?> getUPDATESchema(Representation rep) {
 			return null;
 		}
 	}

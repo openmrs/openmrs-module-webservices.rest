@@ -9,17 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
 import org.openmrs.activelist.AllergySeverity;
 import org.openmrs.activelist.AllergyType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -33,6 +30,8 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+
+import java.util.Arrays;
 
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
@@ -64,28 +63,34 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("allergyType", new EnumProperty(AllergyType.class))
-		        .property("reaction", new RefProperty("#/definitions/ConceptGetRef"))
-		        .property("severity", new EnumProperty(AllergySeverity.class))
-		        .property("allergen", new RefProperty("#/definitions/ConceptGetRef"));
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("reaction", new RefProperty("#/definitions/ConceptGet"))
-			        .property("allergen", new RefProperty("#/definitions/ConceptGet"));
+	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof ObjectSchema) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("allergyType", new Schema<AllergyType>().type("string")._enum(Arrays.asList(AllergyType.values())))
+					.addProperty("reaction", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
+					.addProperty("severity", new Schema<AllergySeverity>().type("string")._enum(Arrays.asList(AllergySeverity.values())))
+					.addProperty("allergen", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"));
+			if (rep instanceof FullRepresentation) {
+				objectSchema
+						.addProperty("reaction", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
+						.addProperty("allergen", new Schema<Object>().$ref("#/components/schemas/ConceptGet"));
+			}
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("allergyType", new EnumProperty(AllergyType.class))
-		        .property("reaction", new ObjectProperty()
-		                .property("uuid", new StringProperty()))
-		        .property("severity", new EnumProperty(AllergySeverity.class))
-		        .property("allergen", new StringProperty());
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("allergyType", new Schema<AllergyType>().type("string")._enum(Arrays.asList(AllergyType.values())))
+				.addProperty("reaction", new ObjectSchema())
+						.addProperty("uuid", new StringSchema())
+				.addProperty("severity", new Schema<AllergySeverity>().type("string")._enum(Arrays.asList(AllergySeverity.values())))
+				.addProperty("allergen", new StringSchema());
 	}
 	
 	/**
@@ -127,7 +132,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	/**
 	 * Annotated setter for allergen
 	 * 
-	 * @param allergen
+	 * @param allergy
 	 * @param value
 	 */
 	@PropertySetter("allergen")

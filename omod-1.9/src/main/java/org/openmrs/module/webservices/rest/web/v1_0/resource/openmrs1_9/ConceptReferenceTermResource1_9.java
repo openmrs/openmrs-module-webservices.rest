@@ -9,13 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-import io.swagger.models.properties.UUIDProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
+import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -34,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -94,38 +94,40 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
-			model.property("uuid", new UUIDProperty());
-			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
-			model.property("code", new StringProperty());
-			model.property("version", new StringProperty());
+			model
+					.addProperty("uuid", new Schema<String>().type("string").format("uuid"))
+					.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceGetRef"))
+					.addProperty("code", new StringSchema())
+					.addProperty("version", new StringSchema());
 		} else if (rep instanceof FullRepresentation) {
-			model.property("uuid", new UUIDProperty());
-			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetFull"));
-			model.property("code", new StringProperty());
-			model.property("version", new StringProperty());
-			model.property("auditInfo", new StringProperty());
+			model
+					.addProperty("uuid", new Schema<String>().type("string").format("uuid"))
+					.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceGetFull"))
+					.addProperty("code", new StringSchema())
+					.addProperty("version", new StringSchema())
+					.addProperty("auditInfo", new StringSchema());
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("code", new StringProperty())
-		        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceCreate"))
-		        .property("version", new StringProperty())
-		        
-		        .required("code").required("conceptSource");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return super.getCREATESchema(rep)
+		        .addProperty("code", new StringSchema())
+				.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceCreate"))
+		        .addProperty("version", new StringSchema())
+				.required(Arrays.asList("code", "conceptSource"));
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return super.getUPDATESchema(rep);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */

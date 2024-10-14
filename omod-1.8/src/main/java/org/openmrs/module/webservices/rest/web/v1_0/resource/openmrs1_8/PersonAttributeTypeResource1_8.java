@@ -9,15 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.Privilege;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -33,6 +33,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
+
+import java.util.Collections;
 
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
@@ -114,41 +116,40 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("format", new StringProperty())
-			        .property("foreignKey", new IntegerProperty())
-			        .property("sortWeight", new DoubleProperty())
-			        .property("searchable", new BooleanProperty()._default(false));
+			        .addProperty("format", new StringSchema())
+			        .addProperty("foreignKey", new IntegerSchema())
+			        .addProperty("sortWeight", new NumberSchema().format("double"))
+			        .addProperty("searchable", new BooleanSchema()._default(false));
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeGetRef"));
+			model.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet"));
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeGet"))
-			        .property("concept", new StringProperty());
+					.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull"))
+			        .addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("format", new StringProperty().example("java.lang.String"))
-		        .property("foreignKey", new IntegerProperty())
-		        .property("sortWeight", new DoubleProperty())
-		        .property("searchable", new BooleanProperty()._default(false))
-		        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeCreate"))
-		        
-		        .required("description");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return super.getCREATESchema(rep)
+		        .addProperty("format", new StringSchema().example("java.lang.String"))
+		        .addProperty("foreignKey", new IntegerSchema())
+		        .addProperty("sortWeight", new NumberSchema().format("double"))
+		        .addProperty("searchable", new BooleanSchema()._default(false))
+				.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull"))
+		        .required(Collections.singletonList("description"));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

@@ -9,13 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -91,35 +94,40 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("voided", new StringProperty())
-			        .property("memberIds", new ArrayProperty(new IntegerProperty())); //FIXME
+			schema
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("name", new StringSchema())
+			        .addProperty("description", new StringSchema())
+			        .addProperty("voided", new BooleanSchema())
+			        .addProperty("memberIds", new ArraySchema().items(new IntegerSchema()));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("description", new StringProperty())
-		        .property("memberIds", new ArrayProperty(new IntegerProperty())) //FIXME
-		        .required("name").required("description").required("memberIds");
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+		        .addProperty("name", new StringSchema())
+		        .addProperty("description", new StringSchema())
+		        .addProperty("memberIds", new ArraySchema().items(new IntegerSchema()));
+		schema.setRequired(Arrays.asList("name", "description", "memberIds"));
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("description", new StringProperty())
-		        .required("name").required("description");
+	public Schema<?> getUPDATESchema(Representation representation) {
+		ObjectSchema schema = new ObjectSchema();
+		schema
+		        .addProperty("name", new StringSchema())
+		        .addProperty("description", new StringSchema());
+		schema.setRequired(Arrays.asList("name", "description"));
+		return schema;
 	}
 	
 	/**

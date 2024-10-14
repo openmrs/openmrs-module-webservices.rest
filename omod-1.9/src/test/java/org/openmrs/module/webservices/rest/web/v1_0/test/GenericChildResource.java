@@ -9,9 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.test;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -42,25 +43,25 @@ public class GenericChildResource extends DelegatingCrudResource<GenericChild> {
 		
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		return ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("value", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		return super.getGETSchema(rep)
+				.addProperty("uuid", new UUIDSchema())
+				.addProperty("value", new StringSchema());
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("value", new StringProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new Schema<Object>()
+		        .addProperty("value", new StringSchema());
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl();
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema();
 	}
-	
+
 	@Override
 	public GenericChild newDelegate() {
 		return new GenericChild();

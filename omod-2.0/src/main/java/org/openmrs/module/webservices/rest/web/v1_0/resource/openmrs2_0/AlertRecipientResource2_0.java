@@ -9,12 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -99,42 +98,43 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 		return description;
 	}
 
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-				.property(UUID, new StringProperty())
-				.property(DISPLAY, new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            schema
+					.addProperty(UUID, new StringSchema())
+					.addProperty(DISPLAY, new StringSchema());
 
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGetRef"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
+			if (rep instanceof DefaultRepresentation) {
+				schema
+						.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserGetRef"))
+						.addProperty(ALERT_READ, new BooleanSchema())
+						.addProperty(DATE_CHANGED, new DateTimeSchema());
+			}
+			if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserGet"))
+						.addProperty(ALERT_READ, new BooleanSchema())
+						.addProperty(DATE_CHANGED, new DateTimeSchema());
+			}
 		}
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGet"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
-		}
-		return modelImpl;
+		return schema;
 	}
 
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl modelImpl = new ModelImpl()
-				.property(RECIPIENT, new StringProperty().example("uuid"));
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema()
+				.addProperty(RECIPIENT, new StringSchema().example("uuid"));
 
 		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserCreate"));
+			schema.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserCreate"));
 		}
-		return modelImpl;
+		return schema;
 	}
 
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 
 	@Override

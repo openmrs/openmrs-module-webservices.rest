@@ -9,12 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -30,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -90,8 +89,8 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			description.addProperty("maximumDailyDose");
 			description.addProperty("minimumDailyDose");
 			description.addProperty("units");
-			description.addProperty("concept", Representation.REF);
 			description.addProperty("combination");
+			description.addProperty("concept", Representation.REF);
 			description.addProperty("route", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -103,71 +102,77 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 			description.addProperty("name");
 			description.addProperty("description");
 			description.addProperty("retired");
-			description.addProperty("dosageForm", Representation.REF);
+			description.addProperty("dosageForm");
 			description.addProperty("doseStrength");
 			description.addProperty("maximumDailyDose");
 			description.addProperty("minimumDailyDose");
 			description.addProperty("units");
-			description.addProperty("concept", Representation.REF);
 			description.addProperty("combination");
-			description.addProperty("route", Representation.REF);
+			description.addProperty("concept");
+			description.addProperty("route");
 			description.addProperty("auditInfo");
 			description.addSelfLink();
 			return description;
 		}
-		//Let the superclass handle this
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("doseStrength", new DoubleProperty())
-			        .property("maximumDailyDose", new DoubleProperty())
-			        .property("minimumDailyDose", new DoubleProperty())
-			        .property("units", new StringProperty())
-			        .property("combination", new BooleanProperty()._default(false));
+			schema
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("name", new StringSchema())
+			        .addProperty("description", new StringSchema())
+			        .addProperty("retired", new BooleanSchema())
+			        .addProperty("doseStrength", new NumberSchema())
+			        .addProperty("maximumDailyDose", new NumberSchema())
+			        .addProperty("minimumDailyDose", new NumberSchema())
+			        .addProperty("units", new StringSchema())
+			        .addProperty("combination", new BooleanSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				schema
+				        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
+				        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
+				        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				schema
+				        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
+				        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
+				        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptGet"));
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("route", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("route", new RefProperty("#/definitions/ConceptGet"));
-		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("combination", new BooleanProperty()._default(false))
-		        .property("concept", new StringProperty())
-		        .property("doseStrength", new DoubleProperty())
-		        .property("maximumDailyDose", new DoubleProperty())
-		        .property("minimumDailyDose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("dosageForm", new StringProperty())
-		        .property("route", new StringProperty())
-		        
-		        .required("combination").required("concept");
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		schema
+		        .addProperty("combination", new BooleanSchema()._default(false))
+		        .addProperty("concept", new StringSchema())
+		        .addProperty("doseStrength", new NumberSchema())
+		        .addProperty("maximumDailyDose", new NumberSchema())
+		        .addProperty("minimumDailyDose", new NumberSchema())
+		        .addProperty("units", new StringSchema())
+		        .addProperty("dosageForm", new StringSchema())
+		        .addProperty("route", new StringSchema());
+		schema.setRequired(Arrays.asList("combination", "concept"));
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("route", new RefProperty("#/definitions/ConceptCreate"));
+			schema
+			        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"))
+			        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"))
+			        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep); //FIXME no updatableProperties()
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep); //FIXME no updatableProperties()
 	}
 	
 	/**

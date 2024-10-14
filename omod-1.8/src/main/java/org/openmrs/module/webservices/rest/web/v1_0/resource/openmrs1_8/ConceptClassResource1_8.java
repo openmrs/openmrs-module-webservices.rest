@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -67,11 +67,6 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 		Context.getConceptService().purgeConceptClass(conceptClass);
 	}
 	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -80,5 +75,12 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 		return new NeedsPaging<ConceptClass>(Context.getConceptService().getAllConceptClasses(context.getIncludeAll()),
 		        context);
 	}
-	
+
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCREATESchema(Representation) (Representation)
+	 */
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		return getCREATESchema(rep);
+	}
 }

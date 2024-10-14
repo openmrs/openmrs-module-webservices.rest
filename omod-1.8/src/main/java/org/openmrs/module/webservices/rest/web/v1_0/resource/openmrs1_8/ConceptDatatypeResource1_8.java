@@ -9,10 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -67,18 +66,19 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 		return null;
 	}
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
+	@Override
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("hl7Abbreviation", new StringProperty())
-			        .property("retired", new BooleanProperty());
+			schema
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("name", new StringSchema())
+			        .addProperty("description", new StringSchema())
+			        .addProperty("hl7Abbreviation", new StringSchema())
+			        .addProperty("retired", new BooleanSchema());
 		}
-		return model;
+		return schema;
 	}
 	
 	/**

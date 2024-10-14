@@ -9,10 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
@@ -71,26 +70,26 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("display", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema.addProperty("display", new StringSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				schema
+						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
+						.addProperty("conceptName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
+						.addProperty("conceptName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetRef"))
+						.addProperty("word", new StringSchema())
+						.addProperty("transientWeight", new StringSchema());
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("conceptName", new RefProperty("#/definitions/ConceptNameGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("conceptName", new RefProperty("#/definitions/ConceptNameGetRef"))
-			        .property("word", new StringProperty())
-			        .property("transientWeight", new StringProperty());
-		}
-		return model;
+		return schema;
 	}
 	
 	/**

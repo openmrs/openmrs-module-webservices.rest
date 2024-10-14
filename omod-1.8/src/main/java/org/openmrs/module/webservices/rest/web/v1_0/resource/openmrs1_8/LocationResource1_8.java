@@ -13,11 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
@@ -142,64 +141,71 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("address1", new StringProperty())
-			        .property("address2", new StringProperty())
-			        .property("cityVillage", new StringProperty())
-			        .property("stateProvince", new StringProperty())
-			        .property("country", new StringProperty())
-			        .property("postalCode", new StringProperty())
-			        .property("latitude", new StringProperty())
-			        .property("longitude", new StringProperty())
-			        .property("countyDistrict", new StringProperty())
-			        .property("address3", new StringProperty())
-			        .property("address4", new StringProperty())
-			        .property("address5", new StringProperty())
-			        .property("address6", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("address1", new StringSchema())
+					.addProperty("address2", new StringSchema())
+					.addProperty("cityVillage", new StringSchema())
+					.addProperty("stateProvince", new StringSchema())
+					.addProperty("country", new StringSchema())
+					.addProperty("postalCode", new StringSchema())
+					.addProperty("latitude", new StringSchema())
+					.addProperty("longitude", new StringSchema())
+					.addProperty("countyDistrict", new StringSchema())
+					.addProperty("address3", new StringSchema())
+					.addProperty("address4", new StringSchema())
+					.addProperty("address5", new StringSchema())
+					.addProperty("address6", new StringSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				objectSchema
+						.addProperty("tags", new ArraySchema().items(new Schema<LocationTag>().$ref("#/components/schemas/LocationtagGetRef")))
+						.addProperty("parentLocation", new Schema<Location>().$ref("#/components/schemas/LocationGetRef"))
+						.addProperty("childLocations", new ArraySchema().items(new Schema<Location>().$ref("#/components/schemas/LocationGetRef")));
+			} else if (rep instanceof FullRepresentation) {
+				objectSchema
+						.addProperty("tags", new ArraySchema().items(new Schema<LocationTag>().$ref("#/components/schemas/LocationtagGet")))
+						.addProperty("parentLocation", new Schema<Location>().$ref("#/components/schemas/LocationGet"))
+						.addProperty("childLocations", new ArraySchema().items(new Schema<Location>().$ref("#/components/schemas/LocationGet")));
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("tags", new ArrayProperty(new RefProperty("#/definitions/LocationtagGetRef")))
-			        .property("parentLocation", new RefProperty("#/definitions/LocationGetRef"))
-			        .property("childLocations", new ArrayProperty(new RefProperty("#/definitions/LocationGetRef")));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("tags", new ArrayProperty(new RefProperty("#/definitions/LocationtagGet")))
-			        .property("parentLocation", new RefProperty("#/definitions/LocationGet"))
-			        .property("childLocations", new ArrayProperty(new RefProperty("#/definitions/LocationGet")));
+		return schema;
+	}
+
+	@Override
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		if (schema instanceof ObjectSchema) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("address1", new StringSchema())
+					.addProperty("address2", new StringSchema())
+					.addProperty("cityVillage", new StringSchema())
+					.addProperty("stateProvince", new StringSchema())
+					.addProperty("country", new StringSchema())
+					.addProperty("postalCode", new StringSchema())
+					.addProperty("latitude", new StringSchema())
+					.addProperty("longitude", new StringSchema())
+					.addProperty("countyDistrict", new StringSchema())
+					.addProperty("address3", new StringSchema())
+					.addProperty("address4", new StringSchema())
+					.addProperty("address5", new StringSchema())
+					.addProperty("address6", new StringSchema())
+					.addProperty("tags", new ArraySchema().items(new StringSchema()))
+					.addProperty("parentLocation", new StringSchema())
+					.addProperty("childLocations", new ArraySchema().items(new StringSchema()));
 		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("address1", new StringProperty())
-		        .property("address2", new StringProperty())
-		        .property("cityVillage", new StringProperty())
-		        .property("stateProvince", new StringProperty())
-		        .property("country", new StringProperty())
-		        .property("postalCode", new StringProperty())
-		        .property("latitude", new StringProperty())
-		        .property("longitude", new StringProperty())
-		        .property("countyDistrict", new StringProperty())
-		        .property("address3", new StringProperty())
-		        .property("address4", new StringProperty())
-		        .property("address5", new StringProperty())
-		        .property("address6", new StringProperty())
-		        .property("tags", new ArrayProperty(new StringProperty()))
-		        .property("parentLocation", new StringProperty())
-		        .property("childLocations", new ArrayProperty(new StringProperty()));
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

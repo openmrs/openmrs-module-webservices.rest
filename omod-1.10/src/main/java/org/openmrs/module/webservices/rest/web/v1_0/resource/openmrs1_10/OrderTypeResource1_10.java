@@ -9,15 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.ConceptClass;
 import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -153,31 +154,36 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("javaClassName", new StringProperty());
+			schema
+			        .addProperty("javaClassName", new StringSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGetRef")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGetRef"));
+			schema
+					.addProperty("conceptClasses", new ArraySchema().items(new Schema<ConceptClass>().$ref("#/components/schemas/ConceptclassGetRef")))
+					.addProperty("parent", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGet")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGet"));
+			schema
+					.addProperty("conceptClasses", new ArraySchema().items(new Schema<ConceptClass>().$ref("#/components/schemas/ConceptclassGetFull")))
+					.addProperty("parent", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetFull"));
 		}
-		return model;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("javaClassName", new StringProperty())
-		        .property("parent", new StringProperty().example("uuid")) //FIXME type
-		        .property("conceptClasses", new ArrayProperty(new StringProperty().example("uuid")))
-		        
-		        .required("javaClassName");
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		if (schema instanceof ObjectSchema) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("javaClassName", new StringSchema())
+					.addProperty("parent", new StringSchema().example("uuid"))
+					.addProperty("conceptClasses", new ArraySchema().items(new StringSchema().example("uuid")));
+
+			objectSchema.setRequired(Collections.singletonList("javaClassName"));
+		}
+		return schema;
 	}
 }

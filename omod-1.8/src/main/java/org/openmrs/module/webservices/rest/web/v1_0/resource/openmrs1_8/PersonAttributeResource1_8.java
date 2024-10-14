@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Attributable;
 import org.openmrs.Location;
 import org.openmrs.Person;
@@ -38,6 +37,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsClassLoader;
+
+import java.util.Collections;
 
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
@@ -153,45 +154,44 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
-			        .property("voided", new BooleanProperty());
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("value", new StringSchema())
+					.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeGet"))
+			        .addProperty("voided", new BooleanSchema());
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeGetRef"))
-			        .property("voided", new BooleanProperty())
-			        .property("hydratedObject", new StringProperty());
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("value", new StringSchema())
+					.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeGetFull"))
+			        .addProperty("voided", new BooleanSchema())
+			        .addProperty("hydratedObject", new StringSchema());
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("attributeType", new StringProperty().example("uuid"))
-		        .property("value", new StringProperty())
-		        .property("hydratedObject", new StringProperty().example("uuid"))
-		        
-		        .required("attributeType");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		        .addProperty("attributeType", new StringSchema().example("uuid"))
+		        .addProperty("value", new StringSchema())
+		        .addProperty("hydratedObject", new StringSchema().example("uuid"))
+		        .required(Collections.singletonList("attributeType"));
 		if (rep instanceof FullRepresentation) {
-			model
-			        .property("attributeType", new RefProperty("#/definitions/PersonattributetypeCreate"));
+			model.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeCreate"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

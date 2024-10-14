@@ -9,10 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Condition;
@@ -83,59 +82,59 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		}
 		return null;
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETSchema(Representation)
 	 */
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("condition", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("clinicalStatus", new StringProperty())
-			        .property("verificationStatus", new StringProperty())
-			        .property("previousVersion", new StringProperty())
-			        .property("onsetDate", new StringProperty())
-			        .property("endDate", new StringProperty())
-			        .property("additionalDetail", new StringProperty())
-			        .property("voided", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("condition", new StringSchema())
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
+					.addProperty("clinicalStatus", new StringSchema())
+					.addProperty("verificationStatus", new StringSchema())
+					.addProperty("previousVersion", new StringSchema())
+					.addProperty("onsetDate", new StringSchema())
+					.addProperty("endDate", new StringSchema())
+					.addProperty("additionalDetail", new StringSchema())
+					.addProperty("voided", new StringSchema());
 		}
-		return model;
+		return schema;
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATESchema(Representation)
 	 */
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("condition", new StringProperty())
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("clinicalStatus", new StringProperty())
-		        .property("verificationStatus", new StringProperty())
-		        .property("previousVersion", new StringProperty())
-		        .property("onsetDate", new StringProperty())
-		        .property("endDate", new StringProperty())
-		        .property("additionalDetail", new StringProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("condition", new StringSchema())
+				.addProperty("patient", new StringSchema().example("uuid"))
+				.addProperty("clinicalStatus", new StringSchema())
+				.addProperty("verificationStatus", new StringSchema())
+				.addProperty("previousVersion", new StringSchema())
+				.addProperty("onsetDate", new StringSchema())
+				.addProperty("endDate", new StringSchema())
+				.addProperty("additionalDetail", new StringSchema());
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATESchema(Representation)
 	 */
 	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("condition", new StringProperty())
-		        .property("clinicalStatus", new StringProperty())
-		        .property("verificationStatus", new StringProperty())
-		        .property("previousVersion", new StringProperty())
-		        .property("onsetDate", new StringProperty())
-		        .property("endDate", new StringProperty())
-		        .property("additionalDetail", new StringProperty())
-		        .property("voided", new StringProperty());
+	public Schema<?> getUPDATESchema(Representation representation) {
+		return new ObjectSchema()
+				.addProperty("condition", new StringSchema())
+				.addProperty("clinicalStatus", new StringSchema())
+				.addProperty("verificationStatus", new StringSchema())
+				.addProperty("previousVersion", new StringSchema())
+				.addProperty("onsetDate", new StringSchema())
+				.addProperty("endDate", new StringSchema())
+				.addProperty("additionalDetail", new StringSchema())
+				.addProperty("voided", new StringSchema());
 	}
 	
 	/**

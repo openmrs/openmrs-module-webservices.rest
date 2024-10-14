@@ -10,15 +10,16 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.FloatProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import org.openmrs.Field;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
@@ -42,62 +43,62 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         "1.8.* - 9.*" })
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("fieldNumber", new IntegerProperty())
-			        .property("fieldPart", new StringProperty())
-			        .property("pageNumber", new IntegerProperty())
-			        .property("minOccurs", new IntegerProperty())
-			        .property("maxOccurs", new IntegerProperty())
-			        .property("required", new BooleanProperty()._default(false))
-			        .property("sortWeight", new FloatProperty())
-			        .property("retired", new BooleanProperty()); //FIXME
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("display", new StringSchema())
+			        .addProperty("fieldNumber", new IntegerSchema())
+			        .addProperty("fieldPart", new StringSchema())
+			        .addProperty("pageNumber", new IntegerSchema())
+			        .addProperty("minOccurs", new IntegerSchema())
+			        .addProperty("maxOccurs", new IntegerSchema())
+			        .addProperty("required", new BooleanSchema()._default(false))
+			        .addProperty("sortWeight", new NumberSchema().format("float"))
+			        .addProperty("retired", new BooleanSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldGetRef"))
-			        .property("form", new RefProperty("#/definitions/FormGetRef"))
-			        .property("field", new RefProperty("#/definitions/FieldGetRef"));
+					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGet"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGet"))
+					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGet"));
 		} else if (rep instanceof FullRepresentation) {
 			modelImpl
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldGet"))
-			        .property("form", new RefProperty("#/definitions/FormGet"))
-			        .property("field", new RefProperty("#/definitions/FieldGet"));
+					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGetFull"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGetFull"))
+					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetFull"));
 		}
 		return modelImpl;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl() //FIXME validate if correct
-		        .property("form", new StringProperty().example("uuid"))
-		        .property("field", new StringProperty().example("uuid"))
-		        .property("required", new BooleanProperty()._default(false))
-		        .property("parent", new StringProperty().example("uuid"))
-		        .property("fieldNumber", new IntegerProperty())
-		        .property("fieldPart", new StringProperty())
-		        .property("pageNumber", new IntegerProperty())
-		        .property("minOccurs", new IntegerProperty())
-		        .property("maxOccurs", new IntegerProperty())
-		        .property("sortWeight", new BooleanProperty()._default(false))
-		        
-		        .required("form").required("field").required("required");
+	@SuppressWarnings("unchecked")
+	public Schema<Object> getCREATESchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		        .addProperty("form", new StringSchema().example("uuid"))
+		        .addProperty("field", new StringSchema().example("uuid"))
+		        .addProperty("required", new BooleanSchema()._default(false))
+		        .addProperty("parent", new StringSchema().example("uuid"))
+		        .addProperty("fieldNumber", new IntegerSchema())
+		        .addProperty("fieldPart", new StringSchema())
+		        .addProperty("pageNumber", new IntegerSchema())
+		        .addProperty("minOccurs", new IntegerSchema())
+		        .addProperty("maxOccurs", new IntegerSchema())
+		        .addProperty("sortWeight", new BooleanSchema()._default(false))
+		        .required(Arrays.asList("form", "field", "required"));
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("form", new RefProperty("#/definitions/FormCreate"))
-			        .property("field", new RefProperty("#/definitions/FieldCreate"))
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldCreate"));
+					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormCreate"))
+					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreate"))
+					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldCreate"));
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema(); //FIXME missing props
 	}
 	
 	/**

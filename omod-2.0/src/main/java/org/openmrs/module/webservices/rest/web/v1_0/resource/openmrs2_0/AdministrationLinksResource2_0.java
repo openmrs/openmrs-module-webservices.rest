@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
@@ -119,12 +118,12 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-					.property(MODULE_TITLE, new StringProperty())
-					.property(LINKS, new ArrayProperty(new ObjectProperty()));
+					.addProperty(MODULE_TITLE, new StringSchema())
+					.addProperty(LINKS, new ArraySchema().items(new Schema<>()));
 		}
 
 		return model;

@@ -9,12 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import org.openmrs.Obs;
+import org.openmrs.Person;
 import org.openmrs.activelist.ActiveListItem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,6 +28,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
+
 /**
  * Subclass of {@link DataDelegatingCrudResource} with helper methods specific to
  * {@link ActiveListItem}
@@ -33,22 +37,49 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> extends DataDelegatingCrudResource<T> {
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("person", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("comments", new StringProperty())
-		        .property("startObs", new StringProperty())
-		        .property("stopObs", new StringProperty())
-		        
-		        .required("person").required("startDate");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"))
-			        .property("startObs", new RefProperty("#/definitions/ObsCreate"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsCreate"));
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema()
+				.addProperty("uuid", new StringSchema())
+				.addProperty("display", new StringSchema())
+				.addProperty("startDate", new DateTimeSchema())
+				.addProperty("endDate", new DateTimeSchema())
+				.addProperty("comments", new StringSchema())
+				.addProperty("voided", new BooleanSchema());
+		
+		if (rep instanceof DefaultRepresentation) {
+			schema
+				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"))
+				.addProperty("activeListType", new StringSchema())
+				.addProperty("startObs", new Schema<Object>().$ref("#/components/schemas/ObsGet"))
+				.addProperty("stopObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"));
+		} else if (rep instanceof FullRepresentation) {
+			schema
+				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGetRef"))
+				.addProperty("activeListType", new StringSchema())
+				.addProperty("startObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"))
+				.addProperty("stopObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"));
 		}
-		return model;
+		return schema;
+	}
+
+	@Override
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema()
+				.addProperty("person", new StringSchema())
+				.addProperty("startDate", new DateSchema())
+				.addProperty("comments", new StringSchema())
+				.addProperty("startObs", new StringSchema())
+				.addProperty("stopObs", new StringSchema());
+
+		schema.setRequired(Arrays.asList("person", "startDate"));
+
+		if (rep instanceof FullRepresentation) {
+			schema.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonCreate"));
+			schema.addProperty("startObs", new Schema<Obs>().$ref("#/components/schemas/ObsCreate"));
+			schema.addProperty("stopObs", new Schema<Obs>().$ref("#/components/schemas/ObsCreate"));
+		}
+
+		return schema;
 	}
 	
 	/**
@@ -88,30 +119,6 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 			return description;
 		}
 		return null;
-	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        .property("comments", new StringProperty())
-		        .property("voided", new BooleanProperty());
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGet"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGetRef"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
-		}
-		return model;
 	}
 	
 	/**

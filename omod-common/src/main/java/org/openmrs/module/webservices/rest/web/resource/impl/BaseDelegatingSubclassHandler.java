@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
@@ -78,8 +78,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

@@ -9,14 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -27,6 +26,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Arrays;
 
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
@@ -116,36 +117,36 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("format", new StringProperty())
-			        .property("formatDescription", new StringProperty())
-			        .property("required", new BooleanProperty())
-			        .property("checkDigit", new BooleanProperty())
-			        .property("validator", new StringProperty())
-			        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
-			        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+			        .addProperty("format", new StringSchema())
+			        .addProperty("formatDescription", new StringSchema())
+			        .addProperty("required", new BooleanSchema())
+			        .addProperty("checkDigit", new BooleanSchema())
+			        .addProperty("validator", new StringSchema())
+					.addProperty("locationBehavior", new Schema<PatientIdentifierType.LocationBehavior>()._enum(Arrays.asList(PatientIdentifierType.LocationBehavior.values())))
+			        .addProperty("uniquenessBehavior", new StringSchema()); //FIXME check type
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("format", new StringProperty())
-		        .property("formatDescription", new StringProperty())
-		        .property("required", new BooleanProperty())
-		        .property("checkDigit", new BooleanProperty())
-		        .property("validator", new StringProperty())
-		        .property("locationBehavior", new EnumProperty(PatientIdentifierType.LocationBehavior.class))
-		        .property("uniquenessBehavior", new StringProperty()); //FIXME check type
+	public Schema<?> getCREATESchema(Representation rep) {
+		return super.getCREATESchema(rep)
+		        .addProperty("format", new StringSchema())
+		        .addProperty("formatDescription", new StringSchema())
+		        .addProperty("required", new BooleanSchema())
+		        .addProperty("checkDigit", new BooleanSchema())
+		        .addProperty("validator", new StringSchema())
+		        .addProperty("locationBehavior", new Schema<PatientIdentifierType.LocationBehavior>()._enum(Arrays.asList(PatientIdentifierType.LocationBehavior.values())))
+		        .addProperty("uniquenessBehavior", new StringSchema()); //FIXME check type
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

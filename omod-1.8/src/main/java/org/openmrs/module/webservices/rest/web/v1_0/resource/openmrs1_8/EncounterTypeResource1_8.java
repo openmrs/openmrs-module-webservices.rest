@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -22,6 +22,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Collections;
 
 /**
  * {@link Resource} for {@link EncounterType}, supporting standard CRUD operations
@@ -44,9 +46,9 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .required("description");
+	public Schema<?> getCREATESchema(Representation rep) {
+		return ((ObjectSchema) super.getCREATESchema(rep))
+		        .required(Collections.singletonList("description"));
 	}
 	
 	/**

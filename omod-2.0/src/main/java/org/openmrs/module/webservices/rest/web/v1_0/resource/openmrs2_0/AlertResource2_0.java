@@ -9,16 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -149,51 +147,49 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 	}
 
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-				.property("uuid", new StringProperty())
-				.property("display", new StringProperty())
-				.property(ALERT_ID, new IntegerProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof Schema) {
+            schema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty(ALERT_ID, new IntegerSchema());
 
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
+			if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+				schema
+						.addProperty(TEXT, new StringSchema())
+						.addProperty(SATISFIED_BY_ANY, new BooleanSchema())
+						.addProperty(ALERT_READ, new BooleanSchema())
+						.addProperty(DATE_TO_EXPIRE, new DateSchema())
+						.addProperty(RECIPIENTS, new ArraySchema().items(new Schema<>().$ref("#/components/schemas/AlertRecipientGetRef")));
+			}
+			if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty(CREATOR, new ObjectSchema())
+						.addProperty(DATE_CREATED, new DateTimeSchema())
+						.addProperty(CHANGED_BY, new ObjectSchema())
+						.addProperty(DATE_CHANGED, new DateTimeSchema());
+			}
 		}
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(CREATOR, new ObjectProperty())
-					.property(DATE_CREATED, new DateTimeProperty())
-					.property(CHANGED_BY, new ObjectProperty())
-					.property(DATE_CHANGED, new DateTimeProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
-		}
-		return modelImpl;
+		return schema;
 	}
 
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-				.property(TEXT, new StringProperty())
-				.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientCreate")))
-				.property(SATISFIED_BY_ANY, new BooleanProperty())
-				.property(DATE_TO_EXPIRE, new DateProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty(TEXT, new StringSchema())
+				.addProperty(RECIPIENTS, new ArraySchema().items(new Schema<>().$ref("#/components/schemas/AlertRecipientCreate")))
+				.addProperty(SATISFIED_BY_ANY, new BooleanSchema())
+				.addProperty(DATE_TO_EXPIRE, new DateSchema());
 	}
 
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-				.property(TEXT, new StringProperty())
-				.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientCreate")))
-				.property(SATISFIED_BY_ANY, new BooleanProperty())
-				.property(DATE_TO_EXPIRE, new DateProperty());
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty(TEXT, new StringSchema())
+				.addProperty(RECIPIENTS, new ArraySchema().items(new Schema<>().$ref("#/components/schemas/AlertRecipientCreate")))
+				.addProperty(SATISFIED_BY_ANY, new BooleanSchema())
+				.addProperty(DATE_TO_EXPIRE, new DateSchema());
 	}
 
 	@Override

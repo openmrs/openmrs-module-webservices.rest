@@ -11,10 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import java.util.ArrayList;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
@@ -97,35 +97,35 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 		d.addProperty("endDate");
 		return d;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("patientUuid", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("startDate", new DateTimeSchema())
+					.addProperty("endDate", new DateTimeSchema())
+					.addProperty("patientUuid", new StringSchema());
 		}
 		//FIXME missing props
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patientUuid", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("patientUuid", new StringSchema())
+				.addProperty("startDate", new DateTimeSchema())
+				.addProperty("endDate", new DateTimeSchema());
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty());
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("startDate", new DateTimeSchema())
+				.addProperty("endDate", new DateTimeSchema());
 	}
 	
 	@PropertyGetter("display")

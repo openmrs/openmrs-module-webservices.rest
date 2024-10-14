@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -21,6 +21,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Collections;
 
 /**
  * {@link Resource} for {@link HL7Source}, supporting standard CRUD operations
@@ -58,15 +60,15 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
+	public Schema<?> getCREATESchema(Representation rep) {
+		return ((ObjectSchema) super.getCREATESchema(rep))
 		        
-		        .required("description");
+		        .required(Collections.singletonList("description"));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

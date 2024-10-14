@@ -9,7 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Drug;
+import org.openmrs.DrugReferenceMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -17,10 +20,6 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource1_8;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Drug},
@@ -59,22 +58,23 @@ public class DrugResource1_10 extends DrugResource1_8 {
 		
 		return description;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapGet"));
-		}
-		return modelImpl;
-	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapCreate"));
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            if (rep instanceof DefaultRepresentation) {
+				schema.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				schema.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapGet"));
+			}
+		}
+		return schema;
+	}
+
+	@Override
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapCreate"));
 	}
 }

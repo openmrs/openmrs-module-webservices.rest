@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -106,48 +107,49 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("givenName", new StringProperty())
-			        .property("middleName", new StringProperty())
-			        .property("familyName", new StringProperty())
-			        .property("familyName2", new StringProperty())
-			        .property("voided", new BooleanProperty());
+			        .addProperty("display", new StringSchema())
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("givenName", new StringSchema())
+			        .addProperty("middleName", new StringSchema())
+			        .addProperty("familyName", new StringSchema())
+			        .addProperty("familyName2", new StringSchema())
+			        .addProperty("voided", new BooleanSchema());
 		}
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("preferred", new BooleanProperty())
-			        .property("prefix", new StringProperty())
-			        .property("familyNamePrefix", new StringProperty())
-			        .property("familyNameSuffix", new StringProperty())
-			        .property("degree", new StringProperty());
+			        .addProperty("preferred", new BooleanSchema())
+			        .addProperty("prefix", new StringSchema())
+			        .addProperty("familyNamePrefix", new StringSchema())
+			        .addProperty("familyNameSuffix", new StringSchema())
+			        .addProperty("degree", new StringSchema());
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("givenName", new StringProperty())
-		        .property("middleName", new StringProperty())
-		        .property("familyName", new StringProperty())
-		        .property("familyName2", new StringProperty())
-		        .property("preferred", new BooleanProperty()._default(false))
-		        .property("prefix", new StringProperty())
-		        .property("familyNamePrefix", new StringProperty())
-		        .property("familyNameSuffix", new StringProperty())
-		        .property("degree", new StringProperty())
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("givenName", new StringSchema())
+		        .addProperty("middleName", new StringSchema())
+		        .addProperty("familyName", new StringSchema())
+		        .addProperty("familyName2", new StringSchema())
+		        .addProperty("preferred", new BooleanSchema()._default(false))
+		        .addProperty("prefix", new StringSchema())
+		        .addProperty("familyNamePrefix", new StringSchema())
+		        .addProperty("familyNameSuffix", new StringSchema())
+		        .addProperty("degree", new StringSchema())
+				.required(Arrays.asList("givenName", "familyName"));
 		        
-		        .required("givenName").required("familyName");
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

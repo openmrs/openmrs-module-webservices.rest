@@ -9,16 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -32,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/orderset", supportedClass = OrderSet.class, supportedOpenmrsVersions = {
@@ -107,31 +106,31 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		d.addProperty("orderSetMembers");
 		return d;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("operator", new EnumProperty(OrderSet.Operator.class));
+	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("operator", new Schema<OrderSet.Operator>().type("string")._enum(Arrays.asList(OrderSet.Operator.values())));
+
+			if (rep instanceof DefaultRepresentation) {
+				schema
+						.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberGetRef")));
+			} else if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberGet")));
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(new RefProperty(
-			                "#/definitions/OrdersetOrdersetmemberGetRef")));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(
-			                new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
-		}
-		return modelImpl;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("operator", new EnumProperty(OrderSet.Operator.class))
-		        .property("orderSetMembers",
-		            new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation representation) {
+		return new ObjectSchema()
+				.addProperty("operator", new Schema<OrderSet.Operator>().type("string")._enum(Arrays.asList(OrderSet.Operator.values())))
+				.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberCreate")));
 	}
 }

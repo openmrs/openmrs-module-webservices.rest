@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.BooleanUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -43,17 +43,17 @@ public class ObsResource1_11 extends ObsResource1_9 {
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		return ((ModelImpl) super.getGETModel(rep))
-		        .property("formFieldPath", new StringProperty())
-		        .property("formFieldNamespace", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		return ((ObjectSchema) super.getGETSchema(rep))
+		        .addProperty("formFieldPath", new StringSchema())
+		        .addProperty("formFieldNamespace", new StringSchema());
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("formFieldPath", new StringProperty())
-		        .property("formFieldNamespace", new StringProperty());
+	public Schema<?> getCREATESchema(Representation rep) {
+		return ((ObjectSchema) super.getCREATESchema(rep))
+		        .addProperty("formFieldPath", new StringSchema())
+		        .addProperty("formFieldNamespace", new StringSchema());
 	}
 	
 	/**

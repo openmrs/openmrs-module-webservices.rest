@@ -9,12 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import liquibase.changelog.ChangeSet;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -31,6 +29,7 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.util.DatabaseUpdater;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -116,30 +115,30 @@ public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<Da
 	}
 
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class))
-					.property(COMMENTS, new StringProperty())
-					.property(RAN_DATE, new DateProperty());
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty());
+	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+				schema
+						.addProperty(UUID, new StringSchema())
+						.addProperty(DISPLAY, new StringSchema())
+						.addProperty(AUTHOR, new StringSchema())
+						.addProperty(DESCRIPTION, new StringSchema())
+						.addProperty(RUN_STATUS, new Schema<ChangeSet.RunStatus>().type("string")._enum(Arrays.asList(ChangeSet.RunStatus.values())));
+
+				if (rep instanceof FullRepresentation) {
+					schema
+							.addProperty(COMMENTS, new StringSchema())
+							.addProperty(RAN_DATE, new DateTimeSchema());
+				}
+			} else if (rep instanceof RefRepresentation) {
+				schema
+						.addProperty(UUID, new StringSchema())
+						.addProperty(DISPLAY, new StringSchema());
+			}
 		}
-		return model;
+		return schema;
 	}
 
 	@Override

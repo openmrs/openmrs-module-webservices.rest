@@ -9,16 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflow;
+import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -174,43 +173,42 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
 		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .property("uuid", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("voided", new BooleanProperty());
+			        .addProperty("uuid", new StringSchema())
+			        .addProperty("startDate", new DateSchema())
+			        .addProperty("endDate", new DateSchema())
+			        .addProperty("voided", new BooleanSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGet"));
+			model.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet"));
 		} else if (rep instanceof RefRepresentation) {
 			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
+					.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetRef"))
+			        .addProperty("patientProgram", new ObjectSchema()); //FIXME type
 		} else if (rep instanceof FullRepresentation) {
 			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
+					.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetFull"))
+			        .addProperty("patientProgram", new ObjectSchema()); //FIXME type
 		}
 		return model;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("state", new RefProperty("#/definitions/WorkflowStateCreate"))
-		        
-		        .required("state");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateCreate"))
+		        .required(Collections.singletonList("state"));
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        .property("voided", new BooleanProperty());
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema()
+		        .addProperty("startDate", new DateSchema())
+		        .addProperty("endDate", new DateSchema())
+		        .addProperty("voided", new BooleanSchema());
 	}
 }
