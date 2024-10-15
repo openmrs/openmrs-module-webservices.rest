@@ -861,11 +861,8 @@ public class SwaggerSpecificationCreator {
 			Map<String, Schema> properties;
 			if (definition instanceof ObjectSchema) {
 				properties = definition.getProperties();
-			} else if (definition instanceof Schema) {
-				properties = definition.getProperties();
 			} else {
-				log.warn("Unexpected schema type for " + resourceName + ": " + definition.getClass().getName());
-				continue;
+				properties = definition.getProperties();
 			}
 
 			// 2. merge subclass properties into definition

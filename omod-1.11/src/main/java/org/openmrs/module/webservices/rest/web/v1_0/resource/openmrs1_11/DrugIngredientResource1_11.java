@@ -88,7 +88,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
 			        .addProperty("uuid", new StringSchema())

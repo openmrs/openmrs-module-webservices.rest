@@ -92,7 +92,7 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
 					.addProperty("startDate", new DateTimeSchema())

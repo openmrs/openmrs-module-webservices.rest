@@ -201,7 +201,7 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 	@SuppressWarnings("unchecked")
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> schema = super.getGETSchema(rep);
 		schema.addProperty("tasks", new ArraySchema().items(new StringSchema()));
 		schema.addProperty("action", new Schema<TaskAction.Action>().type("string")._enum(Arrays.asList(TaskAction.Action.values())))
 				.required(Collections.singletonList("action"));

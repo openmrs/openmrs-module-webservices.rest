@@ -72,9 +72,12 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 						.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
 						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGet"));
 			}
-			schema.getProperties().remove("source"); //FIXME check
-			schema.getProperties().remove("sourceCode");
-			schema.getProperties().remove("comment");
+
+			if (schema.getProperties() != null) {
+				schema.getProperties().remove("source"); //FIXME check
+				schema.getProperties().remove("sourceCode");
+				schema.getProperties().remove("comment");
+			}
 		}
 		return schema;
 	}

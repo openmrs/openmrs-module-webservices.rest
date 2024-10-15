@@ -95,7 +95,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
 					.addProperty("uuid", new Schema<String>().type("string").format("uuid"))

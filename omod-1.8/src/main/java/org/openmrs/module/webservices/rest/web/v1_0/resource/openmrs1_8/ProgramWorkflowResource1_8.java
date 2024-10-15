@@ -73,7 +73,7 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
 					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))

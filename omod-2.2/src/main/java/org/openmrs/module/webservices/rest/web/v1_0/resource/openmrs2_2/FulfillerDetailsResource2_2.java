@@ -56,6 +56,16 @@ public class FulfillerDetailsResource2_2 extends DelegatingSubResource<Fulfiller
 
 	@Override
 	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		schema
+				.addProperty("fulfillerComment", new StringSchema())
+				.addProperty("fulfillerStatus", new Schema<Order.FulfillerStatus>().type("string")._enum(Arrays.asList(Order.FulfillerStatus.values())));
+		return schema;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
 	public Schema<?> getCREATESchema(Representation rep) {
 		return new ObjectSchema()
 				.addProperty("fulfillerComment", new StringSchema())

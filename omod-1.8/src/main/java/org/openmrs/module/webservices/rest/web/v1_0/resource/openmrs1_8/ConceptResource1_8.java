@@ -216,7 +216,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
 			        .addProperty("uuid", new StringSchema())
@@ -235,30 +235,6 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		}
 		return schema;
 	}
-
-//	@Override
-//	public Schema<?> getCREATESchema(Representation rep) {
-//		return new ObjectSchema()
-//		        .addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptNameCreate")))
-//		        .addProperty("datatype", new StringSchema().example("uuid"))
-//		        .addProperty("set", new BooleanSchema())
-//		        .addProperty("version", new StringSchema())
-//		        .addProperty("answers", new ArraySchema().items(new StringSchema().example("uuid")))
-//		        .addProperty("setMembers", new ArraySchema().items(new StringSchema().example("uuid")))
-//
-//		        //ConceptNumeric properties
-//		        .addProperty("hiNormal", new StringSchema())
-//		        .addProperty("hiAbsolute", new StringSchema())
-//		        .addProperty("hiCritical", new StringSchema())
-//		        .addProperty("lowNormal", new StringSchema())
-//		        .addProperty("lowAbsolute", new StringSchema())
-//		        .addProperty("lowCritical", new StringSchema())
-//		        .addProperty("units", new StringSchema())
-//		        .addProperty("allowDecimal", new StringSchema())
-//		        .addProperty("displayPrecision", new StringSchema())
-//
-//		        .required("names").required("datatype").required("conceptClass");
-//	}
 
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {

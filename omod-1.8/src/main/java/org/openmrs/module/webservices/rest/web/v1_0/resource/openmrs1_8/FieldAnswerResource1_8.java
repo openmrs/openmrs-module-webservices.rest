@@ -84,7 +84,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> modelImpl = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			modelImpl
 					.addProperty("uuid", new UUIDSchema())
@@ -104,7 +104,7 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	@Override
 	@SuppressWarnings("unchecked")
 	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		Schema<?> model = (ObjectSchema) new ObjectSchema()
 				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
 				.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreate").example("uuid"))
 				.required(Arrays.asList("field", "concept"));

@@ -119,7 +119,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 					.addProperty(MODULE_TITLE, new StringSchema())

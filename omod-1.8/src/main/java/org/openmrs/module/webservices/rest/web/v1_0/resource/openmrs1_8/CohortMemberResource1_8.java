@@ -122,7 +122,7 @@ public class CohortMemberResource1_8 extends DelegatingSubResource<CohortMember1
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof RefRepresentation) {
 			schema
 			        .addProperty("display", new StringSchema());

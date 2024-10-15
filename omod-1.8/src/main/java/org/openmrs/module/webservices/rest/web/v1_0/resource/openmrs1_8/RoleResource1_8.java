@@ -126,7 +126,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
 			        .addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet")))
@@ -143,7 +143,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 	
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
-		return ((ObjectSchema) super.getCREATESchema(rep))
+		return super.getCREATESchema(rep)
 				.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeCreate")))
 				.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")));
 	}
