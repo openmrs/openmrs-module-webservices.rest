@@ -114,19 +114,19 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 		ModelImpl model = new ModelImpl();
 		if (rep instanceof DefaultRepresentation) {
 			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreateRef")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreateRef")));
+					.property("concept", new RefProperty("#/definitions/ConceptCreate"))
+					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreate")))
+					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreate")));
 		} else if (rep instanceof FullRepresentation) {
 			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowGet")))
+					.property("concept", new RefProperty("#/definitions/ConceptCreateFull"))
+					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreateFull")))
 					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGet")));
 		} else if (rep instanceof RefRepresentation) {
 			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreateRef")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreateRef")));
+					.property("concept", new RefProperty("#/definitions/ConceptCreate"))
+					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreate")))
+					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreate")));
 		}
 		return model;
 	}
