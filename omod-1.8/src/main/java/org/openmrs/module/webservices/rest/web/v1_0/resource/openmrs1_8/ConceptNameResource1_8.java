@@ -80,7 +80,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof RefRepresentation) {
 			schema
 			        .addProperty("uuid", new StringSchema())

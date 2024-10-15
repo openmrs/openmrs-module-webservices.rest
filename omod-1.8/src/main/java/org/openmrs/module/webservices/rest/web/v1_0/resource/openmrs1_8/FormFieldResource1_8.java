@@ -44,7 +44,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> modelImpl = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
 			        .addProperty("uuid", new StringSchema())

@@ -73,7 +73,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
+		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof DefaultRepresentation) {
 			schema.addProperty("links", new ArraySchema()
 					.items(new ObjectSchema()
@@ -321,7 +321,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 
 	@Override
 	public Schema<?> getUPDATESchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) getCREATESchema(rep);
+		Schema<?> schema = getCREATESchema(rep);
 		for (String property : getPropertiesToExposeAsSubResources()) {
 			schema.getProperties().remove(property);
 		}

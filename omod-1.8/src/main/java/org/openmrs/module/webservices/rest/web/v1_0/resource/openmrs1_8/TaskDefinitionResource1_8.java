@@ -114,7 +114,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			schema.addProperty("uuid", new UUIDSchema());
 			schema.addProperty("name", new StringSchema());

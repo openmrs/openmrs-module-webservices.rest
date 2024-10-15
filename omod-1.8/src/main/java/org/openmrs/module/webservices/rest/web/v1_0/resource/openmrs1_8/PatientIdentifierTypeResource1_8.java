@@ -118,7 +118,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 			        .addProperty("format", new StringSchema())

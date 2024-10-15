@@ -143,7 +143,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) ((ObjectSchema) super.getGETSchema(rep))
+		Schema<?> model = super.getGETSchema(rep)
 		        .addProperty("uuid", new UUIDSchema())
 		        .addProperty("display", new StringSchema());
 		

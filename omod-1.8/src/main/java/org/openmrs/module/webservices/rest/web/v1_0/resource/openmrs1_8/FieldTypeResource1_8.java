@@ -33,7 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldType> {
 	
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> modelImpl = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
 			        .addProperty("isSet", new BooleanSchema()._default(false));

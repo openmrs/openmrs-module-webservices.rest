@@ -38,7 +38,7 @@ import java.util.List;
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema modelImpl = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> modelImpl = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
 					.addProperty("tableName", new StringSchema())

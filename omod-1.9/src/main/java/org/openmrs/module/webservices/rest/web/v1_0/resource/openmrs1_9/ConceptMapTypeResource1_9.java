@@ -83,8 +83,8 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 	}
 	
 	@Override
-	public Schema<Object> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 			        .addProperty("isHidden", new BooleanSchema());

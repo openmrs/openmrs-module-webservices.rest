@@ -164,7 +164,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 			        .addProperty("uuid", new StringSchema())
