@@ -42,27 +42,18 @@ public class UnrelatedGenericChildResource extends GenericChildResource {
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
 		getGETCalled = true;
-		System.out.println("getGETSchema called");
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema == null) {
-			schema = new ObjectSchema();
-		}
-
-		schema.addProperty("someProperty", new StringSchema());
-		return schema;
+		return super.getGETSchema(rep);
 	}
 
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
 		getCREATECalled = true;
-		System.out.println("getCREATESchema called");
 		return super.getCREATESchema(rep);
 	}
 
 	@Override
 	public Schema<?> getUPDATESchema(Representation rep) {
 		getUPDATECalled = true;
-		System.out.println("getUPDATESchema called");
 		return super.getUPDATESchema(rep);
 	}
 }

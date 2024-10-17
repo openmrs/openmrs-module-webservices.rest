@@ -285,7 +285,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
      * Ensure that resources not directly related to the webservices.rest package are successfully
      * defined in the swagger documentation.
      */
-//    @Test
+    @Test
     public void testUnrelatedResourceDefinitions() {
         // ensure the statics are false first
         UnrelatedGenericChildResource.getGETCalled = false;
