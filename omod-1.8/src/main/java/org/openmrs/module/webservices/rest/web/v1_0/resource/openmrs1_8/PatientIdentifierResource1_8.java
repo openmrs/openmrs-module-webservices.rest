@@ -135,8 +135,8 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	}
 	
 	@Override
-	public Schema<Object> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 			        .addProperty("uuid", new StringSchema())
@@ -160,7 +160,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	@Override
 	@SuppressWarnings("unchecked")
 	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		Schema<?> model = (ObjectSchema) new ObjectSchema()
 		        .addProperty("identifier", new StringSchema())
 		        .addProperty("identifierType", new StringSchema().example("uuid"))
 		        .addProperty("location", new StringSchema().example("uuid"))

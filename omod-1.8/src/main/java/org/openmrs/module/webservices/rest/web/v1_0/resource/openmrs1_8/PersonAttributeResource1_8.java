@@ -155,7 +155,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
 			        .addProperty("display", new StringSchema())

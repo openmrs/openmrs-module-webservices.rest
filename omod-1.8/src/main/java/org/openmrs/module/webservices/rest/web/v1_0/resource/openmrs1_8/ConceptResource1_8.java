@@ -61,7 +61,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
+//import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -364,13 +364,22 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 				instance) {
 
 			@Override
+//			public int compare(ConceptName left, ConceptName right) {
+//				if (Objects.equals(left.getUuid(), right.getUuid())) {
+//					return 0;
+//				}
+//				boolean areEqual = (Objects.equals(left.getName(), right.getName())
+//						&& Objects.equals(left.getConceptNameType(), right.getConceptNameType()) && Objects.equals(
+//						left.getLocale(), right.getLocale()));
+//				return areEqual ? 0 : 1;
+//			}
 			public int compare(ConceptName left, ConceptName right) {
-				if (Objects.equals(left.getUuid(), right.getUuid())) {
+				if (safeEquals(left.getUuid(), right.getUuid())) {
 					return 0;
 				}
-				boolean areEqual = (Objects.equals(left.getName(), right.getName())
-						&& Objects.equals(left.getConceptNameType(), right.getConceptNameType()) && Objects.equals(
-						left.getLocale(), right.getLocale()));
+				boolean areEqual = safeEquals(left.getName(), right.getName())
+						&& safeEquals(left.getConceptNameType(), right.getConceptNameType())
+						&& safeEquals(left.getLocale(), right.getLocale());
 				return areEqual ? 0 : 1;
 			}
 
@@ -391,6 +400,11 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		}.set(names);
 	}
 
+
+	private static boolean safeEquals(Object a, Object b) {
+		return (a == b) || (a != null && a.equals(b));
+	}
+
 	/**
 	 * It's needed, because of ConversionException: Don't know how to handle collection class:
 	 * interface java.util.Collection
@@ -409,12 +423,24 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 				instance) {
 
 			@Override
+//			public int compare(ConceptDescription left, ConceptDescription right) {
+//				if (Objects.equals(left.getUuid(), right.getUuid())) {
+//					return 0;
+//				}
+//				boolean areEqual = (Objects.equals(left.getDescription(), right.getDescription()) && Objects.equals(
+//						left.getLocale(), right.getLocale()));
+//				return areEqual ? 0 : 1;
+//			}
 			public int compare(ConceptDescription left, ConceptDescription right) {
-				if (Objects.equals(left.getUuid(), right.getUuid())) {
+				// Compare UUIDs
+				if (safeEquals(left.getUuid(), right.getUuid())) {
 					return 0;
 				}
-				boolean areEqual = (Objects.equals(left.getDescription(), right.getDescription()) && Objects.equals(
-						left.getLocale(), right.getLocale()));
+
+				// Check if the description and locale are equal
+				boolean areEqual = safeEquals(left.getDescription(), right.getDescription())
+						&& safeEquals(left.getLocale(), right.getLocale());
+
 				return areEqual ? 0 : 1;
 			}
 

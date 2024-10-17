@@ -44,14 +44,14 @@ public class ObsResource1_11 extends ObsResource1_9 {
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		return ((ObjectSchema) super.getGETSchema(rep))
+		return super.getGETSchema(rep)
 		        .addProperty("formFieldPath", new StringSchema())
 		        .addProperty("formFieldNamespace", new StringSchema());
 	}
 	
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
-		return ((ObjectSchema) super.getCREATESchema(rep))
+		return new ObjectSchema()
 		        .addProperty("formFieldPath", new StringSchema())
 		        .addProperty("formFieldNamespace", new StringSchema());
 	}

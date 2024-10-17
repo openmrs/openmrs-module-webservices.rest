@@ -9,7 +9,9 @@
  */
 package org.openmrs.module.unrelatedtest.rest.resource;
 
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.module.unrelatedtest.UnrelatedGenericChild;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,21 +38,31 @@ public class UnrelatedGenericChildResource extends GenericChildResource {
 	 * implementation is unimportant, they just set flags so we can assert the methods were called
 	 * correctly by the reflector.
 	 */
+
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
 		getGETCalled = true;
-		return super.getGETSchema(rep);
+		System.out.println("getGETSchema called");
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema == null) {
+			schema = new ObjectSchema();
+		}
+
+		schema.addProperty("someProperty", new StringSchema());
+		return schema;
 	}
 
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
 		getCREATECalled = true;
+		System.out.println("getCREATESchema called");
 		return super.getCREATESchema(rep);
 	}
 
 	@Override
 	public Schema<?> getUPDATESchema(Representation rep) {
 		getUPDATECalled = true;
+		System.out.println("getUPDATESchema called");
 		return super.getUPDATESchema(rep);
 	}
 }
