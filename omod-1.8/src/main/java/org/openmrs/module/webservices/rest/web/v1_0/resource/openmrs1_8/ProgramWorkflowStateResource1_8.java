@@ -126,7 +126,7 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 	
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
+		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation) {
 			model
 			        .addProperty("uuid", new UUIDSchema())

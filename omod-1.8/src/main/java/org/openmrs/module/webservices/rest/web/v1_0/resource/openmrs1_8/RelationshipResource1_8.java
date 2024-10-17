@@ -187,7 +187,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
+		Schema<?> model = (ObjectSchema) new ObjectSchema()
 		        .addProperty("personA", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"))
 		        .addProperty("relationshipType", new Schema<RelationshipType>().$ref("#/components/schemas/RelationshiptypeCreate").example("uuid"))
 		        .addProperty("personB", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"))

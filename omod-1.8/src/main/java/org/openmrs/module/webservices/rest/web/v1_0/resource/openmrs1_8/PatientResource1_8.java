@@ -167,13 +167,13 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	@Override
 	public Schema<?> getCREATESchema(Representation rep) {
 		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
-				.addProperty("person", new StringSchema().example("uuid"))
+				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate").example("uuid"))
 				.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierCreate")));
 		
 		schema.setRequired(Arrays.asList("person", "identifiers"));
 
 		if (rep instanceof FullRepresentation) {
-			schema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate"));
+			schema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreateFull"));
 		}
 		return schema;
 	}
@@ -181,7 +181,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 	@Override
 	public Schema<?> getUPDATESchema(Representation rep) {
 		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
-				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"));
+				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate"));
 		
 		schema.setRequired(Collections.singletonList("person"));
 		
