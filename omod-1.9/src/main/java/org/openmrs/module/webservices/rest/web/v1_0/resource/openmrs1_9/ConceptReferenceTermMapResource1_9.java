@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import org.openmrs.ConceptMapType;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import java.util.Arrays;
 
 /**
  * {@link Resource} for {@link ConceptReferenceTermMap}, supporting standard CRUD operations
@@ -86,37 +87,39 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 		
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("termA", new RefProperty("#/definitions/ConceptreferencetermGetRef"))
-			        .property("termB", new RefProperty("#/definitions/ConceptreferencetermGetRef"))
-			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("termA", new RefProperty("#/definitions/ConceptreferencetermGet"))
-			        .property("termB", new RefProperty("#/definitions/ConceptreferencetermGet"))
-			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            if (rep instanceof DefaultRepresentation) {
+				schema
+						.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
+						.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
+						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGetRef"));
+			} else if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
+						.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
+						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGet"));
+			}
 		}
-		return model;
+		return schema;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermCreate"))
+				.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermCreate"))
+				.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeCreate"))
+				.required(Arrays.asList("termA", "termB", "conceptMapType"));
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("termA", new RefProperty("#/definitions/ConceptreferencetermCreate"))
-		        .property("termB", new RefProperty("#/definitions/ConceptreferencetermCreate"))
-		        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeCreate"))
-		        
-		        .required("termA").required("termB").required("conceptMapType");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema(); //FIXME missing props
 	}
 	
 	/**

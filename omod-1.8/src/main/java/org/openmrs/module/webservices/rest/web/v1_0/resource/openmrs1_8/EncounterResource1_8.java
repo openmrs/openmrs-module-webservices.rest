@@ -9,14 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Form;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
@@ -39,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -49,7 +52,7 @@ import java.util.Set;
  */
 @Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.8.*")
 public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -90,57 +93,56 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
+
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("encounterDatetime", new DateProperty())
-			        .property("provider", new StringProperty()) //FIXME
-			        .property("voided", new BooleanProperty());
+			schema.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("encounterDatetime", new DateTimeSchema())
+					.addProperty("provider", new StringSchema()) //FIXME
+					.addProperty("voided", new BooleanSchema());
 		}
 		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
+			schema.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef")) //FIXME
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetRef")) //FIXME
+					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGetRef")) //FIXME
+					.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef")) //FIXME
+					.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGetRef"))) //FIXME
+					.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderGetRef"))); //FIXME
 		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
+			schema.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet")) //FIXME
+					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet")) //FIXME
+					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGet")) //FIXME
+					.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGet")) //FIXME
+					.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGet"))) //FIXME
+					.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderGet"))); //FIXME
 		}
-		return modelImpl;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-		        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
-		        .property("encounterDatetime", new DateProperty())
-		        .property("location", new RefProperty("#/definitions/LocationCreate"))
-		        .property("form", new RefProperty("#/definitions/FormCreate"))
-		        .property("provider", new StringProperty())
-		        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderCreate")))
-		        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsCreate")))
-		        
-		        .required("patient").required("encounterType");
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema()
+				.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate"))
+				.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeCreate"))
+				.addProperty("encounterDatetime", new DateTimeSchema())
+				.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
+				.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormCreate"))
+				.addProperty("provider", new StringSchema())
+				.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderCreate")))
+				.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsCreate")));
+
+		schema.setRequired(Arrays.asList("patient", "encounterType"));
+
+		return schema;
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 * <strong>Should</strong> create an encounter type
@@ -148,20 +150,20 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addProperty("encounterDatetime"); // has a default value set, hence not required here
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("encounterType");
-		
+
 		description.addProperty("location");
 		description.addProperty("form");
 		description.addProperty("provider");
 		description.addProperty("orders");
 		description.addProperty("obs");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -174,7 +176,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		enc.setOrders(new LinkedHashSet<Order>());
 		return enc;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(org.openmrs.Encounter)
 	 */
@@ -182,7 +184,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public Encounter save(Encounter enc) {
 		return Context.getEncounterService().saveEncounter(enc);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -190,7 +192,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public Encounter getByUniqueId(String uuid) {
 		return Context.getEncounterService().getEncounterByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -203,7 +205,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		Context.getEncounterService().voidEncounter(enc, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -215,7 +217,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		return enc;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.Encounter,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -228,7 +230,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		Context.getEncounterService().purgeEncounter(enc);
 	}
-	
+
 	/**
 	 * @param encounter
 	 * @return encounter type and date
@@ -238,10 +240,10 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
 		ret += " ";
 		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(
-		    encounter.getEncounterDatetime());
+				encounter.getEncounterDatetime());
 		return ret;
 	}
-	
+
 	/**
 	 * @param instance
 	 * @return all non-voided top-level obs from the given encounter
@@ -250,25 +252,25 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public static Object getObsAtTopLevel(Encounter instance) {
 		return instance.getObsAtTopLevel(false);
 	}
-	
+
 	@PropertySetter("obs")
 	public static void setObs(Encounter instance, Set<Obs> obs) {
 		instance.getAllObs(true).clear();
 		for (Obs o : obs)
 			instance.addObs(o);
 	}
-	
+
 	@PropertySetter("orders")
 	public static void setOrders(Encounter instance, Set<Order> orders) {
 		for (Order o : orders)
 			instance.addOrder(o);
 	}
-	
+
 	/**
 	 * Gets encounters for the given patient (paged according to context if necessary) only if a
 	 * patient parameter exists in the request set on the {@link RequestContext} otherwise searches
 	 * for encounters that match the specified query
-	 * 
+	 *
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -277,15 +279,15 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
 			List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
 			return new NeedsPaging<Encounter>(encs, context);
 		}
-		
+
 		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(
-		    context.getParameter("q"), context);
+				context.getParameter("q"), context);
 	}
-	
+
 }

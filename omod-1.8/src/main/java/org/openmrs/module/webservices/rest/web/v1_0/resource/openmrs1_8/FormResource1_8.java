@@ -9,15 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.EncounterType;
-import org.openmrs.Field;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
@@ -97,56 +95,63 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 		
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("version", new StringProperty())
-			        .property("build", new IntegerProperty())
-			        .property("published", new BooleanProperty()._default(false))
-			        .property("retired", new BooleanProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema())
+					.addProperty("name", new StringSchema())
+					.addProperty("description", new StringSchema())
+					.addProperty("version", new StringSchema())
+					.addProperty("build", new IntegerSchema())
+					.addProperty("published", new BooleanSchema()._default(false))
+					.addProperty("retired", new BooleanSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				objectSchema
+						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef"))
+						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetRef")));
+			} else if (rep instanceof FullRepresentation) {
+				objectSchema
+						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef"))
+						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetRef")));;
+			}
 		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGetRef")));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldGet")));
+		return schema;
+	}
+
+	@Override
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		if (schema instanceof ObjectSchema) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("version", new StringSchema())
+					.addProperty("encounterType", new StringSchema())
+					.addProperty("build", new IntegerSchema())
+					.addProperty("published", new BooleanSchema()._default(false))
+					.addProperty("formFields", new ArraySchema().items(new StringSchema()))
+					.addProperty("xslt", new StringSchema())
+					.addProperty("template", new StringSchema());
+
+			objectSchema.setRequired(Arrays.asList("version"));
+
+			if (rep instanceof FullRepresentation) {
+				objectSchema
+						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeCreate"))
+						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldCreate")));
+			}
 		}
-		return modelImpl;
+		return schema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("version", new StringProperty())
-		        .property("encounterType", new StringProperty())
-		        .property("build", new IntegerProperty())
-		        .property("published", new BooleanProperty()._default(false))
-		        .property("formFields", new ArrayProperty(new StringProperty()))
-		        .property("xslt", new StringProperty())
-		        .property("template", new StringProperty())
-		        
-		        .required("version");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
-			        .property("formFields", new ArrayProperty(new RefProperty("#/definitions/FormFormfieldCreate")));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
 	
 	/**

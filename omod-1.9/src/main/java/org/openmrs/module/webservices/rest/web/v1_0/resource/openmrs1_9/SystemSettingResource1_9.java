@@ -9,8 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Collections;
 import java.util.List;
 
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
@@ -33,10 +37,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * {@link Resource} for {@link GlobalProperty}, supporting standard CRUD operations
@@ -110,47 +110,48 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 		description.removeProperty("property");
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("property", new StringProperty())
-			        .property("value", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("display", new StringProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("property", new StringSchema())
+					.addProperty("value", new StringSchema())
+					.addProperty("description", new StringSchema())
+					.addProperty("display", new StringSchema());
+
+			if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("datatypeClassname", new StringSchema())
+						.addProperty("datatypeConfig", new StringSchema())
+						.addProperty("preferredHandlerClassname", new StringSchema())
+						.addProperty("handlerConfig", new StringSchema());
+			}
 		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("datatypeClassname", new StringProperty())
-			        .property("datatypeConfig", new StringProperty())
-			        .property("preferredHandlerClassname", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
-		}
-		return model;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("property", new StringProperty())
-		        .property("description", new StringProperty())
-		        .property("datatypeClassname", new StringProperty())
-		        .property("datatypeConfig", new StringProperty())
-		        .property("preferredHandlerClassname", new StringProperty())
-		        .property("handlerConfig", new StringProperty())
-		        .property("value", new StringProperty())
-		        
-		        .required("property");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("property", new StringSchema())
+				.addProperty("description", new StringSchema())
+				.addProperty("datatypeClassname", new StringSchema())
+				.addProperty("datatypeConfig", new StringSchema())
+				.addProperty("preferredHandlerClassname", new StringSchema())
+				.addProperty("handlerConfig", new StringSchema())
+				.addProperty("value", new StringSchema())
+				.required(Collections.singletonList("property"));
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		Model model = getCREATEModel(rep);
-		model.getProperties().remove("property");
-		return model;
+	public Schema<?> getUPDATESchema(Representation rep) {
+		Schema<?> schema = getCREATESchema(rep);
+		((ObjectSchema) schema).getProperties().remove("property");
+		return schema;
 	}
 	
 	/**

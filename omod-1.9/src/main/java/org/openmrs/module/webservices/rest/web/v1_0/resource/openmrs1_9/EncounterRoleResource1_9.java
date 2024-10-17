@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.EncounterRole;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -41,12 +41,12 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 		
 		return description;
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return getCREATESchema(rep);
 	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

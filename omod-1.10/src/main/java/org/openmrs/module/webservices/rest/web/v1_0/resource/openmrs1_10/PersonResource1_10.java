@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -59,23 +59,23 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		description.addProperty("birthtime");
 		return description;
 	}
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		return addNewProperties(super.getGETModel(rep), rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		return addNewProperties(super.getGETSchema(rep), rep);
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return addNewProperties(super.getCREATEModel(rep), rep);
+	public Schema<?> getCREATESchema(Representation rep) {
+		return addNewProperties(super.getCREATESchema(rep), rep);
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return addNewProperties(super.getUPDATEModel(rep), rep);
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return addNewProperties(super.getUPDATESchema(rep), rep);
 	}
 	
-	private Model addNewProperties(Model model, Representation rep) {
-		
+	private Schema<?> addNewProperties(Schema<?> model, Representation rep) {
 		return model;
 	}
 	

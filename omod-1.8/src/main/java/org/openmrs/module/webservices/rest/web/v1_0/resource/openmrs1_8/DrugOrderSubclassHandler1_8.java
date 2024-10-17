@@ -11,13 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.Patient;
@@ -137,48 +134,53 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
+	public Schema<?> getGETSchema(Representation rep) {
 		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
-		ModelImpl orderModel = (ModelImpl) orderResource.getGETModel(rep);
-		orderModel
-		        .property("dose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("frequency", new StringProperty())
-		        .property("prn", new BooleanProperty())
-		        .property("complex", new BooleanProperty())
-		        .property("quantity", new IntegerProperty());
+		Schema<?> orderSchema = orderResource.getGETSchema(rep);
+		orderSchema
+		        .addProperty("dose", new NumberSchema().format("double"))
+		        .addProperty("units", new StringSchema())
+		        .addProperty("frequency", new StringSchema())
+		        .addProperty("prn", new BooleanSchema())
+		        .addProperty("complex", new BooleanSchema())
+		        .addProperty("quantity", new NumberSchema().format("integer"));
 		
 		if (rep instanceof DefaultRepresentation) {
-			orderModel
-			        .property("drug", new RefProperty("#/definitions/DrugGetRef"));
+			orderSchema
+			        .addProperty("drug", new Schema<Object>().$ref("#/components/schemas/DrugGetRef"));
 		} else if (rep instanceof FullRepresentation) {
-			orderModel
-			        .property("drug", new RefProperty("#/definitions/DrugGet"));
+			orderSchema
+			        .addProperty("drug", new Schema<Object>().$ref("#/components/schemas/DrugGet"));
 		}
-		return orderModel;
+		return orderSchema;
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
+	public Schema<?> getCREATESchema(Representation rep) {
 		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
-		ModelImpl orderModel = (ModelImpl) orderResource.getCREATEModel(rep);
-		orderModel
-		        .property("dose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("frequency", new StringProperty())
-		        .property("prn", new BooleanProperty())
-		        .property("complex", new BooleanProperty())
-		        .property("quantity", new IntegerProperty())
-		        .property("drug", new RefProperty("#/definitions/DrugCreate"));
+		Schema<?> orderSchema = orderResource.getCREATESchema(rep);
+		orderSchema
+		        .addProperty("dose", new NumberSchema().format("double"))
+		        .addProperty("units", new StringSchema())
+		        .addProperty("frequency", new StringSchema())
+		        .addProperty("prn", new BooleanSchema())
+		        .addProperty("complex", new BooleanSchema())
+		        .addProperty("quantity", new NumberSchema().format("integer"))
+		        .addProperty("drug", new Schema<Object>().$ref("#/components/schemas/DrugCreate"));
 		
 		// DrugOrders have a specific hardcoded value for this property
-		orderModel.getProperties().remove("orderType");
+		orderSchema.getProperties().remove("orderType");
 		
-		return orderModel;
+		return orderSchema;
 	}
-	
+
+	@Override
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return null;
+	}
+
 	/**
 	 * Handles getOrdersByPatient for {@link OrderResource1_8} when type=drugorder
 	 * 

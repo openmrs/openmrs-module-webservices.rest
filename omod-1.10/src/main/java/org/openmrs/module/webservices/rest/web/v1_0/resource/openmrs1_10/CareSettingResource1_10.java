@@ -9,15 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.CareSetting;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -71,13 +70,16 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("careSettingType", new EnumProperty(CareSetting.CareSettingType.class));
+	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+            schema
+					.addProperty("careSettingType", new Schema<CareSetting.CareSettingType>()
+							.type("string")
+							._enum(Arrays.asList(CareSetting.CareSettingType.values())));
 		}
-		return model;
+		return schema;
 	}
 	
 	/**

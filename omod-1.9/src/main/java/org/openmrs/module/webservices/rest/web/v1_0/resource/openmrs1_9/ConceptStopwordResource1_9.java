@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,6 +27,8 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.ConceptStopWord;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -83,28 +85,31 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		description.addProperty("locale");
 		return description;
 	}
-	
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("value", new StringProperty())
-			        .property("locale", new StringProperty().example("en")); //FIXME type
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            schema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("display", new StringSchema());
+
+			if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
+				schema
+						.addProperty("value", new StringSchema())
+						.addProperty("locale", new StringSchema().example("en")); //FIXME type
+			}
 		}
-		return modelImpl;
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("value", new StringProperty())
-		        .property("locale", new StringProperty().example("en"))
-		        
-		        .required("value");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("value", new StringSchema())
+				.addProperty("locale", new StringSchema().example("en"))
+				.required(Collections.singletonList("value"));
 	}
 	
 	/**

@@ -16,8 +16,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import io.swagger.v3.oas.models.media.ObjectSchema;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Person;
+import org.openmrs.Privilege;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -40,13 +43,10 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.MapSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 
 /**
  * {@link Resource} for User, supporting standard CRUD operations
@@ -136,45 +136,46 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	}
 	
 	@Override
-	public Model getGETModel(Representation rep) {
-		//FIXME check valid supportedClass
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("username", new StringProperty())
-			        .property("systemId", new StringProperty())
-			        .property("userProperties", new MapProperty()); //FIXME type
+			schema
+					.addProperty("username", new StringSchema())
+					.addProperty("systemId", new StringSchema())
+					.addProperty("userProperties", new MapSchema().additionalProperties(new StringSchema())); //FIXME type
 		}
 		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
+			schema
+					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGetRef"))
+					.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetRef")))
+					.addProperty("roles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGetRef")));
 		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
-			        .property("secretQuestion", new StringProperty());
+			schema
+					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
+					.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet")))
+					.addProperty("roles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGet")))
+					.addProperty("allRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGet")))
+					.addProperty("proficientLocales", new ArraySchema().items(new ObjectSchema()))
+					.addProperty("secretQuestion", new StringSchema());
 		}
-		return model;
+
+		return schema;
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("username", new StringProperty())
-		        .property("password", new StringProperty())
-		        .property("person", new RefProperty("#/definitions/PersonCreate"))
-		        .property("systemId", new StringProperty())
-		        .property("userProperties", new MapProperty()) //FIXME type
-		        .property("roles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")))
-		        .property("proficientLocales", new ArrayProperty(new ObjectProperty()))
-		        .property("secretQuestion", new StringProperty())
-		        
-		        .required("username").required("password").required("person");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getCREATESchema(Representation rep) {
+		ObjectSchema schema = new ObjectSchema();
+		return schema
+		        .addProperty("username", new StringSchema().required(Collections.singletonList("username")))
+		        .addProperty("password", new StringSchema().required(Collections.singletonList("password")))
+				.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonCreate").required(Collections.singletonList("person")))
+		        .addProperty("systemId", new StringSchema())
+		        .addProperty("userProperties", new MapSchema().additionalProperties(new StringSchema()))
+				.addProperty("proficientLocales", new ArraySchema().items(new ObjectSchema()))
+				.addProperty("roles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")))
+				.addProperty("secretQuestion", new StringSchema());
 	}
 	
 	/**

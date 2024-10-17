@@ -9,14 +9,19 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import java.util.Arrays;
 import java.util.Date;
 
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.IntegerSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -34,12 +39,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
@@ -129,22 +128,24 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETSchema(Representation) (Representation)
 	 */
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("diagnosis", new StringProperty())
-			        .property("condition", new StringProperty())
-			        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
-			        .property("rank", new IntegerProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("voided", new BooleanProperty());
+	@SuppressWarnings("unchecked")
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
+			Schema<?> objectSchema = (Schema<?>) schema;
+			objectSchema
+					.addProperty("uuid", new StringSchema())
+					.addProperty("diagnosis", new StringSchema())
+					.addProperty("condition", new StringSchema())
+					.addProperty("certainty", new Schema<ConditionVerificationStatus>().type("string")._enum(Arrays.asList(ConditionVerificationStatus.values())))
+					.addProperty("rank", new IntegerSchema())
+					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
+					.addProperty("voided", new BooleanSchema());
 		}
-		return model;
+		return schema;
 	}
 	
 	/**
@@ -179,21 +180,34 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		
 		return description;
 	}
-	
+
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATESchema(Representation)
 	 */
 	@Override
-	public Model getCREATEModel(Representation rep) {
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("diagnosis", new StringSchema())
+				.addProperty("encounter", new StringSchema())
+				.addProperty("condition", new StringSchema())
+				.addProperty("certainty", new StringSchema())
+				.addProperty("patient", new StringSchema().example("uuid"))
+				.addProperty("rank", new IntegerSchema());
+	}
 
-		return new ModelImpl()
-		        .property("diagnosis", new StringProperty())
-		        .property("encounter", new StringProperty())
-		        .property("condition", new StringProperty())
-		        .property("certainty", new StringProperty())
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("rank", new IntegerProperty());
-
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATESchema(Representation)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("diagnosis", new StringSchema())
+				.addProperty("condition", new StringSchema())
+				.addProperty("encounter", new StringSchema())
+				.addProperty("certainty", new Schema<ConditionVerificationStatus>().type("string")._enum(Arrays.asList(ConditionVerificationStatus.values())))
+				.addProperty("rank", new IntegerSchema())
+				.addProperty("voided", new BooleanSchema());
 	}
 	
 	/**
@@ -211,20 +225,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		description.addRequiredProperty("encounter");
 
 		return description;
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
-	 */
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("diagnosis", new StringProperty())
-		        .property("condition", new StringProperty())
-		        .property("encounter", new StringProperty())
-		        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
-		        .property("rank", new IntegerProperty())
-		        .property("voided", new BooleanProperty());
 	}
 
 	@Override
