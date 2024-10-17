@@ -43,7 +43,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleFactory;
 import org.openmrs.module.webservices.docs.SearchHandlerDoc;
-import org.openmrs.module.webservices.docs.SearchQueryDoc;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -159,7 +158,7 @@ public class SwaggerSpecificationCreator {
 	private void addDefaultDefinitions() {
 		// schema of the default response
 		// received from fetchAll and search operations
-		Components components = new Components();
+		Components components = openAPI.getComponents();
 		components.addSchemas("FetchAll", new ObjectSchema()
 				.addProperty("results", new ArraySchema()
 						.items(new ObjectSchema()
@@ -169,7 +168,7 @@ public class SwaggerSpecificationCreator {
 										.items(new ObjectSchema()
 												.addProperty("rel", new StringSchema().example("self"))
 												.addProperty("uri", new StringSchema().format("uri")))))));
-		
+
 		openAPI.setComponents(components);
 	}
 
@@ -832,51 +831,6 @@ public class SwaggerSpecificationCreator {
 		log.debug("Finished addPaths method. Total paths: " + (openAPI.getPaths() != null ? openAPI.getPaths().size() : 0));
 	}
 
-	private void addSubclassOperations() {
-		// FIXME: this needs to be improved a lot
-		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
-		for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
-
-			if (!(resourceHandler instanceof DelegatingSubclassHandler))
-				continue;
-
-			Class<?> resourceClass = ((DelegatingSubclassHandler<?, ?>) resourceHandler).getSuperclass();
-			String resourceName = resourceClass.getSimpleName().toLowerCase();
-
-			// 1. add non-optional enum property to model
-			PathItem path = openAPI.getPaths().get("/" + resourceName);
-			if (path == null)
-				continue;
-
-			// FIXME: implement other operations when required
-			io.swagger.v3.oas.models.Operation post = path.getPost();
-			if (post == null)
-				continue;
-
-			Schema<?> definition = openAPI.getComponents().getSchemas().get(StringUtils.capitalize(resourceName) + "Create");
-			if (definition == null) {
-				continue;
-			}
-
-			Map<String, Schema> properties;
-			if (definition instanceof ObjectSchema) {
-				properties = definition.getProperties();
-			} else {
-				properties = definition.getProperties();
-			}
-
-			// 2. merge subclass properties into definition
-			for (Map.Entry<String, Schema> prop : resourceHandler.getGETSchema(Representation.FULL).getProperties().entrySet()) {
-				if (properties.get(prop.getKey()) == null) {
-					properties.put(prop.getKey(), prop.getValue());
-				}
-			}
-
-			// 3. update description
-			post.setDescription("Certain properties may be required depending on type");
-		}
-	}
-
 	private String createJSON() {
 		return Json.pretty(openAPI);
 	}
@@ -990,34 +944,73 @@ public class SwaggerSpecificationCreator {
 		return ret.toString();
 	}
 
+	/**
+	 * Creates and adds schema definitions to the OpenAPI components for a given resource and operation.
+	 *
+	 * @param operationEnum The type of operation (GET, CREATE, UPDATE)
+	 * @param resourceName The name of the resource
+	 * @param resourceParentName The name of the parent resource (if applicable, can be null)
+	 * @param resourceHandler The DelegatingResourceHandler for the resource
+	 *
+	 * @throws IllegalArgumentException if operationEnum, resourceName, or resourceHandler is null
+	 * <p>
+	 * This method performs the following tasks:
+	 * 1. Generates a schema name based on the resource and operation type
+	 * 2. Retrieves or creates the Components object from the OpenAPI specification
+	 * 3. Based on the operation type (Get, Create, or Update):
+	 *    - Retrieves the appropriate schema(s) from the resourceHandler
+	 *    - Adds the schema(s) to the Components object with the generated name
+	 * <p>
+	 * For GET operations, it adds schemas for DEFAULT, REF, and FULL representations.
+	 * For CREATE operations, it adds schemas for DEFAULT and FULL representations.
+	 * For UPDATE operations, it adds a schema for the DEFAULT representation.
+	 *
+	 * The method ensures that only non-null schemas are added to the components.
+	 */
 	private void createDefinition(OperationEnum operationEnum, String resourceName, String resourceParentName,
 								  DelegatingResourceHandler<?> resourceHandler) {
+		if (operationEnum == null || resourceName == null || resourceHandler == null) {
+			throw new IllegalArgumentException("Operation, resource name, and resource handler must not be null");
+		}
 
 		String definitionName = getSchemaName(resourceName, resourceParentName, operationEnum);
-		Schema<?> model = null;
-		Schema<?> modelRef = null;
-		Schema<?> modelFull = null;
+		Components components = openAPI.getComponents();
+		if (components == null) {
+			components = new Components();
+			openAPI.setComponents(components);
+		}
 
 		if (definitionName.endsWith("Get")) {
-			model = resourceHandler.getGETSchema(Representation.DEFAULT);
-			modelRef = resourceHandler.getGETSchema(Representation.REF);
-			modelFull = resourceHandler.getGETSchema(Representation.FULL);
+			Schema<?> getSchema = resourceHandler.getGETSchema(Representation.DEFAULT);
+			Schema<?> getRefSchema = resourceHandler.getGETSchema(Representation.REF);
+			Schema<?> getFullSchema = resourceHandler.getGETSchema(Representation.FULL);
+
+			if (getSchema != null) {
+				components.addSchemas(definitionName, getSchema);
+			}
+			if (getRefSchema != null) {
+				components.addSchemas(definitionName + "Ref", getRefSchema);
+			}
+			if (getFullSchema != null) {
+				components.addSchemas(definitionName + "Full", getFullSchema);
+			}
 		} else if (definitionName.endsWith("Create")) {
-			model = resourceHandler.getCREATESchema(Representation.DEFAULT);
-			modelFull = resourceHandler.getCREATESchema(Representation.FULL);
+			Schema<?> createSchema = resourceHandler.getCREATESchema(Representation.DEFAULT);
+			Schema<?> createFullSchema = resourceHandler.getCREATESchema(Representation.FULL);
+
+			if (createSchema != null) {
+				components.addSchemas(definitionName, createSchema);
+			}
+			if (createFullSchema != null) {
+				components.addSchemas(definitionName + "Full", createFullSchema);
+			}
 		} else if (definitionName.endsWith("Update")) {
-			model = resourceHandler.getUPDATESchema(Representation.DEFAULT);
+			Schema<?> updateSchema = resourceHandler.getUPDATESchema(Representation.DEFAULT);
+			if (updateSchema != null) {
+				components.addSchemas(definitionName, updateSchema);
+			}
 		}
 
-		if (model != null) {
-			openAPI.getComponents().addSchemas(definitionName, model);
-		}
-		if (modelRef != null) {
-			openAPI.getComponents().addSchemas(definitionName + "Ref", modelRef);
-		}
-		if (modelFull != null) {
-			openAPI.getComponents().addSchemas(definitionName + "Full", modelFull);
-		}
 	}
 
 	/**
