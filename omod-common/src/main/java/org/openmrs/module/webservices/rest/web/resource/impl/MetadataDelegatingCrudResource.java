@@ -176,31 +176,6 @@ public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> 
 	}
 	
 	/**
-	 * This code is largely copied from the UI Framework:
-	 * org.openmrs.ui.framework.FormatterImpl#format(org.openmrs.OpenmrsMetadata, java.util.Locale)
-	 * 
-	 * @param shortClassName
-	 * @param uuid
-	 * @return localization for the given metadata, from message source, in the authenticated locale
-	 */
-	private String getLocalization(String shortClassName, String uuid) {
-		// in case this is a hibernate proxy, strip off anything after an underscore
-		// ie: EncounterType_$$_javassist_26 needs to be converted to EncounterType
-		int underscoreIndex = shortClassName.indexOf("_$");
-		if (underscoreIndex > 0) {
-			shortClassName = shortClassName.substring(0, underscoreIndex);
-		}
-		
-		String code = "ui.i18n." + shortClassName + ".name." + uuid;
-		String localization = Context.getMessageSourceService().getMessage(code);
-		if (localization == null || localization.equals(code)) {
-			return null;
-		} else {
-			return localization;
-		}
-	}
-	
-	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override

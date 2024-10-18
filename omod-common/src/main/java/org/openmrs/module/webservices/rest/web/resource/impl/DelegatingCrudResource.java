@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -291,5 +292,30 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	public boolean isVoidable() {
 		return false;
+	}
+
+	/**
+	 * This code is largely copied from the UI Framework:
+	 * org.openmrs.ui.framework.FormatterImpl#format(org.openmrs.OpenmrsMetadata, java.util.Locale)
+	 *
+	 * @param shortClassName
+	 * @param uuid
+	 * @return localization for the given metadata, from message source, in the authenticated locale
+	 */
+    protected String getLocalization(String shortClassName, String uuid) {
+		// in case this is a hibernate proxy, strip off anything after an underscore
+		// ie: EncounterType_$$_javassist_26 needs to be converted to EncounterType
+		int underscoreIndex = shortClassName.indexOf("_$");
+		if (underscoreIndex > 0) {
+			shortClassName = shortClassName.substring(0, underscoreIndex);
+		}
+
+		String code = "ui.i18n." + shortClassName + ".name." + uuid;
+		String localization = Context.getMessageSourceService().getMessage(code);
+		if (localization == null || localization.equals(code)) {
+			return null;
+		} else {
+			return localization;
+		}
 	}
 }
