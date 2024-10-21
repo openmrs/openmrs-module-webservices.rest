@@ -12,6 +12,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ServiceContext;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
@@ -140,5 +144,51 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		catch (ConversionException e) {
 			Assert.assertFalse(e.getCause().getCause().getMessage().contains("Cycles in children are not supported."));
 		}
+	}
+
+	@Test
+	public void testGetDisplayName() throws Exception {
+		Concept concept = new Concept();
+		ConceptName fullySpecifiedName = new ConceptName("some name", new Locale("en", "US"));
+		fullySpecifiedName.setConceptNameId(1);
+		fullySpecifiedName.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+		fullySpecifiedName.setLocalePreferred(false);
+		concept.addName(fullySpecifiedName);
+
+		ConceptResource1_9 resource = new ConceptResource1_9();
+		String result = resource.getDisplayString(concept);
+
+		Assert.assertEquals("some name", result);
+	}
+
+	@Test
+	public void testGetDisplayNameForConceptWithNoName() throws Exception {
+		Concept concept = new Concept(1);
+		ConceptResource1_9 resource = new ConceptResource1_9();
+		String result = resource.getDisplayString(concept);
+		Assert.assertEquals("1", result);  // this will need to updated to "Concept #1" when we start building against more recent versions of OpenMRS Core
+	}
+
+	@Test
+	public void testGetDisplayNameWithLocalizationOverride() throws Exception {
+
+		String UUID = "f0c5b621-3e5e-4f0d-8b9e-1d3e2b2c1b2d";
+
+		Concept concept = new Concept();
+		concept.setUuid(UUID);
+		MessageSourceService messageSourceService = mock(MessageSourceService.class);
+		when(messageSourceService.getMessage("ui.i18n.Concept.name." + UUID)).thenReturn("Overridden by message source");
+		ServiceContext.getInstance().setMessageSourceService(messageSourceService);
+
+		ConceptName fullySpecifiedName = new ConceptName("some name", new Locale("en", "US"));
+		fullySpecifiedName.setConceptNameId(1);
+		fullySpecifiedName.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+		fullySpecifiedName.setLocalePreferred(false);
+		concept.addName(fullySpecifiedName);
+
+		ConceptResource1_9 resource = new ConceptResource1_9();
+		String result = resource.getDisplayString(concept);
+
+		Assert.assertEquals("Overridden by message source", result);
 	}
 }

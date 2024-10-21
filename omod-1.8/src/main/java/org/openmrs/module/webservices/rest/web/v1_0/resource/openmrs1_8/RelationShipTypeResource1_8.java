@@ -220,7 +220,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		}
 	}
 	
-	private String getLocalization(String uuid, String type) {
+	protected String getLocalization(String uuid, String type) {
 		String code = "ui.i18n.RelationshipType" + "." + type + "." + uuid;
 		String localization = Context.getMessageSourceService().getMessage(code);
 		if (localization == null || localization.equals(code)) {
