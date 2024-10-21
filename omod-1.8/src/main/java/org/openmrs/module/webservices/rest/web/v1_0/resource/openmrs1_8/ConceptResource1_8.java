@@ -468,7 +468,11 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			return localization;
 		} else {
 			ConceptName cn = instance.getName();
-			return cn == null ? null : cn.getName();
+			if (cn != null) {
+				return cn.getName();
+			} else {
+				return instance.toString();
+			}
 		}
 	}
 	
