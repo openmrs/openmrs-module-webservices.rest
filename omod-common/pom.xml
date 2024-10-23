@@ -43,10 +43,6 @@
 					<groupId>javax.validation</groupId>
 					<artifactId>validation-api</artifactId>
 				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.datatype</groupId>
-					<artifactId>jackson-datatype-jsr310</artifactId>
-				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
