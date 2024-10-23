@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -100,23 +101,28 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 	}
 	
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))
-		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"));
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = super.getCREATESchema(rep);
+		if (schema != null) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("states", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ProgramenrollmentStateCreate")))
+					.addProperty("outcome", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"));
+		}
+		return schema;
 	}
 	
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl() //FIXME use super.
-		        .property("dateEnrolled", new DateProperty())
-		        .property("states", new ArrayProperty(new RefProperty("#/definitions/ProgramenrollmentStateCreate")))
-		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"))
-		        .property("location", new RefProperty("#/definitions/LocationCreate"))
-		        .property("voided", new BooleanProperty())
-		        .property("dateCompleted", new DateProperty())
-		        
-		        .required("dateEnrolled");
+	@SuppressWarnings("unchecked")
+	public Schema<?> getUPDATESchema(Representation rep) {
+		return super.getUPDATESchema(rep)
+				.addProperty("dateEnrolled", new DateTimeSchema())
+				.addProperty("states", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ProgramenrollmentStateCreate")))
+				.addProperty("outcome", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
+				.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
+				.addProperty("voided", new BooleanSchema())
+				.addProperty("dateCompleted", new DateTimeSchema())
+				.required(Collections.singletonList("dateEnrolled"));
 		
 	}
 	

@@ -9,11 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptProposal;
 import org.openmrs.User;
@@ -113,46 +112,49 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 	}
 
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
-			model.property("originalText", new StringProperty());
-			model.property("finalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("comments", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("creator", new RefProperty("#/definitions/UserGetRef"));
-			model.property("dateCreated", new DateProperty());
-		} else if (rep instanceof FullRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGet"));
-			model.property("obsConcept", new RefProperty("#/definitions/ConceptGet"));
-			model.property("obs", new RefProperty("#/definitions/ObsGet"));
-			model.property("mappedConcept", new RefProperty("#/definitions/ConceptGet"));
-			model.property("originalText", new StringProperty());
-			model.property("finalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("comments", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("creator", new RefProperty("#/definitions/UserGet"));
-			model.property("dateCreated", new DateProperty());
-			model.property("changedBy", new RefProperty("#/definitions/UserGet"));
-			model.property("dateChanged", new DateProperty());
-		} else if (rep instanceof RefRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
-			model.property("originalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("changedBy", new RefProperty("#/definitions/UserGetRef"));
-			model.property("dateChanged", new DateProperty());
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema instanceof Schema) {
+            schema
+					.addProperty("uuid", new StringSchema().example("uuid"))
+					.addProperty("display", new StringSchema());
+
+			if (rep instanceof DefaultRepresentation) {
+				schema
+						.addProperty("encounter", new Schema<>().$ref("#/components/schemas/EncounterGetRef"))
+						.addProperty("originalText", new StringSchema())
+						.addProperty("finalText", new StringSchema())
+						.addProperty("state", new StringSchema())
+						.addProperty("comments", new StringSchema())
+						.addProperty("occurrences", new StringSchema())
+						.addProperty("creator", new Schema<>().$ref("#/components/schemas/UserGetRef"))
+						.addProperty("dateCreated", new DateTimeSchema());
+			} else if (rep instanceof FullRepresentation) {
+				schema
+						.addProperty("encounter", new Schema<>().$ref("#/components/schemas/EncounterGet"))
+						.addProperty("obsConcept", new Schema<>().$ref("#/components/schemas/ConceptGet"))
+						.addProperty("obs", new Schema<>().$ref("#/components/schemas/ObsGet"))
+						.addProperty("mappedConcept", new Schema<>().$ref("#/components/schemas/ConceptGet"))
+						.addProperty("originalText", new StringSchema())
+						.addProperty("finalText", new StringSchema())
+						.addProperty("state", new StringSchema())
+						.addProperty("comments", new StringSchema())
+						.addProperty("occurrences", new StringSchema())
+						.addProperty("creator", new Schema<>().$ref("#/components/schemas/UserGet"))
+						.addProperty("dateCreated", new DateTimeSchema())
+						.addProperty("changedBy", new Schema<>().$ref("#/components/schemas/UserGet"))
+						.addProperty("dateChanged", new DateTimeSchema());
+			} else if (rep instanceof RefRepresentation) {
+				schema
+						.addProperty("encounter", new Schema<>().$ref("#/components/schemas/EncounterGetRef"))
+						.addProperty("originalText", new StringSchema())
+						.addProperty("state", new StringSchema())
+						.addProperty("occurrences", new StringSchema())
+						.addProperty("changedBy", new Schema<>().$ref("#/components/schemas/UserGetRef"))
+						.addProperty("dateChanged", new DateTimeSchema());
+			}
 		}
-		return model;
+		return schema;
 	}
 
 	@PropertyGetter("occurrences")
@@ -177,12 +179,27 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 	}
 
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-				.property("originalText", new StringProperty())
-				.property("mappedConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-				.property("obsConcept", new RefProperty("#/definitions/ConceptCreate"));
+	public Schema<?> getCREATESchema(Representation rep) {
+		return new ObjectSchema()
+				.addProperty("originalText", new StringSchema())
+				.addProperty("mappedConcept", new Schema<>().$ref("#/components/schemas/ConceptCreate"))
+				.addProperty("encounter", new Schema<>().$ref("#/components/schemas/EncounterCreate"))
+				.addProperty("obsConcept", new Schema<>().$ref("#/components/schemas/ConceptCreate"));
+	}
+
+	@Override
+	public Schema<?> getUPDATESchema(Representation rep) {
+		Schema<?> schema = super.getUPDATESchema(rep);
+		if (schema instanceof ObjectSchema) {
+			ObjectSchema objectSchema = (ObjectSchema) schema;
+			objectSchema
+					.addProperty("finalText", new StringSchema())
+					.addProperty("mappedConcept", new Schema<>().$ref("#/components/schemas/ConceptCreate"))
+					.addProperty("encounter", new Schema<>().$ref("#/components/schemas/EncounterCreate"))
+					.addProperty("obsConcept", new Schema<>().$ref("#/components/schemas/ConceptCreate"))
+					.addProperty("comments", new StringSchema());
+		}
+		return schema;
 	}
 
 	@Override
@@ -194,17 +211,6 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		description.addProperty("mappedConcept");
 		description.addProperty("comments");
 		return description;
-	}
-
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getUPDATEModel(rep);
-		return model
-				.property("finalText", new StringProperty())
-				.property("mappedConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-				.property("obsConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("comments", new StringProperty());
 	}
 
 	@Override

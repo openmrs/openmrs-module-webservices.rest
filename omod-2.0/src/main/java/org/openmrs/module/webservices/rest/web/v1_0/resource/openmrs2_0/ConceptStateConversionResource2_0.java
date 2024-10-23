@@ -9,10 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
+import io.swagger.v3.oas.models.media.ArraySchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.ConceptStateConversion;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -88,47 +87,34 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 	}
 
 	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowGetRef")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGetRef")));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowGetRef")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGetRef")));
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowGetRef")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGetRef")));
+	public Schema<?> getGETSchema(Representation rep) {
+		Schema<?> schema = super.getGETSchema(rep);
+		if (schema != null) {
+            if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation || rep instanceof RefRepresentation) {
+				schema
+						.addProperty("concept", new Schema<>().$ref("#/components/schemas/ConceptGetRef"))
+						.addProperty("programWorkflow", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowGetRef")))
+						.addProperty("programWorkflowState", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowStateGetRef")));
+			}
 		}
-		return model;
+		return schema;
 	}
 
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl();
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptCreate"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreate")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreate")));
+	public Schema<?> getCREATESchema(Representation rep) {
+		Schema<?> schema = new ObjectSchema();
+		if (rep instanceof DefaultRepresentation || rep instanceof RefRepresentation) {
+			schema
+					.addProperty("concept", new Schema<>().$ref("#/components/schemas/ConceptCreate"))
+					.addProperty("programWorkflow", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowCreate")))
+					.addProperty("programWorkflowState", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowStateCreate")));
 		} else if (rep instanceof FullRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptCreateFull"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreateFull")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateGet")));
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.property("concept", new RefProperty("#/definitions/ConceptCreate"))
-					.property("programWorkflow", new ArrayProperty(new RefProperty("#/definitions/WorkflowCreate")))
-					.property("programWorkflowState", new ArrayProperty(new RefProperty("#/definitions/WorkflowStateCreate")));
+			schema
+					.addProperty("concept", new Schema<>().$ref("#/components/schemas/ConceptCreateFull"))
+					.addProperty("programWorkflow", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowCreateFull")))
+					.addProperty("programWorkflowState", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/WorkflowStateGet")));
 		}
-		return model;
+		return schema;
 	}
 
 	@Override
