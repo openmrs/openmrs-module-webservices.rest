@@ -46,7 +46,7 @@
 				<exclusion>
 					<groupId>com.fasterxml.jackson.datatype</groupId>
 					<artifactId>jackson-datatype-jsr310</artifactId>
-				</exclusion
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
