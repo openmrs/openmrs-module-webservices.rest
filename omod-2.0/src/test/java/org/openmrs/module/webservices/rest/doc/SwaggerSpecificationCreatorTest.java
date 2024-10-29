@@ -17,7 +17,6 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.dbunit.database.DatabaseConnection;
@@ -28,15 +27,10 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResource;
+import org.openmrs.module.webservices.docs.swagger.SwaggerConstants;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.WriterAppender;
-import java.io.StringWriter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -48,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
@@ -132,7 +125,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
         Context.getService(RestService.class).initialize();
 
         Context.getAdministrationService().saveGlobalProperty(
-                new GlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
+                new GlobalProperty(SwaggerConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
 
         // ensure GP is written to database before we count the rows
         Context.flushSession();

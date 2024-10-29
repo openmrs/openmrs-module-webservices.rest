@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
-import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
@@ -77,11 +76,13 @@ public class SwaggerSpecificationCreator {
 
 	private static OpenAPI openAPI;
 
+	private static String cachedJson;
+
 	private String host;
 
 	private String basePath;
 
-	private List<SwaggerDefinition.Scheme> schemes;
+	private List<Scheme> schemes;
 
 	private String baseUrl;
 
@@ -114,9 +115,9 @@ public class SwaggerSpecificationCreator {
 		return this;
 	}
 
-	public SwaggerSpecificationCreator scheme(SwaggerDefinition.Scheme scheme) {
+	public SwaggerSpecificationCreator scheme(Scheme scheme) {
 		if (schemes == null) {
-			this.schemes = new ArrayList<SwaggerDefinition.Scheme>();
+			this.schemes = new ArrayList<Scheme>();
 		}
 		if (!schemes.contains(scheme)) {
 			this.schemes.add(scheme);
@@ -124,12 +125,27 @@ public class SwaggerSpecificationCreator {
 		return this;
 	}
 
+	@io.swagger.v3.oas.annotations.media.Schema (description = "Scheme type for API communication")
+	public enum Scheme {
+		@io.swagger.v3.oas.annotations.media.Schema (description = "Hypertext Transfer Protocol")
+		HTTP,
+
+		@io.swagger.v3.oas.annotations.media.Schema (description = "Hypertext Transfer Protocol Secure")
+		HTTPS,
+
+		@io.swagger.v3.oas.annotations.media.Schema (description = "WebSocket Protocol")
+		WS,
+
+		@io.swagger.v3.oas.annotations.media.Schema(description = "WebSocket Secure Protocol")
+		WSS
+	}
+
 	/**
 	 * Regenerate the swagger spec from scratch
 	 */
 	private void BuildJSON() {
 		log.info("Initiating Swagger specification creation");
-		toggleLogs(RestConstants.SWAGGER_LOGS_OFF);
+		toggleLogs(SwaggerConstants.SWAGGER_LOGS_OFF);
 		try {
 			initOpenAPI();
 			addPaths();
@@ -140,19 +156,20 @@ public class SwaggerSpecificationCreator {
 			log.error("Error while creating Swagger specification", e);
 		}
 		finally {
-			toggleLogs(RestConstants.SWAGGER_LOGS_ON);
+			toggleLogs(SwaggerConstants.SWAGGER_LOGS_ON);
 		}
 	}
 
 	public String getJSON() {
-		if (isCached()) {
+		if (isCached() && cachedJson != null) {
 			log.info("Returning a cached copy of Swagger specification");
-			initOpenAPI();
-		} else {
-			openAPI = new OpenAPI();
-			BuildJSON();
+			return cachedJson;
 		}
-		return createJSON();
+
+		openAPI = new OpenAPI();
+		BuildJSON();
+		cachedJson = createJSON();  // Cache the JSON string
+		return cachedJson;
 	}
 
 	private void addDefaultDefinitions() {
@@ -173,9 +190,9 @@ public class SwaggerSpecificationCreator {
 	}
 
 	private void toggleLogs(boolean targetState) {
-		if (Context.getAdministrationService().getGlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME)
+		if (Context.getAdministrationService().getGlobalProperty(SwaggerConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME)
 				.equals("true")) {
-			if (targetState == RestConstants.SWAGGER_LOGS_OFF) {
+			if (targetState == SwaggerConstants.SWAGGER_LOGS_OFF) {
 				// turn off the log4j loggers
 				List<Logger> loggers = Collections.<Logger> list(LogManager.getCurrentLoggers());
 				loggers.add(LogManager.getRootLogger());
@@ -200,7 +217,7 @@ public class SwaggerSpecificationCreator {
 						// noop
 					}
 				}));
-			} else if (targetState == RestConstants.SWAGGER_LOGS_ON) {
+			} else if (targetState == SwaggerConstants.SWAGGER_LOGS_ON) {
 				List<Logger> loggers = Collections.<Logger> list(LogManager.getCurrentLoggers());
 				loggers.add(LogManager.getRootLogger());
 				for (Logger logger : loggers) {
@@ -222,6 +239,7 @@ public class SwaggerSpecificationCreator {
 				.license(new License().name("MPL-2.0 w/ HD").url("http://openmrs.org/license"));
 
 		openAPI = new OpenAPI()
+				.openapi("3.0.0")
 				.info(info)
 				.addServersItem(new Server().url(this.host + this.basePath))
 				.components(new Components().addSecuritySchemes("basic_auth", new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
@@ -253,7 +271,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
 					}
 
 					break;
@@ -264,7 +282,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
 					}
 
 					break;
@@ -275,7 +293,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID);
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID);
 					}
 
 					break;
@@ -320,7 +338,7 @@ public class SwaggerSpecificationCreator {
 					} else {
 						try {
 							// to avoid saving data to the database, we pass a null SimpleObject
-							method.invoke(resourceHandler, null, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
+							method.invoke(resourceHandler, null, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
 									new RequestContext());
 						}
 						catch (InvocationTargetException e) {
@@ -344,7 +362,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
 								buildPOSTUpdateSimpleObject(resourceHandler), new RequestContext());
 					}
 
@@ -356,8 +374,8 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
-								RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, buildPOSTUpdateSimpleObject(resourceHandler),
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
+								SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, buildPOSTUpdateSimpleObject(resourceHandler),
 								new RequestContext());
 					}
 
@@ -369,7 +387,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, "",
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, "",
 								new RequestContext());
 					}
 
@@ -381,8 +399,8 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
-								RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, "", new RequestContext());
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
+								SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, "", new RequestContext());
 					}
 					break;
 				case purge:
@@ -392,7 +410,7 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
 					}
 
 					break;
@@ -403,8 +421,8 @@ public class SwaggerSpecificationCreator {
 					if (method == null) {
 						return false;
 					} else {
-						method.invoke(resourceHandler, RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
-								RestConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
+						method.invoke(resourceHandler, SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID,
+								SwaggerConstants.SWAGGER_IMPOSSIBLE_UNIQUE_ID, new RequestContext());
 					}
 			}
 			return true;
@@ -1234,11 +1252,14 @@ public class SwaggerSpecificationCreator {
 	 * @return true if and only if openAPI is not null, and its paths are also set.
 	 */
 	public static boolean isCached() {
-		return openAPI != null && openAPI.getPaths() != null;
+		return openAPI != null &&
+				openAPI.getPaths() != null &&
+				!openAPI.getPaths().isEmpty();
 	}
 
 	public static void clearCache() {
 		openAPI = null;
+		cachedJson = null;
 	}
 
 }
