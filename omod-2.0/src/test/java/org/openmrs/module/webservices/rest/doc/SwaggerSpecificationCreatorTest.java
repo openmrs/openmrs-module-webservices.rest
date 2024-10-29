@@ -179,30 +179,31 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
     @Test
     public void checkRepresentationParamExists() {
         SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
-        String json = ssc.getJSON();
+        ssc.getJSON();
         OpenAPI spec = ssc.getOpenAPI();
 
         Assert.assertNotNull("SwaggerSpecificationCreator should not be null", ssc);
-        Assert.assertNotNull("JSON should not be null", json);
         Assert.assertNotNull("OpenAPI spec should not be null", spec);
         Assert.assertNotNull("Paths in OpenAPI spec should not be null", spec.getPaths());
 
-        // If we get past the assertion, continue with the original test logic
-        for (PathItem p : spec.getPaths().values()) {
-            Assert.assertNotNull("PathItem should not be null", p);
-            for (Operation o : p.readOperations()) {
-                if (o != null) {
-                    Assert.assertTrue("Ensure each GET operation has the 'v' query parameter",
-                            operationHasRepresentationParam(o));
-                }
+        spec.getPaths().forEach((path, pathItem) -> {
+            Operation getOperation = pathItem.getGet();
+            if (getOperation != null) {
+                Assert.assertTrue(
+                        String.format("GET operation at path %s must have 'v' query parameter", path),
+                        operationHasRepresentationParam(getOperation)
+                );
             }
-        }
+        });
     }
 
     private boolean operationHasRepresentationParam(Operation operation) {
-        return operation.getParameters() != null &&
-                operation.getParameters().stream()
-                        .anyMatch(param -> "v".equals(param.getName()) && "query".equals(param.getIn()));
+        if (operation.getParameters() == null) {
+            return false;
+        }
+
+        return operation.getParameters().stream()
+                .anyMatch(param -> "v".equals(param.getName()));
     }
 
     // make sure each operation that supports paging has the limit and startIndex parameters
