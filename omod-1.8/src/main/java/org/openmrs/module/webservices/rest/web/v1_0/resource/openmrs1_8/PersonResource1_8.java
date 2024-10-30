@@ -21,6 +21,7 @@ import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -146,7 +147,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
 			ObjectSchema objectSchema = (ObjectSchema) schema;
 			objectSchema
-					.addProperty("uuid", new StringSchema())
+					.addProperty("uuid", new UUIDSchema())
 					.addProperty("display", new StringSchema())
 					.addProperty("gender", new StringSchema()._enum(Arrays.asList("M", "F")))
 					.addProperty("age", new IntegerSchema())

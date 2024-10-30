@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -149,7 +150,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
 			ObjectSchema objectSchema = (ObjectSchema) schema;
 			objectSchema
-					.addProperty("uuid", new StringSchema())
+					.addProperty("uuid", new UUIDSchema())
 					.addProperty("display", new StringSchema())
 					.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierGetRef")))
 					.addProperty("preferred", new BooleanSchema()._default(false))

@@ -16,6 +16,7 @@ import java.util.List;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
@@ -72,13 +73,13 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		if (rep instanceof DefaultRepresentation) {
 			schema
 			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGetRef"))
 			        .addProperty("sourceCode", new StringSchema());
 		} else if (rep instanceof FullRepresentation) {
 			schema
 			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGet"))
 			        .addProperty("sourceCode", new StringSchema())
 			        .addProperty("comment", new StringSchema());

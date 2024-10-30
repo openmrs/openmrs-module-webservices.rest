@@ -13,6 +13,7 @@ import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -112,7 +113,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
 			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("givenName", new StringSchema())
 			        .addProperty("middleName", new StringSchema())
 			        .addProperty("familyName", new StringSchema())

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.DateTimeSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
@@ -83,11 +84,11 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof RefRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema());
 		} else if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("locale", new StringSchema().example("en"))

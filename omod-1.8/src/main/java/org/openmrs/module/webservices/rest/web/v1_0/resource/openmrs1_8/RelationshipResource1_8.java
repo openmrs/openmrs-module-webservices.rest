@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
@@ -167,7 +168,7 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("voided", new BooleanSchema());
 		}

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -99,7 +100,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("description", new StringSchema())

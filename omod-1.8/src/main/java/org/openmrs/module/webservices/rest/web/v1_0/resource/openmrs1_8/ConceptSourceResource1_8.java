@@ -13,6 +13,7 @@ import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -76,7 +77,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("description", new StringSchema())

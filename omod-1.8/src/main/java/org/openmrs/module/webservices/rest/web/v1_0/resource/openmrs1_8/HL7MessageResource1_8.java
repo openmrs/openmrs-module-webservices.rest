@@ -13,6 +13,7 @@ import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -103,12 +104,12 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 			ObjectSchema objectSchema = (ObjectSchema) schema;
 			if (rep instanceof DefaultRepresentation) {
 				objectSchema
-						.addProperty("uuid", new StringSchema())
+						.addProperty("uuid", new UUIDSchema())
 						.addProperty("display", new StringSchema())
 						.addProperty("messageState", new IntegerSchema());
 			} else if (rep instanceof FullRepresentation) {
 				objectSchema
-						.addProperty("uuid", new StringSchema())
+						.addProperty("uuid", new UUIDSchema())
 						.addProperty("display", new StringSchema())
 						.addProperty("source", new Schema<HL7Source>().$ref("#/components/schemas/Hl7sourceGet"))
 						.addProperty("sourceKey", new StringSchema())

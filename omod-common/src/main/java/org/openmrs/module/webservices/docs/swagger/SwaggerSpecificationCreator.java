@@ -189,6 +189,7 @@ public class SwaggerSpecificationCreator {
 		openAPI.setComponents(components);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void toggleLogs(boolean targetState) {
 		if (Context.getAdministrationService().getGlobalProperty(SwaggerConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME)
 				.equals("true")) {

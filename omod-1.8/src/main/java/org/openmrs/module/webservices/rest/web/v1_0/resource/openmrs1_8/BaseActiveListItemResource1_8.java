@@ -15,6 +15,7 @@ import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.activelist.ActiveListItem;
@@ -39,7 +40,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 	@Override
 	public Schema<?> getGETSchema(Representation rep) {
 		Schema<?> schema = new ObjectSchema()
-				.addProperty("uuid", new StringSchema())
+				.addProperty("uuid", new UUIDSchema())
 				.addProperty("display", new StringSchema())
 				.addProperty("startDate", new DateTimeSchema())
 				.addProperty("endDate", new DateTimeSchema())

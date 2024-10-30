@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflow;
@@ -177,7 +178,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("startDate", new DateSchema())
 			        .addProperty("endDate", new DateSchema())
 			        .addProperty("voided", new BooleanSchema());

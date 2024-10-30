@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -219,7 +220,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		Schema<?> schema = new ObjectSchema();
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new Schema<Object>().$ref("#/components/schemas/ConceptNameGet"))
 			        .addProperty("datatype", new Schema<Object>().$ref("#/components/schemas/ConceptdatatypeGetRef"))

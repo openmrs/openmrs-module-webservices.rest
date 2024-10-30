@@ -19,6 +19,7 @@ import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Field;
 import org.openmrs.Form;
 import org.openmrs.FormField;
@@ -47,7 +48,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		Schema<?> modelImpl = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			modelImpl
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("fieldNumber", new IntegerSchema())
 			        .addProperty("fieldPart", new StringSchema())

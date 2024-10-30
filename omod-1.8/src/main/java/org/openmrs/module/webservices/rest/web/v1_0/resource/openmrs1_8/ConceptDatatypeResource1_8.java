@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -71,7 +72,7 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 		Schema<?> schema = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("description", new StringSchema())

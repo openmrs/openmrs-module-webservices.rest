@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
@@ -112,7 +113,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("description", new StringSchema())
@@ -129,7 +130,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			        .addProperty("requiredModules", new ArraySchema().items(new StringSchema()));
 		} else if (rep instanceof RefRepresentation) {
 			model
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema());
 		}
 		return model;

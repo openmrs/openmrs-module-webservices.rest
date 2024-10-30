@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
 import org.openmrs.activelist.AllergySeverity;
@@ -88,7 +89,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		return new ObjectSchema()
 				.addProperty("allergyType", new Schema<AllergyType>().type("string")._enum(Arrays.asList(AllergyType.values())))
 				.addProperty("reaction", new ObjectSchema())
-						.addProperty("uuid", new StringSchema())
+				.addProperty("uuid", new UUIDSchema())
 				.addProperty("severity", new Schema<AllergySeverity>().type("string")._enum(Arrays.asList(AllergySeverity.values())))
 				.addProperty("allergen", new StringSchema());
 	}

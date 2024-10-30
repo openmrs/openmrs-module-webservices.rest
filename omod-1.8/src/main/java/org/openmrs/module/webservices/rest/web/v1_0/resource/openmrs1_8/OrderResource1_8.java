@@ -17,6 +17,7 @@ import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -218,7 +219,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		Schema<?> model = super.getGETSchema(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("display", new StringSchema())
 			        .addProperty("instructions", new StringSchema())
 			        .addProperty("startDate", new DateSchema())
@@ -236,7 +237,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGet"))
 					.addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserGet"))
 					.addProperty("discontinuedBy", new Schema<User>().$ref("#/components/schemas/UserGet"))
-					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptGet"));
+					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
 		} else if (rep instanceof FullRepresentation) {
 			model
 					.addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetFull"))
@@ -245,7 +246,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetFull"))
 					.addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserGetFull"))
 					.addProperty("discontinuedBy", new Schema<User>().$ref("#/components/schemas/UserGetFull"))
-					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas.ConceptGetFull"));
+					.addProperty("discontinuedReason", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
 		}
 		return model;
 	}

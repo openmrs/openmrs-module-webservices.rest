@@ -13,6 +13,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.NumberSchema;
 import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -123,7 +124,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			schema
 			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new StringSchema())
+			        .addProperty("uuid", new UUIDSchema())
 			        .addProperty("name", new StringSchema())
 			        .addProperty("description", new StringSchema())
 			        .addProperty("retired", new BooleanSchema())
