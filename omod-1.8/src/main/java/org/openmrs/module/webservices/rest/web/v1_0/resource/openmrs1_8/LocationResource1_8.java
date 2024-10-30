@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -19,6 +19,7 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
@@ -263,10 +264,12 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		String tag = context.getParameter("tag");
 		String query = context.getParameter("q");
 
-		List<Location> locationsByTag = Collections.emptyList();
-		List<Location> locationsByQuery = Collections.emptyList();
+		List<Location> locationsByTag = null;
+		List<Location> locationsByQuery = null;
 
-		if (tag != null) {
+		if (StringUtils.isNotBlank(tag)) {
+			locationsByTag = new ArrayList<Location>();
+
 			try {
 				Context.addProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
 				Context.addProxyPrivilege("Get Locations"); //1.11+
@@ -285,16 +288,13 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 			}
 		}
 
-		if (query != null) {
+		if (StringUtils.isNotBlank(query)) {
 			locationsByQuery = Context.getLocationService().getLocations(query);
 		}
 
-		// note that here we check if the actual query parameters are null, not the results
-		// because, for instance, if a tag parameter is specified and no locations are found with that tag, we want to return an empty list,
-		// regardless of the query parameter, and vice versa; note the default value of the results are set to empty lists above
-		if (tag == null) {
+		if (locationsByTag == null) {
 			return new NeedsPaging<Location>(locationsByQuery, context);
-		} else if (query == null) {
+		} else if (locationsByQuery == null) {
 			return new NeedsPaging<Location>(locationsByTag, context);
 		} else {
 			return new NeedsPaging<Location>(
