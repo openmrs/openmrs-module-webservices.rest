@@ -252,6 +252,11 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
 	}
 
+	/**
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
+	 *      A query string and/or a tag (referenced by name or uuid) can be passed in; if both are passed in, returns an
+	 *      intersection of the results; excludes retired locations
+	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 
