@@ -287,6 +287,20 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(1, hits.size()); // should ignore retired location?
 		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
+
+	@Test
+	public void shouldSearchAndReturnListOfLocationsWithSpecifiedReferencedByName() throws Exception {
+
+		executeDataSet(LOCATION_TAG_INITIAL_XML);
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("tag", "General Hospital");
+
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(1, hits.size()); // should ignore retired location?
+		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+	}
 	
 	@Test
 	public void shouldSearchAndReturnListOfLocationsWithSpecifiedTagAndQueryString() throws Exception {

@@ -16,7 +16,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8.LocationSearchHandler;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -47,11 +46,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 	public String getUuid() {
 		return RestTestConstants1_8.PATIENT_UUID;
 	}
-	
-	/**
-	 * @verifies return location by tag uuid
-	 * @see LocationSearchHandler#getSearchConfig()
-	 */
+
 	@Test
 	public void getSearchConfig_shouldReturnPatientByIdentifier() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());

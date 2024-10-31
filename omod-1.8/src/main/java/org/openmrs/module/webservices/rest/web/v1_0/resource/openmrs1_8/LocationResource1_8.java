@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,9 +19,9 @@ import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -34,6 +35,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import static org.openmrs.util.PrivilegeConstants.VIEW_LOCATIONS;
 
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
@@ -249,39 +252,53 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	protected NeedsPaging<Location> doGetAll(RequestContext context) {
 		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
-	 *      A query string and/or a tag uuid can be passed in; if both are passed in, returns an
+	 *      A query string and/or a tag (referenced by name or uuid) can be passed in; if both are passed in, returns an
 	 *      intersection of the results; excludes retired locations
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
-		
-		LocationService locationService = Context.getLocationService();
-		
-		String tagUuid = context.getParameter("tag");
+
+		String tag = context.getParameter("tag");
 		String query = context.getParameter("q");
-		
+
 		List<Location> locationsByTag = null;
 		List<Location> locationsByQuery = null;
-		
-		if (tagUuid != null) {
-			LocationTag locationTag = locationService.getLocationTagByUuid(tagUuid);
-			locationsByTag = locationService.getLocationsHavingAllTags(Arrays.asList(locationTag));
+
+		if (StringUtils.isNotBlank(tag)) {
+			locationsByTag = new ArrayList<Location>();
+
+			try {
+				Context.addProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
+				Context.addProxyPrivilege("Get Locations"); //1.11+
+
+				LocationTag locationTag = Context.getLocationService().getLocationTagByUuid(tag);
+				if (locationTag == null) {
+					locationTag = Context.getLocationService().getLocationTagByName(tag);
+				}
+
+				if (locationTag != null) {
+					locationsByTag = Context.getLocationService().getLocationsHavingAllTags(Arrays.asList(locationTag));
+				}
+			} finally {
+				Context.removeProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
+				Context.removeProxyPrivilege("Get Locations"); //1.11+
+			}
 		}
-		
-		if (query != null) {
-			locationsByQuery = locationService.getLocations(query);
+
+		if (StringUtils.isNotBlank(query)) {
+			locationsByQuery = Context.getLocationService().getLocations(query);
 		}
-		
+
 		if (locationsByTag == null) {
 			return new NeedsPaging<Location>(locationsByQuery, context);
 		} else if (locationsByQuery == null) {
 			return new NeedsPaging<Location>(locationsByTag, context);
 		} else {
 			return new NeedsPaging<Location>(
-			        (List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
+					(List<Location>) CollectionUtils.intersection(locationsByQuery, locationsByTag), context);
 		}
 	}
 }
