@@ -13,15 +13,16 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9.SessionController1_9;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 /**
- * Tests functionality of {@link SessionController2_0}
+ * Tests functionality of {@link SessionController1_9} in OpenMRS 2.0
  */
-public class SessionController2_0Test extends BaseModuleWebContextSensitiveTest {
+public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest {
 
     /**
-     * @see SessionController2_0#get()
+     * @see SessionController1_9#get()
      * @verifies return the session with current provider if the user doesn't have Get Providers privilege
      */
     @Test
@@ -33,7 +34,7 @@ public class SessionController2_0Test extends BaseModuleWebContextSensitiveTest 
         Context.authenticate("test_user", "test");
         Assert.assertTrue(Context.isAuthenticated());
 
-        SessionController2_0 controller = Context.getRegisteredComponents(SessionController2_0.class).iterator().next();
+        SessionController1_9 controller = Context.getRegisteredComponents(SessionController1_9.class).get(0);
 
         Object ret = controller.get();
         Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
