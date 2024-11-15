@@ -70,7 +70,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	}
 
 	@Test
-	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmailForAnyUser() throws Exception {
+	public void requestPasswordReset_shouldCreateUserActivationKeyWhenUnauthenticatedWithValidEmail() throws Exception {
 		User user = setUpUser("butch");
 		user.setEmail("butch@gmail.com");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
@@ -87,7 +87,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	}
 
 	@Test
-	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameForAnyUser() throws Exception {
+	public void requestPasswordReset_shouldCreateUserActivationKeyWhenUnauthenticatedWithValidUsername() throws Exception {
 		User user = setUpUser("butch");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
 		assertNotNull(user.getUsername());
