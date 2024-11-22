@@ -73,7 +73,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
 				.getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 
-		if (patient != null) {
+		if (patient != null && (encounterType != null || encounterTypeUuid == null)) {
 			EncounterSearchCriteriaBuilder encounterSearchCriteriaBuilder = new EncounterSearchCriteriaBuilder()
 					.setPatient(patient).setFromDate(fromDate).setToDate(toDate).setIncludeVoided(false);
 			if (encounterType != null) {
