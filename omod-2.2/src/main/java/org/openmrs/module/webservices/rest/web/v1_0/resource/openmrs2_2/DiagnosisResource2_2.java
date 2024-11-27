@@ -40,7 +40,7 @@ import io.swagger.models.properties.BooleanProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PatientResource1_9;
 
 /**
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
@@ -235,7 +235,7 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 			return new EmptySearchResult();
 		}
 		Date dateFrom = (Date) ConversionUtil.convert(fromDate, Date.class);
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
+		Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(
 				Patient.class)).getByUniqueId(patientUuid);
 		if (patient == null) {
 			return new EmptySearchResult();

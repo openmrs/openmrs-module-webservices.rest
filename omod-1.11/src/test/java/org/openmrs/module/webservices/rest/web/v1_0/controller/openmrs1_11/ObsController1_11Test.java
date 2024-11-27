@@ -15,7 +15,7 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
@@ -48,7 +48,7 @@ public class ObsController1_11Test extends MainResourceControllerTest {
 
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.OBS_UUID;
+		return RestTestConstants1_9.OBS2_UUID;
 	}
 
 	@Override

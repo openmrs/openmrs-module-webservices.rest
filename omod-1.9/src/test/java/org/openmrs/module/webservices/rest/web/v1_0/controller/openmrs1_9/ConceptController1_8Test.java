@@ -33,7 +33,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
@@ -386,7 +386,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * {@link ConceptResource1_8#getByUniqueId(String)}
+	 * {@link ConceptResource1_9#getByUniqueId(String)}
 	 * 
 	 * @throws Exception
 	 */
@@ -404,7 +404,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.CONCEPT_UUID;
+		return RestTestConstants1_9.CONCEPT3_UUID;
 	}
 	
 	/**

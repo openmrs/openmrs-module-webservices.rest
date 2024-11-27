@@ -28,7 +28,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,17 +42,17 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 	
 	@Override
 	public String getURI() {
-		return "patient/" + RestTestConstants1_8.PATIENT_UUID + "/identifier";
+		return "patient/" + RestTestConstants1_9.PATIENT_UUID + "/identifier";
 	}
 	
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PATIENT_IDENTIFIER_UUID;
+		return RestTestConstants1_9.PATIENT_IDENTIFIER_UUID;
 	}
 	
 	@Override
 	public long getAllCount() {
-		return service.getPatientByUuid(RestTestConstants1_8.PATIENT_UUID).getActiveIdentifiers().size();
+		return service.getPatientByUuid(RestTestConstants1_9.PATIENT_UUID).getActiveIdentifiers().size();
 	}
 	
 	@Before
@@ -87,7 +87,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		SimpleObject patientIdentifier = new SimpleObject();
 		patientIdentifier.add("identifier", "abc123ez");
 		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
-		patientIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+		patientIdentifier.add("location", RestTestConstants1_9.LOCATION2_UUID);
 		
 		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
 		
@@ -102,7 +102,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldEditAPatientIdentifier() throws Exception {
-		final String newLocationUuid = RestTestConstants1_8.LOCATION_UUID;
+		final String newLocationUuid = RestTestConstants1_9.LOCATION2_UUID;
 		PatientIdentifier patientIdentifierType = service.getPatientIdentifierByUuid(getUuid());
 		assertFalse(newLocationUuid.equals(patientIdentifierType.getLocation().getUuid()));
 		SimpleObject patientIdentifier = new SimpleObject();
@@ -124,7 +124,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		SimpleObject patientIdentifier = new SimpleObject();
 		patientIdentifier.add("identifier", "abc123ez");
 		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
-		patientIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+		patientIdentifier.add("location", RestTestConstants1_9.LOCATION2_UUID);
 		patientIdentifier.add("preferred", true);
 		
 		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
@@ -197,7 +197,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		SimpleObject patientIdentifier = new SimpleObject();
 		patientIdentifier.add("identifier", "123456789qwerty");
 		patientIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
-		patientIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+		patientIdentifier.add("location", RestTestConstants1_9.LOCATION2_UUID);
 
 		String json = new ObjectMapper().writeValueAsString(patientIdentifier);
 

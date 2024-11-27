@@ -17,14 +17,14 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.PersonResource1_9;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/person", order = 3, supportedClass = Person.class, supportedOpenmrsVersions = {
         "1.10.4 - 1.10.*" })
-public class PersonResource1_10 extends PersonResource1_8 {
+public class PersonResource1_10 extends PersonResource1_9 {
 	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)

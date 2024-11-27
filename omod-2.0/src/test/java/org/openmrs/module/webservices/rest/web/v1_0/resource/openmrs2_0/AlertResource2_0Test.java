@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.notification.Alert;
 
@@ -24,7 +24,7 @@ public class AlertResource2_0Test extends BaseDelegatingResourceTest<AlertResour
 		alert.setText("New Alert");
 		alert.setSatisfiedByAny(true);
 		alert.setAlertRead(true);
-		alert.addRecipient(Context.getUserService().getUserByUuid(RestTestConstants1_8.USER_UUID));
+		alert.addRecipient(Context.getUserService().getUserByUuid(RestTestConstants1_9.USER_UUID));
 		return alert;
 	}
 

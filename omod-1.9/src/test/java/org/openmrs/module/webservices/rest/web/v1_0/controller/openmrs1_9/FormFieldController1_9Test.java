@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 /**
@@ -22,7 +22,7 @@ public class FormFieldController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getURI() {
-		return "form/" + RestTestConstants1_8.FORM_UUID + "/formfield";
+		return "form/" + RestTestConstants1_9.FORM2_UUID + "/formfield";
 	}
 	
 	/**
@@ -30,7 +30,7 @@ public class FormFieldController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.FORM_FIELD_UUID;
+		return RestTestConstants1_9.FORM_FIELD_UUID;
 	}
 	
 	/**

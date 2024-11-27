@@ -20,7 +20,7 @@ import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -67,17 +67,17 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.PATIENT_PROGRAM_UUID;
+		return RestTestConstants1_9.PATIENT_PROGRAM_UUID;
 	}
 	
 	@Test
 	@Override
 	public void shouldGetAll() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("patient", RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
+		req.setParameter("patient", RestTestConstants1_9.PATIENT_IN_A_PROGRAM_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
-		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_9.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
 		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
@@ -85,10 +85,10 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 	@Test
 	public void shouldExcludeVoided() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.setParameter("patient", RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		req.setParameter("patient", RestTestConstants1_9.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		SimpleObject result = deserialize(handle(req));
 		
-		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
+		Patient patient = patientService.getPatientByUuid(RestTestConstants1_9.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
 		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
@@ -97,7 +97,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 	public void shouldTransitPatientState() throws Exception {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String stateStartDate = "2015-08-04";
-		String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_8.STATE_UUID
+		String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_9.STATE_UUID
 		        + "\"}, \"startDate\": \"" + stateStartDate + "\"}]}";
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
@@ -111,7 +111,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
 		Assert.assertEquals(2, states.size());
 		sortPatientStatesBasedOnStartDate(states);
-		Assert.assertEquals(RestTestConstants1_8.STATE_UUID, states.get(1).getState().getUuid());
+		Assert.assertEquals(RestTestConstants1_9.STATE_UUID, states.get(1).getState().getUuid());
 		String existingStateEndDate = dateFormat.format(states.get(0).getEndDate());
 		Assert.assertEquals(stateStartDate, existingStateEndDate);
 	}
@@ -149,7 +149,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		//Transit the existing patient state to new state
 		String stateStartDate = "2015-08-04";
-		String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_8.STATE_UUID
+		String json = "{ \"states\": [{ \"state\": {\"uuid\" : \"" + RestTestConstants1_9.STATE_UUID
 		        + "\"}, \"startDate\": \"" + stateStartDate + "\"}]}";
 		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), SimpleObject.parseJson(json));

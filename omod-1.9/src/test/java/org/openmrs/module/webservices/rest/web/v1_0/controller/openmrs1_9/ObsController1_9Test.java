@@ -28,7 +28,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.OpenmrsConstants;
@@ -62,7 +62,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 	@Test
 	public void getObs_shouldGetObsConceptByConceptMappings() throws Exception {
-		String json = "{ \"value\":\"" + 10.0 + "\", \"person\":\"" + RestTestConstants1_8.PERSON_UUID
+		String json = "{ \"value\":\"" + 10.0 + "\", \"person\":\"" + RestTestConstants1_9.PERSON_UUID
 		        + "\", \"concept\":\"SNOMED CT:2332523\", \"obsDatetime\":\"2013-12-09T00:00:00.000+0100\"}";
 
 		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
@@ -120,7 +120,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public String getUuid() {
-		return RestTestConstants1_8.OBS_UUID;
+		return RestTestConstants1_9.OBS2_UUID;
 	}
 
 	/**

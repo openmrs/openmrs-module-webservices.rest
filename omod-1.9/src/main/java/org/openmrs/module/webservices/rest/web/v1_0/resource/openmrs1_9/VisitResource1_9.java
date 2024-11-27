@@ -42,9 +42,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
@@ -377,7 +374,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private Patient getPatient(String patientUniqueId) {
-		Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceByName(
+		Patient patient = ((PatientResource1_9) Context.getService(RestService.class).getResourceByName(
 		    RestConstants.VERSION_1 + "/patient")).getByUniqueId(patientUniqueId);
 		if (patient == null)
 			throw new ObjectNotFoundException();
@@ -385,7 +382,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private Location getLocation(String locationUniqueId) {
-		Location location = ((LocationResource1_8) Context.getService(RestService.class).getResourceByName(
+		Location location = ((LocationResource1_9) Context.getService(RestService.class).getResourceByName(
 		    RestConstants.VERSION_1 + "/location")).getByUniqueId(locationUniqueId);
 		if (location == null)
 			throw new ObjectNotFoundException();
