@@ -123,7 +123,7 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 				.addProperty("instructions", new StringSchema())
 				.required(Arrays.asList("patient", "concept"));
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getAllByType(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

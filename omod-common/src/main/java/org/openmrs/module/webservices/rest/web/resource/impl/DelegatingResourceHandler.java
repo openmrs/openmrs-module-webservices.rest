@@ -68,7 +68,7 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	/**
 	 * Gets the {@link DelegatingResourceDescription} for the given representation for this
 	 * resource, if it exists
-	 * 
+	 *
 	 * @param rep
 	 * @return
 	 */

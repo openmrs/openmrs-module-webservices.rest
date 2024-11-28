@@ -14,10 +14,14 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.core.util.Json;
+import io.swagger.v3.oas.models.media.NumberSchema;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import io.swagger.v3.oas.models.parameters.QueryParameter;
 import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -53,6 +57,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -61,6 +66,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -71,6 +77,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import static org.openmrs.module.webservices.rest.util.ReflectionUtil.getGenericType;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.FULL;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
 
 public class SwaggerSpecificationCreator {
 
@@ -752,6 +764,7 @@ public class SwaggerSpecificationCreator {
 
 		// get all registered resource handlers
 		List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
+		System.out.println("Number of resource handlers: " + resourceHandlers.size());
 		log.debug("Number of resource handlers: " + resourceHandlers.size());
 		
 		sortResourceHandlers(resourceHandlers);
@@ -977,7 +990,7 @@ public class SwaggerSpecificationCreator {
 	 * 1. Generates a schema name based on the resource and operation type
 	 * 2. Retrieves or creates the Components object from the OpenAPI specification
 	 * 3. Based on the operation type (Get, Create, or Update):
-	 *    - Retrieves the appropriate schema(s) from the resourceHandler
+	 *    - Generates the appropriate schema(s) using the OpenMRSOpenAPIGenerator
 	 *    - Adds the schema(s) to the Components object with the generated name
 	 * <p>
 	 * For GET operations, it adds schemas for DEFAULT, REF, and FULL representations.
@@ -993,16 +1006,17 @@ public class SwaggerSpecificationCreator {
 		}
 
 		String definitionName = getSchemaName(resourceName, resourceParentName, operationEnum);
+		System.out.println("definition-name:" + definitionName);
 		Components components = openAPI.getComponents();
 		if (components == null) {
 			components = new Components();
 			openAPI.setComponents(components);
 		}
 
-		if (definitionName.endsWith("Get")) {
-			Schema<?> getSchema = resourceHandler.getGETSchema(Representation.DEFAULT);
-			Schema<?> getRefSchema = resourceHandler.getGETSchema(Representation.REF);
-			Schema<?> getFullSchema = resourceHandler.getGETSchema(Representation.FULL);
+        if (definitionName.endsWith("Get")) {
+			Schema<?> getSchema = generateGETSchema(resourceHandler, Representation.DEFAULT);
+			Schema<?> getRefSchema = generateGETSchema(resourceHandler, Representation.REF);
+			Schema<?> getFullSchema = generateGETSchema(resourceHandler, Representation.FULL);
 
 			if (getSchema != null) {
 				components.addSchemas(definitionName, getSchema);
@@ -1014,8 +1028,8 @@ public class SwaggerSpecificationCreator {
 				components.addSchemas(definitionName + "Full", getFullSchema);
 			}
 		} else if (definitionName.endsWith("Create")) {
-			Schema<?> createSchema = resourceHandler.getCREATESchema(Representation.DEFAULT);
-			Schema<?> createFullSchema = resourceHandler.getCREATESchema(Representation.FULL);
+			Schema<?> createSchema = generateCREATESchema(resourceHandler, Representation.DEFAULT);
+			Schema<?> createFullSchema = generateCREATESchema(resourceHandler, FULL);
 
 			if (createSchema != null) {
 				components.addSchemas(definitionName, createSchema);
@@ -1024,12 +1038,11 @@ public class SwaggerSpecificationCreator {
 				components.addSchemas(definitionName + "Full", createFullSchema);
 			}
 		} else if (definitionName.endsWith("Update")) {
-			Schema<?> updateSchema = resourceHandler.getUPDATESchema(Representation.DEFAULT);
+			Schema<?> updateSchema = generateUPDATESchema(resourceHandler, Representation.DEFAULT);
 			if (updateSchema != null) {
 				components.addSchemas(definitionName, updateSchema);
 			}
 		}
-
 	}
 
 	/**
@@ -1261,6 +1274,261 @@ public class SwaggerSpecificationCreator {
 	public static void clearCache() {
 		openAPI = null;
 		cachedJson = null;
+	}
+
+	/**
+	 * Generates the schema for GET operations.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @param representation  the representation type (DEFAULT, REF, FULL)
+	 * @return the generated schema
+	 * @throws IllegalArgumentException if the representation is unsupported
+	 */
+	public Schema<?> generateGETSchema(DelegatingResourceHandler<?> resourceHandler, Representation representation) {
+		ObjectSchema schema = new ObjectSchema();
+
+		if (representation.equals(DEFAULT)) {
+			schema = addDefaultProperties(resourceHandler);
+		} else if (representation.equals(REF)) {
+			schema = addRefProperties(resourceHandler);
+		} else if (representation.equals(FULL)) {
+			schema = addFullProperties(resourceHandler);
+		} else {
+			throw new IllegalArgumentException("Unsupported representation: " + representation);
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Generates the schema for CREATE operations.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @param representation  the representation type (DEFAULT, FULL)
+	 * @return the generated schema
+	 * @throws IllegalArgumentException if the representation is unsupported
+	 */
+	public Schema<?> generateCREATESchema(DelegatingResourceHandler<?> resourceHandler, Representation representation) {
+		ObjectSchema schema = new ObjectSchema();
+
+		if (representation.equals(DEFAULT)) {
+			schema = addCreatableProperties(resourceHandler, "Create");
+		} else if (representation.equals(FULL)) {
+			schema = addCreatableProperties(resourceHandler, "CreateFull");
+		} else {
+			throw new IllegalArgumentException("Unsupported representation: " + representation);
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Generates the schema for UPDATE operations.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @param representation  the representation type (DEFAULT)
+	 * @return the generated schema
+	 * @throws IllegalArgumentException if the representation is unsupported
+	 */
+	public Schema<?> generateUPDATESchema(DelegatingResourceHandler<?> resourceHandler, Representation representation) {
+		ObjectSchema schema = new ObjectSchema();
+
+		if (representation.equals(DEFAULT)) {
+			schema = addUpdatableProperties(resourceHandler);
+		} else {
+			throw new IllegalArgumentException("Unsupported representation: " + representation);
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Adds default properties to the schema based on the resource handler's DEFAULT representation.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @return the updated schema with default properties
+	 */
+	private ObjectSchema addDefaultProperties(DelegatingResourceHandler<?> resourceHandler) {
+		ObjectSchema schema = new ObjectSchema();
+		schema.addProperty("uuid", new UUIDSchema().description("Unique identifier of the resource"));
+		schema.addProperty("display", new StringSchema().description("Display name of the resource"));
+
+		DelegatingResourceDescription description = resourceHandler.getRepresentationDescription(DEFAULT);
+		if (description != null) {
+			for (String property : description.getProperties().keySet()) {
+				schema.addProperty(property, determineSchemaForProperty(resourceHandler, property, "Get"));
+			}
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Adds reference properties to the schema based on the resource handler's REF representation.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @return the updated schema with reference properties
+	 */
+	private ObjectSchema addRefProperties(DelegatingResourceHandler<?> resourceHandler) {
+		ObjectSchema schema = new ObjectSchema();
+		schema.addProperty("uuid", new UUIDSchema().description("Unique identifier of the resource"));
+		schema.addProperty("display", new StringSchema().description("Display name of the resource"));
+
+		DelegatingResourceDescription description = resourceHandler.getRepresentationDescription(REF);
+		if (description != null) {
+			for (String property : description.getProperties().keySet()) {
+				schema.addProperty(property, determineSchemaForProperty(resourceHandler, property, "GetRef"));
+			}
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Adds full properties to the schema based on the resource handler's FULL representation.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @return the updated schema with full properties
+	 */
+	private ObjectSchema addFullProperties(DelegatingResourceHandler<?> resourceHandler) {
+		ObjectSchema schema = new ObjectSchema();
+
+		DelegatingResourceDescription description = resourceHandler.getRepresentationDescription(FULL);
+		if (description != null) {
+			for (String property : description.getProperties().keySet()) {
+				schema.addProperty(property, determineSchemaForProperty(resourceHandler, property, "GetFull"));
+			}
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Adds creatable properties to the schema based on the resource handler's creatable properties.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @return the updated schema with creatable properties
+	 */
+	private ObjectSchema addCreatableProperties(DelegatingResourceHandler<?> resourceHandler, String operationType) {
+		ObjectSchema schema = new ObjectSchema();
+
+		DelegatingResourceDescription description = resourceHandler.getCreatableProperties();
+		if (description != null) {
+			for (String property : description.getProperties().keySet()) {
+				schema.addProperty(property, determineSchemaForProperty(resourceHandler, property, operationType));
+			}
+		}
+
+		return schema;
+	}
+
+	/**
+	 * Adds updatable properties to the schema based on the resource handler's updatable properties.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @return the updated schema with updatable properties
+	 */
+	private ObjectSchema addUpdatableProperties(DelegatingResourceHandler<?> resourceHandler) {
+		ObjectSchema schema = new ObjectSchema();
+
+		DelegatingResourceDescription description = resourceHandler.getUpdatableProperties();
+		if (description != null) {
+			for (String property : description.getProperties().keySet()) {
+				schema.addProperty(property, determineSchemaForProperty(resourceHandler, property, "Update"));
+			}
+		}
+
+		return schema;
+	}
+
+	/**
+	 * determines the schema for a property based on the resource handler and property name.
+	 *
+	 * @param resourceHandler the resource handler for the resource
+	 * @param propertyName    the name of the property
+	 * @return the schema for the property
+	 */
+	public Schema<?> determineSchemaForProperty(DelegatingResourceHandler<?> resourceHandler, String propertyName, String operationType) {
+		Class<?> genericType = getGenericType(resourceHandler.getClass());
+		if (genericType == null) {
+			//FIXME: need to handle cases where resource handler doesn't extend directly
+			// but instead extend another resource-handler e.g public class UserResource2_0 extends UserResource1_8
+			throw new IllegalArgumentException("No generic type for resource handler");
+		}
+
+		try {
+			Field field = genericType.getDeclaredField(propertyName);
+			Class<?> fieldType = field.getType();
+			return createSchemaForType(fieldType, operationType, field);
+		} catch (NoSuchFieldException e) {
+			return new StringSchema().description("unknown");
+		}
+	}
+
+	/**
+	 * <p>
+	 * This method maps Java types to their corresponding OpenAPI schema types. For example, it converts
+	 * Java primitives and common types (like {@link String}, {@link Integer}, and {@link UUID}) into
+	 * their OpenAPI equivalents (e.g., {@code StringSchema}, {@code IntegerSchema}). It also handles
+	 * arrays, dates, and custom OpenMRS resource types by referencing specific schema definitions in
+	 * OpenAPI components.
+	 * <p>
+	 * If the provided class is a custom OpenMRS data object (e.g., `Concept`, `Patient`), the method
+	 * generates a reference schema (`$ref`) pointing to the corresponding OpenAPI component, using
+	 * the class name and the specified operation type (e.g., `ConceptCreate` or `ConceptGet`).
+	 *
+	 * @param type          the Java class type to generate the schema for
+	 *                      (e.g., {@link String}, {@link Integer}, {@link Boolean}, custom OpenMRS objects)
+	 * @param operationType the type of operation (e.g., "Create", "Get", "Update")
+	 *                      used to distinguish schema variants for different API operations
+	 * @param field
+	 * @return a {@link Schema} object representing the OpenAPI schema for the provided type
+	 * @throws IllegalArgumentException if an unsupported type is encountered
+	 *                                  <p>
+	 *                                  Example:
+	 *                                  - For {@link String}, returns a {@code StringSchema}.
+	 *                                  - For {@link UUID}, returns a {@code UUIDSchema}.
+	 *                                  - For `Concept` with operationType="Create", returns a schema with
+	 *                                  {@code $ref: "#/components/schemas/ConceptCreate"}.
+	 */
+	@SuppressWarnings("unchecked")
+	private Schema<?> createSchemaForType(Class<?> type, String operationType, Field field) {
+		if (String.class.equals(type)) {
+			return new StringSchema();
+		} else if (Integer.class.equals(type) || int.class.equals(type)) {
+			return new IntegerSchema();
+		} else if (Boolean.class.equals(type) || boolean.class.equals(type)) {
+			return new BooleanSchema();
+		} else if (UUID.class.equals(type)) {
+			return new UUIDSchema();
+		} else if (java.util.Date.class.equals(type)) {
+			return new DateSchema();
+		} else if (Double.class.equals(type)) {
+			return new NumberSchema().format("double");
+		} else if (Object.class.equals(type)) {
+			return new ObjectSchema();
+		} else if (Set.class.equals(type)) {
+			return new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/" + field.getName() + operationType));
+		}
+
+		// Handle references to other OpenMRS data objects e.g PatientResource references Person i.e #/components/schemas/PersonGet
+		else if (isOpenMRSResource(type)) {
+			return new Schema<Object>().$ref("#/components/schemas/" + field.getName() + operationType);
+		} else if (isOpenMRSResource(type) && type.isEnum()) {
+			return new Schema<Object>().type("string")._enum(Arrays.asList(type));
+		} else {
+			return new ObjectSchema();
+		}
+	}
+
+	/**
+	 * Checks whether a class is an OpenMRS resource (e.g., references an OpenMRS data object).
+	 *
+	 * @param type the class to check
+	 * @return true if the class represents an OpenMRS resource, false otherwise
+	 */
+	private boolean isOpenMRSResource(Class<?> type) {
+		return type.getPackage().getName().startsWith("org.openmrs");
 	}
 
 }

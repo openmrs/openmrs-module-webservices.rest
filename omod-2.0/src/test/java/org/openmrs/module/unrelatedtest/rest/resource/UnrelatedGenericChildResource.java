@@ -14,9 +14,15 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.module.unrelatedtest.UnrelatedGenericChild;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChild;
 import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
 
 /**
@@ -27,12 +33,12 @@ import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
 @Resource(name = RestConstants.VERSION_1 + "/unrelated", supportedClass = UnrelatedGenericChild.class, supportedOpenmrsVersions = { "1.9.* - 9.*" })
 public class UnrelatedGenericChildResource extends GenericChildResource {
 	
-	public static boolean getGETCalled = false;
-	
-	public static boolean getCREATECalled = false;
-	
-	public static boolean getUPDATECalled = false;
-	
+	public static boolean getRepresentationDescription = false;
+
+	public static boolean getCreatableProperties = false;
+
+	public static boolean getUpdatableProperties = false;
+
 	/*******************************
 	 * TEST METHOD IMPLEMENTATIONS * These methods are the ones we want to test against. There
 	 * implementation is unimportant, they just set flags so we can assert the methods were called
@@ -40,20 +46,20 @@ public class UnrelatedGenericChildResource extends GenericChildResource {
 	 */
 
 	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		getGETCalled = true;
-		return super.getGETSchema(rep);
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		getRepresentationDescription = true;
+		return new DelegatingResourceDescription();
 	}
 
 	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		getCREATECalled = true;
-		return super.getCREATESchema(rep);
+	public DelegatingResourceDescription getCreatableProperties() {
+		getCreatableProperties = true;
+		return new DelegatingResourceDescription();
 	}
 
 	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		getUPDATECalled = true;
-		return super.getUPDATESchema(rep);
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		getUpdatableProperties = true;
+		return new DelegatingResourceDescription();
 	}
 }

@@ -841,5 +841,4 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	public T newDelegate(SimpleObject object) {
 		return newDelegate();
 	}
-
 }

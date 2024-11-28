@@ -17,6 +17,8 @@ import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.dbunit.database.DatabaseConnection;
@@ -30,6 +32,7 @@ import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResou
 import org.openmrs.module.webservices.docs.swagger.SwaggerConstants;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.UserResource2_0;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.Field;
@@ -46,6 +49,7 @@ import java.util.Map;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 
@@ -140,7 +144,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 
         Map<String, Integer> afterCounts = getRowCounts();
 
-        Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
+        assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
         Assert.assertTrue("Ensure that no data was added or removed from any tables",
                 ensureCountsEqual(beforeCounts, afterCounts));
     }
@@ -223,10 +227,10 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
         });
     }
 
-    private boolean operationHasPagingParams(io.swagger.v3.oas.models.Operation o) {
+    private boolean operationHasPagingParams(Operation o) {
         boolean limit = false, startIndex = false;
 
-        for (io.swagger.v3.oas.models.parameters.Parameter p : o.getParameters()) {
+        for (Parameter p : o.getParameters()) {
             if (p.getName().equals("limit")) {
                 limit = true;
             } else if (p.getName().equals("startIndex")) {
@@ -275,6 +279,37 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
         assertTrue(json.contains("SystemsettingSubdetailsCreate"));
     }
 
+    @Test
+    public void determineSchemaForProperty_shouldReturnNotKnownForNonExistentProperty() {
+        SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+        UserResource2_0 resourceHandler = new UserResource2_0();
+
+        Schema<?> unknownResult = ssc.determineSchemaForProperty(resourceHandler, "nonExistent", "Get");
+        assertNotNull(unknownResult);
+        assertTrue(unknownResult instanceof StringSchema);
+        assertEquals("unknown", unknownResult.getDescription());
+    }
+
+    @Test
+    public void determineSchemaForProperty_shouldInferSchemaForGivenDatePropertyForSubResource() {
+        SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+        UserResource2_0 resourceHandler = new UserResource2_0();
+
+        Schema<?> dose = ssc.determineSchemaForProperty(resourceHandler, "dose", "Get");
+        assertNotNull(dose);
+        assertTrue(dose instanceof StringSchema);
+    }
+
+    @Test
+    public void determineSchemaForProperty_shouldInferSchemaForGivenPropertyForResourceHandlerWhichDoesNotDirectlyDeclareAParameterizedSuperclass() {
+        SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+        UserResource2_0 testResource2_1 = new UserResource2_0();
+
+        Schema<?> dose = ssc.determineSchemaForProperty(testResource2_1, "secretQuestion", "Get");
+        assertNotNull(dose);
+        assertEquals("unknown", dose.getDescription());
+    }
+
     /**
      * Ensure that resources not directly related to the webservices.rest package are successfully
      * defined in the swagger documentation.
@@ -282,9 +317,9 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
     @Test
     public void testUnrelatedResourceDefinitions() {
         // ensure the statics are false first
-        UnrelatedGenericChildResource.getGETCalled = false;
-        UnrelatedGenericChildResource.getCREATECalled = false;
-        UnrelatedGenericChildResource.getUPDATECalled = false;
+        UnrelatedGenericChildResource.getCreatableProperties = false;
+        UnrelatedGenericChildResource.getRepresentationDescription = false;
+        UnrelatedGenericChildResource.getUpdatableProperties = false;
 
         // make sure to reset the cache for multiple tests in the same run
         if (SwaggerSpecificationCreator.isCached()) {
@@ -294,10 +329,10 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
         SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
         ssc.getJSON();
 
-        // check our custom methods were called
-        assertTrue(UnrelatedGenericChildResource.getGETCalled);
-        assertTrue(UnrelatedGenericChildResource.getCREATECalled);
-        assertTrue(UnrelatedGenericChildResource.getUPDATECalled);
+//        // check our custom methods were called
+        assertTrue(UnrelatedGenericChildResource.getRepresentationDescription);
+        assertTrue(UnrelatedGenericChildResource.getCreatableProperties);
+        assertTrue(UnrelatedGenericChildResource.getUpdatableProperties);
 
         // assert the definition is now in the swagger object
         OpenAPI openAPI = ssc.getOpenAPI();

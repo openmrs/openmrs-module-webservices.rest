@@ -170,7 +170,7 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		        .getResourceBySupportedClass(Order.class);
 		return orderResource.getUPDATESchema(rep);
 	}
-	
+
 	public PageableResult getActiveOrders(Patient patient, RequestContext context) {
 		String careSettingUuid = context.getRequest().getParameter("careSetting");
 		String asOfDateString = context.getRequest().getParameter("asOfDate");
