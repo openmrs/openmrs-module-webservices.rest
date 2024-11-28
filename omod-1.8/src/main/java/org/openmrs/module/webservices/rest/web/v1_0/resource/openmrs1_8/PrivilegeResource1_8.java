@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
@@ -92,12 +90,7 @@ public class PrivilegeResource1_8 extends MetadataDelegatingCrudResource<Privile
 		return description;
 	}
 
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return super.getUPDATESchema(rep).addProperty("description", new StringSchema());
-	}
-
-	/**
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override

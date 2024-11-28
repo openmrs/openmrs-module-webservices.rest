@@ -14,7 +14,6 @@ import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.context.Context;
@@ -140,62 +139,7 @@ public class PersonAddressResource1_8 extends DelegatingSubResource<PersonAddres
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep)
-		        .addProperty("uuid", new UUIDSchema())
-		        .addProperty("display", new StringSchema());
-		
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("preferred", new BooleanSchema()._default(false))
-			        .addProperty("address1", new StringSchema())
-			        .addProperty("address2", new StringSchema())
-			        .addProperty("cityVillage", new StringSchema())
-			        .addProperty("stateProvince", new StringSchema())
-			        .addProperty("country", new StringSchema())
-			        .addProperty("postalCode", new StringSchema())
-			        .addProperty("countyDistrict", new StringSchema())
-			        .addProperty("address3", new StringSchema())
-			        .addProperty("address4", new StringSchema())
-			        .addProperty("address5", new StringSchema())
-			        .addProperty("address6", new StringSchema())
-			        .addProperty("startDate", new DateSchema())
-			        .addProperty("endDate", new DateSchema())
-			        .addProperty("latitude", new StringSchema())
-			        .addProperty("longitude", new StringSchema())
-			        .addProperty("voided", new BooleanSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("preferred", new BooleanSchema()._default(false))
-		        .addProperty("address1", new StringSchema())
-		        .addProperty("address2", new StringSchema())
-		        .addProperty("cityVillage", new StringSchema())
-		        .addProperty("stateProvince", new StringSchema())
-		        .addProperty("country", new StringSchema())
-		        .addProperty("postalCode", new StringSchema())
-		        .addProperty("countyDistrict", new StringSchema())
-		        .addProperty("address3", new StringSchema())
-		        .addProperty("address4", new StringSchema())
-		        .addProperty("address5", new StringSchema())
-		        .addProperty("address6", new StringSchema())
-		        .addProperty("startDate", new DateSchema())
-		        .addProperty("endDate", new DateSchema())
-		        .addProperty("latitude", new StringSchema())
-		        .addProperty("longitude", new StringSchema());
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */

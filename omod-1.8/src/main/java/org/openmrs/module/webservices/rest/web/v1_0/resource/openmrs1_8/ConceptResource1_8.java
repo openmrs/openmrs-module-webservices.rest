@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -213,73 +207,6 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			return description;
 		}
 		return null;
-	}
-
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema();
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("name", new Schema<Object>().$ref("#/components/schemas/ConceptNameGet"))
-			        .addProperty("datatype", new Schema<Object>().$ref("#/components/schemas/ConceptdatatypeGetRef"))
-			        .addProperty("conceptClass", new Schema<Object>().$ref("#/components/schemas/ConceptclassGetRef"))
-			        .addProperty("set", new BooleanSchema())
-			        .addProperty("version", new StringSchema())
-			        .addProperty("retired", new BooleanSchema())
-			        .addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptNameGetRef")))
-			        .addProperty("descriptions", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptDescriptionGetRef")))
-			        .addProperty("mappings", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptMappingGetRef")))
-			        .addProperty("answers", new ArraySchema().items(new Schema<Object>()))
-			        .addProperty("setMembers", new ArraySchema().items(new Schema<Object>()));
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-				.addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptNameCreate")))
-				.addProperty("datatype", new StringSchema().example("uuid"))
-				.addProperty("set", new BooleanSchema())
-				.addProperty("version", new StringSchema())
-				.addProperty("answers", new ArraySchema().items(new StringSchema().example("uuid")))
-				.addProperty("setMembers", new ArraySchema().items(new StringSchema().example("uuid")))
-
-				//ConceptNumeric properties
-				.addProperty("hiNormal", new StringSchema())
-				.addProperty("hiAbsolute", new StringSchema())
-				.addProperty("hiCritical", new StringSchema())
-				.addProperty("lowNormal", new StringSchema())
-				.addProperty("lowAbsolute", new StringSchema())
-				.addProperty("lowCritical", new StringSchema())
-				.addProperty("units", new StringSchema())
-				.addProperty("allowDecimal", new StringSchema())
-				.addProperty("displayPrecision", new StringSchema());
-		schema.setRequired(Arrays.asList("name", "datatype", "conceptClass"));
-		if (rep instanceof DefaultRepresentation) {
-			schema
-					.addProperty("conceptClass", new StringSchema())
-					.addProperty("descriptions",  new ArraySchema().items(new StringSchema()))
-					.addProperty("mappings", new ArraySchema().items(new StringSchema()));
-		}
-		else if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("conceptClass", new Schema<Object>().$ref("#/components/schemas/ConceptclassCreate"))
-					.addProperty("descriptions", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptDescriptionCreate")))
-					.addProperty("mappings", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptMappingCreate")));
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("name", new Schema<Object>().$ref("#/components/schemas/ConceptNameCreate"))
-		        .addProperty("names", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptNameCreate")))
-		        .addProperty("descriptions", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ConceptDescriptionCreate")));
 	}
 
 	/**

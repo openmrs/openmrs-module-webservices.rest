@@ -9,12 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import org.openmrs.Concept;
 import org.openmrs.Program;
-import org.openmrs.ProgramWorkflow;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Collections;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" }, order = 1)
@@ -116,42 +110,7 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 		description.addProperty("retired");
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-					.addProperty("allWorkflows", new Schema<ProgramWorkflow>().$ref("#/components/schemas/WorkflowGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
-					.addProperty("allWorkflows", new Schema<ProgramWorkflow>().$ref("#/components/schemas/WorkflowGetFull"));
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.addProperty("allWorkflows", new Schema<ProgramWorkflow>().$ref("#/components/schemas/WorkflowGetRef"));
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getCREATESchema(rep)
-		        .addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").required(Collections.singletonList("concept")).example("uuid"))
-		        .addProperty("retired", new BooleanSchema());
-		if (rep instanceof FullRepresentation) {
-			model.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreateFull").required(Collections.singletonList("concept")).example("uuid"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema(); //FIXME missing props
-	}
-	
+
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		String query = context.getParameter("q");

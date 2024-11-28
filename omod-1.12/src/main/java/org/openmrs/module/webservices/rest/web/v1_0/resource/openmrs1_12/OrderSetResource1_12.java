@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OrderSet;
@@ -30,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/orderset", supportedClass = OrderSet.class, supportedOpenmrsVersions = {
@@ -107,30 +103,4 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		return d;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("operator", new Schema<OrderSet.Operator>().type("string")._enum(Arrays.asList(OrderSet.Operator.values())));
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberGetRef")));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberGet")));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation representation) {
-		return new ObjectSchema()
-				.addProperty("operator", new Schema<OrderSet.Operator>().type("string")._enum(Arrays.asList(OrderSet.Operator.values())))
-				.addProperty("orderSetMembers", new ArraySchema().items(new Schema<OrderSetMember>().$ref("#/components/schemas/OrdersetOrdersetmemberCreate")));
-	}
 }

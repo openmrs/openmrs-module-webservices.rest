@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -63,17 +59,7 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) super.getCREATESchema(rep)
-		        .addProperty("outcomesConcept", new StringSchema().example("uuid"));
-		if (rep instanceof FullRepresentation) {
-			schema.addProperty("outcomesConcept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"));
-		}
-		return schema;
-	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();

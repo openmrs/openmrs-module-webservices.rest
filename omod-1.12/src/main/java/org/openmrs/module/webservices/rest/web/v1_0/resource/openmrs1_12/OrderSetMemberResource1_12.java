@@ -12,14 +12,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
-import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -103,45 +97,6 @@ public class OrderSetMemberResource1_12 extends DelegatingSubResource<OrderSetMe
 		return getCreatableProperties();
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("retired", new BooleanSchema())
-					.addProperty("orderTemplate", new StringSchema())
-					.addProperty("orderTemplateType", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetRef"))
-						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("orderType", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGet"))
-						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("orderType", new ObjectSchema()
-						.addProperty("uuid", new StringSchema()))
-				.addProperty("orderTemplate", new StringSchema())
-				.addProperty("concept", new StringSchema().example("uuid"))
-				.addProperty("retired", new BooleanSchema());
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
 	@Override
 	public OrderSetMember getByUniqueId(String uniqueId) {
 		return Context.getOrderSetService().getOrderSetMemberByUuid(uniqueId);

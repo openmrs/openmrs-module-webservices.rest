@@ -67,21 +67,6 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
         return description;
     }
 
-    @Override
-    public Schema<?> getGETSchema(Representation rep) {
-        return addNewProperties(super.getGETSchema(rep), rep);
-    }
-
-    @Override
-    public Schema<?> getCREATESchema(Representation rep) {
-        return addNewProperties(super.getCREATESchema(rep), rep);
-    }
-
-    @Override
-    public Schema<?> getUPDATESchema(Representation rep) {
-        return addNewProperties(super.getUPDATESchema(rep), rep);
-    }
-
     private Schema<?> addNewProperties(Schema<?>  model, Representation rep) {
         if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
             ((ObjectSchema) model)

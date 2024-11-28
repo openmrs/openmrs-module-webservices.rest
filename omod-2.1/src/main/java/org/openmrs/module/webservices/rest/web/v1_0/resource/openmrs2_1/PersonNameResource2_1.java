@@ -9,16 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.PersonName;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PersonNameResource2_0;
-
-import java.util.List;
 
 @SubResource(parent = PersonResource1_11.class, path = "name", supportedClass = PersonName.class, supportedOpenmrsVersions = {
         "2.1.* - 9.*" })
@@ -30,11 +25,5 @@ public class PersonNameResource2_1 extends PersonNameResource2_0 {
 		resourceDescription.getProperties().get("familyName").setRequired(false);
 		return resourceDescription;
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getCREATESchema(rep);
-		model.getProperties().get("familyName");
-		return model;
-	}
+
 }

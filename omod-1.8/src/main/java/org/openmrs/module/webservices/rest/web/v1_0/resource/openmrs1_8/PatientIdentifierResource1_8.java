@@ -10,14 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -134,52 +128,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("identifier", new StringSchema())
-			        .addProperty("preferred", new BooleanSchema()._default(false))
-			        .addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeGet"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeGetFull"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetFull"));
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> model = (ObjectSchema) new ObjectSchema()
-		        .addProperty("identifier", new StringSchema())
-		        .addProperty("identifierType", new StringSchema().example("uuid"))
-		        .addProperty("location", new StringSchema().example("uuid"))
-		        .addProperty("preferred", new BooleanSchema()._default(false))
-		        .required(Arrays.asList("identifier", "identifierType"));
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("identifierType", new Schema<PatientIdentifierType>().$ref("#/components/schemas/PatientidentifiertypeCreate"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	private PatientService service() {
 		return Context.getPatientService();
 	}

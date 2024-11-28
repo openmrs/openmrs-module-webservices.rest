@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -42,7 +36,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -143,52 +136,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("uuid", new UUIDSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierGetRef")))
-					.addProperty("preferred", new BooleanSchema()._default(false))
-					.addProperty("voided", new BooleanSchema());
 
-			if (rep instanceof DefaultRepresentation) {
-				objectSchema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				objectSchema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
-				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate").example("uuid"))
-				.addProperty("identifiers", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/PatientIdentifierCreate")));
-		
-		schema.setRequired(Arrays.asList("person", "identifiers"));
-
-		if (rep instanceof FullRepresentation) {
-			schema.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreateFull"));
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) new ObjectSchema()
-				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonCreate"));
-		
-		schema.setRequired(Collections.singletonList("person"));
-		
-		return schema;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

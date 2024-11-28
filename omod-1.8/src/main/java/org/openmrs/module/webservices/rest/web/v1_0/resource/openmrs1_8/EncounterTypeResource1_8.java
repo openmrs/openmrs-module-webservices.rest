@@ -9,21 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Collections;
 
 /**
  * {@link Resource} for {@link EncounterType}, supporting standard CRUD operations
@@ -44,13 +39,7 @@ public class EncounterTypeResource1_8 extends MetadataDelegatingCrudResource<Enc
 		
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return ((ObjectSchema) super.getCREATESchema(rep))
-		        .required(Collections.singletonList("description"));
-	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

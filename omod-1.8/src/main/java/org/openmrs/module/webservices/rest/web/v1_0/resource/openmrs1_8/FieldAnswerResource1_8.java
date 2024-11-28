@@ -10,14 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Concept;
 import org.openmrs.Field;
 import org.openmrs.FieldAnswer;
 import org.openmrs.api.context.Context;
@@ -82,40 +76,6 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		return null;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> modelImpl = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.addProperty("uuid", new UUIDSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-					.addProperty("uuid", new UUIDSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> model = (ObjectSchema) new ObjectSchema()
-				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
-				.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreate").example("uuid"))
-				.required(Arrays.asList("field", "concept"));
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreateFull"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreateFull"));
-		}
-		return model;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */

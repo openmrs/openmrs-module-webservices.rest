@@ -9,10 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Drug;
-import org.openmrs.DrugReferenceMap;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -59,22 +56,4 @@ public class DrugResource1_10 extends DrugResource1_8 {
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            if (rep instanceof DefaultRepresentation) {
-				schema.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("drugReferenceMaps", new Schema<DrugReferenceMap>().$ref("#/components/schemas/DrugreferencemapCreate"));
-	}
 }

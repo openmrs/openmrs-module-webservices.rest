@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.ConceptMapType;
-import org.openmrs.ConceptReferenceTerm;
-import org.openmrs.Drug;
 import org.openmrs.DrugReferenceMap;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -119,35 +113,4 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            schema
-					.addProperty("display", new StringSchema())
-					.addProperty("uuid", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("drug", new Schema<Drug>().$ref("#/components/schemas/DrugGetRef"))
-						.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("auditInfo", new StringSchema())
-						.addProperty("drug", new Schema<Drug>().$ref("#/components/schemas/DrugGet"))
-						.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("conceptReferenceTerm", new StringSchema().example("uuid"))
-				.addProperty("conceptMapType", new StringSchema().example("uuid"))
-				.addProperty("drug", new StringSchema().example("uuid"));
-	}
 }

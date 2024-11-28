@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.NumberSchema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,7 +24,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -117,65 +111,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("name", new StringSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("retired", new BooleanSchema())
-			        .addProperty("doseStrength", new NumberSchema())
-			        .addProperty("maximumDailyDose", new NumberSchema())
-			        .addProperty("minimumDailyDose", new NumberSchema())
-			        .addProperty("units", new StringSchema())
-			        .addProperty("combination", new BooleanSchema());
 
-			if (rep instanceof DefaultRepresentation) {
-				schema
-				        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
-				        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
-				        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-				        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
-				        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
-				        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptGet"));
-			}
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = super.getCREATESchema(rep);
-		schema
-		        .addProperty("combination", new BooleanSchema()._default(false))
-		        .addProperty("concept", new StringSchema())
-		        .addProperty("doseStrength", new NumberSchema())
-		        .addProperty("maximumDailyDose", new NumberSchema())
-		        .addProperty("minimumDailyDose", new NumberSchema())
-		        .addProperty("units", new StringSchema())
-		        .addProperty("dosageForm", new StringSchema())
-		        .addProperty("route", new StringSchema());
-		schema.setRequired(Arrays.asList("combination", "concept"));
-		if (rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("concept", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"))
-			        .addProperty("dosageForm", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"))
-			        .addProperty("route", new Schema<Object>().$ref("#/components/schemas/ConceptCreate"));
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep); //FIXME no updatableProperties()
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */

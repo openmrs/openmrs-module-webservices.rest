@@ -21,24 +21,14 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Obs;
-import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.Person;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
@@ -182,59 +172,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model.addProperty("uuid", new StringSchema()).addProperty("display", new StringSchema())
-			        .addProperty("obsDatetime", new DateSchema()).addProperty("accessionNumber", new StringSchema())
-			        .addProperty("comment", new StringSchema()).addProperty("voided", new BooleanSchema())
-			        .addProperty("value", new StringSchema()).addProperty("valueModifier", new StringSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
-					.addProperty("obsGroup", new Schema<Obs>().$ref("#/components/schemas/ObsGet"))
-					.addProperty("groupMembers", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGet")))
-					.addProperty("valueCodedName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGet"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"))
-					.addProperty("order", new Schema<Order>().$ref("#/components/schemas/OrderGet"))
-					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
-					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGetFull"))
-					.addProperty("obsGroup", new Schema<Obs>().$ref("#/components/schemas/ObsGetFull"))
-					.addProperty("groupMembers", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGetFull")))
-					.addProperty("valueCodedName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetFull"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetFull"))
-					.addProperty("order", new Schema<Order>().$ref("#/components/schemas/OrderGetFull"))
-					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetFull"));
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema().addProperty("person", new StringSchema().example("uuid"))
-		        .addProperty("obsDatetime", new DateTimeSchema()).addProperty("concept", new StringSchema().example("uuid"))
-		        .addProperty("location", new StringSchema()).addProperty("order", new StringSchema())
-		        .addProperty("encounter", new StringSchema()).addProperty("accessionNumber", new StringSchema())
-		        .addProperty("groupMembers", new ArraySchema().items(new StringSchema()))
-		        .addProperty("valueCodedName", new StringSchema()).addProperty("comment", new StringSchema())
-		        .addProperty("voided", new BooleanSchema()).addProperty("value", new StringSchema())
-		        .addProperty("valueModifier", new StringSchema())
-				.required(Arrays.asList("person", "obsDatetime", "concept"));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */

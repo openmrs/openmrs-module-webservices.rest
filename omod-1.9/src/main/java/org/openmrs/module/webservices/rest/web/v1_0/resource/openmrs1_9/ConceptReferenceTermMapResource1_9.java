@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import org.openmrs.ConceptMapType;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
@@ -30,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import java.util.Arrays;
 
 /**
  * {@link Resource} for {@link ConceptReferenceTermMap}, supporting standard CRUD operations
@@ -88,40 +84,6 @@ public class ConceptReferenceTermMapResource1_9 extends DelegatingCrudResource<C
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
-						.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
-						.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("termA", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermCreate"))
-				.addProperty("termB", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermCreate"))
-				.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeCreate"))
-				.required(Arrays.asList("termA", "termB", "conceptMapType"));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema(); //FIXME missing props
-	}
-	
 	/**
 	 * Gets the display string for a concept map.
 	 * 

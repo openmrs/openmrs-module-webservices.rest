@@ -17,13 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Encounter;
@@ -166,74 +159,6 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("startDatetime", new DateTimeSchema())
-					.addProperty("stopDatetime", new DateTimeSchema())
-					.addProperty("attributes", new ArraySchema().items(new StringSchema())) //FIXME type
-					.addProperty("voided", new BooleanSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
-						.addProperty("visitType", new Schema<VisitType>().$ref("#/components/schemas/VisittypeGetRef"))
-						.addProperty("indication", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
-						.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetRef"))
-						.addProperty("encounters", new ArraySchema().items(new Schema<Encounter>().$ref("#/components/schemas/EncounterGetRef")));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet"))
-						.addProperty("visitType", new Schema<VisitType>().$ref("#/components/schemas/VisittypeGet"))
-						.addProperty("indication", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-						.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"))
-						.addProperty("encounters", new ArraySchema().items(new Schema<Encounter>().$ref("#/components/schemas/EncounterGet")));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("patient", new StringSchema().example("uuid"))
-				.addProperty("visitType", new StringSchema().example("uuid"))
-				.addProperty("startDatetime", new DateTimeSchema())
-				.addProperty("location", new StringSchema().example("uuid"))
-				.addProperty("indication", new StringSchema())
-				.addProperty("stopDatetime", new DateTimeSchema())
-				.addProperty("encounters", new ArraySchema().items(new StringSchema().example("uuid")))
-				.addProperty("attributes", new ArraySchema().items(new Schema<VisitAttribute>().$ref("#/components/schemas/VisitAttributeCreate")));
-
-		schema.setRequired(Arrays.asList("patient", "visitType"));
-
-		if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate"))
-					.addProperty("visitType", new Schema<VisitType>().$ref("#/components/schemas/VisittypeCreate"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
-					.addProperty("indication", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-					.addProperty("encounters", new ArraySchema().items(new Schema<Encounter>().$ref("#/components/schemas/EncounterCreate")));
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("visitType", new Schema<VisitType>().$ref("#/components/schemas/VisittypeCreate"))
-				.addProperty("startDatetime", new DateTimeSchema())
-				.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
-				.addProperty("indication", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-				.addProperty("stopDatetime", new DateTimeSchema())
-				.addProperty("encounters", new ArraySchema().items(new Schema<Encounter>().$ref("#/components/schemas/EncounterCreate")))
-				.addProperty("attributes", new ArraySchema().items(new StringSchema())); //FIXME type
-	}
-	
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

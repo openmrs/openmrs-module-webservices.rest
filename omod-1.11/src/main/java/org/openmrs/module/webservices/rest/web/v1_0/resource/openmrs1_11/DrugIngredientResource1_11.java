@@ -10,15 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.NumberSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Concept;
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.api.context.Context;
@@ -86,43 +79,7 @@ public class DrugIngredientResource1_11 extends DelegatingSubResource<DrugIngred
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("strength", new NumberSchema().format("double"));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			schema
-					.addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
-					.addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
-					.addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
-		}
-		return schema;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("ingredient", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
-		        .addProperty("strength", new NumberSchema().format("double"))
-		        .addProperty("units", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").example("uuid"))
-		        .required(Collections.singletonList("ingredient"));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */

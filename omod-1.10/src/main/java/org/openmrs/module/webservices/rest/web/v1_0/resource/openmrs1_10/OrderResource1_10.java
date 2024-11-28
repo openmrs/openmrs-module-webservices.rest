@@ -9,18 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
-import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -41,7 +34,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderRes
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -115,44 +107,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			return null;
 		}
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("encounter", new StringSchema().example("uuid"))
-				.addProperty("orderType", new StringSchema().example("uuid"))
-				.addProperty("action", new Schema<Order.Action>()._enum(Arrays.asList(Order.Action.values())))
-				.addProperty("accessionNumber", new StringSchema())
-				.addProperty("dateActivated", new DateTimeSchema())
-				.addProperty("scheduledDate", new DateTimeSchema())
-				.addProperty("patient", new StringSchema().example("uuid"))
-				.addProperty("concept", new StringSchema().example("uuid"))
-				.addProperty("careSetting", new StringSchema().example("uuid"))
-				.addProperty("dateStopped", new DateTimeSchema())
-				.addProperty("autoExpireDate", new DateTimeSchema())
-				.addProperty("orderer", new StringSchema().example("uuid"))
-				.addProperty("previousOrder", new StringSchema().example("uuid"))
-				.addProperty("urgency", new Schema<Order.Urgency>()._enum(Arrays.asList(Order.Urgency.values())))
-				.addProperty("orderReason", new StringSchema().example("uuid"))
-				.addProperty("orderReasonNonCoded", new StringSchema())
-				.addProperty("instructions", new StringSchema())
-				.addProperty("commentToFulfiller", new StringSchema());
-		schema.setRequired(Arrays.asList("orderType", "patient", "concept"));
-		if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterCreate"))
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate"))
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-					.addProperty("orderer", new Schema<User>().$ref("#/components/schemas/UserCreate"))
-					.addProperty("previousOrder", new Schema<Order>().$ref("#/components/schemas/OrderCreate"))
-					.addProperty("orderReason", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-					.addProperty("orderReasonNonCoded", new StringSchema())
-					.addProperty("instructions", new StringSchema())
-					.addProperty("commentToFulfiller", new StringSchema());
-		}
-		return schema;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

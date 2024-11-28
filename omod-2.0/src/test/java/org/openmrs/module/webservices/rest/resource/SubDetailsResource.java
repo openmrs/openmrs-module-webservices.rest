@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.resource;
 
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.GlobalProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -78,8 +77,4 @@ public class SubDetailsResource extends DelegatingSubResource<SubDetails, Global
 		return delegate;
 	}
 
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep);
-	}
 }

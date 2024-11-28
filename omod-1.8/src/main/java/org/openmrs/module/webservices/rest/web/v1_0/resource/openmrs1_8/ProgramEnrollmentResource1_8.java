@@ -9,16 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,7 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" }, order = 1)
@@ -128,59 +119,7 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		d.addProperty("voided");
 		return d;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("dateEnrolled", new DateSchema())
-			        .addProperty("dateCompleted", new DateSchema())
-			        .addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet"))
-					.addProperty("program", new Schema<Program>().$ref("#/components/schemas/ProgramGet"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetFull"))
-					.addProperty("program", new Schema<Program>().$ref("#/components/schemas/ProgramGetFull"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetFull"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
-		        .addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate").example("uuid"))
-		        .addProperty("program", new Schema<Program>().$ref("#/components/schemas/ProgramCreate").example("uuid"))
-		        .addProperty("dateEnrolled", new DateSchema())
-		        .addProperty("dateCompleted", new DateSchema())
-		        .addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate").example("uuid"))
-		        .addProperty("voided", new BooleanSchema());
-		model.setRequired(Arrays.asList("patient", "program", "dateEnrolled"));
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreateFull").example("uuid"))
-					.addProperty("program", new Schema<Program>().$ref("#/components/schemas/ProgramCreateFull").example("uuid"))
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreateFull").example("uuid"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("dateEnrolled", new DateSchema())
-		        .addProperty("dateCompleted", new DateSchema()); //FIXME missing props
-		
-	}
-	
+
 	/**
 	 * Gets all the programs (excluding voided) of the given patient
 	 * 

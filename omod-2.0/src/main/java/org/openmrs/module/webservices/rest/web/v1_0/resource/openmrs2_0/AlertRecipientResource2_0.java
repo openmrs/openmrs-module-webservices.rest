@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -96,45 +91,6 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty(RECIPIENT);
 		return description;
-	}
-
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            schema
-					.addProperty(UUID, new StringSchema())
-					.addProperty(DISPLAY, new StringSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserGetRef"))
-						.addProperty(ALERT_READ, new BooleanSchema())
-						.addProperty(DATE_CHANGED, new DateTimeSchema());
-			}
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserGet"))
-						.addProperty(ALERT_READ, new BooleanSchema())
-						.addProperty(DATE_CHANGED, new DateTimeSchema());
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty(RECIPIENT, new StringSchema().example("uuid"));
-
-		if (rep instanceof FullRepresentation) {
-			schema.addProperty(RECIPIENT, new Schema<>().$ref("#/components/schemas/UserCreate"));
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
 	}
 
 	@Override

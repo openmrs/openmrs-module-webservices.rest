@@ -9,17 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -94,43 +85,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("name", new StringSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("voided", new BooleanSchema())
-			        .addProperty("memberIds", new ArraySchema().items(new IntegerSchema()));
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-		        .addProperty("name", new StringSchema())
-		        .addProperty("description", new StringSchema())
-		        .addProperty("memberIds", new ArraySchema().items(new IntegerSchema()));
-		schema.setRequired(Arrays.asList("name", "description", "memberIds"));
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation representation) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-		        .addProperty("name", new StringSchema())
-		        .addProperty("description", new StringSchema());
-		schema.setRequired(Arrays.asList("name", "description"));
-		return schema;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

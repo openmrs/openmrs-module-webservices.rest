@@ -13,9 +13,7 @@ import io.swagger.v3.oas.models.media.DateTimeSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.Order;
-import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -88,40 +86,6 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		d.addProperty("instructions");
 		return d;
 		
-	}
-
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema();
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-					.addProperty("startDate", new DateTimeSchema())
-					.addProperty("autoExpireDate", new DateTimeSchema())
-					.addProperty("standardRegimenCode", new StringSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			schema
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet"))
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("patient", new StringSchema().example("uuid"))
-				.addProperty("concept", new StringSchema().example("uuid"))
-				.addProperty("startDate", new DateTimeSchema())
-				.addProperty("autoExpireDate", new DateTimeSchema())
-				.addProperty("standardRegimenCode", new StringSchema())
-				.addProperty("instructions", new StringSchema())
-				.required(Arrays.asList("patient", "concept"));
 	}
 
 	/**

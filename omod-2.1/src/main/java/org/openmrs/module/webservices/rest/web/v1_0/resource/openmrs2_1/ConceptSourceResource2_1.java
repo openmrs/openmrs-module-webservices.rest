@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.ConceptSource;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -28,24 +26,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptS
         "2.1.* - 9.*" })
 public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema.addProperty("uniqueId", new StringSchema());
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation representation) {
-		Schema<?> schema = super.getCREATESchema(representation);
-		if (schema != null) {
-            schema.addProperty("uniqueId", new StringSchema());
-		}
-		return schema;
-	}
-	
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */

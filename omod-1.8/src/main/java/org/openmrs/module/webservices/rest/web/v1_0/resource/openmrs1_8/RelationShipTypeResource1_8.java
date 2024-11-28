@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
@@ -29,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/relationshiptype", supportedClass = RelationshipType.class, supportedOpenmrsVersions = {
@@ -131,36 +126,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		description.addProperty("description");
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("aIsToB", new StringSchema())
-			        .addProperty("bIsToA", new StringSchema());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("weight", new IntegerSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-		        .addProperty("aIsToB", new StringSchema().required(Collections.singletonList("aIsToB")))
-		        .addProperty("bIsToA", new StringSchema().required(Collections.singletonList("bIsToA")))
-		        .addProperty("weight", new IntegerSchema());
-		        
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

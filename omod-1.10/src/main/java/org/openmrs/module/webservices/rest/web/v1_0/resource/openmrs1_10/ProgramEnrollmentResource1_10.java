@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import org.openmrs.Concept;
-import org.openmrs.Location;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.context.Context;
@@ -99,33 +92,7 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 		d.addProperty("voided");
 		return d;
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = super.getCREATESchema(rep);
-		if (schema != null) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("states", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ProgramenrollmentStateCreate")))
-					.addProperty("outcome", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"));
-		}
-		return schema;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return super.getUPDATESchema(rep)
-				.addProperty("dateEnrolled", new DateTimeSchema())
-				.addProperty("states", new ArraySchema().items(new Schema<Object>().$ref("#/components/schemas/ProgramenrollmentStateCreate")))
-				.addProperty("outcome", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-				.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
-				.addProperty("voided", new BooleanSchema())
-				.addProperty("dateCompleted", new DateTimeSchema())
-				.required(Collections.singletonList("dateEnrolled"));
-		
-	}
-	
+
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();

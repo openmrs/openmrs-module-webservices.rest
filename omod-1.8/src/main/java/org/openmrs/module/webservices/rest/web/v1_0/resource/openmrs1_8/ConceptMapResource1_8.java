@@ -10,13 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
@@ -66,37 +61,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema();
-		if (rep instanceof DefaultRepresentation) {
-			schema
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGetRef"))
-			        .addProperty("sourceCode", new StringSchema());
-		} else if (rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("source", new Schema<Object>().$ref("#/components/schemas/ConceptSourceGet"))
-			        .addProperty("sourceCode", new StringSchema())
-			        .addProperty("comment", new StringSchema());
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-		        .addProperty("source", new StringSchema())
-		        .addProperty("sourceCode", new StringSchema());
-		schema.setRequired(Arrays.asList("source", "sourceCode"));
-		return schema;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

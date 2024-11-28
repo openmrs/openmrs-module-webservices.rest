@@ -12,9 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.customdatatype.CustomDatatype;
@@ -106,30 +103,7 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 		description.addRequiredProperty("value");
 		return description;
 	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new Schema<Object>()
-		        .addProperty("attributeType", new StringSchema().example("uuid"))
-		        .addProperty("value", new StringSchema())
-		        .required(Arrays.asList("attributeType", "value"));
-	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-					.addProperty("display", new StringSchema())
-					.addProperty("uuid", new StringSchema())
-					.addProperty("attributeType", new StringSchema())
-					.addProperty("value", new StringSchema())
-					.addProperty("voided", new BooleanSchema());
-		}
-		return model;
-	}
-	
+
 	/**
 	 * Gets the display string for an attribute.
 	 * 

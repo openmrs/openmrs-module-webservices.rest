@@ -11,10 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import java.util.ArrayList;
 
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
@@ -98,36 +94,6 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 		return d;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("startDate", new DateTimeSchema())
-					.addProperty("endDate", new DateTimeSchema())
-					.addProperty("patientUuid", new StringSchema());
-		}
-		//FIXME missing props
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("patientUuid", new StringSchema())
-				.addProperty("startDate", new DateTimeSchema())
-				.addProperty("endDate", new DateTimeSchema());
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("startDate", new DateTimeSchema())
-				.addProperty("endDate", new DateTimeSchema());
-	}
-	
 	@PropertyGetter("display")
 	public String getDisplay(CohortMembership cohortMembership) {
 		return "Patient in cohort (see link with rel=patient)";

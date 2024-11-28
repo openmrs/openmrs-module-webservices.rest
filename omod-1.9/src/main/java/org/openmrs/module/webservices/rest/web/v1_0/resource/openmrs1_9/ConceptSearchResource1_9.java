@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
@@ -71,28 +68,7 @@ public class ConceptSearchResource1_9 extends BaseDelegatingResource<ConceptSear
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema.addProperty("display", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
-						.addProperty("conceptName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-						.addProperty("conceptName", new Schema<ConceptName>().$ref("#/components/schemas/ConceptNameGetRef"))
-						.addProperty("word", new StringSchema())
-						.addProperty("transientWeight", new StringSchema());
-			}
-		}
-		return schema;
-	}
-	
-	/**
+    /**
 	 * @see
 	 */
 	@PropertyGetter("display")

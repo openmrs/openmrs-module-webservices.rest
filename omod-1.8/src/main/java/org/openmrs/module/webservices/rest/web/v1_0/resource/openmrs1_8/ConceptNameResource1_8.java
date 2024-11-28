@@ -10,19 +10,11 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
-import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -78,44 +70,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema();
-		if (rep instanceof RefRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema());
-		} else if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("name", new StringSchema())
-			        .addProperty("locale", new StringSchema().example("en"))
-			        .addProperty("localePreferred", new BooleanSchema())
-			        .addProperty("conceptNameType", new Schema<ConceptNameType>()._enum(Arrays.asList(ConceptNameType.values())));
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-		        .addProperty("name", new StringSchema())
-		        .addProperty("locale", new StringSchema().example("en"))
-		        .addProperty("localePreferred", new BooleanSchema()._default(false))
-				.addProperty("conceptNameType", new Schema<ConceptNameType>()._enum(Arrays.asList(ConceptNameType.values())));
-		schema.setRequired(Arrays.asList("name", "locale"));
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation representation) {
-		return new Schema<Object>()
-		        .addProperty("name", new StringSchema());
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

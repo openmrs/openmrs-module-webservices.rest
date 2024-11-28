@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
@@ -107,36 +101,8 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("name", new StringSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("started", new BooleanSchema()) //FIXME check type
-			        .addProperty("startupErrorMessage", new StringSchema()); //FIXME add-link: action
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("packageName", new StringSchema())
-			        .addProperty("author", new StringSchema())
-			        .addProperty("version", new StringSchema())
-			        .addProperty("requireOpenmrsVersion", new StringSchema())
-			        .addProperty("awareOfModules", new ArraySchema().items(new StringSchema())) //FIXME check type
-			        .addProperty("requiredModules", new ArraySchema().items(new StringSchema()));
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema());
-		}
-		return model;
-	}
-	
-	/**
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingReadableResource#doGetAll(RequestContext)
 	 */
 	@Override

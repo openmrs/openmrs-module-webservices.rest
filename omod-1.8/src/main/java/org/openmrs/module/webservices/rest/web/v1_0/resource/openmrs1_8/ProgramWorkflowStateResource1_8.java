@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -34,7 +28,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SubResource(parent = ProgramWorkflowResource1_8.class, path = "state", supportedClass = ProgramWorkflowState.class, supportedOpenmrsVersions = {
@@ -122,40 +115,6 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 			return description;
 		}
 		return null;
-	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("retired", new BooleanSchema())
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("retired", new BooleanSchema())
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("retired", new BooleanSchema())
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate").required(Collections.singletonList("concept")))
-				.addProperty("initial", new BooleanSchema())
-				.addProperty("terminal", new BooleanSchema());
-
 	}
 
 	@Override

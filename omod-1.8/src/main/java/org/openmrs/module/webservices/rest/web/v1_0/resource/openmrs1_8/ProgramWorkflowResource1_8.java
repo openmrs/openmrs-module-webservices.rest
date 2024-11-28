@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import org.openmrs.Concept;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -70,27 +66,8 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 		}
 		return null;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet")));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
-					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetFull")));
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"))
-					.addProperty("states", new ArraySchema().items(new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet")));
-		}
-		return model;
-	}
-	
-	@PropertyGetter("states")
+
+    @PropertyGetter("states")
 	public Set<ProgramWorkflowState> getUnretiredStates(ProgramWorkflow instance) {
 		return instance.getStates(false);
 	}

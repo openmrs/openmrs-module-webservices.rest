@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -92,14 +88,7 @@ public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<Locat
 		
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return ((ObjectSchema) super.getCREATESchema(rep))
-		        .addProperty("retired", new BooleanSchema())
-		        .addProperty("retiredReason", new StringSchema());
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

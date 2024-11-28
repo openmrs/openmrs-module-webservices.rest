@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.openmrs.api.APIException;
@@ -43,9 +38,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/moduleaction", supportedClass = ModuleAction.class, supportedOpenmrsVersions = {
@@ -295,25 +288,7 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		description.addRequiredProperty("action", "action");
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return ((ObjectSchema) super.getGETSchema(rep))
-		        .addProperty("modules", new ArraySchema().$ref("#/definitions/ModuleGetRef"))
-				.addProperty("action", new Schema<ModuleAction.Action>()._enum(Arrays.asList(ModuleAction.Action.values())));
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("modules", new ArraySchema().items(new StringSchema().example("moduleId")))
-		        .addProperty("allModules", new BooleanSchema())
-		        .addProperty("action", new Schema<ModuleAction.Action>()._enum(Arrays.asList(ModuleAction.Action.values())))
-		        .addProperty("installUri", new StringSchema())
-		        .required(Collections.singletonList("action"));
-	}
-	
+
 	/**
 	 * Converter does not handle getters starting with 'is' instead of 'get'
 	 */

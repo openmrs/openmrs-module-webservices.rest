@@ -61,22 +61,7 @@ public class PersonResource1_11 extends PersonResource1_10 {
 		description.addProperty("deathdateEstimated");
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return addNewProperties(super.getGETSchema(rep), rep);
-	}
 
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return addNewProperties(super.getCREATESchema(rep), rep);
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return addNewProperties(super.getUPDATESchema(rep), rep);
-	}
-	
 	private Schema<?> addNewProperties(Schema<?> model, Representation rep) {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model.addProperty("deathdateEstimated", new BooleanSchema()._default(false));

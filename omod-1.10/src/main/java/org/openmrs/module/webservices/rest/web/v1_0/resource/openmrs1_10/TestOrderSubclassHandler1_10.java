@@ -18,9 +18,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
-import org.openmrs.Concept;
 import org.openmrs.Order;
-import org.openmrs.OrderFrequency;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.TestOrder;
@@ -127,48 +125,6 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		        .getResourceBySupportedClass(Order.class);
 		//this actually throws a ResourceDoesNotSupportOperationException
 		return orderResource.getUpdatableProperties();
-	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		ObjectSchema orderSchema = (ObjectSchema) orderResource.getGETSchema(rep);
-		orderSchema
-				.addProperty("laterality", new Schema<TestOrder.Laterality>()._enum(Arrays.asList(TestOrder.Laterality.values())))
-				.addProperty("clinicalHistory", new StringSchema())
-				.addProperty("numberOfRepeats", new IntegerSchema());
-		
-		if (rep instanceof DefaultRepresentation) {
-			orderSchema
-					.addProperty("specimenSource", new Schema<Concept>().$ref("#/components/schemas/ConceptGetRef"))
-					.addProperty("frequency", new Schema<OrderFrequency>().$ref("#/components/schemas/OrderfrequencyGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			orderSchema
-					.addProperty("specimenSource", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"))
-					.addProperty("frequency", new Schema<OrderFrequency>().$ref("#/components/schemas/OrderfrequencyGetFull"));
-		}
-		return orderSchema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		ObjectSchema orderSchema = (ObjectSchema) orderResource.getCREATESchema(rep);
-		return orderSchema
-				.addProperty("specimenSource", new StringSchema().example("uuid"))
-				.addProperty("laterality", new Schema<TestOrder.Laterality>()._enum(Arrays.asList(TestOrder.Laterality.values())))
-				.addProperty("clinicalHistory", new StringSchema())
-				.addProperty("frequency", new StringSchema().example("uuid"))
-				.addProperty("numberOfRepeats", new IntegerSchema());
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		return orderResource.getUPDATESchema(rep);
 	}
 
 	public PageableResult getActiveOrders(Patient patient, RequestContext context) {

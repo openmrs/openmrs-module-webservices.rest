@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Form;
 import org.openmrs.FormResource;
@@ -140,45 +137,6 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-				schema
-						.addProperty("name", new StringSchema())
-						.addProperty("valueReference", new StringSchema());
-			}
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("dataType", new StringSchema())
-						.addProperty("handler", new StringSchema())
-						.addProperty("handlerConfig", new StringSchema());
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("form", new StringSchema())
-				.addProperty("name", new StringSchema())
-				.addProperty("dataType", new StringSchema())
-				.addProperty("handler", new StringSchema())
-				.addProperty("handlerConfig", new StringSchema())
-				.addProperty("value", new StringSchema())
-				.addProperty("valueReference", new StringSchema());
-		if (rep instanceof FullRepresentation) {
-			schema.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormCreate"));
-		}
-		return schema;
-	}
-	
 	@Override
 	protected void delete(FormResource delegate, String reason, RequestContext context) throws ResponseException {
 		purge(delegate, context);

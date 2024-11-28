@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.MapSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -42,14 +40,8 @@ public class ServerLogResource1_8 extends BaseDelegatingResource<ServerLogAction
 		rest.put("serverLog", serverLogActionWrapper.getServerLogs());
 		return rest;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return super.getGETSchema(rep)
-		        .addProperty("serverLog", new MapSchema());
-	}
-	
-	@Override
+
+    @Override
 	public ServerLogActionWrapper getByUniqueId(String uniqueId) {
 		throw new UnsupportedOperationException("Serverlog doesn't support to this action");
 	}

@@ -9,13 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Concept;
 import org.openmrs.Field;
-import org.openmrs.FieldType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,46 +30,6 @@ import java.util.List;
  */
 @Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = { "1.8.* - 9.*" })
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
-	
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> modelImpl = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-					.addProperty("tableName", new StringSchema())
-					.addProperty("attributeName", new StringSchema())
-					.addProperty("defaultValue", new StringSchema())
-					.addProperty("selectMultiple", new BooleanSchema()._default(false));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.addProperty("fieldType", new Schema<FieldType>().$ref("#/components/schemas/FieldtypeGet"))
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-					.addProperty("fieldType", new Schema<FieldType>().$ref("#/components/schemas/FieldtypeGetFull"))
-					.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = (ObjectSchema) super.getCREATESchema(rep)
-				.addProperty("fieldType", new Schema<FieldType>().$ref("#/components/schemas/FieldtypeCreate"))
-				.addProperty("selectMultiple", new BooleanSchema()._default(false))
-				.addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-				.addProperty("tableName", new StringSchema())
-				.addProperty("attributeName", new StringSchema())
-				.addProperty("defaultValue", new StringSchema());
-
-		schema.setRequired(Arrays.asList("fieldType", "selectMultiple"));
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return super.getUPDATESchema(rep);
-	}
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)

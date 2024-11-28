@@ -16,7 +16,6 @@ import java.util.List;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
@@ -67,39 +66,6 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 			return description;
 		}
 		return null;
-	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema();
-		if (rep instanceof RefRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema());
-		} else if (rep instanceof DefaultRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("locale", new StringSchema());
-		} else if (rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("description", new StringSchema())
-			        .addProperty("locale", new StringSchema());
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema
-		        .addProperty("description", new StringSchema())
-		        .addProperty("locale", new StringSchema().example("fr"));
-		schema.setRequired(Arrays.asList("description", "locale"));
-		return schema;
 	}
 	
 	/**

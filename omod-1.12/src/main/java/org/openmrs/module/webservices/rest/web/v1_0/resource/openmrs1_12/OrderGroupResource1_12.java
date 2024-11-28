@@ -9,15 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.OrderGroup;
-import org.openmrs.OrderSet;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -128,52 +121,6 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof Schema) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("voided", new BooleanSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
-						.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetRef"))
-						.addProperty("orders", new Schema<Order>().$ref("#/components/schemas/OrderGetRef"))
-						.addProperty("orderSet", new Schema<OrderSet>().$ref("#/components/schemas/OrdersetGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("auditInfo", new BooleanSchema())
-						.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
-						.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterGetRef"))
-						.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderGetRef")))
-						.addProperty("orderSet", new Schema<OrderSet>().$ref("#/components/schemas/OrdersetGetRef"));
-			} else if (rep instanceof RefRepresentation) {
-				schema
-						.addProperty("display", new StringSchema())
-						.addProperty("uuid", new StringSchema());
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation representation) {
-		return new ObjectSchema()
-				.addProperty("patient", new StringSchema().example("uuid"))
-				.addProperty("encounter", new StringSchema().example("uuid"))
-				.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderCreate")))
-				.addProperty("orderSet", new StringSchema().example("uuid"));
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderCreate")));
-	}
-	
 	@PropertyGetter("display")
 	public String getDisplayString(OrderGroup group) {
 		if (group.getOrders() == null)

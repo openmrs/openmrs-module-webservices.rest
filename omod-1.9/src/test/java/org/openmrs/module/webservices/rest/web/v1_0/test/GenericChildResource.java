@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.test;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -42,24 +38,6 @@ public class GenericChildResource extends DelegatingCrudResource<GenericChild> {
 		description.addProperty("value");
 		
 		return description;
-	}
-
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return super.getGETSchema(rep)
-				.addProperty("uuid", new UUIDSchema())
-				.addProperty("value", new StringSchema());
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new Schema<Object>()
-		        .addProperty("value", new StringSchema());
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema();
 	}
 
 	@Override

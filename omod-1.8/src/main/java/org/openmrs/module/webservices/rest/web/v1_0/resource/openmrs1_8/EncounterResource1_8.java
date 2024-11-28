@@ -9,16 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Form;
-import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
@@ -41,7 +32,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.resource.impl.ServiceSearcher;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -92,55 +82,6 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 			return description;
 		}
 		return null;
-	}
-
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("encounterDatetime", new DateTimeSchema())
-					.addProperty("provider", new StringSchema()) //FIXME
-					.addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			schema.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef")) //FIXME
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGetRef")) //FIXME
-					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGetRef")) //FIXME
-					.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef")) //FIXME
-					.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGetRef"))) //FIXME
-					.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderGetRef"))); //FIXME
-		} else if (rep instanceof FullRepresentation) {
-			schema.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGet")) //FIXME
-					.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationGet")) //FIXME
-					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGet")) //FIXME
-					.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGet")) //FIXME
-					.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsGet"))) //FIXME
-					.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderGet"))); //FIXME
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientCreate"))
-				.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeCreate"))
-				.addProperty("encounterDatetime", new DateTimeSchema())
-				.addProperty("location", new Schema<Location>().$ref("#/components/schemas/LocationCreate"))
-				.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormCreate"))
-				.addProperty("provider", new StringSchema())
-				.addProperty("orders", new ArraySchema().items(new Schema<Order>().$ref("#/components/schemas/OrderCreate")))
-				.addProperty("obs", new ArraySchema().items(new Schema<Obs>().$ref("#/components/schemas/ObsCreate")));
-
-		schema.setRequired(Arrays.asList("patient", "encounterType"));
-
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
 	}
 
 	/**

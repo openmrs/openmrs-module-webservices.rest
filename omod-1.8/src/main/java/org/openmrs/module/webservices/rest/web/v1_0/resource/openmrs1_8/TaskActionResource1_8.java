@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
@@ -34,9 +29,7 @@ import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.TaskDefinition;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 @Resource(name = RestConstants.VERSION_1 + "/taskaction", supportedClass = TaskAction.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
@@ -198,28 +191,6 @@ public class TaskActionResource1_8 extends BaseDelegatingResource<TaskAction> im
 		return description;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		schema.addProperty("tasks", new ArraySchema().items(new StringSchema()));
-		schema.addProperty("action", new Schema<TaskAction.Action>().type("string")._enum(Arrays.asList(TaskAction.Action.values())))
-				.required(Collections.singletonList("action"));
-		return schema;
-
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema schema = new ObjectSchema();
-		schema.addProperty("tasks", new ArraySchema().items(new StringSchema()));
-		schema.addProperty("allTasks", new BooleanSchema());
-		schema.addProperty("action", new Schema<TaskAction.Action>().type("string")._enum(Arrays.asList(TaskAction.Action.values())))
-				.required(Collections.singletonList("action"));
-		return schema;
-	}
-	
 	/**
 	 * Converter does not handle getters starting with 'is' instead of 'get'
 	 */

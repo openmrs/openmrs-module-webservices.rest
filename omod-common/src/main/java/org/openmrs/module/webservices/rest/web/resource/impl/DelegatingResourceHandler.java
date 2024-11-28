@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -89,39 +88,5 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	 * @throws ResponseException if this resource does not support the operation
 	 */
 	DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException;
-	
-	/**
-	 * Returns a {@link Schema} object representing GET representation schema for the resource.
-	 * 
-	 * @param rep representation type under which the resource {@link Schema} should be fetched. It
-	 *            can take {@link Representation#DEFAULT}, {@link Representation#REF}, or
-	 *            {@link Representation#FULL}
-	 * @return a {@link Schema} object or null in case if such model does not exist or not
-	 *         documented.
-	 */
-	Schema<?> getGETSchema(Representation rep);
-	
-	/**
-	 * Returns a {@link Schema} object representing CREATE representation schema for the resource.
-	 * The returned model object will hold properties (and example values) required to create the
-	 * underlying resource.
-	 * 
-	 * @param rep representation type under which the resource {@link Schema} should be fetched. It
-	 *            can take {@link Representation#DEFAULT}, or {@link Representation#FULL}
-	 * @return a {@link Schema} object or null in case if such model does not exist or not
-	 *         documented.
-	 */
-	Schema<?> getCREATESchema(Representation rep);
-	
-	/**
-	 * Returns a {@link Schema} object representing UPDATE representation schema for the resource.
-	 * The returned model object will hold properties (and example values) required to update the
-	 * underlying resource.
-	 * 
-	 * @param rep representation type under which the resource {@link Schema} should be fetched. It
-	 *            can take {@link Representation#DEFAULT}, or {@link Representation#FULL}
-	 * @return a {@link Schema} object or null in case if such model does not exist or not
-	 *         documented.
-	 */
-	Schema<?> getUPDATESchema(Representation rep);
+
 }

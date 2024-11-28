@@ -10,17 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.NumberSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Field;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
@@ -43,65 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @SubResource(parent = FormResource1_8.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
-	
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> modelImpl = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("fieldNumber", new IntegerSchema())
-			        .addProperty("fieldPart", new StringSchema())
-			        .addProperty("pageNumber", new IntegerSchema())
-			        .addProperty("minOccurs", new IntegerSchema())
-			        .addProperty("maxOccurs", new IntegerSchema())
-			        .addProperty("required", new BooleanSchema()._default(false))
-			        .addProperty("sortWeight", new NumberSchema().format("float"))
-			        .addProperty("retired", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGet"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGet"))
-					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGet"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormGetFull"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldGetFull"))
-					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetFull"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<Object> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
-		        .addProperty("form", new StringSchema().example("uuid"))
-		        .addProperty("field", new StringSchema().example("uuid"))
-		        .addProperty("required", new BooleanSchema()._default(false))
-		        .addProperty("parent", new StringSchema().example("uuid"))
-		        .addProperty("fieldNumber", new IntegerSchema())
-		        .addProperty("fieldPart", new StringSchema())
-		        .addProperty("pageNumber", new IntegerSchema())
-		        .addProperty("minOccurs", new IntegerSchema())
-		        .addProperty("maxOccurs", new IntegerSchema())
-		        .addProperty("sortWeight", new BooleanSchema()._default(false))
-		        .required(Arrays.asList("form", "field", "required"));
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("form", new Schema<Form>().$ref("#/components/schemas/FormCreate"))
-					.addProperty("field", new Schema<Field>().$ref("#/components/schemas/FieldCreate"))
-					.addProperty("parent", new Schema<FormField>().$ref("#/components/schemas/FormFormfieldCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

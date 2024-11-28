@@ -9,16 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.ConceptClass;
 import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -152,38 +146,5 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 		d.addProperty("conceptClasses");
 		return d;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			schema
-			        .addProperty("javaClassName", new StringSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			schema
-					.addProperty("conceptClasses", new ArraySchema().items(new Schema<ConceptClass>().$ref("#/components/schemas/ConceptclassGetRef")))
-					.addProperty("parent", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("conceptClasses", new ArraySchema().items(new Schema<ConceptClass>().$ref("#/components/schemas/ConceptclassGetFull")))
-					.addProperty("parent", new Schema<OrderType>().$ref("#/components/schemas/OrdertypeGetFull"));
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = super.getCREATESchema(rep);
-		if (schema instanceof ObjectSchema) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("javaClassName", new StringSchema())
-					.addProperty("parent", new StringSchema().example("uuid"))
-					.addProperty("conceptClasses", new ArraySchema().items(new StringSchema().example("uuid")));
 
-			objectSchema.setRequired(Collections.singletonList("javaClassName"));
-		}
-		return schema;
-	}
 }

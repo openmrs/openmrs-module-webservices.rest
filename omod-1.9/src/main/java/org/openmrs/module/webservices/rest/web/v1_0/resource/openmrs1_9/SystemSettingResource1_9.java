@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import java.util.Collections;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
@@ -111,49 +107,6 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("property", new StringSchema())
-					.addProperty("value", new StringSchema())
-					.addProperty("description", new StringSchema())
-					.addProperty("display", new StringSchema());
-
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("datatypeClassname", new StringSchema())
-						.addProperty("datatypeConfig", new StringSchema())
-						.addProperty("preferredHandlerClassname", new StringSchema())
-						.addProperty("handlerConfig", new StringSchema());
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("property", new StringSchema())
-				.addProperty("description", new StringSchema())
-				.addProperty("datatypeClassname", new StringSchema())
-				.addProperty("datatypeConfig", new StringSchema())
-				.addProperty("preferredHandlerClassname", new StringSchema())
-				.addProperty("handlerConfig", new StringSchema())
-				.addProperty("value", new StringSchema())
-				.required(Collections.singletonList("property"));
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		Schema<?> schema = getCREATESchema(rep);
-		((ObjectSchema) schema).getProperties().remove("property");
-		return schema;
-	}
-	
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

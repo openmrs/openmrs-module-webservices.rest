@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.CustomDatatype;
@@ -101,27 +98,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 		return null;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("datatypeClassname", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("handlers", new ArraySchema().items(new Schema<CustomDatatypeHandler<?,?>>().$ref("#/components/schemas/CustomdatatypeHandlersGetRef")));
-			} else if (rep instanceof FullRepresentation) {
-				((Schema<?>) schema)
-						.addProperty("handlers", new ArraySchema().items(new Schema<CustomDatatypeHandler<?,?>>().$ref("#/components/schemas/CustomdatatypeHandlersGet")));
-			}
-		}
-		return schema;
-	}
-	
-	@Override
+    @Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
 		List<CustomDatatypeRepresentation> datatypes = getAllCustomDatatypes();
 		

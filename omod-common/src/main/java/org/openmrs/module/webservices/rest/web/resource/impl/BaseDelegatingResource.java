@@ -23,10 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,8 +42,6 @@ import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.SubClassHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -71,31 +65,7 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 
 	private final Log log = LogFactory.getLog(getClass());
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new Schema<Object>();
-		if (rep instanceof DefaultRepresentation) {
-			schema.addProperty("links", new ArraySchema()
-					.items(new ObjectSchema()
-							.addProperty("rel", new StringSchema().example("self|full"))
-							.addProperty("uri", new StringSchema().format("uri"))));
-		} else if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("auditInfo", new StringSchema())
-					.addProperty("links", new ArraySchema()
-							.items(new ObjectSchema()
-									.addProperty("rel", new StringSchema().example("self"))
-									.addProperty("uri", new StringSchema().format("uri"))));
-		} else if (rep instanceof RefRepresentation) {
-			schema.addProperty("links", new ArraySchema()
-					.items(new ObjectSchema()
-							.addProperty("rel", new StringSchema().example("self"))
-							.addProperty("uri", new StringSchema().format("uri"))));
-		}
-		return schema;
-	}
-
-	protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
+    protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
 
 	/**
 	 * Properties that should silently be ignored if you try to get them. Implementations should
@@ -296,11 +266,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		throw new ResourceDoesNotSupportOperationException();
 	}
 
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return null;
-	}
-
 	/**
 	 * Gets a description of resource's properties which can be edited.
 	 * <p/>
@@ -317,15 +282,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 			description.getProperties().remove(property);
 		}
 		return description;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		Schema<?> schema = getCREATESchema(rep);
-		for (String property : getPropertiesToExposeAsSubResources()) {
-			schema.getProperties().remove(property);
-		}
-		return schema;
 	}
 
 	/**

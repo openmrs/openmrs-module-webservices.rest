@@ -9,15 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.DateSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.DateTimeSchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
-import org.openmrs.Obs;
-import org.openmrs.Person;
 import org.openmrs.activelist.ActiveListItem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -29,60 +20,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
-
 /**
  * Subclass of {@link DataDelegatingCrudResource} with helper methods specific to
  * {@link ActiveListItem}
  */
 public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> extends DataDelegatingCrudResource<T> {
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("uuid", new UUIDSchema())
-				.addProperty("display", new StringSchema())
-				.addProperty("startDate", new DateTimeSchema())
-				.addProperty("endDate", new DateTimeSchema())
-				.addProperty("comments", new StringSchema())
-				.addProperty("voided", new BooleanSchema());
-		
-		if (rep instanceof DefaultRepresentation) {
-			schema
-				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGet"))
-				.addProperty("activeListType", new StringSchema())
-				.addProperty("startObs", new Schema<Object>().$ref("#/components/schemas/ObsGet"))
-				.addProperty("stopObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			schema
-				.addProperty("person", new Schema<Object>().$ref("#/components/schemas/PersonGetRef"))
-				.addProperty("activeListType", new StringSchema())
-				.addProperty("startObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"))
-				.addProperty("stopObs", new Schema<Object>().$ref("#/components/schemas/ObsGetRef"));
-		}
-		return schema;
-	}
 
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("person", new StringSchema())
-				.addProperty("startDate", new DateSchema())
-				.addProperty("comments", new StringSchema())
-				.addProperty("startObs", new StringSchema())
-				.addProperty("stopObs", new StringSchema());
-
-		schema.setRequired(Arrays.asList("person", "startDate"));
-
-		if (rep instanceof FullRepresentation) {
-			schema.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonCreate"));
-			schema.addProperty("startObs", new Schema<Obs>().$ref("#/components/schemas/ObsCreate"));
-			schema.addProperty("stopObs", new Schema<Obs>().$ref("#/components/schemas/ObsCreate"));
-		}
-
-		return schema;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

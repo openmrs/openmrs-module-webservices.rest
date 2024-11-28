@@ -60,21 +60,6 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return addNewProperties(super.getGETSchema(rep), rep);
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return addNewProperties(super.getCREATESchema(rep), rep);
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return addNewProperties(super.getUPDATESchema(rep), rep);
-	}
-	
 	private Schema<?> addNewProperties(Schema<?> model, Representation rep) {
 		return model;
 	}

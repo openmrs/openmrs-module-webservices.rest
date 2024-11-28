@@ -9,15 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.EncounterType;
 import org.openmrs.Form;
-import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -96,64 +88,6 @@ public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof ObjectSchema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema())
-					.addProperty("name", new StringSchema())
-					.addProperty("description", new StringSchema())
-					.addProperty("version", new StringSchema())
-					.addProperty("build", new IntegerSchema())
-					.addProperty("published", new BooleanSchema()._default(false))
-					.addProperty("retired", new BooleanSchema());
-
-			if (rep instanceof DefaultRepresentation) {
-				objectSchema
-						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef"))
-						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetRef")));
-			} else if (rep instanceof FullRepresentation) {
-				objectSchema
-						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeGetRef"))
-						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldGetRef")));;
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = super.getCREATESchema(rep);
-		if (schema instanceof ObjectSchema) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("version", new StringSchema())
-					.addProperty("encounterType", new StringSchema())
-					.addProperty("build", new IntegerSchema())
-					.addProperty("published", new BooleanSchema()._default(false))
-					.addProperty("formFields", new ArraySchema().items(new StringSchema()))
-					.addProperty("xslt", new StringSchema())
-					.addProperty("template", new StringSchema());
-
-			objectSchema.setRequired(Arrays.asList("version"));
-
-			if (rep instanceof FullRepresentation) {
-				objectSchema
-						.addProperty("encounterType", new Schema<EncounterType>().$ref("#/components/schemas/EncountertypeCreate"))
-						.addProperty("formFields", new ArraySchema().items(new Schema<FormField>().$ref("#/components/schemas/FormFormfieldCreate")));
-			}
-		}
-		return schema;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */

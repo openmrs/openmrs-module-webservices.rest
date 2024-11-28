@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import org.openmrs.Person;
 import org.openmrs.Provider;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.context.Context;
@@ -33,7 +28,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -113,50 +107,6 @@ public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider
 		return getCreatableProperties();
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGetRef"))
-					.addProperty("identifier", new StringSchema())
-					.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeGetRef")))
-					.addProperty("preferredHandlerClassname", new StringSchema());
-
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
-						.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeGet")));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = super.getCREATESchema(rep);
-		if (schema instanceof Schema) {
-            schema
-					.addProperty("person", new StringSchema().example("uuid"))
-					.addProperty("identifier", new StringSchema())
-					.addProperty("attributes", new ArraySchema().items(new Schema<ProviderAttribute>().$ref("#/components/schemas/ProviderAttributeCreate")))
-					.addProperty("retired", new BooleanSchema());
-
-			schema.setRequired(Arrays.asList("person", "identifier"));
-
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("person", new Schema<Person>().$ref("#/components/schemas/PersonCreate"));
-			}
-		}
-		return schema;
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */

@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.FieldType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -31,21 +28,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource(name = RestConstants.VERSION_1 + "/fieldtype", supportedClass = FieldType.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
 public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldType> {
-	
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> modelImpl = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .addProperty("isSet", new BooleanSchema()._default(false));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

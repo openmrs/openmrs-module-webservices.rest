@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
@@ -123,39 +119,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet")))
-			        .addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGet")));
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull")))
-					.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGetFull")))
-					.addProperty("allInheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleGetFull")));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-				.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeCreate")))
-				.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("description", new StringSchema())
-				.addProperty("privileges", new ArraySchema().items(new Schema<Privilege>().$ref("#/components/schemas/PrivilegeCreate")))
-				.addProperty("inheritedRoles", new ArraySchema().items(new Schema<Role>().$ref("#/components/schemas/RoleCreate")));
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

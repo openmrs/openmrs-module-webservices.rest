@@ -9,15 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.NumberSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
-import org.openmrs.Privilege;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -33,8 +26,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.Collections;
 
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
@@ -114,44 +105,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("format", new StringSchema())
-			        .addProperty("foreignKey", new IntegerSchema())
-			        .addProperty("sortWeight", new NumberSchema().format("double"))
-			        .addProperty("searchable", new BooleanSchema()._default(false));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull"))
-			        .addProperty("concept", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-		        .addProperty("format", new StringSchema().example("java.lang.String"))
-		        .addProperty("foreignKey", new IntegerSchema())
-		        .addProperty("sortWeight", new NumberSchema().format("double"))
-		        .addProperty("searchable", new BooleanSchema()._default(false))
-				.addProperty("editPrivilege", new Schema<Privilege>().$ref("#/components/schemas/PrivilegeGetFull"))
-		        .required(Collections.singletonList("description"));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */

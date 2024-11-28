@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -23,8 +20,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Arrays;
 
 /**
  * {@link Resource} for Order, supporting standard CRUD operations on fulfiller_comment and
@@ -52,24 +47,6 @@ public class FulfillerDetailsResource2_2 extends DelegatingSubResource<Fulfiller
 		delegatingResourceDescription.addProperty("fulfillerStatus");
 		delegatingResourceDescription.addProperty("fulfillerComment");
 		return delegatingResourceDescription;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		schema
-				.addProperty("fulfillerComment", new StringSchema())
-				.addProperty("fulfillerStatus", new Schema<Order.FulfillerStatus>().type("string")._enum(Arrays.asList(Order.FulfillerStatus.values())));
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("fulfillerComment", new StringSchema())
-				.addProperty("fulfillerStatus", new Schema<Order.FulfillerStatus>().type("string")._enum(Arrays.asList(Order.FulfillerStatus.values())));
 	}
 
 	@Override

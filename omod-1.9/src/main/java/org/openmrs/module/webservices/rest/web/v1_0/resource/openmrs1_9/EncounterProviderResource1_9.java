@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
@@ -89,49 +85,6 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("provider", new Schema<Provider>().$ref("#/components/schemas/ProviderGetRef"))
-					.addProperty("encounterRole", new Schema<EncounterRole>().$ref("#/components/schemas/EncounterroleGetRef"))
-					.addProperty("voided", new BooleanSchema());
-
-			if (rep instanceof FullRepresentation) {
-				((Schema<?>) schema)
-						.addProperty("provider", new Schema<Provider>().$ref("#/components/schemas/ProviderGet"))
-						.addProperty("encounterRole", new Schema<EncounterRole>().$ref("#/components/schemas/EncounterroleGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> schema = new ObjectSchema()
-				.addProperty("provider", new StringSchema().example("uuid"))
-				.addProperty("encounterRole", new StringSchema().example("uuid"))
-				.addProperty("encounter", new StringSchema()); //FIXME remove if not needed
-
-		if (rep instanceof FullRepresentation) {
-			schema
-					.addProperty("provider", new Schema<Provider>().$ref("#/components/schemas/ProviderCreate"))
-					.addProperty("encounter", new Schema<Encounter>().$ref("#/components/schemas/EncounterCreate"))
-					.addProperty("encounterRole", new Schema<EncounterRole>().$ref("#/components/schemas/EncounterroleCreate"));
-		}
-		return schema;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("encounterRole", new StringSchema())
-				.addProperty("voided", new BooleanSchema())
-				.addProperty("voidReason", new StringSchema());
-	}
-	
 	@Override
 	public Encounter getParent(EncounterProvider instance) {
 		return instance.getEncounter();

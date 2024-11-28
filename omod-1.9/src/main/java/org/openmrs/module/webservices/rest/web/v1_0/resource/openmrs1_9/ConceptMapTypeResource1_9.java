@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.ConceptMapType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -81,23 +78,7 @@ public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<Co
 		
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("isHidden", new BooleanSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-		        .addProperty("isHidden", new BooleanSchema());
-	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

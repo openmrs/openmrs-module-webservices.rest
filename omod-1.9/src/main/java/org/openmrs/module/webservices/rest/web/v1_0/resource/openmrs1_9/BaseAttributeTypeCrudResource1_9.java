@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.attribute.AttributeType;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -20,8 +17,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 
-import java.util.Collections;
-
 /**
  * Subclass of {@link MetadataDelegatingCrudResource} with helper methods specific to
  * {@link AttributeType}
@@ -29,38 +24,7 @@ import java.util.Collections;
  * @param <T>
  */
 public abstract class BaseAttributeTypeCrudResource1_9<T extends AttributeType<?>> extends MetadataDelegatingCrudResource<T> {
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = (Schema<?>) super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("minOccurs", new IntegerSchema())
-			        .addProperty("maxOccurs", new IntegerSchema())
-			        .addProperty("datatypeClassname", new StringSchema())
-			        .addProperty("preferredHandlerClassname", new StringSchema());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("datatypeConfig", new StringSchema())
-			        .addProperty("handlerConfig", new StringSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-				.addProperty("datatypeClassname", new StringSchema())
-				.addProperty("minOccurs", new IntegerSchema())
-				.addProperty("maxOccurs", new IntegerSchema())
-				.addProperty("datatypeConfig", new StringSchema())
-				.addProperty("preferredHandlerClassname", new StringSchema())
-				.addProperty("handlerConfig", new StringSchema()).required(Collections.singletonList("datatypeClassname"));
-		
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

@@ -9,16 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.DateSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflow;
-import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -172,44 +165,5 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		updatableProperties.addProperty("voided");
 		return updatableProperties;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("startDate", new DateSchema())
-			        .addProperty("endDate", new DateSchema())
-			        .addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGet"));
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetRef"))
-			        .addProperty("patientProgram", new ObjectSchema()); //FIXME type
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateGetFull"))
-			        .addProperty("patientProgram", new ObjectSchema()); //FIXME type
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("state", new Schema<ProgramWorkflowState>().$ref("#/components/schemas/WorkflowStateCreate"))
-		        .required(Collections.singletonList("state"));
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("startDate", new DateSchema())
-		        .addProperty("endDate", new DateSchema())
-		        .addProperty("voided", new BooleanSchema());
-	}
+
 }

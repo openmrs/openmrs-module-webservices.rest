@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
@@ -34,7 +29,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -106,53 +100,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("givenName", new StringSchema())
-			        .addProperty("middleName", new StringSchema())
-			        .addProperty("familyName", new StringSchema())
-			        .addProperty("familyName2", new StringSchema())
-			        .addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("preferred", new BooleanSchema())
-			        .addProperty("prefix", new StringSchema())
-			        .addProperty("familyNamePrefix", new StringSchema())
-			        .addProperty("familyNameSuffix", new StringSchema())
-			        .addProperty("degree", new StringSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("givenName", new StringSchema())
-		        .addProperty("middleName", new StringSchema())
-		        .addProperty("familyName", new StringSchema())
-		        .addProperty("familyName2", new StringSchema())
-		        .addProperty("preferred", new BooleanSchema()._default(false))
-		        .addProperty("prefix", new StringSchema())
-		        .addProperty("familyNamePrefix", new StringSchema())
-		        .addProperty("familyNameSuffix", new StringSchema())
-		        .addProperty("degree", new StringSchema())
-				.required(Arrays.asList("givenName", "familyName"));
-		        
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */

@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Attributable;
 import org.openmrs.Location;
 import org.openmrs.Person;
@@ -38,8 +33,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsClassLoader;
-
-import java.util.Collections;
 
 /**
  * {@link Resource} for PersonAttributes, supporting standard CRUD operations
@@ -153,48 +146,7 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("value", new StringSchema())
-					.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeGet"))
-			        .addProperty("voided", new BooleanSchema());
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .addProperty("display", new StringSchema())
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("value", new StringSchema())
-					.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeGetFull"))
-			        .addProperty("voided", new BooleanSchema())
-			        .addProperty("hydratedObject", new StringSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) new ObjectSchema()
-		        .addProperty("attributeType", new StringSchema().example("uuid"))
-		        .addProperty("value", new StringSchema())
-		        .addProperty("hydratedObject", new StringSchema().example("uuid"))
-		        .required(Collections.singletonList("attributeType"));
-		if (rep instanceof FullRepresentation) {
-			model.addProperty("attributeType", new Schema<PersonAttributeType>().$ref("#/components/schemas/PersonattributetypeCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */

@@ -9,16 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import java.util.Arrays;
 import java.util.Date;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -126,29 +119,8 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		}
 		return null;
 	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETSchema(Representation) (Representation)
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof Schema && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-			Schema<?> objectSchema = (Schema<?>) schema;
-			objectSchema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("diagnosis", new StringSchema())
-					.addProperty("condition", new StringSchema())
-					.addProperty("certainty", new Schema<ConditionVerificationStatus>().type("string")._enum(Arrays.asList(ConditionVerificationStatus.values())))
-					.addProperty("rank", new IntegerSchema())
-					.addProperty("patient", new Schema<Patient>().$ref("#/components/schemas/PatientGetRef"))
-					.addProperty("voided", new BooleanSchema());
-		}
-		return schema;
-	}
-	
-	/**
+
+    /**
 	 * @param diagnosis
 	 * @return Diagnosis's name
 	 */
@@ -181,35 +153,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		return description;
 	}
 
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATESchema(Representation)
-	 */
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("diagnosis", new StringSchema())
-				.addProperty("encounter", new StringSchema())
-				.addProperty("condition", new StringSchema())
-				.addProperty("certainty", new StringSchema())
-				.addProperty("patient", new StringSchema().example("uuid"))
-				.addProperty("rank", new IntegerSchema());
-	}
-
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATESchema(Representation)
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("diagnosis", new StringSchema())
-				.addProperty("condition", new StringSchema())
-				.addProperty("encounter", new StringSchema())
-				.addProperty("certainty", new Schema<ConditionVerificationStatus>().type("string")._enum(Arrays.asList(ConditionVerificationStatus.values())))
-				.addProperty("rank", new IntegerSchema())
-				.addProperty("voided", new BooleanSchema());
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */

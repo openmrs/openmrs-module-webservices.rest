@@ -90,18 +90,4 @@ public class CatSubclassHandler_1_9 implements DelegatingSubclassHandler<Animal,
 		return null;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return null;
-	}
-
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return null;
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return null;
-	}
 }

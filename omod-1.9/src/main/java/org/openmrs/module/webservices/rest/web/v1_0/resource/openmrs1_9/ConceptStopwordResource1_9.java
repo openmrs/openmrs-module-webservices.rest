@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -27,8 +24,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.ConceptStopWord;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,32 +81,6 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            schema
-					.addProperty("uuid", new StringSchema())
-					.addProperty("display", new StringSchema());
-
-			if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-				schema
-						.addProperty("value", new StringSchema())
-						.addProperty("locale", new StringSchema().example("en")); //FIXME type
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("value", new StringSchema())
-				.addProperty("locale", new StringSchema().example("en"))
-				.required(Collections.singletonList("value"));
-	}
-	
 	/**
 	 * @see DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */

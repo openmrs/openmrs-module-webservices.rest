@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Cohort;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -32,17 +30,7 @@ public class CohortResource2_1 extends CohortResource1_8 {
 		return RestConstants2_1.RESOURCE_VERSION;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            schema.getProperties().remove("memberIds");
-			schema.addProperty("size", new IntegerSchema());
-		}
-		return schema;
-	}
-	
-	@Override
+    @Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		// We do not override the CohortResource1_8 representation, because we want to basically do a clean-slate
 		// representation, rather than make minor tweaks (and require a dev to look at a superclass)

@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang.BooleanUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -41,21 +38,7 @@ public class ObsResource1_11 extends ObsResource1_9 {
 		}
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		return super.getGETSchema(rep)
-		        .addProperty("formFieldPath", new StringSchema())
-		        .addProperty("formFieldNamespace", new StringSchema());
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("formFieldPath", new StringSchema())
-		        .addProperty("formFieldNamespace", new StringSchema());
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
-import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -33,7 +29,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -91,41 +86,6 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		description.addProperty("version");
 		
 		return description;
-	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("uuid", new Schema<String>().type("string").format("uuid"))
-					.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceGetRef"))
-					.addProperty("code", new StringSchema())
-					.addProperty("version", new StringSchema());
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("uuid", new Schema<String>().type("string").format("uuid"))
-					.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceGetFull"))
-					.addProperty("code", new StringSchema())
-					.addProperty("version", new StringSchema())
-					.addProperty("auditInfo", new StringSchema());
-		}
-		return model;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-		        .addProperty("code", new StringSchema())
-				.addProperty("conceptSource", new Schema<ConceptSource>().$ref("#/components/schemas/ConceptsourceCreate"))
-		        .addProperty("version", new StringSchema())
-				.required(Arrays.asList("code", "conceptSource"));
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return super.getUPDATESchema(rep);
 	}
 
 	/**

@@ -9,14 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Allergy;
-import org.openmrs.activelist.AllergySeverity;
-import org.openmrs.activelist.AllergyType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,8 +25,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-
-import java.util.Arrays;
 
 /**
  * {@link Resource} for Allergy, supporting standard CRUD operations
@@ -62,38 +54,7 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 		}
 		return null;
 	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof ObjectSchema) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			objectSchema
-					.addProperty("allergyType", new Schema<AllergyType>().type("string")._enum(Arrays.asList(AllergyType.values())))
-					.addProperty("reaction", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"))
-					.addProperty("severity", new Schema<AllergySeverity>().type("string")._enum(Arrays.asList(AllergySeverity.values())))
-					.addProperty("allergen", new Schema<Object>().$ref("#/components/schemas/ConceptGetRef"));
-			if (rep instanceof FullRepresentation) {
-				objectSchema
-						.addProperty("reaction", new Schema<Object>().$ref("#/components/schemas/ConceptGet"))
-						.addProperty("allergen", new Schema<Object>().$ref("#/components/schemas/ConceptGet"));
-			}
-		}
-		return schema;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("allergyType", new Schema<AllergyType>().type("string")._enum(Arrays.asList(AllergyType.values())))
-				.addProperty("reaction", new ObjectSchema())
-				.addProperty("uuid", new UUIDSchema())
-				.addProperty("severity", new Schema<AllergySeverity>().type("string")._enum(Arrays.asList(AllergySeverity.values())))
-				.addProperty("allergen", new StringSchema());
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */

@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -26,8 +22,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Arrays;
 
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
@@ -115,40 +109,7 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("format", new StringSchema())
-			        .addProperty("formatDescription", new StringSchema())
-			        .addProperty("required", new BooleanSchema())
-			        .addProperty("checkDigit", new BooleanSchema())
-			        .addProperty("validator", new StringSchema())
-					.addProperty("locationBehavior", new Schema<PatientIdentifierType.LocationBehavior>()._enum(Arrays.asList(PatientIdentifierType.LocationBehavior.values())))
-			        .addProperty("uniquenessBehavior", new StringSchema()); //FIXME check type
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-		        .addProperty("format", new StringSchema())
-		        .addProperty("formatDescription", new StringSchema())
-		        .addProperty("required", new BooleanSchema())
-		        .addProperty("checkDigit", new BooleanSchema())
-		        .addProperty("validator", new StringSchema())
-		        .addProperty("locationBehavior", new Schema<PatientIdentifierType.LocationBehavior>()._enum(Arrays.asList(PatientIdentifierType.LocationBehavior.values())))
-		        .addProperty("uniquenessBehavior", new StringSchema()); //FIXME check type
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */

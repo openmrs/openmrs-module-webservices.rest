@@ -10,13 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
 import org.openmrs.Allergy;
 import org.openmrs.Allergies;
 import org.openmrs.AllergyReaction;
@@ -95,48 +90,6 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 		return getCreatableProperties();
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null && (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation)) {
-            schema
-					.addProperty("display", new StringSchema())
-					.addProperty("uuid", new StringSchema())
-					.addProperty("allergen", new ObjectSchema()) //FIXME type
-					.addProperty("severity", new Schema<>().$ref("#/components/schemas/ConceptGetRef"))
-					.addProperty("comment", new StringSchema())
-					.addProperty("reactions", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/ConceptGetRef")))
-					.addProperty("patient", new Schema<>().$ref("#/components/schemas/PatientGetRef"));
-
-			if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("severity", new Schema<>().$ref("#/components/schemas/ConceptGet"))
-						.addProperty("reactions", new ArraySchema().items(new Schema<>().$ref("#/components/schemas/ConceptGet")))
-						.addProperty("patient", new Schema<>().$ref("#/components/schemas/PatientGet"));
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-				.addProperty("allergen", new ObjectSchema()) //FIXME type
-				.addProperty("severity", new ObjectSchema()
-						.addProperty("uuid", new StringSchema()))
-				.addProperty("comment", new StringSchema())
-				.addProperty("reactions", new ArraySchema().items(new ObjectSchema()
-						.addProperty("allergy", new ObjectSchema().addProperty("uuid", new StringSchema()))
-						.addProperty("reaction", new ObjectSchema().addProperty("uuid", new StringSchema()))))
-				.required(Collections.singletonList("allergen"));
-	}
-
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return getCREATESchema(rep);
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */

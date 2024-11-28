@@ -9,12 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.BooleanSchema;
 import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
@@ -162,51 +159,5 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 		description.addProperty("voided");
 		return description;
 	}
-	
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> model = super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("uuid", new UUIDSchema())
-			        .addProperty("display", new StringSchema())
-			        .addProperty("voided", new BooleanSchema());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.addProperty("personA", new Schema<Person>().$ref("#/components/schemas/PersonGet"))
-					.addProperty("relationshipType", new Schema<RelationshipType>().$ref("#/components/schemas/RelationshiptypeGet"))
-					.addProperty("personB", new Schema<Person>().$ref("#/components/schemas/PersonGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("personA", new Schema<Person>().$ref("#/components/schemas/PersonGetFull"))
-					.addProperty("relationshipType", new Schema<RelationshipType>().$ref("#/components/schemas/RelationshiptypeGetFull"))
-					.addProperty("personB", new Schema<Person>().$ref("#/components/schemas/PersonGetFull"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getCREATESchema(Representation rep) {
-		Schema<?> model = (ObjectSchema) new ObjectSchema()
-		        .addProperty("personA", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"))
-		        .addProperty("relationshipType", new Schema<RelationshipType>().$ref("#/components/schemas/RelationshiptypeCreate").example("uuid"))
-		        .addProperty("personB", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"))
-		        .addProperty("startDate", new DateSchema())
-		        .addProperty("endDate", new DateSchema());
-		model.setRequired(Arrays.asList("personA", "relationshipType", "personB"));
-		if (rep instanceof FullRepresentation) {
-			model
-					.addProperty("personA", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"))
-					.addProperty("relationshipType", new Schema<RelationshipType>().$ref("#/components/schemas/RelationshiptypeCreate").example("uuid"))
-					.addProperty("personB", new Schema<Person>().$ref("#/components/schemas/PersonCreate").example("uuid"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Schema<?> getUPDATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("voided", new BooleanSchema()); //FIXME missing properties
-	}
+
 }

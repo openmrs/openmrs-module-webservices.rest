@@ -9,13 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.NumberSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.activelist.Problem;
-import org.openmrs.activelist.ProblemModifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,33 +26,13 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 /**
  * {@link Resource} for Problem, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/problem", supportedClass = Problem.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		ObjectSchema model = (ObjectSchema) super.getGETSchema(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .addProperty("modifier", new Schema<ProblemModifier>().type("string")._enum(Arrays.asList(ProblemModifier.values())))
-			        .addProperty("sortWeight", new NumberSchema().format("double"));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model.addProperty("problem", new Schema<Concept>().$ref("#/components/schemas/ConceptGet"));
-		} else if (rep instanceof FullRepresentation) {
-			model.addProperty("problem", new Schema<Concept>().$ref("#/components/schemas/ConceptGetFull"));
-		}
-		return model;
-	}
-	
-	/**
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	@Override
@@ -91,16 +66,6 @@ public class ProblemResource1_8 extends BaseActiveListItemResource1_8<Problem> {
 		return description;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return super.getCREATESchema(rep)
-				.addProperty("problem", new Schema<Concept>().$ref("#/components/schemas/ConceptCreate"))
-				.addProperty("modifier", new Schema<ProblemModifier>().type("string")._enum(Arrays.asList(ProblemModifier.values())))
-		        .addProperty("sortWeight", new NumberSchema().format("double"))
-		        .required(Collections.singletonList("problem"));
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
 	 */

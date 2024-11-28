@@ -9,13 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.v3.oas.models.media.IntegerSchema;
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.media.UUIDSchema;
 import org.openmrs.api.context.Context;
-import org.openmrs.hl7.HL7Source;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -31,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.HL7MessageController1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.IncomingHl7Message1_8;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -97,37 +90,6 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 		return description;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema instanceof ObjectSchema) {
-			ObjectSchema objectSchema = (ObjectSchema) schema;
-			if (rep instanceof DefaultRepresentation) {
-				objectSchema
-						.addProperty("uuid", new UUIDSchema())
-						.addProperty("display", new StringSchema())
-						.addProperty("messageState", new IntegerSchema());
-			} else if (rep instanceof FullRepresentation) {
-				objectSchema
-						.addProperty("uuid", new UUIDSchema())
-						.addProperty("display", new StringSchema())
-						.addProperty("source", new Schema<HL7Source>().$ref("#/components/schemas/Hl7sourceGet"))
-						.addProperty("sourceKey", new StringSchema())
-						.addProperty("data", new StringSchema())
-						.addProperty("messageState", new IntegerSchema());
-			}
-		}
-		return schema;
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation rep) {
-		return new ObjectSchema()
-		        .addProperty("hl7", new StringSchema()) //FIXME TYPE
-		        .required(Collections.singletonList("hl7"));
-	}
-	
 	/**
 	 * It needs to be overwritten to allow for hidden properties: source, sourceKey and data. They
 	 * are automatically extracted from the hl7 property and populated in

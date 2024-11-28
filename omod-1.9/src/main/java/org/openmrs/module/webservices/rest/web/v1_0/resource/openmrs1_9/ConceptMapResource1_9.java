@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.v3.oas.models.media.ObjectSchema;
-import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.ConceptMap;
-import org.openmrs.ConceptMapType;
-import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -25,8 +21,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptMapResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
-
-import java.util.Arrays;
 
 /**
  * {@link Resource} for {@link ConceptMap}, supporting standard CRUD operations
@@ -59,38 +53,6 @@ public class ConceptMapResource1_9 extends ConceptMapResource1_8 {
 		return null;
 	}
 
-	@Override
-	public Schema<?> getGETSchema(Representation rep) {
-		Schema<?> schema = super.getGETSchema(rep);
-		if (schema != null) {
-            if (rep instanceof DefaultRepresentation) {
-				schema
-						.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGetRef"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGetRef"));
-			} else if (rep instanceof FullRepresentation) {
-				schema
-						.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermGet"))
-						.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeGet"));
-			}
-
-			if (schema.getProperties() != null) {
-				schema.getProperties().remove("source"); //FIXME check
-				schema.getProperties().remove("sourceCode");
-				schema.getProperties().remove("comment");
-			}
-		}
-		return schema;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public Schema<?> getCREATESchema(Representation representation) {
-		return new ObjectSchema()
-				.addProperty("conceptReferenceTerm", new Schema<ConceptReferenceTerm>().$ref("#/components/schemas/ConceptreferencetermCreate"))
-				.addProperty("conceptMapType", new Schema<ConceptMapType>().$ref("#/components/schemas/ConceptmaptypeCreate"))
-				.required(Arrays.asList("conceptReferenceTerm", "conceptMapType"));
-	}
-	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
