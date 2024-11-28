@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -49,7 +42,7 @@ import java.util.Set;
  */
 @Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = "1.8.*")
 public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> {
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -90,57 +83,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("encounterDatetime", new DateProperty())
-			        .property("provider", new StringProperty()) //FIXME
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-		        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
-		        .property("encounterDatetime", new DateProperty())
-		        .property("location", new RefProperty("#/definitions/LocationCreate"))
-		        .property("form", new RefProperty("#/definitions/FormCreate"))
-		        .property("provider", new StringProperty())
-		        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderCreate")))
-		        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsCreate")))
-		        
-		        .required("patient").required("encounterType");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 * <strong>Should</strong> create an encounter type
@@ -148,20 +91,20 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		
+
 		description.addProperty("encounterDatetime"); // has a default value set, hence not required here
 		description.addRequiredProperty("patient");
 		description.addRequiredProperty("encounterType");
-		
+
 		description.addProperty("location");
 		description.addProperty("form");
 		description.addProperty("provider");
 		description.addProperty("orders");
 		description.addProperty("obs");
-		
+
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#newDelegate()
 	 */
@@ -174,7 +117,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		enc.setOrders(new LinkedHashSet<Order>());
 		return enc;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(org.openmrs.Encounter)
 	 */
@@ -182,7 +125,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public Encounter save(Encounter enc) {
 		return Context.getEncounterService().saveEncounter(enc);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(java.lang.String)
 	 */
@@ -190,7 +133,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public Encounter getByUniqueId(String uuid) {
 		return Context.getEncounterService().getEncounterByUuid(uuid);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#delete(org.openmrs.Encounter,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -203,7 +146,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		Context.getEncounterService().voidEncounter(enc, reason);
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#undelete(java.lang.Object,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -215,7 +158,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		return enc;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#purge(org.openmrs.Encounter,
 	 *      org.openmrs.module.webservices.rest.web.RequestContext)
@@ -228,7 +171,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		Context.getEncounterService().purgeEncounter(enc);
 	}
-	
+
 	/**
 	 * @param encounter
 	 * @return encounter type and date
@@ -238,10 +181,10 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		String ret = encounter.getEncounterType() == null ? "?" : encounter.getEncounterType().getName();
 		ret += " ";
 		ret += encounter.getEncounterDatetime() == null ? "?" : Context.getDateFormat().format(
-		    encounter.getEncounterDatetime());
+				encounter.getEncounterDatetime());
 		return ret;
 	}
-	
+
 	/**
 	 * @param instance
 	 * @return all non-voided top-level obs from the given encounter
@@ -250,25 +193,25 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	public static Object getObsAtTopLevel(Encounter instance) {
 		return instance.getObsAtTopLevel(false);
 	}
-	
+
 	@PropertySetter("obs")
 	public static void setObs(Encounter instance, Set<Obs> obs) {
 		instance.getAllObs(true).clear();
 		for (Obs o : obs)
 			instance.addObs(o);
 	}
-	
+
 	@PropertySetter("orders")
 	public static void setOrders(Encounter instance, Set<Order> orders) {
 		for (Order o : orders)
 			instance.addOrder(o);
 	}
-	
+
 	/**
 	 * Gets encounters for the given patient (paged according to context if necessary) only if a
 	 * patient parameter exists in the request set on the {@link RequestContext} otherwise searches
 	 * for encounters that match the specified query
-	 * 
+	 *
 	 * @param context
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doSearch(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
@@ -277,15 +220,15 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		String patientUuid = context.getRequest().getParameter("patient");
 		if (patientUuid != null) {
 			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
+					Patient.class)).getByUniqueId(patientUuid);
 			if (patient == null)
 				return new EmptySearchResult();
 			List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
 			return new NeedsPaging<Encounter>(encs, context);
 		}
-		
+
 		return new ServiceSearcher<Encounter>(EncounterService.class, "getEncounters", "getCountOfEncounters").search(
-		    context.getParameter("q"), context);
+				context.getParameter("q"), context);
 	}
-	
+
 }
