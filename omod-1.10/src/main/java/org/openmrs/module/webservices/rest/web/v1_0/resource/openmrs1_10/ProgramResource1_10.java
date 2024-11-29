@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Program;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -63,18 +59,7 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		}
 		return null;
 	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("outcomesConcept", new StringProperty().example("uuid"));
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("outcomesConcept", new RefProperty("#/definitions/ConceptCreate"));
-		}
-		return model;
-	}
-	
+
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();

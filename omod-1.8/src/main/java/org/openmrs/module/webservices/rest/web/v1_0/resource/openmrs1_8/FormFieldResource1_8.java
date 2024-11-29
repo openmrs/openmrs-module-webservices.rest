@@ -12,13 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.FloatProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Form;
 import org.openmrs.FormField;
 import org.openmrs.api.context.Context;
@@ -41,65 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @SubResource(parent = FormResource1_8.class, path = "formfield", supportedClass = FormField.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("fieldNumber", new IntegerProperty())
-			        .property("fieldPart", new StringProperty())
-			        .property("pageNumber", new IntegerProperty())
-			        .property("minOccurs", new IntegerProperty())
-			        .property("maxOccurs", new IntegerProperty())
-			        .property("required", new BooleanProperty()._default(false))
-			        .property("sortWeight", new FloatProperty())
-			        .property("retired", new BooleanProperty()); //FIXME
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldGetRef"))
-			        .property("form", new RefProperty("#/definitions/FormGetRef"))
-			        .property("field", new RefProperty("#/definitions/FieldGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldGet"))
-			        .property("form", new RefProperty("#/definitions/FormGet"))
-			        .property("field", new RefProperty("#/definitions/FieldGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl() //FIXME validate if correct
-		        .property("form", new StringProperty().example("uuid"))
-		        .property("field", new StringProperty().example("uuid"))
-		        .property("required", new BooleanProperty()._default(false))
-		        .property("parent", new StringProperty().example("uuid"))
-		        .property("fieldNumber", new IntegerProperty())
-		        .property("fieldPart", new StringProperty())
-		        .property("pageNumber", new IntegerProperty())
-		        .property("minOccurs", new IntegerProperty())
-		        .property("maxOccurs", new IntegerProperty())
-		        .property("sortWeight", new BooleanProperty()._default(false))
-		        
-		        .required("form").required("field").required("required");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("form", new RefProperty("#/definitions/FormCreate"))
-			        .property("field", new RefProperty("#/definitions/FieldCreate"))
-			        .property("parent", new RefProperty("#/definitions/FormFormfieldCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

@@ -11,10 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import java.util.ArrayList;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.Patient;
@@ -97,37 +93,7 @@ public class CohortMembershipResource2_1 extends DelegatingSubResource<CohortMem
 		d.addProperty("endDate");
 		return d;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("patientUuid", new StringProperty());
-		}
-		//FIXME missing props
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patientUuid", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty());
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty());
-	}
-	
+
 	@PropertyGetter("display")
 	public String getDisplay(CohortMembership cohortMembership) {
 		return "Patient in cohort (see link with rel=patient)";

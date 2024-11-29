@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
@@ -89,48 +84,7 @@ public class EncounterProviderResource1_9 extends DelegatingSubResource<Encounte
 		description.addProperty("voidReason");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("provider", new RefProperty("#/definitions/ProviderGetRef"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleGetRef"))
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("provider", new RefProperty("#/definitions/ProviderGet"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("provider", new StringProperty().example("uuid"))
-		        .property("encounterRole", new StringProperty().example("uuid"))
-		        .property("encounter", new StringProperty()); //FIXME remove if not needed
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("provider", new RefProperty("#/definitions/ProviderCreate"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("encounterRole", new RefProperty("#/definitions/EncounterroleCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("encounterRole", new StringProperty())
-		        .property("voided", new BooleanProperty())
-		        .property("voidReason", new StringProperty());
-	}
-	
+
 	@Override
 	public Encounter getParent(EncounterProvider instance) {
 		return instance.getEncounter();

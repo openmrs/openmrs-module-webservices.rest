@@ -19,36 +19,36 @@ import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
 
 /**
  * A test resource that is unrelated to the main webservices package.
- * 
+ *
  * @see SwaggerSpecificationCreatorTest#testUnrelatedResourceDefinitions()
  */
 @Resource(name = RestConstants.VERSION_1 + "/unrelated", supportedClass = UnrelatedGenericChild.class, supportedOpenmrsVersions = { "1.9.* - 9.*" })
 public class UnrelatedGenericChildResource extends GenericChildResource {
-	
+
 	public static boolean getGETCalled = false;
-	
+
 	public static boolean getCREATECalled = false;
-	
+
 	public static boolean getUPDATECalled = false;
-	
+
 	/*******************************
 	 * TEST METHOD IMPLEMENTATIONS * These methods are the ones we want to test against. There
 	 * implementaion is unimportant, they just set flags so we can assert the methods were called
 	 * correctly by the reflector.
 	 */
-	
+
 	@Override
 	public Model getGETModel(Representation rep) {
 		getGETCalled = true;
 		return super.getGETModel(rep);
 	}
-	
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		getCREATECalled = true;
 		return super.getCREATEModel(rep);
 	}
-	
+
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		getUPDATECalled = true;

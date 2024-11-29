@@ -62,22 +62,7 @@ public class PersonResource1_11 extends PersonResource1_10 {
 		description.addProperty("deathdateEstimated");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return addNewProperties(super.getGETModel(rep), rep);
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return addNewProperties(super.getCREATEModel(rep), rep);
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return addNewProperties(super.getUPDATEModel(rep), rep);
-	}
-	
+
 	private Model addNewProperties(Model model, Representation rep) {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			((ModelImpl) model)

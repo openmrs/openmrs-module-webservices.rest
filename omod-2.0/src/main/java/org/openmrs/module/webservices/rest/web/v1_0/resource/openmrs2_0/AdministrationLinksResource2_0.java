@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
@@ -116,18 +111,6 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	@PropertyGetter(LINKS)
 	public static Map<String, String> getLinks(AdministrationSectionLinks instance) {
 		return instance.getLinks();
-	}
-
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-					.property(MODULE_TITLE, new StringProperty())
-					.property(LINKS, new ArrayProperty(new ObjectProperty()));
-		}
-
-		return model;
 	}
 
 	@Override

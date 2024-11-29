@@ -13,11 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.OrderType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -151,33 +146,5 @@ public class OrderTypeResource1_10 extends MetadataDelegatingCrudResource<OrderT
 		d.addProperty("conceptClasses");
 		return d;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("javaClassName", new StringProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGetRef")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptClasses", new ArrayProperty(new RefProperty("#/definitions/ConceptclassGet")))
-			        .property("parent", new RefProperty("#/definitions/OrdertypeGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("javaClassName", new StringProperty())
-		        .property("parent", new StringProperty().example("uuid")) //FIXME type
-		        .property("conceptClasses", new ArrayProperty(new StringProperty().example("uuid")))
-		        
-		        .required("javaClassName");
-	}
+
 }

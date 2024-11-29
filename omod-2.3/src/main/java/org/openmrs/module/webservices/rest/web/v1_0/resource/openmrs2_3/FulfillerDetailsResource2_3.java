@@ -9,12 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_3;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
@@ -54,14 +50,6 @@ public class FulfillerDetailsResource2_3 extends DelegatingSubResource<Fulfiller
         delegatingResourceDescription.addProperty("fulfillerComment");
         delegatingResourceDescription.addProperty("accessionNumber");
         return delegatingResourceDescription;
-    }
-
-    @Override
-    public Model getCREATEModel(Representation rep) {
-        return new ModelImpl()
-                .property("fulfillerComment", new StringProperty())
-                .property("fulfillerStatus", new EnumProperty(Order.FulfillerStatus.class))
-                .property("accessionNumber", new StringProperty());
     }
 
     @Override

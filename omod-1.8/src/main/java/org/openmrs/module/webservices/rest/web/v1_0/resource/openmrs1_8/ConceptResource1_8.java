@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -215,73 +208,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("name", new RefProperty("#/definitions/ConceptNameGet"))
-			        .property("datatype", new RefProperty("#/definitions/ConceptdatatypeGetRef"))
-			        .property("conceptClass", new RefProperty("#/definitions/ConceptclassGetRef"))
-			        .property("set", new BooleanProperty())
-			        .property("version", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameGetRef"))) //FIXME
-			        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionGetRef"))) //FIXME
-			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingGetRef"))) //FIXME
-			        .property("answers", new ArrayProperty(new ObjectProperty())) //FIXME
-			        .property("setMembers", new ArrayProperty(new ObjectProperty())); //FIXME
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameCreate")))
-		        .property("datatype", new StringProperty().example("uuid"))
-		        .property("set", new BooleanProperty())
-		        .property("version", new StringProperty())
-		        .property("answers", new ArrayProperty(new StringProperty().example("uuid")))
-		        .property("setMembers", new ArrayProperty(new StringProperty().example("uuid")))
-		        
-		        //ConceptNumeric properties
-		        .property("hiNormal", new StringProperty())
-		        .property("hiAbsolute", new StringProperty())
-		        .property("hiCritical", new StringProperty())
-		        .property("lowNormal", new StringProperty())
-		        .property("lowAbsolute", new StringProperty())
-		        .property("lowCritical", new StringProperty())
-		        .property("units", new StringProperty())
-		        .property("allowDecimal", new StringProperty())
-		        .property("displayPrecision", new StringProperty())
-		        
-		        .required("names").required("datatype").required("conceptClass");
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("conceptClass", new StringProperty())
-			        .property("descriptions", new ArrayProperty(new StringProperty()))
-			        .property("mappings", new ArrayProperty(new StringProperty()));
-		}
-		else if (rep instanceof FullRepresentation) {
-			model
-			        .property("conceptClass", new RefProperty("#/definitions/ConceptclassCreate"))
-			        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionCreate")))
-			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingCreate")));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new RefProperty("#/definitions/ConceptNameCreate"))
-		        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameCreate")))
-		        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionCreate")));
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -90,57 +83,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("encounterDatetime", new DateProperty())
-			        .property("provider", new StringProperty()) //FIXME
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGetRef")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGetRef")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGetRef")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGetRef"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef"))); //FIXME
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("patient", new RefProperty("#/definitions/PatientGet")) //FIXME
-			        .property("location", new RefProperty("#/definitions/LocationGet")) //FIXME
-			        .property("form", new RefProperty("#/definitions/FormGet")) //FIXME
-			        .property("encounterType", new RefProperty("#/definitions/EncountertypeGet")) //FIXME
-			        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsGet"))) //FIXME
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGet"))); //FIXME
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-		        .property("encounterType", new RefProperty("#/definitions/EncountertypeCreate"))
-		        .property("encounterDatetime", new DateProperty())
-		        .property("location", new RefProperty("#/definitions/LocationCreate"))
-		        .property("form", new RefProperty("#/definitions/FormCreate"))
-		        .property("provider", new StringProperty())
-		        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderCreate")))
-		        .property("obs", new ArrayProperty(new RefProperty("#/definitions/ObsCreate")))
-		        
-		        .required("patient").required("encounterType");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 * <strong>Should</strong> create an encounter type
