@@ -12,12 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Allergy;
 import org.openmrs.Allergies;
 import org.openmrs.AllergyReaction;
@@ -95,48 +89,7 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("allergen", new ObjectProperty()) //FIXME type
-			        .property("severity", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("comment", new StringProperty())
-			        .property("reactions", new ArrayProperty(new RefProperty("#/definitions/ConceptGetRef")))
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"));
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("severity", new RefProperty("#/definitions/ConceptGet"))
-			        .property("reactions", new ArrayProperty(new RefProperty("#/definitions/ConceptGet")))
-			        .property("patient", new RefProperty("#/definitions/PatientGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("allergen", new ObjectProperty()) //FIXME type
-		        .property("severity", new ObjectProperty()
-		                .property("uuid", new StringProperty()))
-		        .property("comment", new StringProperty())
-		        .property("reactions", new ArrayProperty(new ObjectProperty()
-		                .property("allergy", new ObjectProperty().property("uuid", new StringProperty()))
-		                .property("reaction", new ObjectProperty().property("uuid", new StringProperty()))))
-		        
-		        .required("allergen");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource#getParent(java.lang.Object)
 	 */

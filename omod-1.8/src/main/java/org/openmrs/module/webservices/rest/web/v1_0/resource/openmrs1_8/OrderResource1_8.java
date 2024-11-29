@@ -11,12 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService.ORDER_STATUS;
@@ -208,81 +202,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 		d.addProperty("accessionNumber");
 		return d;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("instructions", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("accessionNumber", new StringProperty())
-			        .property("discontinuedDate", new DateProperty())
-			        .property("discontinuedReasonNonCoded", new StringProperty())
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGetRef"))
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("orderer", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGetRef"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeGet"))
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGet"))
-			        .property("orderer", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserGet"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("orderType", new StringProperty().example("uuid"))
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("instructions", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("autoExpireDate", new DateProperty())
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("orderer", new StringProperty().example("uuid"))
-		        .property("discontinuedBy", new StringProperty().example("uuid"))
-		        .property("discontinuedDate", new DateProperty())
-		        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"))
-		        .property("discontinuedReasonNonCoded", new StringProperty())
-		        .property("accessionNumber", new StringProperty())
-		        
-		        .required("orderType").required("patient").required("concept");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("orderType", new RefProperty("#/definitions/OrdertypeCreate"))
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedBy", new RefProperty("#/definitions/UserCreate"))
-			        .property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"));
-		}
-		//FIXME missing prop: type
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
-	}
-	
+
 	/**
 	 * Gets orders by given patient (paged according to context if necessary) only if a patient
 	 * parameter exists in the request set on the {@link RequestContext} otherwise
