@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Field;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -35,46 +30,7 @@ import java.util.List;
  */
 @Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = { "1.8.* - 9.*" })
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("tableName", new StringProperty())
-			        .property("attributeName", new StringProperty())
-			        .property("defaultValue", new StringProperty())
-			        .property("selectMultiple", new BooleanProperty()._default(false));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("fieldType", new RefProperty("#/definitions/FieldtypeGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("fieldType", new RefProperty("#/definitions/FieldtypeGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("fieldType", new RefProperty("#/definitions/FieldtypeCreate"))
-		        .property("selectMultiple", new BooleanProperty()._default(false))
-		        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-		        .property("tableName", new StringProperty())
-		        .property("attributeName", new StringProperty())
-		        .property("defaultValue", new StringProperty())
-		        
-		        .required("fieldType").required("selectMultiple");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

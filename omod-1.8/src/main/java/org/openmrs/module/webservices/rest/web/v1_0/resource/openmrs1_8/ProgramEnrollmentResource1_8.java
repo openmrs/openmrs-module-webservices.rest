@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.PatientService;
@@ -125,60 +119,7 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		d.addProperty("voided");
 		return d;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("dateEnrolled", new DateProperty())
-			        .property("dateCompleted", new DateProperty())
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("program", new RefProperty("#/definitions/ProgramGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("program", new RefProperty("#/definitions/ProgramGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("program", new StringProperty().example("uuid"))
-		        .property("dateEnrolled", new DateProperty())
-		        .property("dateCompleted", new DateProperty())
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("voided", new BooleanProperty())
-		        
-		        .required("patient").required("program").required("dateEnrolled");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("program", new RefProperty("#/definitions/ProgramCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("dateEnrolled", new DateProperty())
-		        .property("dateCompleted", new DateProperty()); //FIXME missing props
-		
-	}
-	
+
 	/**
 	 * Gets all the programs (excluding voided) of the given patient
 	 * 

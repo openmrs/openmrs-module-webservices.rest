@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -86,41 +81,7 @@ public class HivDrugOrderSubclassHandler extends BaseDelegatingSubclassHandler<O
 		return d;
 		
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = new ModelImpl();
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("startDate", new DateProperty())
-			        .property("autoExpireDate", new DateProperty())
-			        .property("standardRegimenCode", new StringProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("patient", new RefProperty("#/definitions/PatientGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("startDate", new DateProperty())
-		        .property("autoExpireDate", new DateProperty())
-		        .property("standardRegimenCode", new StringProperty())
-		        .property("instructions", new StringProperty())
-		        
-		        .required("patient").required("concept");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getAllByType(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
