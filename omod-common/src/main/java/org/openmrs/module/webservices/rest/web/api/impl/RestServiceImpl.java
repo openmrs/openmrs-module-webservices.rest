@@ -442,7 +442,7 @@ public class RestServiceImpl implements RestService {
 		if (HibernateProxy.class.isAssignableFrom(resourceClass)) {
 			resourceClass = resourceClass.getSuperclass();
 		}
-		
+
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
 		
 		if (resource == null) {
@@ -688,6 +688,19 @@ public class RestServiceImpl implements RestService {
 			initializeSearchHandlers();
 		}
 		return searchHandlersByResource.get(resourceName);
+	}
+
+	/**
+	 * @see RestService#getResourceHandlerForSupportedClass(Class)
+	 * <strong>Should</strong> return search resources for given resource class
+	 * @param resourceClass the resource class e.g. PatientIdentifier
+	 */
+	@Override
+	public Resource getResourceHandlerForSupportedClass(Class<?> resourceClass) {
+		if (resourcesBySupportedClasses == null) {
+			initializeResources();
+		}
+		return resourcesBySupportedClasses.get(resourceClass);
 	}
 	
 	/**
