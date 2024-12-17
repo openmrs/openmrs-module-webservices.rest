@@ -49,7 +49,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchParameter;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
@@ -76,6 +75,8 @@ import java.util.Set;
 public class SwaggerSpecificationCreator {
 
 	private static Swagger swagger;
+
+	private static String cachedJson;
 
 	private String host;
 
@@ -146,14 +147,15 @@ public class SwaggerSpecificationCreator {
 	}
 
 	public String getJSON() {
-		if (isCached()) {
+		if (isCached() && cachedJson != null) {
 			log.info("Returning a cached copy of Swagger specification");
-			initSwagger();
-		} else {
-			swagger = new Swagger();
-			BuildJSON();
+			return cachedJson;
 		}
-		return createJSON();
+
+		swagger = new Swagger();
+		BuildJSON();
+		cachedJson = createJSON();
+		return cachedJson;
 	}
 
 	private void addDefaultDefinitions() {
@@ -832,12 +834,12 @@ public class SwaggerSpecificationCreator {
 			Map<String, Property> properties = definition.getProperties();
 
 			// 2. merge subclass properties into definition
-			for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties()
-					.entrySet()) {
-				if (properties.get(prop.getKey()) == null) {
-					properties.put(prop.getKey(), prop.getValue());
-				}
-			}
+//			for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties()
+//					.entrySet()) {
+//				if (properties.get(prop.getKey()) == null) {
+//					properties.put(prop.getKey(), prop.getValue());
+//				}
+//			}
 
 			// 3. update description
 			post.setDescription("Certain properties may be required depending on type");
@@ -994,19 +996,17 @@ public class SwaggerSpecificationCreator {
 								  DelegatingResourceHandler<?> resourceHandler) {
 
 		String definitionName = getSchemaName(resourceName, resourceParentName, operationEnum);
+		System.out.println("definition-name:" + definitionName);
 		Model model = null;
 		Model modelRef = null;
 		Model modelFull = null;
 
 		if (definitionName.endsWith("Get")) {
-			model = resourceHandler.getGETModel(Representation.DEFAULT);
-			modelRef = resourceHandler.getGETModel(Representation.REF);
-			modelFull = resourceHandler.getGETModel(Representation.FULL);
+			//TODO: To be fixed in follow up pull request
 		} else if (definitionName.endsWith("Create")) {
-			model = resourceHandler.getCREATEModel(Representation.DEFAULT);
-			modelFull = resourceHandler.getCREATEModel(Representation.FULL);
+			//TODO: To be fixed in follow up pull request
 		} else if (definitionName.endsWith("Update")) {
-			model = resourceHandler.getUPDATEModel(Representation.DEFAULT);
+			//TODO: To be fixed in follow up pull request
 		}
 
 		if (model != null) {
@@ -1025,7 +1025,6 @@ public class SwaggerSpecificationCreator {
 	 * @param operationName get, post, delete
 	 * @param resourceName
 	 * @param resourceParentName
-	 * @param representation
 	 * @param operationEnum
 	 * @return
 	 */
@@ -1230,11 +1229,12 @@ public class SwaggerSpecificationCreator {
 	 * @return true if and only if swagger is not null, and its paths are also set.
 	 */
 	public static boolean isCached() {
-		return swagger != null && swagger.getPaths() != null;
+		return swagger != null && swagger.getPaths() != null && !swagger.getPaths().isEmpty();
 	}
 
 	public static void clearCache() {
 		swagger = null;
+		cachedJson = null;
 	}
 
 }

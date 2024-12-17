@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.attribute.AttributeType;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -28,39 +24,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
  * @param <T>
  */
 public abstract class BaseAttributeTypeCrudResource1_9<T extends AttributeType<?>> extends MetadataDelegatingCrudResource<T> {
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("minOccurs", new IntegerProperty())
-			        .property("maxOccurs", new IntegerProperty())
-			        .property("datatypeClassname", new StringProperty())
-			        .property("preferredHandlerClassname", new StringProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("datatypeConfig", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("datatypeClassname", new StringProperty())
-		        .property("minOccurs", new IntegerProperty())
-		        .property("maxOccurs", new IntegerProperty())
-		        .property("datatypeConfig", new StringProperty())
-		        .property("preferredHandlerClassname", new StringProperty())
-		        .property("handlerConfig", new StringProperty())
-		        
-		        .required("datatypeClassname");
-		
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

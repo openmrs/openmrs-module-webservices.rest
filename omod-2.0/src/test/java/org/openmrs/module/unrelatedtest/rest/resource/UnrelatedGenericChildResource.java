@@ -9,12 +9,13 @@
  */
 package org.openmrs.module.unrelatedtest.rest.resource;
 
-import io.swagger.models.Model;
 import org.openmrs.module.unrelatedtest.UnrelatedGenericChild;
 import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
 
 /**
@@ -25,33 +26,27 @@ import org.openmrs.module.webservices.rest.web.v1_0.test.GenericChildResource;
 @Resource(name = RestConstants.VERSION_1 + "/unrelated", supportedClass = UnrelatedGenericChild.class, supportedOpenmrsVersions = { "1.9.* - 9.*" })
 public class UnrelatedGenericChildResource extends GenericChildResource {
 	
-	public static boolean getGETCalled = false;
+	public static boolean getRepresentationDescription = false;
 	
-	public static boolean getCREATECalled = false;
+	public static boolean getCreatableProperties = false;
 	
-	public static boolean getUPDATECalled = false;
-	
-	/*******************************
-	 * TEST METHOD IMPLEMENTATIONS * These methods are the ones we want to test against. There
-	 * implementaion is unimportant, they just set flags so we can assert the methods were called
-	 * correctly by the reflector.
-	 */
-	
+	public static boolean getUpdatableProperties = false;
+
 	@Override
-	public Model getGETModel(Representation rep) {
-		getGETCalled = true;
-		return super.getGETModel(rep);
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		getRepresentationDescription = true;
+		return new DelegatingResourceDescription();
 	}
-	
+
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		getCREATECalled = true;
-		return super.getCREATEModel(rep);
+	public DelegatingResourceDescription getCreatableProperties() {
+		getCreatableProperties = true;
+		return new DelegatingResourceDescription();
 	}
-	
+
 	@Override
-	public Model getUPDATEModel(Representation rep) {
-		getUPDATECalled = true;
-		return super.getUPDATEModel(rep);
+	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
+		getUpdatableProperties = true;
+		return new DelegatingResourceDescription();
 	}
 }
