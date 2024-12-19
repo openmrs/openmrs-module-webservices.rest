@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Privilege;
 import org.openmrs.Role;
@@ -124,39 +119,7 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGetRef")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGetRef")));
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeGet")))
-			        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")))
-			        .property("allInheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleGet")));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("description", new StringProperty())
-		        .property("privileges", new ArrayProperty(new RefProperty("#/definitions/PrivilegeCreate")))
-		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
