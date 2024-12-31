@@ -131,6 +131,7 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 		DelegatingResourceDescription rep = new DelegatingResourceDescription();
 		rep.addProperty("uuid");
 		rep.addProperty("display");
+		rep.addProperty("status");
 		if (delegate instanceof OpenmrsData) {
 			if (((OpenmrsData) delegate).isVoided())
 				rep.addProperty("voided");
