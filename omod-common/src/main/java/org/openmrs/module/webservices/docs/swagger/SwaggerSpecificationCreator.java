@@ -832,12 +832,12 @@ public class SwaggerSpecificationCreator {
 			Map<String, Property> properties = definition.getProperties();
 
 			// 2. merge subclass properties into definition
-			for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties()
-					.entrySet()) {
-				if (properties.get(prop.getKey()) == null) {
-					properties.put(prop.getKey(), prop.getValue());
-				}
-			}
+//			for (Map.Entry<String, Property> prop : resourceHandler.getGETModel(Representation.FULL).getProperties()
+//					.entrySet()) {
+//				if (properties.get(prop.getKey()) == null) {
+//					properties.put(prop.getKey(), prop.getValue());
+//				}
+//			}
 
 			// 3. update description
 			post.setDescription("Certain properties may be required depending on type");
