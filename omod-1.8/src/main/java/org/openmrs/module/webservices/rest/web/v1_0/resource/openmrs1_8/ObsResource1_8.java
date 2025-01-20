@@ -234,8 +234,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		return new StringProperty(value != null ? value.toString() : null);
 	}
 
-
-
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl().property("person", new StringProperty().example("uuid"))
