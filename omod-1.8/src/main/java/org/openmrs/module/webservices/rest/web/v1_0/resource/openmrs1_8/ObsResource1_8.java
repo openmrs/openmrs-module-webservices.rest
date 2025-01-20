@@ -11,7 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -185,11 +187,14 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
+		DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		DateFormat targetDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model.property("uuid", new StringProperty()).property("display", new StringProperty())
 			        .property("obsDatetime", new DateProperty()).property("accessionNumber", new StringProperty())
 			        .property("comment", new StringProperty()).property("voided", new BooleanProperty())
-			        .property("value", new StringProperty()).property("valueModifier", new StringProperty());
+					.property("value", parseAndFormatDateProperty(model.property("value", new StringProperty()), isoDateFormat, targetDateFormat))
+					.property("valueModifier", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
@@ -212,7 +217,25 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		}
 		return model;
 	}
-	
+
+	private StringProperty parseAndFormatDateProperty(Object value, DateFormat isoDateFormat, DateFormat targetDateFormat) {
+		if (value instanceof String) {
+			String valueString = (String) value;
+			try {
+				// Trying to parse the string as an ISO date
+				Date date = isoDateFormat.parse(valueString);
+				String formattedDate = targetDateFormat.format(date);
+				return new StringProperty(formattedDate);
+			} catch (ParseException e) {
+				// If parsing fails, return the original string
+				return new StringProperty(valueString);
+			}
+		}
+		return new StringProperty(value != null ? value.toString() : null);
+	}
+
+
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl().property("person", new StringProperty().example("uuid"))
