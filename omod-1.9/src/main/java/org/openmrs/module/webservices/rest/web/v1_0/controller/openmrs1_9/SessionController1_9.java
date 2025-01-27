@@ -52,6 +52,8 @@ public class SessionController1_9 extends BaseRestController {
 
 	private static final Logger log = LoggerFactory.getLogger(SessionController1_9.class);
 
+	// In OpenMRS 2.0, the privilege changes from View Providers to Get Providers
+	public static final String GET_PROVIDERS_PRIVILEGE = "Get Providers";
 	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name),links)";
 
 	@Autowired
@@ -139,12 +141,14 @@ public class SessionController1_9 extends BaseRestController {
 			Collection<Provider> providers = new HashSet<Provider>();
 			try {
 				Context.addProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+				Context.addProxyPrivilege(GET_PROVIDERS_PRIVILEGE);
 				if (currentUser.getPerson() != null) {
 					providers = Context.getProviderService().getProvidersByPerson(currentUser.getPerson(), false);
 				}
 			}
 			finally {
 				Context.removeProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
+				Context.removeProxyPrivilege(GET_PROVIDERS_PRIVILEGE);
 			}
 			if (providers.size() > 1) {
 				log.warn("Can't handle users with multiple provider accounts");
