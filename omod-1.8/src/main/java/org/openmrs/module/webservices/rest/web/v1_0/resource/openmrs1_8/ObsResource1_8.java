@@ -68,6 +68,8 @@ import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 
+import static org.openmrs.module.webservices.rest.web.ConversionUtil.DATE_FORMAT;
+
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
@@ -187,14 +189,11 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		DateFormat targetDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			model.property("uuid", new StringProperty()).property("display", new StringProperty())
 			        .property("obsDatetime", new DateProperty()).property("accessionNumber", new StringProperty())
 			        .property("comment", new StringProperty()).property("voided", new BooleanProperty())
-					.property("value", parseAndFormatDateProperty(model.property("value", new StringProperty()), isoDateFormat, targetDateFormat))
-					.property("valueModifier", new StringProperty());
+			        .property("value", new StringProperty()).property("valueModifier", new StringProperty());
 		}
 		if (rep instanceof DefaultRepresentation) {
 			model.property("concept", new RefProperty("#/definitions/ConceptGetRef"))
@@ -216,22 +215,6 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			        .property("encounter", new RefProperty("#/definitions/EncounterGet"));
 		}
 		return model;
-	}
-
-	private StringProperty parseAndFormatDateProperty(Object value, DateFormat isoDateFormat, DateFormat targetDateFormat) {
-		if (value instanceof String) {
-			String valueString = (String) value;
-			try {
-				// Trying to parse the string as an ISO date
-				Date date = isoDateFormat.parse(valueString);
-				String formattedDate = targetDateFormat.format(date);
-				return new StringProperty(formattedDate);
-			} catch (ParseException e) {
-				// If parsing fails, return the original string
-				return new StringProperty(valueString);
-			}
-		}
-		return new StringProperty(value != null ? value.toString() : null);
 	}
 
 	@Override
@@ -342,9 +325,20 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 					return Context.getLocationService().getLocationByUuid(obs.getValueText());
 				}
 			} else {
-				return obs.getValueText();
+				try {
+					String[] supportedFormats = { DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ",
+							"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+					DateFormat targetDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					for (String format : supportedFormats) {
+						SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+						Date date = dateFormat.parse(obs.getValueText());
+						return targetDateFormat.format(date);
+					}
+				} catch (ParseException e) {
+					// If parsing fails, return the original string
+					return obs.getValueText();
+				}
 			}
-			
 		}
 
 		if (obs.getValueNumeric() != null) {
