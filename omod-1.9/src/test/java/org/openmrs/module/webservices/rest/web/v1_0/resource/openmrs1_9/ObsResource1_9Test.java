@@ -275,6 +275,15 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 	}
 
 	@Test
+	public void setValue_shouldReturnValueTextInDateFormat() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = Context.getConceptService().getConceptByUuid("96408258-000b-424e-af1a-403919332938");
+		obs.setConcept(concept);
+		ObsResource1_8.setValue(obs, "2023-07-23T00:00:00.000-0400");
+		assertEquals("2023-07-23", new ObsResource1_8().getValue(obs));
+	}
+
+	@Test
 	public void setValue_shouldReturnUuidForConceptFalse() throws Exception {
 		Obs obs = new Obs();
 		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
