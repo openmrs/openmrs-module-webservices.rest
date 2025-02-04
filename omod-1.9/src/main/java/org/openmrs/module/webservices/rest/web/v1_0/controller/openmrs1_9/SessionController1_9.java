@@ -57,6 +57,8 @@ public class SessionController1_9 extends BaseRestController {
 	// The privilege to get providers was changed from "View Providers" to "Get Providers" in OpenMRS 2.0
 	private static final String GET_PROVIDERS = "Get Providers";
 
+	private static final String GET_GLOBAL_PROPERTIES = "Get Global Properties";
+
 	@Autowired
 	RestService restService;
 
@@ -70,7 +72,16 @@ public class SessionController1_9 extends BaseRestController {
 		SimpleObject session = new SimpleObject();
 		session.add("authenticated", authenticated);
 		session.add("locale", Context.getLocale());
-		session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.addProxyPrivilege(GET_GLOBAL_PROPERTIES);
+			
+			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(GET_GLOBAL_PROPERTIES);
+		}
 		if (authenticated) {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
 			    new CustomRepresentation(USER_CUSTOM_REP)));
