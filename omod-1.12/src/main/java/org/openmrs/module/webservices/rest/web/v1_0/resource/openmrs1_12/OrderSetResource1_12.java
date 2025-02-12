@@ -9,16 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_12;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.RefProperty;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
@@ -107,31 +102,5 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		d.addProperty("orderSetMembers");
 		return d;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("operator", new EnumProperty(OrderSet.Operator.class));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(new RefProperty(
-			                "#/definitions/OrdersetOrdersetmemberGetRef")));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("orderSetMembers", new ArrayProperty(
-			                new RefProperty("#/definitions/OrdersetOrdersetmemberGet")));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("operator", new EnumProperty(OrderSet.Operator.class))
-		        .property("orderSetMembers",
-		            new ArrayProperty(new RefProperty("#/definitions/OrdersetOrdersetmemberCreate")));
-	}
+
 }

@@ -13,15 +13,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
-import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -29,6 +23,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
@@ -44,7 +39,13 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		if (rep instanceof DefaultRepresentation) {
+		if (rep instanceof RefRepresentation) {
+			DelegatingResourceDescription description = new DelegatingResourceDescription();
+			description.addProperty("uuid");
+			description.addProperty("display");
+			description.addSelfLink();
+			return description;
+		} else if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("uuid");
@@ -57,8 +58,8 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 			return description;
 		} else if (rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
-			description.addProperty("display");
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("name");
 			description.addProperty("locale");
 			description.addProperty("localePreferred");
@@ -69,38 +70,7 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("name", new StringProperty())
-			        .property("locale", new StringProperty().example("en"))
-			        .property("localePreferred", new BooleanProperty())
-			        .property("conceptNameType", new EnumProperty(ConceptNameType.class));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("locale", new StringProperty().example("en"))
-		        .property("localePreferred", new BooleanProperty()._default(false))
-		        .property("conceptNameType", new EnumProperty(ConceptNameType.class))
-		        .required("name").required("locale");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new StringProperty()); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
