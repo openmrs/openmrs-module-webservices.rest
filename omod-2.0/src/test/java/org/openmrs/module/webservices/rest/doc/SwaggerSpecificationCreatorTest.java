@@ -15,12 +15,18 @@ import io.swagger.converter.ModelConverters;
 import io.swagger.jackson.ModelResolver;
 import io.swagger.models.Info;
 import io.swagger.models.Model;
+import io.swagger.models.ModelImpl;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Scheme;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.parameters.Parameter;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.DateProperty;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
 import io.swagger.util.Json;
 import org.dbunit.database.DatabaseConnection;
 import org.junit.Assert;
@@ -30,9 +36,14 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResource;
+import org.openmrs.module.webservices.docs.swagger.SwaggerGenerationUtil;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ObsResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.Field;
@@ -49,6 +60,7 @@ import java.util.Map;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -270,7 +282,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		assertFalse(json.contains("SystemsettingSubdetailsUpdate"));
 		assertTrue(json.contains("SystemsettingSubdetailsCreate"));
 	}
-	
+
 	/**
 	 * Ensure that resources not directly related to the webservices.rest package are successfully
 	 * defined in the swagger documentation.
@@ -281,24 +293,82 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		UnrelatedGenericChildResource.getGETCalled = false;
 		UnrelatedGenericChildResource.getCREATECalled = false;
 		UnrelatedGenericChildResource.getUPDATECalled = false;
-		
+
 		// make sure to reset the cache for multiple tests in the same run
 		if (SwaggerSpecificationCreator.isCached()) {
 			SwaggerSpecificationCreator.clearCache();
 		}
-		
+
 		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
 		ssc.getJSON();
-		
+
 		// check our custom methods were called
 		assertTrue(UnrelatedGenericChildResource.getGETCalled);
 		assertTrue(UnrelatedGenericChildResource.getCREATECalled);
 		assertTrue(UnrelatedGenericChildResource.getUPDATECalled);
-		
+
 		// assert the definition is now in the swagger object
 		Swagger swagger = ssc.getSwagger();
 		assertTrue(swagger.getDefinitions().containsKey("UnrelatedGet"));
 		assertTrue(swagger.getDefinitions().containsKey("UnrelatedUpdate"));
 		assertTrue(swagger.getDefinitions().containsKey("UnrelatedCreate"));
+	}
+
+	@Test
+	public void generateGETModel_shouldCheckForOpenMRSResource() {
+		Model model = SwaggerGenerationUtil.generateGETModel(new ObsResource1_8(), Representation.DEFAULT);
+		Assert.assertTrue(model instanceof ModelImpl);
+
+		Map<String, Property> propertyMap = model.getProperties();
+		Assert.assertTrue(propertyMap.containsKey("location"));
+		Assert.assertTrue(propertyMap.containsKey("person"));
+		Assert.assertTrue(propertyMap.containsKey("obsDatetime"));
+		Assert.assertTrue(propertyMap.containsKey("accessionNumber"));
+
+		Assert.assertTrue(propertyMap.get("location") instanceof RefProperty);
+		Assert.assertTrue(propertyMap.get("person") instanceof RefProperty);
+		Assert.assertTrue(propertyMap.get("obsDatetime") instanceof DateProperty);
+		Assert.assertTrue(propertyMap.get("accessionNumber") instanceof StringProperty);
+
+		Property property = propertyMap.get("encounter");
+		Assert.assertTrue(property instanceof RefProperty);
+		RefProperty stringProperty = (RefProperty) property;
+		assertEquals("#/definitions/EncounterGet", stringProperty.get$ref());
+	}
+
+	@Test
+	public void generateGETModel_shouldReturnAnArrayPropertyWithRefPropertyWhenFieldIsASet() {
+		Model model = SwaggerGenerationUtil.generateGETModel(new PersonResource1_8(), Representation.DEFAULT);
+		Assert.assertTrue(model instanceof ModelImpl);
+
+		Map<String, Property> propertyMap = model.getProperties();
+		System.out.println(propertyMap);
+		Assert.assertTrue(propertyMap.containsKey("attributes"));
+
+		Property property = propertyMap.get("attributes");
+		Assert.assertTrue(property instanceof ArrayProperty);
+		ArrayProperty arrayProperty = (ArrayProperty) property;
+		Assert.assertTrue(arrayProperty.getItems() instanceof RefProperty);
+
+		RefProperty refProperty = (RefProperty) arrayProperty.getItems();
+		assertEquals("#/definitions/PersonAttributeGet", refProperty.get$ref());
+	}
+
+	@Test
+	public void generateGETModelPatient_shouldReturnAnArrayPropertyWithRefPropertyWhenFieldIsASet() {
+		Model model = SwaggerGenerationUtil.generateGETModel(new PatientResource1_8(), Representation.DEFAULT);
+		Assert.assertTrue(model instanceof ModelImpl);
+
+		Map<String, Property> propertyMap = model.getProperties();
+		System.out.println(propertyMap);
+		Assert.assertTrue(propertyMap.containsKey("identifiers"));
+
+		Property property = propertyMap.get("identifiers");
+		Assert.assertTrue(property instanceof ArrayProperty);
+		ArrayProperty arrayProperty = (ArrayProperty) property;
+		Assert.assertTrue(arrayProperty.getItems() instanceof RefProperty);
+
+		RefProperty refProperty = (RefProperty) arrayProperty.getItems();
+		assertEquals("#/definitions/PatientIdentifierGet", refProperty.get$ref());
 	}
 }
