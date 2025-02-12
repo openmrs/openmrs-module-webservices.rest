@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
@@ -112,45 +105,7 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("format", new StringProperty())
-			        .property("foreignKey", new IntegerProperty())
-			        .property("sortWeight", new DoubleProperty())
-			        .property("searchable", new BooleanProperty()._default(false));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeGet"))
-			        .property("concept", new StringProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("format", new StringProperty().example("java.lang.String"))
-		        .property("foreignKey", new IntegerProperty())
-		        .property("sortWeight", new DoubleProperty())
-		        .property("searchable", new BooleanProperty()._default(false))
-		        .property("editPrivilege", new RefProperty("#/definitions/PrivilegeCreate"))
-		        
-		        .required("description");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(java.lang.String)
 	 */
