@@ -8,6 +8,7 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
+
 import org.openmrs.layout.address.AddressSupport;
 import org.openmrs.layout.address.AddressTemplate;
 import org.openmrs.module.webservices.rest.web.RestConstants;

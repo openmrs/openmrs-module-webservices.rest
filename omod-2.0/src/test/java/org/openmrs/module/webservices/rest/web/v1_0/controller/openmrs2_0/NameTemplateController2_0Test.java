@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import static org.hamcrest.Matchers.is;
+
+import java.io.InputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
@@ -22,10 +26,6 @@ import org.openmrs.module.webservices.rest.web.response.UnknownResourceException
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.io.InputStream;
-
-import static org.hamcrest.Matchers.is;
 
 public class NameTemplateController2_0Test extends RestControllerTestUtils {
 
