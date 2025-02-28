@@ -46,13 +46,13 @@
     "familyName"
   ],
   "nameMappings": {
-    "familyName": "PersonName.familyName",
     "givenName": "PersonName.givenName",
+    "familyName": "PersonName.familyName",
     "middleName": "PersonName.middleName"
   },
   "sizeMappings": {
-    "familyName": "30",
     "givenName": "30",
+    "familyName": "30",
     "middleName": "30"
   },
   "elementDefaults": null,
