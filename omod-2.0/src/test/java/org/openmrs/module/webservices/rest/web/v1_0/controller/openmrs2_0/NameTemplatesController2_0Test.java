@@ -24,31 +24,31 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTes
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class NameTemplatesController2_0Test extends RestControllerTestUtils {
-    
-    private static final String SHORT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
-    private static final String LONG_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
-    
-    public String getURI() {
-        return "nametemplates";
-    }
-    
-    @Test
-    public void shouldGetAll() throws Exception {
-        MockHttpServletRequest req = newGetRequest(getURI());
-        SimpleObject result = deserialize(handle(req));
-        
-        String shortNameTemplateJson;
-        String longNameTemplateJson;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(SHORT_NAMETEMPLATE_RESOURCE)) {
-            shortNameTemplateJson = IOUtils.toString(inputStream, "UTF-8");
-        }
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(LONG_NAMETEMPLATE_RESOURCE)) {
-            longNameTemplateJson = IOUtils.toString(inputStream, "UTF-8");
-        }
-        
-        Assert.assertThat(result.containsKey("results"), is(true));
-        Assert.assertThat(result.get("results"), is(not(empty())));
-        Assert.assertThat(result.get("results"), hasItem(SimpleObject.parseJson(shortNameTemplateJson)));
-        Assert.assertThat(result.get("results"), hasItem(SimpleObject.parseJson(longNameTemplateJson)));
-    }
+	
+	private static final String SHORT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
+	private static final String LONG_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
+	
+	public String getURI() {
+		return "nametemplates";
+	}
+	
+	@Test
+	public void shouldGetAll() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		String shortNameTemplateJson;
+		String longNameTemplateJson;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(SHORT_NAMETEMPLATE_RESOURCE)) {
+			shortNameTemplateJson = IOUtils.toString(inputStream, "UTF-8");
+		}
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(LONG_NAMETEMPLATE_RESOURCE)) {
+			longNameTemplateJson = IOUtils.toString(inputStream, "UTF-8");
+		}
+		
+		Assert.assertThat(result.containsKey("results"), is(true));
+		Assert.assertThat(result.get("results"), is(not(empty())));
+		Assert.assertThat(result.get("results"), hasItem(SimpleObject.parseJson(shortNameTemplateJson)));
+		Assert.assertThat(result.get("results"), hasItem(SimpleObject.parseJson(longNameTemplateJson)));
+	}
 }

@@ -43,7 +43,7 @@ public class NameTemplatesController2_0 extends BaseRestController {
 		LayoutTemplateProvider<NameTemplate> provider = getTemplateProvider();
 		List<NameTemplate> nameTemplates = provider.getAllLayoutTemplates();
 		List<SimpleObject> nameTemplatesSO = new ArrayList<>(nameTemplates.size());
-		for (NameTemplate template: nameTemplates) {
+		for (NameTemplate template : nameTemplates) {
 			nameTemplatesSO.add(provider.asRepresentation(template));
 		}
 		SimpleObject result = new SimpleObject();

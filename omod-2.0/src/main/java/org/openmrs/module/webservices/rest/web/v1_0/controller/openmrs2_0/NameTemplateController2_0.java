@@ -26,40 +26,41 @@ import org.springframework.web.context.request.WebRequest;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/nametemplate")
-public class NameTemplateController2_0  extends BaseRestController {
-    
-    public static final String LAYOUT_NAME_DEFAULTS = "layout.name.defaults";
-    
-    public static final String GLOBAL_NAME_TEMPLATE = "global";
-    
-    @RequestMapping(method = RequestMethod.GET)
-    @WSDoc("Get the default layout template (as configured by Global Property 'layout.name.format').")
-    @ResponseBody
-    public Object get(WebRequest request) throws SerializationException {
-        LayoutTemplateProvider<NameTemplate> provider = getTemplateProvider();
-        NameTemplate nameTemplate = provider.getDefaultLayoutTemplate();
-        return provider.asRepresentation(nameTemplate);
-    }
-    
-    @RequestMapping(value = "/{codename}", method = RequestMethod.GET)
-    @WSDoc("Get a name layout template for a given template codename (e.g. 'long', 'short', etc.) Codename 'global' will get the current global layout template.")
-    @ResponseBody
-    public Object get(WebRequest request, @PathVariable String codename) throws SerializationException, NullPointerException {
-        // special-case handling for GET /nametemplate/global; return the system-configured default name template.
-        // (duplicates functionality of GET /nametemplate in the hope that the latter may one day be deprecated/retired...)
-        if (codename.equalsIgnoreCase(GLOBAL_NAME_TEMPLATE)) {
-            return get(request);
-        }
-
-        LayoutTemplateProvider<NameTemplate> provider = getTemplateProvider();
-        NameTemplate nameTemplate = provider.getLayoutTemplateByName(codename);
-        if (nameTemplate == null) {
-            throw new UnknownResourceException();       // HTTP status 404
-        }
-        return provider.asRepresentation(nameTemplate);
-    }
-    
-    private static LayoutTemplateProvider<NameTemplate> getTemplateProvider() {
-        return new LayoutTemplateProvider<>(NameSupport.getInstance(), LAYOUT_NAME_DEFAULTS);
-    }
+public class NameTemplateController2_0 extends BaseRestController {
+	
+	public static final String LAYOUT_NAME_DEFAULTS = "layout.name.defaults";
+	
+	public static final String GLOBAL_NAME_TEMPLATE = "global";
+	
+	@RequestMapping(method = RequestMethod.GET)
+	@WSDoc("Get the default layout template (as configured by Global Property 'layout.name.format').")
+	@ResponseBody
+	public Object get(WebRequest request) throws SerializationException {
+		LayoutTemplateProvider<NameTemplate> provider = getTemplateProvider();
+		NameTemplate nameTemplate = provider.getDefaultLayoutTemplate();
+		return provider.asRepresentation(nameTemplate);
+	}
+	
+	@RequestMapping(value = "/{codename}", method = RequestMethod.GET)
+	@WSDoc("Get a name layout template for a given template codename (e.g. 'long', 'short', etc.) Codename 'global' will get the current global layout template.")
+	@ResponseBody
+	public Object get(WebRequest request, @PathVariable String codename)
+			throws SerializationException, NullPointerException {
+		// special-case handling for GET /nametemplate/global; return the system-configured default name template.
+		// (duplicates functionality of GET /nametemplate in the hope that the latter may one day be deprecated/retired...)
+		if (codename.equalsIgnoreCase(GLOBAL_NAME_TEMPLATE)) {
+			return get(request);
+		}
+		
+		LayoutTemplateProvider<NameTemplate> provider = getTemplateProvider();
+		NameTemplate nameTemplate = provider.getLayoutTemplateByName(codename);
+		if (nameTemplate == null) {
+			throw new UnknownResourceException();       // HTTP status 404
+		}
+		return provider.asRepresentation(nameTemplate);
+	}
+	
+	private static LayoutTemplateProvider<NameTemplate> getTemplateProvider() {
+		return new LayoutTemplateProvider<>(NameSupport.getInstance(), LAYOUT_NAME_DEFAULTS);
+	}
 }

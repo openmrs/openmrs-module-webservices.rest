@@ -28,85 +28,85 @@ import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class NameTemplateController2_0Test extends RestControllerTestUtils {
-
-    private static final String URL_GLOBAL_NAMETEMPLATE = "global";
-    
-    private static final String DEFAULT_NAMETEMPLATE = "short";
-    private static final String DEFAULT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
-    private static final String ALTERNATE_NAMETEMPLATE = "long";
-    private static final String ALTERNATE_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
-    private static final String UNKNOWN_NAMETEMPLATE = "foo";
-    
-    private String originalNametemplate = null;
-    
-    public String getURI() {
-        return "nametemplate";
-    }
-    
-    @Before
-    public void before() throws Exception {
-        AdministrationService service = Context.getAdministrationService();
-        originalNametemplate = service.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
-        service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, DEFAULT_NAMETEMPLATE);
-    }
-    
-    @After
-    public void after() throws Exception {
-        if (!StringUtils.isEmpty(originalNametemplate)) {
-            AdministrationService service = Context.getAdministrationService();
-            service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, originalNametemplate);
-        }
-    }
-    
-    @Test
-    public void shouldGetNameTemplate() throws Exception {
-        MockHttpServletRequest req = newGetRequest(getURI());
-        SimpleObject result = deserialize(handle(req));
-
-        String json;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_NAMETEMPLATE_RESOURCE)) {
-            json = IOUtils.toString(inputStream, "UTF-8");
-        }
-
-        Assert.assertThat(result, is(SimpleObject.parseJson(json)));
-    }
-    
-    @Test
-    public void shouldGetGlobalNameTemplate() throws Exception {
-        MockHttpServletRequest req = newGetRequest(getURI() + "/" + URL_GLOBAL_NAMETEMPLATE);
-        SimpleObject result = deserialize(handle(req));
-        
-        String json;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_NAMETEMPLATE_RESOURCE)) {
-	        json = IOUtils.toString(inputStream, "UTF-8");
-        }
-        
-        Assert.assertThat(result, is(SimpleObject.parseJson(json)));
-    }
-    
-    @Test
-    public void shouldGetNameTemplateByCodename() throws Exception {
-        MockHttpServletRequest req = newGetRequest(getURI() + "/" + ALTERNATE_NAMETEMPLATE);
-        SimpleObject result = deserialize(handle(req));
-        
-        String json;
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(ALTERNATE_NAMETEMPLATE_RESOURCE)) {
-            json = IOUtils.toString(inputStream, "UTF-8");
-        }
-        
-        Assert.assertThat(result, is(SimpleObject.parseJson(json)));
-    }
-    
-    @Test
-    public void shouldReturnNotFoundForUnknownCodename() throws Exception {
-        MockHttpServletRequest req = newGetRequest(getURI() + "/" + UNKNOWN_NAMETEMPLATE);
-        UnknownResourceException handledException = null;
-        try {
-            handle(req);
-        }
-        catch (UnknownResourceException ex) {
-            handledException = ex;
-        }
-        Assert.assertNotNull(handledException);
-    }
+	
+	private static final String URL_GLOBAL_NAMETEMPLATE = "global";
+	
+	private static final String DEFAULT_NAMETEMPLATE = "short";
+	private static final String DEFAULT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
+	private static final String ALTERNATE_NAMETEMPLATE = "long";
+	private static final String ALTERNATE_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
+	private static final String UNKNOWN_NAMETEMPLATE = "foo";
+	
+	private String originalNametemplate = null;
+	
+	public String getURI() {
+		return "nametemplate";
+	}
+	
+	@Before
+	public void before() throws Exception {
+		AdministrationService service = Context.getAdministrationService();
+		originalNametemplate = service.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
+		service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, DEFAULT_NAMETEMPLATE);
+	}
+	
+	@After
+	public void after() throws Exception {
+		if (!StringUtils.isEmpty(originalNametemplate)) {
+			AdministrationService service = Context.getAdministrationService();
+			service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, originalNametemplate);
+		}
+	}
+	
+	@Test
+	public void shouldGetNameTemplate() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI());
+		SimpleObject result = deserialize(handle(req));
+		
+		String json;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_NAMETEMPLATE_RESOURCE)) {
+			json = IOUtils.toString(inputStream, "UTF-8");
+		}
+		
+		Assert.assertThat(result, is(SimpleObject.parseJson(json)));
+	}
+	
+	@Test
+	public void shouldGetGlobalNameTemplate() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + URL_GLOBAL_NAMETEMPLATE);
+		SimpleObject result = deserialize(handle(req));
+		
+		String json;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(DEFAULT_NAMETEMPLATE_RESOURCE)) {
+			json = IOUtils.toString(inputStream, "UTF-8");
+		}
+		
+		Assert.assertThat(result, is(SimpleObject.parseJson(json)));
+	}
+	
+	@Test
+	public void shouldGetNameTemplateByCodename() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + ALTERNATE_NAMETEMPLATE);
+		SimpleObject result = deserialize(handle(req));
+		
+		String json;
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(ALTERNATE_NAMETEMPLATE_RESOURCE)) {
+			json = IOUtils.toString(inputStream, "UTF-8");
+		}
+		
+		Assert.assertThat(result, is(SimpleObject.parseJson(json)));
+	}
+	
+	@Test
+	public void shouldReturnNotFoundForUnknownCodename() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + UNKNOWN_NAMETEMPLATE);
+		UnknownResourceException handledException = null;
+		try {
+			handle(req);
+		}
+		catch (UnknownResourceException ex) {
+			handledException = ex;
+		}
+		Assert.assertNotNull(handledException);
+	}
 }
