@@ -19,7 +19,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
 import org.openmrs.layout.LayoutTemplate;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,22 +55,6 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 			populated.add(populateTemplateDefaults(template));
 		}
 		return populated;
-	}
-	
-	public DelegatingResourceDescription getRepresentationDescription() {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("displayName");
-		description.addProperty("codeName");
-		description.addProperty("country");
-		description.addProperty("lines");
-		description.addProperty("nameMappings");
-		description.addProperty("sizeMappings");
-		description.addProperty("elementDefaults");
-		description.addProperty("elementRegex");
-		description.addProperty("elementRegexFormats");
-		description.addProperty("lineByLineFormat");
-		description.addProperty("requiredElements");
-		return description;
 	}
 	
 	public SimpleObject asRepresentation(T instance) throws ConversionException {
