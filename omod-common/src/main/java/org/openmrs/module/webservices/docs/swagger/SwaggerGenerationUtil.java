@@ -284,14 +284,14 @@ public class SwaggerGenerationUtil {
     }
 
     public static String getSubResourceNameBySupportedClass(Class<?> supportedClass) {
-        org.openmrs.module.webservices.rest.web.resource.api.Resource resource = Context.getService(RestService.class).getResourceHandlerForSupportedClass(supportedClass);
+        org.openmrs.module.webservices.rest.web.resource.api.Resource resourceHandler = Context.getService(RestService.class).getResourceHandlerForSupportedClass(supportedClass);
 
-        if (resource == null) {
+        if (resourceHandler == null) {
             return null;
         }
 
-        Resource annotation = resource.getClass().getAnnotation(Resource.class);
-        SubResource subResourceAnnotation = resource.getClass().getAnnotation(SubResource.class);
+        Resource annotation = resourceHandler.getClass().getAnnotation(Resource.class);
+        SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
 
         if (annotation != null && annotation.supportedClass().equals(supportedClass)) {
             return annotation.name().substring(annotation.name().indexOf('/') + 1);
