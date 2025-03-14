@@ -65,11 +65,6 @@ public class SubDetailsResource extends DelegatingSubResource<SubDetails, Global
 	}
 
 	@Override
-	public DelegatingResourceDescription getCreatableProperties() throws ResourceDoesNotSupportOperationException {
-		return new DelegatingResourceDescription();
-	}
-
-	@Override
 	public SubDetails newDelegate() {
 		return new SubDetails();
 	}
