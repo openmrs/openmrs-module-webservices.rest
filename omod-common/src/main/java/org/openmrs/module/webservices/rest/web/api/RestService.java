@@ -23,7 +23,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
  * Database related methods for the Rest Web Services
  */
 public interface RestService {
-	
+
+	void initializeResources();
+
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
@@ -73,13 +75,6 @@ public interface RestService {
 	 * @throws APIException
 	 */
 	public List<DelegatingResourceHandler<?>> getResourceHandlers() throws APIException;
-
-
-	/**
-	 * @param resourceClass the resource class e.g PatientIdentifier.class
-	 * @return the resource handler for the provided class e.g PatientIdentifierResource1_8
-	 */
-	Resource getResourceHandlerForSupportedClass(Class<?> resourceClass);
 
 	/**
 	 * Initializes all Resources and Search handlers for use; called after module startup
