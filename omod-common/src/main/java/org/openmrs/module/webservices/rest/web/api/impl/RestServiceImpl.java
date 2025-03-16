@@ -49,7 +49,7 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 	
-	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
+	public static volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
 	
@@ -144,8 +144,9 @@ public class RestServiceImpl implements RestService {
 			return result;
 		}
 	}
-	
-	private void initializeResources() {
+
+	@Override
+	public void initializeResources() {
 		if (resourceDefinitionsByNames != null) {
 			return;
 		}
@@ -688,19 +689,6 @@ public class RestServiceImpl implements RestService {
 			initializeSearchHandlers();
 		}
 		return searchHandlersByResource.get(resourceName);
-	}
-
-	/**
-	 * @see RestService#getResourceHandlerForSupportedClass(Class)
-	 * <strong>Should</strong> return search resources for given resource class
-	 * @param resourceClass the resource class e.g. PatientIdentifier
-	 */
-	@Override
-	public Resource getResourceHandlerForSupportedClass(Class<?> resourceClass) {
-		if (resourcesBySupportedClasses == null) {
-			initializeResources();
-		}
-		return resourcesBySupportedClasses.get(resourceClass);
 	}
 	
 	/**
