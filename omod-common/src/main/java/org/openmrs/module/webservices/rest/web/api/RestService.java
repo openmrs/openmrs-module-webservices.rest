@@ -24,8 +24,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
  */
 public interface RestService {
 
-	void initializeResources();
-
 	/**
 	 * Parses a representation requested by the client via the http request
 	 * 
