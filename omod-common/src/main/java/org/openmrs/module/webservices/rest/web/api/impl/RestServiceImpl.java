@@ -145,8 +145,7 @@ public class RestServiceImpl implements RestService {
 		}
 	}
 
-	@Override
-	public void initializeResources() {
+	private void initializeResources() {
 		if (resourceDefinitionsByNames != null) {
 			return;
 		}
