@@ -405,7 +405,7 @@ public class SwaggerGenerationUtil {
      */
     public static org.openmrs.module.webservices.rest.web.resource.api.Resource getResourceHandlerForSupportedClass(Class<?> resourceClass) {
         if (resourcesBySupportedClasses == null) {
-            Context.getService(RestService.class).initializeResources();
+            Context.getService(RestService.class).initialize();
         }
         return resourcesBySupportedClasses.get(resourceClass);
     }
