@@ -21,7 +21,12 @@ public class BaseUriSetup {
 	public synchronized void setup(HttpServletRequest request) {
 		if (!RestConstants.URI_PREFIX.startsWith("http://") && !RestConstants.URI_PREFIX.startsWith("https://")) {
 			StringBuilder uri = new StringBuilder();
-			uri.append(request.getScheme()).append("://").append(request.getServerName());
+			
+			String scheme = request.getScheme();
+			if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Proto"))) {
+				scheme = request.getHeader("X-Forwarded-Proto");
+			}
+			uri.append(scheme).append("://").append(request.getServerName());
 			if (request.getServerPort() != 80) {
 				uri.append(":").append(request.getServerPort());
 			}
