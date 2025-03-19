@@ -41,7 +41,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl.resourcesBySupportedClasses;
 import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
 import static org.openmrs.module.webservices.rest.web.representation.Representation.FULL;
 import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
@@ -404,9 +403,10 @@ public class SwaggerGenerationUtil {
      * @param resourceClass the resource class e.g. PatientIdentifier
      */
     public static org.openmrs.module.webservices.rest.web.resource.api.Resource getResourceHandlerForSupportedClass(Class<?> resourceClass) {
-        if (resourcesBySupportedClasses == null) {
+        if (Context.getService(RestService.class).getResource(resourceClass) == null) {
             Context.getService(RestService.class).initialize();
         }
-        return resourcesBySupportedClasses.get(resourceClass);
+        return Context.getService(RestService.class).getResource(resourceClass);
     }
+
 }
