@@ -327,7 +327,6 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 	}
 	
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
-		obs.setConcept(null);
 		obs.setValueCoded(type.equals(ObsType.CODED) ? (Concept) value : null);
 		obs.setValueComplex(type.equals(ObsType.COMPLEX) ? (String) value : null);
 		obs.setValueDatetime(type.equals(ObsType.DATETIME) ? (Date) value : null);

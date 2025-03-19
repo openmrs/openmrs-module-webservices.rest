@@ -78,7 +78,7 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 		String json = IOUtils.toString(inputStream, "UTF-8");
 		SimpleObject expectedResult = SimpleObject.parseJson(json);
 
-		// this entire hack is because timezone will different between environments
+		// this entire hack is because timezone will differ between environments
 		replaceTimeZone(actualResult);
 		replaceTimeZone(expectedResult);
 		Assert.assertEquals(expectedResult, actualResult);

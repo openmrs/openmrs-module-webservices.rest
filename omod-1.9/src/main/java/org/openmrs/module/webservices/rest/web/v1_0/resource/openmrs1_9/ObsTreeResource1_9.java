@@ -42,7 +42,6 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 @Resource(name = RestConstants.VERSION_1 + "/obstree", supportedClass = SimpleObject.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
