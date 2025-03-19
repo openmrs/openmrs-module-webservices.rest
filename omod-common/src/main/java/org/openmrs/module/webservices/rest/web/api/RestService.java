@@ -78,6 +78,14 @@ public interface RestService {
 	 * Initializes all Resources and Search handlers for use; called after module startup
 	 */
 	public void initialize();
+
+	/**
+	 * Retrieves the resource handler for the given supported class.
+	 *
+	 * @param resourceClass the class for which to get the resource handler
+	 * @return the corresponding Resource handler, or {@code null} if none exists
+	 */
+	public Resource getResource(Class<?> resourceClass);
 	
 	/**
 	 * Returns all search handlers.
