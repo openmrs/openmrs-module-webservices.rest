@@ -19,7 +19,6 @@ import org.openmrs.Patient;
 import org.openmrs.TestOrder;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -34,12 +33,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
-
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
@@ -128,49 +121,7 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		//this actually throws a ResourceDoesNotSupportOperationException
 		return orderResource.getUpdatableProperties();
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		ModelImpl orderModel = (ModelImpl) orderResource.getGETModel(rep);
-		orderModel
-		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
-		        .property("clinicalHistory", new StringProperty())
-		        .property("numberOfRepeats", new IntegerProperty());
-		
-		if (rep instanceof DefaultRepresentation) {
-			orderModel
-			        .property("specimenSource", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			orderModel
-			        .property("specimenSource", new RefProperty("#/definitions/ConceptGet"))
-			        .property("frequency", new RefProperty("#/definitions/OrderfrequencyGet"));
-		}
-		return orderModel;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		ModelImpl orderModel = (ModelImpl) orderResource.getCREATEModel(rep);
-		return orderModel
-		        .property("specimenSource", new StringProperty().example("uuid"))
-		        .property("laterality", new EnumProperty(TestOrder.Laterality.class))
-		        .property("clinicalHistory", new StringProperty())
-		        .property("frequency", new StringProperty().example("uuid"))
-		        .property("numberOfRepeats", new IntegerProperty());
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Order.class);
-		return orderResource.getUPDATEModel(rep);
-	}
-	
+
 	public PageableResult getActiveOrders(Patient patient, RequestContext context) {
 		String careSettingUuid = context.getRequest().getParameter("careSetting");
 		String asOfDateString = context.getRequest().getParameter("asOfDate");
