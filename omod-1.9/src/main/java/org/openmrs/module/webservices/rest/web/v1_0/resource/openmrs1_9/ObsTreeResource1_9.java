@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,10 +42,16 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 @Resource(name = RestConstants.VERSION_1 + "/obstree", supportedClass = SimpleObject.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
 public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> implements Searchable {
+
+	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+	public static final String DATE_FORMAT = "yyyy-MM-dd";
+
 
 	@Override
 	public SimpleObject newDelegate() {
@@ -150,8 +157,20 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		List<HashMap<String, String>> mapList = new ArrayList<HashMap<String, String>>();
 		for (Obs obs : obsList) {
 			HashMap<String, String> valueMap = new HashMap<String, String>();
-			valueMap.put("value", obs.getValueAsString(Context.getLocale()));
-			valueMap.put("obsDatetime", obs.getObsDatetime().toString());
+			String value;
+			// we special case they obs of type date and datetime because for some reason getValueAsString strips off the timezone of datetimes
+			if (obs.getValueDatetime() != null) {
+				if (obs.getConcept().getDatatype().isDate()) {
+					value = new SimpleDateFormat(DATE_FORMAT).format(obs.getValueDatetime());
+				} else {
+					value = new SimpleDateFormat(DATETIME_FORMAT).format(obs.getValueDatetime());
+				}
+			}
+			else {
+				value = obs.getValueAsString(Context.getLocale());
+			}
+			valueMap.put("value", value);
+			valueMap.put("obsDatetime", new SimpleDateFormat(DATETIME_FORMAT).format(obs.getObsDatetime()));
 			mapList.add(valueMap);
 		}
 		
