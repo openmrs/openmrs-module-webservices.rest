@@ -10,6 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,10 +72,33 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 				new Parameter("patient", "5946f880-b197-400b-9caa-a3c661d23041"),
 				new Parameter("concept", "0f97e14e-cdc2-49ac-9255-b5126f8a5148"));
 		
-		SimpleObject result = deserialize(handle(req));
+		SimpleObject actualResult = deserialize(handle(req));
 		
 		InputStream inputStream = getClass().getClassLoader().getResourceAsStream("obsTreeDataset.json");
 		String json = IOUtils.toString(inputStream, "UTF-8");
-		Assert.assertEquals(result, SimpleObject.parseJson(json));
+		SimpleObject expectedResult = SimpleObject.parseJson(json);
+
+		// this entire hack is because timezone will differ between environments
+		replaceTimeZone(actualResult);
+		replaceTimeZone(expectedResult);
+		Assert.assertEquals(expectedResult, actualResult);
+	}
+
+	// pull timezone off the obsDatetime (while confirming there is one based on size)
+	public void replaceTimeZone(HashMap<String, Object> object) {
+		for (String key : object.keySet()) {
+			if (key.equals("obsDatetime")) {
+				String value = object.get(key).toString();
+				assert(value.length() > 23);
+				object.put("obsDatetime", value.substring(0, 23));
+			} else if (object.get(key) instanceof HashMap) {
+				replaceTimeZone((HashMap) object.get(key));
+			} else if (object.get(key) instanceof List) {
+				Iterator it = ((List) object.get(key)).iterator();
+				while (it.hasNext()) {
+					replaceTimeZone((HashMap) it.next());
+				}
+			}
+		}
 	}
 }

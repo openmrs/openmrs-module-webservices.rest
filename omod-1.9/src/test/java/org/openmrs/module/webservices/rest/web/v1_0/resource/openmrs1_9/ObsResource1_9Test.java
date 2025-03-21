@@ -9,10 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
@@ -127,12 +129,6 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		rep = (SimpleObject) rep.get("value");
 		Assert.assertEquals("coded", concept.getUuid(), rep.get("uuid"));
 		
-		// datetime
-		Date datetime = new Date();
-		clearAndSetValue(obs, ObsType.DATETIME, datetime);
-		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
-		Assert.assertEquals("datetime", datetime, ConversionUtil.convert(rep.get("value"), Date.class));
-		
 		// drug
 		Drug drug = Context.getConceptService().getDrugByUuid("3cfcf118-931c-46f7-8ff6-7b876f0d4202");
 		clearAndSetValue(obs, ObsType.DRUG, drug);
@@ -183,7 +179,32 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource1_
 		Assert.assertNull(rep.get("value"));
 		rep = (SimpleObject) rep.get("value");
 	}
-	
+
+	// easier to break these out as a separate test to assure resetting state
+	@Test
+	public void asRepresentation_shouldReturnProperlyEncodedDateValue() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = new Concept();
+		concept.setDatatype(Context.getConceptService().getConceptDatatypeByUuid(ConceptDatatype.DATE_UUID));
+		obs.setConcept(concept);
+		Date datetime = new Date();
+		obs.setValueDate(datetime);
+		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
+		Assert.assertEquals(new DateTime(datetime).withTimeAtStartOfDay().toDate(), ConversionUtil.convert(rep.get("value"), Date.class));
+	}
+
+	@Test
+	public void asRepresentation_shouldReturnProperlyEncodedDateTimeValue() throws Exception {
+		Obs obs = new Obs();
+		Concept concept = new Concept();
+		concept.setDatatype(Context.getConceptService().getConceptDatatypeByUuid(ConceptDatatype.DATETIME_UUID));
+		obs.setConcept(concept);
+		Date datetime = new Date();
+		obs.setValueDate(datetime);
+		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
+		Assert.assertEquals(datetime, ConversionUtil.convert(rep.get("value"), Date.class));
+	}
+
 	@Test
 	public void setGroupMembers_shouldSetGroupMembers() throws Exception {
 		executeDataSet("obsWithGroupMembers.xml");

@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -71,7 +72,11 @@ import io.swagger.models.properties.StringProperty;
  */
 @Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements Uploadable {
-	
+
+	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+	public static final String DATE_FORMAT = "yyyy-MM-dd";
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#delete(java.lang.Object,
 	 *      java.lang.String, org.openmrs.module.webservices.rest.web.RequestContext)
@@ -296,7 +301,10 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			return null;
 		
 		if (obs.getValueDatetime() != null) {
-			return ConversionUtil.convert(obs.getValueDatetime(), Date.class);
+			if (obs.getConcept().getDatatype().isDate()) {
+				return new SimpleDateFormat(DATE_FORMAT).format(obs.getValueDatetime());
+			}
+			return new SimpleDateFormat(DATETIME_FORMAT).format(obs.getValueDatetime());
 		}
 		
 		if (obs.getValueDrug() != null) {
