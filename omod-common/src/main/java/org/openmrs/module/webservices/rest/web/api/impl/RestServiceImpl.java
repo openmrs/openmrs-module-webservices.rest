@@ -49,7 +49,7 @@ public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
 
-	static volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
+	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
 	
