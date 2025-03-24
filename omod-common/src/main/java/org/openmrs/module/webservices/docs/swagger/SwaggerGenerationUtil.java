@@ -284,26 +284,27 @@ public class SwaggerGenerationUtil {
     }
 
     public static String getSubResourceNameBySupportedClass(Class<?> supportedClass) {
-        org.openmrs.module.webservices.rest.web.resource.api.Resource resourceHandler = getResourceHandlerForSupportedClass(supportedClass);
+        List<DelegatingResourceHandler<?>> resourceHandlers = Context.getService(RestService.class).getResourceHandlers();
+        for (DelegatingResourceHandler<?> resourceHandler : resourceHandlers) {
+            if (resourceHandler == null) {
+                return null;
+            }
 
-        if (resourceHandler == null) {
-            return null;
-        }
+            Resource annotation = resourceHandler.getClass().getAnnotation(Resource.class);
+            SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
 
-        Resource annotation = resourceHandler.getClass().getAnnotation(Resource.class);
-        SubResource subResourceAnnotation = resourceHandler.getClass().getAnnotation(SubResource.class);
+            if (annotation != null && annotation.supportedClass().equals(supportedClass)) {
+                return annotation.name().substring(annotation.name().indexOf('/') + 1);
+            } else if (subResourceAnnotation != null && subResourceAnnotation.supportedClass().equals(supportedClass)) {
+                Resource parentResourceAnnotation = subResourceAnnotation.parent().getAnnotation(Resource.class);
 
-        if (annotation != null && annotation.supportedClass().equals(supportedClass)) {
-            return annotation.name().substring(annotation.name().indexOf('/') + 1);
-        } else if (subResourceAnnotation != null && subResourceAnnotation.supportedClass().equals(supportedClass)) {
-            Resource parentResourceAnnotation = subResourceAnnotation.parent().getAnnotation(Resource.class);
+                String resourceName = subResourceAnnotation.path();
+                String resourceParentName = parentResourceAnnotation.name().substring(
+                        parentResourceAnnotation.name().indexOf('/') + 1);
 
-            String resourceName = subResourceAnnotation.path();
-            String resourceParentName = parentResourceAnnotation.name().substring(
-                    parentResourceAnnotation.name().indexOf('/') + 1);
-
-            String combinedName = capitalize(resourceParentName) + capitalize(resourceName);
-            return combinedName.replace("/", "");
+                String combinedName = capitalize(resourceParentName) + capitalize(resourceName);
+                return combinedName.replace("/", "");
+            }
         }
         return null;
     }
@@ -397,16 +398,4 @@ public class SwaggerGenerationUtil {
 
         return null;
     }
-
-    /**
-     * <strong>Should</strong> return search resources for given resource class
-     * @param resourceClass the resource class e.g. PatientIdentifier
-     */
-    public static org.openmrs.module.webservices.rest.web.resource.api.Resource getResourceHandlerForSupportedClass(Class<?> resourceClass) {
-        if (Context.getService(RestService.class).getResource(resourceClass) == null) {
-            Context.getService(RestService.class).initialize();
-        }
-        return Context.getService(RestService.class).getResource(resourceClass);
-    }
-
 }
