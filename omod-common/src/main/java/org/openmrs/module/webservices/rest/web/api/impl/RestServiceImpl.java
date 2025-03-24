@@ -79,10 +79,6 @@ public class RestServiceImpl implements RestService {
 		this.openmrsClassScanner = openmrsClassScanner;
 	}
 
-	public Resource getResource(Class<?> resourceClass) {
-		return resourcesBySupportedClasses.get(resourceClass);
-	}
-
 	public RestServiceImpl() {
 	}
 	
