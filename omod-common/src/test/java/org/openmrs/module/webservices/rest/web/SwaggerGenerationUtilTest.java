@@ -18,8 +18,6 @@ import io.swagger.models.properties.Property;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.module.webservices.docs.swagger.SwaggerGenerationUtil;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
