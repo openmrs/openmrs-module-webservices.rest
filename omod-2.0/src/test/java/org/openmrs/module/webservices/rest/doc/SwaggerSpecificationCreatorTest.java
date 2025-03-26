@@ -25,6 +25,7 @@ import io.swagger.models.properties.Property;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import io.swagger.util.Json;
+import org.dbunit.database.DatabaseConnection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,9 +46,16 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
@@ -55,15 +63,43 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
+
 	private SwaggerSpecificationCreator swaggerCreator;
 
+	Map<String, Integer> beforeCounts;
+
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		Context.getService(RestService.class).initialize();
 		Context.getAdministrationService().saveGlobalProperty(
 				new GlobalProperty(RestConstants.SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME, "true"));
 		Context.flushSession();
 		swaggerCreator = new SwaggerSpecificationCreator();
+		beforeCounts = getRowCounts();
+	}
+
+	@Test
+	public void checkNoDatabaseChanges() throws Exception {
+		SwaggerSpecificationCreator ssc = new SwaggerSpecificationCreator();
+		ssc.getJSON();
+
+		Map<String, Integer> afterCounts = getRowCounts();
+
+		Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
+		Assert.assertTrue("Ensure that no data was added or removed from any tables",
+				ensureCountsEqual(beforeCounts, afterCounts));
+	}
+
+	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
+		for (String key : beforeCounts.keySet()) {
+			if (beforeCounts.get(key) != afterCounts.get(key)) {
+				System.err.println("The " + key + " table has a different number of rows (" + beforeCounts.get(key)
+						+ " before, " + afterCounts.get(key) + " after).");
+
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Test
@@ -232,5 +268,21 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 
 		RefProperty refProperty = (RefProperty) arrayProperty.getItems();
 		assertEquals("#/definitions/PatientIdentifierGet", refProperty.get$ref());
+	}
+
+	public Map<String, Integer> getRowCounts() throws Exception {
+		Map<String, Integer> ret = new HashMap<>();
+
+		Connection con = this.getConnection();
+		DatabaseMetaData metaData = con.getMetaData();
+		DatabaseConnection databaseConnection = new DatabaseConnection(con);
+
+		ResultSet rs = metaData.getTables(null, "PUBLIC", "%", null);
+		while (rs.next()) {
+			String tableName = rs.getString(3);
+
+			ret.put(tableName, databaseConnection.getRowCount(tableName));
+		}
+		return ret;
 	}
 }
