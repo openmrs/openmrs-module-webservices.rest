@@ -24,6 +24,8 @@ import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvider;
 
+import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
+
 /**
  * {@link Resource} for {@link NameTemplate}, supporting Read operation.
  */
@@ -32,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvide
 public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<NameTemplate> {
 	
 	/* special Uuid to reference the name template specified by the global property layout.name.format */
-	public static final String GLOBAL_NAME_TEMPLATE = "layout.name.format";
+	public static final String GLOBAL_NAME_TEMPLATE = GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
 	
 	/* name of the global property used to apply default values to name templates */
 	public static final String LAYOUT_NAME_DEFAULTS = "layout.name.defaults";

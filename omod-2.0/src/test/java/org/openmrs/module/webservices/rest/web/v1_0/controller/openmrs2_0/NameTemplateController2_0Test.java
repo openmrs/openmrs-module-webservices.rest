@@ -17,14 +17,15 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.RestConstants2_0;
-import org.openmrs.util.OpenmrsConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -32,17 +33,15 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.iterableWithSize;
 
+import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
+import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_SHORT;
+import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_LONG;
+
 public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	
-	private static final String URL_GLOBAL_NAMETEMPLATE = "layout.name.format";
+	private static final String SHORT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
 	
-	private static final String DEFAULT_NAMETEMPLATE = "short";
-	
-	private static final String DEFAULT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";
-	
-	private static final String ALTERNATE_NAMETEMPLATE = "long";
-	
-	private static final String ALTERNATE_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
+	private static final String LONG_NAMETEMPLATE_RESOURCE = "nameTemplateLong.json";
 	
 	private static final String UNKNOWN_NAMETEMPLATE = "foo";
 	
@@ -54,13 +53,16 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		return "nametemplate";
 	}
 	
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+	
 	@Before
 	public void before() throws Exception {
 		// save a backup of the current global property value for name layout,
 		// before setting a specific name layout value for the tests.
 		AdministrationService service = Context.getAdministrationService();
-		originalNametemplate = service.getGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
-		service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, DEFAULT_NAMETEMPLATE);
+		originalNametemplate = service.getGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
+		service.setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, PERSON_NAME_FORMAT_SHORT);
 	}
 	
 	@After
@@ -68,7 +70,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		if (!StringUtils.isEmpty(originalNametemplate)) {
 			// restore the backed up name layout global property value.
 			AdministrationService service = Context.getAdministrationService();
-			service.setGlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, originalNametemplate);
+			service.setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, originalNametemplate);
 		}
 	}
 	
@@ -77,8 +79,8 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		MockHttpServletRequest req = newGetRequest(getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		SimpleObject defaultNameTemplateResource = parseNameTemplateResource(DEFAULT_NAMETEMPLATE_RESOURCE);
-		SimpleObject alternateNameTemplateResource = parseNameTemplateResource(ALTERNATE_NAMETEMPLATE_RESOURCE);
+		SimpleObject defaultNameTemplateResource = parseNameTemplateResource(SHORT_NAMETEMPLATE_RESOURCE);
+		SimpleObject alternateNameTemplateResource = parseNameTemplateResource(LONG_NAMETEMPLATE_RESOURCE);
 		
 		Assert.assertThat(result.containsKey("results"), is(true));
 		Assert.assertThat(result.get("results"), iterableWithSize(NAME_TEMPLATES_COUNT));
@@ -88,20 +90,20 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	
 	@Test
 	public void shouldGetGlobalNameTemplate() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + URL_GLOBAL_NAMETEMPLATE);
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
 		SimpleObject result = deserialize(handle(req));
 		
-		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(DEFAULT_NAMETEMPLATE_RESOURCE));
+		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(SHORT_NAMETEMPLATE_RESOURCE));
 		
 		Assert.assertThat(result, is(expectedResult));
 	}
 	
 	@Test
 	public void shouldGetNameTemplateByCodename() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI() + "/" + ALTERNATE_NAMETEMPLATE);
+		MockHttpServletRequest req = newGetRequest(getURI() + "/" + PERSON_NAME_FORMAT_LONG);
 		SimpleObject result = deserialize(handle(req));
 		
-		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(ALTERNATE_NAMETEMPLATE_RESOURCE));
+		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(LONG_NAMETEMPLATE_RESOURCE));
 		
 		Assert.assertThat(result, is(expectedResult));
 	}
@@ -109,16 +111,8 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	@Test
 	public void shouldReturnNotFoundForUnknownCodename() throws Exception {
 		MockHttpServletRequest req = newGetRequest(getURI() + "/" + UNKNOWN_NAMETEMPLATE);
-		MockHttpServletResponse result = null;
-		ObjectNotFoundException handledException = null;
-		try {
-			result = handle(req);
-		}
-		catch (ObjectNotFoundException ex) {
-			handledException = ex;
-		}
-		Assert.assertNotNull(handledException);
-		Assert.assertNull(result);
+		thrown.expect(ObjectNotFoundException.class);
+		MockHttpServletResponse result = handle(req);
 	}
 	
 	private static SimpleObject parseNameTemplateResource(String resourceName) throws IOException {
