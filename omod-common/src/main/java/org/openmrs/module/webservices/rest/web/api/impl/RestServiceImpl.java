@@ -48,7 +48,7 @@ import org.openmrs.util.OpenmrsConstants;
 public class RestServiceImpl implements RestService {
 	
 	volatile Map<String, ResourceDefinition> resourceDefinitionsByNames;
-
+	
 	volatile Map<Class<?>, Resource> resourcesBySupportedClasses;
 	
 	private volatile Map<CompositeSearchHandlerKeyValue, Set<SearchHandler>> searchHandlersByParameter;
@@ -78,7 +78,7 @@ public class RestServiceImpl implements RestService {
 	public void setOpenmrsClassScanner(OpenmrsClassScanner openmrsClassScanner) {
 		this.openmrsClassScanner = openmrsClassScanner;
 	}
-
+	
 	public RestServiceImpl() {
 	}
 	
@@ -144,7 +144,7 @@ public class RestServiceImpl implements RestService {
 			return result;
 		}
 	}
-
+	
 	private void initializeResources() {
 		if (resourceDefinitionsByNames != null) {
 			return;
@@ -442,7 +442,7 @@ public class RestServiceImpl implements RestService {
 		if (HibernateProxy.class.isAssignableFrom(resourceClass)) {
 			resourceClass = resourceClass.getSuperclass();
 		}
-
+		
 		Resource resource = resourcesBySupportedClasses.get(resourceClass);
 		
 		if (resource == null) {
