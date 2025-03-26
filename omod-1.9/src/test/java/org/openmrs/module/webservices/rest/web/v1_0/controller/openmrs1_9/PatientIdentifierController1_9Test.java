@@ -227,7 +227,7 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 
 	@Test
 	public void shouldUpdateAnExistingPatientIdentifier() throws Exception {
-		final String patientIdentifierNewValue = "omrs12-34-00";
+		final String patientIdentifierNewValue = "1234-4";
 		PatientIdentifier patientIdentifier = service.getPatientIdentifierByUuid(getUuid());
 		final String patientIdentifierUuidThatShouldNotChange = patientIdentifier.getUuid();
 
