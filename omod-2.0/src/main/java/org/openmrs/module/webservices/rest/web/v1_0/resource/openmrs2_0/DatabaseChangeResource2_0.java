@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.StringProperty;
-import liquibase.changelog.ChangeSet;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -115,34 +109,7 @@ public class DatabaseChangeResource2_0 extends BaseDelegatingReadableResource<Da
 		return instance.getAuthor() + " " + instance.getDescription();
 	}
 
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class));
-		} else if (rep instanceof FullRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty())
-					.property(AUTHOR, new StringProperty())
-					.property(DESCRIPTION, new StringProperty())
-					.property(RUN_STATUS, new EnumProperty(ChangeSet.RunStatus.class))
-					.property(COMMENTS, new StringProperty())
-					.property(RAN_DATE, new DateProperty());
-		} else if (rep instanceof RefRepresentation) {
-			model
-					.property(UUID, new StringProperty())
-					.property(DISPLAY, new StringProperty());
-		}
-		return model;
-	}
-
-	@Override
+    @Override
 	public DatabaseUpdater.OpenMRSChangeSet newDelegate() {
 		return null;
 	}

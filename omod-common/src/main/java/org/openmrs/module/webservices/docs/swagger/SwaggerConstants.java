@@ -9,32 +9,19 @@
  */
 package org.openmrs.module.webservices.docs.swagger;
 
-import java.util.Map;
+import static org.openmrs.module.webservices.rest.web.RestConstants.MODULE_ID;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
+/**
+ * Constants used when generating the Swagger specification
+ */
+public class SwaggerConstants {
+	
+	public static String SWAGGER_IMPOSSIBLE_UNIQUE_ID = "a--b";
 
-//List of Available Paths. 
-public class Paths {
+	public static String SWAGGER_QUIET_DOCS_GLOBAL_PROPERTY_NAME = MODULE_ID + ".quietDocs";
 	
-	private Map<String, Path> paths;
+	public static final boolean SWAGGER_LOGS_ON = true;
 	
-	public Paths() {
-		
-	}
-	
-	/**
-	 * @return the paths
-	 */
-	@JsonAnyGetter
-	public Map<String, Path> getPaths() {
-		return paths;
-	}
-	
-	/**
-	 * @param paths the paths to set
-	 */
-	public void setPaths(Map<String, Path> paths) {
-		this.paths = paths;
-	}
+	public static final boolean SWAGGER_LOGS_OFF = false;
 	
 }

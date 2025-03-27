@@ -11,11 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Cohort;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -90,38 +85,7 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("voided", new StringProperty())
-			        .property("memberIds", new ArrayProperty(new IntegerProperty())); //FIXME
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("description", new StringProperty())
-		        .property("memberIds", new ArrayProperty(new IntegerProperty())) //FIXME
-		        .required("name").required("description").required("memberIds");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("description", new StringProperty())
-		        .required("name").required("description");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

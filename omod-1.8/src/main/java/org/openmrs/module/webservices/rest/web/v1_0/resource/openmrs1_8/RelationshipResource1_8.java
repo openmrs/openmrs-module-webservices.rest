@@ -9,14 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
+import io.swagger.v3.oas.models.media.DateSchema;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,6 +28,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+
+import java.util.Arrays;
 
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for Provider, supporting
@@ -159,53 +159,5 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 		description.addProperty("voided");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("personA", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("relationshipType", new RefProperty("#/definitions/RelationshiptypeGetRef"))
-			        .property("personB", new RefProperty("#/definitions/PersonGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("personA", new RefProperty("#/definitions/PersonGet"))
-			        .property("relationshipType", new RefProperty("#/definitions/RelationshiptypeGet"))
-			        .property("personB", new RefProperty("#/definitions/PersonGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("personA", new StringProperty().example("uuid"))
-		        .property("relationshipType", new StringProperty().example("uuid"))
-		        .property("personB", new StringProperty().example("uuid"))
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        
-		        .required("personA").required("relationshipType").required("personB");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("personA", new RefProperty("#/definitions/PersonCreate"))
-			        
-			        .property("relationshipType", new RefProperty("#/definitions/RelationshiptypeCreate"))
-			        .property("personB", new RefProperty("#/definitions/PersonCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("voided", new BooleanProperty()); //FIXME missing properties
-	}
+
 }
