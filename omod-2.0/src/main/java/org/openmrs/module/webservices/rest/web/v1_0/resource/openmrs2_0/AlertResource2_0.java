@@ -9,16 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -146,54 +136,6 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 	@Override
 	public List<String> getPropertiesToExposeAsSubResources() {
 		return Collections.singletonList(RECIPIENTS);
-	}
-
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-				.property("uuid", new StringProperty())
-				.property("display", new StringProperty())
-				.property(ALERT_ID, new IntegerProperty());
-
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
-		}
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(TEXT, new StringProperty())
-					.property(SATISFIED_BY_ANY, new BooleanProperty())
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_TO_EXPIRE, new DateProperty())
-					.property(CREATOR, new ObjectProperty())
-					.property(DATE_CREATED, new DateTimeProperty())
-					.property(CHANGED_BY, new ObjectProperty())
-					.property(DATE_CHANGED, new DateTimeProperty())
-					.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientGetRef")));
-		}
-		return modelImpl;
-	}
-
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-				.property(TEXT, new StringProperty())
-				.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientCreate")))
-				.property(SATISFIED_BY_ANY, new BooleanProperty())
-				.property(DATE_TO_EXPIRE, new DateProperty());
-	}
-
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-				.property(TEXT, new StringProperty())
-				.property(RECIPIENTS, new ArrayProperty(new RefProperty("#/definitions/AlertRecipientCreate")))
-				.property(SATISFIED_BY_ANY, new BooleanProperty())
-				.property(DATE_TO_EXPIRE, new DateProperty());
 	}
 
 	@Override
