@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,6 +67,8 @@ import io.swagger.models.properties.DateProperty;
 import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import static org.openmrs.module.webservices.rest.web.ConversionUtil.DATE_FORMAT;
 
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
@@ -217,7 +220,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		}
 		return model;
 	}
-	
+
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl().property("person", new StringProperty().example("uuid"))
@@ -329,9 +332,20 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 					return Context.getLocationService().getLocationByUuid(obs.getValueText());
 				}
 			} else {
-				return obs.getValueText();
+				try {
+					String[] supportedFormats = { DATE_FORMAT, "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ",
+							"yyyy-MM-dd'T'HH:mm:ssXXX", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+					DateFormat targetDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					for (String format : supportedFormats) {
+						SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+						Date date = dateFormat.parse(obs.getValueText());
+						return targetDateFormat.format(date);
+					}
+				} catch (ParseException e) {
+					// If parsing fails, return the original string
+					return obs.getValueText();
+				}
 			}
-			
 		}
 
 		if (obs.getValueNumeric() != null) {
