@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.util.List;
+import java.util.Comparator;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -313,6 +314,15 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
 			}
+			
+			//Sort orders by date in descending order (newest first)
+			orders.sort(new Comparator<Order>() {
+				@Override
+				public int compare(Order o1, Order o2) {
+					return o2.getDateCreated().compareTo(o1.getDateCreated());
+				}
+			});
+			
 			return new NeedsPaging<Order>(orders, context);
 		}
 		
