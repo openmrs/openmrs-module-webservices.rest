@@ -12,7 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 import org.openmrs.layout.address.AddressSupport;
 import org.openmrs.layout.address.AddressTemplate;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateRepresentation;
 import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvider;
 import org.openmrs.serialization.SerializationException;
 import org.springframework.stereotype.Controller;
@@ -32,10 +36,32 @@ public class AddressTemplateController2_0 extends BaseRestController {
 	public Object get(WebRequest request) throws SerializationException {
 		LayoutTemplateProvider<AddressTemplate> provider = getTemplateProvider();
 		AddressTemplate addressTemplate = provider.getDefaultLayoutTemplate();
-		return provider.asRepresentation(addressTemplate);
+		
+		Converter converter = new Converter();
+		return converter.asRepresentation(addressTemplate, Representation.DEFAULT);
 	}
 	
 	private static LayoutTemplateProvider<AddressTemplate> getTemplateProvider() {
 		return new LayoutTemplateProvider<>(AddressSupport.getInstance(), LAYOUT_ADDRESS_DEFAULTS);
+	}
+	
+	
+	private static class Converter extends BaseDelegatingConverter<AddressTemplate> {
+		
+		@Override
+		public AddressTemplate newInstance(String type) {
+			return null;
+		}
+		
+		@Override
+		public AddressTemplate getByUniqueId(String codename) {
+			LayoutTemplateProvider<AddressTemplate> provider = getTemplateProvider();
+			return provider.getLayoutTemplateByName(codename);
+		}
+		
+		@Override
+		public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+			return LayoutTemplateRepresentation.getRepresentationDescription(rep);
+		}
 	}
 }

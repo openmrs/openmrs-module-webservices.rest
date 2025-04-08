@@ -22,6 +22,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
+import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateRepresentation;
 import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvider;
 
 import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
@@ -46,12 +47,12 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 	
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		return getTemplateProvider().getRepresentationDescription(rep);
+		return LayoutTemplateRepresentation.getRepresentationDescription(rep);
 	}
 	
 	@Override
 	public Model getGETModel(Representation rep) {
-		return getTemplateProvider().getGETModel(NameTemplateTokenEnum.class);
+		return LayoutTemplateRepresentation.getGETModel(NameTemplateTokenEnum.class);
 	}
 	
 	@Override

@@ -12,25 +12,15 @@ package org.openmrs.module.webservices.rest.web.v1_0.helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
-import org.apache.commons.lang3.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
 import org.openmrs.layout.LayoutTemplate;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.messagesource.MessageSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
 public class LayoutTemplateProvider<T extends LayoutTemplate> {
@@ -48,84 +38,75 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	
 	public T getDefaultLayoutTemplate() {
 		T template = source.getDefaultLayoutTemplate();
-		return populateTemplateDefaults(template);
+		return populateLayoutTemplate(template);
 	}
 	
 	public T getLayoutTemplateByName(String codename) {
 		T template = source.getLayoutTemplateByName(codename);
-		return populateTemplateDefaults(template);
+		return populateLayoutTemplate(template);
 	}
 	
 	public List<T> getAllLayoutTemplates() {
 		List<T> templates = source.getLayoutTemplates();
 		List<T> populated = new ArrayList<>(templates.size());
 		for (T template: templates) {
-			populated.add(populateTemplateDefaults(template));
+			populated.add(populateLayoutTemplate(template));
 		}
 		return populated;
 	}
 	
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("displayName", rep);
-		description.addProperty("codeName", rep);
-		description.addProperty("country", rep);
-		description.addProperty("lines", rep);
-		description.addProperty("lineByLineFormat", rep);
-		description.addProperty("nameMappings", rep);
-		description.addProperty("sizeMappings", rep);
-		description.addProperty("elementDefaults", rep);
-		description.addProperty("elementRegex", rep);
-		description.addProperty("elementRegexFormats", rep);
-		description.addProperty("requiredElements", rep);
-		return description;
+	private T populateLayoutTemplate(T template) {
+		if (template == null) { return null; }
+		Locale locale = Context.getLocale();
+		T translated = translateNameMappings(template, locale);
+		return populateTemplateDefaults(translated, locale);
 	}
 	
-	public ModelImpl getGETModel(Class<? extends Enum<?>> clsTokenEnum) {
-		return new ModelImpl()
-			.property("displayName", new StringProperty())
-			.property("codeName", new StringProperty())
-			.property("country", new StringProperty())
-			.property("lines", new ArrayProperty(
-					new ArrayProperty(
-							new ObjectProperty()
-									.property("isToken", new EnumProperty(clsTokenEnum))
-									.property("displayText", new StringProperty())
-									.property("codeName", new StringProperty())
-									.property("displaySize", new StringProperty())
-					)))
-			.property("lineByLineFormat", new ArrayProperty(new StringProperty()))
-			.property("nameMappings", new MapProperty().additionalProperties(new StringProperty()))
-			.property("sizeMappings", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementDefaults", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementRegex", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementRegexFormats", new MapProperty().additionalProperties(new StringProperty()))
-			.property("requiredElements", new ArrayProperty(new StringProperty()));
+	private T translateNameMappings(T template, Locale locale) {
+		MessageSourceService messageSourceService = Context.getMessageSourceService();
+		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(), messageSourceService, locale);
+		template.setNameMappings(translatedNameMappings);
+		return template;
 	}
 	
-	public SimpleObject asRepresentation(T instance) throws ConversionException {
-		List<List<Map<String, String>>> lines = getLines(instance);
-		SimpleObject obj = new SimpleObject();
-		obj.add("displayName", instance.getDisplayName());
-		obj.add("codeName", instance.getCodeName());
-		obj.add("country", instance.getCountry());
-		obj.add("lines", lines);
-		obj.add("lineByLineFormat", instance.getLineByLineFormat());
-		obj.add("nameMappings", instance.getNameMappings());
-		obj.add("sizeMappings", instance.getSizeMappings());
-		obj.add("elementDefaults", instance.getElementDefaults());
-		obj.add("elementRegex", instance.getElementRegex());
-		obj.add("elementRegexFormats", instance.getElementRegexFormats());
-		obj.add("requiredElements", instance.getRequiredElements());
-		return obj;
-	}
-	
-	private T populateTemplateDefaults(T template) {
+	private T populateTemplateDefaults(T template, Locale locale) {
 		String customDefaults = Context.getAdministrationService().getGlobalProperty(layoutDefaultsProperty);
-		if (template != null && customDefaults != null) {
+		if (customDefaults != null) {
 			applyElementDefaults(template, layoutDefaultsProperty, customDefaults);
 		}
+		
+		MessageSourceService messageSourceService = Context.getMessageSourceService();
+		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(), messageSourceService,
+				locale);
+		template.setElementDefaults(translatedDefaults);
+
 		return template;
+	}
+	
+	/**
+	 * Create a copy of a map having all message values translated according to the given locale.
+	 *
+	 * @param map The map to be copied and translated
+	 * @param messageService The message translation service
+	 * @param locale The locale for which all messages should be translated
+	 * @return A copy of the given map but with translated values
+	 */
+	private static Map<String, String> translateValues(Map<String, String> map, MessageSourceService messageService, Locale locale) {
+		if (map == null || messageService == null || locale == null) {
+			return map;
+		}
+		
+		Map<String, String> translatedMap = new HashMap<>(map.size());
+		for (String key: map.keySet()) {
+			String value = map.get(key);
+			try {
+				String translated = messageService.getMessage(value, null, locale);
+				translatedMap.put(key, translated);
+			} catch (NoSuchMessageException e) {
+				translatedMap.put(key, value);
+			}
+		}
+		return translatedMap;
 	}
 	
 	/**
@@ -162,34 +143,5 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 			elementDefaults.put(key, elementDefaultOverrides.get(key));
 		}
 		template.setElementDefaults(elementDefaults);
-	}
-	
-	private static List<List<Map<String, String>>> getLines(LayoutTemplate template) {
-		MessageSource messageSource = Context.getMessageSourceService();
-		Map<String, String> nameMappings = template.getNameMappings();
-		List<List<Map<String, String>>> lines = template.getLines();
-		for (List<Map<String, String>> line : lines) {
-			for (Map<String, String> elements : line) {
-				if (elements.containsKey("displayText")) {
-					String displayCode = elements.get("displayText");
-					if (StringUtils.isNotBlank(displayCode)) {
-						String displayText;
-						try {
-							displayText = messageSource.getMessage(displayCode, null, Context.getLocale());
-						}
-						catch (NoSuchMessageException e) {
-							displayText = displayCode;
-						}
-						elements.put("displayText", displayText);
-						
-						String codeName = elements.get("codeName");
-						if (codeName != null && nameMappings.containsKey(codeName)) {
-							nameMappings.put(codeName, displayText);
-						}
-					}
-				}
-			}
-		}
-		return lines;
 	}
 }
