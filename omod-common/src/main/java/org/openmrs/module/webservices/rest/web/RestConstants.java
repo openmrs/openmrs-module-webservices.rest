@@ -179,7 +179,7 @@ public class RestConstants {
 	 * A set of special request parameter names
 	 */
 	public static final Set<String> SPECIAL_REQUEST_PARAMETERS;
-	
+
 	static {
 		SPECIAL_REQUEST_PARAMETERS = new HashSet<String>();
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_INCLUDE_ALL);
@@ -189,6 +189,7 @@ public class RestConstants {
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_JSESSIONID);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_SEARCH_ID);
 		SPECIAL_REQUEST_PARAMETERS.add(REQUEST_PROPERTY_FOR_TYPE);
+		SPECIAL_REQUEST_PARAMETERS.add("totalCount");
 	}
 	
 	/**
