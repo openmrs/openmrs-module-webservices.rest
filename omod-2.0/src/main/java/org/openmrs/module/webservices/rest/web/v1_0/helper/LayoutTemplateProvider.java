@@ -49,14 +49,16 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	public List<T> getAllLayoutTemplates() {
 		List<T> templates = source.getLayoutTemplates();
 		List<T> populated = new ArrayList<>(templates.size());
-		for (T template: templates) {
+		for (T template : templates) {
 			populated.add(populateLayoutTemplate(template));
 		}
 		return populated;
 	}
 	
 	private T populateLayoutTemplate(T template) {
-		if (template == null) { return null; }
+		if (template == null) {
+			return null;
+		}
 		Locale locale = Context.getLocale();
 		T translated = translateNameMappings(template, locale);
 		return populateTemplateDefaults(translated, locale);
@@ -64,7 +66,8 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	
 	private T translateNameMappings(T template, Locale locale) {
 		MessageSourceService messageSourceService = Context.getMessageSourceService();
-		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(), messageSourceService, locale);
+		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(),
+				messageSourceService, locale);
 		template.setNameMappings(translatedNameMappings);
 		return template;
 	}
@@ -76,10 +79,10 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 		}
 		
 		MessageSourceService messageSourceService = Context.getMessageSourceService();
-		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(), messageSourceService,
-				locale);
+		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(),
+				messageSourceService, locale);
 		template.setElementDefaults(translatedDefaults);
-
+		
 		return template;
 	}
 	
@@ -91,18 +94,20 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	 * @param locale The locale for which all messages should be translated
 	 * @return A copy of the given map but with translated values
 	 */
-	private static Map<String, String> translateValues(Map<String, String> map, MessageSourceService messageService, Locale locale) {
+	private static Map<String, String> translateValues(Map<String, String> map,
+			MessageSourceService messageService, Locale locale) {
 		if (map == null || messageService == null || locale == null) {
 			return map;
 		}
 		
 		Map<String, String> translatedMap = new HashMap<>(map.size());
-		for (String key: map.keySet()) {
+		for (String key : map.keySet()) {
 			String value = map.get(key);
 			try {
 				String translated = messageService.getMessage(value, null, locale);
 				translatedMap.put(key, translated);
-			} catch (NoSuchMessageException e) {
+			}
+			catch (NoSuchMessageException e) {
 				translatedMap.put(key, value);
 			}
 		}

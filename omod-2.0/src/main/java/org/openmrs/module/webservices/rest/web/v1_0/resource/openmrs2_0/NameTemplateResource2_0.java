@@ -72,8 +72,7 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 		   return the system-configured default name template. */
 		if (codename.equalsIgnoreCase(GLOBAL_NAME_TEMPLATE)) {
 			nameTemplate = getTemplateProvider().getDefaultLayoutTemplate();
-		}
-		else {
+		} else {
 			nameTemplate = getTemplateProvider().getLayoutTemplateByName(codename);
 		}
 		if (nameTemplate == null) {
