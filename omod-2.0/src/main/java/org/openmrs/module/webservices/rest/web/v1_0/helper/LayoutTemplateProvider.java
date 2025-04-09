@@ -65,9 +65,8 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	}
 	
 	private T translateNameMappings(T template, Locale locale) {
-		MessageSourceService messageSourceService = Context.getMessageSourceService();
-		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(),
-				messageSourceService, locale);
+		MessageSourceService messages = Context.getMessageSourceService();
+		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(), messages, locale);
 		template.setNameMappings(translatedNameMappings);
 		return template;
 	}
@@ -78,9 +77,8 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 			applyElementDefaults(template, layoutDefaultsProperty, customDefaults);
 		}
 		
-		MessageSourceService messageSourceService = Context.getMessageSourceService();
-		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(),
-				messageSourceService, locale);
+		MessageSourceService messages = Context.getMessageSourceService();
+		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(), messages, locale);
 		template.setElementDefaults(translatedDefaults);
 		
 		return template;
@@ -94,11 +92,10 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	 * @param locale The locale for which all messages should be translated
 	 * @return A copy of the given map but with translated values
 	 */
-	private static Map<String, String> translateValues(Map<String, String> map,
-			MessageSourceService messageService, Locale locale) {
-		if (map == null || messageService == null || locale == null) {
-			return map;
-		}
+	private static Map<String, String> translateValues(
+			Map<String, String> map, MessageSourceService messageService, Locale locale) {
+		
+		if (map == null || messageService == null || locale == null) { return map; }
 		
 		Map<String, String> translatedMap = new HashMap<>(map.size());
 		for (String key : map.keySet()) {
