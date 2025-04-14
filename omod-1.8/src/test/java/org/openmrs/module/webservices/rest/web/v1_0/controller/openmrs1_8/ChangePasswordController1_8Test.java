@@ -12,6 +12,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -75,6 +77,7 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		
 		MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\""
 		        + "," + "\"oldPassword\":\"" + oldPassword + "\"}"));
+		Assert.assertFalse(Context.isAuthenticated());
 		assertEquals(200, response.getStatus());
 	}
 	
