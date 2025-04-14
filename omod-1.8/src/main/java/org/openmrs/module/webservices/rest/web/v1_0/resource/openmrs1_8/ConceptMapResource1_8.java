@@ -12,9 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.context.Context;
@@ -64,34 +61,7 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("source", new StringProperty()) //FIXME
-			        .property("sourceCode", new StringProperty());
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("display", new StringProperty())
-			        .property("uuid", new StringProperty())
-			        .property("source", new StringProperty()) //FIXME
-			        .property("sourceCode", new StringProperty())
-			        .property("comment", new StringProperty());
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("source", new StringProperty())
-		        .property("sourceCode", new StringProperty())
-		        .required("source").required("sourceCode");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
