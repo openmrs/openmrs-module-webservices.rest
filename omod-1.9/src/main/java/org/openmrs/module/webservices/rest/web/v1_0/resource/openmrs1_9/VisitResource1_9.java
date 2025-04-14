@@ -325,12 +325,18 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
 		String fromStartDate = context.getRequest().getParameter("fromStartDate");
+		String toStartDate = context.getRequest().getParameter("toStartDate");
+		String fromStopDate = context.getRequest().getParameter("fromStopDate");
+		String toStopDate = context.getRequest().getParameter("toStopDate");
 		String visitTypeParameter = context.getRequest().getParameter("visitType");
 		String includeParentLocations = context.getRequest().getParameter("includeParentLocations");
 		if (patientParameter != null || includeInactiveParameter != null || locationParameter != null
 		        || visitTypeParameter != null) {
 			Date minStartDate = fromStartDate != null ? (Date) ConversionUtil.convert(fromStartDate, Date.class) : null;
-			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, locationParameter,
+			Date maxStartDate = toStartDate != null ? (Date) ConversionUtil.convert(toStartDate, Date.class) : null;
+			Date minStopDate = fromStopDate != null ? (Date) ConversionUtil.convert(fromStopDate, Date.class) : null;
+			Date maxStopDate = toStopDate != null ? (Date) ConversionUtil.convert(toStopDate, Date.class) : null;
+			return getVisits(context, patientParameter, includeInactiveParameter, minStartDate, maxStartDate, minStopDate, maxStopDate, locationParameter,
 			    visitTypeParameter, includeParentLocations);
 		} else {
 			return super.search(context);
@@ -338,7 +344,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	}
 	
 	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
-	        Date minStartDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
+	        Date minStartDate, Date maxStartDate, Date minStopDate, Date maxStopDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null :
 				Boolean.parseBoolean(includeParentLocations) ?
@@ -348,8 +354,8 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		        .asList(getVisitType(visitTypeParameter));
 		boolean includeInactive = includeInactiveParameter == null ? true : Boolean.parseBoolean(includeInactiveParameter);
 		return new NeedsPaging<Visit>(Context.getVisitService().getVisits(visitTypes, patients, locations, null,
-		    minStartDate,
-		    null, null, null, null, includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
+		    minStartDate, maxStartDate, minStopDate, maxStopDate, null, 
+				includeInactive, context.getIncludeAll()), context).toSimpleObject(this);
 	}
 
 	/**
