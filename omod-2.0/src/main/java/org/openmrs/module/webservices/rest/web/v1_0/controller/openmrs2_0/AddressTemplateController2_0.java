@@ -29,23 +29,36 @@ import org.springframework.web.context.request.WebRequest;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/addresstemplate")
 public class AddressTemplateController2_0 extends BaseRestController {
 	
-	public static final String LAYOUT_ADDRESS_DEFAULTS = "layout.address.defaults";
-	
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	public Object get(WebRequest request) throws SerializationException {
-		LayoutTemplateProvider<AddressTemplate> provider = getTemplateProvider();
+		LayoutTemplateProvider<AddressTemplate> provider = new AddressTemplateProvider();
 		AddressTemplate addressTemplate = provider.getDefaultLayoutTemplate();
 		
 		Converter converter = new Converter();
 		return converter.asRepresentation(addressTemplate, Representation.DEFAULT);
 	}
 	
-	private static LayoutTemplateProvider<AddressTemplate> getTemplateProvider() {
-		return new LayoutTemplateProvider<>(AddressSupport.getInstance(), LAYOUT_ADDRESS_DEFAULTS);
+	/**
+	 * Private utility class implementation of a LayoutTemplateProvider for type of AddressTemplate.
+	 */
+	private static class AddressTemplateProvider extends LayoutTemplateProvider<AddressTemplate> {
+		
+		public static final String LAYOUT_ADDRESS_DEFAULTS = "layout.address.defaults";
+		
+		public AddressTemplateProvider() {
+			super(AddressSupport.getInstance(), LAYOUT_ADDRESS_DEFAULTS);
+		}
+		
+		@Override
+		public AddressTemplate createInstance() {
+			return new AddressTemplate("");
+		}
 	}
 	
-	
+	/**
+	 * Private utility class implementation of a Converter for an AddressTemplate.
+	 */
 	private static class Converter extends BaseDelegatingConverter<AddressTemplate> {
 		
 		@Override
@@ -55,7 +68,7 @@ public class AddressTemplateController2_0 extends BaseRestController {
 		
 		@Override
 		public AddressTemplate getByUniqueId(String codename) {
-			LayoutTemplateProvider<AddressTemplate> provider = getTemplateProvider();
+			LayoutTemplateProvider<AddressTemplate> provider = new AddressTemplateProvider();
 			return provider.getLayoutTemplateByName(codename);
 		}
 		

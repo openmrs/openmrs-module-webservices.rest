@@ -15,15 +15,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
 import org.openmrs.layout.LayoutTemplate;
-import org.openmrs.messagesource.MessageSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
-public class LayoutTemplateProvider<T extends LayoutTemplate> {
+public abstract class LayoutTemplateProvider<T extends LayoutTemplate> {
 	
 	private static final Logger log = LoggerFactory.getLogger(LayoutTemplateProvider.class);
 	
@@ -36,72 +37,113 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 		this.layoutDefaultsProperty = layoutDefaultsProperty;
 	}
 	
+	public abstract T createInstance();
+	
 	public T getDefaultLayoutTemplate() {
 		T template = source.getDefaultLayoutTemplate();
-		return populateLayoutTemplate(template);
+		return createPopulatedLayoutTemplate(template);
 	}
 	
 	public T getLayoutTemplateByName(String codename) {
 		T template = source.getLayoutTemplateByName(codename);
-		return populateLayoutTemplate(template);
+		return createPopulatedLayoutTemplate(template);
 	}
 	
 	public List<T> getAllLayoutTemplates() {
 		List<T> templates = source.getLayoutTemplates();
 		List<T> populated = new ArrayList<>(templates.size());
 		for (T template : templates) {
-			populated.add(populateLayoutTemplate(template));
+			populated.add(createPopulatedLayoutTemplate(template));
 		}
 		return populated;
 	}
 	
-	private T populateLayoutTemplate(T template) {
-		if (template == null) {
-			return null;
+	private T createPopulatedLayoutTemplate(T template) {
+		T shallowCopy = null;
+		if (template != null) {
+			shallowCopy = cloneLayoutTemplate(template);
 		}
-		Locale locale = Context.getLocale();
-		T translated = translateNameMappings(template, locale);
-		return populateTemplateDefaults(translated, locale);
+		if (shallowCopy != null) {
+			Map<String, String> translatedNameMappings = getTranslatedNameMappings(template);
+			Map<String, String> populatedTemplateDefaults = getPopulatedTemplateDefaults(template);
+			shallowCopy.setNameMappings(translatedNameMappings);
+			shallowCopy.setElementDefaults(populatedTemplateDefaults);
+		}
+		return shallowCopy;
 	}
 	
-	private T translateNameMappings(T template, Locale locale) {
-		MessageSourceService messages = Context.getMessageSourceService();
-		Map<String, String> translatedNameMappings = translateValues(template.getNameMappings(), messages, locale);
-		template.setNameMappings(translatedNameMappings);
-		return template;
+	private Map<String, String> getTranslatedNameMappings(T template) { return translateValues(template.getNameMappings());
 	}
 	
-	private T populateTemplateDefaults(T template, Locale locale) {
+	private Map<String, String> getPopulatedTemplateDefaults(T template) {
 		String customDefaults = Context.getAdministrationService().getGlobalProperty(layoutDefaultsProperty);
-		if (customDefaults != null) {
-			applyElementDefaults(template, layoutDefaultsProperty, customDefaults);
+		Map<String, String> populated = populateElementDefaults(template.getElementDefaults(),
+				layoutDefaultsProperty, customDefaults);
+		return translateValues(populated);
+	}
+	
+	/**
+	 * Create of copy of the given element defaults map, having default values/overrides from the given global property.
+	 *
+	 * @param elementDefaults The element defaults map to be copied and populated.
+	 * @param propertyName The name of the global property that supplies custom default values; for logging purposes.
+	 * @param customDefaults The global defaults/overrides as a string in the form of "n=v,n1=v1,..."
+	 * @return A fully populated copy of the given element defaults map,
+	 *         or null if the given element defaults map was null and no defaults/overrides were specified.
+	 */
+	private static Map<String, String> populateElementDefaults(Map<String, String> elementDefaults, String propertyName, String customDefaults) {
+		Map<String, String> merged = null;
+		if (elementDefaults != null) {
+			merged = new HashMap<>(elementDefaults);
 		}
 		
-		MessageSourceService messages = Context.getMessageSourceService();
-		Map<String, String> translatedDefaults = translateValues(template.getElementDefaults(), messages, locale);
-		template.setElementDefaults(translatedDefaults);
-		
-		return template;
+		if (!StringUtils.isBlank(customDefaults)) {
+			if (merged == null) {
+				merged = new HashMap<>();
+			}
+			// Check global properties for defaults/overrides in the form of n=v,n1=v1, etc
+			Map<String, String> elementDefaultOverrides = parseElementDefaultOverrides(propertyName, customDefaults);
+			for (String key : elementDefaultOverrides.keySet()) {
+				merged.put(key, elementDefaultOverrides.get(key));
+			}
+		}
+		return merged;
+	}
+	
+	private static Map<String, String> parseElementDefaultOverrides(String propertyName, String customDefaults) {
+		Map<String, String> parsedElementDefaults = new HashMap<>();
+		String[] tokens = customDefaults.split(",");
+		for (String token : tokens) {
+			String[] pair = token.split("=");
+			if (pair.length == 2) {
+				String name = pair[0];
+				String val = pair[1];
+				parsedElementDefaults.put(name, val);
+			} else {
+				log.warn("Found invalid token while parsing GlobalProperty " + propertyName + " : " + token);
+			}
+		}
+		return parsedElementDefaults;
 	}
 	
 	/**
 	 * Create a copy of a map having all message values translated according to the given locale.
 	 *
-	 * @param map The map to be copied and translated
-	 * @param messageService The message translation service
-	 * @param locale The locale for which all messages should be translated
-	 * @return A copy of the given map but with translated values
+	 * @param map The map to be copied and translated.
+	 * @return A copy of the given map having translated values.
 	 */
-	private static Map<String, String> translateValues(
-			Map<String, String> map, MessageSourceService messageService, Locale locale) {
-		
-		if (map == null || messageService == null || locale == null) { return map; }
+	private static Map<String, String> translateValues(Map<String, String> map) {
+		MessageSource messageSource = Context.getMessageSourceService();
+		Locale locale = Context.getLocale();
+		if (map == null || messageSource == null || locale == null) {
+			return map;
+		}
 		
 		Map<String, String> translatedMap = new HashMap<>(map.size());
 		for (String key : map.keySet()) {
 			String value = map.get(key);
 			try {
-				String translated = messageService.getMessage(value, null, locale);
+				String translated = messageSource.getMessage(value, null, locale);
 				translatedMap.put(key, translated);
 			}
 			catch (NoSuchMessageException e) {
@@ -112,38 +154,23 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 	}
 	
 	/**
-	 * Update the element defaults property of the given LayoutTemplate with
-	 * default values/overrides from the given global property.
+	 * Create a shallow copy of a LayoutTemplate
 	 *
-	 * @param template The layout template to update.
-	 * @param propertyName The name of the global property that supplies custom default values; for logging purposes.
-	 * @param customDefaults The global defaults/overrides as a string in the form of "n=v,n1=v1,..."
+	 * @param layoutTemplate the LayoutTemplate instance to be copied
+	 * @return a shallow copy of the given LayoutTemplate instance.
 	 */
-	private static void applyElementDefaults(LayoutTemplate template, String propertyName, String customDefaults) {
-		// Check global properties for defaults/overrides in the form of n=v,n1=v1, etc
-		Map<String, String> parsedElementDefaults = new HashMap<>();
-		String[] tokens = customDefaults.split(",");
-		for (String token : tokens) {
-			String[] pair = token.split("=");
-			if (pair.length == 2) {
-				String name = pair[0];
-				String val = pair[1];
-				parsedElementDefaults.put(name, val);
-			} else {
-				log.debug("Found invalid token while parsing GlobalProperty " + propertyName + " : " + token);
-			}
-		}
-		mergeElementDefaults(template, parsedElementDefaults);
-	}
-	
-	private static void mergeElementDefaults(LayoutTemplate template, Map<String, String> elementDefaultOverrides) {
-		Map<String, String> elementDefaults = template.getElementDefaults();
-		if (elementDefaults == null) {
-			elementDefaults = new HashMap<>();
-		}
-		for (String key : elementDefaultOverrides.keySet()) {
-			elementDefaults.put(key, elementDefaultOverrides.get(key));
-		}
-		template.setElementDefaults(elementDefaults);
+	private T cloneLayoutTemplate(T layoutTemplate) {
+		T clone = createInstance();
+		clone.setDisplayName(layoutTemplate.getDisplayName());
+		clone.setCodeName(layoutTemplate.getCodeName());
+		clone.setCountry(layoutTemplate.getCountry());
+		clone.setNameMappings(layoutTemplate.getNameMappings());
+		clone.setSizeMappings(layoutTemplate.getSizeMappings());
+		clone.setElementDefaults(layoutTemplate.getElementDefaults());
+		clone.setElementRegex(layoutTemplate.getElementRegex());
+		clone.setElementRegexFormats(layoutTemplate.getElementRegexFormats());
+		clone.setLineByLineFormat(layoutTemplate.getLineByLineFormat());
+		clone.setRequiredElements(layoutTemplate.getRequiredElements());
+		return clone;
 	}
 }

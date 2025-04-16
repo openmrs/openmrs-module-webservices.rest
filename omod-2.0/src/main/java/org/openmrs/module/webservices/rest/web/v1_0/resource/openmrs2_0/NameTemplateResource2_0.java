@@ -37,9 +37,6 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 	/* special Uuid to reference the name template specified by the global property layout.name.format */
 	public static final String GLOBAL_NAME_TEMPLATE = GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
 	
-	/* name of the global property used to apply default values to name templates */
-	public static final String LAYOUT_NAME_DEFAULTS = "layout.name.defaults";
-	
 	enum NameTemplateTokenEnum {
 		IS_NOT_NAME_TOKEN,
 		IS_NAME_TOKEN
@@ -58,7 +55,7 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 	@Override
 	public PageableResult doGetAll(RequestContext context) {
 		try {
-			return new NeedsPaging<>(getTemplateProvider().getAllLayoutTemplates(), context);
+			return new NeedsPaging<>(new NameTemplateProvider().getAllLayoutTemplates(), context);
 		}
 		catch (Exception e) {
 			throw new GenericRestException("Exception while getting name templates", e);
@@ -71,9 +68,9 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 		/* special-case handling for GET /nametemplate/layout.name.format;
 		   return the system-configured default name template. */
 		if (codename.equalsIgnoreCase(GLOBAL_NAME_TEMPLATE)) {
-			nameTemplate = getTemplateProvider().getDefaultLayoutTemplate();
+			nameTemplate = new NameTemplateProvider().getDefaultLayoutTemplate();
 		} else {
-			nameTemplate = getTemplateProvider().getLayoutTemplateByName(codename);
+			nameTemplate = new NameTemplateProvider().getLayoutTemplateByName(codename);
 		}
 		if (nameTemplate == null) {
 			throw new ObjectNotFoundException("NameTemplate with codename: " + codename + " doesn't exist.");
@@ -99,7 +96,20 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 		return RestConstants2_0.RESOURCE_VERSION;
 	}
 	
-	private static LayoutTemplateProvider<NameTemplate> getTemplateProvider() {
-		return new LayoutTemplateProvider<>(NameSupport.getInstance(), LAYOUT_NAME_DEFAULTS);
+	/**
+	 * Private utility class implementation of a LayoutTemplateProvider for type of NameTemplate.
+	 */
+	private static class NameTemplateProvider extends LayoutTemplateProvider<NameTemplate> {
+		
+		public static final String LAYOUT_NAME_DEFAULTS = "layout.name.defaults";
+		
+		public NameTemplateProvider() {
+			super(NameSupport.getInstance(), LAYOUT_NAME_DEFAULTS);
+		}
+		
+		@Override
+		public NameTemplate createInstance() {
+			return new NameTemplate();
+		}
 	}
 }
