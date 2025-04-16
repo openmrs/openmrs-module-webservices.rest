@@ -72,7 +72,8 @@ public abstract class LayoutTemplateProvider<T extends LayoutTemplate> {
 		return shallowCopy;
 	}
 	
-	private Map<String, String> getTranslatedNameMappings(T template) { return translateValues(template.getNameMappings());
+	private Map<String, String> getTranslatedNameMappings(T template) {
+		return translateValues(template.getNameMappings());
 	}
 	
 	private Map<String, String> getPopulatedTemplateDefaults(T template) {
@@ -127,7 +128,7 @@ public abstract class LayoutTemplateProvider<T extends LayoutTemplate> {
 	}
 	
 	/**
-	 * Create a copy of a map having all message values translated according to the given locale.
+	 * Create a copy of a map having all message values translated according to the current locale.
 	 *
 	 * @param map The map to be copied and translated.
 	 * @return A copy of the given map having translated values.
