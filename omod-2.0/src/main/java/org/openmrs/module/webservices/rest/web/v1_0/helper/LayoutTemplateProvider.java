@@ -12,28 +12,19 @@ package org.openmrs.module.webservices.rest.web.v1_0.helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
 import org.openmrs.layout.LayoutTemplate;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 
-public class LayoutTemplateProvider<T extends LayoutTemplate> {
+public abstract class LayoutTemplateProvider<T extends LayoutTemplate> {
 	
 	private static final Logger log = LoggerFactory.getLogger(LayoutTemplateProvider.class);
 	
@@ -46,98 +37,81 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 		this.layoutDefaultsProperty = layoutDefaultsProperty;
 	}
 	
+	public abstract T createInstance();
+	
 	public T getDefaultLayoutTemplate() {
 		T template = source.getDefaultLayoutTemplate();
-		return populateTemplateDefaults(template);
+		return createPopulatedLayoutTemplate(template);
 	}
 	
 	public T getLayoutTemplateByName(String codename) {
 		T template = source.getLayoutTemplateByName(codename);
-		return populateTemplateDefaults(template);
+		return createPopulatedLayoutTemplate(template);
 	}
 	
 	public List<T> getAllLayoutTemplates() {
 		List<T> templates = source.getLayoutTemplates();
 		List<T> populated = new ArrayList<>(templates.size());
-		for (T template: templates) {
-			populated.add(populateTemplateDefaults(template));
+		for (T template : templates) {
+			populated.add(createPopulatedLayoutTemplate(template));
 		}
 		return populated;
 	}
 	
-	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-		DelegatingResourceDescription description = new DelegatingResourceDescription();
-		description.addProperty("displayName", rep);
-		description.addProperty("codeName", rep);
-		description.addProperty("country", rep);
-		description.addProperty("lines", rep);
-		description.addProperty("lineByLineFormat", rep);
-		description.addProperty("nameMappings", rep);
-		description.addProperty("sizeMappings", rep);
-		description.addProperty("elementDefaults", rep);
-		description.addProperty("elementRegex", rep);
-		description.addProperty("elementRegexFormats", rep);
-		description.addProperty("requiredElements", rep);
-		return description;
-	}
-	
-	public ModelImpl getGETModel(Class<? extends Enum<?>> clsTokenEnum) {
-		return new ModelImpl()
-			.property("displayName", new StringProperty())
-			.property("codeName", new StringProperty())
-			.property("country", new StringProperty())
-			.property("lines", new ArrayProperty(
-					new ArrayProperty(
-							new ObjectProperty()
-									.property("isToken", new EnumProperty(clsTokenEnum))
-									.property("displayText", new StringProperty())
-									.property("codeName", new StringProperty())
-									.property("displaySize", new StringProperty())
-					)))
-			.property("lineByLineFormat", new ArrayProperty(new StringProperty()))
-			.property("nameMappings", new MapProperty().additionalProperties(new StringProperty()))
-			.property("sizeMappings", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementDefaults", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementRegex", new MapProperty().additionalProperties(new StringProperty()))
-			.property("elementRegexFormats", new MapProperty().additionalProperties(new StringProperty()))
-			.property("requiredElements", new ArrayProperty(new StringProperty()));
-	}
-	
-	public SimpleObject asRepresentation(T instance) throws ConversionException {
-		List<List<Map<String, String>>> lines = getLines(instance);
-		SimpleObject obj = new SimpleObject();
-		obj.add("displayName", instance.getDisplayName());
-		obj.add("codeName", instance.getCodeName());
-		obj.add("country", instance.getCountry());
-		obj.add("lines", lines);
-		obj.add("lineByLineFormat", instance.getLineByLineFormat());
-		obj.add("nameMappings", instance.getNameMappings());
-		obj.add("sizeMappings", instance.getSizeMappings());
-		obj.add("elementDefaults", instance.getElementDefaults());
-		obj.add("elementRegex", instance.getElementRegex());
-		obj.add("elementRegexFormats", instance.getElementRegexFormats());
-		obj.add("requiredElements", instance.getRequiredElements());
-		return obj;
-	}
-	
-	private T populateTemplateDefaults(T template) {
-		String customDefaults = Context.getAdministrationService().getGlobalProperty(layoutDefaultsProperty);
-		if (template != null && customDefaults != null) {
-			applyElementDefaults(template, layoutDefaultsProperty, customDefaults);
+	private T createPopulatedLayoutTemplate(T template) {
+		T shallowCopy = null;
+		if (template != null) {
+			shallowCopy = cloneLayoutTemplate(template);
 		}
-		return template;
+		if (shallowCopy != null) {
+			Map<String, String> translatedNameMappings = getTranslatedNameMappings(template);
+			Map<String, String> populatedTemplateDefaults = getPopulatedTemplateDefaults(template);
+			shallowCopy.setNameMappings(translatedNameMappings);
+			shallowCopy.setElementDefaults(populatedTemplateDefaults);
+		}
+		return shallowCopy;
+	}
+	
+	private Map<String, String> getTranslatedNameMappings(T template) {
+		return translateValues(template.getNameMappings());
+	}
+	
+	private Map<String, String> getPopulatedTemplateDefaults(T template) {
+		String customDefaults = Context.getAdministrationService().getGlobalProperty(layoutDefaultsProperty);
+		Map<String, String> populated = populateElementDefaults(template.getElementDefaults(),
+				layoutDefaultsProperty, customDefaults);
+		return translateValues(populated);
 	}
 	
 	/**
-	 * Update the element defaults property of the given LayoutTemplate with
-	 * default values/overrides from the given global property.
+	 * Create of copy of the given element defaults map, having default values/overrides from the given global property.
 	 *
-	 * @param template The layout template to update.
+	 * @param elementDefaults The element defaults map to be copied and populated.
 	 * @param propertyName The name of the global property that supplies custom default values; for logging purposes.
 	 * @param customDefaults The global defaults/overrides as a string in the form of "n=v,n1=v1,..."
+	 * @return A fully populated copy of the given element defaults map,
+	 *         or null if the given element defaults map was null and no defaults/overrides were specified.
 	 */
-	private static void applyElementDefaults(LayoutTemplate template, String propertyName, String customDefaults) {
-		// Check global properties for defaults/overrides in the form of n=v,n1=v1, etc
+	private static Map<String, String> populateElementDefaults(Map<String, String> elementDefaults, String propertyName, String customDefaults) {
+		Map<String, String> merged = null;
+		if (elementDefaults != null) {
+			merged = new HashMap<>(elementDefaults);
+		}
+		
+		if (!StringUtils.isBlank(customDefaults)) {
+			if (merged == null) {
+				merged = new HashMap<>();
+			}
+			// Check global properties for defaults/overrides in the form of n=v,n1=v1, etc
+			Map<String, String> elementDefaultOverrides = parseElementDefaultOverrides(propertyName, customDefaults);
+			for (String key : elementDefaultOverrides.keySet()) {
+				merged.put(key, elementDefaultOverrides.get(key));
+			}
+		}
+		return merged;
+	}
+	
+	private static Map<String, String> parseElementDefaultOverrides(String propertyName, String customDefaults) {
 		Map<String, String> parsedElementDefaults = new HashMap<>();
 		String[] tokens = customDefaults.split(",");
 		for (String token : tokens) {
@@ -147,49 +121,57 @@ public class LayoutTemplateProvider<T extends LayoutTemplate> {
 				String val = pair[1];
 				parsedElementDefaults.put(name, val);
 			} else {
-				log.debug("Found invalid token while parsing GlobalProperty " + propertyName + " : " + token);
+				log.warn("Found invalid token while parsing GlobalProperty " + propertyName + " : " + token);
 			}
 		}
-		mergeElementDefaults(template, parsedElementDefaults);
+		return parsedElementDefaults;
 	}
 	
-	private static void mergeElementDefaults(LayoutTemplate template, Map<String, String> elementDefaultOverrides) {
-		Map<String, String> elementDefaults = template.getElementDefaults();
-		if (elementDefaults == null) {
-			elementDefaults = new HashMap<>();
-		}
-		for (String key : elementDefaultOverrides.keySet()) {
-			elementDefaults.put(key, elementDefaultOverrides.get(key));
-		}
-		template.setElementDefaults(elementDefaults);
-	}
-	
-	private static List<List<Map<String, String>>> getLines(LayoutTemplate template) {
+	/**
+	 * Create a copy of a map having all message values translated according to the current locale.
+	 *
+	 * @param map The map to be copied and translated.
+	 * @return A copy of the given map having translated values.
+	 */
+	private static Map<String, String> translateValues(Map<String, String> map) {
 		MessageSource messageSource = Context.getMessageSourceService();
-		Map<String, String> nameMappings = template.getNameMappings();
-		List<List<Map<String, String>>> lines = template.getLines();
-		for (List<Map<String, String>> line : lines) {
-			for (Map<String, String> elements : line) {
-				if (elements.containsKey("displayText")) {
-					String displayCode = elements.get("displayText");
-					if (StringUtils.isNotBlank(displayCode)) {
-						String displayText;
-						try {
-							displayText = messageSource.getMessage(displayCode, null, Context.getLocale());
-						}
-						catch (NoSuchMessageException e) {
-							displayText = displayCode;
-						}
-						elements.put("displayText", displayText);
-						
-						String codeName = elements.get("codeName");
-						if (codeName != null && nameMappings.containsKey(codeName)) {
-							nameMappings.put(codeName, displayText);
-						}
-					}
-				}
+		Locale locale = Context.getLocale();
+		if (map == null || messageSource == null || locale == null) {
+			return map;
+		}
+		
+		Map<String, String> translatedMap = new HashMap<>(map.size());
+		for (String key : map.keySet()) {
+			String value = map.get(key);
+			try {
+				String translated = messageSource.getMessage(value, null, locale);
+				translatedMap.put(key, translated);
+			}
+			catch (NoSuchMessageException e) {
+				translatedMap.put(key, value);
 			}
 		}
-		return lines;
+		return translatedMap;
+	}
+	
+	/**
+	 * Create a shallow copy of a LayoutTemplate
+	 *
+	 * @param layoutTemplate the LayoutTemplate instance to be copied
+	 * @return a shallow copy of the given LayoutTemplate instance.
+	 */
+	private T cloneLayoutTemplate(T layoutTemplate) {
+		T clone = createInstance();
+		clone.setDisplayName(layoutTemplate.getDisplayName());
+		clone.setCodeName(layoutTemplate.getCodeName());
+		clone.setCountry(layoutTemplate.getCountry());
+		clone.setNameMappings(layoutTemplate.getNameMappings());
+		clone.setSizeMappings(layoutTemplate.getSizeMappings());
+		clone.setElementDefaults(layoutTemplate.getElementDefaults());
+		clone.setElementRegex(layoutTemplate.getElementRegex());
+		clone.setElementRegexFormats(layoutTemplate.getElementRegexFormats());
+		clone.setLineByLineFormat(layoutTemplate.getLineByLineFormat());
+		clone.setRequiredElements(layoutTemplate.getRequiredElements());
+		return clone;
 	}
 }
