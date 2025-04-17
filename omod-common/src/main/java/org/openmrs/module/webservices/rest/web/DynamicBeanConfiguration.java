@@ -13,9 +13,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.ServiceContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
