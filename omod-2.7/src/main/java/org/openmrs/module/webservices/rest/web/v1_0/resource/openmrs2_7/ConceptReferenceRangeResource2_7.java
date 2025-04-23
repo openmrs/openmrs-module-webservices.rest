@@ -164,7 +164,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 		
 		String[] conceptReferenceStrings = conceptUuid.split(",");
 		for (String conceptReference : conceptReferenceStrings) {
-			Concept concept = conceptService.getConceptByReference(conceptReference);
+			Concept concept = conceptService.getConceptByReference(conceptReference.trim());
 			if (concept != null) {
 				ConceptReferenceRange referenceRange = conceptService.getConceptReferenceRange(patient, concept);
 				if (referenceRange != null) {

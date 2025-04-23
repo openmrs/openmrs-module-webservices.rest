@@ -38,10 +38,10 @@ public class ConceptReferenceRangeController2_7Test extends MainResourceControll
 	}
 
 	@Test
-	public void shouldGetConceptReferenceRange() throws Exception {
+	public void shouldGetConceptReferenceRangeEvenWithSpacesAroundConceptUuid() throws Exception {
 		MockHttpServletRequest request = newGetRequest(getURI());
 		request.setParameter("patient", RestConstants2_7.PATIENT_UUID);
-		request.setParameter("concept", RestConstants2_7.CONCEPT_NUMERIC_UUID);
+		request.setParameter("concept", RestConstants2_7.CONCEPT_NUMERIC_UUID + " ");
 		request.setParameter("v", "full");
 		SimpleObject response = deserialize(handle(request));
 		List<Object> resultsList = Util.getResultsList(response);
