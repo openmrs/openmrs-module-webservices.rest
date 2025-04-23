@@ -110,4 +110,9 @@ public class ObsReferenceRangeResource2_7 extends DelegatingSubResource<ObsRefer
 	public String getDisplayString(ObsReferenceRange referenceRange) {
 		return "";
 	}
+	
+	@Override
+	public String getResourceVersion() {
+		return RestConstants2_7.RESOURCE_VERSION;
+	}
 }

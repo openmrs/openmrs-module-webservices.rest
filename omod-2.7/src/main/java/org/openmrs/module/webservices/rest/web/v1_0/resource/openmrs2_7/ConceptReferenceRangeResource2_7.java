@@ -175,4 +175,9 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 
 		return new NeedsPaging<ConceptReferenceRange>(referenceRanges, context);
 	}
+	
+	@Override
+	public String getResourceVersion() {
+		return RestConstants2_7.RESOURCE_VERSION;
+	}
 }
