@@ -21,7 +21,6 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -65,7 +64,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 			description.addProperty("lowAbsolute");
 			description.addProperty("lowCritical");
 			description.addProperty("units");
-			description.addProperty("precise");
+			description.addProperty("allowDecimal");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -82,7 +81,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 			description.addProperty("lowAbsolute");
 			description.addProperty("lowCritical");
 			description.addProperty("units");
-			description.addProperty("precise");
+			description.addProperty("allowDecimal");
 			description.addSelfLink();
 			return description;
 		}
@@ -103,8 +102,8 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 		return instance.getConceptNumeric().getUnits();
 	}
 	
-	@PropertyGetter("precise")
-	public Boolean getPrecise(ConceptReferenceRange instance) {
+	@PropertyGetter("allowDecimal")
+	public Boolean getallowDecimal(ConceptReferenceRange instance) {
 		return instance.getConceptNumeric().getAllowDecimal();
 	}
 	
@@ -165,31 +164,11 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 		
 		String[] conceptReferenceStrings = conceptUuid.split(",");
 		for (String conceptReference : conceptReferenceStrings) {
-			if (StringUtils.isBlank(conceptReference)) {
-				continue;
-			}
-			// handle UUIDs
-			if (RestUtil.isValidUuid(conceptReference)) {
-				Concept concept = conceptService.getConceptByUuid(conceptReference.trim());
-				if (concept != null) {
-					ConceptReferenceRange referenceRange = conceptService.getConceptReferenceRange(patient, concept);
-					if (referenceRange != null) {
-						referenceRanges.add(referenceRange);
-					}
-					continue;
-				}
-			}
-			// handle mappings
-			int idx = conceptReference.indexOf(':');
-			if (idx >= 0 && idx < conceptReference.length() - 1) {
-				String conceptSource = conceptReference.substring(0, idx);
-				String conceptCode = conceptReference.substring(idx + 1);
-				Concept concept = conceptService.getConceptByMapping(conceptCode.trim(), conceptSource.trim(), false);
-				if (concept != null) {
-					ConceptReferenceRange referenceRange = conceptService.getConceptReferenceRange(patient, concept);
-					if (referenceRange != null) {
-						referenceRanges.add(referenceRange);
-					}
+			Concept concept = conceptService.getConceptByReference(conceptReference);
+			if (concept != null) {
+				ConceptReferenceRange referenceRange = conceptService.getConceptReferenceRange(patient, concept);
+				if (referenceRange != null) {
+					referenceRanges.add(referenceRange);
 				}
 			}
 		}
