@@ -39,7 +39,7 @@ public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResource
 		assertPropEquals("lowAbsolute", getObject().getLowAbsolute());
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getConceptNumeric().getUnits());
-		assertPropEquals("precise", getObject().getConceptNumeric().getAllowDecimal());
+		assertPropEquals("allowDecimal", getObject().getConceptNumeric().getAllowDecimal());
 	}
 	
 	@Override
@@ -55,7 +55,7 @@ public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResource
 		assertPropEquals("lowAbsolute", getObject().getLowAbsolute());
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getConceptNumeric().getUnits());
-		assertPropEquals("precise", getObject().getConceptNumeric().getAllowDecimal());
+		assertPropEquals("allowDecimal", getObject().getConceptNumeric().getAllowDecimal());
 	}
 
 	@Override
