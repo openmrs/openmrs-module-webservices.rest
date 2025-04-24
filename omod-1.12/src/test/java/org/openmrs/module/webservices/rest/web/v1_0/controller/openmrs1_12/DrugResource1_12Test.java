@@ -25,7 +25,7 @@ public class DrugResource1_12Test extends BaseDelegatingResourceTest<DrugResourc
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
-		assertPropNotPresent("doseStrength");
+		assertPropPresent("strength");
 		assertPropNotPresent("units");
 		assertPropNotPresent("route");
 	}
@@ -33,7 +33,7 @@ public class DrugResource1_12Test extends BaseDelegatingResourceTest<DrugResourc
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
-		assertPropNotPresent("doseStrength");
+		assertPropPresent("strength");
 		assertPropNotPresent("units");
 		assertPropNotPresent("route");
 	}
