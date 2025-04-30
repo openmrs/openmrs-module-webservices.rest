@@ -18,13 +18,18 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -153,9 +158,84 @@ public class SchemaIntrospectionServiceImplTest {
 	}
 	
 	/**
+	 * @see SchemaIntrospectionServiceImpl#discoverResourceProperties(Resource)
+	 */
+	@Test
+	public void discoverResourceProperties_shouldIncludePropertiesFromAnnotations() {
+		TestPatientResourceWithAnnotations resource = new TestPatientResourceWithAnnotations();
+		Map<String, String> properties = service.discoverResourceProperties(resource);
+		
+		// Verify standard properties from the delegate type
+		assertThat(properties, hasKey("uuid"));
+		assertThat(properties, hasKey("patientId"));
+		
+		// Verify properties defined by @PropertyGetter annotations
+		assertThat(properties, hasKey("activeIdentifiers"));
+		assertThat(properties, hasKey("displayName"));
+		assertThat(properties, hasEntry("activeIdentifiers", "List<PatientIdentifier>"));
+		assertThat(properties, hasEntry("displayName", "String"));
+		
+		// Verify properties defined by @PropertySetter annotations
+		assertThat(properties, hasKey("preferredName"));
+		assertThat(properties, hasEntry("preferredName", "String"));
+	}
+	
+	/**
 	 * Mock DelegatingCrudResource for testing
 	 */
 	private class TestPatientResource extends DelegatingCrudResource<Patient> {
+		
+		@Override
+		public Patient newDelegate() {
+			return new Patient();
+		}
+		
+		@Override
+		public Patient save(Patient delegate) {
+			return delegate;
+		}
+		
+		@Override
+		public Patient getByUniqueId(String uniqueId) {
+			return new Patient();
+		}
+		
+		@Override
+		public void purge(Patient delegate, RequestContext context) {
+		}
+		
+		@Override
+		public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+			return null;
+		}
+		
+		@Override
+		public void delete(Patient delegate, String reason, RequestContext context) throws ResourceDoesNotSupportOperationException {
+			throw new ResourceDoesNotSupportOperationException();
+		}
+	}
+	
+	/**
+	 * Mock DelegatingCrudResource for testing PropertyGetter and PropertySetter annotations
+	 */
+	private class TestPatientResourceWithAnnotations extends DelegatingCrudResource<Patient> {
+		
+		@PropertyGetter("activeIdentifiers")
+		public List<PatientIdentifier> getActiveIdentifiers(Patient patient) {
+			return new ArrayList<PatientIdentifier>();
+		}
+		
+		@PropertyGetter("displayName")
+		public String getDisplayName(Patient patient) {
+			return patient.getPersonName().getFullName();
+		}
+		
+		@PropertySetter("preferredName")
+		public void setPreferredName(Patient patient, String name) {
+			// Implementation not needed for test
+		}
+		
+		// Standard resource methods
 		
 		@Override
 		public Patient newDelegate() {

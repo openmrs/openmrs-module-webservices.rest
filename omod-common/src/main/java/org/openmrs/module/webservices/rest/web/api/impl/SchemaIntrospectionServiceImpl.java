@@ -21,6 +21,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.api.SchemaIntrospectionService;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -139,7 +141,52 @@ public class SchemaIntrospectionServiceImpl extends BaseOpenmrsService implement
 	@Override
 	public Map<String, String> discoverResourceProperties(Resource resource) {
 		Class<?> delegateType = getDelegateType(resource);
-		return discoverAvailableProperties(delegateType);
+		Map<String, String> properties = discoverAvailableProperties(delegateType);
+		
+		// Also discover properties defined by PropertyGetter and PropertySetter annotations
+		if (resource != null) {
+			discoverAnnotatedProperties(resource.getClass(), properties);
+		}
+		
+		return properties;
+	}
+	
+	/**
+	 * Discovers properties defined by PropertyGetter and PropertySetter annotations in a resource class
+	 * and its superclasses
+	 *
+	 * @param resourceClass The resource class to scan for annotations
+	 * @param properties The map to add discovered properties to
+	 */
+	private void discoverAnnotatedProperties(Class<?> resourceClass, Map<String, String> properties) {
+		// Process the current class and all its superclasses
+		Class<?> currentClass = resourceClass;
+		while (currentClass != null && !currentClass.equals(Object.class)) {
+			// Process all methods in the class
+			for (Method method : currentClass.getDeclaredMethods()) {
+				// Check for PropertyGetter annotation
+				PropertyGetter getter = method.getAnnotation(PropertyGetter.class);
+				if (getter != null) {
+					String propertyName = getter.value();
+					Type returnType = method.getGenericReturnType();
+					properties.put(propertyName, getTypeName(returnType));
+				}
+				
+				// Check for PropertySetter annotation
+				PropertySetter setter = method.getAnnotation(PropertySetter.class);
+				if (setter != null && method.getParameterTypes().length > 1) {
+					String propertyName = setter.value();
+					// For setters, use the type of the second parameter (after the delegate)
+					Type paramType = method.getGenericParameterTypes()[1];
+					// Only add if not already discovered through a getter
+					if (!properties.containsKey(propertyName)) {
+						properties.put(propertyName, getTypeName(paramType));
+					}
+				}
+			}
+			// Move up to the superclass
+			currentClass = currentClass.getSuperclass();
+		}
 	}
 	
 	/**
