@@ -163,6 +163,12 @@
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
             <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$ -->
+            <exclusions>
+            	<exclusion>
+            		<groupId>javax.servlet</groupId>
+            		<artifactId>servlet-api</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
