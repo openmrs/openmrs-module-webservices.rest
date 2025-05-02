@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.openmrs.Patient;
@@ -40,4 +41,11 @@ public class PatientResource1_9 extends PatientResource1_8 {
 		super.delete(patient, reason, context);
 	}
 	
+	public Object toFhirResource(Patient patient) throws ReflectiveOperationException {
+		Class translatorClass = Context.loadClass("org.openmrs.module.fhir2.api.translators.impl.PatientTranslatorImpl");
+		Method m = translatorClass.getDeclaredMethod("toFhirResource", Patient.class);
+		Object translator = translatorClass.newInstance();
+		m.setAccessible(true);
+		return m.invoke(translator, patient);
+	}
 }
