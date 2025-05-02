@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.controller;
 
-import com.google.common.net.HttpHeaders;
-import io.swagger.models.Scheme;
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,22 +22,25 @@ import javax.servlet.http.HttpServletRequest;
 public class SwaggerSpecificationController {
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody
-	String getSwaggerSpecification(HttpServletRequest request) throws Exception {
+	@SuppressWarnings("unused")
+	public @ResponseBody String getOpenAPISpecification(HttpServletRequest request) throws Exception {
 		
-		String host = request.getHeader(HttpHeaders.HOST);
+		String host = request.getServerName();
+		int port = request.getServerPort();
+		String contextPath = request.getContextPath();
 		
-		String scheme = request.getHeader(HttpHeaders.X_FORWARDED_PROTO);
+		String scheme = request.getHeader("X-Forwarded-Proto");
 		if (scheme == null) {
 			scheme = request.getScheme();
 		}
 		
-		return new SwaggerSpecificationCreator()
-		        .host(host)
-		        .basePath(request.getContextPath() + "/ws/rest/v1")
-		        .scheme(Scheme.forValue(scheme))
-		        
-		        .getJSON();
+		String baseUrl = scheme + "://" + host + (port == 80 || port == 443 ? "" : ":" + port) + contextPath;
+		
+		SwaggerSpecificationCreator creator = new SwaggerSpecificationCreator();
+		creator.host(baseUrl)
+		       .basePath("/ws/rest/v1");
+		
+		return creator.getJSON();
 	}
 	
 }
