@@ -130,7 +130,6 @@ public class AllergyResource1_8 extends BaseActiveListItemResource1_8<Allergy> {
 	 * @param allergen
 	 * @param value
 	 */
-	@PropertySetter("allergen")
 	public static void setAllergen(Allergy allergy, Object value) {
 		allergy.setAllergen(Context.getConceptService().getConceptByUuid((String) value));
 	}
