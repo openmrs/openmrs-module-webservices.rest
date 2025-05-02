@@ -11,10 +11,6 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import java.util.Date;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
@@ -37,29 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * @param <T>
  */
 public abstract class MetadataDelegatingCrudResource<T extends OpenmrsMetadata> extends DelegatingCrudResource<T> {
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("name", new StringProperty())
-		        .property("description", new StringProperty())
-		        .required("name");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */

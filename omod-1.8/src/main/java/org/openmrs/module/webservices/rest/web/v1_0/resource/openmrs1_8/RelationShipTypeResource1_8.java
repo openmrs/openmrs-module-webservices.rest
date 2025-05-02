@@ -10,10 +10,6 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.apache.commons.lang.StringUtils;
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -130,37 +126,7 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		description.addProperty("description");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("aIsToB", new StringProperty())
-			        .property("bIsToA", new StringProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("weight", new IntegerProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("aIsToB", new StringProperty())
-		        .property("bIsToA", new StringProperty())
-		        .property("weight", new IntegerProperty())
-		        
-		        .required("aIsToB").required("bIsToA");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */

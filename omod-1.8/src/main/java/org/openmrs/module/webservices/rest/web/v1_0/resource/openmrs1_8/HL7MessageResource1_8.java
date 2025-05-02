@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -94,34 +89,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 		description.addRequiredProperty("hl7");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("messageState", new IntegerProperty());
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("source", new RefProperty("#/definitions/Hl7sourceGet"))
-			        .property("sourceKey", new StringProperty())
-			        .property("data", new StringProperty())
-			        .property("messageState", new IntegerProperty());
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("hl7", new StringProperty()) //FIXME TYPE
-		        .required("hl7");
-	}
-	
+
 	/**
 	 * It needs to be overwritten to allow for hidden properties: source, sourceKey and data. They
 	 * are automatically extracted from the hl7 property and populated in
