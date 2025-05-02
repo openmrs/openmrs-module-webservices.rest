@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.CareSetting;
 import org.openmrs.ConceptClass;
+import org.openmrs.Drug;
+import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -31,6 +33,8 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+
 
 public class OrderController1_12Test extends MainResourceControllerTest {
 	
@@ -138,4 +142,6 @@ public class OrderController1_12Test extends MainResourceControllerTest {
 		assertEquals(order.get("dispenseAsWritten"), Util.getByPath(newOrder, "dispenseAsWritten"));
 		assertEquals(order.get("drugNonCoded"), Util.getByPath(newOrder, "drugNonCoded"));
 	}
+
+	
 }
