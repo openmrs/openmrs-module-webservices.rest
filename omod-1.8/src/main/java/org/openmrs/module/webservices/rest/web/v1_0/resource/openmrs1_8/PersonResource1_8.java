@@ -545,7 +545,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 				}
 			}
 		}
-		if (!hasPreferred) {
+		if (!hasPreferred && !addresses.isEmpty()) {
 			addresses.iterator().next().setPreferred(true);
 		}
 	}
