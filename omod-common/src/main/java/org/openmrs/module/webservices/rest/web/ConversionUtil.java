@@ -547,7 +547,7 @@ public class ConversionUtil {
 		int startIndex = 0;
 		List<String> properties = new ArrayList<String>();
 		int nestingLevel = 0;
-		for (int i=0; i<def.length(); i++) {
+		for (int i=0; i < def.length(); i++) {
 			char c = def.charAt(i);
 			if (c == '(') {
 				nestingLevel++;
