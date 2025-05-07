@@ -9,26 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,6 +32,30 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.util.HandlerUtil;
 import org.openmrs.util.LocaleUtility;
+
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.FULL;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
 
 public class ConversionUtil {
 	
@@ -539,56 +543,46 @@ public class ConversionUtil {
 		String def = representation.getRepresentation();
 		def = def.startsWith("(") ? def.substring(1) : def;
 		def = def.endsWith(")") ? def.substring(0, def.length() - 1) : def;
-		String[] fragments = def.split(",");
-		for (int i = 0; i < fragments.length; i++) {
-			String[] field = fragments[i].split(":"); //split into field and representation
-			if (field.length == 1) {
-				if (!field[0].equals("links"))
-					desc.addProperty(field[0]);
-				if (field[0].equals("links")) {
+
+		int startIndex = 0;
+		List<String> properties = new ArrayList<String>();
+		int nestingLevel = 0;
+		for (int i=0; i < def.length(); i++) {
+			char c = def.charAt(i);
+			if (c == '(') {
+				nestingLevel++;
+			}
+			else if (c == ')') {
+				nestingLevel--;
+			}
+			else if (c == ',' && nestingLevel == 0) {
+				properties.add(def.substring(startIndex, i));
+				startIndex = i + 1;
+			}
+		}
+		properties.add(def.substring(startIndex));
+
+		for (String propertyDefinition : properties) {
+			if (propertyDefinition.contains(":")) {
+				String[] propertyAndRepresentation = propertyDefinition.split(":", 2);
+				String property = propertyAndRepresentation[0];
+				String rep = propertyAndRepresentation[1];
+				Representation r;
+				if (rep.startsWith("(")) {
+					r = new CustomRepresentation(rep);
+				}
+				else {
+					r = rep.equalsIgnoreCase("REF") ? REF : rep.equalsIgnoreCase("FULL") ? FULL : DEFAULT;
+				}
+				desc.addProperty(property, r);
+			}
+			else {
+				if (propertyDefinition.equals("links")) {
 					desc.addSelfLink();
 					desc.addLink("default", ".?v=" + RestConstants.REPRESENTATION_DEFAULT);
 				}
-			} else {
-				String property = field[0];
-				String rep = field[1];
-
-				// if custom representation
-				if (rep.startsWith("(")) {
-					StringBuilder customRep = new StringBuilder();
-					customRep.append(rep);
-					if (!rep.endsWith(")")) {
-						for (int j = 2; j < field.length; j++) {
-							customRep.append(":").append(field[j]);
-						}
-						int open = 1;
-						for (i = i + 1; i < fragments.length; i++) {
-							for (char fragment : fragments[i].toCharArray()) {
-								if (fragment == '(') {
-									open++;
-								} else if (fragment == ')') {
-									open--;
-								}
-							}
-
-							customRep.append(",");
-							customRep.append(fragments[i]);
-
-							if (open == 0) {
-								break;
-							}
-						}
-					}
-					desc.addProperty(property, new CustomRepresentation(customRep.toString()));
-				} else {
-					rep = rep.toUpperCase(); //normalize
-					if (rep.equals("REF")) {
-						desc.addProperty(property, Representation.REF);
-					} else if (rep.equals("FULL")) {
-						desc.addProperty(property, Representation.FULL);
-					} else if (rep.equals("DEFAULT")) {
-						desc.addProperty(property, Representation.DEFAULT);
-					}
+				else {
+					desc.addProperty(propertyDefinition);
 				}
 			}
 		}

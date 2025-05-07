@@ -15,21 +15,30 @@ import org.openmrs.ConceptName;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
 import static org.hibernate.validator.util.Contracts.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
+import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
 
 public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
 
+    @Autowired
+    ConceptService conceptService;
 
     @Test
     public void convertToRepresentation_shouldConvertObsDrugValueAsNull() {
@@ -81,5 +90,51 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
             assertNull(resultObs2.get("value"));
         }
 
+    }
+
+    @Test
+    public void convert_shouldConvertObjectWithNestedCustomRepresentations() {
+        String customRep = "(concepts:(creator:(person:(uuid),username),datatype:ref,uuid))";
+        DelegatingResourceDescription fullDesc = ConversionUtil.getCustomRepresentationDescription(new CustomRepresentation(customRep));
+        assertThat(fullDesc.getProperties().size(), is(1));
+        DelegatingResourceDescription.Property conceptsProperty = fullDesc.getProperties().get("concepts");
+        assertNotNull(conceptsProperty);
+        assertCustomRepresentation(conceptsProperty.getRep(), "(creator:(person:(uuid),username),datatype:ref,uuid)");
+
+        DelegatingResourceDescription conceptDesc = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) conceptsProperty.getRep());
+        assertThat(conceptDesc.getProperties().size(), is(3));
+        DelegatingResourceDescription.Property creatorProperty = conceptDesc.getProperties().get("creator");
+        assertNotNull(creatorProperty);
+        assertCustomRepresentation(creatorProperty.getRep(), "(person:(uuid),username)");
+
+        DelegatingResourceDescription creatorDesc = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) creatorProperty.getRep());
+        assertThat(creatorDesc.getProperties().size(), is(2));
+        DelegatingResourceDescription.Property personProperty = creatorDesc.getProperties().get("person");
+        assertNotNull(personProperty);
+
+        DelegatingResourceDescription.Property usernameProperty = creatorDesc.getProperties().get("username");
+        assertNotNull(usernameProperty);
+        assertEquals(DEFAULT, usernameProperty.getRep());
+
+        DelegatingResourceDescription personDesc = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) personProperty.getRep());
+        assertThat(personDesc.getProperties().size(), is(1));
+        DelegatingResourceDescription.Property personUuidProperty = personDesc.getProperties().get("uuid");
+        assertNotNull(personUuidProperty);
+        assertEquals(DEFAULT, personUuidProperty.getRep());
+
+        DelegatingResourceDescription.Property datatypeProperty = conceptDesc.getProperties().get("datatype");
+        assertNotNull(datatypeProperty);
+        assertEquals(REF, datatypeProperty.getRep());
+
+        DelegatingResourceDescription.Property uuidProperty = conceptDesc.getProperties().get("uuid");
+        assertNotNull(uuidProperty);
+        assertEquals(DEFAULT, uuidProperty.getRep());
+    }
+
+    public void assertCustomRepresentation(Representation representation, String rep) {
+        assertNotNull(representation);
+        assertTrue(representation instanceof CustomRepresentation);
+        CustomRepresentation customRepresentation = (CustomRepresentation) representation;
+        assertEquals(rep, customRepresentation.getRepresentation());
     }
 }
