@@ -33,7 +33,7 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 	/**
 	 * Gets the {@link DelegatingResourceDescription} for the given representation for this
 	 * resource, if it exists
-	 * 
+	 *
 	 * @param rep
 	 * @return
 	 */

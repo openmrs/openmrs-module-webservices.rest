@@ -43,7 +43,7 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 	/**
 	 * Gets the {@link DelegatingResourceDescription} for the given representation for this
 	 * resource, if it exists
-	 * 
+	 *
 	 * @param rep
 	 * @return
 	 */
