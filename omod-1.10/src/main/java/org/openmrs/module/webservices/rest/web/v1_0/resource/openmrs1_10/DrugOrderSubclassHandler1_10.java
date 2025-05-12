@@ -32,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugOrderSubclassHandler1_8;
+//import org.openmrs.module.webservices.rest.web.representation.SimpleObject;
 
 /**
  * Exposes the {@link org.openmrs.DrugOrder} subclass as a type in
@@ -67,7 +68,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("display");
-			d.addProperty("drug", Representation.REF);
+			d.addProperty("drug", Representation.DEFAULT);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
 			d.addProperty("doseUnits", Representation.REF);
@@ -89,7 +90,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			        .getResourceBySupportedClass(Order.class);
 			DelegatingResourceDescription d = orderResource.getRepresentationDescription(rep);
 			d.addProperty("display");
-			d.addProperty("drug", Representation.REF);
+			d.addProperty("drug", Representation.DEFAULT);
 			d.addProperty("dosingType");
 			d.addProperty("dose");
 			d.addProperty("doseUnits", Representation.DEFAULT);
@@ -118,7 +119,7 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
 		DelegatingResourceDescription d = orderResource.getCreatableProperties();
-		d.addProperty("drug");
+		d.addProperty("drug", Representation.DEFAULT);
 		d.addProperty("dosingType");
 		d.addProperty("dose");
 		d.addProperty("doseUnits");
@@ -202,4 +203,5 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 		
 		return ret.toString();
 	}
+
 }
