@@ -268,13 +268,15 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
 			}
-			
+
+			// if the user indicated a specific sort parameter, apply sort here
 			if (StringUtils.isNotBlank(sortParam)) {
 				List<Order> sortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, sortParam, status);
 				return new NeedsPaging<Order>(sortedOrder, context);
 			}
 			else {
-				return new NeedsPaging<Order>(orders, context);
+				List<Order> descSortedOrder = sortOrdersInDescendingOrderByDate(orders);
+				return new NeedsPaging<Order>(descSortedOrder, context);
 			}
 		} else {
 			throw new InvalidSearchException("Please provide patientUuid in the patient parameter");
@@ -288,6 +290,21 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	}
 	
 	private static Date getActiveOrderSortDate(Order order) {
+		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
+	}
+
+	private List<Order> sortOrdersInDescendingOrderByDate(List<Order> orders) {
+		List<Order> sortedList = new ArrayList<Order>(orders);
+		Collections.sort(sortedList, new Comparator<Order>() {
+			@Override
+			public int compare(Order o1, Order o2) {
+				return getOrderSortDate(o2).compareTo(getOrderSortDate(o1));
+			}
+		});
+		return sortedList;
+	}
+
+	private static Date getOrderSortDate(Order order) {
 		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
 	}
 	

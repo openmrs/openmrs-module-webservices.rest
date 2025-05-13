@@ -598,4 +598,23 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		);
 		handle(req);
 	}
+
+	@Test
+	public void doSearch_shouldReturnOrdersSortedInDescendingOrderByDate() throws Exception {
+		SimpleObject orders = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5")
+		)));
+
+		List<Object> resultList = Util.getResultsList(orders);
+		assertTrue(resultList.size() >= 2);
+
+		String uuid1 = PropertyUtils.getProperty(resultList.get(0), "uuid").toString();
+		String uuid2 = PropertyUtils.getProperty(resultList.get(1), "uuid").toString();
+
+		Order order1 = orderService.getOrderByUuid(uuid1);
+		Order order2 = orderService.getOrderByUuid(uuid2);
+
+		// orders sorted by date in descending order (newest first)
+		assertTrue(order1.getDateActivated().after(order2.getDateActivated()));
+	}
 }
