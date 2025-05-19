@@ -105,10 +105,25 @@
 				<configuration>
 					<header>${project.parent.basedir}/license-header.txt</header>
 				</configuration>
-			</plugin>
+			</plugin>			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
+			</plugin>
+			<!-- OpenAPI Generator Maven Plugin -->
+			<plugin>
+				<groupId>org.openmrs.plugin</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>say-hello</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>hello</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
