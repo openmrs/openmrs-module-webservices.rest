@@ -42,6 +42,13 @@
             <version>3.8.6</version>
             <scope>provided</scope>
         </dependency>
+        
+        <!-- JavaParser for extracting Javadoc -->
+        <dependency>
+            <groupId>com.github.javaparser</groupId>
+            <artifactId>javaparser-core</artifactId>
+            <version>3.25.5</version>
+        </dependency>
     </dependencies>
 
     <build>
