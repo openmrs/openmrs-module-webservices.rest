@@ -275,7 +275,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				return new NeedsPaging<Order>(sortedOrder, context);
 			}
 			else {
-				List<Order> descSortedOrder = sortOrdersInDescendingOrderByDate(orders);
+				List<Order> descSortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, "DESC", status);
 				return new NeedsPaging<Order>(descSortedOrder, context);
 			}
 		} else {
@@ -290,21 +290,6 @@ public class OrderResource1_10 extends OrderResource1_8 {
 	}
 	
 	private static Date getActiveOrderSortDate(Order order) {
-		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
-	}
-
-	private List<Order> sortOrdersInDescendingOrderByDate(List<Order> orders) {
-		List<Order> sortedList = new ArrayList<Order>(orders);
-		Collections.sort(sortedList, new Comparator<Order>() {
-			@Override
-			public int compare(Order o1, Order o2) {
-				return getOrderSortDate(o2).compareTo(getOrderSortDate(o1));
-			}
-		});
-		return sortedList;
-	}
-
-	private static Date getOrderSortDate(Order order) {
 		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
 	}
 	
