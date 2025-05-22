@@ -12,7 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - uses: johnyherangi/create-release-notes@main
+      - name: Create Release Notes
+        uses: johnyherangi/create-release-notes@main
         id: create-release-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -25,7 +26,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: ${{ steps.create-release-notes.outputs.release-notes }}
+          release_name: ${{ github.ref }}
+          body: |
+            ## What's Changed
+            ${{ steps.create-release-notes.outputs.release-notes }}
           draft: false
           prerelease: false
