@@ -2,7 +2,6 @@ on:
   push:
     tags:
       - '*' # Create release for every new tag
-  workflow_dispatch:
 
 name: Create Release
 
