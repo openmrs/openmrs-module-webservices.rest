@@ -40,6 +40,7 @@ import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
 
 /**
  * Exposes the {@link org.openmrs.TestOrder} subclass as a type in
@@ -214,5 +215,15 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
 		        .getResourceBySupportedClass(Order.class);
 		return orderResource.getDisplayString(delegate);
+	}
+
+	/**
+	 * @see OrderResource1_8#getStatus(org.openmrs.Order)
+	 */
+	@PropertyGetter("status")
+	public String getStatus(TestOrder delegate) {
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
+				.getResourceBySupportedClass(Order.class);
+		return orderResource.getStatus(delegate);
 	}
 }
