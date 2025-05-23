@@ -268,13 +268,15 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			if (context.getType() != null) {
 				filterByType(orders, context.getType());
 			}
-			
+
+			// if the user indicated a specific sort parameter, apply sort here
 			if (StringUtils.isNotBlank(sortParam)) {
 				List<Order> sortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, sortParam, status);
 				return new NeedsPaging<Order>(sortedOrder, context);
 			}
 			else {
-				return new NeedsPaging<Order>(orders, context);
+				List<Order> descSortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, "DESC", status);
+				return new NeedsPaging<Order>(descSortedOrder, context);
 			}
 		} else {
 			throw new InvalidSearchException("Please provide patientUuid in the patient parameter");

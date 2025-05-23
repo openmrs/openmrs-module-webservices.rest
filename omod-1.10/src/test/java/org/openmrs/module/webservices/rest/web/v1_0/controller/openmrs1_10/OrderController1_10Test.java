@@ -413,7 +413,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void shouldGetTheActiveOrdersForAPatientAsOfTheSpecifiedDate() throws Exception {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientService
-		        .getPatient(2).getUuid()), new Parameter("asOfDate", "2007-12-10"))));
+		        .getPatient(2).getUuid()), new Parameter("status", "active"), new Parameter("asOfDate", "2007-12-10"))));
 		
 		assertEquals(2, Util.getResultsSize(results));
 		
@@ -566,7 +566,8 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		
 		// order service should return all orders when no order type filter specified
 		req = newGetRequest(getURI(),
-		    new Parameter("patient", PATIENT_UUID)
+		    new Parameter("patient", PATIENT_UUID),
+				new Parameter("status", "active")
 		        );
 		SimpleObject orders = deserialize(handle(req));
 		ArrayList<Object> resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
@@ -597,5 +598,25 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 				new Parameter("status", "active")
 		);
 		handle(req);
+	}
+
+	@Test
+	public void doSearch_shouldReturnOrdersSortedInDescendingOrderByDate() throws Exception {
+		SimpleObject orders = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
+				new Parameter("status", "active")
+		)));
+
+		List<Object> resultList = Util.getResultsList(orders);
+		assertTrue(resultList.size() >= 2);
+
+		String uuid1 = PropertyUtils.getProperty(resultList.get(0), "uuid").toString();
+		String uuid2 = PropertyUtils.getProperty(resultList.get(1), "uuid").toString();
+
+		Order order1 = orderService.getOrderByUuid(uuid1);
+		Order order2 = orderService.getOrderByUuid(uuid2);
+
+		// orders sorted by date in descending order (newest first)
+		assertTrue(order1.getDateActivated().after(order2.getDateActivated()));
 	}
 }
