@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import org.apache.struts.mock.MockHttpServletRequest;
-import org.apache.struts.mock.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
