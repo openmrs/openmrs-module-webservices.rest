@@ -9,18 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -31,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
@@ -114,45 +107,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			return null;
 		}
 	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("orderType", new StringProperty().example("uuid"))
-		        .property("action", new EnumProperty(Order.Action.class))
-		        .property("accessionNumber", new StringProperty())
-		        .property("dateActivated", new DateProperty())
-		        .property("scheduledDate", new DateProperty())
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("careSetting", new StringProperty().example("uuid"))
-		        .property("dateStopped", new DateProperty())
-		        .property("autoExpireDate", new DateProperty())
-		        .property("orderer", new StringProperty().example("uuid"))
-		        .property("previousOrder", new StringProperty().example("uuid"))
-		        .property("urgency", new EnumProperty(Order.Urgency.class))
-		        .property("orderReason", new StringProperty().example("uuid"))
-		        .property("orderReasonNonCoded", new StringProperty())
-		        .property("instructions", new StringProperty())
-		        .property("commentToFulfiller", new StringProperty())
-		        
-		        .required("orderType").required("patient").required("concept");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-			        .property("patient", new RefProperty("#/definitions/PatientCreate"))
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("orderer", new RefProperty("#/definitions/UserCreate"))
-			        .property("previousOrder", new RefProperty("#/definitions/OrderCreate"))
-			        .property("orderReason", new RefProperty("#/definitions/ConceptCreate"))
-					.property("orderReasonNonCoded", new StringProperty())
-					.property("instructions", new StringProperty())
-					.property("commentToFulfiller", new StringProperty());
-		}
-		return model;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
