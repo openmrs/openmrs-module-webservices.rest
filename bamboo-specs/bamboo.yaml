@@ -1,0 +1,123 @@
+---
+version: 2
+plan:
+  project-key: RESTWS
+  key: RESTWS
+  name: Rest Webservices Module
+  description: Builds and runs unit tests. More details of the release in https://wiki.openmrs.org/x/i4DTAw
+stages:
+- Default Stage:
+    manual: false
+    final: false
+    jobs:
+    - Default Job
+- Release:
+    manual: true
+    final: false
+    jobs:
+    - Release to maven
+Default Job:
+  key: JOB1
+  tasks:
+  - checkout:
+      force-clean-build: 'false'
+      description: Checkout Default Repository
+# com.atlassian.bamboo.plugins.maven:task.builder.mvn3 is disabled. This state is not supported at YAML
+  - maven:
+      executable: Maven 3
+      jdk: JDK 1.8
+      goal: clean deploy
+      tests: 'true'
+      description: Runs tests and deploys artifacts to maven repo
+  artifact-subscriptions: []
+Release to maven:
+  key: RTM
+  tasks:
+  - checkout:
+      force-clean-build: 'true'
+      description: Checkout Default Repository
+  - checkout:
+      repository: Release scripts
+      path: release-scripts
+      force-clean-build: 'true'
+      description: Checkout Default Repository
+  - command:
+      executable: Bash
+      argument: release-scripts/release-prepare-perform.sh -r "${bamboo.maven.release.version}" -d "${bamboo.maven.development.version}"
+      envrionment: JAVA_HOME=${bamboo.capability.system.jdk.openjdk-8-jdk} MAVEN_HOME=${bamboo.capability.system.builder.mvn3.Maven 3}
+      description: Release prepare perform
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.variable.updater.variable-updater-generic:variable-extractor
+      configuration:
+        variable: maven.release.version
+        removeSnapshot: 'true'
+        variableScope: PLAN
+      description: Save next release version
+  - any-task:
+      plugin-key: com.atlassian.bamboo.plugins.variable.updater.variable-updater-generic:variable-extractor
+      configuration:
+        variable: maven.development.version
+        variableScope: JOB
+      description: Retrieve next snaphot version
+  - command:
+      executable: Bash
+      argument: release-scripts/distro-update.sh -r "${bamboo.maven.release.version}" -d "${bamboo.maven.development.version}" -p "${bamboo.refapp.distro.property}" -s "${bamboo.refapp.distro.scm}" -b "${bamboo.refapp.distro.dev.branch}" -n "${bamboo.preparing.refapp.distro.release}"
+      envrionment: MAVEN_HOME=${bamboo.capability.system.builder.mvn3.Maven 3}
+      description: Update distro with the new version
+  artifact-subscriptions: []
+variables:
+  maven.development.version: ''
+  maven.release.version: 2.50.0
+  refapp.distro.property: webservices.restVersion
+repositories:
+- openmrs-module-webservices.rest:
+    scope: global
+- Release scripts:
+    scope: global
+triggers:
+- polling:
+    period: '180'
+    repositories:
+    - openmrs-module-webservices.rest
+branches:
+  create: manually
+  delete: never
+  link-to-jira: true
+notifications:
+- events:
+  - plan-failed
+  recipients:
+  - committers
+  - watchers
+labels:
+- platform
+dependencies:
+  require-all-stages-passing: false
+  enabled-for-branches: true
+  block-strategy: none
+  plans:
+  - CA-CA
+  - REFAPP-OMODDISTRO
+  - EMRAPI-EMRAPI
+other:
+  concurrent-build-plugin: system-default
+---
+version: 2
+plan:
+  key: RESTWS-RESTWS
+plan-permissions:
+- users:
+  - ibacher
+  roles:
+  - logged-in
+  permissions:
+  - view
+  - edit
+  - build
+  - clone
+  - admin
+- roles:
+  - anonymous
+  permissions:
+  - view
+...
