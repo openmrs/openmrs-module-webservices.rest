@@ -66,7 +66,7 @@ Release to maven:
       description: Update distro with the new version
   artifact-subscriptions: []
 variables:
-  maven.development.version: ''
+  maven.development.version: 2.51.0-SNAPSHOT
   maven.release.version: 2.50.0
   refapp.distro.property: webservices.restVersion
 repositories:
