@@ -206,7 +206,7 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	@Override
 	public UserAndPassword1_8 getByUniqueId(String uuid) {
 		User user = Context.getUserService().getUserByUuid(uuid);
-		return user != null ? new UserAndPassword1_8(Context.getUserService().getUserByUuid(uuid)) : null;
+		return user != null ? new UserAndPassword1_8(user) : null;
 	}
 	
 	/**
