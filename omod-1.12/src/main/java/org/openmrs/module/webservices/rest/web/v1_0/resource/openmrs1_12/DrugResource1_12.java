@@ -33,7 +33,7 @@ public class DrugResource1_12 extends DrugResource1_11 {
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
 			DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-			description.removeProperty("doseStrength");
+			description.addProperty("strength");
 			description.removeProperty("units");
 			description.removeProperty("route");
 			return description;
@@ -47,7 +47,7 @@ public class DrugResource1_12 extends DrugResource1_11 {
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
-		description.removeProperty("doseStrength");
+		description.addProperty("strength");
 		description.removeProperty("units");
 		description.removeProperty("route");
 		return description;
