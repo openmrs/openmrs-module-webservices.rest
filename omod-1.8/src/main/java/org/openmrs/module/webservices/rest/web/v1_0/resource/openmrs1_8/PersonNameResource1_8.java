@@ -53,6 +53,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 			description.addProperty("middleName");
 			description.addProperty("familyName");
 			description.addProperty("familyName2");
+			description.addProperty("preferred");
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -120,7 +121,7 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 		}
 		if (rep instanceof FullRepresentation) {
 			model
-			        .property("preferred", new BooleanProperty())
+					.property("preferred", new BooleanProperty()._default(false))
 			        .property("prefix", new StringProperty())
 			        .property("familyNamePrefix", new StringProperty())
 			        .property("familyNameSuffix", new StringProperty())
@@ -224,9 +225,21 @@ public class PersonNameResource1_8 extends DelegatingSubResource<PersonName, Per
 				break;
 			}
 		}
-		if (needToAdd)
+		if (needToAdd) {
 			newName.getPerson().addName(newName);
+		}
+
+		// if this name is marked as preferred, then we need to clear any others that are marked as preferred
+		if (newName.isPreferred()) {
+			for (PersonName pn : newName.getPerson().getNames()) {
+				if (!pn.equals(newName)) {
+					pn.setPreferred(false);
+				}
+			}
+		}
+
 		Context.getPersonService().savePerson(newName.getPerson());
+
 		return newName;
 	}
 	
