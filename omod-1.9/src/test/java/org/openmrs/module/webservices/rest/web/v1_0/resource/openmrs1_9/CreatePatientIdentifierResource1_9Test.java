@@ -39,8 +39,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		String personAttributeJson = "{" + "            \"identifier\": \"101-6\"," + "            \"identifierType\": {"
 		        + "              \"uuid\" : \"1a339fe9-38bc-4ab3-b180-320988c0b968\"" + "            },"
 		        + "            \"location\" : {" + "              \"uuid\" : \"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\""
-		        + "            }"
-				+ "        }";
+		        + "            }}";
 		
 		SimpleObject personAttributeSimpleObject = new SimpleObject();
 		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(personAttributeJson, HashMap.class));
@@ -55,8 +54,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		String personAttributeJson = "{" + "            \"identifier\": \"101-6\"," + "            \"identifierType\": {"
 		        + "              \"name\" : \"OpenMRS Identification Number\"" + "            },"
 		        + "            \"location\" : {" + "              \"uuid\" : \"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\""
-		        + "            }"
-				+ "        }";
+		        + "            }}";
 		
 		SimpleObject personAttributeSimpleObject = new SimpleObject();
 		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(personAttributeJson, HashMap.class));

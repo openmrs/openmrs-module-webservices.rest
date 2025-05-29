@@ -20,7 +20,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
