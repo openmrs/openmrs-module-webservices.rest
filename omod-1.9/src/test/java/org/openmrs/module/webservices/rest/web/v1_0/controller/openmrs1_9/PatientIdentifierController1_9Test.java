@@ -9,7 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,11 +22,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
+import java.util.Set;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonName;
 import org.openmrs.api.APIException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -30,6 +41,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierResource1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -247,5 +259,53 @@ public class PatientIdentifierController1_9Test extends MainResourceControllerTe
 		assertEquals(patientIdentifierUuidThatShouldNotChange, uuid);
 		assertEquals(patientIdentifierNewValue, identifierValue);
 		assertEquals(patientIdentifierNewValue, patientIdentifier.getIdentifier());
+	}
+
+	@Test
+	public void shouldSetPreferred() throws Exception {
+		PatientIdentifier nonPreferred = service.getPatientIdentifierByUuid(getUuid());
+		Patient patient = nonPreferred.getPatient();
+		assertThat(nonPreferred.isPreferred(), is(true));
+
+		SimpleObject newIdentifier = new SimpleObject();
+		newIdentifier.add("identifier", "OMRS303");
+		newIdentifier.add("identifierType", "2f470aa8-1d73-43b7-81b5-01f0c0dfa53c");
+		newIdentifier.add("location", RestTestConstants1_8.LOCATION_UUID);
+		newIdentifier.add("preferred", "true");
+
+		String json = new ObjectMapper().writeValueAsString(newIdentifier);
+
+		MockHttpServletRequest req = request(RequestMethod.POST, "patient/" + patient.getUuid() + "/identifier");
+		req.setContent(json.getBytes());
+
+		SimpleObject result = deserialize(handle(req));
+		Object uuid = PropertyUtils.getProperty(result, "uuid");
+		PatientIdentifier preferred = service.getPatientIdentifierByUuid(uuid.toString());
+
+		// sanity check
+		assertThat(nonPreferred.isPreferred(), is(false));
+		assertThat(preferred.isPreferred(), is(true));
+
+		// check before change
+		assertThat(patient.getIdentifiers(), (Matcher) hasItem(allOf(
+				hasProperty("preferred", is(true)),
+				hasProperty("identifier", is("OMRS303"))
+		)));
+
+		// change non preferred to preferred
+		SimpleObject updateToTrue = new SimpleObject();
+		updateToTrue.add("preferred", "true");
+
+		String updateJson = new ObjectMapper().writeValueAsString(updateToTrue);
+
+		MockHttpServletRequest req1 = request(RequestMethod.POST, "patient/" + patient.getUuid() + "/identifier/" + nonPreferred.getUuid());
+		req1.setContent(updateJson.getBytes());
+		handle(req1);
+
+		// check after change
+		assertThat(patient.getIdentifiers(), (Matcher) hasItem(allOf(
+				hasProperty("preferred", is(false)),
+				hasProperty("identifier", is("OMRS303"))
+		)));
 	}
 }

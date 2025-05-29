@@ -221,7 +221,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 				}
 			}
 		}
-		
+
 		boolean needToAdd = true;
 		for (PatientIdentifier pi : delegate.getPatient().getActiveIdentifiers()) {
 			if (pi.equals(delegate)) {
@@ -235,9 +235,10 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 		if (needToAdd) {
 			delegate.getPatient().addIdentifier(delegate);
 		}
+		// make sure that the identifier has actually been added to the patient
+		Context.getPatientService().savePatient(delegate.getPatient());
 
 		return delegate;
-		
 	}
 	
 	@Override
