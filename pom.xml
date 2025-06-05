@@ -455,15 +455,6 @@
 
 			<modules>
 				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
-				<module>omod-2.0</module>
-				<module>omod-2.1</module>
-				<module>omod-2.2</module>
-				<module>omod-2.3</module>
 				<module>omod-2.4</module>
 				<module>omod-2.5</module>
 				<module>omod-2.7</module>
@@ -482,11 +473,7 @@
 
 			<modules>
 				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
+				<module>omod-2.4</module>
 				<module>omod</module>
 				<module>integration-tests</module>
 			</modules>
@@ -530,15 +517,6 @@
 
 			<modules>
 				<module>omod-common</module>
-				<module>omod-1.8</module>
-				<module>omod-1.9</module>
-				<module>omod-1.10</module>
-				<module>omod-1.11</module>
-				<module>omod-1.12</module>
-				<module>omod-2.0</module>
-				<module>omod-2.1</module>
-				<module>omod-2.2</module>
-				<module>omod-2.3</module>
 				<module>omod-2.4</module>
 				<module>omod-2.5</module>
 				<module>omod-2.7</module>
