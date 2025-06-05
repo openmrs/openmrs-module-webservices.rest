@@ -33,9 +33,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>1.11.6</openmrs.version>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<openmrs.version>2.4.6-SNAPSHOT</openmrs.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.name}</MODULE_NAME>
@@ -60,6 +60,12 @@
 				<version>${openmrs.version}</version>
 				<type>jar</type>
 				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>servlet-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
@@ -70,11 +76,25 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.openmrs.api</groupId>
+				<artifactId>openmrs-api</artifactId>
+				<version>${openmrs.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
 				<version>${openmrs.version}</version>
 				<classifier>tests</classifier>
 				<type>jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.web</groupId>
+				<artifactId>openmrs-web</artifactId>
+				<version>${openmrs.version}</version>
+				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -95,6 +115,18 @@
 				<version>1.14</version>
 				<type>jar</type>
 				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javaxVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>legacyui-omod</artifactId>
+				<version>1.23.0</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -132,7 +164,12 @@
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 

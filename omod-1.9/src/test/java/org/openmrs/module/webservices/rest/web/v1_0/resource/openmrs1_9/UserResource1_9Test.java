@@ -61,7 +61,6 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		assertPropPresent("roles");
 		assertPropPresent("allRoles");
 		assertPropEquals("proficientLocales", getObject().getUser().getProficientLocales());
-		assertPropEquals("secretQuestion", getObject().getUser().getSecretQuestion());
 		assertPropEquals("retired", getObject().getUser().getRetired());
 	}
 	

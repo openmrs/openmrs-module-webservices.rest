@@ -35,8 +35,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import static org.openmrs.util.PrivilegeConstants.VIEW_LOCATIONS;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * {@link Resource} for {@link Location}, supporting standard CRUD operations
@@ -271,8 +270,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 			locationsByTag = new ArrayList<Location>();
 
 			try {
-				Context.addProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
-				Context.addProxyPrivilege("Get Locations"); //1.11+
+				Context.addProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
 
 				LocationTag locationTag = Context.getLocationService().getLocationTagByUuid(tag);
 				if (locationTag == null) {
@@ -283,8 +281,7 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 					locationsByTag = Context.getLocationService().getLocationsHavingAllTags(Arrays.asList(locationTag));
 				}
 			} finally {
-				Context.removeProxyPrivilege(VIEW_LOCATIONS); //Not using PrivilegeConstants.VIEW_LOCATIONS which was removed in platform 1.11+
-				Context.removeProxyPrivilege("Get Locations"); //1.11+
+				Context.removeProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
 			}
 		}
 

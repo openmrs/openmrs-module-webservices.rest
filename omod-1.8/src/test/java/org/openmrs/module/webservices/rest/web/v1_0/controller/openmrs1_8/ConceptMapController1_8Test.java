@@ -81,8 +81,8 @@ public class ConceptMapController1_8Test extends MainResourceControllerTest {
 		
 		ConceptMap conceptMap = restHelperService.getObjectByUuid(ConceptMap.class, uuid);
 		assertThat(conceptMap.getConcept().getUuid(), is(RestTestConstants1_8.CONCEPT2_UUID));
-		assertThat(conceptMap.getSource().getUuid(), is(RestTestConstants1_8.CONCEPT_SOURCE_UUID));
-		assertThat(conceptMap.getSourceCode(), is("test"));
+		assertThat(conceptMap.getConceptReferenceTerm().getConceptSource().getUuid(), is(RestTestConstants1_8.CONCEPT_SOURCE_UUID));
+		assertThat(conceptMap.getConceptReferenceTerm().getCode(), is("test"));
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class ConceptMapController1_8Test extends MainResourceControllerTest {
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		ConceptMap conceptMap = restHelperService.getObjectByUuid(ConceptMap.class, getUuid());
-		assertThat(conceptMap.getSourceCode(), is("test"));
+		assertThat(conceptMap.getConceptReferenceTerm().getCode(), is("test"));
 	}
 	
 	@Test(expected = ResourceDoesNotSupportOperationException.class)

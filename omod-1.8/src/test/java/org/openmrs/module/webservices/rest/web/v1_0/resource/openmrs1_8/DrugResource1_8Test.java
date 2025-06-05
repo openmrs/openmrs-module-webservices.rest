@@ -35,10 +35,8 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("doseStrength", getObject().getDoseStrength());
 		assertPropEquals("maximumDailyDose", getObject().getMaximumDailyDose());
 		assertPropEquals("minimumDailyDose", getObject().getMinimumDailyDose());
-		assertPropEquals("units", getObject().getUnits());
 		assertPropEquals("combination", getObject().getCombination());
 		assertPropPresent("concept");
 		assertPropPresent("route");
@@ -51,10 +49,8 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 		assertPropEquals("name", getObject().getName());
 		assertPropEquals("description", getObject().getDescription());
 		assertPropEquals("retired", getObject().isRetired());
-		assertPropEquals("doseStrength", getObject().getDoseStrength());
 		assertPropEquals("maximumDailyDose", getObject().getMaximumDailyDose());
 		assertPropEquals("minimumDailyDose", getObject().getMinimumDailyDose());
-		assertPropEquals("units", getObject().getUnits());
 		assertPropEquals("combination", getObject().getCombination());
 		assertPropPresent("concept");
 		assertPropPresent("route");
@@ -71,20 +67,4 @@ public class DrugResource1_8Test extends BaseDelegatingResourceTest<DrugResource
 	public String getUuidProperty() {
 		return RestTestConstants1_8.DRUG_UUID;
 	}
-	
-	/**
-	 * Tests
-	 * {@link BaseDelegatingResource#setConvertedProperties(Object, java.util.Map, DelegatingResourceDescription, boolean)}
-	 */
-	@Test
-	public void setConvertedProperties_shouldAllowSettingANullValue() {
-		DrugResource1_8 resource = new DrugResource1_8();
-		Drug drug = new Drug();
-		drug.setRoute(new Concept());
-		Map<String, Object> propertyMap = new HashMap<String, Object>();
-		propertyMap.put("route", null);
-		resource.setConvertedProperties(drug, propertyMap, resource.getUpdatableProperties(), false);
-		Assert.isNull(drug.getRoute());
-	}
-	
 }

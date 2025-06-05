@@ -10,10 +10,6 @@
 	<name>Rest Web Services 2.2 OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
-	<properties>
-                 <openmrs.version.2.2.1>2.2.1</openmrs.version.2.2.1>
-    </properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
@@ -116,7 +112,6 @@
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
-			<version>${openmrs.version.2.2.1}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 
 		<dependency>
@@ -124,13 +119,11 @@
 			<artifactId>openmrs-api</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
-			<version>${openmrs.version.2.2.1}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
                 
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
-			<version>${openmrs.version.2.2.1}</version> <!-- $NO-MVN-MAN-VER$ -->
 		</dependency>
 		
 		<dependency>
@@ -138,7 +131,6 @@
 			<artifactId>openmrs-web</artifactId>
 			<type>test-jar</type>
 			<scope>test</scope>
-			<version>${openmrs.version.2.2.1}</version> <!-- $NO-MVN-MAN-VER$-->
 		</dependency> 
 		
 		<dependency>
@@ -146,15 +138,8 @@
 			<artifactId>openmrs-test</artifactId>
 			<type>pom</type>
 			<scope>test</scope>
-			<version>${openmrs.version.2.2.1}</version> <!-- $NO-MVN-MAN-VER$ -->
 		</dependency>
-                
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>4.1.4.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
+
 
 		<dependency>
 			<groupId>javax.servlet</groupId>

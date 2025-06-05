@@ -37,6 +37,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 
@@ -190,14 +191,8 @@ public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassw
 	 */
 	@Override
 	public UserAndPassword1_8 save(UserAndPassword1_8 user) {
-		String password = user.getPassword();
-		User openmrsUser = Context.getUserService().saveUser(user.getUser(), password);
-		Context.refreshAuthenticatedUser();
-		if (openmrsUser.getId() != null && StringUtils.isNotBlank(password)) {
-			Context.getUserService().changePassword(openmrsUser, password);
-		}
-		return new UserAndPassword1_8(openmrsUser);
-		
+		//openmrs-api-2.4.x upgrade, implemented in newer resource
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

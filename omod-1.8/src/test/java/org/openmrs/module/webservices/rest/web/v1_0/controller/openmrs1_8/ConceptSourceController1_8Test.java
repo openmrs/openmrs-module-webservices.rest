@@ -50,7 +50,7 @@ public class ConceptSourceController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getAllConceptSources().size();
+		return service.getAllConceptSources(true).size();
 	}
 	
 	/**

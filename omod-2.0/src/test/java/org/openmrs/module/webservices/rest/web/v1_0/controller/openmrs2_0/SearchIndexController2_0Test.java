@@ -11,35 +11,34 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.ContextDAO;
+import org.openmrs.test.BaseContextMockTest;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Context.class)
-public class SearchIndexController2_0Test {
-	
+public class SearchIndexController2_0Test extends BaseContextMockTest {
+
+	@Mock
+	ContextDAO contextDAO;
+
 	private SearchIndexController2_0 controller = new SearchIndexController2_0();
 	
 	@Test
 	public void updateSearchIndex_shouldUpdateTheEntireSearchIndex() throws Exception {
-		PowerMockito.mockStatic(Context.class);
-		PowerMockito.doNothing().when(Context.class, "updateSearchIndex");
 		controller.updateSearchIndex(null);
-		
-		PowerMockito.verifyStatic();
-		Context.updateSearchIndex();
+
+		Mockito.verify(contextDAO, Mockito.times(1)).updateSearchIndex();
 	}
 	
 	@Test
 	public void updateSearchIndex_shouldUpdateTheEntireSearchIndexAsynchronously() throws Exception {
-		PowerMockito.mockStatic(Context.class);
-		PowerMockito.doNothing().when(Context.class, "updateSearchIndex");
 		controller.updateSearchIndex("{\"async\": true}");
 		
-		PowerMockito.verifyStatic();
-		Context.updateSearchIndexAsync();
+		Mockito.verify(contextDAO, Mockito.times(1)).updateSearchIndexAsync();
 	}
 	
 }

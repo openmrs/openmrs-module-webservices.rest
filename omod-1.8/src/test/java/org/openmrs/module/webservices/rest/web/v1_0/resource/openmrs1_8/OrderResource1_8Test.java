@@ -65,7 +65,7 @@ public class OrderResource1_8Test extends BaseDelegatingResourceTest<OrderResour
 	private void voidOneOrder() {
 		Order order = Context.getOrderService().getOrderByUuid(RestTestConstants1_8.ORDER_UUID);
 		order.setVoided(true);
-		Context.getOrderService().saveOrder(order);
+		Context.getOrderService().saveOrder(order, null);
 	}
 	
 }

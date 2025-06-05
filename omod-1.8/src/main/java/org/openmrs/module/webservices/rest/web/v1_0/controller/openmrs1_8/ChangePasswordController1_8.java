@@ -64,15 +64,13 @@ public class ChangePasswordController1_8 extends BaseRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void changeOthersPassword(@PathVariable("userUuid") String userUuid, @RequestBody Map<String, String> body) {
 		String newPassword = body.get("newPassword");
-		Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
-		Context.addProxyPrivilege("Get Users"); // support later versions of OpenMRS
+		Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
 		User user;
 		try {
 			user = userService.getUserByUuid(userUuid);
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
-			Context.removeProxyPrivilege("Get Users");
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
 		}
 		
 		if (user == null || user.getUserId() == null) {

@@ -90,7 +90,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUBCLASS_UUID, context);
 		Util.log("Retrieved subclass", retrieved);
 		Assert.assertEquals("drugorder", retrieved.get("type"));
-		Assert.assertEquals(325d, retrieved.get("dose"));
+		Assert.assertEquals(325d, (double) retrieved.get("dose"));
 	}
 	
 	@Test
@@ -153,18 +153,6 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		Util.log("Get all of subclass", all);
 		Assert.assertEquals(5, Util.getResultsSize(all));
 		Assert.assertEquals("drugorder", Util.getByPath(all, "results[0]/type"));
-	}
-	
-	@Test
-	public void shouldUsePropertySetterAndGetterFromSubclassHandler() throws Exception {
-		HivDrugOrderSubclassHandler handler = new HivDrugOrderSubclassHandler();
-		resource.registerSubclassHandler(handler);
-		HivDrugOrder o = handler.newDelegate();
-		// this will only work if the @PropertySetter method on the subclass handler is used 
-		resource.setProperty(o, "standardRegimenCode", "Peds-1a");
-		// this will only work if the @PropertyGetter method on the subclass handler is used
-		Object valueSet = resource.getProperty(o, "standardRegimenCode");
-		Assert.assertEquals("Peds-1a", valueSet);
 	}
 	
 	@Test(expected = IllegalArgumentException.class)

@@ -30,7 +30,6 @@ public class PatientIdentifierTypeResource1_8Test extends BaseDelegatingResource
 		assertPropEquals("format", getObject().getFormat());
 		assertPropEquals("formatDescription", getObject().getFormatDescription());
 		assertPropEquals("required", getObject().getRequired());
-		assertPropEquals("checkDigit", getObject().getCheckDigit());
 		assertPropEquals("validator", getObject().getValidator());
 		assertPropPresent("locationBehavior");
 		assertPropEquals("retired", getObject().getRetired());
@@ -44,7 +43,6 @@ public class PatientIdentifierTypeResource1_8Test extends BaseDelegatingResource
 		assertPropEquals("format", getObject().getFormat());
 		assertPropEquals("formatDescription", getObject().getFormatDescription());
 		assertPropEquals("required", getObject().getRequired());
-		assertPropEquals("checkDigit", getObject().getCheckDigit());
 		assertPropEquals("validator", getObject().getValidator());
 		assertPropPresent("locationBehavior");
 		assertPropEquals("retired", getObject().getRetired());

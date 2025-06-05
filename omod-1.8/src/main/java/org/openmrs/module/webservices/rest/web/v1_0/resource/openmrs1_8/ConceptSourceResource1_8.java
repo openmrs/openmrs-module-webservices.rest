@@ -150,7 +150,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doGetAll(RequestContext context) {
-		return doGetAll(context, Context.getConceptService().getAllConceptSources());
+		return doGetAll(context, Context.getConceptService().getAllConceptSources(true));
 	}
 	
 	protected NeedsPaging<ConceptSource> doGetAll(RequestContext context, List<ConceptSource> sources) {
@@ -170,7 +170,7 @@ public class ConceptSourceResource1_8 extends MetadataDelegatingCrudResource<Con
 	 */
 	@Override
 	protected NeedsPaging<ConceptSource> doSearch(RequestContext context) {
-		return doSearch(context, Context.getConceptService().getAllConceptSources());
+		return doSearch(context, Context.getConceptService().getAllConceptSources(true));
 	}
 	
 	protected NeedsPaging<ConceptSource> doSearch(RequestContext context, List<ConceptSource> sources) {

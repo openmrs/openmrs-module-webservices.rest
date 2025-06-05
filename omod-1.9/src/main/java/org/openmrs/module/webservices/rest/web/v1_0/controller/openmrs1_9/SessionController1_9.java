@@ -54,11 +54,6 @@ public class SessionController1_9 extends BaseRestController {
 
 	public static final String USER_CUSTOM_REP = "(uuid,display,username,systemId,userProperties,person:(uuid,display),privileges:(uuid,display,name),roles:(uuid,display,name),links)";
 
-	// The privilege to get providers was changed from "View Providers" to "Get Providers" in OpenMRS 2.0
-	private static final String GET_PROVIDERS = "Get Providers";
-
-	private static final String GET_GLOBAL_PROPERTIES = "Get Global Properties";
-
 	@Autowired
 	RestService restService;
 
@@ -73,14 +68,12 @@ public class SessionController1_9 extends BaseRestController {
 		session.add("authenticated", authenticated);
 		session.add("locale", Context.getLocale());
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
-			Context.addProxyPrivilege(GET_GLOBAL_PROPERTIES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 			
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
-			Context.removeProxyPrivilege(GET_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 		}
 		if (authenticated) {
 			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
@@ -152,15 +145,13 @@ public class SessionController1_9 extends BaseRestController {
 		if (currentUser != null) {
 			Collection<Provider> providers = new HashSet<Provider>();
 			try {
-				Context.addProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
-				Context.addProxyPrivilege(GET_PROVIDERS);
+				Context.addProxyPrivilege(PrivilegeConstants.GET_PROVIDERS);
 				if (currentUser.getPerson() != null) {
 					providers = Context.getProviderService().getProvidersByPerson(currentUser.getPerson(), false);
 				}
 			}
 			finally {
-				Context.removeProxyPrivilege(PrivilegeConstants.VIEW_PROVIDERS);
-				Context.removeProxyPrivilege(GET_PROVIDERS);
+				Context.removeProxyPrivilege(PrivilegeConstants.GET_PROVIDERS);
 			}
 			if (providers.size() > 1) {
 				log.warn("Can't handle users with multiple provider accounts");

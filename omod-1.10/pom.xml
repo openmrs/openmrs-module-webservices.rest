@@ -10,10 +10,6 @@
 	<name>Rest Web Services 1.10 OMOD</name>
 	<description>OpenMRS module project for Rest Web Services</description>
 
-	<properties>
-		<openmrs.version.1.10>1.10.4</openmrs.version.1.10>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
@@ -60,34 +56,29 @@
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
-			<version>${openmrs.version.1.10}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.api</groupId>
 			<artifactId>openmrs-api</artifactId>
 			<classifier>tests</classifier>
-			<version>${openmrs.version.1.10}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
-			<version>${openmrs.version.1.10}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
 			<artifactId>openmrs-web</artifactId>
 			<classifier>tests</classifier>
-			<version>${openmrs.version.1.10}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 
 		<dependency>
 			<groupId>org.openmrs.test</groupId>
 			<artifactId>openmrs-test</artifactId>
 			<type>pom</type>
-			<version>${openmrs.version.1.10}</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 	</dependencies>
 

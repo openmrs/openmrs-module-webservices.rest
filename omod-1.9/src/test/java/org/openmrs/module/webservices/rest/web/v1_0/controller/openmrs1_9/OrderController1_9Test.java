@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -17,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
@@ -27,6 +30,8 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.parameter.OrderSearchCriteria;
+import org.openmrs.parameter.OrderSearchCriteriaBuilder;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -66,7 +71,7 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return service.getOrders(Order.class, null, null, null, null, null, null).size();
+		return service.getOrders(new OrderSearchCriteriaBuilder().build()).size();
 	}
 	
 	/**
@@ -130,7 +135,7 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		int count = service.getOrders(Order.class, null, null, null, null, null, null).size();
+		int count = service.getOrders(new OrderSearchCriteriaBuilder().build()).size();
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
 		
@@ -142,8 +147,10 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_TYPE, "drugorder");
 		SimpleObject result = deserialize(handle(req));
-		
-		int count = service.getOrders(DrugOrder.class, null, null, null, null, null, null).size();
+
+		OrderType drugOrderType = service.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+
+		int count = service.getOrders(new OrderSearchCriteriaBuilder().setOrderTypes(Arrays.asList(drugOrderType)).build()).size();
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
 		
@@ -157,7 +164,7 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-		List<Order> orders = service.getOrdersByPatient(patient);
+		List<Order> orders = service.getAllOrdersByPatient(patient);
 		Assert.assertEquals(orders.size(), Util.getResultsSize(result));
 		
 	}
@@ -171,7 +178,9 @@ public class OrderController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-		int count = service.getDrugOrdersByPatient(patient).size();
+
+		OrderType drugOrderType = service.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+		int count = service.getActiveOrders(patient, drugOrderType, null, null).size();
 		
 		Assert.assertEquals(count, Util.getResultsSize(result));
 	}

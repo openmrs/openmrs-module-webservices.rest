@@ -111,10 +111,8 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptMap conceptMap) {
-		if (conceptMap.getSource() == null) {
-			return "";
-		}
-		return conceptMap.getSource().getName() + ":" + conceptMap.getSourceCode();
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**

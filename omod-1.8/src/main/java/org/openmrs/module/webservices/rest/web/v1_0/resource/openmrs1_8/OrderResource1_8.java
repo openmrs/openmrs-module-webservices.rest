@@ -19,7 +19,6 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Order;
 import org.openmrs.Patient;
-import org.openmrs.api.OrderService.ORDER_STATUS;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -34,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -71,7 +71,7 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	 */
 	@Override
 	public Order save(Order delegate) {
-		return Context.getOrderService().saveOrder(delegate);
+		return Context.getOrderService().saveOrder(delegate, null);
 	}
 	
 	/**
@@ -115,11 +115,8 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	 */
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		//ORDER_STATUS.ANY is used to specify that all orders, including voided ones should be retrieved
-		ORDER_STATUS orderStatus = context.getIncludeAll() ? ORDER_STATUS.ANY : null;
-		
-		return new NeedsPaging<Order>(Context.getOrderService().getOrders(Order.class, null, null, orderStatus, null, null,
-		    null), context);
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -293,31 +290,8 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	 */
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
-		String patientUuid = context.getRequest().getParameter("patient");
-		if (patientUuid != null) {
-			Patient patient = ((PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
-			    Patient.class)).getByUniqueId(patientUuid);
-			if (patient == null)
-				return new EmptySearchResult();
-			
-			// if the user indicated a specific type, try to delegate to the appropriate subclass handler
-			if (context.getType() != null) {
-				PageableResult ret = (PageableResult) findAndInvokeSubclassHandlerMethod(context.getType(),
-				    "getOrdersByPatient", patient, context);
-				if (ret != null)
-					return ret;
-			}
-			
-			List<Order> orders = Context.getOrderService().getOrdersByPatient(patient);
-			// if the user indicated a specific type, and we couldn't delegate to a subclass handler above, filter here
-			if (context.getType() != null) {
-				filterByType(orders, context.getType());
-			}
-			return new NeedsPaging<Order>(orders, context);
-		}
-		
-		//currently this is not supported since the superclass throws an exception
-		return super.doSearch(context);
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 }

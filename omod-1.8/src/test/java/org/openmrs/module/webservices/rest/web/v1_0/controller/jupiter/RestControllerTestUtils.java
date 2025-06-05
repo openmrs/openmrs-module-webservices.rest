@@ -7,7 +7,9 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.controller;
+package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
@@ -25,11 +27,11 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -93,7 +95,7 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 				break;
 			}
 		}
-		Assert.assertNotNull("The request URI does not exist", handlerExecutionChain);
+		assertNotNull(handlerExecutionChain, "The request URI does not exist");
 
 		handlerAdapter.handle(request, response, handlerExecutionChain.getHandler());
 

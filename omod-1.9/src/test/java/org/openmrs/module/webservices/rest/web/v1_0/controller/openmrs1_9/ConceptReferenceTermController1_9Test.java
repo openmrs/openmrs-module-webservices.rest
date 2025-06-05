@@ -200,7 +200,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		List<Object> results = Util.getResultsList(result);
 		assertThat(
 		    results,
-		    containsInAnyOrder((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+				(Matcher) containsInAnyOrder(hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
 		        hasEntry("name", "no term name3")));
 	}
 	
@@ -213,7 +213,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		List<Object> results = Util.getResultsList(result);
 		assertThat(
 		    results,
-		    containsInAnyOrder((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+				(Matcher) containsInAnyOrder(hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
 		        hasEntry("name", "no term name3")));
 	}
 	
@@ -234,7 +234,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		results.addAll(resultsSecondPage);
 		assertThat(
 		    results,
-		    hasItems((Matcher) hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
+				(Matcher) hasItems(hasEntry("name", "no term name"), hasEntry("name", "no term name2"),
 		        hasEntry("name", "no term name3")));
 	}
 	
@@ -244,7 +244,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		        "Some Standardized Terminology"), new Parameter("codeOrName", "no term name"), new Parameter("searchType",
 		        "equal"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(result);
-		assertThat(results, contains((Matcher) hasEntry("name", "no term name")));
+		assertThat(results, (Matcher) contains(hasEntry("name", "no term name")));
 	}
 	
 	@Test
@@ -252,7 +252,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("codeOrName", "127689"),
 		    new Parameter("searchType", "equal"), new Parameter("v", "full"))));
 		List<Object> results = Util.getResultsList(result);
-		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "died term"), hasEntry("name", "married term")));
+		assertThat(results, (Matcher) containsInAnyOrder(hasEntry("name", "died term"), hasEntry("name", "married term")));
 	}
 	
 	@Test
@@ -269,7 +269,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		assertThat(resultsSecondPage, hasSize(1));
 		
 		results.addAll(resultsSecondPage);
-		assertThat(results, containsInAnyOrder((Matcher) hasEntry("name", "died term"), hasEntry("name", "married term")));
+		assertThat(results, (Matcher) containsInAnyOrder(hasEntry("name", "died term"), hasEntry("name", "married term")));
 	}
 	
 	@Test(expected = InvalidSearchException.class)

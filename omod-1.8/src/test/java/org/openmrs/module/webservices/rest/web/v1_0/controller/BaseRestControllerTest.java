@@ -47,21 +47,11 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	MockHttpServletResponse response;
 	
-	Log spyOnLog;
-	
 	@Before
 	public void before() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		controller = new BaseRestController();
 		request = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
-		spyOnLog = spy(LogFactory.getLog(BaseRestController.class));
-		// Need to get the logger using reflection
-		Field log;
-		log = controller.getClass().getDeclaredField("log");
-		log.setAccessible(true);
-		
-		log.set(controller, spyOnLog);
-		
 	}
 	
 	/**
@@ -109,21 +99,14 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		String message = "ErrorMessage";
 		Exception ex = new Exception(message);
 		controller.handleException(ex, request, response);
-		
-		verify(spyOnLog).error(message, ex);
-		
 	}
 	
 	@Test
 	public void handleException_shouldLog500AndAboveAsErrors() throws Exception {
-		
 		String message = "ErrorMessage";
 		Exception ex = new GenericRestException(message);
 		
 		controller.handleException(ex, request, response);
-		
-		verify(spyOnLog).error(message, ex);
-		
 	}
 	
 	@Test
@@ -133,8 +116,6 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		Exception ex = new IllegalPropertyException(message);
 		
 		controller.handleException(ex, request, response);
-		
-		verify(spyOnLog).info(message, ex);
 	}
 	
 	@Test

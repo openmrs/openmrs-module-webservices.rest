@@ -69,7 +69,6 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	@Override
 	public DrugOrder newDelegate() {
 		DrugOrder o = new DrugOrder();
-		o.setOrderType(Context.getOrderService().getOrderType(OpenmrsConstants.ORDERTYPE_DRUG));
 		return o;
 	}
 	
@@ -79,7 +78,8 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	@SuppressWarnings("deprecation")
 	@Override
 	public PageableResult getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException {
-		return new NeedsPaging<DrugOrder>(Context.getOrderService().getDrugOrders(), context);
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -187,8 +187,8 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	 * @return
 	 */
 	public PageableResult getOrdersByPatient(Patient patient, RequestContext context) {
-		List<DrugOrder> orders = Context.getOrderService().getDrugOrdersByPatient(patient);
-		return new NeedsPaging<DrugOrder>(orders, context);
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 	
 	/**
@@ -199,11 +199,7 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 	 */
 	@PropertyGetter("display")
 	public static String getDisplay(DrugOrder delegate) {
-		StringBuilder ret = new StringBuilder();
-		ret.append(delegate.getDrug() != null ? delegate.getDrug().getName() : "[no drug]");
-		ret.append(": ");
-		ret.append(delegate.getDose()).append(" ").append(delegate.getUnits());
-		// TODO dates, etc
-		return ret.toString();
+		//openmrs-api-2.4.x upgrade
+		throw new ResourceDoesNotSupportOperationException();
 	}
 }

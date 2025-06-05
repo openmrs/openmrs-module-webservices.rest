@@ -100,7 +100,7 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String newPassword = "newPassword9";
 		
 		expectedException.expect(ValidationException.class);
-		expectedException.expectMessage("Passwords don't match");
+		expectedException.expectMessage("old.password.not.correct");
 		
 		handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\"" + "," + "\"oldPassword\":\""
 		        + wrongOldPassword + "\"}"));
@@ -129,7 +129,7 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String newPassword = "newPassword9";
 		
 		expectedException.expect(APIAuthenticationException.class);
-		expectedException.expectMessage("Privileges required: [Edit User Passwords]");
+		expectedException.expectMessage("error.privilegesRequired");
 		
 		handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID, "{\"newPassword\":\"" + newPassword
 		        + "\"}"));

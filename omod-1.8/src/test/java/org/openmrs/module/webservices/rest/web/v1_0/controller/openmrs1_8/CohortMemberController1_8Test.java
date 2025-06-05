@@ -118,7 +118,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 		
 		Cohort cohort = service.getCohortByUuid(getUuid());
 		Patient patient = patientService.getPatientByUuid(patientId);
-		Assert.assertTrue(cohort.contains(patient));
+		Assert.assertTrue(cohort.contains(patient.getPatientId()));
 	}
 	
 	@Test
@@ -130,7 +130,7 @@ public class CohortMemberController1_8Test extends MainResourceControllerTest {
 		
 		Cohort cohort = service.getCohortByUuid(getUuid());
 		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
-		Assert.assertTrue(!cohort.contains(patient));
+		Assert.assertTrue(!cohort.contains(patient.getPatientId()));
 		
 	}
 	

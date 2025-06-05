@@ -10,12 +10,6 @@
     <artifactId>webservices.rest-omod-2.4</artifactId>
     <name>Rest Web Services 2.4 OMOD</name>
 
-    <properties>
-        <openmrs.version.2.4.0>2.4.0</openmrs.version.2.4.0>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
@@ -132,7 +126,6 @@
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
-            <version>${openmrs.version.2.4.0}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
@@ -140,13 +133,11 @@
             <artifactId>openmrs-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.4.0}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
-            <version>${openmrs.version.2.4.0}</version> <!-- $NO-MVN-MAN-VER$ -->
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
@@ -160,7 +151,6 @@
             <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.4.0}</version> <!-- $NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
@@ -168,7 +158,6 @@
             <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.4.0}</version> <!-- $NO-MVN-MAN-VER$ -->
         </dependency>
 
         <dependency>
