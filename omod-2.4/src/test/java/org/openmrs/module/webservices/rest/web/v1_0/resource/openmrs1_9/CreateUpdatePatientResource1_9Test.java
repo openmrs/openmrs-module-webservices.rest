@@ -58,7 +58,7 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 		
 		Date birthdate = (Date) ConversionUtil.convert("1979-12-08T00:00:00.000+0530", Date.class);
 		
-		Assert.assertEquals("101-6 - Mr. Rama Kabira Esq.", created.get("display"));
+		Assert.assertEquals("101-6 - Rama Kabira", created.get("display"));
 		Map<String, Object> person = (Map<String, Object>) created.get("person");
 		Assert.assertEquals("F", person.get("gender"));
 		Assert.assertNotNull(person.get("age"));

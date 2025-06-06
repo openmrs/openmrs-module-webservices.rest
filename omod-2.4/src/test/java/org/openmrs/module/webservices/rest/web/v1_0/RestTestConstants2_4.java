@@ -21,4 +21,5 @@ public class RestTestConstants2_4 {
 	
 	public final static String EQUIPMENT_MAINTENANCE_UUID = "6896a870-554f-494b-bd99-4fbdec1dedba";
 	
+	public final static String LOCATION_UUID = "9356400c-a5a2-4532-8f2b-2361b3446eb8";
 }

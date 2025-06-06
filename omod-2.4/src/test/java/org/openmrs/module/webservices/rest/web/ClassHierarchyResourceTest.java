@@ -9,17 +9,30 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Order;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.OrderResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
+import org.openmrs.module.webservices.validation.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -29,7 +42,13 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
-	private static final String PATIENT_UUID = "5946f880-b197-400b-9caa-a3c661d23041";
+	private static final String PATIENT_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
+
+	private static final String ENCOUNTER_UUID = "c59b3942-4fdd-11e5-8c3c-410f8777c163";
+
+	private static final String PROVIDER_UUID = "c2299800-dgha-11e0-9572-0800200c9a66";
+
+	private static final String CARE_SETTING_UUID = "c365e560-c3ec-11e3-9c1a-0800200c9a66";
 	
 	private static final String SUPERCLASS_UUID = "ff97d3a0-8dbf-11e1-bc86-da3a922f3783";
 	
@@ -42,32 +61,44 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	private static final String LUNCH_ORDER_TYPE_UUID = "e23733ab-787e-4096-8ba2-577a902d2c2b";
 	
 	RequestContext context;
-	
-	OrderResource1_8 resource;
+
+	OrderResource2_2 resource;
+
+	@Autowired
+	@Qualifier("conceptService")
+	ConceptService conceptService;
 	
 	@Before
 	public void beforeEachTests() throws Exception {
 		executeDataSet(DATASET_FILENAME);
 		context = new RequestContext();
-		resource = (OrderResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
+		resource = (OrderResource2_2) Context.getService(RestService.class).getResourceBySupportedClass(Order.class);
 	}
 	
 	private SimpleObject buildSuperclass() {
-		return new SimpleObject().add(RestConstants.PROPERTY_FOR_TYPE, "order").add("startDate", "2011-02-03")
-		        .add("patient", PATIENT_UUID).add("concept", ASPIRIN_CONCEPT_UUID).add("orderType", LUNCH_ORDER_TYPE_UUID);
+		return new SimpleObject().add(RestConstants.PROPERTY_FOR_TYPE, "order").add("encounter", ENCOUNTER_UUID)
+				.add("orderer", PROVIDER_UUID)
+				.add("careSetting", CARE_SETTING_UUID)
+		        .add("patient", PATIENT_UUID).add("concept", ASPIRIN_CONCEPT_UUID).add("orderType", "52a447d3-a64a-11e3-9aeb-50e549534c5e");
 	}
 	
 	private SimpleObject buildSubclass() {
 		return buildSuperclass().removeProperty("orderType").add(RestConstants.PROPERTY_FOR_TYPE, "drugorder")
-		        .add("dose", "100").add("units", "mg").add("prn", "true").add("complex", "false")
-		        .add("drug", ASPIRIN_DRUG_UUID);
+		        .add("drug", ASPIRIN_DRUG_UUID).add("dose", "100").add("doseUnits", conceptService.getConcept(50))
+				.add("frequency", "28090760-7c38-11e3-baa7-0800200c9a66").add("route", conceptService.getConcept(22))
+				.add("numRefills", "0");
 	}
 	
 	@Test
-	public void shouldCreateASuperclass() throws Exception {
-		SimpleObject created = (SimpleObject) resource.create(buildSuperclass(), context);
-		Util.log("Created superclass", created);
-		Assert.assertEquals("order", created.get("type"));
+	public void shouldNotCreateASuperclass() throws Exception {
+		try {
+			resource.create(buildSuperclass(), context);
+		} catch (Exception e) {
+			// Must always be created with a subclass
+			assertThat(e, is(instanceOf(ValidationException.class)));
+			return;
+		}
+		fail();
 	}
 	
 	@Test
@@ -90,22 +121,32 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUBCLASS_UUID, context);
 		Util.log("Retrieved subclass", retrieved);
 		Assert.assertEquals("drugorder", retrieved.get("type"));
-		Assert.assertEquals(325d, (double) retrieved.get("dose"));
+		Assert.assertEquals(325d, (double) retrieved.get("dose"), 0.0d);
 	}
 	
 	@Test
 	public void shouldUpdateASuperclass() throws Exception {
-		String newValue = "Do a CD4 Test STAT!";
-		Object updated = resource.update(SUPERCLASS_UUID, new SimpleObject().add("instructions", newValue), context);
-		Util.log("Updated subclass", updated);
-		Assert.assertEquals(newValue, PropertyUtils.getProperty(updated, "instructions"));
+		try {
+			String newValue = "Do a CD4 Test STAT!";
+			resource.update(SUPERCLASS_UUID, new SimpleObject().add("instructions", newValue), context);
+		} catch (Exception e) {
+			assertThat(e, is(instanceOf(ResourceDoesNotSupportOperationException.class)));
+			return;
+		}
+		fail();
+
 	}
 	
 	@Test
 	public void shouldUpdateASubclass() throws Exception {
-		Object updated = resource.update(SUBCLASS_UUID, new SimpleObject().add("dose", "500"), context);
-		Util.log("Updated subclass", updated);
-		Assert.assertEquals(500d, PropertyUtils.getProperty(updated, "dose"));
+		try {
+			resource.update(SUBCLASS_UUID, new SimpleObject().add("dose", "500"), context);
+		} catch (Exception e) {
+			assertThat(e, is(instanceOf(ResourceDoesNotSupportOperationException.class)));
+			return;
+		}
+		fail();
+
 	}
 	
 	@Test
@@ -131,28 +172,32 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	
 	@Test
 	public void shouldPurgeASubclass() throws Exception {
-		resource.purge(SUBCLASS_UUID, context);
-		Order purged = Context.getOrderService().getOrderByUuid(SUBCLASS_UUID);
+		resource.purge("e1f95924-697a-11e3-bd76-0800271c1b75", context);
+		Order purged = Context.getOrderService().getOrderByUuid("e1f95924-697a-11e3-bd76-0800271c1b75");
 		Assert.assertNull(purged);
 	}
 	
 	@Test
 	public void shouldGetAll() throws Exception {
-		SimpleObject all = resource.getAll(context);
-		Util.log("Get all", all);
-		Assert.assertEquals(6, Util.getResultsSize(all));
-		// ensure the type property gets added when we return multiple
-		Object typeForFirst = Util.getByPath(all, "results[0]/type");
-		Assert.assertTrue("drugorder".equals(typeForFirst) || "order".equals(typeForFirst));
+		try {
+			resource.getAll(context);
+		} catch (Exception e) {
+			assertThat(e, is(instanceOf(ResourceDoesNotSupportOperationException.class)));
+			return;
+		}
+		fail();
 	}
 	
 	@Test
 	public void shouldGetAllOfSubclass() throws Exception {
-		context.setType("drugorder");
-		SimpleObject all = resource.getAll(context);
-		Util.log("Get all of subclass", all);
-		Assert.assertEquals(5, Util.getResultsSize(all));
-		Assert.assertEquals("drugorder", Util.getByPath(all, "results[0]/type"));
+		try {
+			context.setType("drugorder");
+			resource.getAll(context);
+		} catch (Exception e) {
+			assertThat(e, is(instanceOf(ResourceDoesNotSupportOperationException.class)));
+			return;
+		}
+		fail();
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
@@ -168,7 +213,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		context.setRequest(request);
 		SimpleObject simple = resource.search(context);
 		Util.log("all orders for patient", simple);
-		Assert.assertEquals(2, Util.getResultsSize(simple));
+		Assert.assertEquals(5, Util.getResultsSize(simple));
 		Object typeForFirst = Util.getByPath(simple, "results[0]/type");
 		Assert.assertTrue("drugorder".equals(typeForFirst) || "order".equals(typeForFirst));
 	}
@@ -181,7 +226,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		context.setRequest(request);
 		SimpleObject simple = resource.search(context);
 		Util.log("drug orders for patient", simple);
-		Assert.assertEquals(1, Util.getResultsSize(simple));
+		Assert.assertEquals(4, Util.getResultsSize(simple));
 		Assert.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));
 	}
 	

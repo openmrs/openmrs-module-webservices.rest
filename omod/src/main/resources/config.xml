@@ -16,8 +16,10 @@
 
 	<updateURL>https://modules.openmrs.org/modules/download/webservices.rest/update.rdf</updateURL>
 	<!-- /Base Module Properties -->
-	
-	<require_version>${openmrs.version}</require_version>
+
+	<!--Overwrite until 2.4.6 released-->
+	<!--<require_version>${openmrs.version}</require_version>-->
+	<require_version>2.4.5</require_version>
 	
 	<aware_of_modules>
 	    <aware_of_module>org.openmrs.module.legacyui</aware_of_module>

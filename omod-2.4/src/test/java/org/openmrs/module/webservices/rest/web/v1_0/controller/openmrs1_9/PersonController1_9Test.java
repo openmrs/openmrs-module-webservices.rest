@@ -89,8 +89,6 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldGetPersonDateCreated() throws Exception {
 		Person person = service.getPersonByUuid(getUuid());
-		Date personDateCreated = new Date();
-		person.setPersonDateCreated(personDateCreated);
 		service.savePerson(person);
 		
 		MockHttpServletRequest req = newGetRequest(getURI() + "/" + getUuid(), new Parameter("v",
@@ -99,7 +97,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		
 		Map<String, String> auditInfo = (Map<String, String>) PropertyUtils.getProperty(result, "auditInfo");
 		
-		assertEquals(ConversionUtil.convertToRepresentation(personDateCreated, Representation.FULL),
+		assertEquals(ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.FULL),
 		    auditInfo.get("dateCreated"));
 	}
 	

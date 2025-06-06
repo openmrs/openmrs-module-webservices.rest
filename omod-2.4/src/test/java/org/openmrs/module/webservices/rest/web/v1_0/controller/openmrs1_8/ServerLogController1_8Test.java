@@ -16,11 +16,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
+import org.openmrs.module.webservices.helper.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ServerLogResource1_8;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.ServerLogResource2_4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,17 +40,17 @@ public class ServerLogController1_8Test extends MainResourceControllerTest {
 
 	private static final String LOG_2 = "ERROR - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 
-	private final MockServerLogActionWrapper<ServerLogActionWrapper1_8> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper1_8>(
-			new ServerLogActionWrapper1_8());
+	private final MockServerLogActionWrapper<ServerLogActionWrapper> mockServerLogActionWrapper = new MockServerLogActionWrapper<ServerLogActionWrapper>(
+			new ServerLogActionWrapper2_4());
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
 	@Before
 	public void setUp() {
-		ServerLogResource1_8 serverLogResource1_8 = (ServerLogResource1_8) restService
+		ServerLogResource2_4 serverLogResource = (ServerLogResource2_4) restService
 				.getResourceBySupportedClass(ServerLogActionWrapper.class);
-		serverLogResource1_8.setServerLogActionWrapper(mockServerLogActionWrapper);
+		serverLogResource.setServerLogActionWrapper(mockServerLogActionWrapper);
 	}
 
 	@Test(expected = Exception.class)

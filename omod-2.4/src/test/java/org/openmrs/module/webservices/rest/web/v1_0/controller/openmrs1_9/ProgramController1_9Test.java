@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -23,9 +26,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Tests functionality of Program CRUD by MainResourceController
@@ -195,7 +195,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Test
-	public void shouldNotListRetiredProgramWorkflowsInResultDataset() throws Exception {
+	public void shouldReturnAllWorkflows() throws Exception {
 		
 		// there is no retired workflows in the standard test dataset, so add some test data with one
 		executeDataSet("programDataset1_9.xml");
@@ -204,23 +204,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(result, "workflows")).size());
-		
-	}
-	
-	@Test
-	public void shouldNotListRetiredProgramWorkflowStatesInResultDataset() throws Exception {
-		
-		// there is no retired workflows in the standard test dataset, so add some test data with one
-		executeDataSet("programDataset1_9.xml");
-		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/45ad63a8-84cb-4bcb-bb2c-ec5b233502bc");
-		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
-		Assert.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
-		
-		List<Object> workflows = (List<Object>) PropertyUtils.getProperty(result, "workflows");
-		Assert.assertEquals(1, ((List<Object>) PropertyUtils.getProperty(workflows.get(0), "states")).size());
+		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "allWorkflows")).size());
 		
 	}
 	

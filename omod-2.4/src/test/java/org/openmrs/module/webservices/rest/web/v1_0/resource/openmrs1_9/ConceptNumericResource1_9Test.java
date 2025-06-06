@@ -13,8 +13,9 @@ import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptResource2_0;
 
-public class ConceptNumericResource1_9Test extends BaseDelegatingResourceTest<ConceptResource1_9, Concept> {
+public class ConceptNumericResource1_9Test extends BaseDelegatingResourceTest<ConceptResource2_0, Concept> {
 	
 	@Override
 	public Concept newObject() {
@@ -59,7 +60,6 @@ public class ConceptNumericResource1_9Test extends BaseDelegatingResourceTest<Co
 		assertPropPresent("lowAbsolute");
 		assertPropPresent("lowCritical");
 		assertPropPresent("units");
-		assertPropPresent("precise");
 	}
 	
 	@Override

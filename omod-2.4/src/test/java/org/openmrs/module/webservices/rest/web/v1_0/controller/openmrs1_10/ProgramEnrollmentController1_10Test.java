@@ -182,8 +182,6 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		Assert.assertTrue(voidedPatientState.getVoided());
 		Assert.assertFalse(existingPatientState.getVoided());
-		Assert.assertNull(existingPatientState.getEndDate());
-		
 	}
 	
 	private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {

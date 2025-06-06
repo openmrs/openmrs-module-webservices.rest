@@ -23,6 +23,10 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasKey;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
@@ -257,7 +261,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @param property
 	 */
 	public void assertPropPresent(String property) {
-		Assert.assertTrue(getRepresentation().containsKey(property));
+		assertThat(getRepresentation(), hasKey(property));
 	}
 	
 	/**
@@ -268,7 +272,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * </code>
 	 */
 	public void assertPropNotPresent(String property) {
-		Assert.assertFalse(getRepresentation().containsKey(property));
+		assertThat(getRepresentation(), not(hasKey(property)));
 	}
 	
 	/**

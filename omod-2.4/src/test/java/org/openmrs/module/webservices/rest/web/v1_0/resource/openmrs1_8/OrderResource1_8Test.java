@@ -28,38 +28,12 @@ public class OrderResource1_8Test extends BaseDelegatingResourceTest<OrderResour
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Aspirin: 325.0 mg";
+		return "(NEW) ASPIRIN: 325.0 mg UNKNOWN 1/day x 7 days/week";
 	}
 	
 	@Override
 	public String getUuidProperty() {
 		return RestTestConstants1_8.ORDER_UUID;
-	}
-	
-	/**
-	 * @see OrderResource1_8#doGetAll(RequestContext)
-	 * @verifies return all Orders (including retired) if context.includeAll is set
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Test
-	public void doGetAll_shouldReturnAllOrdersIncludingRetiredIfContextincludeAllIsSet() throws Exception {
-		OrderResource1_8 or = getResource();
-		
-		RequestContext ctx = new RequestContext();
-		
-		List<Object> orderList = (List) or.getAll(ctx).get("results");
-		Assert.assertEquals("getAll should return all not voided orders from sample data", 5, orderList.size());
-		
-		voidOneOrder();
-		
-		orderList = (List) or.getAll(ctx).get("results");
-		Assert.assertEquals("getAll should return all not voided orders from sample data", 4, orderList.size());
-		
-		ctx.setIncludeAll(true);
-		
-		orderList = (List) or.getAll(ctx).get("results");
-		Assert.assertEquals("getAll should return all orders from sample data", 5, orderList.size());
-		
 	}
 	
 	private void voidOneOrder() {

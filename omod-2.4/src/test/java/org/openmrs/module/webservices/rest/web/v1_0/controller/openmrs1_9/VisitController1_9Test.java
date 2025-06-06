@@ -15,6 +15,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +40,10 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +52,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	
 	private VisitService service;
 	
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
 	/**
 	 * @see MainResourceControllerTest#getURI()
@@ -80,7 +87,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	public void shouldCreateAVisit() throws Exception {
 		int originalCount = service.getAllVisits().size();
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
-		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants1_9.LOCATION_UUID
+		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants2_4.LOCATION_UUID
 		        + "\", \"startDatetime\":\"" + DATE_FORMAT.format(new Date()) + "\"}";
 		
 		Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
@@ -102,7 +109,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	public void shouldCreateVisitWithoutStartDatetime() throws Exception {
 		int originalCount = service.getAllVisits().size();
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
-		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants1_9.LOCATION_UUID + "\"}";
+		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants2_4.LOCATION_UUID + "\"}";
 		
 		Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
 		
@@ -119,7 +126,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
 		        + RestTestConstants1_9.VISIT_TYPE_UUID
 		        + "\", \"location\":\""
-		        + RestTestConstants1_9.LOCATION_UUID
+		        + RestTestConstants2_4.LOCATION_UUID
 		        + "\", \"startDatetime\":\""
 		        + DATE_FORMAT.format(new Date())
 		        + "\", \"encounters\": [\"6519d653-393b-4118-9c83-a3715b82d4ac\", \"eec646cb-c847-45a7-98bc-91c8c4f70add\"] }";
@@ -138,7 +145,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
 		        + RestTestConstants1_9.VISIT_TYPE_UUID
 		        + "\", \"location\":\""
-		        + RestTestConstants1_9.LOCATION_UUID
+		        + RestTestConstants2_4.LOCATION_UUID
 		        + "\", \"startDatetime\":\""
 		        + DATE_FORMAT.format(new Date())
 		        + "\", \"encounters\": [{\"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"obs\": [{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\":\"b055abd8-a420-4a11-8b98-02ee170a7b54\"}]}] }}] }";
@@ -154,7 +161,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 	public void shouldCreateAVisitWithAttributes() throws Exception {
 		int originalCount = service.getAllVisits().size();
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
-		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants1_9.LOCATION_UUID
+		        + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"location\":\"" + RestTestConstants2_4.LOCATION_UUID
 		        + "\", \"startDatetime\":\"" + DATE_FORMAT.format(new Date()) + "\","
 		        + "\"attributes\":[{\"attributeType\":\"" + RestTestConstants1_9.VISIT_ATTRIBUTE_TYPE_UUID
 		        + "\",\"value\":\"2012-12-01\"}]}";
@@ -191,8 +198,10 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		Assert.assertEquals(newVisitTypeUuid, updated.getVisitType().getUuid());
 		Assert.assertEquals(newLocationUuid, updated.getLocation().getUuid());
 		Assert.assertEquals(newIndicationConceptUuid, updated.getIndication().getUuid());
-		Assert.assertEquals(newStartDatetime, updated.getStartDatetime());
-		Assert.assertEquals(newStopDatetime, updated.getStopDatetime());
+		Assert.assertEquals(newStartDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
+				updated.getStartDatetime().toInstant());
+		Assert.assertEquals(newStopDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
+				updated.getStopDatetime().toInstant());
 	}
 	
 	@Test

@@ -46,8 +46,8 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		Assert.assertEquals(4, obs.size());
 		// test should sort by order descending
 		Assert.assertEquals("2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0", PropertyUtils.getProperty(obs.get(0), "uuid"));
-		Assert.assertEquals("1ce473c8-3fac-440d-9f92-e10facab194f", PropertyUtils.getProperty(obs.get(1), "uuid"));
-		Assert.assertEquals("2f616900-5e7c-4667-9a7f-dcb260abf1de", PropertyUtils.getProperty(obs.get(2), "uuid"));
+		Assert.assertEquals("1ce473c8-3fac-440d-9f92-e10facab194f", PropertyUtils.getProperty(obs.get(2), "uuid"));
+		Assert.assertEquals("2f616900-5e7c-4667-9a7f-dcb260abf1de", PropertyUtils.getProperty(obs.get(1), "uuid"));
 		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(obs.get(3), "uuid"));
 	}
 	

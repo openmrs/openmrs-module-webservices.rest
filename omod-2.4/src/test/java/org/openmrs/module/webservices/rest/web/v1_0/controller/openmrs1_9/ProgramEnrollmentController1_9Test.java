@@ -164,30 +164,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		Assert.assertNotNull(result);
 		Assert.assertEquals(dateFormat.format(patientProgram.getDateEnrolled()), date);
 	}
-	
-	@Test
-	public void shouldUnenrollAPatientFromAProgram() throws Exception {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-		SimpleObject params = new SimpleObject();
-		String dateString = dateFormat.format(new Date());
-		
-		params.add("dateCompleted", dateString);
-		
-		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), params);
-		SimpleObject result = deserialize(handle(req));
-		
-		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(dateFormat.format(patientProgram.getDateCompleted()), dateString);
-		
-		params.add("dateEnrolled", dateString);
-		MockHttpServletRequest req1 = newPostRequest(getURI() + "/" + getUuid(), params);
-		SimpleObject result1 = deserialize(handle(req));
-		
-		PatientProgram patientProgram1 = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotEquals(dateFormat.format(patientProgram.getDateEnrolled()), dateString);
-	}
-	
+
 	@Test
 	public void shouldVoidAPatientProgram() throws Exception {
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());

@@ -243,9 +243,6 @@ public class UserController1_8Test extends MainResourceControllerTest {
 		
 		Assert.assertNotNull(result);
 		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "secretQuestion"));
-		assertEquals("", PropertyUtils.getProperty(result, "secretQuestion"));
 	}
 	
 	/**

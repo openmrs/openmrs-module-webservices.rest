@@ -166,7 +166,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		Concept concept = new Concept(1);
 		ConceptResource1_9 resource = new ConceptResource1_9();
 		String result = resource.getDisplayString(concept);
-		Assert.assertEquals("1", result);  // this will need to updated to "Concept #1" when we start building against more recent versions of OpenMRS Core
+		Assert.assertEquals("Concept #1", result);  // this will need to updated to "Concept #1" when we start building against more recent versions of OpenMRS Core
 	}
 
 	@Test

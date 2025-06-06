@@ -53,7 +53,7 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 	
 	@Override
 	public long getAllCount() {
-		return 4;
+		return 12;
 	}
 	
 	@Before

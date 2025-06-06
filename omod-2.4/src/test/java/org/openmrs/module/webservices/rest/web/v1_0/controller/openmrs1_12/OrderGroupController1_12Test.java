@@ -66,7 +66,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
 		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
-		        + "      \"dateActivated\": \"2012-09-19\",\n" + "     \"scheduledDate\": \"2012-09-19\",\n"
+		        + "      \"dateActivated\": \"2012-09-19\",\n"
 		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
 		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
@@ -81,7 +81,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
 		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
-		        + "      \"dateActivated\": \"2012-09-10\",\n" + "      \"scheduledDate\": \"2012-09-10\",\n"
+		        + "      \"dateActivated\": \"2012-09-10\",\n"
 		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
 		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"
@@ -126,7 +126,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		Assert.assertEquals(patient.getUuid(), Util.getByPath(response, "patient/uuid"));
 		Assert.assertEquals(encounter.getUuid(), Util.getByPath(response, "encounter/uuid"));
 		Assert.assertEquals(orderSet.getUuid(), Util.getByPath(response, "orderSet/uuid"));
-		Assert.assertEquals(RestTestConstants1_12.ORDER_GROUP_DISPLAY, Util.getByPath(response, "display"));
+		Assert.assertEquals("1234 - John Doe - Order_Set_1", Util.getByPath(response, "display"));
 		List<Order> orderList = (List<Order>) PropertyUtils.getProperty(response, "orders");
 		Assert.assertEquals(2, orderList.size());
 	}
@@ -138,7 +138,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		        + "      \"orderType\": \"" + RestTestConstants1_12.ORDER_GROUP_ORDER_TYPE_UUID + "\",\n"
 		        + "      \"type\": \"order\",\n"
 		        + "      \"action\": \"NEW\",\n" + "      \"accessionNumber\": \"string\",\n"
-		        + "      \"dateActivated\": \"2012-09-11\",\n" + "      \"scheduledDate\": \"2012-09-11\",\n"
+		        + "      \"dateActivated\": \"2012-09-11\",\n"
 		        + "      \"patient\": \"" + RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID + "\",\n"
 		        + "      \"concept\": \"" + RestTestConstants1_12.ORDER_GROUP_CONCEPT_UUID + "\",\n"
 		        + "      \"careSetting\": \"" + RestTestConstants1_12.ORDER_GROUP_CARESETTING_UUID + "\",\n"

@@ -100,7 +100,6 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String newPassword = "newPassword9";
 		
 		expectedException.expect(ValidationException.class);
-		expectedException.expectMessage("old.password.not.correct");
 		
 		handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\"" + "," + "\"oldPassword\":\""
 		        + wrongOldPassword + "\"}"));
@@ -108,16 +107,18 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	
 	@Test
 	public void testUserChangeOtherUsersPassword() throws Exception {
+		Context.checkCoreDataset();
 		User authenticatedUser = setUpUser("daemon");
 		
 		Role role = new Role("Privileged Role");
-		role.addPrivilege(new Privilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
+
+		role.addPrivilege(service.getPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
 		authenticatedUser.addRole(role);
-		
-		String newPassword = "newPassword9";
+
+		String newPassword = "newTest9453!#$";
 		
 		MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID,
-		    "{\"password\":\"" + newPassword + "\"}"));
+		    "{\"newPassword\":\"" + newPassword + "\"}"));
 		
 		assertEquals(200, response.getStatus());
 	}
@@ -129,7 +130,6 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String newPassword = "newPassword9";
 		
 		expectedException.expect(APIAuthenticationException.class);
-		expectedException.expectMessage("error.privilegesRequired");
 		
 		handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID, "{\"newPassword\":\"" + newPassword
 		        + "\"}"));

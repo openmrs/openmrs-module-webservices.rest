@@ -29,7 +29,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.SystemSe
  * @see SwaggerSpecificationCreatorTest#createOnlySubresourceDefinitions()
  */
 @SubResource(parent = SystemSettingResource1_9.class, path = "subdetails", supportedClass = SubDetails.class, supportedOpenmrsVersions = {
-        "2.0.*" })
+        "2.0.* - 9.*" })
 public class SubDetailsResource extends DelegatingSubResource<SubDetails, GlobalProperty, SystemSettingResource1_9> {
 	
 	@Override

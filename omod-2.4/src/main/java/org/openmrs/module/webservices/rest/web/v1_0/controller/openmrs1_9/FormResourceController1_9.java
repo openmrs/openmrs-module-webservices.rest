@@ -36,7 +36,7 @@ public class FormResourceController1_9 extends MainResourceController {
 	@Autowired
 	private FormService formService;
 	
-	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
+	@RequestMapping(method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
 	@ResponseBody
 	public Object createResourceValue(@PathVariable("uuid") String formUuid,
 	        @PathVariable("resourceUuid") String resourceUuid, @RequestParam("value") MultipartFile file,
@@ -56,7 +56,7 @@ public class FormResourceController1_9 extends MainResourceController {
 		return new FormResourceResource1_9().asDefaultRep(resource);
 	}
 	
-	@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public void getResourceValue(@PathVariable("uuid") String formUuid, @PathVariable("resourceUuid") String resourceUuid,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		//Get the resource

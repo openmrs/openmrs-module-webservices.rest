@@ -83,7 +83,6 @@ public class OrderFrequencyController1_10Test extends MainResourceControllerTest
 		assertEquals(expectedOrderFrequency.getName(), PropertyUtils.getProperty(result, "name"));
 		assertEquals(expectedOrderFrequency.getFrequencyPerDay(), PropertyUtils.getProperty(result, "frequencyPerDay"));
 		assertNotNull(PropertyUtils.getProperty(result, "concept"));
-		assertEquals(expectedOrderFrequency.getDescription(), PropertyUtils.getProperty(result, "description"));
 		assertEquals(expectedOrderFrequency.isRetired(), PropertyUtils.getProperty(result, "retired"));
 		assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}

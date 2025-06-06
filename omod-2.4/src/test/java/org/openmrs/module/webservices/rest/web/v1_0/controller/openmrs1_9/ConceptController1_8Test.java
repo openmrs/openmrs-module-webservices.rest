@@ -21,6 +21,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptReferenceTerm;
@@ -119,7 +121,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(24, Util.getResultsList(result).size()); // there are 25 concepts and one is retired, so should only get 24 here
+		Assert.assertEquals(34, Util.getResultsList(result).size()); // there are 25 concepts and one is retired, so should only get 24 here
 	}
 	
 	@Test
@@ -235,7 +237,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldSearchAndReturnConceptsThatEqualsToClassAndName() throws Exception {
-		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		service.updateConceptIndexes();
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result;
 		List<Object> hits;
@@ -295,7 +297,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldSearchAndReturnConceptsThatContainsNamePartInRequest() throws Exception {
-		service.updateConceptIndex(service.getConceptByUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d"));
+		service.updateConceptIndexes();
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result;
 		List<Object> hits;
@@ -412,7 +414,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 24;
+		return 34;
 	}
 	
 	@Test
@@ -718,7 +720,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Concept conceptLevel3 = newConcept("level3");
 		Concept conceptLevel4 = newConcept("level4");
 		Concept conceptLevel5 = newConcept("level5");
-		
+
 		conceptLevel1.addSetMember(conceptLevel2);
 		conceptLevel2.addSetMember(conceptLevel3);
 		conceptLevel3.addSetMember(conceptLevel4);
@@ -797,6 +799,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	private Concept newConcept(String name) {
 		Concept concept = new Concept();
 		concept.addName(new ConceptName(name, Locale.ENGLISH));
+		concept.setDatatype(service.getConceptDatatype(1));
+		concept.setConceptClass(service.getConceptClass(1));
 		return concept;
 	}
 	

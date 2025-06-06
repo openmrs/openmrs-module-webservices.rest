@@ -49,7 +49,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 24;
+		return 34;
 	}
 	
 	@Test
@@ -65,18 +65,19 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldFindNumericConceptsByQueryString() throws Exception {
 		executeDataSet("numericConcept.xml");
+		updateSearchIndex();
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "HEIGHT"), new Parameter("v",
 		        "full"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(2, results.size());
 		Object next = results.iterator().next();
 		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
 	}
 	
 	@Test
 	public void shouldFindConceptByReferenceTerm() throws Exception {
-		executeDataSet("customConceptDataset1_9.xml");
+		executeDataSet("customConceptDataset.xml");
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + "CIEL:WGT234");
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));

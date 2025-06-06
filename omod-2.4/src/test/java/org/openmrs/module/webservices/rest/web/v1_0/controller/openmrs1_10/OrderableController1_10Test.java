@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -41,7 +43,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 	public void before() throws Exception {
 		service = Context.getConceptService();
 		if (!isIndexUpToDate) {
-			service.updateConceptIndex(service.getConceptByUuid(RestTestConstants1_10.COUGH_SYRUP_UUID));
+			service.updateConceptIndexes();
 			isIndexUpToDate = true;
 		}
 	}
@@ -90,18 +92,22 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 		req.addParameter("q", "");
 		req.addParameter("conceptClasses", "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7");
 		SimpleObject result = deserialize(handle(req));
-		
-		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertTrue(hits.size() > 0);
+
+		for (int i = 0; i < Util.getResultsSize(result); i++) {
+			String uuid = (String) Util.getByPath(result, String.format("results[%d]/concept/uuid", i));
+			assertThat(service.getConceptByUuid(uuid).getConceptClass().getUuid(), is("3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"));
+		}
 		
 		// test with test concept uuid
 		req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "");
 		req.addParameter("conceptClasses", "97097dd9-b092-4b68-a2dc-e5e5be961d42");
 		result = deserialize(handle(req));
-		hits = (List<Object>) result.get("results");
-		Assert.assertTrue(hits.size() == 0);
-		
+
+		for (int i = 0; i < Util.getResultsSize(result); i++) {
+			String uuid = (String) Util.getByPath(result, String.format("results[%d]/concept/uuid", i));
+			assertThat(service.getConceptByUuid(uuid).getConceptClass().getUuid(), is("97097dd9-b092-4b68-a2dc-e5e5be961d42"));
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -113,7 +119,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertTrue(hits.size() > 0);
+		assertThat(hits.size(), is(4));
 		
 		// test with lab test order type uuid
 		req = request(RequestMethod.GET, getURI());
@@ -121,7 +127,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 		req.addParameter("orderTypes", "52a447d3-a64a-11e3-9aeb-50e549534c5e");
 		result = deserialize(handle(req));
 		hits = (List<Object>) result.get("results");
-		Assert.assertTrue(hits.size() == 0);
+		assertThat(hits.size(), is(2));
 	}
 	
 	private Matcher<? super Object> isConceptWithUuid(final String uuid) {

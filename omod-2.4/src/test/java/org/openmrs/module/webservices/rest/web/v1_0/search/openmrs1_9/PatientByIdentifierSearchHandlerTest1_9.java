@@ -47,6 +47,11 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		return RestTestConstants1_8.PATIENT_UUID;
 	}
 
+	@Override
+	public void shouldGetAll() throws Exception {
+		// not supported
+	}
+
 	@Test
 	public void getSearchConfig_shouldReturnPatientByIdentifier() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());

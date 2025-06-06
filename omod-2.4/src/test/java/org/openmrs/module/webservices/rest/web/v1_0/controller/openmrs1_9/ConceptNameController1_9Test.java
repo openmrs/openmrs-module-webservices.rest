@@ -129,6 +129,8 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		
 		handle(newDeleteRequest("concept/" + conceptUuid2 + "/name/8230adbf-30a9-4e18-b6d7-fc57e0c23cab", new Parameter(
 		        "purge", "")));
+
+		Context.flushSession();
 		
 		Long after = (Long) Context.getAdministrationService()
 		        .executeSQL("select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);

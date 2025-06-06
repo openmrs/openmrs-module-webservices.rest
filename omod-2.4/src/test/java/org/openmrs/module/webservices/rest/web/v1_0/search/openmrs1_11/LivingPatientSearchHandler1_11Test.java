@@ -15,6 +15,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -32,6 +33,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	public void init() throws Exception {
 		patientService = Context.getPatientService();
 		executeDataSet(RestTestConstants1_11.LIVING_PATIENT_SEARCH_DATASET);
+		updateSearchIndex();
 	}
 	
 	@Override
@@ -71,14 +73,17 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldReturnBothDeadAndLivingPatientsIfIncludeDeadIsSetToTrue() throws Exception {
-		patientService.getPatientByUuid(getUuid()).setDead(true);
+		Patient patient = patientService.getPatientByUuid(getUuid());
+		patient.setDead(true);
+		patient.setCauseOfDeathNonCoded("unknown");
+		patientService.savePatient(patient);
 		Assert.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
 		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(3, patients.size());
+		Assert.assertEquals(4, patients.size());
 	}
 	
 	@Test
@@ -89,7 +94,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 		req.addParameter("q", "Moz");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(2, patients.size());
+		Assert.assertEquals(3, patients.size());
 	}
 	
 	@Test
@@ -101,7 +106,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 		req.addParameter("includeDead", "wrongx");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(2, patients.size());
+		Assert.assertEquals(3, patients.size());
 	}
 	
 	@Test
@@ -113,7 +118,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 		req.addParameter("includeDead", "False");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(2, patients.size());
+		Assert.assertEquals(3, patients.size());
 	}
 	
 	@Test

@@ -118,7 +118,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugs_shouldGetDrugsLinkedToConceptsWithNamesThatMatchThePhrase() throws Exception {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
-		        "amiv"))));
+		        "Trio"))));
 		Assert.assertEquals(1, Util.getResultsSize(results));
 		Assert.assertEquals(conceptService.getDrug(2).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
@@ -165,6 +165,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugs_shouldGetDrugsLinkedToConceptsWithNamesThatMatchThePhraseAndRelatedLocales() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		updateSearchIndex();
 		final String searchPhrase = "another";
 		//Should look only in the exact locale if exactLocale is set to true
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
@@ -186,9 +187,10 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugs_shouldGetDrugsThatHaveMappingsWithReferenceTermCodesThatMatchThePhrase() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		updateSearchIndex();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
-		        "XXXZZ"), new Parameter("exactLocale", "true"), new Parameter("includeAll", "true"))));
-		Assert.assertEquals(1, Util.getResultsSize(results));
+		        "XXX"), new Parameter("exactLocale", "true"), new Parameter("includeAll", "true"))));
+		Assert.assertEquals(2, Util.getResultsSize(results));
 		Assert.assertEquals(conceptService.getDrug(11).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
@@ -200,10 +202,11 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	@Test
 	public void getDrugs_shouldReturnAllDrugsWithAMatchingTermCodeOrDrugNameOrConceptName() throws Exception {
 		executeDataSet(DRUG_SEARCH_TEST_DATA);
+		updateSearchIndex();
 		String[] expectedDrugUuids = { conceptService.getDrug(3).getUuid(), conceptService.getDrug(11).getUuid(),
 		        conceptService.getDrug(444).getUuid() };
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
-		        "ZZZ"), new Parameter("exactLocale", "false"), new Parameter("includeAll", "true"))));
+		        "XXX"), new Parameter("exactLocale", "false"), new Parameter("includeAll", "true"))));
 		
 		Assert.assertEquals(3, Util.getResultsSize(results));
 		List<Object> resultList = Util.getResultsList(results);

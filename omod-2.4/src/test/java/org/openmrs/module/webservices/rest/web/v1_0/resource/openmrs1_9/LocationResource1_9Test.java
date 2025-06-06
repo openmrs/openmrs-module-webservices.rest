@@ -14,6 +14,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4;
 
 public class LocationResource1_9Test extends BaseDelegatingResourceTest<LocationResource1_9, Location> {
 	
@@ -85,12 +86,12 @@ public class LocationResource1_9Test extends BaseDelegatingResourceTest<Location
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Mumbai";
+		return "Xanadu";
 	}
 	
 	@Override
 	public String getUuidProperty() {
-		return RestTestConstants1_9.LOCATION_UUID;
+		return RestTestConstants2_4.LOCATION_UUID;
 	}
 	
 }

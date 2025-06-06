@@ -100,7 +100,7 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 		String json = "{ \"attributeType\":\"54fc8400-1683-4d71-a1ac-98d40836ff7c\" }";
 		
 		PersonAttribute personAttribute = service.getPersonAttributeByUuid(getUuid());
-		assertThat(personAttribute.getAttributeType().getName(), is("Race"));
+		assertThat(personAttribute.getAttributeType().getName(), is("Birthplace"));
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		

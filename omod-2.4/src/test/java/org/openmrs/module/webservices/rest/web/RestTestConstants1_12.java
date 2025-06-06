@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web;
 
 public class RestTestConstants1_12 {
 	
-	public final static String TEST_DATA_SET = "customTestDataset1_12.xml";
+	public final static String TEST_DATA_SET = "customTestDataset.xml";
 	
 	public final static String ORDER_SET_UUID = "order_set_uuid1";
 	
@@ -23,11 +23,11 @@ public class RestTestConstants1_12 {
 	
 	public final static String ORDER_GROUP_UUID = "1c96f25c-4949-4f72-9931-d808fbcdb613";
 	
-	public final static String ORDER_GROUP_DISPLAY = "1234 - Mr. Horatio Peeter Hornblower2 - Order_Set_1";
+	public final static String ORDER_GROUP_DISPLAY = "12345 - John3 Doe - Order_Set_1";
 	
 	public final static String ORDER_GROUP_ENCOUNTER_UUID = "33d70956-b359-452a-b3da-b69c8ab459ce";
 	
-	public final static String ORDER_GROUP_PATIENT_UUID = "19887889-7110-46a7-a9f0-ebf1eb4bbd48";
+	public final static String ORDER_GROUP_PATIENT_UUID = "2fffba52-dfef-4c09-97e1-c987f5e64692";
 	
 	public final static String ORDER_GROUP_ORDERSET_UUID = "2d3fb1d0-ae06-22e3-a5e2-0140211c1001";
 	

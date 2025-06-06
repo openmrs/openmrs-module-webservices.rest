@@ -56,7 +56,9 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		} else if (rep instanceof RefRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("uuid");
+			description.addProperty("display");
 			description.addProperty("name");
+			description.addProperty("retired");
 			description.addProperty("allWorkflows", Representation.REF);
 			description.addSelfLink();
 			return description;

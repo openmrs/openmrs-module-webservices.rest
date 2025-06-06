@@ -50,8 +50,7 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	public void before() {
 		service = Context.getConceptService();
 		if (!isIndexUpToDate) {
-			service.updateConceptIndex(service.getConceptByUuid(MARRIED_CONCEPT_UUID));
-			service.updateConceptIndex(service.getConceptByUuid(MALARIA_PROGRAM_CONCEPT_UUID));
+			service.updateConceptIndexes();
 			isIndexUpToDate = true;
 		}
 	}

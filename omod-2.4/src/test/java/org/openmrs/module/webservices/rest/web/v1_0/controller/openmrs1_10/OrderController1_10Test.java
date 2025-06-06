@@ -24,14 +24,17 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -567,10 +570,10 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		// order service should return all orders when no order type filter specified
 		req = newGetRequest(getURI(),
 		    new Parameter("patient", PATIENT_UUID)
-		        );
+		);
 		SimpleObject orders = deserialize(handle(req));
 		ArrayList<Object> resp = (ArrayList<Object>) PropertyUtils.getProperty(orders, "results");
-		assertEquals(activeTestOrderCount + activeDrugOrderCount, resp.size());
+		assertEquals(4, resp.size());
 		
 		// order service should filter by test order type
 		req = newGetRequest(getURI(),

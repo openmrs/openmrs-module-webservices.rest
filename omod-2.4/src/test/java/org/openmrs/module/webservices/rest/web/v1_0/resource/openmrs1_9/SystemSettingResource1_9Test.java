@@ -49,7 +49,7 @@ public class SystemSettingResource1_9Test extends BaseDelegatingResourceTest<Sys
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Locale - Allowed List = en";
+		return "Locale - Allowed List = en_GB";
 	}
 	
 	@Override

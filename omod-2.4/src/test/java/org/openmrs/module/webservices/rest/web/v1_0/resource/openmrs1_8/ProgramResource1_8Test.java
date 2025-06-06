@@ -13,8 +13,9 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.ProgramResource1_10;
 
-public class ProgramResource1_8Test extends BaseDelegatingResourceTest<ProgramResource1_8, Program> {
+public class ProgramResource1_8Test extends BaseDelegatingResourceTest<ProgramResource1_10, Program> {
 	
 	@Override
 	public Program newObject() {

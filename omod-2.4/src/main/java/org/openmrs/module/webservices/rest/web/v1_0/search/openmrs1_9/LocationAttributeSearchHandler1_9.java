@@ -32,7 +32,7 @@ import java.util.List;
 public class LocationAttributeSearchHandler1_9 implements SubResourceSearchHandler {
 	
 	private static final SearchConfig SEARCH_CONFIG = new SearchConfig("default", RestConstants.VERSION_1
-	        + "/location/attribute", Collections.singletonList("1.9.* - 2.0.*"), new SearchQuery.Builder(
+	        + "/location/attribute", Collections.singletonList("1.9.* - 9.*"), new SearchQuery.Builder(
 	        "Allows you to find attributes by attribute type").withRequiredParameters("attributeType").build());
 	
 	@Override

@@ -33,11 +33,8 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	private static final String ACTIVE_LIST_INITIAL_XML = "customActiveListTest.xml";
-	
 	@Before
 	public void init() throws Exception {
-		executeDataSet(ACTIVE_LIST_INITIAL_XML);
 		service = Context.getConceptService();
 	}
 	

@@ -137,7 +137,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 	@Test
 	public void testSearchingByUser() {
 		// all users
-		assertSearch("", null, 3);
+		assertSearch("", null, 2);
 		
 		// full name
 		assertSearch("admin", null, 1);

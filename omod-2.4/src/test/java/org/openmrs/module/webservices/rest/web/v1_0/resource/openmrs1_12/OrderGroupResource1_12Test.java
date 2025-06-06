@@ -29,7 +29,7 @@ public class OrderGroupResource1_12Test extends BaseDelegatingResourceTest<Order
 	
 	@Override
 	public String getDisplayProperty() {
-		return RestTestConstants1_12.ORDER_GROUP_DISPLAY;
+		return "1234 - John Doe - Order_Set_1";
 	}
 	
 	@Override
