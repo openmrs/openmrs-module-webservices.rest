@@ -13,12 +13,23 @@ import org.junit.Test;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
+import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.Before;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+
 
 public class DrugOrderSubclassHandler1_10Test {
+
 	
+		
 	@Test
 	public void getDisplayString_shouldNotFailForDcOrder() throws Exception {
 		Drug drug = new Drug();
@@ -31,4 +42,6 @@ public class DrugOrderSubclassHandler1_10Test {
 		String actual = DrugOrderSubclassHandler1_10.getDisplay(order);
 		assertThat(actual, is("(DISCONTINUE) Aspirin"));
 	}
+
+
 }
