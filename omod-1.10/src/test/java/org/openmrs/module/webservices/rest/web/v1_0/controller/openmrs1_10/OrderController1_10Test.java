@@ -35,7 +35,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.contains;
@@ -485,6 +487,31 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString() });
 		assertThat(uuids, hasItems(expectedOrderUuids));
+	}
+
+	@Test
+	public void doSearch_shouldGetAllInActiveOrdersForAPatient() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(),
+				new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), new Parameter("status", "INACTIVE"),
+				new Parameter("careSetting", RestTestConstants1_10.CARE_SETTING_UUID))));
+		assertEquals(4, Util.getResultsSize(results));
+
+		List<Object> resultsList = Util.getResultsList(results);
+		List<Map<String, Object>> resultMap = new LinkedList<Map<String, Object>>();
+		for (Object o : resultsList) {
+			resultMap.add((Map<String, Object>) o);
+		}
+
+		String[] expectedStatuses = new String[] {"inactive", "inactive", "inactive", "inactive"};
+		List<String> statusList = new LinkedList<String>();
+		for (Map<String, Object> m : resultMap) {
+			for (String key : m.keySet()) {
+				if (key.equals(RestConstants.PROPERTY_FOR_STATUS)) {
+					statusList.add((String) m.get(key));
+				}
+			}
+		}
+		assertEquals(Arrays.asList(expectedStatuses), statusList);
 	}
 	
 	@Test

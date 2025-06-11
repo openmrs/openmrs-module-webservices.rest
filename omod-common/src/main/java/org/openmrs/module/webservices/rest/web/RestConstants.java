@@ -144,7 +144,12 @@ public class RestConstants {
 	 * resource that represents a full class hierarchy
 	 */
 	public static final String PROPERTY_FOR_TYPE = "type";
-	
+
+	/**
+	 * Used in object representations to indicate the status of the order
+	 */
+	public static final String PROPERTY_FOR_STATUS = "status";
+
 	// a ref is just a uuid/uri/display value
 	public static String REPRESENTATION_REF = "ref";
 	

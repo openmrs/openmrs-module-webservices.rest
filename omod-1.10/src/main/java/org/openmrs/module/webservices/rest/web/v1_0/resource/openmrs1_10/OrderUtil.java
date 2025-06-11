@@ -43,16 +43,16 @@ public class OrderUtil {
 	        Date asOfDate, boolean includeVoided) {
 		
 		OrderService os = Context.getOrderService();
-		if (!INACTIVE.equals(status) && !ANY.equals(status)) {
+		if (!INACTIVE.equalsIgnoreCase(status) && !ANY.equalsIgnoreCase(status)) {
 			return os.getActiveOrders(patient, orderType, careSetting, asOfDate);
 		}
 		
-		if (INACTIVE.equals(status)) {
+		if (INACTIVE.equalsIgnoreCase(status)) {
 			includeVoided = false;
 		}
 		
 		List<Order> orders = os.getOrders(patient, careSetting, orderType, includeVoided);
-		if (INACTIVE.equals(status)) {
+		if (INACTIVE.equalsIgnoreCase(status)) {
 			removeActiveOrders(orders, asOfDate);
 		}
 		

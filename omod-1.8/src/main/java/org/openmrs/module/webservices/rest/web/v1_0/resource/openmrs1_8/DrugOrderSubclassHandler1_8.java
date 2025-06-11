@@ -206,4 +206,18 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 		// TODO dates, etc
 		return ret.toString();
 	}
+	/**
+	 *  @see OrderResource1_8#getStatus(org.openmrs.Order)
+	 *
+	 * Gets the status of the DrugOrder
+	 *
+	 * @param delegate DrugOrder to check if ACTIVE or INACTIVE
+	 * @return status String
+	 */
+	@PropertyGetter("status")
+	public String getStatus(DrugOrder delegate) {
+		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
+				.getResourceBySupportedClass(Order.class);
+		return orderResource.getStatus(delegate);
+	}
 }
