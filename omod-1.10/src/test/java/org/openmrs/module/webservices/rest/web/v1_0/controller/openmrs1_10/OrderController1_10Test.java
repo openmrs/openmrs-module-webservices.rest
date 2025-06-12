@@ -598,4 +598,16 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		);
 		handle(req);
 	}
+
+	@Test
+	public void doSearch_shouldReturnWithDrugStrengthProperty() throws Exception {
+		MockHttpServletRequest req = newGetRequest(getURI(),
+				new Parameter("orderTypes", RestTestConstants1_10.DRUG_ORDER_TYPE_UUID),
+				new Parameter("patient", PATIENT_UUID)
+		);
+
+		SimpleObject orders = deserialize(handle(req));
+		List<Object> results = orders.get("results");
+		assertEquals(PropertyUtils.getProperty(results.get(0), "strength"), "325.0mg");
+	}
 }

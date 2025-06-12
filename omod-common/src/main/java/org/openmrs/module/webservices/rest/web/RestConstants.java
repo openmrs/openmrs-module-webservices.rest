@@ -155,6 +155,11 @@ public class RestConstants {
 	public static String REPRESENTATION_FULL = "full";
 	
 	public static String REPRESENTATION_CUSTOM_PREFIX = "custom:";
+
+	/**
+	 * Used in DrugOrder object representations to indicate the specific strength an instance has
+	 */
+	public static String PROPERTY_FOR_STRENGTH = "strength";
 	
 	// The URI prefix through which clients consuming web services will connect
 	// to the web application
