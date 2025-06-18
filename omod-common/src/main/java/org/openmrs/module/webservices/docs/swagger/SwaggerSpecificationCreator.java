@@ -999,14 +999,14 @@ public class SwaggerSpecificationCreator {
 		Model modelFull = null;
 
 		if (definitionName.endsWith("Get")) {
-			model = resourceHandler.getGETModel(Representation.DEFAULT);
-			modelRef = resourceHandler.getGETModel(Representation.REF);
-			modelFull = resourceHandler.getGETModel(Representation.FULL);
+			model = SwaggerGenerationUtil.generateGETModel(resourceHandler, Representation.DEFAULT);
+			modelRef = SwaggerGenerationUtil.generateGETModel(resourceHandler, Representation.REF);
+			modelFull = SwaggerGenerationUtil.generateGETModel(resourceHandler, Representation.FULL);
 		} else if (definitionName.endsWith("Create")) {
-			model = resourceHandler.getCREATEModel(Representation.DEFAULT);
-			modelFull = resourceHandler.getCREATEModel(Representation.FULL);
+			model = SwaggerGenerationUtil.generateCREATEModel(resourceHandler, Representation.DEFAULT);
+			modelFull = SwaggerGenerationUtil.generateCREATEModel(resourceHandler, Representation.FULL);
 		} else if (definitionName.endsWith("Update")) {
-			model = resourceHandler.getUPDATEModel(Representation.DEFAULT);
+			model = SwaggerGenerationUtil.generateUPDATEModel(resourceHandler, Representation.DEFAULT);
 		}
 
 		if (model != null) {
@@ -1025,7 +1025,6 @@ public class SwaggerSpecificationCreator {
 	 * @param operationName get, post, delete
 	 * @param resourceName
 	 * @param resourceParentName
-	 * @param representation
 	 * @param operationEnum
 	 * @return
 	 */
