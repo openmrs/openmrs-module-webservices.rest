@@ -32,12 +32,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-
 /**
  * Sub-resource for patient identifiers
  */
@@ -134,52 +128,7 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	public DelegatingResourceDescription getUpdatableProperties() {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("identifier", new StringProperty())
-			        .property("preferred", new BooleanProperty()._default(false))
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeGet"))
-			        .property("location", new RefProperty("#/definitions/LocationGet"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("identifier", new StringProperty())
-		        .property("identifierType", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("preferred", new BooleanProperty()._default(false))
-		        
-		        .required("identifier").required("identifierType");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("identifierType", new RefProperty("#/definitions/PatientidentifiertypeCreate"))
-			        .property("location", new RefProperty("#/definitions/LocationCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
+
 	private PatientService service() {
 		return Context.getPatientService();
 	}

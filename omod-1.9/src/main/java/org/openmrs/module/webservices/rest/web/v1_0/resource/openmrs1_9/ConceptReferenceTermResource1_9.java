@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-import io.swagger.models.properties.UUIDProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
@@ -92,40 +87,7 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model.property("uuid", new UUIDProperty());
-			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetRef"));
-			model.property("code", new StringProperty());
-			model.property("version", new StringProperty());
-		} else if (rep instanceof FullRepresentation) {
-			model.property("uuid", new UUIDProperty());
-			model.property("conceptSource", new RefProperty("#/definitions/ConceptsourceGetFull"));
-			model.property("code", new StringProperty());
-			model.property("version", new StringProperty());
-			model.property("auditInfo", new StringProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("code", new StringProperty())
-		        .property("conceptSource", new RefProperty("#/definitions/ConceptsourceCreate"))
-		        .property("version", new StringProperty())
-		        
-		        .required("code").required("conceptSource");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getDisplayString(org.openmrs.OpenmrsMetadata)
 	 */

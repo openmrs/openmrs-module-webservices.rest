@@ -14,15 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -141,74 +132,7 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		description.addProperty("deathDate");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("gender", new StringProperty()._enum("M")._enum("F"))
-			        .property("age", new IntegerProperty())
-			        .property("birthdate", new DateTimeProperty())
-			        .property("birthdateEstimated", new BooleanProperty())
-			        .property("dead", new BooleanProperty())
-			        .property("deathDate", new DateProperty())
-			        .property("causeOfDeath", new StringProperty())
-			        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeGetRef")))
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGetRef"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGetRef"));
-			
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("preferredName", new RefProperty("#/definitions/PersonNameGet"))
-			        .property("preferredAddress", new RefProperty("#/definitions/PersonAddressGet"))
-			        .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameGet")))
-			        .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressGet")));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		ModelImpl model = new ModelImpl()
-		        .property("names", new ArrayProperty(new RefProperty("#/definitions/PersonNameCreate")))
-		        .property("gender", new StringProperty()._enum("M")._enum("F"))
-		        .property("age", new IntegerProperty())
-		        .property("birthdate", new DateProperty())
-		        .property("birthdateEstimated", new BooleanProperty()._default(false))
-		        .property("dead", new BooleanProperty()._default(false))
-		        .property("deathDate", new DateProperty())
-		        .property("causeOfDeath", new StringProperty())
-		        .property("addresses", new ArrayProperty(new RefProperty("#/definitions/PersonAddressCreate")))
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeCreate")));
-		
-		model.setRequired(Arrays.asList("names", "gender"));
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("dead", new BooleanProperty())
-		        .property("causeOfDeath", new StringProperty())
-		        .property("deathDate", new DateProperty())
-		        .property("age", new IntegerProperty())
-		        .property("gender", new StringProperty()._enum("M")._enum("F"))
-		        .property("birthdate", new DateProperty())
-		        .property("birthdateEstimated", new BooleanProperty()._default(false))
-		        .property("preferredName", new StringProperty().example("uuid"))
-		        .property("preferredAddress", new StringProperty().example("uuid"))
-		        .property("attributes", new ArrayProperty(new RefProperty("#/definitions/PersonAttributeCreate")))
-		        
-		        .required("dead").required("causeOfDeath");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getPropertiesToExposeAsSubResources()
 	 */

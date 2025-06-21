@@ -8,7 +8,7 @@
 </script>
 
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Source+Code+Pro:300,600|Titillium+Web:400,600,700" rel="stylesheet"/>
-<link rel="stylesheet" type="text/css" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui-3.0.10/swagger-ui.css" >
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@3/swagger-ui.css" >
 <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui-3.0.10/favicon-32x32.png" sizes="32x32" />
 <link rel="icon" type="image/png" href="<openmrs:contextPath/>/moduleResources/webservices/rest/js/swagger-ui-3.0.10/favicon-16x16.png" sizes="16x16" />
 
@@ -47,7 +47,7 @@
     </symbol>
 
     <symbol viewBox="0 0 20 20" id="close">
-      <path d="M14.348 14.849c-.469.469-1.229.469-1.697 0L10 11.819l-2.651 3.029c-.469.469-1.229.469-1.697 0-.469-.469-.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-.469-.469-.469-1.228 0-1.697.469-.469 1.228-.469 1.697 0L10 8.183l2.651-3.031c.469-.469 1.228-.469 1.697 0 .469.469.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c.469.469.469 1.229 0 1.698z"/>
+      <path d="M14.348 14.849c-.469.469-1.229.469-1.697 0L10 11.819l-2.651 3.029c-.469.469-1.229.469-1.697 0-.469-.469-.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-.469-.469-.469-1.228 0-1.697.469-.469 1.228-.469 1.697 0L10 8.183l2.651-3.031c.469-.469 1.228-.469 1.697 0 .469.469.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c.469.469.469 1.228 0 1.697z"/>
     </symbol>
 
     <symbol viewBox="0 0 20 20" id="large-arrow">
@@ -72,15 +72,15 @@
 
 <div id="swagger-ui"></div>
 
-<script src="${pageContext.request.contextPath}/moduleResources/webservices/rest/js/swagger-ui-3.0.10/swagger-ui-bundle.js"> </script>
-<script src="${pageContext.request.contextPath}/moduleResources/webservices/rest/js/swagger-ui-3.0.10/swagger-ui-standalone-preset.js"> </script>
+<script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js"></script>
 <openmrs:require privilege="Manage RESTWS" otherwise="/login.htm" redirect="/module/webservices/rest/settings.form" />
   <script type="text/javascript">
       window.onload = function() {
           const ui = SwaggerUIBundle({
               url: "${pageContext.request.contextPath}/module/webservices/rest/swagger.json",
-              validatorUrl: null,
               dom_id: '#swagger-ui',
+              deepLinking: true,
               presets: [
                   SwaggerUIBundle.presets.apis,
                   SwaggerUIStandalonePreset
@@ -88,8 +88,7 @@
               plugins: [
                   SwaggerUIBundle.plugins.DownloadUrl
               ],
-              layout: "StandaloneLayout",
-              tagsSorter: 'alpha'
+              layout: "StandaloneLayout"
           });
 
           window.ui = ui

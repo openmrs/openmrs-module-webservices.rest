@@ -9,9 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
+import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -62,26 +61,10 @@ public class PersonResource1_11 extends PersonResource1_10 {
 		description.addProperty("deathdateEstimated");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return addNewProperties(super.getGETModel(rep), rep);
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return addNewProperties(super.getCREATEModel(rep), rep);
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return addNewProperties(super.getUPDATEModel(rep), rep);
-	}
-	
-	private Model addNewProperties(Model model, Representation rep) {
+
+	private Schema<?> addNewProperties(Schema<?> model, Representation rep) {
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			((ModelImpl) model)
-			        .property("deathdateEstimated", new BooleanProperty()._default(false));
+			model.addProperty("deathdateEstimated", new BooleanSchema()._default(false));
 		}
 		return model;
 	}

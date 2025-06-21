@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.ConceptSource;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -28,23 +25,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptS
 @Resource(name = RestConstants.VERSION_1 + "/conceptsource", supportedClass = ConceptSource.class, supportedOpenmrsVersions = {
         "2.1.* - 9.*" })
 public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uniqueId", new StringProperty());
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return ((ModelImpl) super.getCREATEModel(representation))
-		        .property("uniqueId", new StringProperty());
-	}
-	
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */

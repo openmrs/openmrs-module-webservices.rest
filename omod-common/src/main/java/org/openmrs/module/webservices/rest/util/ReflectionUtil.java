@@ -147,5 +147,51 @@ public class ReflectionUtil {
 			throw new RuntimeException("No suitable method \"" + name + "\" in " + clazz);
 		return ret;
 	}
-	
+
+	/**
+	 * Extracts the generic type parameter from a specified class or its superclasses
+	 * that implement a parameterized interface or extend a parameterized class.
+	 * <p>
+	 * This method works by checking the current class for parameterized interfaces
+	 * or superclasses. If the current class does not have a generic type, the method
+	 * traverses up the class hierarchy until it finds one or reaches the top of the hierarchy.
+	 * <p>
+	 * @param resourceHandlerClass the class implementing or extending a parameterized type
+	 * @return the Class representing the generic type, or null if it cannot be determined
+	 */
+	public static Class<?> getGenericType(Class<?> resourceHandlerClass) {
+		Class<?> currentClass = resourceHandlerClass;
+
+		while (currentClass != null) {
+			// If the current class implements a parameterized interface, extract the generic type
+			Type[] genericInterfaces = currentClass.getGenericInterfaces();
+			for (Type genericInterface : genericInterfaces) {
+				if (genericInterface instanceof ParameterizedType) {
+					ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+					Type[] typeArguments = parameterizedType.getActualTypeArguments();
+
+					if (typeArguments.length > 0 && typeArguments[0] instanceof Class<?>) {
+						return (Class<?>) typeArguments[0];
+					}
+				}
+			}
+
+			// If the current class has a parameterized superclass, extract the generic type
+			Type genericSuperclass = currentClass.getGenericSuperclass();
+			if (genericSuperclass instanceof ParameterizedType) {
+				ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+				Type[] typeArguments = parameterizedType.getActualTypeArguments();
+
+				if (typeArguments.length > 0 && typeArguments[0] instanceof Class<?>) {
+					return (Class<?>) typeArguments[0];
+				}
+			}
+
+			currentClass = currentClass.getSuperclass();
+		}
+
+		return null;
+	}
+
+
 }

@@ -24,11 +24,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 
@@ -117,27 +112,5 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 		description.addProperty("drug");
 		return description;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl.property("display", new StringProperty()).property("uuid", new StringProperty())
-			        .property("drug", new RefProperty("#/definitions/DrugGetRef"))
-			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGetRef"))
-			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl.property("display", new StringProperty()).property("uuid", new StringProperty())
-			        .property("auditInfo", new StringProperty()).property("drug", new RefProperty("#/definitions/DrugGet"))
-			        .property("conceptReferenceTerm", new RefProperty("#/definitions/ConceptreferencetermGet"))
-			        .property("conceptMapType", new RefProperty("#/definitions/ConceptmaptypeGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl().property("conceptReferenceTerm", new StringProperty().example("uuid"))
-		        .property("conceptMapType", new StringProperty().example("uuid"))
-		        .property("drug", new StringProperty().example("uuid"));
-	}
+
 }

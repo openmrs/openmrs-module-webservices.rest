@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import io.swagger.models.Model;
 import org.openmrs.OpenmrsData;
 import org.openmrs.OpenmrsMetadata;
 import org.openmrs.api.context.Context;
@@ -22,7 +21,6 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
@@ -76,13 +74,8 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		return getCreatableProperties();
 	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
-	}
-	
-	/**
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(java.lang.Object)
 	 */
 	@SuppressWarnings("unchecked")

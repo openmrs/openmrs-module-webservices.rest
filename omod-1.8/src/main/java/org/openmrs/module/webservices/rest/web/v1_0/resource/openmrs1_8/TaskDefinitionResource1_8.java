@@ -102,7 +102,7 @@ public class TaskDefinitionResource1_8 extends MetadataDelegatingCrudResource<Ta
 		description.addRequiredProperty("properties");
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#save(java.lang.Object)
 	 */

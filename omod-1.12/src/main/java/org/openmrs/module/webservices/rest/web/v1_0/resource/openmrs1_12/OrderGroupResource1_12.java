@@ -27,13 +27,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
-
 @Resource(name = RestConstants.VERSION_1 + "/ordergroup", supportedClass = OrderGroup.class, supportedOpenmrsVersions = {
         "1.12.* - 9.*" })
 public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGroup> {
@@ -127,46 +120,7 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		description.addProperty("orders");
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
-			        .property("voided", new BooleanProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("orders", new RefProperty("#/definitions/OrderGetRef"))
-			        .property("orderSet", new RefProperty("#/definitions/OrdersetGetRef"));
-			
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl.property("uuid", new StringProperty()).property("display", new StringProperty())
-			        .property("voided", new BooleanProperty()).property("auditInfo", new BooleanProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderGetRef")))
-			        .property("orderSet", new RefProperty("#/definitions/OrdersetGetRef"));
-		} else if (rep instanceof RefRepresentation) {
-			modelImpl.property("display", new StringProperty()).property("uuid", new StringProperty());
-			
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl().property("patient", new StringProperty().example("uuid"))
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("orders", new ArrayProperty(new RefProperty("#/definitions/OrderCreate")))
-		        .property("orderSet", new StringProperty().example("uuid"));
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl().property("orders",
-		    new ArrayProperty(new RefProperty("#/definitions/OrderCreate")));
-	}
-	
+
 	@PropertyGetter("display")
 	public String getDisplayString(OrderGroup group) {
 		if (group.getOrders() == null)
