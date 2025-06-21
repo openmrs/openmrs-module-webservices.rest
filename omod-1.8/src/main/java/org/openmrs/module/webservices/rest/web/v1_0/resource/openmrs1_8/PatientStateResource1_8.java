@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.ProgramWorkflow;
@@ -172,45 +165,5 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		updatableProperties.addProperty("voided");
 		return updatableProperties;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof RefRepresentation || rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("startDate", new DateProperty())
-			        .property("endDate", new DateProperty())
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGet"));
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("state", new RefProperty("#/definitions/WorkflowStateGetRef"))
-			        .property("patientProgram", new ObjectProperty()); //FIXME type
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("state", new RefProperty("#/definitions/WorkflowStateCreate"))
-		        
-		        .required("state");
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        .property("voided", new BooleanProperty());
-	}
+
 }

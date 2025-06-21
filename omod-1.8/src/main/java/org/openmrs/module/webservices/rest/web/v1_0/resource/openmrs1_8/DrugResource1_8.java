@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -118,58 +112,7 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		//Let the superclass handle this
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("doseStrength", new DoubleProperty())
-			        .property("maximumDailyDose", new DoubleProperty())
-			        .property("minimumDailyDose", new DoubleProperty())
-			        .property("units", new StringProperty())
-			        .property("combination", new BooleanProperty()._default(false));
-		}
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("route", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptGet"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"))
-			        .property("route", new RefProperty("#/definitions/ConceptGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
-		        .property("combination", new BooleanProperty()._default(false))
-		        .property("concept", new StringProperty())
-		        .property("doseStrength", new DoubleProperty())
-		        .property("maximumDailyDose", new DoubleProperty())
-		        .property("minimumDailyDose", new DoubleProperty())
-		        .property("units", new StringProperty())
-		        .property("dosageForm", new StringProperty())
-		        .property("route", new StringProperty())
-		        
-		        .required("combination").required("concept");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("concept", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("dosageForm", new RefProperty("#/definitions/ConceptCreate"))
-			        .property("route", new RefProperty("#/definitions/ConceptCreate"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep); //FIXME no updatableProperties()
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource#getCreatableProperties()
 	 */

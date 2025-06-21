@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.ConceptProposal;
 import org.openmrs.User;
@@ -112,49 +107,6 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		return null;
 	}
 
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
-			model.property("originalText", new StringProperty());
-			model.property("finalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("comments", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("creator", new RefProperty("#/definitions/UserGetRef"));
-			model.property("dateCreated", new DateProperty());
-		} else if (rep instanceof FullRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGet"));
-			model.property("obsConcept", new RefProperty("#/definitions/ConceptGet"));
-			model.property("obs", new RefProperty("#/definitions/ObsGet"));
-			model.property("mappedConcept", new RefProperty("#/definitions/ConceptGet"));
-			model.property("originalText", new StringProperty());
-			model.property("finalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("comments", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("creator", new RefProperty("#/definitions/UserGet"));
-			model.property("dateCreated", new DateProperty());
-			model.property("changedBy", new RefProperty("#/definitions/UserGet"));
-			model.property("dateChanged", new DateProperty());
-		} else if (rep instanceof RefRepresentation) {
-			model.property("uuid", new StringProperty().example("uuid"));
-			model.property("display", new StringProperty());
-			model.property("encounter", new RefProperty("#/definitions/EncounterGetRef"));
-			model.property("originalText", new StringProperty());
-			model.property("state", new StringProperty());
-			model.property("occurrences", new StringProperty());
-			model.property("changedBy", new RefProperty("#/definitions/UserGetRef"));
-			model.property("dateChanged", new DateProperty());
-		}
-		return model;
-	}
-
 	@PropertyGetter("occurrences")
 	public Integer getOccurrencesProperty(ConceptProposal proposal) {
 		Map<String, List<ConceptProposal>> proposalsMap = getProposalsMapByOriginalText(false);
@@ -177,15 +129,6 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 	}
 
 	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-				.property("originalText", new StringProperty())
-				.property("mappedConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-				.property("obsConcept", new RefProperty("#/definitions/ConceptCreate"));
-	}
-
-	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("finalText");
@@ -194,17 +137,6 @@ public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptPr
 		description.addProperty("mappedConcept");
 		description.addProperty("comments");
 		return description;
-	}
-
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getUPDATEModel(rep);
-		return model
-				.property("finalText", new StringProperty())
-				.property("mappedConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("encounter", new RefProperty("#/definitions/EncounterCreate"))
-				.property("obsConcept", new RefProperty("#/definitions/ConceptCreate"))
-				.property("comments", new StringProperty());
 	}
 
 	@Override

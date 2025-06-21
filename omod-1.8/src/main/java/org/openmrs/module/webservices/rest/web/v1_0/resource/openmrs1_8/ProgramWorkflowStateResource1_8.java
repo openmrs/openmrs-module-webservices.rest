@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
@@ -120,35 +115,6 @@ public class ProgramWorkflowStateResource1_8 extends DelegatingSubResource<Progr
 			return description;
 		}
 		return null;
-	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGet"));
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("retired", new BooleanProperty())
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"));
-		}
-		return model;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
 	}
 
 	@Override

@@ -9,14 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -39,19 +34,7 @@ public class CustomDatatypeHandlerResource1_9 extends DelegatingSubResource<Cust
 		description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("handlerClassname", new StringProperty())
-			        .property("display", new StringProperty()); //FIXME delegate property name
-		}
-		return model;
-	}
-	
+
 	@Override
 	public CustomDatatypeHandlerRepresentation newDelegate() {
 		return new CustomDatatypeHandlerRepresentation();

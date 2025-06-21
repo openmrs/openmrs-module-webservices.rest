@@ -18,10 +18,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.DrugResource1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-
 /**
  * {@link org.openmrs.module.webservices.rest.web.annotation.Resource} for {@link org.openmrs.Drug},
  * supporting standard CRUD operations
@@ -59,22 +55,5 @@ public class DrugResource1_10 extends DrugResource1_8 {
 		
 		return description;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapGet"));
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("drugReferenceMaps", new RefProperty("#/definitions/DrugreferencemapCreate"));
-	}
+
 }

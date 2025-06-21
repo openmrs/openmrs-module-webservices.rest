@@ -12,9 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.context.Context;
@@ -66,37 +63,7 @@ public class ConceptDescriptionResource1_8 extends DelegatingSubResource<Concept
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof RefRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty());
-		} else if (rep instanceof DefaultRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("locale", new StringProperty());
-		} else if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("locale", new StringProperty());
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return new ModelImpl()
-		        .property("description", new StringProperty())
-		        .property("locale", new StringProperty().example("fr"))
-		        .required("description").required("locale");
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

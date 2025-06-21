@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.activelist.ActiveListItem;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -31,26 +25,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * {@link ActiveListItem}
  */
 public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> extends DataDelegatingCrudResource<T> {
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("person", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("comments", new StringProperty())
-		        .property("startObs", new StringProperty())
-		        .property("stopObs", new StringProperty())
-		        
-		        .required("person").required("startDate");
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonCreate"))
-			        .property("startObs", new RefProperty("#/definitions/ObsCreate"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsCreate"));
-		}
-		return model;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
@@ -89,31 +64,7 @@ public abstract class BaseActiveListItemResource1_8<T extends ActiveListItem> ex
 		}
 		return null;
 	}
-	
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty())
-		        .property("startDate", new DateProperty())
-		        .property("endDate", new DateProperty())
-		        .property("comments", new StringProperty())
-		        .property("voided", new BooleanProperty());
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGet"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGet"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("person", new RefProperty("#/definitions/PersonGetRef"))
-			        .property("activeListType", new StringProperty()) //FIXME type
-			        .property("startObs", new RefProperty("#/definitions/ObsGetRef"))
-			        .property("stopObs", new RefProperty("#/definitions/ObsGetRef"));
-		}
-		return model;
-	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */

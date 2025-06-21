@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Form;
 import org.openmrs.FormResource;
@@ -140,44 +136,7 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		
 		return description;
 	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-		        .property("uuid", new StringProperty())
-		        .property("display", new StringProperty());
-		
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("name", new StringProperty())
-			        .property("valueReference", new StringProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-			        .property("dataType", new StringProperty())
-			        .property("handler", new StringProperty())
-			        .property("handlerConfig", new StringProperty());
-		}
-		return modelImpl;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl model = new ModelImpl()
-		        .property("form", new StringProperty())
-		        .property("name", new StringProperty())
-		        .property("dataType", new StringProperty())
-		        .property("handler", new StringProperty())
-		        .property("handlerConfig", new StringProperty())
-		        .property("value", new StringProperty())
-		        .property("valueReference", new StringProperty());
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("form", new RefProperty("#/definitions/FormCreate"));
-		}
-		return model;
-	}
-	
+
 	@Override
 	protected void delete(FormResource delegate, String reason, RequestContext context) throws ResponseException {
 		purge(delegate, context);
