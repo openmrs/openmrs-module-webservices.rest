@@ -41,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.validation.ValidateUtil;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -137,6 +138,11 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			description.addProperty("person", Representation.FULL);
 			description.addProperty("voided");
 			description.addProperty("auditInfo");
+			try {
+				description.addProperty("fhir", this.getClass().getMethod("toFhirResource", Patient.class));
+			} catch(ReflectiveOperationException e) {
+				log.warn(">>>> reflection failed", e);
+			}
 			description.addSelfLink();
 			return description;
 		}
@@ -366,5 +372,5 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		    personResource.getUpdatableProperties(), false);
 		return patient;
 	}
-	
+
 }
