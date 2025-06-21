@@ -122,7 +122,6 @@ public class PatientIdentifierResource1_8 extends DelegatingSubResource<PatientI
 	 * @param location
 	 * @throws org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException
 	 */
-	@PropertySetter("location")
 	public void setLocation(PatientIdentifier instance, Location location) {
 		instance.setLocation(Context.getLocationService().getLocationByUuid(location.getUuid()));
 	}
