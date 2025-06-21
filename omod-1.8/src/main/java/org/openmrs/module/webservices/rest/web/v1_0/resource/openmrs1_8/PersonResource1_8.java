@@ -23,6 +23,8 @@ import io.swagger.models.properties.DateTimeProperty;
 import io.swagger.models.properties.IntegerProperty;
 import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
+
+import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -563,5 +565,19 @@ public class PersonResource1_8 extends DataDelegatingCrudResource<Person> {
 		SimpleObject ret = super.getAuditInfo(person);
 		ret.put("dateCreated", ConversionUtil.convertToRepresentation(person.getPersonDateCreated(), Representation.DEFAULT));
 		return ret;
+	}
+	/**
+	 * Adds the link to related {@link Patient} resource to this {@link Person} if its a patient
+	 * 
+	 * 
+	 * 
+	 */
+	private DelegatingResourceDescription ifPatientAddLink(DelegatingResourceDescription description,Person person) {
+		if (person != null && person.isPatient()) {
+			Patient patient = Context.getPatientService().getPatient(person.getId());
+			String uri = "/" + RestConstants.VERSION_1 + "/patient/" + patient.getUuid();
+			description.addLink("patient", uri);
+		}
+		return description;
 	}
 }
