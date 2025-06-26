@@ -33,22 +33,6 @@
 	
 	<conditionalResources>
 		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.0.*</path>
-			<openmrsVersion>2.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.1.*</path>
-			<openmrsVersion>2.1.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.2.*</path>
-			<openmrsVersion>2.2.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.3.*</path>
-			<openmrsVersion>2.3.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
 			<path>/lib/webservices.rest-omod-2.4.*</path>
 			<openmrsVersion>2.4.* - 9.*</openmrsVersion>
 		</conditionalResource>

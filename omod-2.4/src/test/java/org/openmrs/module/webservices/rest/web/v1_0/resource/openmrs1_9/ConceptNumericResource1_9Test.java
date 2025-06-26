@@ -60,6 +60,7 @@ public class ConceptNumericResource1_9Test extends BaseDelegatingResourceTest<Co
 		assertPropPresent("lowAbsolute");
 		assertPropPresent("lowCritical");
 		assertPropPresent("units");
+		assertPropPresent("allowDecimal");
 	}
 	
 	@Override

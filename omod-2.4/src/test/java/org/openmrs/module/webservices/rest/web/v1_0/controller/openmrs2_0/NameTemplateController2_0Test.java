@@ -79,10 +79,12 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		MockHttpServletRequest req = newGetRequest(getURI());
 		SimpleObject result = deserialize(handle(req));
 
+		SimpleObject defaultNameTemplateResource = parseNameTemplateResource(SHORT_NAMETEMPLATE_RESOURCE);
 		SimpleObject alternateNameTemplateResource = parseNameTemplateResource(LONG_NAMETEMPLATE_RESOURCE);
-		
+
 		Assert.assertThat(result.containsKey("results"), is(true));
 		Assert.assertThat(result.get("results"), iterableWithSize(NAME_TEMPLATES_COUNT));
+		Assert.assertThat(result.get("results"), hasItem(defaultNameTemplateResource));
 		Assert.assertThat(result.get("results"), hasItem(alternateNameTemplateResource));
 	}
 	

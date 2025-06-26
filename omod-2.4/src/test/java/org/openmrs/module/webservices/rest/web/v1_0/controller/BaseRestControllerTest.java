@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
@@ -19,7 +19,6 @@ import java.lang.reflect.Field;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +46,19 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	MockHttpServletResponse response;
 	
+	Log spyOnLog;
+
 	@Before
 	public void before() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		controller = new BaseRestController();
 		request = new MockHttpServletRequest();
 		response = new MockHttpServletResponse();
+		spyOnLog = mock(Log.class);
+		// Need to get the logger using reflection
+		Field log;
+		log = controller.getClass().getDeclaredField("log");
+		log.setAccessible(true);
+		log.set(controller, spyOnLog);
 	}
 	
 	/**
@@ -99,6 +106,9 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		String message = "ErrorMessage";
 		Exception ex = new Exception(message);
 		controller.handleException(ex, request, response);
+
+		verify(spyOnLog).error(message, ex);
+
 	}
 	
 	@Test
@@ -107,6 +117,9 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		Exception ex = new GenericRestException(message);
 		
 		controller.handleException(ex, request, response);
+
+		verify(spyOnLog).error(message, ex);
+
 	}
 	
 	@Test
@@ -116,11 +129,12 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		Exception ex = new IllegalPropertyException(message);
 		
 		controller.handleException(ex, request, response);
+
+		verify(spyOnLog).info(message, ex);
 	}
 	
 	@Test
 	public void handleConversionException_shouldLogConversionErrorAsInfo() throws Exception {
-		
 		String message = "conversion error";
 		ConversionException ex = new ConversionException(message);
 		SimpleObject responseSimpleObject = controller.conversionExceptionHandler(ex, request, response);
