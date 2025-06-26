@@ -20,6 +20,7 @@ import org.junit.rules.ExpectedException;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UsernamePasswordCredentials;
 import org.openmrs.api.db.LoginCredential;
 import org.openmrs.api.db.UserDAO;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
@@ -68,6 +69,48 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
 	}
+
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmailForAnyUser() throws Exception {
+		User user = setUpUser("butch"); // Login user without privileges.
+		user.setEmail("butch@gmail.com");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		assertNotNull(user.getEmail());
+
+		assertEquals(Context.getAuthenticatedUser().getUuid(), user.getUuid()); // Assert logged-in user is butch
+
+		expectedException.expect(MessageException.class);
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+	}
+
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameForAnyUser() throws Exception {
+		User user = setUpUser("butch"); // Login user without privileges.
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		assertNotNull(user.getUsername());
+
+		assertEquals(Context.getAuthenticatedUser().getUuid(), user.getUuid()); // Assert logged-in user is butch
+
+		expectedException.expect(MessageException.class);
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+	}
+
+	@Test
+	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmailForAnyUnAuthenticatedUser() throws Exception {
+		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
+		user.setEmail("butch@gmail.com");
+		assertNull(dao.getLoginCredential(user).getActivationKey());
+		assertNotNull(user.getEmail());
+
+		Context.logout();
+		assertNull(Context.getAuthenticatedUser()); // Assert no user is logged in.
+
+		expectedException.expect(MessageException.class);
+		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
+		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+	}
 	
 	@Test
 	public void resetPassword_shouldResetUserPasswordIfActivationKeyIsCorrect() throws Exception {
@@ -86,5 +129,18 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		assertEquals(200, response.getStatus());
 		Context.authenticate(user.getUsername(), newPassword);
 		
+	}
+
+	private User setUpUser(String userName) throws Exception {
+		User user = userService.getUserByUsername(userName);
+		final String newPassword = "SomeOtherPassword123";
+
+		userService.changePassword(user, newPassword);
+
+		// Logout Admin User with Privileges
+		Context.logout();
+
+		Context.authenticate(new UsernamePasswordCredentials(userName, newPassword));
+		return Context.getAuthenticatedUser();
 	}
 }
