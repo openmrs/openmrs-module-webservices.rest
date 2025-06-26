@@ -72,7 +72,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenEmailForAnyUser() throws Exception {
-		User user = setUpUser("butch"); // Login user without privileges
+		User user = setUpUser("butch"); // Login user without privileges.
 		user.setEmail("butch@gmail.com");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
 		assertNotNull(user.getEmail());
@@ -86,7 +86,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 
 	@Test
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsernameForAnyUser() throws Exception {
-		User user = setUpUser("butch"); // Login user without privileges
+		User user = setUpUser("butch"); // Login user without privileges.
 		assertNull(dao.getLoginCredential(user).getActivationKey());
 		assertNotNull(user.getUsername());
 
@@ -105,7 +105,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		assertNotNull(user.getEmail());
 
 		Context.logout();
-		assertNull(Context.getAuthenticatedUser()); // Assert no user is logged in
+		assertNull(Context.getAuthenticatedUser()); // Assert no user is logged in.
 
 		expectedException.expect(MessageException.class);
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
