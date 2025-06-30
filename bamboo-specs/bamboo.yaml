@@ -134,7 +134,7 @@ Release to Maven:
       force-clean-build: 'false'
       description: Checkout Default Repository
   - checkout:
-      repository: Git
+      repository: Release scripts
       path: release-scripts
       force-clean-build: 'false'
       description: Checkout Default Repository
