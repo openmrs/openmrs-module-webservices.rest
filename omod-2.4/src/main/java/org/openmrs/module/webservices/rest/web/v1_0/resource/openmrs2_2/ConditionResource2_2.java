@@ -42,7 +42,14 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
         "2.2.* - 9.*" })
 public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> {
 	
-	private ConditionService conditionService = Context.getConditionService();
+	private ConditionService conditionService;
+
+	private ConditionService getConditionService() {
+    if (conditionService == null) {
+        conditionService = Context.getConditionService();
+    }
+    return conditionService;
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(Representation)
@@ -180,7 +187,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	 */
 	@Override
 	public Condition getByUniqueId(String uuid) {
-		return conditionService.getConditionByUuid(uuid);
+		return getConditionService().getConditionByUuid(uuid);
 	}
 	
 	/**
@@ -189,7 +196,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	 */
 	@Override
 	protected void delete(Condition condition, String reason, RequestContext requestContext) throws ResponseException {
-		conditionService.voidCondition(condition, reason);
+		getConditionService().voidCondition(condition, reason);
 	}
 	
 	/**
@@ -205,7 +212,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	 */
 	@Override
 	public Condition save(Condition condition) {
-		return conditionService.saveCondition(condition);
+		return getConditionService().saveCondition(condition);
 	}
 	
 	/**
@@ -214,7 +221,7 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	 */
 	@Override
 	public void purge(Condition condition, RequestContext requestContext) throws ResponseException {
-		conditionService.purgeCondition(condition);
+		getConditionService().purgeCondition(condition);
 	}
 	
 	/**
@@ -237,7 +244,6 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patientUuid");
 		String includeInactive = context.getRequest().getParameter("includeInactive");
-		ConditionService conditionService = Context.getConditionService();
 		if (StringUtils.isBlank(patientUuid)) {
 			return new EmptySearchResult();
 		}
@@ -249,13 +255,13 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 		if (StringUtils.isNotBlank(includeInactive)) {
 			boolean isIncludeInactive = BooleanUtils.toBoolean(includeInactive);
 			if (isIncludeInactive) {
-				return new NeedsPaging<Condition>(conditionService.getAllConditions(patient), context);
+				return new NeedsPaging<Condition>(getConditionService().getAllConditions(patient), context);
 			} else {
-				return new NeedsPaging<Condition>(conditionService.getActiveConditions(patient), context);
+				return new NeedsPaging<Condition>(getConditionService().getActiveConditions(patient), context);
 			}
 		}
 		else {
-			return new NeedsPaging<Condition>(conditionService.getActiveConditions(patient), context);
+			return new NeedsPaging<Condition>(getConditionService().getActiveConditions(patient), context);
 		}
 	}
 }

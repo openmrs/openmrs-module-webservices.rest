@@ -82,7 +82,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>					<execution>
+				<executions>					
+					<execution>
 						<id>Expand resources</id>
 						<goals>
 							<goal>unpack-dependencies</goal>

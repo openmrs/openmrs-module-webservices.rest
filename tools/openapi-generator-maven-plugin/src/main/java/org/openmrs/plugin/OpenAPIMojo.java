@@ -18,6 +18,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.artifact.Artifact;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,29 +37,50 @@ public class OpenAPIMojo extends AbstractMojo {
     
     private static final Logger log = LoggerFactory.getLogger(OpenAPIMojo.class);
     
-    private static final String TARGET_CLASS_NAME = "org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8";
-    
     private URLClassLoader classLoader;
+    
+    private Class<?> representationClass;
+    private Class<?> defaultRepresentationClass;
+    private Class<?> fullRepresentationClass;
+    private Class<?> requestMappingClass;
+    private Class<?> restUtilClass;
+    private Class<?> restConstantsClass;
 
     @Parameter(defaultValue = "${project}", required = true, readonly = true)
     private MavenProject project;
     
+    @Parameter
+    private List<String> scanPackages;
+
+    @Parameter(defaultValue = "false")
+    private boolean skipEmptyModules;
+    
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         log.info("=== OPENAPI GENERATION STARTED ===");
+        log.info("Processing module: {}", project.getArtifactId());
         
         this.classLoader = setupProjectClassLoader();
-        
+        loadCommonClasses();
         disableOpenMRSContext();
         
-        //testRestConstantsAccessibility();
+        List<Class<?>> resourceClasses = discoverResourceClasses();
         
-        Class<?> resourceClazz = loadClass(TARGET_CLASS_NAME);
-
-        testPatientResourceInstantiation(resourceClazz);
+        if (resourceClasses.isEmpty()) {
+            log.info("No resources found in this module - skipping OpenAPI generation");
+            return;
+        }
         
-        log.info("==============");
-    }    private URLClassLoader setupProjectClassLoader() {
+        log.info("Found {} resource classes to process", resourceClasses.size());
+        
+        for (Class<?> resourceClass : resourceClasses) {
+            processResourceClass(resourceClass);
+        }
+        
+        log.info("=== OPENAPI GENERATION COMPLETED ===");
+    }
+    
+    private URLClassLoader setupProjectClassLoader() {
         try {
             List<URL> urls = new ArrayList<>();
             
@@ -65,7 +88,6 @@ public class OpenAPIMojo extends AbstractMojo {
             File outputDir = new File(outputDirectory);
             if (outputDir.exists()) {
                 urls.add(outputDir.toURI().toURL());
-                log.info("Added project output directory: " + outputDirectory);
             } else {
                 log.warn("Project output directory does not exist: " + outputDirectory);
             }
@@ -83,89 +105,49 @@ public class OpenAPIMojo extends AbstractMojo {
                     }
                 }            }
             
-            log.info("ClassLoader setup complete: " + urls.size() + " URLs");
             return new URLClassLoader(urls.toArray(new URL[0]), Thread.currentThread().getContextClassLoader());
             
         } catch (java.net.MalformedURLException e) {
             throw new RuntimeException("Invalid URL in classpath elements: " + e.getMessage(), e);
         }
     }
-
-    private void disableOpenMRSContext() {
-        log.info("=== Disabling OpenMRS Context for Build-Time Use ===");
+    
+    private void loadCommonClasses() {
+        log.debug("=== Loading Common Classes (One-time Cache) ===");
         
         try {
-            Class<?> restUtilClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.RestUtil");
-            Method disableContextMethod = restUtilClass.getMethod("disableContext");
-            disableContextMethod.invoke(null);
-              log.info(" SUCCESS: OpenMRS Context disabled successfully");
-            log.debug("   RestUtil.contextEnabled is now false");
-            log.debug("   Static initializers will not attempt Context access");
-              } catch (ClassNotFoundException e) {
-            log.error(" FAILED: RestUtil class not found: " + e.getMessage());
-            throw new RuntimeException("Cannot disable OpenMRS context", e);
-        } catch (NoSuchMethodException e) {
-            log.error(" FAILED: disableContext method not found: " + e.getMessage());
-            throw new RuntimeException("Cannot disable OpenMRS context", e);
-        } catch (IllegalAccessException e) {
-            log.error(" FAILED: Cannot access disableContext method: " + e.getMessage());
-            throw new RuntimeException("Cannot disable OpenMRS context", e);
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            log.error(" FAILED: disableContext method invocation failed: " + e.getCause().getMessage());
-            throw new RuntimeException("Cannot disable OpenMRS context", e);
+            representationClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.representation.Representation");
+            defaultRepresentationClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation");
+            fullRepresentationClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.representation.FullRepresentation");
+            log.debug("Cached representation classes");
+            
+            restUtilClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.RestUtil");
+            restConstantsClass = classLoader.loadClass("org.openmrs.module.webservices.rest.web.RestConstants");
+            log.debug("Cached REST utility classes");
+            
+            try {
+                requestMappingClass = classLoader.loadClass("org.springframework.web.bind.annotation.RequestMapping");
+                log.debug("Cached RequestMapping annotation class");
+            } catch (ClassNotFoundException e) {
+                log.debug("RequestMapping annotation not available - will skip annotation checks");
+                requestMappingClass = null;
+            }            
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Failed to load required OpenMRS classes. Ensure webservices.rest module is in dependencies.", e);
         }
     }
 
-    private void testRestConstantsAccessibility() {        
-        log.info("=== Testing RestConstants Accessibility ===");
-        
+    private void disableOpenMRSContext() {        
         try {
-            Class<?> restConstants = classLoader.loadClass("org.openmrs.module.webservices.rest.web.RestConstants");
-            log.info(" RestConstants class loaded successfully: " + restConstants.getName());
-            
-            Object version1 = restConstants.getField("VERSION_1").get(null);
-            Object uriPrefix = restConstants.getField("URI_PREFIX").get(null);
-            Object representationDefault = restConstants.getField("REPRESENTATION_DEFAULT").get(null);
-            Object representationFull = restConstants.getField("REPRESENTATION_FULL").get(null);
-            
-            log.info(" RestConstants.VERSION_1 = " + version1);
-            log.info(" RestConstants.URI_PREFIX = " + uriPrefix);
-            log.info(" RestConstants.REPRESENTATION_DEFAULT = " + representationDefault);
-            log.info(" RestConstants.REPRESENTATION_FULL = " + representationFull);
-            
-            if ("v1".equals(version1)) {
-                log.info(" VERSION_1 has expected value");
-            } else {
-                log.warn(" VERSION_1 unexpected value: " + version1);
+            Method disableContextMethod = restUtilClass.getMethod("disableContext");
+            disableContextMethod.invoke(null);
+            log.info("SUCCESS: OpenMRS Context disabled successfully");
+            log.debug("   RestUtil.contextEnabled is now false");
+            log.debug("   Static initializers will not attempt Context access");
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                log.error("FAILED: Cannot disable OpenMRS context", e);
+                throw new RuntimeException("Cannot disable OpenMRS context", e);
             }
-            
-            if (uriPrefix != null && uriPrefix.toString().contains("/ws/rest")) {
-                log.info(" URI_PREFIX contains expected path");
-            } else {
-                log.warn(" URI_PREFIX unexpected value: " + uriPrefix);
-            }
-            
-            if ("default".equals(representationDefault)) {
-                log.info(" REPRESENTATION_DEFAULT has expected value");
-            } else {
-                log.warn(" REPRESENTATION_DEFAULT unexpected value: " + representationDefault);
-            }
-            
-            if ("full".equals(representationFull)) {
-                log.info(" REPRESENTATION_FULL has expected value");
-            } else {
-                log.warn(" REPRESENTATION_FULL unexpected value: " + representationFull);
-            }
-              log.info(" SUCCESS: RestConstants is fully accessible at build time!");
-            
-        } catch (ClassNotFoundException e) {
-            log.error(" FAILED: RestConstants class not found in ClassLoader");
-            log.error("This means RestConstants is not in the classpath");
-        } catch (NoSuchFieldException e) {
-            log.error(" FAILED: RestConstants field not found: " + e.getMessage());
-        } catch (IllegalAccessException e) {
-            log.error(" FAILED: Cannot access RestConstants fields: " + e.getMessage());
-        }    
     }
 
     private Class<?> loadClass(String className) {
@@ -176,75 +158,170 @@ public class OpenAPIMojo extends AbstractMojo {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Failed to load class: " + className, e);
         }
-    }    
-    private void testPatientResourceInstantiation(Class<?> resourceClazz) throws MojoExecutionException {
-        log.debug("=== Testing PatientResource Instance Creation ===");
+    }
+    
+    private List<Class<?>> discoverResourceClasses() throws MojoExecutionException {
+        List<Class<?>> discoveredClasses = new ArrayList<>();
         
-        try {
-            log.debug("Attempting to create PatientResource1_8 instance using normal constructor...");
-            
-            Object instance = resourceClazz.getDeclaredConstructor().newInstance();
-            
-            log.info(" SUCCESS! PatientResource1_8 instance created successfully!");
-            log.info("Instance class: " + instance.getClass().getName());
-            log.info("Instance toString: " + instance.toString());
-            
-            testBasicMethodCall(instance);
-
-            testGetRepresentationDescription(instance);
-            
-        } catch (ExceptionInInitializerError e) {
-            log.error(" FAILED: Static initialization error");
-            log.error("Root cause: " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
-            log.error("This means parent classes have problematic static blocks");
-            
-        } catch (NoClassDefFoundError e) {
-            log.error(" FAILED: Missing class dependency");
-            log.error("Missing class: " + e.getMessage());
-            log.error("This means some required classes aren't in the classpath");
-            
-        } catch (InstantiationException e) {
-            log.error(" FAILED: Cannot instantiate class");
-            log.error("Reason: " + e.getMessage());            
-        } catch (IllegalAccessException e) {
-            log.error(" FAILED: Constructor not accessible");
-            log.error("Reason: " + e.getMessage());
-            
-        } catch (NoSuchMethodException e) {
-            log.error(" FAILED: Default constructor not found");
-            log.error("Reason: " + e.getMessage());
-            
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            log.error(" FAILED: Constructor execution failed");
-            log.error("Cause: " + e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
+        if (scanPackages != null && !scanPackages.isEmpty()) {
+            log.info("Scanning packages: {}", scanPackages);
+            discoveredClasses = scanPackagesForResources(scanPackages);
         }
-    }    private void testBasicMethodCall(Object instance) {
-        log.debug("--- Testing Basic Method Calls ---");
         
-        String toStringResult = instance.toString();
-        log.debug(" toString() works: " + toStringResult);
+        else {
+            throw new MojoExecutionException(
+                "No resource discovery configuration provided. " +
+                "Please specify either 'targetClasses' or 'scanPackages' in plugin configuration."
+            );
+        }
         
-        Class<?> instanceClass = instance.getClass();
-        log.debug(" getClass() works: " + instanceClass.getName());
+        if (discoveredClasses.isEmpty() && !skipEmptyModules) {
+            throw new MojoExecutionException("No REST resource classes found in this module");
+        }
         
-        Method[] methods = instanceClass.getDeclaredMethods();
-        log.debug(" Found " + methods.length + " declared methods");
+        log.info("Discovered {} resource classes", discoveredClasses.size());
+        return discoveredClasses;
+    }
+    
+    private List<Class<?>> scanPackagesForResources(List<String> packages) {
+        List<Class<?>> resourceClasses = new ArrayList<>();
         
-        for (Method method : methods) {
-            if (method.getName().equals("getRepresentationDescription")) {
-                log.info(" Found getRepresentationDescription method: " + method.toString());
+        for (String packageName : packages) {
+            log.debug("Scanning package: {}", packageName);
+            
+            String packagePath = packageName.replace('.', '/');
+            
+            String outputDirectory = project.getBuild().getOutputDirectory();
+            File packageDir = new File(outputDirectory, packagePath);
+            
+            if (!packageDir.exists()) {
+                log.warn("Package directory does not exist: {}", packageDir.getAbsolutePath());
+                continue;
+            }
+            
+            List<File> classFiles = findClassFiles(packageDir);
+            
+            for (File classFile : classFiles) {
+                String className = getClassNameFromFile(classFile, outputDirectory);
+                
+                try {
+                    Class<?> clazz = classLoader.loadClass(className);
+                    
+                    if (isRestResourceClass(clazz)) {
+                        resourceClasses.add(clazz);
+                        log.info("Found REST resource: {}", className);
+                    } else {
+                        log.debug("Skipped non-resource class: {}", className);
+                    }
+                    
+                } catch (ClassNotFoundException | NoClassDefFoundError e) {
+                    log.debug("Could not load class {}: {}", className, e.getMessage());
+                }
             }
         }
-    }private void testGetRepresentationDescription(Object instance) throws MojoExecutionException {
-        log.info("=== Testing getRepresentationDescription Method ===");
+        
+        return resourceClasses;
+    }
+    
+    private boolean isRestResourceClass(Class<?> clazz) {
+        if (clazz.isInterface() || 
+            java.lang.reflect.Modifier.isAbstract(clazz.getModifiers()) ||
+            clazz.getName().contains("Test")) {
+            return false;
+        }
+        
+        if (!clazz.getName().contains(".resource.")) {
+            return false;
+        }
         
         try {
-            Class<?> representationClass = loadRequiredClass("org.openmrs.module.webservices.rest.web.representation.Representation");
-            Class<?> defaultRepClass = loadRequiredClass("org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation");
-            Class<?> fullRepClass = loadRequiredClass("org.openmrs.module.webservices.rest.web.representation.FullRepresentation");
+            Method getRepDescMethod = clazz.getMethod("getRepresentationDescription", representationClass);
             
-            Object defaultRep = createRequiredInstance(defaultRepClass);
-            Object fullRep = createRequiredInstance(fullRepClass);
+            if (getRepDescMethod != null) {
+                log.debug("Class {} has getRepresentationDescription method", clazz.getSimpleName());
+                return true;
+            }
+            
+        } catch (NoSuchMethodException e) {
+            Class<?> current = clazz;
+            while (current != null) {
+                String baseClassName = current.getName();
+                if (baseClassName.contains("DelegatingResourceHandler") ||
+                    baseClassName.contains("DelegatingCrudResource") ||
+                    baseClassName.contains("BaseRestController")) {
+                    log.debug("Class {} extends REST resource base class", clazz.getSimpleName());
+                    return true;
+                }
+                current = current.getSuperclass();
+            }
+        }
+        
+        if (requestMappingClass != null) {
+            try {
+                if (clazz.isAnnotationPresent(requestMappingClass.asSubclass(java.lang.annotation.Annotation.class))) {
+                    log.debug("Class {} has REST annotations", clazz.getSimpleName());
+                    return true;
+                }
+            } catch (ClassCastException e) {
+                log.debug("RequestMapping class is not an annotation, skipping annotation check");
+            }
+        }
+        
+        return false;
+    }
+    
+    private List<File> findClassFiles(File directory) {
+        List<File> classFiles = new ArrayList<>();
+        
+        if (!directory.exists() || !directory.isDirectory()) {
+            return classFiles;
+        }
+        
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    classFiles.addAll(findClassFiles(file));
+                } else if (file.getName().endsWith(".class")) {
+                    classFiles.add(file);
+                }
+            }
+        }
+        
+        return classFiles;
+    }
+    
+    private String getClassNameFromFile(File classFile, String outputDirectory) {
+        String filePath = classFile.getAbsolutePath();
+        String outputPath = new File(outputDirectory).getAbsolutePath();
+        
+        String relativePath = filePath.substring(outputPath.length() + 1);
+        String className = relativePath.substring(0, relativePath.length() - 6); // Remove ".class"
+        
+        return className.replace(File.separatorChar, '.');
+    }
+    
+    private void processResourceClass(Class<?> resourceClass) {
+        log.info("=== Resource: {} ===", resourceClass.getSimpleName());
+        
+        try {
+            Object instance = resourceClass.getDeclaredConstructor().newInstance();
+            
+            processGetRepresentationDescription(instance);
+                        
+        } catch (Exception e) {
+            log.warn("Failed to process resource {}: {}", resourceClass.getSimpleName(), e.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Resource processing error details", e);
+            }
+        }
+    }
+    
+    private void processGetRepresentationDescription(Object instance) throws MojoExecutionException {
+        
+        try {
+            Object defaultRep = createRequiredInstance(defaultRepresentationClass);
+            Object fullRep = createRequiredInstance(fullRepresentationClass);
             
             Method method = instance.getClass().getMethod("getRepresentationDescription", representationClass);
             
@@ -254,9 +331,6 @@ public class OpenAPIMojo extends AbstractMojo {
             tryExtractSchema(defaultResult, "DEFAULT");
             tryExtractSchema(fullResult, "FULL");
             
-        } catch (ClassNotFoundException e) {
-            throw new MojoExecutionException("Required OpenMRS representation classes not found in classpath. " +
-                                           "Ensure OpenMRS webservices.rest module is properly included in dependencies.", e);
         } catch (NoSuchMethodException e) {
             throw new MojoExecutionException("getRepresentationDescription method not found on resource class. " +
                                            "This OpenMRS version may not be supported.", e);
@@ -266,24 +340,20 @@ public class OpenAPIMojo extends AbstractMojo {
         }
     }
 
-    private Class<?> loadRequiredClass(String className) throws ClassNotFoundException {
-        return classLoader.loadClass(className);
-    }
-
     private Object createRequiredInstance(Class<?> clazz) throws InstantiationException, IllegalAccessException {
         try {
             return clazz.getDeclaredConstructor().newInstance();
-        } catch (NoSuchMethodException e) {
-            throw new InstantiationException("No default constructor found for " + clazz.getSimpleName());
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            throw new InstantiationException("Constructor failed: " + e.getCause().getMessage());
+        } catch (NoSuchMethodException | InvocationTargetException e) {
+            String message = e instanceof NoSuchMethodException ? 
+            "No default constructor found for " + clazz.getSimpleName() :
+            "Constructor failed: " + ((InvocationTargetException)e).getCause().getMessage();
+            throw new InstantiationException(message);
         }
     }
     
     private Object invokeRepresentationMethod(Method method, Object instance, Object representation, String type) {
         try {
             Object result = method.invoke(instance, representation);
-            log.info("{} result: {}", type, result);
             return result;
         } catch (java.lang.reflect.InvocationTargetException e) {
             log.warn("Failed to invoke getRepresentationDescription for {}: {}", type, e.getCause().getMessage());
@@ -302,20 +372,13 @@ public class OpenAPIMojo extends AbstractMojo {
             log.info("No {} representation to extract schema from", representationType);
             return false;
         }
-        
-        log.info("=== Extracting Schema from {} ===", representationType);
-        
+                
         boolean propertiesSuccess = tryExtractProperties(description, representationType);
         if (!propertiesSuccess) {
             log.warn("Could not extract properties for {}", representationType);
         }
         
-        boolean linksSuccess = tryExtractLinks(description, representationType);
-        if (!linksSuccess) {
-            log.warn("Could not extract links for {}", representationType);
-        }
-        
-        return propertiesSuccess || linksSuccess;
+        return propertiesSuccess;
         
     }
     
@@ -326,13 +389,7 @@ public class OpenAPIMojo extends AbstractMojo {
             
             if (properties instanceof Map) {
                 Map<?, ?> propertyMap = (Map<?, ?>) properties;
-                log.info("Found {} properties:", propertyMap.size());
-                
-                for (Map.Entry<?, ?> entry : propertyMap.entrySet()) {
-                    String propertyName = String.valueOf(entry.getKey());
-                    Object propertyValue = entry.getValue();
-                    log.info("  - {} -> {}", propertyName, propertyValue);
-                }
+                log.info("Found {} properties in {}", propertyMap.size(), type);
                 return true;
             } else {
                 log.warn("getProperties() returned non-Map type for {}: {}", type, 
@@ -340,57 +397,15 @@ public class OpenAPIMojo extends AbstractMojo {
                 return false;
             }
             
-        } catch (NoSuchMethodException e) {
-            log.warn("getProperties method not available for {} (OpenMRS version compatibility)", type);
+        } catch (NoSuchMethodException | IllegalAccessException | ClassCastException e) {
+            log.warn("Cannot extract properties for {}: {}", type, e.getMessage());
             return false;
-        } catch (IllegalAccessException e) {
-            log.warn("Cannot access getProperties method for {}", type);
-            return false;
-        } catch (java.lang.reflect.InvocationTargetException e) {
+        } catch (InvocationTargetException e) {
             log.warn("getProperties method failed for {}: {}", type, e.getCause().getMessage());
             if (log.isDebugEnabled()) {
-                log.debug("getProperties error details", e.getCause());
-            }
-            return false;
-        } catch (ClassCastException e) {
-            log.warn("getProperties returned unexpected type for {}: {}", type, e.getMessage());
-            return false;
+            log.debug("getProperties error details", e.getCause());
         }
-    }
-  
-    private boolean tryExtractLinks(Object description, String type) {
-        try {
-            Method getLinksMethod = description.getClass().getMethod("getLinks");
-            Object links = getLinksMethod.invoke(description);
-            
-            if (links instanceof Map) {
-                Map<?, ?> linkMap = (Map<?, ?>) links;
-                log.info("Found {} links:", linkMap.size());
-                
-                for (Map.Entry<?, ?> entry : linkMap.entrySet()) {
-                    log.info("  - LINK: {} -> {}", entry.getKey(), entry.getValue());
-                }
-                return true;
-            } else {
-                log.warn("getLinks() returned non-Map type for {}: {}", type,
-                        links != null ? links.getClass().getSimpleName() : "null");
-                return false;
-            }
-            
-        } catch (NoSuchMethodException e) {
-            log.warn("getLinks method not available for {} (OpenMRS version compatibility)", type);
-            return false;
-        } catch (IllegalAccessException e) {
-            log.warn("Cannot access getLinks method for {}", type);
-            return false;
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            log.warn("getLinks method failed for {}: {}", type, e.getCause().getMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("getLinks error details", e.getCause());
-            }
-            return false;        } catch (ClassCastException e) {
-            log.warn("getLinks returned unexpected type for {}: {}", type, e.getMessage());
-            return false;
+        return false;
         }
     }
 }
