@@ -33,9 +33,9 @@ import java.util.Set;
 import java.util.Map;
 
 @Mojo(name = "openapi", defaultPhase = LifecyclePhase.PROCESS_CLASSES, requiresDependencyResolution = ResolutionScope.RUNTIME)
-public class OpenAPIMojo extends AbstractMojo {
+public class OpenmrsOpenApiSpecMojo extends AbstractMojo {
     
-    private static final Logger log = LoggerFactory.getLogger(OpenAPIMojo.class);
+    private static final Logger log = LoggerFactory.getLogger(OpenmrsOpenApiSpecMojo.class);
     
     private URLClassLoader classLoader;
     
