@@ -469,6 +469,7 @@
 			</activation>
 
 			<modules>
+				<module>openapi-generator-maven-plugin</module>
 				<module>omod-common</module>
 				<module>omod-2.4</module>
 				<module>omod-2.5</module>
@@ -487,6 +488,7 @@
 			</activation>
 
 			<modules>
+				<module>openapi-generator-maven-plugin</module>
 				<module>omod-common</module>
 				<module>omod-2.4</module>
 				<module>omod</module>
@@ -531,6 +533,7 @@
 			<id>release</id>
 
 			<modules>
+				<module>openapi-generator-maven-plugin</module>
 				<module>omod-common</module>
 				<module>omod-2.4</module>
 				<module>omod-2.5</module>
