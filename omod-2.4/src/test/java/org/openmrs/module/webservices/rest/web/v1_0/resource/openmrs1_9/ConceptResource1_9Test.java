@@ -176,6 +176,9 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 
 		Concept concept = new Concept();
 		concept.setUuid(UUID);
+		
+		MessageSourceService originalMessageSourceService = ServiceContext.getInstance().getMessageSourceService();
+		
 		MessageSourceService messageSourceService = mock(MessageSourceService.class);
 		when(messageSourceService.getMessage("ui.i18n.Concept.name." + UUID)).thenReturn("Overridden by message source");
 		ServiceContext.getInstance().setMessageSourceService(messageSourceService);
@@ -188,6 +191,8 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 
 		ConceptResource1_9 resource = new ConceptResource1_9();
 		String result = resource.getDisplayString(concept);
+		
+		ServiceContext.getInstance().setMessageSourceService(originalMessageSourceService);
 
 		Assert.assertEquals("Overridden by message source", result);
 	}
