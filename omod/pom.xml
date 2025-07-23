@@ -82,13 +82,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
+				<executions>					
 					<execution>
 						<id>Expand resources</id>
 						<goals>
 							<goal>unpack-dependencies</goal>
 						</goals>
-						<phase>generate-resources</phase>
+						<phase>prepare-package</phase>
 						<configuration>
 							<includeGroupIds>${project.parent.groupId}</includeGroupIds>
 							<includeArtifactIds>${project.parent.artifactId}-omod-common</includeArtifactIds>
@@ -105,7 +105,7 @@
 				<configuration>
 					<header>${project.parent.basedir}/license-header.txt</header>
 				</configuration>
-			</plugin>
+			</plugin>			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
