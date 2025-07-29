@@ -38,7 +38,7 @@ public class OrderResource2_5 extends OrderResource2_2 {
         if (rep instanceof DefaultRepresentation) {
             parentRep.addProperty("attributes", Representation.DEFAULT);
         } else if (rep instanceof FullRepresentation) {
-            parentRep.addProperty("attributes", Representation.DEFAULT);
+            parentRep.addProperty("attributes", Representation.FULL);
         }
         return parentRep;
     }
@@ -48,13 +48,6 @@ public class OrderResource2_5 extends OrderResource2_2 {
         DelegatingResourceDescription delegatingResourceDescription = super.getCreatableProperties();
         delegatingResourceDescription.addProperty("attributes");
         return delegatingResourceDescription;
-    }
-
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addProperty("attributes");
-        return description;
     }
 
     @Override

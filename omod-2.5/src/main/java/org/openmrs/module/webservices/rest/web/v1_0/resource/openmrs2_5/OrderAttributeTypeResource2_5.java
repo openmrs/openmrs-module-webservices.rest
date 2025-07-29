@@ -10,93 +10,75 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
 import org.openmrs.OrderAttributeType;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeTypeCrudResource1_9;
 
 /**
  * Allows standard CRUD for the {@link OrderAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/orderattributetype", supportedClass = OrderAttributeType.class, supportedOpenmrsVersions = { "2.5.*", "2.6.*", "2.7.*" })
-public class OrderAttributeTypeResource2_5 extends MetadataDelegatingCrudResource<OrderAttributeType> {
+@Resource(name = RestConstants.VERSION_1 + "/orderattributetype", supportedClass = OrderAttributeType.class, supportedOpenmrsVersions = { "2.0.* - 9.*" })
+public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource1_9<OrderAttributeType> {
 
-    @Override
-    public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addProperty("uuid");
-        description.addProperty("display");
-        description.addProperty("name");
-        description.addProperty("description");
-        description.addProperty("datatypeClassname");
-        description.addProperty("minOccurs");
-        description.addProperty("maxOccurs");
-        description.addProperty("retired");
-        if (rep instanceof FullRepresentation) {
-            description.addProperty("auditInfo");
-        }
-        description.addSelfLink();
-        description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
-        return description;
+    public OrderAttributeTypeResource2_5() {
+
     }
 
-    @Override
-    public DelegatingResourceDescription getCreatableProperties() {
-        DelegatingResourceDescription description = new DelegatingResourceDescription();
-        description.addRequiredProperty("name");
-        description.addRequiredProperty("description");
-        description.addRequiredProperty("datatypeClassname");
-        description.addProperty("minOccurs");
-        description.addProperty("maxOccurs");
-        return description;
+    private OrderService service() {
+        return Context.getOrderService();
     }
 
-    @Override
-    public DelegatingResourceDescription getUpdatableProperties() {
-        return getCreatableProperties();
-    }
-
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(String)
+     */
     @Override
     public OrderAttributeType getByUniqueId(String uniqueId) {
-        return Context.getOrderService().getOrderAttributeTypeByUuid(uniqueId);
+        return service().getOrderAttributeTypeByUuid(uniqueId);
     }
 
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#doGetAll(RequestContext)
+     */
     @Override
     protected NeedsPaging<OrderAttributeType> doGetAll(RequestContext context) throws ResponseException {
-        return new NeedsPaging<>(Context.getOrderService().getAllOrderAttributeTypes(), context);
+        return new NeedsPaging<>(service().getAllOrderAttributeTypes(), context);
     }
 
-    @Override
-    public void delete(OrderAttributeType delegate, String reason, RequestContext context) throws ResponseException {
-        if (!delegate.isRetired()) {
-            Context.getOrderService().retireOrderAttributeType(delegate, reason);
-        }
-    }
-
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge(Object,
+     *      RequestContext)
+     */
     @Override
     public void purge(OrderAttributeType delegate, RequestContext context) throws ResponseException {
-        Context.getOrderService().purgeOrderAttributeType(delegate);
+        service().purgeOrderAttributeType(delegate);
     }
 
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
+     */
     @Override
     public OrderAttributeType newDelegate() {
         return new OrderAttributeType();
     }
 
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#save(Object)
+     */
     @Override
     public OrderAttributeType save(OrderAttributeType delegate) {
-        return Context.getOrderService().saveOrderAttributeType(delegate);
+        return service().saveOrderAttributeType(delegate);
     }
 
-    @PropertyGetter("display")
-    public String getDisplayString(OrderAttributeType delegate) {
-        return delegate.getName();
+    /**
+     * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
+     */
+    @Override
+    public String getResourceVersion() {
+        return "2.5";
     }
 }
