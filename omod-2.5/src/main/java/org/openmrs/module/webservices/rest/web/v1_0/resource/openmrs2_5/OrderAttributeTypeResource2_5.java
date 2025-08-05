@@ -22,7 +22,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
 /**
  * Allows standard CRUD for the {@link OrderAttributeType} domain object
  */
-@Resource(name = RestConstants.VERSION_1 + "/orderattributetype", supportedClass = OrderAttributeType.class, supportedOpenmrsVersions = { "2.5.* - 9.*" })
+@Resource(name = RestConstants.VERSION_1 + "/orderattributetype", supportedClass = OrderAttributeType.class, supportedOpenmrsVersions = {
+        "2.5.* - 9.*" })
 public class OrderAttributeTypeResource2_5 extends BaseAttributeTypeCrudResource1_9<OrderAttributeType> {
 
     public OrderAttributeTypeResource2_5() {
