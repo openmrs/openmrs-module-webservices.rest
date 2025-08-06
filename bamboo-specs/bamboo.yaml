@@ -51,7 +51,7 @@ Deploy to Maven:
       - |-
         #!/bin/bash -eu
         set -x
-        export IMAGE=${bamboo.build.docker.image.id}
+        export IMAGE="maven:3.9.9-amazoncorretto-8"
         docker pull ${IMAGE}
         docker run -v m2-repo:/root/.m2/repository -v ~/.m2/settings.xml:/.m2/settings.xml:ro -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn deploy -DskipTests --settings /.m2/settings.xml'
       description: Deploy
@@ -73,7 +73,7 @@ Release to Maven:
       - |-
         #!/bin/bash -eu
         set -x
-        export IMAGE=${bamboo.build.docker.image.id}
+        export IMAGE="maven:3.9.9-amazoncorretto-8"
         docker pull ${IMAGE}
         docker run \
           -v m2-repo:/root/.m2/repository \
