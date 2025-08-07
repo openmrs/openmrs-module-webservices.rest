@@ -89,10 +89,26 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldCreateAPatient() throws Exception {
 		long originalCount = service.getAllPatients().size();
-		String json = "{ \"person\": \"ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562\", "
-		        + "\"identifiers\": [{ \"identifier\":\"abc123ez\", "
-		        + "\"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", "
-		        + "\"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", " + "\"preferred\": true }] }";
+		String json = "{\n" +
+				"  \"person\": {\n" +
+				"    \"uuid\": \"xa1b19c2-3ed6-4z63-b8c0-f762dc8d7562\",\n" +
+				"    \"gender\": \"M\",\n" +
+				"    \"names\": [\n" +
+				"      {\n" +
+				"        \"givenName\": \"John\",\n" +
+				"        \"familyName\": \"Doe\"\n" +
+				"      }\n" +
+				"    ]\n" +
+				"  },\n" +
+				"  \"identifiers\": [\n" +
+				"    {\n" +
+				"      \"identifier\": \"abc123ez\",\n" +
+				"      \"identifierType\": \"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\",\n" +
+				"      \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\",\n" +
+				"      \"preferred\": true\n" +
+				"    }\n" +
+				"  ]\n" +
+				"}\n";
 		
 		SimpleObject newPatient = deserialize(handle(newPostRequest(getURI(), json)));
 		
@@ -198,19 +214,37 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		int restCount = Util.getResultsSize(results);
 		assertEquals(fullCount, firstCount + restCount);
 	}
-	
+
 	@Test
 	public void shouldMarkTheFirstIdentifierAsPreferredIfNoneMarked() throws Exception {
-		String uuid = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+		String uuid = "ba1b19x2-3ed6-4f63-n8c0-x762dc8a7562";
 		String preferredIdentifier = "1234";
-		String json = "{ \"person\": \""
-		        + uuid
-		        + "\", \"identifiers\": ["
-		        + "{ \"identifier\":\""
-		        + preferredIdentifier
-		        + "\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\" }, "
-		        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"} ] }";
-		
+		String json =
+				"{"
+						+ "\"person\": {"
+						+ "\"uuid\": \"" + uuid + "\","
+						+ "\"gender\": \"M\","
+						+ "\"names\": ["
+						+ "{"
+						+ "\"givenName\": \"John\","
+						+ "\"familyName\": \"Doe\","
+						+ "\"preferred\": true"
+						+ "}"
+						+ "]"
+						+ "},"
+						+ "\"identifiers\": ["
+						+ "{"
+						+ "\"identifier\": \"" + preferredIdentifier + "\","
+						+ "\"identifierType\": \"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\","
+						+ "\"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\""
+						+ "},"
+						+ "{"
+						+ "\"identifier\": \"12345678\","
+						+ "\"identifierType\": \"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\","
+						+ "\"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\""
+						+ "}"
+						+ "]"
+						+ "}";
 		deserialize(handle(newPostRequest(getURI(), json)));
 		PatientIdentifier prefIdentifier = service.getPatientByUuid(uuid).getPatientIdentifier();
 		assertTrue(prefIdentifier.isPreferred());
@@ -219,16 +253,36 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 	
 	@Test
 	public void shouldRespectPreferredIdentifier() throws Exception {
-		String uuid = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+		String uuid = "bx1b1ac2-3zd6-4fd3-b8c0-f762dc8d7562";
 		String preferredIdentifier = "12345678";
-		String json = "{ \"person\": \""
-		        + uuid
-		        + "\", \"identifiers\": ["
-		        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\"}, "
-		        + "{\"identifier\":\""
-		        + preferredIdentifier
-		        + "\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true} ] }";
-		
+		String json =
+				"{"
+						+ "\"person\": {"
+						+ "\"uuid\": \"" + uuid + "\","
+						+ "\"gender\": \"M\","
+						+ "\"names\": ["
+						+ "{"
+						+ "\"givenName\": \"John\","
+						+ "\"familyName\": \"Doe\","
+						+ "\"preferred\": true"
+						+ "}"
+						+ "]"
+						+ "},"
+						+ "\"identifiers\": ["
+						+ "{"
+						+ "\"identifier\": \"1234\","
+						+ "\"identifierType\": \"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\","
+						+ "\"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\""
+						+ "},"
+						+ "{"
+						+ "\"identifier\": \"" + preferredIdentifier + "\","
+						+ "\"identifierType\": \"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\","
+						+ "\"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\","
+						+ "\"preferred\": true"
+						+ "}"
+						+ "]"
+						+ "}";
+
 		deserialize(handle(newPostRequest(getURI(), json)));
 		PatientIdentifier prefIdentifier = service.getPatientByUuid(uuid).getPatientIdentifier();
 		assertTrue(prefIdentifier.isPreferred());

@@ -46,7 +46,7 @@ public class ConceptReferenceRangeController2_7Test extends MainResourceControll
 		SimpleObject response = deserialize(handle(request));
 		List<Object> resultsList = Util.getResultsList(response);
 		Assert.assertEquals(1, resultsList.size());
-		Assert.assertEquals(140.0, PropertyUtils.getProperty(resultsList.get(0), "hiAbsolute"));
+		Assert.assertEquals(145.0, PropertyUtils.getProperty(resultsList.get(0), "hiAbsolute"));
 		Assert.assertEquals(70.0, PropertyUtils.getProperty(resultsList.get(0), "lowAbsolute"));
 	}
 

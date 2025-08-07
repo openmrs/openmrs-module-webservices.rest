@@ -17,6 +17,7 @@ import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Wrapping the required task information between related resource and SchedulerService
@@ -106,6 +107,10 @@ public class TaskServiceWrapper {
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
 		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
-		task.execute();
-	}
+        try {
+            task.execute();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
