@@ -31,9 +31,18 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<modules>
+		<module>omod-common</module>
+		<module>omod</module>
+		<module>omod-2.4</module>
+		<module>omod-2.5</module>
+		<module>omod-2.7</module>
+		<module>integration-tests</module>
+	</modules>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>2.4.6-SNAPSHOT</openmrs.version>
+		<openmrs.version>2.7.4</openmrs.version>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
@@ -460,23 +469,23 @@
 			</modules>
 		</profile>
 		<!-- if you update this default profile, be sure to update the "release" profile to make sure it stays consistent -->
-		<profile>
-			<id>java-8</id>
-			<activation>
-				<property>
-					<name>!noJava8</name>
-				</property>
-			</activation>
+<!--		<profile>-->
+<!--			<id>java-8</id>-->
+<!--			<activation>-->
+<!--				<property>-->
+<!--					<name>!noJava8</name>-->
+<!--				</property>-->
+<!--			</activation>-->
 
-			<modules>
-				<module>omod-common</module>
-				<module>omod-2.4</module>
-				<module>omod-2.5</module>
-				<module>omod-2.7</module>
-				<module>omod</module>
-				<module>integration-tests</module>
-			</modules>
-		</profile>
+<!--			<modules>-->
+<!--				<module>omod-common</module>-->
+<!--				<module>omod-2.4</module>-->
+<!--				<module>omod-2.5</module>-->
+<!--				<module>omod-2.7</module>-->
+<!--				<module>omod</module>-->
+<!--				<module>integration-tests</module>-->
+<!--			</modules>-->
+<!--		</profile>-->
 
 		<profile>
 			<id>no-java-8</id>

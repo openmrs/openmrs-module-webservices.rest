@@ -37,15 +37,15 @@ public class ModuleActionController1_8Test extends MainResourceControllerTest {
 	@Autowired
 	RestService restService;
 	
-	private Module atlasModule = new Module("Atlas Module", "atlas", "name", "author", "description", "version");
+	private Module atlasModule = new Module("Atlas Module", "atlas", "name", "author", "description", "version", "");
 	
 	private Module conceptLabModule = new Module("Open Concept Lab Module", "openconceptlab", "name", "author",
-	        "description", "version");
+	        "description", "version", "");
 	
 	private Module webservicesRestModule = new Module("Rest module", RestConstants.MODULE_ID,
-	        "org.openmrs.module.webservices.rest", "openrms", "rest", "2.17");
+	        "org.openmrs.module.webservices.rest", "openrms", "rest", "2.17", "");
 	
-	private Module mockModuleToLoad = new Module("MockModule", "mockModule", "name", "author", "description", "version");
+	private Module mockModuleToLoad = new Module("MockModule", "mockModule", "name", "author", "description", "version", "");
 	
 	MockModuleFactoryWrapper mockModuleFactory = new MockModuleFactoryWrapper();
 	

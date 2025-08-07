@@ -44,6 +44,7 @@ public class PasswordResetController2_2 extends BaseRestController {
 		String usernameOrEmail = body.get("usernameOrEmail");
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
+			Context.addProxyPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS);
 			User user = userService.getUserByUsernameOrEmail(usernameOrEmail);
 			if (user != null) {
 				userService.setUserActivationKey(user);
@@ -51,6 +52,7 @@ public class PasswordResetController2_2 extends BaseRestController {
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
+			Context.removeProxyPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS);
 		}
 	}
 	
