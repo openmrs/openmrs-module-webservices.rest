@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openmrs.module</groupId>
         <artifactId>webservices.rest</artifactId>
-        <version>2.50.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>webservices.rest-omod-2.5</artifactId>
@@ -13,7 +13,6 @@
     <description>OpenMRS module project for Rest Web Services</description>
 
     <properties>
-        <openmrs.version.2.5.0>2.5.0</openmrs.version.2.5.0>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
@@ -50,7 +49,6 @@
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
-            <version>${openmrs.version.2.5.0}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
@@ -58,13 +56,11 @@
             <artifactId>openmrs-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version><!--$NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$ -->
             <exclusions>
             	<exclusion>
             		<groupId>javax.servlet</groupId>
@@ -78,7 +74,6 @@
             <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$-->
         </dependency>
 
         <dependency>
@@ -86,7 +81,6 @@
             <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
-            <version>${openmrs.version.2.5.0}</version> <!-- $NO-MVN-MAN-VER$ -->
         </dependency>
 
         <dependency>

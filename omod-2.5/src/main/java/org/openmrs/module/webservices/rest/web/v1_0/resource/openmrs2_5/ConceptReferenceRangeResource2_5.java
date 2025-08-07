@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 /**
  * {@link Resource} for conceptreferencerange on platform versions before 2.7
  */
-@Resource(name = RestConstants.VERSION_1 + "/conceptreferencerange", supportedClass = ConceptNumeric.class, supportedOpenmrsVersions = "2.5.* - 2.6.*")
+@Resource(name = RestConstants.VERSION_1 + "/conceptreferencerange", supportedClass = ConceptNumeric.class, supportedOpenmrsVersions = "2.5.* - 9.*", order = 1)
 public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<ConceptNumeric> {
 
 	@Override

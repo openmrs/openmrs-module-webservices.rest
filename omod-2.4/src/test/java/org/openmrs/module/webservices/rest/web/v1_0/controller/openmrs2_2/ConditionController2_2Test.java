@@ -195,9 +195,11 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
 		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
 		
-		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.NON_CODED_CONDITION_UUID, json));
-		
-		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.NON_CODED_CONDITION_UUID, json)));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original condition's UUID.
+		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
 		
 		Assert.assertNotNull(updatedCondition);
 		Assert.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
@@ -236,9 +238,11 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		        + DATE_FORMAT.format(newOnsetDate) + "\",\"endDate\":\"" + DATE_FORMAT.format(newEndDate)
 		        + "\",\"additionalDetail\":\"" + newAdditionalDetail + "\"}";
 		
-		handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.CODED_CONDITION_UUID, json));
-		
-		Condition updatedCondition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants2_2.CODED_CONDITION_UUID, json)));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original condition's UUID.
+		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
 		
 		Assert.assertNotNull(updatedCondition);
 		Assert.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
@@ -281,9 +285,12 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + voidedUuid);
 		req.setContent(json.getBytes());
-		handle(req);
-		
-		condition = conditionService.getConditionByUuid(voidedUuid);
+		SimpleObject response = deserialize(handle(req));
+
+		// Updating a Condition creates a new entity instead of modifying the existing one,
+		// so the UUID returned in the response will differ from the original voided condition's UUID.
+
+		condition = conditionService.getConditionByUuid(response.get("uuid"));
 		Assert.assertEquals(false, condition.getVoided());
 	}
 	
@@ -315,7 +322,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		request.addParameter("includeInactive", "false");
 		SimpleObject result = deserialize(handle(request));
 		List<Condition> conditions = result.get("results");
-		Assert.assertEquals(2, conditions.size());
+		Assert.assertEquals(3, conditions.size());
 	}
 
 	@Test

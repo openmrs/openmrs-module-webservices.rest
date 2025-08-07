@@ -160,7 +160,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	public void shouldOverwriteAListOfChildLocations() throws Exception {
 		
 		Location location = service.getLocationByUuid(getUuid());
-		location.addChildLocation(service.getLocation(2));
+		location.addChildLocation(service.getLocation(4));
 		service.saveLocation(location);
 		
 		String json = "{ \"childLocations\": [] }";

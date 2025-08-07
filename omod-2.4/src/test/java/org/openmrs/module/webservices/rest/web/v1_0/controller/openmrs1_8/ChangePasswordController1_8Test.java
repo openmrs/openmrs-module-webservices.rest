@@ -72,10 +72,14 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		
 		String oldPassword = "SomeOtherPassword123";
 		String newPassword = "newPassword9";
-		
-		MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\""
-		        + "," + "\"oldPassword\":\"" + oldPassword + "\"}"));
-		assertEquals(200, response.getStatus());
+		try {
+			Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\""
+					+ "," + "\"oldPassword\":\"" + oldPassword + "\"}"));
+			assertEquals(200, response.getStatus());
+		} finally {
+			Context.getUserContext().removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		}
 	}
 	
 	@Test
@@ -111,8 +115,13 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		User authenticatedUser = setUpUser("daemon");
 		
 		Role role = new Role("Privileged Role");
-
-		role.addPrivilege(service.getPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
+		try {
+			Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
+			role.addPrivilege(service.getPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
+			role.addPrivilege(service.getPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES));
+		} finally {
+			Context.getUserContext().removeProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
+		}
 		authenticatedUser.addRole(role);
 
 		String newPassword = "newTest9453!#$";
@@ -147,7 +156,7 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		handle(newPostRequest(PASSWORD_URI + "/" + "someRandomUserUuid", "{\"newPassword\":\"" + newPassword + "\"}"));
 	}
 	
-	private User setUpUser(String userName) throws Exception {
+	private User setUpUser(String userName) {
 		User user = service.getUserByUsername(userName);
 		final String newPassword = "SomeOtherPassword123";
 		

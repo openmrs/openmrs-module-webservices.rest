@@ -44,7 +44,7 @@ public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	
 	@Override
 	public Module parseModuleFile(MultipartFile file) throws IOException {
-		return new Module("ParsedModule", "atlas", "name", "author", "description", "version");
+		return new Module("ParsedModule", "atlas", "name", "author", "description", "version", "");
 	}
 	
 	@Override
@@ -91,7 +91,7 @@ public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	
 	@Override
 	public List<Module> stopModuleAndGetDependent(Module module) {
-		return Collections.singletonList(new Module("dependent", "atlas", "name", "author", "description", "version"));
+		return Collections.singletonList(new Module("dependent", "atlas", "name", "author", "description", "version", ""));
 	}
 	
 	@Override

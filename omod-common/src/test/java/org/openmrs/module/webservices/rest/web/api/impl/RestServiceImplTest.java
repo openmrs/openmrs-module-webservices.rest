@@ -16,6 +16,7 @@ import org.mockingbird.test.Animal;
 import org.mockingbird.test.Cat;
 import org.mockingbird.test.HibernateProxyAnimal;
 import org.mockingbird.test.MockingBird;
+import org.mockingbird.test.rest.resource.AnimalClassResourceLegacy;
 import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.mockingbird.test.rest.resource.AnimalResource_1_11;
 import org.mockingbird.test.rest.resource.AnimalResource_1_9;
@@ -26,6 +27,7 @@ import org.mockingbird.test.rest.resource.CountryResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAndOrderAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9;
+import org.mockingbird.test.rest.resource.LegacyAnimalResource;
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -182,13 +184,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	@Test
 	public void getResourceByName_shouldReturnResourceForGivenName() throws Exception {
 		
-		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		List<Class<? extends Resource>> resources = new ArrayList<>();
 		resources.add(AnimalResource_1_9.class);
 		resources.add(AnimalResource_1_11.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -205,8 +206,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(UnannotatedAnimalResource.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -217,6 +217,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	 * @throws NoSuchFieldException
 	 * @throws IllegalAccessException
 	 */
+	@Deprecated
 	private void setCurrentOpenmrsVersion(final String currentOpenmrsVersion) throws NoSuchFieldException,
 	        IllegalAccessException {
 		
@@ -263,13 +264,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	@Test
 	public void getResourceByName_shouldFailIfResourceForGivenNameDoesNotSupportTheCurrentOpenmrsVersion() throws Exception {
 		
-		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
-		resources.add(AnimalResource_1_9.class);
-		resources.add(AnimalResource_1_11.class);
-		
+		List<Class<? extends Resource>> resources = new ArrayList<>();
+		resources.add(LegacyAnimalResource.class);
+
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.12.0");
-		
+
 		expectedException.expect(UnknownResourceException.class);
 		expectedException.expectMessage("Unknown resource: v1/animal");
 		restService.getResourceByName("v1/animal");
@@ -288,8 +287,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(AnimalClassResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceByName("v1/animal/class"), instanceOf(AnimalClassResource_1_9.class));
 	}
 	
@@ -304,11 +302,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
 		resources.add(AnimalResource_1_9.class);
 		resources.add(AnimalResource_1_11.class);
-		resources.add(AnimalClassResource_1_9.class);
+		resources.add(AnimalClassResourceLegacy.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.12.0");
-		
+
 		expectedException.expect(UnknownResourceException.class);
 		expectedException.expectMessage("Unknown resource: v1/animal/class");
 		restService.getResourceByName("v1/animal/class");
@@ -326,8 +323,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAndOrderAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(IllegalStateException.class);
 		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
 		restService.getResourceByName("v1/animal");
@@ -347,8 +343,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceByName("v1/animal"), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -364,8 +359,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(AnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceBySupportedClass(Animal.class), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -378,12 +372,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
-		resources.add(AnimalResource_1_9.class);
-		resources.add(AnimalResource_1_11.class);
-		
+		resources.add(LegacyAnimalResource.class);
+
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.12.0");
-		
+
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage("Unknown resource: class org.mockingbird.test.Animal");
 		restService.getResourceBySupportedClass(Animal.class);
@@ -401,8 +393,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(AnimalResource_1_11.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage("Unknown resource: class java.lang.String");
 		restService.getResourceBySupportedClass(String.class);
@@ -422,8 +413,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(AnimalResource_1_11.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceBySupportedClass(HibernateProxyAnimal.class), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -441,8 +431,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(AnimalResource_1_11.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceBySupportedClass(Cat.class), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -462,8 +451,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(BirdResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceBySupportedClass(MockingBird.class), instanceOf(BirdResource_1_9.class));
 	}
 	
@@ -497,8 +485,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAndOrderAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(IllegalStateException.class);
 		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
 		restService.getResourceBySupportedClass(Animal.class);
@@ -518,8 +505,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceBySupportedClass(Animal.class), instanceOf(AnimalResource_1_9.class));
 	}
 	
@@ -531,13 +517,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandler_shouldReturnSearchHandlerMatchingIdSetInGivenParameters() throws Exception {
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "Fuzzy search").withRequiredParameters("q").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler));
 		
-		setCurrentOpenmrsVersion("1.8.10");
-		
+
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		parameters.put("s", new String[] { "conceptByMapping" });
 		assertThat(restService.getSearchHandler("v1/concept", parameters), is(searchHandler));
@@ -556,8 +541,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler));
 		
-		setCurrentOpenmrsVersion("1.8.10");
-		
+
 		String searchHandlerId = "conceptByMapping";
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		parameters.put("s", new String[] { searchHandlerId });
@@ -576,17 +560,16 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandler_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
-		
+
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -615,7 +598,6 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        new SearchQuery.Builder("description").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig);
 		
-		setCurrentOpenmrsVersion("1.8.10");
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
@@ -636,16 +618,15 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
@@ -677,7 +658,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
@@ -699,16 +680,16 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
@@ -726,16 +707,16 @@ public class RestServiceImplTest extends BaseContextMockTest {
 			throws Exception {
 
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByName", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByName", "v1/concept", "2.7.*", new SearchQuery.Builder(
 				"description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 				"description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 
-		setCurrentOpenmrsVersion("1.8.10");
+		
 
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 
@@ -769,7 +750,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
@@ -793,7 +774,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
@@ -817,8 +798,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
-		setCurrentOpenmrsVersion("1.12.0");
-		
+
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -847,8 +827,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		    Arrays.<DelegatingSubclassHandler> asList(catSubclassHandler_1_9, catSubclassHandler_1_11));
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceHandlers().size(), is(3));
 		List<DelegatingResourceHandler<?>> handlers = restService.getResourceHandlers();
 		assertThat(handlers, hasItem(catSubclassHandler_1_9));
@@ -873,8 +852,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		assertThat(restService.getResourceHandlers().size(), is(1));
 		assertThat(restService.getResourceHandlers().get(0), instanceOf(AnimalResource_1_9.class));
 	}
@@ -908,8 +886,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAndOrderAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(IllegalStateException.class);
 		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
 		restService.getResourceHandlers();
@@ -942,7 +919,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler4.getSearchConfig()).thenReturn(searchConfig4);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(
 		    asList(searchHandler1, searchHandler2, searchHandler3, searchHandler4));
@@ -976,26 +953,26 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandlers_shouldReturnSearchHandlersForGivenResourceName() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
 		SearchHandler searchHandler3 = mock(SearchHandler.class);
-		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "1.8.*", new SearchQuery.Builder("description")
+		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "2.7.*", new SearchQuery.Builder("description")
 		        .withRequiredParameters("patient").build());
 		when(searchHandler3.getSearchConfig()).thenReturn(searchConfig3);
 		
 		SearchHandler searchHandler4 = mock(SearchHandler.class);
-		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "2.9.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler4.getSearchConfig()).thenReturn(searchConfig4);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(
 		    asList(searchHandler1, searchHandler2, searchHandler3, searchHandler4));
@@ -1020,7 +997,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
@@ -1041,8 +1018,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
-		setCurrentOpenmrsVersion("1.12.0");
-		
+
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
 		RestUtil.disableContext(); //to avoid a Context call
@@ -1068,16 +1044,16 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandlers_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
@@ -1102,13 +1078,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "1.9.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "Search for concepts").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		RestUtil.disableContext(); //to avoid a Context call
 		
 		restService.initialize();
@@ -1134,8 +1109,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
 		
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		RestUtil.disableContext(); //to avoid a Context call
 		
 		restService.initialize();
@@ -1188,8 +1162,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(InstantiateExceptionAnimalResource_1_9.class);
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(APIException.class);
 		expectedException.expectMessage("Failed to instantiate " + InstantiateExceptionAnimalResource_1_9.class.toString());
 		restService.initialize();
@@ -1207,8 +1180,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		resources.add(DuplicateNameAndOrderAnimalResource_1_9.class);
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
-		setCurrentOpenmrsVersion("1.9.10");
-		
+
 		expectedException.expect(IllegalStateException.class);
 		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
 		restService.initialize();
@@ -1222,16 +1194,16 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void initialize_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "1.8.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
-		setCurrentOpenmrsVersion("1.8.10");
+		
 		
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1, searchHandler2));
 		
