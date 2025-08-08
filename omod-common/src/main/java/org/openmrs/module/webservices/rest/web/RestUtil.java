@@ -64,7 +64,8 @@ public class RestUtil implements GlobalPropertyListener {
 	private static boolean contextEnabled = true;
 
 	/**
-	 * @param propertyName the global property to retriee
+	 * Returns the global property value with the given name
+	 * @param propertyName the global property to retrieve
 	 * @return the global property value with the given name
 	 */
 	private static String getGlobalProperty(String propertyName, String defaultValue) {
