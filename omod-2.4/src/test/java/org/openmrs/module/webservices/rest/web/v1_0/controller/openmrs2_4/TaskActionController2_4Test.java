@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -53,7 +52,6 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 		return TASK_SERVICE_WRAPPER.getTaskByUuid(uuid);
 	}
 	
-	@Ignore("Skipping this test temporarily")
 	@Test
 	public void shouldScheduleTask() throws Exception {
 		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(EQUIPMENT_MAINTENANCE_UUID))));
@@ -71,7 +69,6 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID)));
 	}
 	
-	@Ignore("Skipping this test temporarily")
 	@Test
 	public void shouldShutdownTask() throws Exception {
 		schedulerService.scheduleTask(getTaskByUuid(NURSE_PRECEPTING_UUID));
@@ -81,7 +78,6 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
 	}
 	
-	@Ignore("Skipping this test temporarily")
 	@Test
 	public void shutdownTask_shouldDoNothingIfTaskAlreadyShutdown() throws Exception {
 		assertThat(schedulerService.getScheduledTasks(), not(hasItem(getTaskByUuid(NURSE_PRECEPTING_UUID))));
@@ -115,7 +111,6 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 		assertThat(schedulerService.getScheduledTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
 	}
 	
-	@Ignore("Skipping this test temporarily")
 	@Test
 	public void shouldDeleteTask() throws Exception {
 		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(NURSING_EDUCATION_UUID)));
