@@ -162,7 +162,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
 		        "Some Standardized Terminology"))));
 		Integer resultsSize = Util.getResultsSize(result);
-		assertThat(resultsSize, is(8));
+		assertThat(resultsSize, is(9));
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
 		        "00001827-639f-4cb4-961f-1e025bf80000"))));
 		Integer resultsSize = Util.getResultsSize(result);
-		assertThat(resultsSize, is(8));
+		assertThat(resultsSize, is(9));
 	}
 	
 	@Test

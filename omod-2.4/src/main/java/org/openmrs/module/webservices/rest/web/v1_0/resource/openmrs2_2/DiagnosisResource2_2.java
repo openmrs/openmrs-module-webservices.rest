@@ -46,7 +46,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
-        "2.2.* - 2.4.*" })
+        "2.2.*-9.x" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**

@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import liquibase.pro.packaged.I;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;

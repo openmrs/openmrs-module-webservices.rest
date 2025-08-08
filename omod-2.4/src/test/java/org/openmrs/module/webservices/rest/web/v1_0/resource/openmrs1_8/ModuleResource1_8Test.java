@@ -19,7 +19,7 @@ public class ModuleResource1_8Test extends BaseDelegatingResourceTest<ModuleReso
 	
 	@Override
 	public Module newObject() {
-		return new Module("Atlas Module", "atlas", "name", "author", "description", "version");
+		return new Module("Atlas Module", "atlas", "name", "author", "description", "version", "");
 	}
 	
 	@Override

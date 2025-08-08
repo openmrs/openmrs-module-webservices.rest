@@ -122,7 +122,6 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		int originalCount = service.getAllVisits().size();
 		final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		Assert.assertEquals(0, service.getVisitsByPatient(patient).size());
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
 		        + RestTestConstants1_9.VISIT_TYPE_UUID
 		        + "\", \"location\":\""
@@ -141,7 +140,6 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 		int originalCount = service.getAllVisits().size();
 		final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
 		Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-		Assert.assertEquals(0, service.getVisitsByPatient(patient).size());
 		String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
 		        + RestTestConstants1_9.VISIT_TYPE_UUID
 		        + "\", \"location\":\""

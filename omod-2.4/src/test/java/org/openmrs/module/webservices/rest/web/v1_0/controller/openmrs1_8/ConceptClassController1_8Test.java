@@ -157,7 +157,7 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return Context.getConceptService().getAllConceptClasses().size();
+		return Context.getConceptService().getAllConceptClasses(false).size();
 	}
 	
 }
