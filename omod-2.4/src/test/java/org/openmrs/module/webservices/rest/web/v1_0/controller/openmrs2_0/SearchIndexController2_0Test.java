@@ -10,15 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.openmrs.api.context.Context;
 import org.openmrs.api.db.ContextDAO;
 import org.openmrs.test.BaseContextMockTest;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 public class SearchIndexController2_0Test extends BaseContextMockTest {
 
