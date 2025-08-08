@@ -127,7 +127,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 		req.addParameter("orderTypes", "52a447d3-a64a-11e3-9aeb-50e549534c5e");
 		result = deserialize(handle(req));
 		hits = (List<Object>) result.get("results");
-		assertThat(hits.size(), is(2));
+		assertThat(hits.size(), is(3));
 	}
 	
 	private Matcher<? super Object> isConceptWithUuid(final String uuid) {

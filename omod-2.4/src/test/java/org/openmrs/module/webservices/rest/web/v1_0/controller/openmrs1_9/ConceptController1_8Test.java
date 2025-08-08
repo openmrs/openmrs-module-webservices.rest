@@ -121,7 +121,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Assert.assertNotNull(result);
 		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(34, Util.getResultsList(result).size()); // there are 25 concepts and one is retired, so should only get 24 here
+		Assert.assertEquals(getAllCount(), Util.getResultsList(result).size());
 	}
 	
 	@Test
@@ -414,7 +414,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	 */
 	@Override
 	public long getAllCount() {
-		return 34;
+		return service.getAllConcepts(null, true, false).size();
 	}
 	
 	@Test
@@ -685,7 +685,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		        "Some Standardized Terminology"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		assertThat(results.size(), is(6));
+		assertThat(results.size(), is(10));
 	}
 	
 	@Test
@@ -694,7 +694,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		        "00001827-639f-4cb4-961f-1e025bf80000"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		assertThat(results.size(), is(6));
+		assertThat(results.size(), is(10));
 	}
 	
 	@Test

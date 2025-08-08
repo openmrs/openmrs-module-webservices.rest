@@ -19,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1.ObsResou
 /**
  * Resource for `obs`, supporting the new referenceRange property added in openmrs-core 2.7
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.7.* - 9.*" })
+@Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.7.* - 9.*" }, order = 1)
 public class ObsResource2_7 extends ObsResource2_1 {
 	
 	@Override
