@@ -12,9 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.TaskActionResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.TaskDefinitionResource2_4;
 import org.openmrs.scheduler.SchedulerService;
 import org.openmrs.scheduler.TaskDefinition;
@@ -43,9 +45,14 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 	public void setUp() throws Exception {
 		executeDataSet(TASK_SCHEDULER_XML);
 		this.schedulerService = Context.getSchedulerService();
+		
 		TaskDefinitionResource2_4 taskResource = (TaskDefinitionResource2_4) restService
 				.getResourceBySupportedClass(TaskDefinition.class);
 		taskResource.setTaskServiceWrapper(TASK_SERVICE_WRAPPER);
+		
+		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
+				.getResourceBySupportedClass(TaskAction.class);
+		taskActionResource.setTaskServiceWrapper(TASK_SERVICE_WRAPPER);
 	}
 
 	private TaskDefinition getTaskByUuid(String uuid) {
