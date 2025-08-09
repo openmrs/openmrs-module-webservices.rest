@@ -9,28 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -55,7 +33,26 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.context.request.WebRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Convenient helper methods for the Rest Web Services module.
@@ -65,17 +62,30 @@ public class RestUtil implements GlobalPropertyListener {
 	private static Log log = LogFactory.getLog(RestUtil.class);
 	
 	private static boolean contextEnabled = true;
+
+	/**
+	 * Returns the global property value with the given name
+	 * @param propertyName the global property to retrieve
+	 * @return the global property value with the given name
+	 */
+	private static String getGlobalProperty(String propertyName, String defaultValue) {
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			return Context.getAdministrationService().getGlobalProperty(propertyName, defaultValue);
+		}
+		finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+		}
+	}
 	
 	/**
 	 * Looks up the admin defined global property for the system limit
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getDefaultLimit() {
-		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME);
+		String limit = getGlobalProperty(RestConstants.MAX_RESULTS_DEFAULT_GLOBAL_PROPERTY_NAME, null);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
@@ -94,12 +104,10 @@ public class RestUtil implements GlobalPropertyListener {
 	 * Looks up the admin defined global property for the absolute limit to results of REST calls
 	 * 
 	 * @return Integer limit
-	 * @see #getLimit(WebRequest)
 	 * @see RestConstants#MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME
 	 */
 	public static Integer getAbsoluteLimit() {
-		String limit = Context.getAdministrationService()
-		        .getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME);
+		String limit = getGlobalProperty(RestConstants.MAX_RESULTS_ABSOLUTE_GLOBAL_PROPERTY_NAME, null);
 		if (StringUtils.isNotEmpty(limit)) {
 			try {
 				return Integer.parseInt(limit);
@@ -215,8 +223,7 @@ public class RestUtil implements GlobalPropertyListener {
 		String allowedIpsProperty = "";
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-			allowedIpsProperty = Context.getAdministrationService()
-					.getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, allowedIpsProperty);
+			allowedIpsProperty = getGlobalProperty(RestConstants.ALLOWED_IPS_GLOBAL_PROPERTY_NAME, allowedIpsProperty);
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
@@ -611,8 +618,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 */
 	public static void setUriPrefix() {
 		if (contextEnabled) {
-			RestConstants.URI_PREFIX = Context.getAdministrationService()
-			        .getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME);
+			RestConstants.URI_PREFIX = getGlobalProperty(RestConstants.URI_PREFIX_GLOBAL_PROPERTY_NAME, null);
 		}
 		
 		if (StringUtils.isBlank(RestConstants.URI_PREFIX)) {
@@ -844,8 +850,7 @@ public class RestUtil implements GlobalPropertyListener {
 			String stackTraceDetailsEnabledGp = null;
 			try {
 				Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-				stackTraceDetailsEnabledGp = Context.getAdministrationService()
-						.getGlobalPropertyValue(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false");
+				stackTraceDetailsEnabledGp = getGlobalProperty(RestConstants.ENABLE_STACK_TRACE_DETAILS_GLOBAL_PROPERTY_NAME, "false");
 			}
 			finally {
 				Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);

@@ -15,10 +15,12 @@ import static org.hamcrest.core.IsNot.not;
 
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.webservices.helper.TaskAction;
+import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -57,6 +59,17 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		TaskDefinitionResource1_8 taskResource = (TaskDefinitionResource1_8) restService
 		        .getResourceBySupportedClass(TaskDefinition.class);
 		taskResource.setTaskServiceWrapper(mockTaskServiceWrapper);
+	}
+	
+	@After
+	public void cleanup() {
+		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
+		        .getResourceBySupportedClass(TaskAction.class);
+		taskActionResource.setTaskServiceWrapper(new TaskServiceWrapper());
+		
+		TaskDefinitionResource1_8 taskDefResource = (TaskDefinitionResource1_8) restService
+		        .getResourceBySupportedClass(TaskDefinition.class);
+		taskDefResource.setTaskServiceWrapper(new TaskServiceWrapper());
 	}
 	
 	@Test
