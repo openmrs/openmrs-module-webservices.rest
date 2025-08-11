@@ -15,8 +15,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -107,11 +105,7 @@ public class OrderResource2_5 extends OrderResource2_2 {
     @Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
         DelegatingResourceDescription parentRep = super.getRepresentationDescription(rep);
-        if (rep instanceof DefaultRepresentation) {
-            parentRep.addProperty("attributes", Representation.DEFAULT);
-        } else if (rep instanceof FullRepresentation) {
-            parentRep.addProperty("attributes", Representation.FULL);
-        }
+        parentRep.addProperty("attributes", Representation.REF);
         return parentRep;
     }
 
