@@ -20,10 +20,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "2.5.* - 9.*" })
 public class OrderResource2_5 extends OrderResource2_2 {
@@ -35,8 +32,16 @@ public class OrderResource2_5 extends OrderResource2_2 {
      * @return ActiveAttributes
      */
     @PropertyGetter("attributes")
-    public List<OrderAttribute> getAttributes(Order delegate) {
-        return (List<OrderAttribute>) delegate.getActiveAttributes();
+    public List<Map<String, Object>> getAttributes(Order delegate) {
+        List<Map<String, Object>> attrs = new ArrayList<>();
+        for (OrderAttribute attr : delegate.getActiveAttributes()) {
+            Map<String, Object> attrMap = new HashMap<>();
+            attrMap.put("uuid", attr.getUuid());
+            attrMap.put("attributeType", attr.getAttributeType().getUuid());
+            attrMap.put("value", attr.getValue());
+            attrs.add(attrMap);
+        }
+        return attrs;
     }
 
     /**
