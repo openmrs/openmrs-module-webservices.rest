@@ -20,7 +20,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_5;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 
 public class OrderController2_5Test extends MainResourceControllerTest {
 

@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
-import org.openmrs.*;
+import org.openmrs.Order;
+import org.openmrs.OrderAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -20,7 +21,11 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Resource(name = RestConstants.VERSION_1 + "/order", supportedClass = Order.class, supportedOpenmrsVersions = { "2.5.* - 9.*" })
 public class OrderResource2_5 extends OrderResource2_2 {
