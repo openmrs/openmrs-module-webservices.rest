@@ -34,34 +34,6 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-2.4</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>${project.parent.artifactId}-omod-2.4</artifactId>
-            <version>${project.parent.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>${project.parent.groupId}</groupId>-->
-<!--            <artifactId>${project.parent.artifactId}-omod-2.5</artifactId>-->
-<!--            <version>${project.parent.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>${project.parent.groupId}</groupId>-->
-<!--            <artifactId>${project.parent.artifactId}-omod-2.5</artifactId>-->
-<!--            <version>${project.parent.version}</version>-->
-<!--            <classifier>tests</classifier>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
-        <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
             <version>${openmrs.version.2.7.0}</version><!--$NO-MVN-MAN-VER$-->
@@ -107,7 +79,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>${javaxVersion}</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
