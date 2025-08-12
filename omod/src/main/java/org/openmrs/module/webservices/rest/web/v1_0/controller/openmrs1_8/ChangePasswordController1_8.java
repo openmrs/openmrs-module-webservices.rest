@@ -53,11 +53,15 @@ public class ChangePasswordController1_8 extends BaseRestController {
 			throw new APIAuthenticationException("Must be authenticated to change your own password");
 		}
 		try {
+			Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 			userService.changePassword(oldPassword, newPassword);
 		}
 		catch (APIException ex) {
 			// this happens if they give the wrong oldPassword
 			throw new ValidationException(ex.getMessage());
+		}
+		finally {
+			Context.getUserContext().removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 		}
 	}
 	
@@ -65,7 +69,7 @@ public class ChangePasswordController1_8 extends BaseRestController {
 	@ResponseStatus(HttpStatus.OK)
 	public void changeOthersPassword(@PathVariable("userUuid") String userUuid, @RequestBody Map<String, String> body) {
 		String newPassword = body.get("newPassword");
-		Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
+		Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_USERS);
 		User user;
 		try {
 			user = userService.getUserByUuid(userUuid);

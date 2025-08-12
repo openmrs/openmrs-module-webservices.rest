@@ -69,17 +69,13 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	@Test
 	public void testChangeUsersOwnPassword() throws Exception {
 		setUpUser("butch");
-		
+
 		String oldPassword = "SomeOtherPassword123";
 		String newPassword = "newPassword9";
-		try {
-			Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-			MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\""
-					+ "," + "\"oldPassword\":\"" + oldPassword + "\"}"));
-			assertEquals(200, response.getStatus());
-		} finally {
-			Context.getUserContext().removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-		}
+
+		MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\""
+				+ "," + "\"oldPassword\":\"" + oldPassword + "\"}"));
+		assertEquals(200, response.getStatus());
 	}
 	
 	@Test
