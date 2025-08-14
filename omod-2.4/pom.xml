@@ -97,6 +97,24 @@
                     <header>${project.parent.basedir}/license-header.txt</header>
                 </configuration>
             </plugin>
+            <plugin>
+				<groupId>org.openmrs.plugin</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+				<configuration>
+					<scanPackages>
+						<scanPackage>org.openmrs.module.webservices.rest.web.v1_0.resource</scanPackage>
+					</scanPackages>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>openapi</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
 </project>
