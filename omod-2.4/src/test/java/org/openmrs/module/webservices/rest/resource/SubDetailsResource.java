@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.resource;
 
 import io.swagger.models.Model;
 import org.openmrs.GlobalProperty;
-import org.openmrs.module.webservices.rest.doc.SwaggerSpecificationCreatorTest;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -26,7 +25,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.SystemSe
  * A test only resource used to determine if the correct definitions are included in the swagger
  * document. Only supports the create option.
  * 
- * @see SwaggerSpecificationCreatorTest#createOnlySubresourceDefinitions()
  */
 @SubResource(parent = SystemSettingResource1_9.class, path = "subdetails", supportedClass = SubDetails.class, supportedOpenmrsVersions = {
         "2.0.* - 9.*" })
@@ -63,7 +61,7 @@ public class SubDetailsResource extends DelegatingSubResource<SubDetails, Global
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return new DelegatingResourceDescription();
 	}
-	
+
 	@Override
 	public SubDetails newDelegate() {
 		return new SubDetails();
