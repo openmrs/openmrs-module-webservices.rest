@@ -232,9 +232,7 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 			throw new ConversionException("The person property is missing");
 		} else if (personProperty instanceof String) {
 			person = Context.getPersonService().getPersonByUuid((String) personProperty);
-			if (person != null) {
-				Context.evictFromSession(person);
-			}
+			Context.evictFromSession(person);
 		} else if (personProperty instanceof Map) {
 			person = (Person) ConversionUtil.convert(personProperty, Person.class);
 			propertiesToCreate.put("person", "");

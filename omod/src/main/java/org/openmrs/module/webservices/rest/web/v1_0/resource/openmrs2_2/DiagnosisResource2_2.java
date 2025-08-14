@@ -45,7 +45,7 @@ import java.util.Date;
  * {@link Resource} for Diagnosis, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
-        "2.2.*-9.x" })
+		"2.2.* - 2.4.*" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
 	
 	/**

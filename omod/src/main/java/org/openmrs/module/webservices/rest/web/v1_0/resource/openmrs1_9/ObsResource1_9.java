@@ -26,8 +26,8 @@ import java.util.Map;
  * {@link Resource} for Obs, supporting standard
  * CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 4, supportedClass = Obs.class, supportedOpenmrsVersions = {
-        "1.9.* - 9.x" })
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = {
+		"1.9.* - 1.10.*" })
 public class ObsResource1_9 extends ObsResource1_8 {
 
 	/**

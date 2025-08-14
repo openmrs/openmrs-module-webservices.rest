@@ -67,7 +67,7 @@ import java.util.Set;
 /**
  * {@link Resource} for Obs, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/obs", order = 5, supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*" })
+@Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements Uploadable {
 
 	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
