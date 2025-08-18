@@ -111,12 +111,13 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		User authenticatedUser = setUpUser("daemon");
 		
 		Role role = new Role("Privileged Role");
+
 		try {
-			Context.getUserContext().addProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
 			role.addPrivilege(service.getPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
 			role.addPrivilege(service.getPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES));
 		} finally {
-			Context.getUserContext().removeProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
 		}
 		authenticatedUser.addRole(role);
 
