@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ObsResource1_9;
 
 @Resource(name = RestConstants.VERSION_1 + "/obs", order = 1, supportedClass = Obs.class, supportedOpenmrsVersions = {
-        "1.11.* - 2.0.x" })
+        "1.11.* - 2.0.*" })
 public class ObsResource1_11 extends ObsResource1_9 {
 	
 	/**
