@@ -12,6 +12,7 @@ package org.mockingbird.test.rest.resource;
 import org.mockingbird.test.Animal;
 import org.mockingbird.test.AnimalClass;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -24,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.SubResource(path = "class", parent = AnimalResource_1_9.class, supportedClass = AnimalClass.class, supportedOpenmrsVersions = { "2.4.*" })
+@SubResource(path = "class", parent = AnimalResource_1_9.class, supportedClass = AnimalClass.class, supportedOpenmrsVersions = { "2.4.*" })
 public class AnimalClassResourceLegacy extends DelegatingSubResource<AnimalClass, Animal, AnimalResource_1_9> {
 	
 	@Override
