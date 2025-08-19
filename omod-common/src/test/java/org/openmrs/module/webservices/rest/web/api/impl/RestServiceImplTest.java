@@ -211,24 +211,6 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	}
 	
 	/**
-	 * Helper method to set the current OpenMRS version for tests.
-	 * 
-	 * @param currentOpenmrsVersion the openmrs version to set the current version to
-	 * @throws NoSuchFieldException
-	 * @throws IllegalAccessException
-	 */
-	@Deprecated
-	private void setCurrentOpenmrsVersion(final String currentOpenmrsVersion) throws NoSuchFieldException,
-	        IllegalAccessException {
-		
-		Field versionField = OpenmrsConstants.class.getDeclaredField("OPENMRS_VERSION_SHORT");
-		Field modifiersField = Field.class.getDeclaredField("modifiers");
-		modifiersField.setAccessible(true);
-		modifiersField.setInt(versionField, versionField.getModifiers() & ~Modifier.FINAL);
-		versionField.set(null, currentOpenmrsVersion);
-	}
-	
-	/**
 	 * @verifies fail if failed to get resource classes
 	 * @see RestServiceImpl#getResourceByName(String)
 	 */
