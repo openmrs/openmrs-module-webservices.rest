@@ -24,9 +24,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.ResultSet;
+
+import javax.servlet.http.HttpServletResponse;
 
 public class ClobDatatypeStorageControllerTest extends MainResourceControllerTest {
 	

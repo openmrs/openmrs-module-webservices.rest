@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
@@ -26,15 +29,13 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.RestCons
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.iterableWithSize;
+
 import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
-import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_LONG;
 import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_SHORT;
+import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_LONG;
 
 public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	

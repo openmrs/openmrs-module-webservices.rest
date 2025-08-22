@@ -24,9 +24,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletResponse;
-
 import static org.junit.Assert.assertEquals;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Contains tests for {@link VisitAttributeTypeController} CRUD operations

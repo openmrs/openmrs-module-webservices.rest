@@ -24,7 +24,6 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.util.List;
 
 public class TaskDefinitionController1_8Test extends MainResourceControllerTest {
