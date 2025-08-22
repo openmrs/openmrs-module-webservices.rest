@@ -14,4 +14,10 @@ public class RestTestConstants2_5 {
 	public static final String ORDER_ATTRIBUTE_DATA_SET = "OrderAttributeTypeResourceTestDataset.xml";
 	
 	public static final String ORDER_ATTRIBUTE_TYPE_UUID = "cfc96e8e-1234-4c44-aaaa-abcdef123456";
+	
+	public static final String ORDER_DATA_SET = "OrderTestDataset.xml";
+	
+	public static final String ORDER_ATTRIBUTE_UUID = "22222222-bbbb-cccc-dddd-222222222222";
+	
+	public static final String ORDER_UUID = "11111111-aaaa-bbbb-cccc-111111111111";
 }

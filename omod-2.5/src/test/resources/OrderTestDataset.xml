@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+-->
+<dataset>
+    <order_attribute_type order_attribute_type_id="1" name="Test Attribute Type" description="For testing order attributes" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2024-01-01 00:00:00.0" retired="false" uuid="cfc96e8e-1234-4c44-aaaa-abcdef123456" />
+    <patient patient_id="1" creator="1" date_created="2024-01-01 00:00:00.0" voided="false" />
+    <person person_id="1" gender="M" birthdate="1980-01-01" creator="1" date_created="2024-01-01 00:00:00.0" voided="false" uuid="96be32d2-9367-4d1d-a285-79a5e5db12b8"  />
+    <person_name person_name_id="1" preferred="true" person_id="1" given_name="John" family_name="Doe" creator="1" date_created="2024-01-01 00:00:00.0" voided="false" uuid="3acb2a56-412f-4ffb-9936-891b3f85b50e" />
+    <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2024-01-01 00:00:00.0" uuid="5087aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+    <concept_name concept_name_id="1" concept_id="1" name="Test Concept" locale="en" locale_preferred="1" creator="1" date_created="2024-01-01 00:00:00.0" voided="false" uuid="abc12345-6789-0000-1111-222233334444" />
+    <encounter_type encounter_type_id="1" name="Test Encounter Type" description="For testing" creator="1" date_created="2024-01-01 00:00:00.0" uuid="e6f35e82-6b0b-4a14-bb19-9b5a4a4a53dd" />
+    <location location_id="1" name="Test Location" creator="1" date_created="2024-01-01 00:00:00.0" retired="false" uuid="b7b4c0e0-7c87-4f9a-8e6d-7852c36c4ad7" />
+    <encounter encounter_id="1" encounter_type="1" patient_id="1" location_id="1" encounter_datetime="2024-01-02 00:00:00.0" creator="1" date_created="2024-01-02 00:00:00.0" voided="false" uuid="69f83020-caf2-4c9e-bca7-89b8e62b52e1" />
+    <provider provider_id="1" name="Test Provider" identifier="prov-1" creator="1" date_created="2024-01-01 00:00:00.0" retired="false" uuid="f9badd80-ab76-11e2-9e96-0800200c9a66" />
+    <orders order_id="1" order_type_id="1" concept_id="1" orderer="1" encounter_id="1" patient_id="1" care_setting="1" urgency="ROUTINE" date_activated="2024-01-02 00:00:00.0" creator="1" date_created="2024-01-02 00:00:00.0" uuid="11111111-aaaa-bbbb-cccc-111111111111" />
+    <order_attribute order_attribute_id="1" order_id="1" attribute_type_id="1" value_reference="Test" uuid="22222222-bbbb-cccc-dddd-222222222222" creator="1" date_created="2024-01-02 00:00:00.0" voided="false" />
+</dataset>
