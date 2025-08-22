@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openmrs.Form;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -21,9 +24,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.List;
 
 @Component
 public class FormSearchHandler1_8 implements SearchHandler {

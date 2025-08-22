@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
@@ -27,9 +30,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Subclass of {@link DelegatingSubResource} with helper methods specific to {@link Attribute}

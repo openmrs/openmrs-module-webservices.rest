@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.openmrs.CareSetting;
@@ -17,9 +20,6 @@ import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
-
-import java.util.Date;
-import java.util.List;
 
 public class OrderUtil {
 

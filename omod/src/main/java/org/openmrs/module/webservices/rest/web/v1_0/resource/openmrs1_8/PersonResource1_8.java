@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
@@ -40,11 +45,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 /**
  * {@link Resource} for Person, supporting standard CRUD operations

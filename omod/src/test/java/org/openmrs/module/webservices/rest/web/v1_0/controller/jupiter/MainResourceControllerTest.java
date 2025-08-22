@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -16,9 +19,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Facilitates testing controllers.

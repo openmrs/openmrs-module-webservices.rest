@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_10;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
@@ -25,10 +29,6 @@ import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Find drugs that match the specified search phrase. The logic matches on drug names, concept names

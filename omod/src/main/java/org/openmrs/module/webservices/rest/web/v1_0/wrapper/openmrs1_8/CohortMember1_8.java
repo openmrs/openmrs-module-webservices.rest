@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.Patient;
-
-import java.io.Serializable;
 
 /**
  * This class is a wrapper for {@link Cohort} and {@link Patient} that needs to be sent for

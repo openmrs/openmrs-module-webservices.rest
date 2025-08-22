@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8;
 
+import java.io.Serializable;
+
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.User;
-
-import java.io.Serializable;
 
 /**
  * This class is a wrapper for org.openmrs.User and password that needs to be sent for creating a

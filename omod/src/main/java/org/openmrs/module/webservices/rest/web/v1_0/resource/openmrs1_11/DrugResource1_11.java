@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.openmrs.Drug;
 import org.openmrs.DrugIngredient;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -20,9 +23,6 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugResource1_10;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * {@link Resource} for {@link Drug}, supporting standard CRUD operations

@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_0;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Date;
+
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
@@ -30,12 +36,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 @Component
 public class EncounterSearchHandler2_0 implements SearchHandler {

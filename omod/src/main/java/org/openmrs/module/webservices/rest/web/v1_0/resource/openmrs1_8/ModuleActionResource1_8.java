@@ -23,8 +23,8 @@ import org.openmrs.module.ModuleException;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.ModuleAction;
-import org.openmrs.module.webservices.helper.ModuleAction.Action;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
+import org.openmrs.module.webservices.helper.ModuleAction.Action;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -39,7 +39,6 @@ import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ResourceUtils;
-
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.InputStream;

@@ -22,8 +22,8 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
-import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvider;
 import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateRepresentation;
+import org.openmrs.module.webservices.rest.web.v1_0.helper.LayoutTemplateProvider;
 
 import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
 

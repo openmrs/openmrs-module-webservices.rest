@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8;
 
+import java.io.Serializable;
+
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.api.APIException;
 import org.openmrs.hl7.HL7Constants;
 import org.openmrs.hl7.HL7InQueue;
 import org.openmrs.hl7.HL7Source;
-
-import java.io.Serializable;
 
 /**
  * This class represents generic HL7 message (e.g. InQueue/Archive/Error)

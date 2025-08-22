@@ -9,6 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Obs;
 import org.openmrs.ObsReferenceRange;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -25,9 +28,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1.ObsResource2_1;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link Resource} for listing ObsReferenceRanges

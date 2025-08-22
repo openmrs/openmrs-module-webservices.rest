@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
@@ -18,8 +20,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
-
-import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = { "1.9.* - 9.*" })
 public class PatientResource1_9 extends PatientResource1_8 {

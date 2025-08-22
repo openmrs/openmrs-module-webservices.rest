@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import org.openmrs.CareSetting;
@@ -25,10 +29,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * {@link Resource} for

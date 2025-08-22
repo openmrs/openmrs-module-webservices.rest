@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
+import java.util.Map;
+
 import org.openmrs.User;
 import org.openmrs.api.InvalidActivationKeyException;
 import org.openmrs.api.UserService;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/passwordreset")

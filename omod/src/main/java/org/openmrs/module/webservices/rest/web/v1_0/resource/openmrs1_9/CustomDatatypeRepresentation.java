@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class CustomDatatypeRepresentation {
 	

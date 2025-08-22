@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
+import java.util.ArrayList;
+
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.DateProperty;
@@ -31,8 +33,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResour
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
-import java.util.ArrayList;
 
 @SubResource(parent = CohortResource2_1.class, path = "membership", supportedClass = CohortMembership.class, supportedOpenmrsVersions = {
         "2.1.* - 9.*" })

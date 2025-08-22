@@ -9,21 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
-import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.HandlerExecutionChain;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.xml.sax.InputSource;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
@@ -40,7 +26,21 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.xml.sax.InputSource;
 
 public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 
