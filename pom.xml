@@ -32,7 +32,6 @@
 	</distributionManagement>
 
 	<modules>
-		<module>omod-common</module>
 		<module>omod</module>
 		<module>integration-tests</module>
 	</modules>
