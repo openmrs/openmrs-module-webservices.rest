@@ -27,7 +27,6 @@ import org.mockingbird.test.rest.resource.CountryResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAndOrderAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.DuplicateNameAnimalResource_1_9;
 import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9;
-import org.mockingbird.test.rest.resource.LegacyAnimalResource;
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -47,12 +46,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceH
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8;
 import org.openmrs.test.BaseContextMockTest;
-import org.openmrs.util.OpenmrsConstants;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -247,7 +244,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getResourceByName_shouldFailIfResourceForGivenNameDoesNotSupportTheCurrentOpenmrsVersion() throws Exception {
 		
 		List<Class<? extends Resource>> resources = new ArrayList<>();
-		resources.add(LegacyAnimalResource.class);
+		resources.add(CohortResource1_8.class);
 
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
@@ -354,7 +351,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
-		resources.add(LegacyAnimalResource.class);
+		resources.add(CohortResource1_8.class);
 
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
