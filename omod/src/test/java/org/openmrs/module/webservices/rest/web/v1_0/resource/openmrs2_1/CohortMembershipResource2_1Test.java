@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
+import static org.junit.Assert.assertThat;
+import static org.openmrs.module.webservices.rest.test.LinkMatcher.hasLink;
+
+import java.util.Date;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.openmrs.Cohort;
@@ -18,11 +23,6 @@ import org.openmrs.api.PatientService;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_1;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertThat;
-import static org.openmrs.module.webservices.rest.test.LinkMatcher.hasLink;
 
 public class CohortMembershipResource2_1Test extends BaseDelegatingResourceTest<CohortMembershipResource2_1, CohortMembership> {
 	

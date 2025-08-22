@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
+import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
@@ -28,11 +33,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-
-import static org.openmrs.ConditionVerificationStatus.CONFIRMED;
 
 /**
  * Tests functionality of {@link DiagnosisController2_2}.

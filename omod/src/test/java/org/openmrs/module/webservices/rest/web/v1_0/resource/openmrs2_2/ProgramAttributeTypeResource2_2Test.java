@@ -9,18 +9,18 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.openmrs.ProgramAttributeType;
 import org.openmrs.api.ProgramWorkflowService;
+import org.junit.Before;
+import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
-import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
 import static org.junit.Assert.assertEquals;
+import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
 public class ProgramAttributeTypeResource2_2Test extends BaseDelegatingResourceTest<ProgramAttributeTypeResource2_2, ProgramAttributeType> {
 

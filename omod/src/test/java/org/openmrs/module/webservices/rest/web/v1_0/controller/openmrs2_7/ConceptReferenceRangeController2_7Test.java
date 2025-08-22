@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_7;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -17,8 +19,6 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7.RestConstants2_7;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.List;
 
 public class ConceptReferenceRangeController2_7Test extends MainResourceControllerTest {
 

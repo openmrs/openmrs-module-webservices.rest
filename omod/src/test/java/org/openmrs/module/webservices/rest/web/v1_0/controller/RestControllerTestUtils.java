@@ -9,6 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
@@ -24,21 +38,6 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.xml.sax.InputSource;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
 
 public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 

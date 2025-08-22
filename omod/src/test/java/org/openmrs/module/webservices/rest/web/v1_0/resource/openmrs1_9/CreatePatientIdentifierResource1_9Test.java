@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.HashMap;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,8 +22,6 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierResource1_8;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-
-import java.util.HashMap;
 
 public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContextSensitiveTest {
 	

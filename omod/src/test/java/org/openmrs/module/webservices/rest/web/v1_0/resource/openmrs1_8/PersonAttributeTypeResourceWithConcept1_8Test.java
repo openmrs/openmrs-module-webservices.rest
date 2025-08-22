@@ -9,13 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
+import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import static org.junit.Assert.assertEquals;
 
 public class PersonAttributeTypeResourceWithConcept1_8Test extends BaseDelegatingResourceTest<PersonAttributeTypeResource1_8, PersonAttributeType> {
 	

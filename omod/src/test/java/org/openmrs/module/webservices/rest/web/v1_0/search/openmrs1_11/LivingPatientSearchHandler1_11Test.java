@@ -10,6 +10,8 @@
 
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_11;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,8 +24,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTest {
 	

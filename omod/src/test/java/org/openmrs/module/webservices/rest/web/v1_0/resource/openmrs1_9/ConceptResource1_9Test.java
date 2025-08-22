@@ -9,6 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -23,16 +33,6 @@ import org.openmrs.module.webservices.rest.web.representation.NamedRepresentatio
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ConceptResource1_8;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptResource1_9, Concept> {
 	

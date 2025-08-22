@@ -12,14 +12,13 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockHttpServletRequest;
-
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.api.AdministrationService;
 import java.util.Map;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public class SystemInformationResource1_8Test extends BaseModuleWebContextSensitiveTest {
 	

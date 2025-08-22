@@ -9,6 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import java.util.ArrayList;
+
 import org.apache.struts.mock.MockHttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
@@ -20,12 +26,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Integration tests for the ServerLogResource2_4 class

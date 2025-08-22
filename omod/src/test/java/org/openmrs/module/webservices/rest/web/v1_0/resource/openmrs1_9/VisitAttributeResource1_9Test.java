@@ -9,15 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.junit.Assert;
+
 import org.junit.Before;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 /**
  * Contains tests for the {@link VisitAttributeResource1_9}

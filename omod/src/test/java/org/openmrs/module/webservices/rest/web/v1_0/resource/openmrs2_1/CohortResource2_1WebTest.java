@@ -9,6 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Cohort;
@@ -19,11 +24,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_1;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class CohortResource2_1WebTest extends MainResourceControllerTest {
 	

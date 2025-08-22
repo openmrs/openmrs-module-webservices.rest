@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_0;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -18,8 +20,6 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
 

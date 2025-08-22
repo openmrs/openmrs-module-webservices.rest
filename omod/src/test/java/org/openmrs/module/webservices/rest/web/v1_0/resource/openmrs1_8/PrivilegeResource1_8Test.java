@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.UUID;
+
 import org.openmrs.Privilege;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import java.util.UUID;
 
 public class PrivilegeResource1_8Test extends BaseDelegatingResourceTest<PrivilegeResource1_8, Privilege> {
 	

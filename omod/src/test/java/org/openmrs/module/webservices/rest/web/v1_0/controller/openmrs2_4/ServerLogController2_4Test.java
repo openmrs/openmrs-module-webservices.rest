@@ -9,6 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
@@ -16,19 +24,11 @@ import org.openmrs.module.webservices.helper.openmrs2_4.ServerLogActionWrapper2_
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.ServerLogResource2_4;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ServerLogController2_4Test extends MainResourceControllerTest {
 

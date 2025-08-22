@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
 public class ConceptDatatypeResource1_8Test extends BaseDelegatingResourceTest<ConceptDatatypeResource1_8, ConceptDatatype> {

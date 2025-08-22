@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,13 +23,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.util.List;
 import java.util.Map;
-
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
 
 public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	

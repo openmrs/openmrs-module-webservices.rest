@@ -10,11 +10,11 @@
 
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.junit.Before;
 import org.openmrs.PatientProgramAttribute;
 import org.openmrs.api.ProgramWorkflowService;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+import org.junit.Before;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class PatientProgramAttributeResource2_2Test extends BaseDelegatingResourceTest<PatientProgramAttributeResource2_2, PatientProgramAttribute> {

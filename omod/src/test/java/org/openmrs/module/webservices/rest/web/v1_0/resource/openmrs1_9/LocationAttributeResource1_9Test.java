@@ -9,14 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.junit.Before;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 public class LocationAttributeResource1_9Test extends BaseDelegatingResourceTest<LocationAttributeResource1_9, LocationAttribute> {
 	

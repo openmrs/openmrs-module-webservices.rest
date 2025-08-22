@@ -9,6 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Field;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,7 +26,6 @@ import org.openmrs.Person;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.module.webservices.validation.ValidationException;
@@ -27,15 +35,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Field;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import java.util.LinkedHashMap;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	

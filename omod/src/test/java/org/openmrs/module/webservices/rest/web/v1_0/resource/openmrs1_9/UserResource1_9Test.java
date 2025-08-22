@@ -9,6 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,10 +27,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserReso
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource1_8, UserAndPassword1_8> {
 	

@@ -9,16 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_7;
 
+import java.util.List;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7.ObsReferenceRangeResource2_7;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_7.RestConstants2_7;
-
-import java.util.List;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter.MainResourceControllerTest;
 
 /**
  * Tests functionality of {@link ObsReferenceRangeResource2_7}.
