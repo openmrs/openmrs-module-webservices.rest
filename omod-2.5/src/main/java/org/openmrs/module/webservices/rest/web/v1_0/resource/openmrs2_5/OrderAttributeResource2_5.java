@@ -44,17 +44,6 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
     }
 
     /**
-     * Sets value on the given OrderAttribute.
-     *
-     * @param instance
-     * @param attr
-     */
-    @PropertySetter("value")
-    public static void setValue(OrderAttribute instance, Object attr) {
-        instance.setValue(attr);
-    }
-
-    /**
      * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId(String)
      */
     @Override
@@ -67,7 +56,7 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
      */
     @Override
     protected void delete(OrderAttribute delegate, String reason, RequestContext context) throws ResponseException {
-        throw new UnsupportedOperationException("Cannot delete OrderAttribute");
+        throw new UnsupportedOperationException("Cannot delete OrderAttribute because orders are immutable.");
     }
 
     /**
@@ -101,7 +90,7 @@ public class OrderAttributeResource2_5 extends BaseAttributeCrudResource1_9<Orde
      */
     @Override
     public void purge(OrderAttribute delegate, RequestContext context) throws ResponseException {
-        throw new UnsupportedOperationException("Cannot purge OrderAttribute");
+        throw new UnsupportedOperationException("Cannot purge OrderAttribute because orders are immutable.");
     }
 
     /**
