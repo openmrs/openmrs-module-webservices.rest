@@ -16,7 +16,6 @@ import org.mockingbird.test.Animal;
 import org.mockingbird.test.Cat;
 import org.mockingbird.test.HibernateProxyAnimal;
 import org.mockingbird.test.MockingBird;
-import org.mockingbird.test.rest.resource.AnimalClassResourceLegacy;
 import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.mockingbird.test.rest.resource.AnimalResource_1_11;
 import org.mockingbird.test.rest.resource.AnimalResource_1_9;
@@ -281,8 +280,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
 		resources.add(AnimalResource_1_9.class);
 		resources.add(AnimalResource_1_11.class);
-		resources.add(AnimalClassResourceLegacy.class);
-		
+
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
 		expectedException.expect(UnknownResourceException.class);
@@ -947,7 +945,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(searchHandler3.getSearchConfig()).thenReturn(searchConfig3);
 		
 		SearchHandler searchHandler4 = mock(SearchHandler.class);
-		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "2.9.*", new SearchQuery.Builder(
+		SearchConfig searchConfig4 = new SearchConfig("conceptByMapping", "v1/concept", "1.9.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler4.getSearchConfig()).thenReturn(searchConfig4);
 		
