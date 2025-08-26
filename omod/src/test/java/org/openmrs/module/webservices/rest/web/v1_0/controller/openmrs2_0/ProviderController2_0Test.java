@@ -141,16 +141,17 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			List<?> allProviders = deserialize(handle(request)).get("results");
+			List<Object> allUuids = ((List<Map>) allProviders).stream().map(
+					p -> p.get("uuid")
+			).collect(Collectors.toList());
 
-            // Verify: 'includeAll=true' same as Java API
+			// Verify: 'includeAll=true' same as Java API
 			Assert.assertArrayEquals(
 					Context.getProviderService().getProviders(providerName, null, null, null, true)
 							.stream().map(
 							BaseOpenmrsObject::getUuid
-					).sorted().toArray(),
-                    ((List<Map>) allProviders).stream().map(
-                            p -> p.get("uuid")
-                    ).sorted().toArray()
+					).toArray(),
+					allUuids.toArray()
 			);
 		}
 	}
