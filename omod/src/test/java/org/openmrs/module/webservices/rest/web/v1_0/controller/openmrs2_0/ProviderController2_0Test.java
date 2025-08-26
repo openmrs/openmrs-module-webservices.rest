@@ -143,7 +143,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			List<?> allProviders = deserialize(handle(request)).get("results");
 			List<Object> allUuids = ((List<Map>) allProviders).stream().map(
 					p -> p.get("uuid")
-			).collect(Collectors.toList());
+			).sorted().collect(Collectors.toList());
 
 			// Verify: 'includeAll=true' same as Java API
 			Assert.assertArrayEquals(
