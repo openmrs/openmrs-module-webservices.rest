@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProviderController2_0Test extends MainResourceControllerTest {
 	
@@ -141,17 +144,17 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Replay
 			List<?> allProviders = deserialize(handle(request)).get("results");
+			List<Object> allUuids = ((List<Map>) allProviders).stream().map(
+					p -> p.get("uuid")
+			).collect(Collectors.toList());
 
-            // Verify: 'includeAll=true' same as Java API
-			Assert.assertArrayEquals(
-					Context.getProviderService().getProviders(providerName, null, null, null, true)
-							.stream().map(
+			// Verify: 'includeAll=true' same as Java API
+			Object[] array = Context.getProviderService().getProviders(providerName, null, null, null, true)
+					.stream().map(
 							BaseOpenmrsObject::getUuid
-					).sorted().toArray(),
-                    ((List<Map>) allProviders).stream().map(
-                            p -> p.get("uuid")
-                    ).sorted().toArray()
-			);
+					).toArray();
+
+			assertThat(array, Matchers.arrayContainingInAnyOrder(allUuids.toArray()));
 		}
 	}
 	
