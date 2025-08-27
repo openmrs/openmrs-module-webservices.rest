@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * package not under org.openmrs.xxx on purpose otherwise it will be picked up by other tests due to
  * {@link org.openmrs.module.webservices.rest.web.OpenmrsClassScanner} and its classpath pattern.
  */
-@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/bird", order = 1, supportedClass = Bird.class, supportedOpenmrsVersions = { "1.9.*" })
+@org.openmrs.module.webservices.rest.web.annotation.Resource(name = RestConstants.VERSION_1 + "/bird", order = 1, supportedClass = Bird.class, supportedOpenmrsVersions = { "2.7.*" })
 public class BirdResource_1_9 extends DelegatingCrudResource<Bird> {
 	
 	/**
