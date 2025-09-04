@@ -195,6 +195,18 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("person");
 		description.addRequiredProperty("identifiers");
+
+		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
+			description.addProperty("creator");
+			description.addProperty("dateCreated");
+			description.addProperty("changedBy");
+			description.addProperty("dateChanged");
+			description.addProperty("personDateCreated");
+			description.addProperty("personCreator");
+			description.addProperty("personDateChanged");
+			description.addProperty("personChangedBy");
+		}
+
 		return description;
 	}
 	
