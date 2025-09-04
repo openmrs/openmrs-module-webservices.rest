@@ -20,7 +20,9 @@ public class RestConstants {
 	public static final String PRIV_MANAGE_RESTWS = "Manage RESTWS";
 	
 	public static final String PRIV_VIEW_RESTWS = "View RESTWS";
-	
+
+	public static final String PRIV_SET_AUDIT_DATA = "Set Audit Data";
+
 	/**
 	 * The number of results to limit lists of objects to, if an admin has not defined a global
 	 * property

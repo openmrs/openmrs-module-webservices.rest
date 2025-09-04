@@ -141,5 +141,10 @@
 		<name>View RESTWS</name>
 		<description>Gives access to RESTWS in administration</description>
 	</privilege>
-	
+
+	<privilege>
+		<name>Set Audit Data</name>
+		<description>Gives permission to pass in audit data fields when creating resource</description>
+	</privilege>
+
 </module>
