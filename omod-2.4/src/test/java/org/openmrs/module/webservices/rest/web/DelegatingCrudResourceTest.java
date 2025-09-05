@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.User;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -30,6 +31,8 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.EncounterResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
 import org.openmrs.util.Reflect;
@@ -172,5 +175,74 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		Location location = resource.convert(so);
 		Assert.assertEquals(uuid, location.getUuid());
 	}
-	
+
+	@Test
+	public void convert_shouldAllowCreatableFieldsIfCreatable() {
+		SimpleObject so = new SimpleObject();
+		so.add("name", "Location name");
+		so.add("dateCreated", "2018-04-18T14:15:16.000+0000");
+		so.add("creator", "1");
+		DelegatingCrudResource<Location> resource = new LocationResource1_8();
+		resource.convert(so);
+	}
+
+	@Test
+	public void convert_shouldAllowChangeableFieldsIfChangeable() {
+		SimpleObject so = new SimpleObject();
+		so.add("name", "Location name");
+		so.add("dateChanged", "2018-04-18T14:15:16.000+0000");
+		so.add("changedBy", "1");
+		DelegatingCrudResource<Location> resource = new LocationResource1_8();
+		resource.convert(so);
+	}
+
+	@Test
+	public void convert_shouldAllowRetiredFieldsIfRetireable() {
+		SimpleObject so = new SimpleObject();
+		so.add("name", "Location name");
+		so.add("retired", "true");
+		so.add("dateRetired", "2018-04-18T14:15:16.000+0000");
+		so.add("retiredBy", "1");
+		so.add("retireReason", "test");
+		DelegatingCrudResource<Location> resource = new LocationResource1_8();
+		resource.convert(so);
+	}
+
+	@Test
+	public void convert_shouldNotAllowRetiredFieldsNotRetireable() {
+		SimpleObject so = new SimpleObject();
+		so.add("patient", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
+		so.add("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
+		so.add("retired", "true");
+		so.add("dateRetired", "2018-04-18T14:15:16.000+0000");
+		so.add("retiredBy", "1");
+		so.add("retireReason", "test");
+		DelegatingCrudResource<Encounter> resource = new EncounterResource1_8();
+		Assert.assertThrows(ConversionException.class, () -> {resource.convert(so);});
+	}
+
+	@Test
+	public void convert_shouldAllowVoidableFieldsIfVoidable() {
+		SimpleObject so = new SimpleObject();
+		so.add("patient", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
+		so.add("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
+		so.add("voided", "true");
+		so.add("dateVoided", "2018-04-18T14:15:16.000+0000");
+		so.add("voidedBy", "1");
+		so.add("voidReason", "test");
+		DelegatingCrudResource<Encounter> resource = new EncounterResource1_8();
+		resource.convert(so);
+	}
+
+	@Test
+	public void convert_shouldNotAllowVoidableFieldsIfNotVoidable() {
+		SimpleObject so = new SimpleObject();
+		so.add("name", "Location name");
+		so.add("voided", "true");
+		so.add("dateVoided", "2018-04-18T14:15:16.000+0000");
+		so.add("voidedBy", "1");
+		so.add("voidReason", "test");
+		DelegatingCrudResource<Location> resource = new LocationResource1_8();
+		Assert.assertThrows(ConversionException.class, () -> {resource.convert(so);});
+	}
 }
