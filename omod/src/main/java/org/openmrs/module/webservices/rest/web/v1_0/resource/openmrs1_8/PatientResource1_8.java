@@ -195,6 +195,30 @@ public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("person");
 		description.addRequiredProperty("identifiers");
+
+		// we apply these generically to resources in the DelegationCrudResource before calling setConvertedProperties,
+		// but the PatientResource calls setConvertedProperties directly in getPatient method below, so we need to add this here
+		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
+			description.addProperty("dateCreated");
+			description.addProperty("creator");
+			description.addProperty("dateChanged");
+			description.addProperty("changedBy");
+			description.addProperty("retired");
+			description.addProperty("voided");
+			description.addProperty("voidReason");
+			description.addProperty("voidedBy");
+			description.addProperty("dateVoided");
+
+			description.addProperty("personDateCreated");
+			description.addProperty("personCreator");
+			description.addProperty("personDateChanged");
+			description.addProperty("personChangedBy");
+			description.addProperty("personVoided");
+			description.addProperty("personVoidReason");
+			description.addProperty("personVoidedBy");
+			description.addProperty("personDateVoided");
+		}
+
 		return description;
 	}
 	

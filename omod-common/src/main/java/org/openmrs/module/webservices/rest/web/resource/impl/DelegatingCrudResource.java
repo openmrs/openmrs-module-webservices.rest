@@ -14,6 +14,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Changeable;
+import org.openmrs.Retireable;
+import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -105,6 +108,31 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		if (propertiesToCreate.containsKey("uuid")) {
 			description.addProperty("uuid");
 		}
+
+		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
+			if (delegate instanceof org.openmrs.Creatable) {
+				description.addProperty("dateCreated");
+				description.addProperty("creator");
+			}
+			if (delegate instanceof Changeable) {
+				description.addProperty("dateChanged");
+				description.addProperty("changedBy");
+			}
+			if (delegate instanceof Retireable) {
+				description.addProperty("retired");
+				description.addProperty("retireReason");
+				description.addProperty("retiredBy");
+				description.addProperty("dateRetired");
+
+			}
+			if (delegate instanceof Voidable) {
+				description.addProperty("voided");
+				description.addProperty("voidReason");
+				description.addProperty("voidedBy");
+				description.addProperty("dateVoided");
+			}
+		}
+
 		setConvertedProperties(delegate, propertiesToCreate, description, true);
 		return delegate;
 	}
