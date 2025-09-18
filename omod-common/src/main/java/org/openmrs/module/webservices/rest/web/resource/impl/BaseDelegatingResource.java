@@ -852,6 +852,16 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	}
 
 
+	/**
+	 * Utility method to build a delegating resource description with the proper list of allowed creatable properties by starting
+	 * with the creatable properties defined by the handler, and then 1) adding uuid if it is present in the list of properties to create
+	 * and 2) adding any relevant audit fields based on the class of the delegate
+	 *
+	 * @param delegate
+	 * @param handler
+	 * @param propertiesToCreate
+	 * @return
+	 */
 	protected DelegatingResourceDescription buildCreatableProperties(T delegate, DelegatingResourceHandler<? extends T> handler,  SimpleObject propertiesToCreate) {
 
 		DelegatingResourceDescription description = handler.getCreatableProperties();
