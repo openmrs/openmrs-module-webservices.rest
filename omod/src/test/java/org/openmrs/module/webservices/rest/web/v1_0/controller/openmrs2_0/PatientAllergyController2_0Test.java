@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.response.NoContentFoundException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public class PatientAllergyController2_0Test extends MainResourceControllerTest {
 	
@@ -106,7 +107,6 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	@Test
 	public void shouldGetAllergyByUuid() throws Exception {
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
-		Patient patient = allergy.getPatient();
 		
 		// attempt to get allergy by uuid
 		SimpleObject savedAllergy = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
@@ -118,6 +118,24 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
 		Assert.assertEquals(allergy.getAllergen().getAllergenType().toString(),
 		    Util.getByPath(savedAllergy, "allergen/allergenType"));
+	}
+
+	@Test
+	public void shouldGetAllergyByUuidWithCustomRep() throws Exception {
+		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
+
+		// attempt to get allergy by uuid
+		MockHttpServletRequest request = newGetRequest(getURI() + "/" + getUuid());
+		request.addParameter("v", "custom:(uuid,allergen:(allergenType,codedAllergen:(uuid),nonCodedAllergen),severity:(uuid),comment,reactions:(reaction:(uuid),reactionNonCoded)");
+		SimpleObject savedAllergy  = deserialize(handle(request));
+
+		Assert.assertEquals(allergy.getComment(), Util.getByPath(savedAllergy, "comment"));
+		Assert.assertEquals(allergy.getSeverity().getUuid(), Util.getByPath(savedAllergy, "severity/uuid"));
+
+		Assert.assertEquals(allergy.getAllergen().getCodedAllergen().getUuid(),
+				Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
+		Assert.assertEquals(allergy.getAllergen().getAllergenType().toString(),
+				Util.getByPath(savedAllergy, "allergen/allergenType"));
 	}
 	
 	/**
