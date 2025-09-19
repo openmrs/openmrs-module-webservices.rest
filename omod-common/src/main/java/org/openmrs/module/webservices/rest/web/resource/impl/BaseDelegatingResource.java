@@ -29,7 +29,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.proxy.HibernateProxy;
+import org.openmrs.Changeable;
 import org.openmrs.OpenmrsObject;
+import org.openmrs.Retireable;
+import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -847,5 +850,49 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	public T newDelegate(SimpleObject object) {
 		return newDelegate();
 	}
-	
+
+
+	/**
+	 * Utility method to build a delegating resource description with the proper list of allowed creatable properties by starting
+	 * with the creatable properties defined by the handler, and then 1) adding uuid if it is present in the list of properties to create
+	 * and 2) adding any relevant audit fields based on the class of the delegate
+	 *
+	 * @param delegate
+	 * @param handler
+	 * @param propertiesToCreate
+	 * @return
+	 */
+	protected DelegatingResourceDescription buildCreatableProperties(T delegate, DelegatingResourceHandler<? extends T> handler,  SimpleObject propertiesToCreate) {
+
+		DelegatingResourceDescription description = handler.getCreatableProperties();
+		if (propertiesToCreate.containsKey(RestConstants.PROPERTY_UUID)) {
+			description.addProperty(RestConstants.PROPERTY_UUID);
+		}
+
+		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
+			if (delegate instanceof org.openmrs.Creatable) {
+				description.addProperty("dateCreated");
+				description.addProperty("creator");
+			}
+			if (delegate instanceof Changeable) {
+				description.addProperty("dateChanged");
+				description.addProperty("changedBy");
+			}
+			if (delegate instanceof Retireable) {
+				description.addProperty("retired");
+				description.addProperty("retireReason");
+				description.addProperty("retiredBy");
+				description.addProperty("dateRetired");
+
+			}
+			if (delegate instanceof Voidable) {
+				description.addProperty("voided");
+				description.addProperty("voidReason");
+				description.addProperty("voidedBy");
+				description.addProperty("dateVoided");
+			}
+		}
+
+		return description;
+	}
 }

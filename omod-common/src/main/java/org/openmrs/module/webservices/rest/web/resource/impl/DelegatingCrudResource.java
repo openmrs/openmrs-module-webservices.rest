@@ -102,37 +102,9 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		} else {
 			handler = this;
 		}
-		
+
 		T delegate = handler.newDelegate(propertiesToCreate);
-		DelegatingResourceDescription description = handler.getCreatableProperties();
-		if (propertiesToCreate.containsKey("uuid")) {
-			description.addProperty("uuid");
-		}
-
-		if (Context.hasPrivilege(RestConstants.PRIV_SET_AUDIT_DATA)) {
-			if (delegate instanceof org.openmrs.Creatable) {
-				description.addProperty("dateCreated");
-				description.addProperty("creator");
-			}
-			if (delegate instanceof Changeable) {
-				description.addProperty("dateChanged");
-				description.addProperty("changedBy");
-			}
-			if (delegate instanceof Retireable) {
-				description.addProperty("retired");
-				description.addProperty("retireReason");
-				description.addProperty("retiredBy");
-				description.addProperty("dateRetired");
-
-			}
-			if (delegate instanceof Voidable) {
-				description.addProperty("voided");
-				description.addProperty("voidReason");
-				description.addProperty("voidedBy");
-				description.addProperty("dateVoided");
-			}
-		}
-
+		DelegatingResourceDescription description = buildCreatableProperties(delegate, handler, propertiesToCreate);
 		setConvertedProperties(delegate, propertiesToCreate, description, true);
 		return delegate;
 	}
