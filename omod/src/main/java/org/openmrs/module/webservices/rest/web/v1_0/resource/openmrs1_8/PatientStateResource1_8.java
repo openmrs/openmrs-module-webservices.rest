@@ -112,6 +112,7 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	public PatientState save(PatientState delegate) {
 		PatientProgram parent = delegate.getPatientProgram();
 		parent.getStates().add(delegate);
+		Context.getProgramWorkflowService().savePatientProgram(parent);
 		return delegate;
 	}
 	
@@ -161,6 +162,8 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("state");
+		d.addProperty("startDate");
+		d.addProperty("endDate");
 		return d;
 	}
 	
