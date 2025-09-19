@@ -10,18 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs2_0;
 
 import org.openmrs.Allergen;
-import org.openmrs.Concept;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ConceptResource1_11;
 
 /**
  * An implementation of Converter to be able to create a representation from a Allergen when
@@ -44,12 +38,14 @@ public class AllergenConverter2_0 extends BaseDelegatingConverter<Allergen> {
 			description.addProperty("allergenType", Representation.REF);
 			description.addProperty("codedAllergen", Representation.REF);
 			description.addProperty("nonCodedAllergen");
+			return description;
 		} else if (rep instanceof FullRepresentation) {
 			description.addProperty("allergenType", Representation.DEFAULT);
 			description.addProperty("codedAllergen", Representation.DEFAULT);
 			description.addProperty("nonCodedAllergen");
+			return description;
 		}
-		return description;
+		return null;
 	}
 	
 	/**
@@ -68,18 +64,5 @@ public class AllergenConverter2_0 extends BaseDelegatingConverter<Allergen> {
 		return new Allergen();
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T,
-	 *      Representation)
-	 */
-	@Override
-	public SimpleObject asRepresentation(Allergen instance, Representation rep) throws ConversionException {
-		SimpleObject allergenObject = new SimpleObject();
-		allergenObject.add("allergenType", instance.getAllergenType());
-		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Concept.class);
-		allergenObject.add("codedAllergen", conceptResource.asRepresentation(instance.getCodedAllergen(), rep));
-		allergenObject.add("nonCodedAllergen", instance.getNonCodedAllergen());
-		return allergenObject;
-	}
+
 }

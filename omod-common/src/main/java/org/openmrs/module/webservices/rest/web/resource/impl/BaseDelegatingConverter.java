@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
+import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
@@ -62,8 +63,15 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 	public SimpleObject asRepresentation(T delegate, Representation rep) throws ConversionException {
 		if (delegate == null)
 			throw new NullPointerException();
-		
-		DelegatingResourceDescription description = getRepresentationDescription(rep);
+
+		DelegatingResourceDescription description;
+		if (rep instanceof CustomRepresentation) {
+			description = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) rep);
+		}
+		else {
+			description = getRepresentationDescription(rep);
+		}
+
 		return convertDelegateToRepresentation(delegate, description);
 	}
 	
