@@ -17,6 +17,7 @@ import io.swagger.models.properties.RefProperty;
 import io.swagger.models.properties.StringProperty;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
+import org.openmrs.PatientState;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -34,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = PatientProgram.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" }, order = 1)
 public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<PatientProgram> {
@@ -46,6 +48,11 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	@PropertyGetter("display")
 	public String getDisplayString(PatientProgram patientProgram) {
 		return patientProgram.getProgram().getName();
+	}
+
+	@PropertyGetter("states")
+	public List<PatientState> getStates(PatientProgram patientProgram) {
+		return patientProgram.getStates().stream().filter(patientState -> !patientState.getVoided()).collect(Collectors.toList());
 	}
 	
 	@Override

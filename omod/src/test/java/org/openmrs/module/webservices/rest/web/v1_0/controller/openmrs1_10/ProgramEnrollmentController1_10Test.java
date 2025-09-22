@@ -167,7 +167,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		Assert.assertEquals(stateStartDate, existingStateEndDate);
 		Assert.assertFalse(existingPatientState.getVoided());
 		Assert.assertFalse(transitedPatientState.getVoided());
-		
+
 		//Delete the last patient state
 		req = newDeleteRequest(getURI() + "/" + getUuid() + "/state/" + transitedPatientState.getUuid(), new Parameter(
 		        "!purge", ""), new Parameter("reason", "none"));
@@ -182,6 +182,13 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		Assert.assertTrue(voidedPatientState.getVoided());
 		Assert.assertFalse(existingPatientState.getVoided());
+
+		// confirm that the voided state is not returned when we re-request the program
+		req = request(RequestMethod.GET, getURI() + "/" + getUuid()) ;
+		req.setParameter("v", "custom:(states:(uuid,state:(uuid)))");
+		result = deserialize(handle(req));
+		Assert.assertEquals(1, ((List<?>) Util.getByPath(result,"states")).size());
+		Assert.assertEquals(existingPatientState.getState().getUuid(), Util.getByPath(result,"states[0]/state/uuid") );
 	}
 	
 	private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {
