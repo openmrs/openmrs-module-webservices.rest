@@ -50,10 +50,10 @@ public class PatientAllergyResource2_0 extends DelegatingSubResource<Allergy, Pa
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("uuid");
-			description.addProperty("allergen", Representation.REF);
+			description.addProperty("allergen", Representation.DEFAULT);
 			description.addProperty("severity", Representation.REF);
 			description.addProperty("comment");
-			description.addProperty("reactions", Representation.REF);
+			description.addProperty("reactions", Representation.DEFAULT);
 			description.addProperty("patient", Representation.REF);
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);

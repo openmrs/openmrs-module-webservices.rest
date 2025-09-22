@@ -10,18 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.converter.openmrs2_0;
 
 import org.openmrs.AllergyReaction;
-import org.openmrs.Concept;
 import org.openmrs.annotation.Handler;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingConverter;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.response.ConversionException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ConceptResource1_11;
+
 
 /**
  * An implementation of Converter to be able to create a representation from a AllergyReaction when
@@ -43,11 +38,13 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 		if (rep instanceof DefaultRepresentation) {
 			description.addProperty("reaction", Representation.REF);
 			description.addProperty("reactionNonCoded");
+			return description;
 		} else if (rep instanceof FullRepresentation) {
 			description.addProperty("reaction", Representation.DEFAULT);
 			description.addProperty("reactionNonCoded");
+			return  description;
 		}
-		return description;
+		return null;
 	}
 	
 	/**
@@ -66,18 +63,5 @@ public class AllergyReactionConverter2_0 extends BaseDelegatingConverter<Allergy
 		return new AllergyReaction();
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.api.Converter#asRepresentation(T,
-	 *      Representation)
-	 */
-	@Override
-	public SimpleObject asRepresentation(AllergyReaction instance, Representation rep) throws ConversionException {
-		SimpleObject allergenReactionObject = new SimpleObject();
-		Concept reaction = instance.getReaction();
-		ConceptResource1_11 conceptResource = (ConceptResource1_11) Context.getService(RestService.class)
-		        .getResourceBySupportedClass(Concept.class);
-		allergenReactionObject.add("reaction", conceptResource.asRepresentation(reaction, rep));
-		allergenReactionObject.add("reactionNonCoded", instance.getReactionNonCoded());
-		return allergenReactionObject;
-	}
+
 }
