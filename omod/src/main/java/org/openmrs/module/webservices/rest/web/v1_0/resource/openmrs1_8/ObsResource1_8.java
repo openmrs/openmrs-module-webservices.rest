@@ -182,6 +182,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		description.addProperty("comment");
 		description.addProperty("value");
 		description.addProperty("valueModifier");
+		description.addProperty("valueComplex");
 		
 		return description;
 	}
