@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Set;
 
 /**
  * Base controller that handles exceptions (via {@link BaseRestController}) and also standard CRUD
@@ -211,4 +212,37 @@ public class MainResourceController extends BaseRestController {
 		}
 	}
 	
+	/**
+	 * Performs a search on the given resource with the specified SearchHandler
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 */
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/{resource}/search/{searchHandlerId}", method = {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	public SimpleObject searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
+					HttpServletRequest request, HttpServletResponse response) {
+		baseUriSetup.setup(request);
+		String resourceName = buildResourceName(resource);
+		Object res = restService.getResourceByName(resourceName);
+		
+		RequestContext context = RestUtil.getRequestContext(request, response, Representation.REF);
+
+		Set<SearchHandler> handlers = restService.getSearchHandlers(resourceName);
+		SearchHandler searchHandler = null;
+		for(SearchHandler sh: handlers) {
+			if(sh.getSearchConfig().getId().equals(searchHandlerId)) {
+				searchHandler = sh;
+				break;
+			}
+		}
+		if(searchHandler != null) {
+			Converter conv = res instanceof Converter ? (Converter) res : null;
+			return searchHandler.search(context).toSimpleObject(conv);
+		} else {
+			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " does not have search handler: " + searchHandlerId);
+		}
+	}
 }
