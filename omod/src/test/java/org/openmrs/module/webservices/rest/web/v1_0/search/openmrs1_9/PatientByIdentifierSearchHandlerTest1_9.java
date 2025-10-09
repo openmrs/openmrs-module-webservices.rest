@@ -85,4 +85,16 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		List<Object> hits = (List<Object>) result.get("results");
 		Assert.assertEquals(1, hits.size());
 	}
+	
+	@Test
+	public void patientByIdentifierSearchHandler_shouldReturnPatientByIdentifier_matchStart() throws Exception {
+		String searchHandlerURI = getURI() + "/search/patientByIdentifier";
+		MockHttpServletRequest req = request(RequestMethod.GET, searchHandlerURI);
+		req.addParameter("identifier", "7T");
+		req.addParameter("searchType", "start");
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
+		Assert.assertEquals(1, hits.size());
+	}
 }

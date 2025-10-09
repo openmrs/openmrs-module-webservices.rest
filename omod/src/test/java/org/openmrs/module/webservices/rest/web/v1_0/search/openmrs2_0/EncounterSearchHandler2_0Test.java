@@ -90,4 +90,21 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
         Assert.assertEquals(3, totalCount);
         Assert.assertNotEquals(encounters.size(), totalCount);
     }
+
+    @Test
+    public void defaultSearchHandler_shouldReturnEncountersWithTotalCountFilteredByPatientLimitedToOne() throws Exception {
+        String searchHandlerURI = getURI() + "/search/default";
+        MockHttpServletRequest req = request(RequestMethod.GET, searchHandlerURI);
+        req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
+        req.addParameter("limit", String.valueOf(1));
+        req.addParameter("totalCount", String.valueOf(Boolean.TRUE));
+
+        SimpleObject result = deserialize(handle(req));
+        List<Encounter> encounters = result.get("results");
+        Assert.assertEquals(1, encounters.size());
+        int totalCount = result.get("totalCount");
+        Assert.assertNotNull(totalCount);
+        Assert.assertEquals(3, totalCount);
+        Assert.assertNotEquals(encounters.size(), totalCount);
+    }
 }
