@@ -86,6 +86,10 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		Assert.assertEquals(1, hits.size());
 	}
 	
+	/**
+	 * Same as previous test, but invokes the patientByIdentifier SearchHandler
+	 * explicitly via the URI
+	 */
 	@Test
 	public void patientByIdentifierSearchHandler_shouldReturnPatientByIdentifier_matchStart() throws Exception {
 		String searchHandlerURI = getURI() + "/search/patientByIdentifier";
