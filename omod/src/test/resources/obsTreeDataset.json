@@ -7,7 +7,10 @@
       "subSets" : [ {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "7.0"
+          "value" : "7.0",
+          "interpretation" : "NORMAL",
+          "hiAbsolute" : 60.0,
+          "hiCritical" : 68.0
         } ],
         "datatype" : "Numeric",
         "display" : "Hematocrit",
