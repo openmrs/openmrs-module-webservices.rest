@@ -160,6 +160,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		DelegatingResourceDescription d = new DelegatingResourceDescription();
 		d.addRequiredProperty("encounter");
 		d.addProperty("action");
+		d.addProperty("orderNumber");
 		d.addProperty("accessionNumber");
 		d.addProperty("dateActivated");
 		d.addProperty("scheduledDate");
