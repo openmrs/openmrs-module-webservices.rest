@@ -33,5 +33,13 @@ public class OrderResource2_2 extends OrderResource1_10 {
 		}
 		return delegatingResourceDescription;
 	}
-	
+
+	@Override
+	public DelegatingResourceDescription getCreatableProperties() {
+		DelegatingResourceDescription d = super.getCreatableProperties();
+		d.addProperty("fulfillerStatus");
+		d.addProperty("fulfillerComment");
+		return d;
+	}
+
 }
