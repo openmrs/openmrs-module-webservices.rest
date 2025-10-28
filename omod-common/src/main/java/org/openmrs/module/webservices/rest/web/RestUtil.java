@@ -865,10 +865,10 @@ public class RestUtil implements GlobalPropertyListener {
 			map.put("code", "");
 			map.put("detail", "");
 		}
+		map.put("rawMessage", ex.getMessage());
 		String translatedMessage = Context.getMessageSourceService().getMessage(ex.getMessage(), null, null, Context.getLocale());
-		if(translatedMessage != null) {
-			map.put("translatedMessage", translatedMessage);
-		}
+		map.put("translatedMessage", translatedMessage);
+		
 		return new SimpleObject().add("error", map);
 	}
 	
