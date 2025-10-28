@@ -838,7 +838,7 @@ public class RestUtil implements GlobalPropertyListener {
 			cause = cause.getCause();
 		}
 		
-		LinkedHashMap map = new LinkedHashMap();
+		LinkedHashMap<String, String> map = new LinkedHashMap<>();
 		if (reason != null && !reason.isEmpty()) {
 			map.put("message", reason + " [" + message + "]");
 		} else {
@@ -864,6 +864,10 @@ public class RestUtil implements GlobalPropertyListener {
 		} else {
 			map.put("code", "");
 			map.put("detail", "");
+		}
+		String translatedMessage = Context.getMessageSourceService().getMessage(ex.getMessage(), null, null, Context.getLocale());
+		if(translatedMessage != null) {
+			map.put("translatedMessage", translatedMessage);
 		}
 		return new SimpleObject().add("error", map);
 	}
