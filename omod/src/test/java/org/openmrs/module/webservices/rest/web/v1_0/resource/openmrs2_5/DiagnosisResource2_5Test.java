@@ -48,7 +48,7 @@ public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<Diagnos
 
     @Override
     public String getUuidProperty() {
-        return RestTestConstants2_2.DIAGNOSIS_UUID;
+        return "29bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a1";
     }
 
     @Override
@@ -91,8 +91,8 @@ public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<Diagnos
         String uuid = "a303bbfb-w5w4-25d1-9f11-4f33f99d456r";
         Diagnosis diagnosis = new Diagnosis();
         diagnosis.setUuid(uuid);
-        diagnosis.setEncounter(encounterService.getEncounter(1));
-        diagnosis.setPatient(patientService.getPatient(1));
+        diagnosis.setEncounter(encounterService.getEncounter(1001));
+        diagnosis.setPatient(patientService.getPatient(2));
         diagnosis.setRank(2);
 
         final String NAMESPACE = "namespace";

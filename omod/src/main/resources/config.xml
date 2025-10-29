@@ -20,32 +20,17 @@
 	<!--Overwrite until 2.4.6 released-->
 	<!--<require_version>${openmrs.version}</require_version>-->
 	<require_version>2.4.5</require_version>
-	
+
 	<aware_of_modules>
 	    <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
 	</aware_of_modules>
-	
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>
 		<class>org.openmrs.module.webservices.rest.web.AdminSection</class>
 	</extension>
-	
-	<conditionalResources>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.4.*</path>
-			<openmrsVersion>2.4.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.5.*</path>
-			<openmrsVersion>2.5.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.7.*</path>
-			<openmrsVersion>2.7.* - 9.*</openmrsVersion>
-		</conditionalResource>
-	</conditionalResources>
-	
+
 	<!-- AOP -->
 	
 	<!-- Required Privileges -->

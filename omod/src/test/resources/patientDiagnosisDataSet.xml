@@ -11,22 +11,14 @@
 
 -->
 <dataset>
-	<concept concept_id="1" retired="true" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" uuid="c59ddec0-7863-11e3-981f-0800200c9a66"/>
-	<concept concept_id="2" retired="true" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" uuid="d59ddec0-7863-11e3-981f-0800200c9a66"/>
-	<concept_name concept_id="1" name="mg" concept_name_id="1" locale="en" creator="1" date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="df215350-7863-11e3-981f-0800200c9a66"/>
-	<concept_name concept_id="2" name="ka" concept_name_id="2" locale="en" creator="1" date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="cf215350-7863-11e3-981f-0800200c9a66"/>
-
-	<patient patient_id="1" creator="1" date_created="2017-08-12 00:00:00.0" date_changed="2017-08-12 00:00:00.0" voided="false" />
-	<patient patient_id="2" creator="1" date_created="2017-08-12 00:00:00.0" date_changed="2017-08-12 00:00:00.0" voided="false" />
-	<encounter encounter_id="1" encounter_type="1" patient_id="1" location_id="1" form_id="1" creator="1" encounter_datetime="2017-08-12 00:00:00.0" date_created="2017-08-12 00:00:00.0" voided="false" visit_id="1" uuid="44444-fcdb-4a5b-97ea-0d5c4b4315a1"/>
-	<encounter encounter_id="2" encounter_type="1" patient_id="2" location_id="1" form_id="1" creator="1" encounter_datetime="2017-08-12 00:00:00.0" date_created="2017-08-12 00:00:00.0" voided="false" visit_id="1" uuid="34444-fcdb-4a5b-97ea-0d5c4b4315a1"/>
-	<encounter encounter_id="3" encounter_type="1" patient_id="2" location_id="1" form_id="1" creator="1" encounter_datetime="2017-08-12 00:00:00.0" date_created="2017-08-12 00:00:00.0" voided="false" visit_id="1" uuid="54444-fcdb-4a5b-97ea-0d5c4b4315a1"/>
-
-	<conditions condition_id="1" patient_id="1" creator="1" date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED" onset_date="2017-01-12 00:00:00" voided="false" uuid="c804ee60-ecbc-4d70-abda-1e4f6f64e5b5"/>
-	<conditions condition_id="2" patient_id="2" creator="1" date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED" onset_date="2017-01-12 00:00:00" voided="false" uuid="e804ee60-ecbc-4d70-abda-1e4f6f64e5b5"/>
-
-	<encounter_diagnosis diagnosis_id="1" encounter_id="1" condition_id="1" certainty="CONFIRMED" dx_rank="1" uuid="29bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a1" creator="1" date_created="2017-08-12 00:00:00.0" voided="false" patient_id="1" />
-	<encounter_diagnosis diagnosis_id="2" encounter_id="2" condition_id="2" certainty="CONFIRMED" dx_rank="2" uuid="39bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" creator="1" date_created="2017-08-14 00:00:00.0" voided="true" patient_id="1" diagnosis_non_coded="NonCoded"/>
-	<encounter_diagnosis diagnosis_id="3" encounter_id="2" condition_id="2" certainty="CONFIRMED" dx_rank="2" uuid="49bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" creator="1" date_created="2017-08-14 00:00:00.0" voided="false" patient_id="1" diagnosis_non_coded="NonCoded"/>
-	<encounter_diagnosis diagnosis_id="4" encounter_id="3" condition_id="2" certainty="PROVISIONAL" dx_rank="1" uuid="59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" creator="1" date_created="2017-08-14 00:00:00.0" voided="true" patient_id="1" diagnosis_coded_name="1" diagnosis_coded="2"/>
+	<concept concept_id="1001" retired="true" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" uuid="d59ddec0-7863-11e3-981f-0800200c9a66"/>
+	<concept_name concept_id="1001" name="Some Diagnosis" concept_name_id="1001" locale="en" creator="1" date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="df215350-7863-11e3-981f-0800200c9a66"/>
+	<conditions condition_id="1001" patient_id="7" creator="1" date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED" onset_date="2017-01-12 00:00:00" voided="false" uuid="e804ee60-ecbc-4d70-abda-1e4f6f64e5b5"/>
+	<conditions condition_id="1002" patient_id="7" creator="1" date_created="2015-01-12 00:00:00" clinical_status="ACTIVE" verification_status="CONFIRMED" onset_date="2017-01-12 00:00:00" voided="false" uuid="4b2f8e8e-7c91-4268-953b-3987c711f801"/>
+	<encounter_diagnosis diagnosis_id="1001" encounter_id="3" condition_id="1001" certainty="PROVISIONAL" dx_rank="1" uuid="59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" creator="1" date_created="2017-08-14 00:00:00.0" voided="false" patient_id="7" diagnosis_coded_name="1001" diagnosis_coded="1001"/>
+	<encounter_diagnosis diagnosis_id="1002" encounter_id="3" condition_id="1002" certainty="CONFIRMED" dx_rank="2" uuid="39bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" creator="1" date_created="2017-08-14 00:00:00.0" voided="true" patient_id="7" diagnosis_non_coded="NonCoded"/>
+	<encounter_diagnosis diagnosis_id="1003" encounter_id="3" condition_id="1002" certainty="CONFIRMED" dx_rank="2" uuid="a9e13c57-5f0e-4b65-819b-4f0cd312d82d" creator="1" date_created="2017-08-14 00:00:00.0" voided="false" patient_id="7" diagnosis_non_coded="NonCoded"/>
 </dataset>
+
+
+

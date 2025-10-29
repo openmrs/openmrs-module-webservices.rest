@@ -25,11 +25,11 @@ public class RestTestConstants2_2 {
 	
 	public static final String CONDITION_TEST_DATA_XML = "conditionTestDataset.xml";
 	
-	public final static String DIAGNOSIS_UUID = "29bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a1";
+	public final static String DIAGNOSIS_UUID = "59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7";
 	
 	public final static String VOIDED_DIAGNOSIS_UUID = "39bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7";
 	
-	public final static String UPDATABLE_NON_CODED_DIAGNOSIS_UUID = "49bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7";
+	public final static String UPDATABLE_NON_CODED_DIAGNOSIS_UUID = "a9e13c57-5f0e-4b65-819b-4f0cd312d82d";
 	
 	public final static String UPDATABLE_CODED_DIAGNOSIS_UUID = "59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7";
 	

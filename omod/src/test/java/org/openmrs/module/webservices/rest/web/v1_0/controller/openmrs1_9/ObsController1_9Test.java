@@ -246,6 +246,30 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 	}
 
 	@Test
+	public void shouldUploadFileAndFetchComplexObsImg() throws Exception {
+		ConceptComplex conceptComplex = newConceptComplex();
+
+		InputStream in = getClass().getClassLoader().getResourceAsStream("cat.jpg");
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		IOUtils.copy(in, out);
+
+		String json = "{\"concept\":\"" + conceptComplex.getUuid()
+				+ "\", \"person\":\"5946f880-b197-400b-9caa-a3c661d23041\","
+				+ "\"obsDatetime\":\"2015-09-07T00:00:00.000+0530\"}";
+
+		MockMultipartHttpServletRequest request = newUploadRequest(getURI());
+		request.addFile(new MockMultipartFile("file", "cat.jpg", null, out.toByteArray()));
+		request.addParameter("json", json);
+
+		SimpleObject response = deserialize(handle(request));
+
+		MockHttpServletResponse rawResponse = handle(newGetRequest(getURI() + "/" + response.get("uuid") + "/value"));
+
+		assertThat(out.toByteArray(), is(equalTo(rawResponse.getContentAsByteArray())));
+	}
+
+	@Test
 	public void getObs_shouldCreateAnObsWhenTheQuestionConceptIsSetAsAMapContainingTheUuid() throws Exception {
 		long originalCount = getAllCount();
 		SimpleObject obs = new SimpleObject();

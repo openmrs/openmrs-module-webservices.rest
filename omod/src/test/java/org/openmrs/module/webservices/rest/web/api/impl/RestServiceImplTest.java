@@ -494,7 +494,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandler_shouldReturnSearchHandlerMatchingIdSetInGivenParameters() throws Exception {
 		
 		SearchHandler searchHandler = mock(SearchHandler.class);
-		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "Fuzzy search").withRequiredParameters("q").build());
 		when(searchHandler.getSearchConfig()).thenReturn(searchConfig);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler));
@@ -537,12 +537,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandler_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
@@ -595,12 +595,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
@@ -657,12 +657,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	        throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
@@ -684,12 +684,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 			throws Exception {
 
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByName", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByName", "v1/concept", "2.8.*", new SearchQuery.Builder(
 				"description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 				"description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 
@@ -930,17 +930,17 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandlers_shouldReturnSearchHandlersForGivenResourceName() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
 		SearchHandler searchHandler3 = mock(SearchHandler.class);
-		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "2.7.*", new SearchQuery.Builder("description")
+		SearchConfig searchConfig3 = new SearchConfig("default", "v1/order", "2.8.*", new SearchQuery.Builder("description")
 		        .withRequiredParameters("patient").build());
 		when(searchHandler3.getSearchConfig()).thenReturn(searchConfig3);
 		
@@ -1021,12 +1021,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void getSearchHandlers_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
@@ -1055,7 +1055,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("default", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "Search for concepts").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		when(restHelperService.getRegisteredSearchHandlers()).thenReturn(asList(searchHandler1));
@@ -1171,12 +1171,12 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	public void initialize_shouldFailIfTwoSearchHandlersForTheSameResourceHaveTheSameId() throws Exception {
 		
 		SearchHandler searchHandler1 = mock(SearchHandler.class);
-		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig1 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler1.getSearchConfig()).thenReturn(searchConfig1);
 		
 		SearchHandler searchHandler2 = mock(SearchHandler.class);
-		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.7.*", new SearchQuery.Builder(
+		SearchConfig searchConfig2 = new SearchConfig("conceptByMapping", "v1/concept", "2.8.*", new SearchQuery.Builder(
 		        "description").withRequiredParameters("source").withOptionalParameters("code").build());
 		when(searchHandler2.getSearchConfig()).thenReturn(searchConfig2);
 		
