@@ -30,6 +30,7 @@ import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.api.APIException;
+import org.openmrs.module.webservices.RestBaseContextMockTest;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
@@ -46,7 +47,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassH
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8;
-import org.openmrs.test.BaseContextMockTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests {@link RestServiceImpl}.
  */
-public class RestServiceImplTest extends BaseContextMockTest {
+public class RestServiceImplTest extends RestBaseContextMockTest {
 	
 	@Mock
 	RestHelperService restHelperService;
