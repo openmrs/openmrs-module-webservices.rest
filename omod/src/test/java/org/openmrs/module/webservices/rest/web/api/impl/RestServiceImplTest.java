@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -30,8 +29,8 @@ import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.openmrs.api.APIException;
+import org.openmrs.module.webservices.RestBaseContextMockTest;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
@@ -72,7 +71,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests {@link RestServiceImpl}.
  */
-public class RestServiceImplTest {
+public class RestServiceImplTest extends RestBaseContextMockTest {
 	
 	@Mock
 	RestHelperService restHelperService;
@@ -85,11 +84,6 @@ public class RestServiceImplTest {
 	
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
-
-	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
-	}
 	
 	/**
 	 * @verifies return default representation if given null
