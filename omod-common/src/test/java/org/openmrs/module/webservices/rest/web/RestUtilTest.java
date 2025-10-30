@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.GlobalProperty;
+import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -177,7 +178,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailIfAvailable() throws Exception {
-		Exception mockException = Mockito.mock(Exception.class);
+		Exception mockException = Mockito.mock(APIException.class);
 		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
 		StackTraceElement ste = new StackTraceElement("org.mypackage.myclassname", "methodName", "fileName", 149);
 		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] { ste });
@@ -194,7 +195,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailEmptyIfNotAvailable() throws Exception {
-		Exception mockException = Mockito.mock(Exception.class);
+		Exception mockException = Mockito.mock(APIException.class);
 		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
 		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] {});
 		
