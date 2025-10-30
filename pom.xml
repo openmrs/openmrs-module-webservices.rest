@@ -60,16 +60,6 @@
 				<version>${openmrs.version}</version>
 				<type>jar</type>
 				<scope>provided</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
@@ -77,16 +67,6 @@
 				<version>${openmrs.version}</version>
 				<classifier>tests</classifier>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.api</groupId>
@@ -94,16 +74,6 @@
 				<version>${openmrs.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
@@ -112,16 +82,6 @@
 				<classifier>tests</classifier>
 				<type>jar</type>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.test</groupId>
@@ -131,12 +91,8 @@
 				<scope>test</scope>
 				<exclusions>
 					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
+						<groupId>org.mockito</groupId>
+						<artifactId>mockito-core</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -229,6 +185,12 @@
 				<version>1.23.0</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>3.12.4</version>
+				<scope>test</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -293,7 +255,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
