@@ -74,16 +74,6 @@
 				<version>${openmrs.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito2</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
@@ -99,16 +89,6 @@
 				<type>pom</type>
 				<version>${openmrs.version}</version>
 				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-module-junit4</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.powermock</groupId>
-						<artifactId>powermock-api-mockito</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
