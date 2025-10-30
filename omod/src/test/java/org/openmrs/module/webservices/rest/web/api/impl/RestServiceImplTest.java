@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.mockingbird.test.rest.resource.InstantiateExceptionAnimalResource_1_9
 import org.mockingbird.test.rest.resource.UnannotatedAnimalResource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
@@ -82,13 +84,21 @@ public class RestServiceImplTest {
 	
 	@InjectMocks
 	RestService restService = new RestServiceImpl();
-	
+
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	private AutoCloseable closeableMocks;
+
 	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
+	public void setUp() {
+		closeableMocks  = MockitoAnnotations.openMocks(this);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		closeableMocks.close();
+		Mockito.framework().clearInlineMocks();
 	}
 	
 	/**
