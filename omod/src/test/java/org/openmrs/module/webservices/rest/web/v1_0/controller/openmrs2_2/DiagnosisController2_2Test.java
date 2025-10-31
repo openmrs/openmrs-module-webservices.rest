@@ -55,11 +55,11 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.DIAGNOSIS_TEST_DATA_XML);
 		this.diagnosisService = Context.getDiagnosisService();
-		this.encounter = Context.getEncounterService().getEncounter(1);
-		this.patient = Context.getPatientService().getPatient(1);
-		this.condition = Context.getConditionService().getCondition(1);
-		this.concept = Context.getConceptService().getConcept(1);
-		this.conceptName = Context.getConceptService().getConceptName(1);
+		this.encounter = Context.getEncounterService().getEncounter(3); // from standard test dataset
+		this.patient = Context.getPatientService().getPatient(7);  // from standard test dataset
+		this.condition = Context.getConditionService().getCondition(1001);
+		this.concept = Context.getConceptService().getConcept(1001);
+		this.conceptName = Context.getConceptService().getConceptName(1001);
 	}
 	
 	/**
@@ -258,8 +258,8 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		Assert.assertNull(diagnosis.getDiagnosis().getCoded());
 		Assert.assertEquals(2, (int) diagnosis.getRank());
 		Assert.assertEquals("CONFIRMED", diagnosis.getCertainty().toString());
-		Assert.assertEquals("e804ee60-ecbc-4d70-abda-1e4f6f64e5b5", diagnosis.getCondition().getUuid());
-		Assert.assertEquals("34444-fcdb-4a5b-97ea-0d5c4b4315a1", diagnosis.getEncounter().getUuid());
+		Assert.assertEquals("4b2f8e8e-7c91-4268-953b-3987c711f801", diagnosis.getCondition().getUuid());
+		Assert.assertEquals("6519d653-393b-4118-9c83-a3715b82d4ac", diagnosis.getEncounter().getUuid());
 		
 		String json = "{\"diagnosis\":{\"coded\":\"" + concept.getUuid() + "\",\"specificName\":\"" + conceptName.getUuid()
 		        + "\"},\"condition\":\"" + condition.getUuid()
@@ -286,11 +286,11 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 		final String nonCoded = "Some condition";
 		Diagnosis diagnosis = diagnosisService.getDiagnosisByUuid(RestTestConstants2_2.UPDATABLE_CODED_DIAGNOSIS_UUID);
 		
-		Assert.assertTrue(diagnosis.getVoided());
+		Assert.assertFalse(diagnosis.getVoided());
 		Assert.assertNull(diagnosis.getDiagnosis().getNonCoded());
 		Assert.assertEquals(1, (int) diagnosis.getRank());
 		Assert.assertEquals("e804ee60-ecbc-4d70-abda-1e4f6f64e5b5", diagnosis.getCondition().getUuid());
-		Assert.assertEquals("54444-fcdb-4a5b-97ea-0d5c4b4315a1", diagnosis.getEncounter().getUuid());
+		Assert.assertEquals("6519d653-393b-4118-9c83-a3715b82d4ac", diagnosis.getEncounter().getUuid());
 		Assert.assertEquals("PROVISIONAL", diagnosis.getCertainty().toString());
 		
 		String json = "{ \"diagnosis\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + nonCoded
@@ -325,7 +325,7 @@ public class DiagnosisController2_2Test extends MainResourceControllerTest {
 	@Test
 	public void shouldReturnPatientDiagnosis() throws Exception {
 		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
-		request.addParameter("patientUuid", "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562");
+		request.addParameter("patientUuid", "5946f880-b197-400b-9caa-a3c661d23041");
 		request.addParameter("fromDate", "2017-08-11");
 		SimpleObject result = deserialize(handle(request));
 		List<Diagnosis> diagnoses = result.get("results");
