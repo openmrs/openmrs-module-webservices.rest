@@ -52,6 +52,7 @@
 		<jacksonVersion>2.19.1</jacksonVersion>
 	</properties>
 
+	<!-- TODO: combine/simplify the "dependencyManagement" and "dependency" sections into a single "dependency" section and test/remove any unneeded dependencies -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -89,6 +90,9 @@
 				<type>pom</type>
 				<version>${openmrs.version}</version>
 				<scope>test</scope>
+				<!-- in Core 2.8.x, Mockito version was updated to 5.6.0 when building with Java 17 or higher -->
+				<!-- many of the tests weren't working with this version of Mockito, so excluding and included an earlier -->
+				<!-- version (see below) until we get this working -->
 				<exclusions>
 					<exclusion>
 						<groupId>org.mockito</groupId>
