@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.representation.FullRepresentation
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ProviderResource1_9;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.RestConstants1_9;
 
 @Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = { "2.8.* - 9.*" })
 public class ProviderResource2_8 extends ProviderResource1_9 {
@@ -43,4 +44,8 @@ public class ProviderResource2_8 extends ProviderResource1_9 {
         return d;
     }
 
+    @Override
+    public String getResourceVersion() {
+        return RestConstants2_8.RESOURCE_VERSION;
+    }
 }

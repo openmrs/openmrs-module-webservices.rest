@@ -95,6 +95,6 @@ public class ProviderRoleResource2_8 extends MetadataDelegatingCrudResource<Prov
 
     @Override
     public String getResourceVersion() {
-        return "1.9";
+        return RestConstants2_8.RESOURCE_VERSION;
     }
 }
