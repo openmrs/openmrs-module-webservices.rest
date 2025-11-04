@@ -35,7 +35,7 @@ public class ProviderRoleController2_8Test extends MainResourceControllerTest {
     }
 
     @Test
-    public void voidProvider_shouldRetireAProvider() throws Exception {
+    public void voidProvider_shouldRetireAProviderRole() throws Exception {
         ProviderRole providerRole = Context.getProviderService().getProviderRoleByUuid(getUuid());
         Assert.assertFalse(providerRole.isRetired());
 
@@ -49,7 +49,7 @@ public class ProviderRoleController2_8Test extends MainResourceControllerTest {
     }
 
     @Test
-    public void shouldEditAProvider() throws Exception {
+    public void shouldEditAProviderRole() throws Exception {
         String json = "{\"description\":\"new description\"}";
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
