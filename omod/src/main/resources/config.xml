@@ -30,22 +30,7 @@
 		<point>org.openmrs.admin.list</point>
 		<class>org.openmrs.module.webservices.rest.web.AdminSection</class>
 	</extension>
-	
-	<conditionalResources>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.4.*</path>
-			<openmrsVersion>2.4.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.5.*</path>
-			<openmrsVersion>2.5.* - 9.*</openmrsVersion>
-		</conditionalResource>
-		<conditionalResource>
-			<path>/lib/webservices.rest-omod-2.7.*</path>
-			<openmrsVersion>2.7.* - 9.*</openmrsVersion>
-		</conditionalResource>
-	</conditionalResources>
-	
+
 	<!-- AOP -->
 	
 	<!-- Required Privileges -->
