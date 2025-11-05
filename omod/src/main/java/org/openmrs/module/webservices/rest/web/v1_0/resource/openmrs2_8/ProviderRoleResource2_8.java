@@ -21,7 +21,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-
+/**
+ * @since 2.8.0
+ */
 @Resource(name = RestConstants.VERSION_1 + "/providerrole", supportedClass = ProviderRole.class, supportedOpenmrsVersions = { "2.8.* - 9.*" })
 public class ProviderRoleResource2_8 extends MetadataDelegatingCrudResource<ProviderRole> {
 
