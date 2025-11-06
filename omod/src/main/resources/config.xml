@@ -20,11 +20,11 @@
 	<!--Overwrite until 2.4.6 released-->
 	<!--<require_version>${openmrs.version}</require_version>-->
 	<require_version>2.4.5</require_version>
-	
+
 	<aware_of_modules>
 	    <aware_of_module>org.openmrs.module.legacyui</aware_of_module>
 	</aware_of_modules>
-	
+
 	<!-- Extensions -->
 	<extension>
 		<point>org.openmrs.admin.list</point>

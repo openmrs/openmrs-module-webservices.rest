@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <provider_role provider_role_id="1001" name="Binome" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="da7f523f-27ce-4bb2-86d6-6d1d05312bd5"/>
+    <provider_role provider_role_id="1002" name="Binome Supervisor" creator="1" date_created="2005-09-22 00:00:00.0" retired="false" uuid="ea7f523f-27ce-4bb2-86d6-6d1d05312bd5"/>
+    <provider provider_id="4" provider_role_id="1001" person_id="501" name="Ms. Test Provider With Role" identifier="Test4" creator="1" date_created="2015-01-01 00:00:00.0" retired="false" uuid="c23409f7-45d0-4e6f-a1e9-a8b6d64c055b" />
+    <provider provider_id="5" provider_role_id="1002" person_id="8" name="Test Supervisor" identifier="Test5" creator="1" date_created="2015-01-01 00:00:00.0" retired="false" uuid="7f84c276-8b9f-4316-9e0f-3a50af7d7280" />
+</dataset>
