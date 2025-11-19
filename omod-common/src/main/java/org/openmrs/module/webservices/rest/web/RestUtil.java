@@ -456,11 +456,8 @@ public class RestUtil implements GlobalPropertyListener {
 		String temp = request.getParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION);
 		if ("".equals(temp)) {
 			throw new IllegalArgumentException("?v=(empty string) is not allowed");
-		} else if (temp == null) {
+		} else if (temp == null || temp.equalsIgnoreCase(defaultView.getRepresentation())) {
 			ret.setRepresentation(defaultView);
-		} else if (temp.equals(defaultView.getRepresentation())) {
-			throw new IllegalArgumentException(
-			        "Do not specify ?v=" + temp + " because it is the default behavior for this request");
 		} else {
 			ret.setRepresentation(Context.getService(RestService.class).getRepresentation(temp));
 		}

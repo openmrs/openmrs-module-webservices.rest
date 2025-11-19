@@ -101,13 +101,6 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		printXML(xml);
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailIfYouTryToSpecifyDefaultRepOnGetConceptByUuid() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
-		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
-		deserialize(handle(req));
-	}
-	
 	@Test
 	public void shouldListAllUnRetiredConcepts() throws Exception {
 		int totalCount = service.getAllConcepts(null, true, true).size();
