@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 
@@ -36,10 +36,10 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 	
 	@Autowired
 	ObsService obsService;
-	
+
 	@RequestMapping(value = "/{uuid}/value", method = RequestMethod.GET)
 	public void getFile(@PathVariable("uuid") String uuid,
-	        @RequestParam(required = false, defaultValue = "RAW_VIEW") String view, HttpServletResponse response)
+	        @RequestParam(value = "view", required = false, defaultValue = "RAW_VIEW") String view, HttpServletResponse response)
 	        throws Exception {
 		Obs obs = obsService.getObsByUuid(uuid);
 		if (!obs.isComplex()) {

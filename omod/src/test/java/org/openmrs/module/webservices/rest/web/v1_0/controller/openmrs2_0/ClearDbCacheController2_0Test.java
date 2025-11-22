@@ -11,12 +11,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.Person;
@@ -55,8 +54,10 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		//Load the person so that the names are also stored  in person names collection region
 		personService.getPerson(name.getPerson().getPersonId());
 		//Let's have the name in a query cache
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM PersonName WHERE personNameId = ?0");
-		query.setInteger(0, 9351);
+
+		Query<PersonName> query = sessionFactory.getCurrentSession()
+                .createQuery("FROM PersonName WHERE personNameId = ?1", PersonName.class);
+		query.setParameter(1, 9351);
 		query.setCacheable(true);
 		query.setCacheRegion(QUERY_REGION);
 		query.list();
@@ -79,9 +80,9 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		//Load the persons so that the names are also stored in person names collection region
 		personService.getPerson(name1.getPerson().getPersonId()).getNames();
 		personService.getPerson(name2.getPerson().getPersonId()).getNames();
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM PersonName WHERE personNameId IN (?0, ?1)");
-		query.setInteger(0, name1.getPersonNameId());
-		query.setInteger(1, name2.getPersonNameId());
+		Query<PersonName> query = sessionFactory.getCurrentSession().createQuery("FROM PersonName WHERE personNameId IN (?1, ?2)", PersonName.class);
+		query.setParameter(1, name1.getPersonNameId());
+		query.setParameter(2, name2.getPersonNameId());
 		query.setCacheable(true);
 		query.setCacheRegion(QUERY_REGION);
 		query.list();
@@ -98,10 +99,8 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		assertFalse(sessionFactory.getCache().containsEntity(PERSON_NAME_CLASS, ID_2));
 		assertFalse(sessionFactory.getCache().containsEntity(PERSON_NAME_CLASS, ID_8));
 		//All persistent collections containing the names should have been discarded
-		assertNull(sessionFactory.getStatistics().getSecondLevelCacheStatistics(Person.class.getName() + ".names")
-		        .getEntries().get(name1.getPerson().getPersonId()));
-		assertNull(sessionFactory.getStatistics().getSecondLevelCacheStatistics(Person.class.getName() + ".names")
-		        .getEntries().get(name2.getPerson().getPersonId()));
+		assertEquals(0, sessionFactory.getStatistics().getDomainDataRegionStatistics(Person.class.getName() + ".names")
+		        .getElementCountInMemory());
 	}
 	
 	@Test
@@ -112,9 +111,9 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		personService.getPerson(name1.getPerson().getPersonId()).getNames();
 		personService.getPerson(name2.getPerson().getPersonId()).getNames();
 		locationService.getLocation(ID_2);
-		Query query = sessionFactory.getCurrentSession().createQuery("FROM PersonName WHERE personNameId IN (?0, ?1)");
-		query.setInteger(0, name1.getPersonNameId());
-		query.setInteger(1, name2.getPersonNameId());
+		Query<PersonName> query = sessionFactory.getCurrentSession().createQuery("FROM PersonName WHERE personNameId IN (?1, ?2)", PersonName.class);
+		query.setParameter(1, name1.getPersonNameId());
+		query.setParameter(2, name2.getPersonNameId());
 		query.setCacheable(true);
 		query.setCacheRegion(QUERY_REGION);
 		query.list();
@@ -131,10 +130,8 @@ public class ClearDbCacheController2_0Test extends RestControllerTestUtils {
 		assertFalse(sessionFactory.getCache().containsEntity(PERSON_NAME_CLASS, ID_8));
 		assertFalse(sessionFactory.getCache().containsEntity(Location.class, ID_2));
 		//All persistent collections containing the names should have been discarded
-		assertNull(sessionFactory.getStatistics().getSecondLevelCacheStatistics(Person.class.getName() + ".names")
-		        .getEntries().get(name1.getPerson().getPersonId()));
-		assertNull(sessionFactory.getStatistics().getSecondLevelCacheStatistics(Person.class.getName() + ".names")
-		        .getEntries().get(name2.getPerson().getPersonId()));
+		assertEquals(0, sessionFactory.getStatistics().getDomainDataRegionStatistics(Person.class.getName() + ".names")
+		        .getElementCountInMemory());
 	}
 	
 	@Test

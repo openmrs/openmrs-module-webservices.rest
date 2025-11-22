@@ -125,7 +125,7 @@ public class HL7MessageResource1_8 extends DataDelegatingCrudResource<IncomingHl
 	/**
 	 * It needs to be overwritten to allow for hidden properties: source, sourceKey and data. They
 	 * are automatically extracted from the hl7 property and populated in
-	 * {@link HL7MessageController1_8#create(String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}
+	 * {@link HL7MessageController1_8#create(String, jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)}
 	 * . They should not be POSTed by the user.
 	 * 
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#setConvertedProperties(Object,
