@@ -28,7 +28,7 @@ public interface RestHelperService {
 	
 	<T> T getObjectById(Class<? extends T> type, Serializable id);
 	
-	<T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields);
+	<T> List<T> getObjectsByFields(Class<T> type, Field... fields);
 	
 	List<Patient> getPatients(Collection<Integer> patientIds);
 	

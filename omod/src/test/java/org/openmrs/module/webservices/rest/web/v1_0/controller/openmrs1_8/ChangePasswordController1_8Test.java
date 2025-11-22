@@ -131,16 +131,16 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	@Test
 	public void testUserChangeOtherUsersPasswordWithOutPrivilege() throws Exception {
 		setUpUser("daemon");
-		
+
 		String newPassword = "newPassword9";
-		
+
 		expectedException.expect(APIAuthenticationException.class);
-		
+
 		handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID, "{\"newPassword\":\"" + newPassword
 		        + "\"}"));
-		
+
 	}
-	
+
 	@Test
 	public void testThrowExceptionIfUserIsNotAvailable() throws Exception {
 		setUpUser("daemon");

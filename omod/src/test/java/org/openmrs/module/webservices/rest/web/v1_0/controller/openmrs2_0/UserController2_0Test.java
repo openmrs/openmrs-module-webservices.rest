@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.codehaus.jackson.map.ObjectMapper;

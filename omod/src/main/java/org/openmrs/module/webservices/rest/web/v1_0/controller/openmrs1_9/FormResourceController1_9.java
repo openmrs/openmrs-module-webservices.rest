@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller("webservices.rest.formResourceController")
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{formUuid}/resource/{resourceUuid}/value")
 public class FormResourceController1_9 extends MainResourceController {
 	
 	@Autowired
@@ -38,7 +38,7 @@ public class FormResourceController1_9 extends MainResourceController {
 	
 	@RequestMapping(method = RequestMethod.POST, headers = { "Content-Type=multipart/form-data" })
 	@ResponseBody
-	public Object createResourceValue(@PathVariable("uuid") String formUuid,
+	public Object createResourceValue(@PathVariable("formUuid") String formUuid,
 	        @PathVariable("resourceUuid") String resourceUuid, @RequestParam("value") MultipartFile file,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -57,7 +57,7 @@ public class FormResourceController1_9 extends MainResourceController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public void getResourceValue(@PathVariable("uuid") String formUuid, @PathVariable("resourceUuid") String resourceUuid,
+	public void getResourceValue(@PathVariable("formUuid") String formUuid, @PathVariable("resourceUuid") String resourceUuid,
 	        HttpServletRequest request, HttpServletResponse response) throws Exception {
 		//Get the resource
 		FormResource resource = formService.getFormResourceByUuid(resourceUuid);

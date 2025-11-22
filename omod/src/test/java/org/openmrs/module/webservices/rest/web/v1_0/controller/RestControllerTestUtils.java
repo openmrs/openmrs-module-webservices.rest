@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
