@@ -30,6 +30,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -61,9 +63,26 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 	public MockHttpServletRequest request(RequestMethod method, String requestURI) {
 		MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + getNamespace() + "/"
 				+ requestURI);
-		request.addHeader("content-type", "application/json");
-		return request;
+		return request(method, requestURI, MediaType.APPLICATION_JSON_VALUE);
 	}
+
+    /**
+     * Creates a request from the given parameters.
+     * <p>
+     * The requestURI is automatically preceded with "/rest/" + RestConstants.VERSION_1.
+     *
+     * @param method
+     * @param requestURI
+     * @return
+     */
+    public MockHttpServletRequest request(RequestMethod method, String requestURI, String contentType) {
+        MockHttpServletRequest request = new MockHttpServletRequest(method.toString(), "/rest/" + getNamespace() + "/"
+                + requestURI);
+        if (method != RequestMethod.GET && contentType != null && !contentType.isEmpty()) {
+            request.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
+        }
+        return request;
+    }
 
 	/**
 	 * Override this method to test a different namespace than v1.
