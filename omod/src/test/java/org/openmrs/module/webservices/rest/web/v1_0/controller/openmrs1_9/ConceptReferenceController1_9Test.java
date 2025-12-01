@@ -9,12 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -91,6 +96,56 @@ public class ConceptReferenceController1_9Test extends RestControllerTestUtils {
 		assertThat(result, notNullValue());
 		assertThat(result.size(), is(0));
 	}
+
+    @Test
+    public void shouldSupportPostRequests() throws Exception {
+        // Arrange
+        MockHttpServletRequest request = request(RequestMethod.POST, getURI(), MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        request.addParameter("references", CONCEPT_UUID);
+
+        // Act
+        SimpleObject result = deserialize(handle(request));
+
+        // Assert
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(CONCEPT_UUID), notNullValue());
+        assertThat(((Map<String, String>) result.get(CONCEPT_UUID)).get("uuid"), equalTo(CONCEPT_UUID));
+    }
+
+    @Test
+    public void shouldSupportPostRequestsUsingMultipartForm() throws Exception {
+        // Arrange
+        MockHttpServletRequest request = new MockMultipartHttpServletRequest();
+        request.setMethod(RequestMethod.POST.name());
+        request.setRequestURI("/rest/" + getNamespace() + "/" + getURI());
+        request.addParameter("references", CONCEPT_UUID);
+
+        // Act
+        SimpleObject result = deserialize(handle(request));
+
+        // Assert
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(CONCEPT_UUID), notNullValue());
+        assertThat(((Map<String, String>) result.get(CONCEPT_UUID)).get("uuid"), equalTo(CONCEPT_UUID));
+    }
+
+    @Test
+    public void shouldSupportPostRequestsWithJson() throws Exception {
+        // Arrange
+        MockHttpServletRequest request = request(RequestMethod.POST, getURI());
+        request.setContent(("{\"references\": [\"" + CONCEPT_UUID + "\"]}").getBytes(StandardCharsets.UTF_8));
+
+        // Act
+        SimpleObject result = deserialize(handle(request));
+
+        // Assert
+        assertThat(result, notNullValue());
+        assertThat(result.size(), is(1));
+        assertThat(result.get(CONCEPT_UUID), notNullValue());
+        assertThat(((Map<String, String>) result.get(CONCEPT_UUID)).get("uuid"), equalTo(CONCEPT_UUID));
+    }
 	
 	@Test
 	public void shouldSupportRefRepresentation() throws Exception {
