@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Resource for Encounters, supporting standard CRUD operations
@@ -257,6 +258,12 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		for (Obs o : obs)
 			instance.addObs(o);
 	}
+
+    @PropertyGetter("orders")
+    public static Set<Order> getOrders(Encounter instance) {
+        return instance.getOrders().stream().filter(order -> !order.getVoided()).collect(Collectors.toSet());
+    }
+
 	
 	@PropertySetter("orders")
 	public static void setOrders(Encounter instance, Set<Order> orders) {

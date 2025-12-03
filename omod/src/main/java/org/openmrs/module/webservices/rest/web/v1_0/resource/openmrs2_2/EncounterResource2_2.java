@@ -9,14 +9,20 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import org.openmrs.Diagnosis;
 import org.openmrs.Encounter;
+import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.EncounterResource1_9;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * {@link Resource} for {@link EncounterResource2_2}, supporting standard CRUD operations
@@ -54,8 +60,14 @@ public class EncounterResource2_2 extends EncounterResource1_9 {
 		description.addProperty("diagnoses");
 		return description;
 	}
-	
-	/**
+
+    @PropertyGetter("diagnoses")
+    public static Set<Diagnosis> getDiagnoses(Encounter instance) {
+        return instance.getDiagnoses().stream().filter(diagnosis -> !diagnosis.getVoided()).collect(Collectors.toSet());
+    }
+
+
+    /**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getResourceVersion()
 	 */
 	@Override
