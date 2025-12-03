@@ -261,7 +261,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 
     @PropertyGetter("orders")
     public static Set<Order> getOrders(Encounter instance) {
-        return instance.getOrders().stream().filter(order -> !order.getVoided()).collect(Collectors.toSet());
+        return instance.getOrders().stream().filter(order -> !order.getVoided()).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 	

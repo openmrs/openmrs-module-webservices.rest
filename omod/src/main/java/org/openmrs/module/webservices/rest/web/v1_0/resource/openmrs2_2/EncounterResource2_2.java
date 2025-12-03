@@ -21,6 +21,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.EncounterResource1_9;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,7 +64,7 @@ public class EncounterResource2_2 extends EncounterResource1_9 {
 
     @PropertyGetter("diagnoses")
     public static Set<Diagnosis> getDiagnoses(Encounter instance) {
-        return instance.getDiagnoses().stream().filter(diagnosis -> !diagnosis.getVoided()).collect(Collectors.toSet());
+        return instance.getDiagnoses().stream().filter(diagnosis -> !diagnosis.getVoided()).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 
