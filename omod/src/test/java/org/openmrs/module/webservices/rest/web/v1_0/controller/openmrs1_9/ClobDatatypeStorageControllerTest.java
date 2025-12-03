@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.sql.Connection;
 import java.sql.ResultSet;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ClobDatatypeStorageControllerTest extends MainResourceControllerTest {
 	

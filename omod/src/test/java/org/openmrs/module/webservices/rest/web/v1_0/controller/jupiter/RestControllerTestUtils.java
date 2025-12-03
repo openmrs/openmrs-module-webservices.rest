@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;

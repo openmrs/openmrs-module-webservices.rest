@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -36,7 +36,7 @@ public class ClobDatatypeStorageController {
 	
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public String create(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response)
+	public String create(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response)
 	        throws IOException {
 		ClobDatatypeStorage clobData = new ClobDatatypeStorage();
 		String encoding = request.getHeader("Content-Encoding");

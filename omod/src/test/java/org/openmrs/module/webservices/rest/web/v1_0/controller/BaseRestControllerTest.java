@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.junit.Assert;
@@ -64,7 +64,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	/**
 	 * @verifies return unauthorized if not logged in
 	 * @see BaseRestController#apiAuthenticationExceptionHandler(Exception,
-	 *      javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 *      jakarta.servlet.http.HttpServletRequest, HttpServletResponse)
 	 */
 	@Test
 	public void apiAuthenticationExceptionHandler_shouldReturnUnauthorizedIfNotLoggedIn() throws Exception {
@@ -78,7 +78,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	/**
 	 * @verifies return forbidden if logged in
 	 * @see BaseRestController#apiAuthenticationExceptionHandler(Exception,
-	 *      javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 *      jakarta.servlet.http.HttpServletRequest, HttpServletResponse)
 	 */
 	@Test
 	public void apiAuthenticationExceptionHandler_shouldReturnForbiddenIfLoggedIn() throws Exception {

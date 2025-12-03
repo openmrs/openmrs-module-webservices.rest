@@ -346,6 +346,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		propertyMap.put("obsDatetime", "2013-12-09T00:00:00.000+0100");
 		
 		resource.setConvertedProperties(obs, propertyMap, resource.getUpdatableProperties(), false);
-		org.springframework.util.Assert.isTrue(((Double) new ObsResource2_1().getValue(obs)) == 10.0);
+		org.springframework.util.Assert.isTrue(((Double) new ObsResource2_1().getValue(obs)) == 10.0,
+                "Expected Obs value to equal 10.0");
 	}
 }

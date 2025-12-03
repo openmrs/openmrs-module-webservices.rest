@@ -34,8 +34,8 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -496,7 +496,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @return a {@link RequestContext} object filled with all the necessary values
-	 * @see getRequestContext(javax.servlet.http.HttpServletRequest,
+	 * @see getRequestContext(jakarta.servlet.http.HttpServletRequest,
 	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
@@ -544,21 +544,21 @@ public class RestUtil implements GlobalPropertyListener {
 	}
 	
 	/**
-	 * Sets the HTTP status on the response according to the exception
+	 * Sets the HTTP error status on the response according to the exception and sends as an error response
 	 * 
 	 * @param ex
 	 * @param response
 	 */
-	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
+	public static void sendErrorResponse(Throwable ex, HttpServletResponse response) throws IOException {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
 			if (StringUtils.isNotBlank(ann.reason())) {
-				response.setStatus(ann.value().value(), ann.reason());
+				response.sendError(ann.value().value(), ann.reason());
 			} else {
-				response.setStatus(ann.value().value());
+				response.sendError(ann.value().value());
 			}
 		} else {
-			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 	
