@@ -19,7 +19,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.GlobalProperty;
-import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -178,11 +177,13 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailIfAvailable() throws Exception {
-		Exception apiException = new APIException("exceptionmessage");
-		apiException.setStackTrace(new StackTraceElement[] { new StackTraceElement("org.mypackage.myclassname", "methodName", "fileName", 149) });
-
-		SimpleObject returnObject = RestUtil.wrapErrorResponse(apiException, "wraperrorresponsemessage");
-
+		Exception mockException = Mockito.mock(Exception.class);
+		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
+		StackTraceElement ste = new StackTraceElement("org.mypackage.myclassname", "methodName", "fileName", 149);
+		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] { ste });
+		
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(mockException, "wraperrorresponsemessage");
+		
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
 		Assert.assertEquals("org.mypackage.myclassname:149", errorResponseMap.get("code"));
 	}
@@ -193,10 +194,11 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void wrapErrorResponse_shouldSetStackTraceCodeAndDetailEmptyIfNotAvailable() throws Exception {
-		Exception apiException = new APIException("exceptionmessage");
-		apiException.setStackTrace(new StackTraceElement[] {} );
+		Exception mockException = Mockito.mock(Exception.class);
+		Mockito.when(mockException.getMessage()).thenReturn("exceptionmessage");
+		Mockito.when(mockException.getStackTrace()).thenReturn(new StackTraceElement[] {});
 		
-		SimpleObject returnObject = RestUtil.wrapErrorResponse(apiException, "wraperrorresponsemessage");
+		SimpleObject returnObject = RestUtil.wrapErrorResponse(mockException, "wraperrorresponsemessage");
 		
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
 		Assert.assertEquals("", errorResponseMap.get("code"));

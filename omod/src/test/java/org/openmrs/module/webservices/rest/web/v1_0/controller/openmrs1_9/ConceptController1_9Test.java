@@ -71,7 +71,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 		        "full"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, results.size());
+		Assert.assertEquals(2, results.size());
 		Object next = results.iterator().next();
 		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
 	}

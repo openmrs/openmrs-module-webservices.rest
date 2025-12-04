@@ -274,7 +274,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	public void assertPropNotPresent(String property) {
 		assertThat(getRepresentation(), not(hasKey(property)));
 	}
-
+	
 	/**
 	 * Tests {@link Representation#REF}
 	 * 

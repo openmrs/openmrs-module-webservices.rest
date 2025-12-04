@@ -18,6 +18,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.obs.ComplexData;
+import org.openmrs.obs.handler.AbstractHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.InputStream;
 
 @Controller
@@ -68,7 +70,8 @@ public class ObsComplexValueController1_8 extends BaseRestController {
 		} else if (data instanceof BufferedImage) {
 			//special case for ImageHandler
 			BufferedImage image = (BufferedImage) data;
-			String type = StringUtils.substringAfterLast(complexData.getTitle(), ".");
+			File file = AbstractHandler.getComplexDataFile(obs);
+			String type = StringUtils.substringAfterLast(file.getName(), ".");
 			if (type == null) {
 				type = "jpg";
 			}
