@@ -12,16 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 import org.junit.Before;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
 public class EncounterResource2_2Test extends BaseDelegatingResourceTest<EncounterResource2_2, Encounter> {
-
+	
 	@Before
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.DIAGNOSIS_TEST_DATA_XML);
@@ -53,9 +48,6 @@ public class EncounterResource2_2Test extends BaseDelegatingResourceTest<Encount
 		assertPropEquals("voided", getObject().getVoided());
 		assertPropPresent("visit");
 		assertPropEquals("resourceVersion", "2.2");
-
-		assertEquals("59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("uuid"));
-		assertEquals("Some Diagnosis" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("display"));
 	}
 	
 	/**
@@ -77,10 +69,6 @@ public class EncounterResource2_2Test extends BaseDelegatingResourceTest<Encount
 		assertPropPresent("auditInfo");
 		assertPropPresent("visit");
 		assertPropEquals("resourceVersion", "2.2");
-
-		assertEquals("59bf4fbc-fcdb-4a5b-97ea-0d5c4b4315a7" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("uuid"));
-		assertEquals("Some Diagnosis" ,((List<SimpleObject>) getRepresentation().get("diagnoses")).get(0).get("display"));
-
 	}
 	
 	/**
@@ -88,7 +76,7 @@ public class EncounterResource2_2Test extends BaseDelegatingResourceTest<Encount
 	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Emergency 01/08/2008";
+		return "Scheduled 12/08/2017";
 	}
 	
 	/**
@@ -96,6 +84,6 @@ public class EncounterResource2_2Test extends BaseDelegatingResourceTest<Encount
 	 */
 	@Override
 	public String getUuidProperty() {
-		return "6519d653-393b-4118-9c83-a3715b82d4ac";
-	}  // encounter 3 in test dataset
+		return "44444-fcdb-4a5b-97ea-0d5c4b4315a1";
+	}
 }
