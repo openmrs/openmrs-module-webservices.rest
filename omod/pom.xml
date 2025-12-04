@@ -28,6 +28,14 @@
 			<artifactId>legacyui-omod</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Add jackson-dataformat-yaml with test scope to support tests without bundling -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.13.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>
