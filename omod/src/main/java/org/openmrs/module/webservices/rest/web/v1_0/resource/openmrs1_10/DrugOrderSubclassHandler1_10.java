@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.CareSetting;
+import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
@@ -200,6 +201,18 @@ public class DrugOrderSubclassHandler1_10 extends DrugOrderSubclassHandler1_8 {
 			ret.append(dosingInstructionsAsString);
 		}
 		
+		return ret.toString();
+	}
+
+	@PropertyGetter("strength")
+	public String getStrength(DrugOrder delegate) {
+		StringBuilder ret = new StringBuilder();
+		if (delegate.getDrug() != null) {
+			Drug drug = delegate.getDrug();
+			ret.append(drug.getStrength() != null ? drug.getStrength() : "[no strength]");
+		} else {
+			ret.append("[no strength]");
+		}
 		return ret.toString();
 	}
 }
