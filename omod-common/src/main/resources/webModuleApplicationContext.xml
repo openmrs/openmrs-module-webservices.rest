@@ -23,6 +23,7 @@
 				class="org.openmrs.module.webservices.rest.web.api.impl.RestServiceImpl">
 				<property name="restHelperService" ref="restHelperService" />
 				<property name="openmrsClassScanner" ref="openmrsClassScanner" />
+				<property name="executorService" ref="webservicesRestExecutor" />
 			</bean>
 		</property>
 		<property name="preInterceptors" ref="serviceInterceptors" />
@@ -31,7 +32,18 @@
 				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
 		</property>
 	</bean>
-	
+
+	<bean id="webservicesRestExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+		<property name="corePoolSize" value="5"/>
+		<property name="maxPoolSize" value="10"/>
+		<property name="queueCapacity" value="100"/>
+		<property name="keepAliveSeconds" value="30"/>
+		<property name="threadNamePrefix" value="webservices.rest-executor-"/>
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+		</property>
+	</bean>
+
 	<bean parent="serviceContext">
 		<property name="moduleService">
 			<list>
