@@ -414,7 +414,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		// finally if it is a custom representation and not supported by any other handler
 		if (representation instanceof CustomRepresentation) {
 			repDescription = ConversionUtil.getCustomRepresentationDescription((CustomRepresentation) representation);
-			return convertDelegateToRepresentation(delegate, repDescription);
+			SimpleObject simple = convertDelegateToRepresentation(delegate, repDescription);
+			maybeDecorateWithType(simple, delegate);
+			decorateWithResourceVersion(simple, representation);
+			return simple;
 		}
 		
 		throw new ConversionException("Don't know how to get " + getClass().getSimpleName() + "(" + delegate.getClass()
