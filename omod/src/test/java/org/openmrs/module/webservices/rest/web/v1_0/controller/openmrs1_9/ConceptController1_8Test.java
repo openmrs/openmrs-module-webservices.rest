@@ -584,13 +584,15 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject object = deserialize(response);
 		
 		Assert.assertEquals("95312123-e0c2-466d-b6b1-cb6e990d0d65", object.get("uuid"));
-		Assert.assertEquals(4, object.size());
+		Assert.assertNotNull(object.get("resourceVersion"));
+		Assert.assertEquals(5, object.size()); // note that `resourceVersion` is implicitly included
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> datatype = (Map<Object, Object>) object.get("datatype");
-		Assert.assertEquals(2, datatype.size());
+		Assert.assertEquals(3, datatype.size());
 		Assert.assertEquals("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", datatype.get("uuid"));
 		Assert.assertEquals("Coded", datatype.get("name"));
+		Assert.assertNotNull(datatype.get("resourceVersion"));
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
@@ -613,6 +615,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
 		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
 		Assert.assertNotNull(name.get("links"));
+		Assert.assertNull(name.get("resourceVersion")); // resourceVersion is not included in ref representation
 		
 	}
 	

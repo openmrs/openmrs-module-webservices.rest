@@ -345,19 +345,21 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		List<Map<String, Object>> conditions = result.get("results");
 		Assert.assertEquals(3, conditions.size());
 		Map<String, Object> c1 = conditions.get(0);
-		Assert.assertEquals(7, c1.size());
+		Assert.assertEquals(8, c1.size()); // note that `resourceVersion` is implicitly included
 		Assert.assertEquals("c1d4185b-0364-4978-a635-3165a82a3178", c1.get("uuid"));
 		Assert.assertEquals("Concept 1", c1.get("display"));
 		Assert.assertEquals("ACTIVE", c1.get("clinicalStatus"));
 		Assert.assertNotNull(c1.get("onsetDate"));
 		Assert.assertNull(c1.get("endDate"));
 		Assert.assertNull(c1.get("additionalDetail"));
+		Assert.assertNotNull(c1.get("resourceVersion"));
 		Map<String, Object> codedOrNonCoded = (Map<String, Object>) c1.get("condition");
 		Assert.assertNotNull(codedOrNonCoded);
 		Assert.assertEquals(1, codedOrNonCoded.size());
 		Map<String, Object> conditionCoded = (Map<String, Object>) codedOrNonCoded.get("coded");
-		Assert.assertEquals(2, conditionCoded.size());
+		Assert.assertEquals(3, conditionCoded.size());
 		Assert.assertEquals(111, conditionCoded.get("id"));
 		Assert.assertEquals("62a26128-006f-4e77-859b-4aa502e3dd62", conditionCoded.get("uuid"));
+		Assert.assertNotNull(conditionCoded.get("resourceVersion"));
 	}
 }
