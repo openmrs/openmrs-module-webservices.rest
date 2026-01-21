@@ -59,6 +59,7 @@ public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<Con
 			description.addProperty("lowCritical");
 			description.addProperty("units");
 			description.addProperty("allowDecimal");
+			description.addProperty("isCriteriaBased");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -76,6 +77,7 @@ public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<Con
 			description.addProperty("lowCritical");
 			description.addProperty("units");
 			description.addProperty("allowDecimal");
+			description.addProperty("isCriteriaBased");
 			description.addSelfLink();
 			return description;
 		}
@@ -87,15 +89,20 @@ public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<Con
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
-		
+
 		return null;
 	}
-	
+
 	@PropertyGetter("concept")
 	public String getConcept(ConceptNumeric instance) {
 		return instance.getUuid();
 	}
-	
+
+	@PropertyGetter("isCriteriaBased")
+	public Boolean getIsCriteriaBased(ConceptNumeric instance) {
+		return false; // Platform 2.5-2.6 uses static ranges from ConceptNumeric
+	}
+
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptNumeric instance) {
 		String localization = getLocalization("Concept", instance.getUuid());
@@ -120,7 +127,7 @@ public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<Con
 	public ConceptNumeric save(ConceptNumeric delegate) {
 		throw new UnsupportedOperationException("resource does not support this operation");
 	}
-	
+
 	@Override
 	protected void delete(ConceptNumeric delegate, String reason, RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("resource does not support this operation");
@@ -137,39 +144,44 @@ public class ConceptReferenceRangeResource2_5 extends DelegatingCrudResource<Con
 		ConceptService conceptService = Context.getConceptService();
 		List<ConceptNumeric> referenceRanges = new ArrayList<ConceptNumeric>();
 
+		// Patient parameter is optional for Platform 2.5-2.6 (accepted for API
+		// compatibility but not used)
+		// Platform 2.7+ requires it for patient-specific ranges
+		String patientUuid = context.getParameter("patient");
+
 		String conceptUuid = context.getParameter("concept");
 		if (StringUtils.isBlank(conceptUuid)) {
 			throw new IllegalArgumentException("concept is required");
 		}
-		
+
 		String[] conceptReferenceStrings = conceptUuid.split(",");
 		for (String conceptReference : conceptReferenceStrings) {
 			if (StringUtils.isBlank(conceptReference)) {
- 				continue;
- 			}
- 			// handle UUIDs
- 			if (RestUtil.isValidUuid(conceptReference)) {
- 				ConceptNumeric conceptNumeric = conceptService.getConceptNumericByUuid(conceptReference.trim());
- 				if (conceptNumeric != null) {
- 					referenceRanges.add(conceptNumeric);
- 					continue;
- 				}
- 			}
- 			// handle mappings
- 			int idx = conceptReference.indexOf(':');
- 			if (idx >= 0 && idx < conceptReference.length() - 1) {
- 				String conceptSource = conceptReference.substring(0, idx);
- 				String conceptCode = conceptReference.substring(idx + 1);
- 				Concept concept = conceptService.getConceptByMapping(conceptCode.trim(), conceptSource.trim(), false);
- 				if (concept != null && concept instanceof ConceptNumeric) {
+				continue;
+			}
+			// handle UUIDs
+			if (RestUtil.isValidUuid(conceptReference)) {
+				ConceptNumeric conceptNumeric = conceptService.getConceptNumericByUuid(conceptReference.trim());
+				if (conceptNumeric != null) {
+					referenceRanges.add(conceptNumeric);
+					continue;
+				}
+			}
+			// handle mappings
+			int idx = conceptReference.indexOf(':');
+			if (idx >= 0 && idx < conceptReference.length() - 1) {
+				String conceptSource = conceptReference.substring(0, idx);
+				String conceptCode = conceptReference.substring(idx + 1);
+				Concept concept = conceptService.getConceptByMapping(conceptCode.trim(), conceptSource.trim(), false);
+				if (concept != null && concept instanceof ConceptNumeric) {
  					referenceRanges.add((ConceptNumeric)concept);
- 				}
- 			}
+				}
+			}
 		}
 
 		return new NeedsPaging<ConceptNumeric>(referenceRanges, context);
 	}
-	
+
 	@Override
 	public String getResourceVersion() {
 		return RestConstants2_5.RESOURCE_VERSION;

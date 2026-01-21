@@ -65,6 +65,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 			description.addProperty("lowCritical");
 			description.addProperty("units");
 			description.addProperty("allowDecimal");
+			description.addProperty("isCriteriaBased");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -82,6 +83,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 			description.addProperty("lowCritical");
 			description.addProperty("units");
 			description.addProperty("allowDecimal");
+			description.addProperty("isCriteriaBased");
 			description.addSelfLink();
 			return description;
 		}
@@ -93,25 +95,30 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
 		}
-		
+
 		return null;
 	}
-	
+
 	@PropertyGetter("units")
 	public String getUnits(ConceptReferenceRange instance) {
 		return instance.getConceptNumeric().getUnits();
 	}
-	
+
 	@PropertyGetter("allowDecimal")
 	public Boolean getAllowDecimal(ConceptReferenceRange instance) {
 		return instance.getConceptNumeric().getAllowDecimal();
 	}
-	
+
 	@PropertyGetter("concept")
 	public String getConcept(ConceptReferenceRange instance) {
 		return instance.getConceptNumeric().getUuid();
 	}
-	
+
+	@PropertyGetter("isCriteriaBased")
+	public Boolean getIsCriteriaBased(ConceptReferenceRange instance) {
+		return true; // Platform 2.7+ uses patient-specific criteria-based ranges
+	}
+
 	@PropertyGetter("display")
 	public String getDisplayString(ConceptReferenceRange instance) {
 		String localization = getLocalization("Concept", instance.getConceptNumeric().getUuid());
@@ -147,7 +154,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 
 		ConceptService conceptService = Context.getConceptService();
 		List<ConceptReferenceRange> referenceRanges = new ArrayList<ConceptReferenceRange>();
-		
+
 		String patientUuid = context.getParameter("patient");
 		if (StringUtils.isBlank(patientUuid)) {
 			throw new IllegalArgumentException("patient is required");
@@ -161,7 +168,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 		if (StringUtils.isBlank(conceptUuid)) {
 			throw new IllegalArgumentException("concept is required");
 		}
-		
+
 		String[] conceptReferenceStrings = conceptUuid.split(",");
 		for (String conceptReference : conceptReferenceStrings) {
 			Concept concept = conceptService.getConceptByReference(conceptReference.trim());
@@ -175,7 +182,7 @@ public class ConceptReferenceRangeResource2_7 extends DelegatingCrudResource<Con
 
 		return new NeedsPaging<ConceptReferenceRange>(referenceRanges, context);
 	}
-	
+
 	@Override
 	public String getResourceVersion() {
 		return RestConstants2_7.RESOURCE_VERSION;

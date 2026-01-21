@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
  * Tests functionality of {@link ConceptReferenceRangeResource2_7}.
  */
 public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResourceTest<ConceptReferenceRangeResource2_7, ConceptReferenceRange> {
-	
+
 	@Override
 	public ConceptReferenceRange newObject() {
 		ConceptReferenceRange referenceRange = new ConceptReferenceRange();
@@ -25,7 +25,7 @@ public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResource
 		referenceRange.setConceptNumeric(Context.getConceptService().getConceptNumericByUuid(RestConstants2_7.CONCEPT_NUMERIC_UUID));
 		return referenceRange;
 	}
-	
+
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
@@ -40,8 +40,9 @@ public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResource
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getConceptNumeric().getUnits());
 		assertPropEquals("allowDecimal", getObject().getConceptNumeric().getAllowDecimal());
+		assertPropEquals("isCriteriaBased", true);
 	}
-	
+
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
@@ -56,6 +57,7 @@ public class ConceptReferenceRangeResource2_7Test extends BaseDelegatingResource
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getConceptNumeric().getUnits());
 		assertPropEquals("allowDecimal", getObject().getConceptNumeric().getAllowDecimal());
+		assertPropEquals("isCriteriaBased", true);
 	}
 
 	@Override

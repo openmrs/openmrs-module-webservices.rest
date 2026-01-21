@@ -17,12 +17,12 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
  * Tests functionality of {@link ConceptReferenceRangeResource2_5}.
  */
 public class ConceptReferenceRangeResource2_5Test extends BaseDelegatingResourceTest<ConceptReferenceRangeResource2_5, ConceptNumeric> {
-	
+
 	@Override
 	public ConceptNumeric newObject() {
 		return Context.getConceptService().getConceptNumericByUuid(RestConstants2_5.CONCEPT_NUMERIC_UUID);
 	}
-	
+
 	@Override
 	public void validateDefaultRepresentation() throws Exception {
 		super.validateDefaultRepresentation();
@@ -37,8 +37,9 @@ public class ConceptReferenceRangeResource2_5Test extends BaseDelegatingResource
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getUnits());
 		assertPropEquals("allowDecimal", getObject().getAllowDecimal());
+		assertPropEquals("isCriteriaBased", false);
 	}
-	
+
 	@Override
 	public void validateFullRepresentation() throws Exception {
 		super.validateFullRepresentation();
@@ -53,6 +54,7 @@ public class ConceptReferenceRangeResource2_5Test extends BaseDelegatingResource
 		assertPropEquals("lowCritical", getObject().getLowCritical());
 		assertPropEquals("units", getObject().getUnits());
 		assertPropEquals("allowDecimal", getObject().getAllowDecimal());
+		assertPropEquals("isCriteriaBased", false);
 	}
 
 	@Override
