@@ -48,6 +48,7 @@ public class ConceptReferenceRangeController2_7Test extends MainResourceControll
 		Assert.assertEquals(1, resultsList.size());
 		Assert.assertEquals(140.0, PropertyUtils.getProperty(resultsList.get(0), "hiAbsolute"));
 		Assert.assertEquals(70.0, PropertyUtils.getProperty(resultsList.get(0), "lowAbsolute"));
+		Assert.assertEquals(true, PropertyUtils.getProperty(resultsList.get(0), "isCriteriaBased"));
 	}
 
 	@Override

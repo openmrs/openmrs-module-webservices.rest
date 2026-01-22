@@ -49,6 +49,7 @@ public class ConceptReferenceRangeController2_5Test extends MainResourceControll
 		Assert.assertEquals(0.0, PropertyUtils.getProperty(resultsList.get(0), "lowCritical"));
 		Assert.assertEquals("kg", PropertyUtils.getProperty(resultsList.get(0), "units"));
 		Assert.assertEquals(true, PropertyUtils.getProperty(resultsList.get(0), "allowDecimal"));
+		Assert.assertEquals(false, PropertyUtils.getProperty(resultsList.get(0), "isCriteriaBased"));
 	}
 
 	@Override
