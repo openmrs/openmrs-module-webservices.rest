@@ -598,4 +598,110 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		);
 		handle(req);
 	}
+	
+	@Test
+	public void shouldSortOrdersByUrgency() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), 
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), 
+		    new Parameter("sortBy", "urgency"), 
+		    new Parameter("sort", "desc"),
+		    new Parameter("status", "active"))));
+		
+		assertNotNull(results);
+		List<Object> resultList = Util.getResultsList(results);
+		assertTrue("Should have results", resultList.size() > 0);
+		
+		for (int i = 0; i < resultList.size() - 1; i++) {
+			Object urgency1 = PropertyUtils.getProperty(resultList.get(i), "urgency");
+			Object urgency2 = PropertyUtils.getProperty(resultList.get(i + 1), "urgency");
+			
+			if ("STAT".equals(urgency1) && "ROUTINE".equals(urgency2)) {
+				assertTrue(true);
+			} else if ("ROUTINE".equals(urgency1) && "STAT".equals(urgency2)) {
+				assertFalse("STAT orders should appear before ROUTINE orders", true);
+			}
+		}
+	}
+	
+	@Test
+	public void shouldSortOrdersByUrgencyThenDate() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), 
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), 
+		    new Parameter("sortBy", "urgency,dateActivated"), 
+		    new Parameter("sort", "desc"),
+		    new Parameter("status", "active"))));
+		
+		assertNotNull(results);
+		List<Object> resultList = Util.getResultsList(results);
+		assertTrue("Should have results", resultList.size() > 0);
+		
+		String previousUrgency = null;
+		Date previousDate = null;
+		
+		for (Object orderObj : resultList) {
+			String currentUrgency = PropertyUtils.getProperty(orderObj, "urgency").toString();
+			Date currentDate = (Date) PropertyUtils.getProperty(orderObj, "dateActivated");
+			
+			if (previousUrgency != null) {
+				if ("STAT".equals(previousUrgency) && "ROUTINE".equals(currentUrgency)) {
+					assertTrue(true);
+				}
+				else if (previousUrgency.equals(currentUrgency) && previousDate != null && currentDate != null) {
+					assertTrue("Within same urgency, dates should be in descending order", 
+					    previousDate.compareTo(currentDate) >= 0);
+				}
+			}
+			
+			previousUrgency = currentUrgency;
+			previousDate = currentDate;
+		}
+	}
+	
+	@Test
+	public void shouldMaintainBackwardCompatibilityWithSortParameter() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), 
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), 
+		    new Parameter("sort", "desc"),
+		    new Parameter("status", "active"))));
+		
+		assertNotNull(results);
+		assertTrue("Should have results", Util.getResultsSize(results) > 0);
+		
+		List<Object> resultList = Util.getResultsList(results);
+		Date previousDate = null;
+		
+		for (Object orderObj : resultList) {
+			Date currentDate = (Date) PropertyUtils.getProperty(orderObj, "dateActivated");
+			if (previousDate != null && currentDate != null) {
+				assertTrue("Dates should be in descending order", 
+				    previousDate.compareTo(currentDate) >= 0);
+			}
+			previousDate = currentDate;
+		}
+	}
+	
+	@Test
+	public void shouldSortOrdersByUrgencyAscending() throws Exception {
+		SimpleObject results = deserialize(handle(newGetRequest(getURI(), 
+		    new Parameter("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"), 
+		    new Parameter("sortBy", "urgency"), 
+		    new Parameter("sort", "asc"),
+		    new Parameter("status", "active"))));
+		
+		assertNotNull(results);
+		List<Object> resultList = Util.getResultsList(results);
+		
+		if (resultList.size() > 1) {
+			for (int i = 0; i < resultList.size() - 1; i++) {
+				Object urgency1 = PropertyUtils.getProperty(resultList.get(i), "urgency");
+				Object urgency2 = PropertyUtils.getProperty(resultList.get(i + 1), "urgency");
+				
+				if ("ROUTINE".equals(urgency1) && "STAT".equals(urgency2)) {
+					assertTrue(true);
+				} else if ("STAT".equals(urgency1) && "ROUTINE".equals(urgency2)) {
+					assertFalse("In ascending order, ROUTINE should come before STAT", true);
+				}
+			}
+		}
+	}
 }

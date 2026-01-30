@@ -239,6 +239,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			String asOfDateString = context.getRequest().getParameter("asOfDate");
 			String orderTypeUuid = context.getRequest().getParameter("orderType");
 			String sortParam = context.getRequest().getParameter("sort");
+			String sortByParam = context.getRequest().getParameter("sortBy");
 			
 			CareSetting careSetting = null;
 			Date asOfDate = null;
@@ -269,9 +270,10 @@ public class OrderResource1_10 extends OrderResource1_8 {
 				filterByType(orders, context.getType());
 			}
 			
-			if (StringUtils.isNotBlank(sortParam)) {
-				List<Order> sortedOrder = sortOrdersBasedOnDateActivatedOrDateStopped(orders, sortParam, status);
-				return new NeedsPaging<Order>(sortedOrder, context);
+			// Apply sorting if requested
+			if (StringUtils.isNotBlank(sortByParam) || StringUtils.isNotBlank(sortParam)) {
+				List<Order> sortedOrders = sortOrders(orders, sortByParam, sortParam, status);
+				return new NeedsPaging<Order>(sortedOrders, context);
 			}
 			else {
 				return new NeedsPaging<Order>(orders, context);
@@ -291,6 +293,90 @@ public class OrderResource1_10 extends OrderResource1_8 {
 		return order.getDateActivated() != null ? order.getDateActivated() : order.getDateCreated();
 	}
 	
+	/**
+	 * Sorts orders based on specified criteria (urgency, dateActivated, or both).
+	 * 
+	 * @param orders the list of orders to sort
+	 * @param sortBy comma-separated sort fields (e.g., "urgency,dateActivated")
+	 * @param sortOrder sort direction: "asc" or "desc"
+	 * @param status order status ("active" or "inactive")
+	 * @return sorted list of orders
+	 */
+	private List<Order> sortOrders(List<Order> orders, String sortBy, String sortOrder, String status) {
+		List<Order> sortedList = new ArrayList<Order>(orders);
+		final boolean isAscending = StringUtils.isNotBlank(sortOrder) && sortOrder.equalsIgnoreCase("asc");
+		
+		if (StringUtils.isBlank(sortBy)) {
+			return sortOrdersBasedOnDateActivatedOrDateStopped(orders, sortOrder, status);
+		}
+		
+		final String[] sortFields = sortBy.split(",");
+		final boolean sortByUrgency = containsField(sortFields, "urgency");
+		final boolean sortByDate = containsField(sortFields, "dateActivated");
+		
+		Collections.sort(sortedList, new Comparator<Order>() {
+			@Override
+			public int compare(Order o1, Order o2) {
+				int result = 0;
+				
+				if (sortByUrgency) {
+					result = compareByUrgency(o1, o2);
+					if (result != 0) {
+						return isAscending ? result : -result;
+					}
+				}
+				
+				if (sortByDate || sortFields.length == 0) {
+					result = compareByDate(o1, o2, status);
+				}
+				
+				return isAscending ? result : -result;
+			}
+		});
+		
+		return sortedList;
+	}
+	
+	private int compareByUrgency(Order o1, Order o2) {
+		Order.Urgency urgency1 = o1.getUrgency() != null ? o1.getUrgency() : Order.Urgency.ROUTINE;
+		Order.Urgency urgency2 = o2.getUrgency() != null ? o2.getUrgency() : Order.Urgency.ROUTINE;
+		
+		boolean o1IsUrgent = urgency1 == Order.Urgency.STAT || urgency1 == Order.Urgency.ON_SCHEDULED_DATE;
+		boolean o2IsUrgent = urgency2 == Order.Urgency.STAT || urgency2 == Order.Urgency.ON_SCHEDULED_DATE;
+		
+		if (o1IsUrgent && !o2IsUrgent) {
+			return -1;
+		} else if (!o1IsUrgent && o2IsUrgent) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	private int compareByDate(Order o1, Order o2, String status) {
+		if (status != null && status.equalsIgnoreCase("inactive")) {
+			Date date1 = getUsableDate(o1);
+			Date date2 = getUsableDate(o2);
+			return date1.compareTo(date2);
+		} else {
+			Date date1 = getActiveOrderSortDate(o1);
+			Date date2 = getActiveOrderSortDate(o2);
+			return date1.compareTo(date2);
+		}
+	}
+	
+	private boolean containsField(String[] fields, String fieldName) {
+		for (String field : fields) {
+			if (field.trim().equalsIgnoreCase(fieldName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @deprecated Use {@link #sortOrders(List, String, String, String)} instead
+	 */
+	@Deprecated
 	public List<Order> sortOrdersBasedOnDateActivatedOrDateStopped(List<Order> orders, final String sortOrder,
 	        final String status) {
 		List<Order> sortedList = new ArrayList<Order>(orders);
@@ -298,7 +384,7 @@ public class OrderResource1_10 extends OrderResource1_8 {
 			
 			@Override
 			public int compare(Order o1, Order o2) {
-				if (status.equalsIgnoreCase("inactive")) {
+				if (status != null && status.equalsIgnoreCase("inactive")) {
 					return sortOrder.equalsIgnoreCase("ASC") ?
 					        getUsableDate(o1).compareTo(getUsableDate(o2)) : getUsableDate(o2).compareTo(getUsableDate(o1));
 				}
