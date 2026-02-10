@@ -9,15 +9,13 @@
  */
 package org.openmrs.module.webservices.validation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -49,19 +47,12 @@ public class ValidateUtil {
 		AdministrationService administrationService = Context.getAdministrationService();
 		
 		try {
-			// using refection here for compatibility with OpenMRS 1.8,x, which does not have this method
-			Method validate = AdministrationService.class.getMethod("validate", Object.class, Errors.class);
-			validate.invoke(administrationService, obj, errors);
+			administrationService.validate(obj, errors);
 		}
-		catch (NoSuchMethodException ex) {
-			// not running OpenMRS 1.9 or higher, so just skip this validation
-			return;
-		}
-		catch (InvocationTargetException ex) {
-			throw new APIException("Unable to invoke administrationService.validate(Object, Errors) via reflection", ex);
-		}
-		catch (IllegalAccessException ex) {
-			throw new APIException("Unable to invoke administrationService.validate(Object, Errors) via reflection", ex);
+		catch (UnexpectedRollbackException ex) {
+			// ignore this exception, we don't want to commit anything to the DB here
+			// TODO: figure out why this even throws an UnexpectedRollbackException 
+			// https://openmrs.atlassian.net/browse/RESTWS-1015
 		}
 		
 		if (errors.hasErrors()) {
@@ -73,9 +64,15 @@ public class ValidateUtil {
 		Set<String> uniqueErrorMessages = new LinkedHashSet<String>();
 		for (Object objerr : errors.getAllErrors()) {
 			ObjectError error = (ObjectError) objerr;
-			String message = Context.getMessageSourceService().getMessage(error.getCode());
+			String message = null;
+
 			if (error instanceof FieldError) {
 				message = ((FieldError) error).getField() + ": " + message;
+			} else {
+				message = Context.getMessageSourceService().getMessage(error.getCode(), null, null, Context.getLocale());
+				if(StringUtils.isBlank(message)) {
+					message = error.getDefaultMessage();
+				}
 			}
 			uniqueErrorMessages.add(message);
 		}
