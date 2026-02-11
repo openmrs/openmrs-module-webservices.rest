@@ -20,7 +20,11 @@ import org.springframework.validation.Errors;
  * ValidateUtil) can be removed, and we will not have to explicitly call the "validate" within the
  * DelegatingCrudResource, as we can rely on the underlying API validation to do the right thing,
  * and return a ValidationException with Errors which we can trap in the BaseRestController
+ * 
+ * @deprecated use core's version instead. Remove this when this ticket is done:
+ * https://openmrs.atlassian.net/browse/RESTWS-1016
  */
+@Deprecated
 public class ValidationException extends APIException {
 	
 	public static final long serialVersionUID = 1L;
