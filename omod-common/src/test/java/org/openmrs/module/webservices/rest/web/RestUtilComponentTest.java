@@ -15,7 +15,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.validation.ValidationException;
+import org.openmrs.api.ValidationException;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;

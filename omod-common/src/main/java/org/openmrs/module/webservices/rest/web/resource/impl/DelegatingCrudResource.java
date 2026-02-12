@@ -14,9 +14,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Changeable;
-import org.openmrs.Retireable;
-import org.openmrs.Voidable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
@@ -34,7 +31,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainSubResourceController;
-import org.openmrs.module.webservices.validation.ValidateUtil;
 
 /**
  * A base implementation of a {@link CrudResource} that delegates CRUD operations to a wrapped
@@ -78,7 +74,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	@Override
 	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
 		T delegate = convert(propertiesToCreate);
-		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());
 		
@@ -141,7 +136,6 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 		}
 		
 		setConvertedProperties(delegate, propertiesToUpdate, description, false);
-		ValidateUtil.validate(delegate);
 		delegate = save(delegate);
 		
 		SimpleObject ret = (SimpleObject) ConversionUtil.convertToRepresentation(delegate, context.getRepresentation());

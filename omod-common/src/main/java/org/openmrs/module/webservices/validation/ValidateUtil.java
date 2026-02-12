@@ -31,7 +31,11 @@ import org.springframework.validation.ObjectError;
  * we will not have to explicitly call the "validate" within the DelegatingCrudResource, as we can
  * rely on the underlying API validation to do the right thing, and return a ValidationException
  * with Errors which we can trap in the BaseRestController
+ * 
+ * @deprecated since 3.2.0, use {@link org.openmrs.validator.ValidateUtil} instead  
+ * Remove this when this ticket is done: https://openmrs.atlassian.net/browse/RESTWS-1016
  */
+@Deprecated
 public class ValidateUtil {
 	
 	/**
