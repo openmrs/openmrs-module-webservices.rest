@@ -21,6 +21,7 @@ import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -68,7 +69,7 @@ public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject>
   public SimpleObject search(RequestContext context) throws ResponseException {
     String conceptReferenceParam = context.getRequest().getParameter(REQUEST_PARAM_CONCEPT);
     if (conceptReferenceParam == null) {
-      return new SimpleObject();
+      throw new InvalidSearchException("The parameter " + REQUEST_PARAM_CONCEPT + " is required");
     }
 
     Concept concept = Context.getConceptService().getConceptByReference(conceptReferenceParam);

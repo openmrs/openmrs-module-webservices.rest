@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConceptTreeResource1_9Test extends RestControllerTestUtils {
+public class ConceptTreeController1_9Test extends RestControllerTestUtils {
 
   private String rootSetUuid;
   private String childSetUuid;
@@ -69,7 +69,7 @@ public class ConceptTreeResource1_9Test extends RestControllerTestUtils {
   }
 
   @Test
-  public void search_shouldReturnCorrectNestedTreeStructure() throws Exception {
+  public void search_shouldReturnConceptTree() throws Exception {
     MockHttpServletRequest request = request(RequestMethod.GET, getURI());
     request.addParameter("concept", rootSetUuid);
 
