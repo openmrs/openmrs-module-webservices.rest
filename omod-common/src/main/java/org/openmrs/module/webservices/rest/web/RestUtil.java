@@ -892,7 +892,7 @@ public class RestUtil implements GlobalPropertyListener {
 			for (Object errObj : ex.getErrors().getGlobalErrors()) {
 				
 				ObjectError err = (ObjectError) errObj;
-				String message = messageSourceService.getMessage(err.getCode());
+				String message = messageSourceService.getMessage(err.getCode(), err.getArguments(), err.getDefaultMessage(), Context.getLocale());
 				
 				SimpleObject globalError = new SimpleObject();
 				globalError.put("code", err.getCode());
@@ -906,7 +906,7 @@ public class RestUtil implements GlobalPropertyListener {
 			
 			for (Object errObj : ex.getErrors().getFieldErrors()) {
 				FieldError err = (FieldError) errObj;
-				String message = messageSourceService.getMessage(err.getCode());
+				String message = messageSourceService.getMessage(err.getCode(), err.getArguments(), err.getDefaultMessage(), Context.getLocale());
 				
 				SimpleObject fieldError = new SimpleObject();
 				fieldError.put("code", err.getCode());
