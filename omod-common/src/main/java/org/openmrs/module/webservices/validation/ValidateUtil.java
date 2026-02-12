@@ -32,8 +32,8 @@ import org.springframework.validation.ObjectError;
  * rely on the underlying API validation to do the right thing, and return a ValidationException
  * with Errors which we can trap in the BaseRestController
  * 
- * @deprecated use core's version instead. Remove this when this ticket is done:
- * https://openmrs.atlassian.net/browse/RESTWS-1016
+ * @deprecated since 3.2.0, use {@link org.openmrs.validator.ValidateUtil} instead  
+ * Remove this when this ticket is done: https://openmrs.atlassian.net/browse/RESTWS-1016
  */
 @Deprecated
 public class ValidateUtil {
