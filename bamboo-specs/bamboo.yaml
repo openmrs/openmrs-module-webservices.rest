@@ -38,6 +38,18 @@ Build and Test JDK 8:
         docker pull ${IMAGE}
         docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn clean package && chmod -R 777 .'
       description: Build and test
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
   artifact-subscriptions: []
 Deploy to Maven:
   key: DTM
@@ -55,6 +67,18 @@ Deploy to Maven:
         docker pull ${IMAGE}
         docker run -v m2-repo:/root/.m2/repository -v ~/.m2/settings.xml:/.m2/settings.xml:ro -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn deploy -DskipTests --settings /.m2/settings.xml'
       description: Deploy
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
   artifact-subscriptions: []
 Release to Maven:
   key: RTM
@@ -112,6 +136,18 @@ Release to Maven:
         variable: maven.development.version
         variableScope: JOB
       description: Retrieve next snaphot version
+  final-tasks:
+  - script:
+      interpreter: SHELL
+      scripts:
+      - |-
+        #!/bin/bash -eu
+
+        set -x
+
+        # Fix ownership so things can get discarded
+        ${bamboo.docker.run.cleanup}
+      description: Cleanup
   artifact-subscriptions: []
 variables:
   maven.development.version: 2.51.0-SNAPSHOT

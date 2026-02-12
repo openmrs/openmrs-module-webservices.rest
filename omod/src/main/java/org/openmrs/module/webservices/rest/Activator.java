@@ -38,8 +38,8 @@ public class Activator extends BaseModuleActivator {
 	
 	@Override
 	public void contextRefreshed() {
-		// initialize all resources and search handlers
-		Context.getService(RestService.class).initialize();
+		// initialize all resources and search handlers asynchronously for faster startup
+		Context.getService(RestService.class).initializeAsync();
 		
 		log.info("Clearing caches...");
 		

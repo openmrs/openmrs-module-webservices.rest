@@ -270,6 +270,19 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		    Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/value"));
 	}
 
+    @Test
+    public void getEncounter_shouldExcludeVoidedOrders() throws Exception {
+        executeDataSet("encounterWithVoidedOrder1_9.xml");
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/4e1a9d6e-0852-4d4b-9888-ecb680738dbe");
+        req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+        MockHttpServletResponse response = handle(req);
+        SimpleObject result = deserialize(response);
+
+        Util.log("full", result);
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.get("orders"));
+        Assert.assertEquals(0, ((List<?>) result.get("orders")).size());
+    }
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController1_9Test#shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes()
 	 */

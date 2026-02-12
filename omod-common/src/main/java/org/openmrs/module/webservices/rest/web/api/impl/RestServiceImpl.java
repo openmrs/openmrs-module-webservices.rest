@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
@@ -62,6 +63,8 @@ public class RestServiceImpl implements RestService {
 	private RestHelperService restHelperService;
 	
 	private OpenmrsClassScanner openmrsClassScanner;
+
+	private ExecutorService executorService;
 	
 	public RestHelperService getRestHelperService() {
 		return restHelperService;
@@ -78,7 +81,15 @@ public class RestServiceImpl implements RestService {
 	public void setOpenmrsClassScanner(OpenmrsClassScanner openmrsClassScanner) {
 		this.openmrsClassScanner = openmrsClassScanner;
 	}
-	
+
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
+
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
+
 	public RestServiceImpl() {
 	}
 	
@@ -701,15 +712,26 @@ public class RestServiceImpl implements RestService {
 	 */
 	@Override
 	public void initialize() {
-		
 		// first clear out any existing values
 		resourceDefinitionsByNames = null;
 		resourcesBySupportedClasses = null;
 		searchHandlersByIds = null;
 		searchHandlersByParameter = null;
 		searchHandlersByResource = null;
-		
+
 		initializeResources();
 		initializeSearchHandlers();
+	}
+
+	@Override
+	public void initializeAsync() {
+		RestServiceImpl restService = this;
+		executorService.submit(new Runnable() {
+
+			@Override
+			public void run() {
+				restService.initialize();
+			}
+		});
 	}
 }

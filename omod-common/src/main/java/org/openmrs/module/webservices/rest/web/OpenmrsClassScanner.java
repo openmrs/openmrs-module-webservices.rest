@@ -16,34 +16,29 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.util.OpenmrsClassLoader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
 /**
  * Reflection utilities to search the classpath for classes
  */
-public class OpenmrsClassScanner {
+public class OpenmrsClassScanner implements ApplicationContextAware {
 	
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	private static final OpenmrsClassScanner instance = new OpenmrsClassScanner();
-	
-	private final MetadataReaderFactory metadataReaderFactory;
-	
-	private final ResourcePatternResolver resourceResolver;
-	
+
+	private ApplicationContext applicationContext;
+
+	private MetadataReaderFactory metadataReaderFactory;
+
 	OpenmrsClassScanner() {
-		
-		this.metadataReaderFactory = new SimpleMetadataReaderFactory(OpenmrsClassLoader.getInstance());
-		
-		this.resourceResolver = new PathMatchingResourcePatternResolver(OpenmrsClassLoader.getInstance());
-		
 	}
 	
 	/**
@@ -51,11 +46,15 @@ public class OpenmrsClassScanner {
 	 */
 	
 	public static OpenmrsClassScanner getInstance() {
-		
 		return instance;
-		
 	}
-	
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+		this.metadataReaderFactory = new CachingMetadataReaderFactory(applicationContext);
+	}
+
 	/**
 	 * Searches for classes extending or implementing the given type.
 	 * 
@@ -72,7 +71,7 @@ public class OpenmrsClassScanner {
 		
 		String pattern = "classpath*:org/openmrs/**/*.class";
 		
-		Resource[] resources = resourceResolver.getResources(pattern);
+		Resource[] resources = applicationContext.getResources(pattern);
 		
 		TypeFilter typeFilter = new AssignableTypeFilter(type);
 		
