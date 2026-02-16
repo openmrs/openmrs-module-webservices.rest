@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
@@ -76,15 +76,16 @@ public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject>
 			throw new InvalidSearchException("The parameter " + REQUEST_PARAM_CONCEPT + " is required");
 		}
 
-		Concept concept = Context.getConceptService().getConceptByReference(conceptReferenceParam);
+		ConceptService conceptService = Context.getConceptService();
+		Concept concept = conceptService.getConceptByReference(conceptReferenceParam);
 		if (concept == null) {
 			throw new ObjectNotFoundException("No concept found: " + conceptReferenceParam);
 		}
 
-		return buildConceptTree(concept, new HashSet<String>());
+		return buildConceptTree(concept, new HashSet<String>(), conceptService);
 	}
 
-	private SimpleObject buildConceptTree(Concept concept, Set<String> visitedUuids) {
+	private SimpleObject buildConceptTree(Concept concept, Set<String> visitedUuids, ConceptService conceptService) {
 		SimpleObject map = new SimpleObject();
 		map.put("uuid", concept.getUuid());
 		map.put("display", concept.getDisplayString());
@@ -99,10 +100,9 @@ public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject>
 
 		if (concept.getSet()) {
 			List<SimpleObject> childrenList = new ArrayList<SimpleObject>();
-			ConceptService conceptService = Context.getConceptService();
 			List<ConceptSet> conceptSets = conceptService.getConceptSetsByConcept(concept);
 			for (ConceptSet set : conceptSets) {
-				childrenList.add(buildConceptTree(set.getConcept(), new HashSet<>(visitedUuids)));
+				childrenList.add(buildConceptTree(set.getConcept(), new HashSet<>(visitedUuids), conceptService));
 			}
 			map.put("setMembers", childrenList);
 		} else {
