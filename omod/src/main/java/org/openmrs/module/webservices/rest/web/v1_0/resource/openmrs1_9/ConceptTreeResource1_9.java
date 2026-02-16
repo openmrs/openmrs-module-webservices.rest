@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
@@ -27,78 +28,87 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/concepttree", supportedClass = SimpleObject.class, supportedOpenmrsVersions = {
-    "1.9.* - 9.*" })
+		"1.9.* - 9.*" })
 public class ConceptTreeResource1_9 extends BaseDelegatingResource<SimpleObject> implements Searchable {
 
-  public static final String REQUEST_PARAM_CONCEPT = "concept";
+	public static final String REQUEST_PARAM_CONCEPT = "concept";
 
-  @Override
-  public SimpleObject newDelegate() {
-    throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
-  }
+	@Override
+	public SimpleObject newDelegate() {
+		throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
+	}
 
-  @Override
-  public SimpleObject save(SimpleObject delegate) {
-    throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
-  }
+	@Override
+	public SimpleObject save(SimpleObject delegate) {
+		throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
+	}
 
-  @Override
-  public SimpleObject getByUniqueId(String uniqueId) {
-    throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
-  }
+	@Override
+	public SimpleObject getByUniqueId(String uniqueId) {
+		throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
+	}
 
-  @Override
-  protected void delete(SimpleObject delegate, String reason, RequestContext context) {
-    throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
-  }
+	@Override
+	protected void delete(SimpleObject delegate, String reason, RequestContext context) {
+		throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
+	}
 
-  @Override
-  public void purge(SimpleObject delegate, RequestContext context) {
-    throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
-  }
+	@Override
+	public void purge(SimpleObject delegate, RequestContext context) {
+		throw new ResourceDoesNotSupportOperationException("concepttree doesn't support this action");
+	}
 
-  @Override
-  public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-    return new DelegatingResourceDescription();
-  }
+	@Override
+	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+		return new DelegatingResourceDescription();
+	}
 
-  @Override
-  public SimpleObject search(RequestContext context) throws ResponseException {
-    String conceptReferenceParam = context.getRequest().getParameter(REQUEST_PARAM_CONCEPT);
-    if (conceptReferenceParam == null) {
-      throw new InvalidSearchException("The parameter " + REQUEST_PARAM_CONCEPT + " is required");
-    }
+	@Override
+	public SimpleObject search(RequestContext context) throws ResponseException {
+		String conceptReferenceParam = context.getRequest().getParameter(REQUEST_PARAM_CONCEPT);
+		if (StringUtils.isBlank(conceptReferenceParam)) {
+			throw new InvalidSearchException("The parameter " + REQUEST_PARAM_CONCEPT + " is required");
+		}
 
-    Concept concept = Context.getConceptService().getConceptByReference(conceptReferenceParam);
-    if (concept == null) {
-      throw new ObjectNotFoundException("No concept found: " + conceptReferenceParam);
-    }
+		Concept concept = Context.getConceptService().getConceptByReference(conceptReferenceParam);
+		if (concept == null) {
+			throw new ObjectNotFoundException("No concept found: " + conceptReferenceParam);
+		}
 
-    return buildConceptTree(concept);
-  }
+		return buildConceptTree(concept, new HashSet<String>());
+	}
 
-  private SimpleObject buildConceptTree(Concept concept) {
-    SimpleObject map = new SimpleObject();
-    map.put("uuid", concept.getUuid());
-    map.put("display", concept.getName().getName());
-    map.put("isSet", concept.getSet());
+	private SimpleObject buildConceptTree(Concept concept, Set<String> visitedUuids) {
+		SimpleObject map = new SimpleObject();
+		map.put("uuid", concept.getUuid());
+		map.put("display", concept.getDisplayString());
+		map.put("isSet", concept.getSet());
 
-    if (concept.getSet()) {
-      List<SimpleObject> childrenList = new ArrayList<SimpleObject>();
-      ConceptService conceptService = Context.getConceptService();
-      List<ConceptSet> conceptSets = conceptService.getConceptSetsByConcept(concept);
-      for (ConceptSet set : conceptSets) {
-        Concept childMember = set.getConcept();
-        childrenList.add(buildConceptTree(childMember));
-      }
-      map.put("setMembers", childrenList);
-    } else {
-      map.put("setMembers", new ArrayList<SimpleObject>());
-    }
+		if (visitedUuids.contains(concept.getUuid())) {
+			map.put("setMembers", Collections.emptyList());
+			return map;
+		}
 
-    return map;
-  }
+		visitedUuids.add(concept.getUuid());
+
+		if (concept.getSet()) {
+			List<SimpleObject> childrenList = new ArrayList<SimpleObject>();
+			ConceptService conceptService = Context.getConceptService();
+			List<ConceptSet> conceptSets = conceptService.getConceptSetsByConcept(concept);
+			for (ConceptSet set : conceptSets) {
+				childrenList.add(buildConceptTree(set.getConcept(), new HashSet<>(visitedUuids)));
+			}
+			map.put("setMembers", childrenList);
+		} else {
+			map.put("setMembers", new ArrayList<SimpleObject>());
+		}
+
+		return map;
+	}
 }

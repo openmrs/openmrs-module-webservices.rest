@@ -27,52 +27,54 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class DrugsByConceptSearchHandler1_10 implements SearchHandler {
 
-  public static final String REQUEST_PARAM_CONCEPTS = "concepts";
+	public static final String REQUEST_PARAM_CONCEPTS = "concepts";
 
-  @Autowired
-  @Qualifier("conceptService")
-  ConceptService conceptService;
+	@Autowired
+	@Qualifier("conceptService")
+	ConceptService conceptService;
 
-  private final SearchQuery searchQuery = new SearchQuery.Builder(
-      "Allows you to search for drugs associated with a list of concepts")
-      .withRequiredParameters(REQUEST_PARAM_CONCEPTS)
-      .build();
+	private final SearchQuery searchQuery = new SearchQuery.Builder(
+			"Allows you to search for drugs associated with a list of concepts")
+			.withRequiredParameters(REQUEST_PARAM_CONCEPTS)
+			.build();
 
-  private final SearchConfig searchConfig = new SearchConfig("getDrugsByConcepts", RestConstants.VERSION_1 + "/drug",
-      Collections.singletonList("1.10.* - 9.*"), searchQuery);
+	private final SearchConfig searchConfig = new SearchConfig("getDrugsByConcepts", RestConstants.VERSION_1 + "/drug",
+			Collections.singletonList("1.10.* - 9.*"), searchQuery);
 
-  @Override
-  public SearchConfig getSearchConfig() {
-    return searchConfig;
-  }
+	@Override
+	public SearchConfig getSearchConfig() {
+		return searchConfig;
+	}
 
-  @Override
-  public PageableResult search(RequestContext context) throws ResponseException {
-    String conceptReferenceParam = context.getParameter(REQUEST_PARAM_CONCEPTS);
-    List<Drug> drugs = new ArrayList<Drug>();
-    String[] conceptReferences = conceptReferenceParam.split(",");
-    for (String ref : conceptReferences) {
-      drugs.addAll(getDrugsByConceptRef(ref));
-    }
+	@Override
+	public PageableResult search(RequestContext context) throws ResponseException {
+		String conceptReferenceParam = context.getParameter(REQUEST_PARAM_CONCEPTS);
+		Set<Drug> drugs = new LinkedHashSet<>();
+		String[] conceptReferences = conceptReferenceParam.split(",");
+		for (String ref : conceptReferences) {
+			drugs.addAll(getDrugsByConceptRef(ref));
+		}
 
-    return new NeedsPaging<Drug>(drugs, context);
-  }
+		return new NeedsPaging<Drug>(new ArrayList<>(drugs), context);
+	}
 
-  private List<Drug> getDrugsByConceptRef(String conceptRef) {
-    List<Drug> drugs = new ArrayList<>();
-    String trimmedRef = conceptRef != null ? conceptRef.trim() : "";
-    if (StringUtils.isNotBlank(trimmedRef)) {
-      Concept concept = conceptService.getConceptByReference(trimmedRef);
-      if (concept != null) {
-        drugs.addAll(conceptService.getDrugsByConcept(concept));
-      }
-    }
+	private List<Drug> getDrugsByConceptRef(String conceptRef) {
+		List<Drug> drugs = new ArrayList<>();
+		String trimmedRef = conceptRef != null ? conceptRef.trim() : "";
+		if (StringUtils.isNotBlank(trimmedRef)) {
+			Concept concept = conceptService.getConceptByReference(trimmedRef);
+			if (concept != null) {
+				drugs.addAll(conceptService.getDrugsByConcept(concept));
+			}
+		}
 
-    return drugs;
-  }
+		return drugs;
+	}
 }

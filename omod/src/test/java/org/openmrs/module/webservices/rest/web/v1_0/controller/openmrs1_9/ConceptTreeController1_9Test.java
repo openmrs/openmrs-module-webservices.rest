@@ -30,73 +30,73 @@ import static org.junit.Assert.assertEquals;
 
 public class ConceptTreeController1_9Test extends RestControllerTestUtils {
 
-  private String rootSetUuid;
-  private String childSetUuid;
-  private String leafConceptUuid;
+	private String rootSetUuid;
+	private String childSetUuid;
+	private String leafConceptUuid;
 
-  @Before
-  public void init() throws Exception {
-    ConceptService conceptService = Context.getConceptService();
+	@Before
+	public void init() throws Exception {
+		ConceptService conceptService = Context.getConceptService();
 
-    Concept leaf = new Concept();
-    leaf.addName(new ConceptName("Leaf Concept", Locale.ENGLISH));
-    leaf.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
-    leaf.setConceptClass(conceptService.getConceptClassByName("Misc"));
-    conceptService.saveConcept(leaf);
-    leafConceptUuid = leaf.getUuid();
+		Concept leaf = new Concept();
+		leaf.addName(new ConceptName("Leaf Concept", Locale.ENGLISH));
+		leaf.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
+		leaf.setConceptClass(conceptService.getConceptClassByName("Misc"));
+		conceptService.saveConcept(leaf);
+		leafConceptUuid = leaf.getUuid();
 
-    Concept childSet = new Concept();
-    childSet.setSet(true);
-    childSet.addName(new ConceptName("Child Set", Locale.ENGLISH));
-    childSet.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
-    childSet.setConceptClass(conceptService.getConceptClassByName("ConvSet"));
-    childSet.addSetMember(leaf);
-    conceptService.saveConcept(childSet);
-    childSetUuid = childSet.getUuid();
+		Concept childSet = new Concept();
+		childSet.setSet(true);
+		childSet.addName(new ConceptName("Child Set", Locale.ENGLISH));
+		childSet.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
+		childSet.setConceptClass(conceptService.getConceptClassByName("ConvSet"));
+		childSet.addSetMember(leaf);
+		conceptService.saveConcept(childSet);
+		childSetUuid = childSet.getUuid();
 
-    Concept rootSet = new Concept();
-    rootSet.setSet(true);
-    rootSet.addName(new ConceptName("Root Set", Locale.ENGLISH));
-    rootSet.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
-    rootSet.setConceptClass(conceptService.getConceptClassByName("ConvSet"));
-    rootSet.addSetMember(childSet);
-    conceptService.saveConcept(rootSet);
-    rootSetUuid = rootSet.getUuid();
-  }
+		Concept rootSet = new Concept();
+		rootSet.setSet(true);
+		rootSet.addName(new ConceptName("Root Set", Locale.ENGLISH));
+		rootSet.setDatatype(conceptService.getConceptDatatypeByName("N/A"));
+		rootSet.setConceptClass(conceptService.getConceptClassByName("ConvSet"));
+		rootSet.addSetMember(childSet);
+		conceptService.saveConcept(rootSet);
+		rootSetUuid = rootSet.getUuid();
+	}
 
-  public String getURI() {
-    return "concepttree";
-  }
+	public String getURI() {
+		return "concepttree";
+	}
 
-  @Test
-  public void search_shouldReturnConceptTree() throws Exception {
-    MockHttpServletRequest request = request(RequestMethod.GET, getURI());
-    request.addParameter("concept", rootSetUuid);
+	@Test
+	public void search_shouldReturnConceptTree() throws Exception {
+		MockHttpServletRequest request = request(RequestMethod.GET, getURI());
+		request.addParameter("concept", rootSetUuid);
 
-    SimpleObject result = deserialize(handle(request));
+		SimpleObject result = deserialize(handle(request));
 
-    assertEquals(rootSetUuid, PropertyUtils.getProperty(result, "uuid"));
+		assertEquals(rootSetUuid, PropertyUtils.getProperty(result, "uuid"));
 
-    List<Map<String, Object>> rootMembers = result.get("setMembers");
-    assertEquals(1, rootMembers.size());
+		List<Map<String, Object>> rootMembers = result.get("setMembers");
+		assertEquals(1, rootMembers.size());
 
-    Map<String, Object> childNode = rootMembers.get(0);
-    assertEquals(childSetUuid, childNode.get("uuid"));
+		Map<String, Object> childNode = rootMembers.get(0);
+		assertEquals(childSetUuid, childNode.get("uuid"));
 
-    List<Map<String, Object>> childMembers = (List<Map<String, Object>>) childNode.get("setMembers");
-    assertEquals(1, childMembers.size());
+		List<Map<String, Object>> childMembers = (List<Map<String, Object>>) childNode.get("setMembers");
+		assertEquals(1, childMembers.size());
 
-    Map<String, Object> leafNode = childMembers.get(0);
-    assertEquals(leafConceptUuid, leafNode.get("uuid"));
+		Map<String, Object> leafNode = childMembers.get(0);
+		assertEquals(leafConceptUuid, leafNode.get("uuid"));
 
-    List<Object> leafMembers = (List<Object>) leafNode.get("setMembers");
-    assertEquals(0, leafMembers.size());
-  }
+		List<Object> leafMembers = (List<Object>) leafNode.get("setMembers");
+		assertEquals(0, leafMembers.size());
+	}
 
-  @Test(expected = ObjectNotFoundException.class)
-  public void search_shouldThrowExceptionForNonExistentConcept() throws Exception {
-    MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-    req.addParameter("concept", "invalid-concept");
-    handle(req);
-  }
+	@Test(expected = ObjectNotFoundException.class)
+	public void search_shouldThrowExceptionForNonExistentConcept() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("concept", "invalid-concept");
+		handle(req);
+	}
 }
