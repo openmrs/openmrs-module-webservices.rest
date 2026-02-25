@@ -35,7 +35,7 @@ public class PersonResource1_10Test extends BaseDelegatingResourceTest<PersonRes
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Horatio Test Hornblower";
+		return "Mr. Horatio Test Hornblower";
 	}
 	
 	@Override

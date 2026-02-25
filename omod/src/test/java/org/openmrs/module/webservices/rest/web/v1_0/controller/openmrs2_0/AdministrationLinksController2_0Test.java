@@ -21,7 +21,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.Extension;
-import org.openmrs.module.web.extension.AdministrationSectionExt;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
@@ -35,7 +34,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
- * Tests Read operations for {@link AdministrationSectionExt} via web service calls
+ * Tests Read operations for administration links via web service calls
  */
 public class AdministrationLinksController2_0Test extends MainResourceControllerTest {
 
@@ -109,19 +108,22 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 	}
 
 	private void setupMockRestWsModuleAdminListExtension() {
-		Extension extension = new AdministrationSectionExt() {
+		Extension extension = new Extension() {
 
-			@Override
 			public String getTitle() {
 				return "WS-links";
 			}
 
-			@Override
 			public Map<String, String> getLinks() {
 				Map<String, String> linksMap = new HashMap<>();
 				linksMap.put("link1", "ws.first.link");
 				linksMap.put("link2", "ws.second.link");
 				return linksMap;
+			}
+
+			@Override
+			public MEDIA_TYPE getMediaType() {
+				return MEDIA_TYPE.html;
 			}
 
 			@Override
@@ -134,18 +136,21 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 	}
 
 	private void setupMockAtlasModuleAdminListExtension() {
-		Extension extension = new AdministrationSectionExt() {
+		Extension extension = new Extension() {
 
-			@Override
 			public String getTitle() {
 				return "Atlas-links";
 			}
 
-			@Override
 			public Map<String, String> getLinks() {
 				Map<String, String> linksMap = new HashMap<>();
 				linksMap.put("link3", "atlas.first.link");
 				return linksMap;
+			}
+
+			@Override
+			public MEDIA_TYPE getMediaType() {
+				return MEDIA_TYPE.html;
 			}
 
 			@Override

@@ -65,7 +65,7 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         long originalCount = getAllCount();
         String json = "{\"name\": \"Time Span\",\"description\": \"This attribute type will record the time span for the concept\"," +
                 "\"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\",\"minOccurs\": 0,\"maxOccurs\": 1," +
-                "\"datatypeConfig\": \"default\",\"preferredHandlerClassname\": \"org.openmrs.web.attribute.handler.LongFreeTextTextareaHandler\",\"handlerConfig\": null}";
+                "\"datatypeConfig\": \"default\"}";
 
         MockHttpServletRequest req = request(RequestMethod.POST, getURI());
         req.setContent(json.getBytes());

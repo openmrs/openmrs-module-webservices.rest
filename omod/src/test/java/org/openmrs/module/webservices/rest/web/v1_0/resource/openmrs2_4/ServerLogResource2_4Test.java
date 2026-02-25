@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 
-import org.apache.struts.mock.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.openmrs2_4.ServerLogActionWrapper2_4;

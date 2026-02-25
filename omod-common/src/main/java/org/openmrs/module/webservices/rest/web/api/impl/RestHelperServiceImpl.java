@@ -9,10 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import org.hibernate.CacheMode;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.hibernate.DbSession;
@@ -21,8 +17,14 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassHandler;
+import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,14 +46,25 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		this.sessionFactory = sessionFactory;
 	}
 	
+	private Session getHibernateSession() {
+		return sessionFactory.getHibernateSessionFactory().getCurrentSession();
+	}
+	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectByUuid(Class,
 	 *      String)
 	 */
 	@Override
 	@Transactional(readOnly = true)
+	@SuppressWarnings("unchecked")
 	public <T> T getObjectByUuid(Class<? extends T> type, String uuid) {
-		return type.cast(getSession().createCriteria(type).add(Restrictions.eq("uuid", uuid)).uniqueResult());
+		Session session = getHibernateSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery((Class<T>) type);
+		Root<T> root = cq.from((Class<T>) type);
+		cq.where(cb.equal(root.get("uuid"), uuid));
+		List<T> results = session.createQuery(cq).getResultList();
+		return results.isEmpty() ? null : results.get(0);
 	}
 	
 	private DbSession getSession() {
@@ -60,7 +73,6 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 				return sessionFactory.getCurrentSession();
 			}
 			catch (NoSuchMethodError error) {
-				//Supports Hibernate 3 by casting org.hibernate.classic.Session to org.hibernate.Session
 				try {
 					method = sessionFactory.getClass().getMethod("getCurrentSession");
 					return (DbSession) method.invoke(sessionFactory);
@@ -95,29 +107,42 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> List<T> getObjectsByFields(Class<? extends T> type, Field... fields) {
-		Criteria criteria = getSession().createCriteria(type);
+		Session session = getHibernateSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery((Class<T>) type);
+		Root<T> root = cq.from((Class<T>) type);
+		List<Predicate> predicates = new ArrayList<>();
 		for (Field field : fields) {
 			if (field != null) {
-				criteria.add(Restrictions.eq(field.getName(), field.getValue()));
+				predicates.add(cb.equal(root.get(field.getName()), field.getValue()));
 			}
 		}
-		return criteria.list();
+		if (!predicates.isEmpty()) {
+			cq.where(predicates.toArray(new Predicate[0]));
+		}
+		return session.createQuery(cq).getResultList();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getPatients(Collection)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Patient> getPatients(Collection<Integer> patientIds) {
 		List<Patient> ret = new ArrayList<Patient>();
 		
 		if (!patientIds.isEmpty()) {
-			Criteria criteria = getSession().createCriteria(Patient.class);
-			criteria.setCacheMode(CacheMode.IGNORE);
-			criteria.add(Restrictions.in("patientId", patientIds));
-			criteria.add(Restrictions.eq("voided", false));
-			List<Patient> temp = criteria.list();
+			Session session = getHibernateSession();
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+			CriteriaQuery<Patient> cq = cb.createQuery(Patient.class);
+			Root<Patient> root = cq.from(Patient.class);
+			cq.where(
+				cb.and(
+					root.get("patientId").in(patientIds),
+					cb.equal(root.get("voided"), false)
+				)
+			);
+			session.setCacheMode(org.hibernate.CacheMode.IGNORE);
+			List<Patient> temp = session.createQuery(cq).getResultList();
 			for (Patient p : temp) {
 				ret.add(p);
 			}
@@ -128,14 +153,19 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 	
 	@Override
 	public List<Patient> findPatientsByIdentifierStartingWith(String identifier, boolean includeAll) {
-		Criteria criteria = getSession().createCriteria(Patient.class);
-		criteria.createAlias("identifiers", "identifiers");
-		criteria.add(Restrictions.like("identifiers.identifier", identifier, MatchMode.START));
-		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		Session session = getHibernateSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Patient> cq = cb.createQuery(Patient.class);
+		Root<Patient> root = cq.from(Patient.class);
+		Join<?, ?> identifiers = root.join("identifiers");
+		List<Predicate> predicates = new ArrayList<>();
+		predicates.add(cb.like(identifiers.get("identifier"), identifier + "%"));
 		if (!includeAll) {
-			criteria.add(Restrictions.eq("voided", false));
+			predicates.add(cb.equal(root.get("voided"), false));
 		}
-		return criteria.list();
+		cq.where(predicates.toArray(new Predicate[0]));
+		cq.distinct(true);
+		return session.createQuery(cq).getResultList();
 	}
 	
 	/**

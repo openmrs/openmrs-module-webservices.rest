@@ -70,7 +70,7 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 	
 	@Override
 	public String getDisplayProperty() {
-		return "Horatio Test Hornblower";
+		return "Mr. Horatio Test Hornblower";
 	}
 	
 	@Override

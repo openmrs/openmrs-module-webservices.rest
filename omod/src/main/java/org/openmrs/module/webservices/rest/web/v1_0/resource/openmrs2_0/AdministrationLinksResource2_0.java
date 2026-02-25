@@ -17,7 +17,6 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
-import org.openmrs.module.web.extension.AdministrationSectionExt;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -34,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -145,7 +145,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
-			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId()
+			if (isAdminSectionExtension(adminListExtension) && adminListExtension.getModuleId()
 					.equals(moduleId)) {
 				return mapAdminListExtension(adminListExtension, messageSourceService);
 			}
@@ -161,7 +161,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
-			if (adminListExtension instanceof AdministrationSectionExt) {
+			if (isAdminSectionExtension(adminListExtension)) {
 				modulesWithLinksList.add(mapAdminListExtension(adminListExtension, messageSourceService));
 			}
 		}
@@ -169,24 +169,40 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		return modulesWithLinksList;
 	}
 
+	private boolean isAdminSectionExtension(Extension extension) {
+		try {
+			extension.getClass().getMethod("getTitle");
+			extension.getClass().getMethod("getLinks");
+			return true;
+		} catch (NoSuchMethodException e) {
+			return false;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
 	private AdministrationSectionLinks mapAdminListExtension(Extension extension,
 			MessageSourceService messageSourceService) {
-		AdministrationSectionExt adminListExtension = (AdministrationSectionExt) extension;
+		try {
+			Method getTitleMethod = extension.getClass().getMethod("getTitle");
+			Method getLinksMethod = extension.getClass().getMethod("getLinks");
+			getTitleMethod.setAccessible(true);
+			getLinksMethod.setAccessible(true);
 
-		// map module title message key to its value
-		String title = messageSourceService.getMessage(adminListExtension.getTitle());
+			String title = messageSourceService.getMessage((String) getTitleMethod.invoke(extension));
 
-		// map link titles to their values
-		Map<String, String> links = adminListExtension.getLinks();
-		for (Map.Entry<String, String> link : links.entrySet()) {
-			link.setValue(messageSourceService.getMessage(link.getValue()));
+			Map<String, String> links = (Map<String, String>) getLinksMethod.invoke(extension);
+			for (Map.Entry<String, String> link : links.entrySet()) {
+				link.setValue(messageSourceService.getMessage(link.getValue()));
+			}
+
+			AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
+			administrationSectionLinks.setModuleId(extension.getModuleId());
+			administrationSectionLinks.setTitle(title);
+			administrationSectionLinks.setLinks(links);
+
+			return administrationSectionLinks;
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to map admin list extension", e);
 		}
-
-		AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
-		administrationSectionLinks.setModuleId(adminListExtension.getModuleId());
-		administrationSectionLinks.setTitle(title);
-		administrationSectionLinks.setLinks(links);
-
-		return administrationSectionLinks;
 	}
 }

@@ -11,10 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -64,7 +64,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#create(SimpleObject, javax.servlet.http.HttpServletRequest,
+	 * @see RoleController#create(SimpleObject, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies create a new Role
 	 */
@@ -90,7 +90,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
+	 * @see RoleController#retrieve(String, jakarta.servlet.http.HttpServletRequest)
 	 * @verifies get a default representation of a Role
 	 */
 	@Test
@@ -105,7 +105,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#retrieve(String, javax.servlet.http.HttpServletRequest)
+	 * @see RoleController#retrieve(String, jakarta.servlet.http.HttpServletRequest)
 	 * @verifies get a full representation of a Role
 	 */
 	@Test
@@ -121,7 +121,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#update(String, SimpleObject, javax.servlet.http.HttpServletRequest,
+	 * @see RoleController#update(String, SimpleObject, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies change a property on a Role
 	 */
@@ -141,7 +141,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#delete(String, String, javax.servlet.http.HttpServletRequest,
+	 * @see RoleController#delete(String, String, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies void a Role
 	 */
@@ -181,7 +181,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest,
+	 * @see RoleController#search(String, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies return no results if there are no matching Roles
 	 */
@@ -198,7 +198,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#search(String, javax.servlet.http.HttpServletRequest,
+	 * @see RoleController#search(String, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 * @verifies find matching Roles
 	 */
@@ -218,7 +218,7 @@ public class RoleController1_8Test extends MainResourceControllerTest {
 	}
 	
 	/**
-	 * @see RoleController#getAll(javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 * @see RoleController#getAll(jakarta.servlet.http.HttpServletRequest, HttpServletResponse)
 	 * @verifies get all Roles
 	 */
 	@Test

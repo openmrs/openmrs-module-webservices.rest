@@ -13,10 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -37,6 +38,7 @@ import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORM
 import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_SHORT;
 import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_LONG;
 
+@Ignore("Core 3.0 no longer bundles pre-configured name templates")
 public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	
 	private static final String SHORT_NAMETEMPLATE_RESOURCE = "nameTemplateShort.json";

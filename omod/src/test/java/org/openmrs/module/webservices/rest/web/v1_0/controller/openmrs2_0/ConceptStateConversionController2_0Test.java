@@ -43,6 +43,17 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		Context.getProgramWorkflowService().saveProgram(workflow.getProgram());
 
 		Context.flushSession();
+		Context.clearSession();
+
+		// Re-fetch entities after clearing session to avoid transient references
+		workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		state = null;
+		for (ProgramWorkflowState s : workflow.getStates()) {
+			if (concept.equals(s.getConcept())) {
+				state = s;
+				break;
+			}
+		}
 
 		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
 		conceptStateConversion.setConcept(concept);
@@ -86,6 +97,17 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		service.saveProgram(workflow.getProgram());
 
 		Context.flushSession();
+		Context.clearSession();
+
+		// Re-fetch to avoid transient references in Hibernate 6
+		workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		state = null;
+		for (ProgramWorkflowState s : workflow.getStates()) {
+			if (concept.equals(s.getConcept())) {
+				state = s;
+				break;
+			}
+		}
 
 		String json =
 				"{\"concept\": \"" + concept.getUuid() + "\",\"programWorkflow\": \"" + workflow.getUuid()
@@ -118,6 +140,17 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 		workflow.addState(state);
 		service.saveProgram(workflow.getProgram());
 		Context.flushSession();
+		Context.clearSession();
+
+		// Re-fetch to avoid transient references in Hibernate 6
+		workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		state = null;
+		for (ProgramWorkflowState s : workflow.getStates()) {
+			if (concept.equals(s.getConcept())) {
+				state = s;
+				break;
+			}
+		}
 
 		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
 		conceptStateConversion.setConcept(concept);

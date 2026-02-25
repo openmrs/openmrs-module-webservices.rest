@@ -200,10 +200,10 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	 */
 	@Override
 	public NeedsPaging<FieldAnswer> doGetAll(Field parent, RequestContext context) throws ResponseException {
-		List<FieldAnswer> fieldAnswers = new ArrayList<FieldAnswer>();
-		if (parent.getAnswers() != null) {
-			fieldAnswers.addAll(parent.getAnswers());
-		}
+		List<FieldAnswer> fieldAnswers = Context.getService(
+				org.openmrs.module.webservices.rest.web.api.RestHelperService.class)
+				.getObjectsByFields(FieldAnswer.class,
+						new org.openmrs.module.webservices.rest.web.api.RestHelperService.Field("field", parent));
 		return new NeedsPaging<FieldAnswer>(fieldAnswers, context);
 	}
 	

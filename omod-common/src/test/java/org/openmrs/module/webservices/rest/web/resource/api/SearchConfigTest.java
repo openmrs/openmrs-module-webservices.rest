@@ -63,7 +63,7 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenIdIsNull() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expect(NullPointerException.class);
 		expectedException.expectMessage("id must not be empty");
 		String id = null;
 		new SearchConfig(id, "v1/order", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
@@ -90,7 +90,7 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedResourceIsNull() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expect(NullPointerException.class);
 		expectedException.expectMessage("supportedResource must not be empty");
 		String supportedResource = null;
 		new SearchConfig("default", supportedResource, asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
@@ -117,7 +117,7 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedOpenmrsVersionsIsNull() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expect(NullPointerException.class);
 		expectedException.expectMessage("supportedOpenmrsVersions must not be empty");
 		List<String> supportedOpenmrsVersions = null;
 		new SearchConfig("default", "v1/order", supportedOpenmrsVersions,
@@ -145,7 +145,7 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSearchQueriesIsNull() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
+		expectedException.expect(NullPointerException.class);
 		expectedException.expectMessage("searchQueries must not be empty");
 		List<SearchQuery> searchQueries = null;
 		new SearchConfig("default", "v1/order", "1.8.*", searchQueries);

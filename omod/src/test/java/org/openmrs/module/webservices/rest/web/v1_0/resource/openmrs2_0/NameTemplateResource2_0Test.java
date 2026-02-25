@@ -9,10 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import org.junit.Ignore;
 import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 
+@Ignore("Core 3.0 no longer bundles pre-configured name templates")
 public class NameTemplateResource2_0Test extends BaseDelegatingResourceTest<NameTemplateResource2_0, NameTemplate> {
 
 	@Override
