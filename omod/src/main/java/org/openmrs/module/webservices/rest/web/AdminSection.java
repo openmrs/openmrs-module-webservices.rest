@@ -27,6 +27,7 @@ public class AdminSection extends AdministrationSectionExt {
 		return RestConstants.MODULE_ID + ".title";
 	}
 	
+	@Override
 	public Map<String, String> getLinks() {
 		
 		Map<String, String> map = new LinkedHashMap<String, String>();
