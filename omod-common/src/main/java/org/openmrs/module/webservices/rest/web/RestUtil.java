@@ -552,11 +552,7 @@ public class RestUtil implements GlobalPropertyListener {
 	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
-			if (StringUtils.isNotBlank(ann.reason())) {
-				response.setStatus(ann.value().value());
-			} else {
-				response.setStatus(ann.value().value());
-			}
+			response.setStatus(ann.value().value());
 		} else {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
