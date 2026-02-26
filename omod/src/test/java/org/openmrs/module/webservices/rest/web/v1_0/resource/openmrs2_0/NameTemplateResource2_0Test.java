@@ -9,14 +9,19 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
+import org.openmrs.api.context.Context;
 import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
+
+import static org.openmrs.util.OpenmrsConstants.GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT;
+import static org.openmrs.util.OpenmrsConstants.PERSON_NAME_FORMAT_SHORT;
 
 public class NameTemplateResource2_0Test extends BaseDelegatingResourceTest<NameTemplateResource2_0, NameTemplate> {
 
 	@Override
 	public NameTemplate newObject() {
+		Context.getAdministrationService().setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, PERSON_NAME_FORMAT_SHORT);
 		return NameSupport.getInstance().getDefaultLayoutTemplate();
 	}
 	

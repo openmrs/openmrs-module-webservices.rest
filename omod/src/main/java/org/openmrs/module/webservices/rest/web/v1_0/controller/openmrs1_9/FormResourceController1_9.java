@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import org.openmrs.FormResource;
 import org.openmrs.api.FormService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.FormResourceResource1_9;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Controller("webservices.rest.formResourceController")
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/form/{uuid}/resource/{resourceUuid}/value")
-public class FormResourceController1_9 extends MainResourceController {
+public class FormResourceController1_9 extends BaseRestController {
 	
 	@Autowired
 	private ClobDatatypeStorageController clobDatatypeStorageController;

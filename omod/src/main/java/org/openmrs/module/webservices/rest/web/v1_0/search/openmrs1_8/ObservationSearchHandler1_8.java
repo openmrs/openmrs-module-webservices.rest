@@ -46,7 +46,7 @@ import java.util.List;
 public class ObservationSearchHandler1_8 implements SearchHandler {
 	
 	private final SearchConfig searchConfig = new SearchConfig("default", RestConstants.VERSION_1 + "/obs", Arrays.asList(
-	    "1.8.* - 2.*"), Arrays.asList(new SearchQuery.Builder(
+	    "1.8.* - 9.*"), Arrays.asList(new SearchQuery.Builder(
 	        "Allows you to find Observations by patient and concept").withRequiredParameters("patient")
 	        .withOptionalParameters("concept", "concepts", "answers", "groupingConcepts").build()));
 	

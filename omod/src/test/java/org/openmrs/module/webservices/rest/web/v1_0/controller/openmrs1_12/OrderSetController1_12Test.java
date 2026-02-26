@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

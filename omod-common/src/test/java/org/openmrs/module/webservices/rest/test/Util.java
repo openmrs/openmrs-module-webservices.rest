@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -27,7 +27,7 @@ public class Util {
 		String toPrint;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			mapper.getSerializationConfig().set(SerializationConfig.Feature.INDENT_OUTPUT, true);
+			mapper.enable(SerializationFeature.INDENT_OUTPUT);
 			toPrint = mapper.writeValueAsString(object);
 		}
 		catch (Exception ex) {
