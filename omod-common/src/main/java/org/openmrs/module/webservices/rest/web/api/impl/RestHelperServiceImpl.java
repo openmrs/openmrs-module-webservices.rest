@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.api.impl;
 
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.hibernate.DbSession;
 import org.openmrs.api.db.hibernate.DbSessionFactory;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
@@ -26,7 +25,6 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,8 +37,6 @@ import static org.openmrs.api.context.Context.getRegisteredComponents;
 public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHelperService {
 	
 	DbSessionFactory sessionFactory;
-	
-	Method method;
 	
 	public void setSessionFactory(DbSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -67,37 +63,9 @@ public class RestHelperServiceImpl extends BaseOpenmrsService implements RestHel
 		return results.isEmpty() ? null : results.get(0);
 	}
 	
-	private DbSession getSession() {
-		if (method == null) {
-			try {
-				return sessionFactory.getCurrentSession();
-			}
-			catch (NoSuchMethodError error) {
-				try {
-					method = sessionFactory.getClass().getMethod("getCurrentSession");
-					return (DbSession) method.invoke(sessionFactory);
-				}
-				catch (Exception e) {
-					throw new IllegalStateException(e);
-				}
-			}
-		} else {
-			try {
-				return (DbSession) method.invoke(sessionFactory);
-			}
-			catch (Exception e) {
-				throw new IllegalStateException(e);
-			}
-		}
-	}
-	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.api.RestHelperService#getObjectById(Class,
-	 *      Serializable)
-	 */
 	@Override
 	public <T> T getObjectById(Class<? extends T> type, Serializable id) {
-		return type.cast(getSession().get(type, id));
+		return type.cast(getHibernateSession().get(type, id));
 	}
 	
 	/**
