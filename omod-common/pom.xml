@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jasper</artifactId>
-			<version>11.0.5</version>
+			<version>${apacheTomcatVersion}</version>
 			<scope>provided</scope>
 		</dependency>
 
