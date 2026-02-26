@@ -115,7 +115,6 @@ public class DynamicBeanConfiguration {
 			clazz = Context.loadClass("org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping");
 		}
 		
-		AbstractHandlerMapping mapping = (AbstractHandlerMapping) clazz.getDeclaredConstructor().newInstance();
-		return mapping;
+		return (AbstractHandlerMapping) clazz.getDeclaredConstructor().newInstance();
 	}
 }
