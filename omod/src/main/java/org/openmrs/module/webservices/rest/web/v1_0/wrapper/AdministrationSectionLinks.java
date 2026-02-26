@@ -9,13 +9,17 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.wrapper;
 
+import org.openmrs.module.web.extension.AdministrationSectionExt;
+
 import java.util.Map;
 
 /**
- * REST wrapper for administration section extensions.
- * We're using it for a few reasons:
- * - Using a custom wrapper gives us more flexibility.
- * - Avoids requiring additional module dependencies on the classpath.
+ * REST wrapper for {@link AdministrationSectionExt}
+ * We're using it instead of {@link AdministrationSectionExt} for a few reasons:
+ * - {@link AdministrationSectionExt} class doesn't support setters for its fields
+ * so we cannot map their values, for example as we do with message keys.
+ * - Using a custom wrapper gives us more flexibility when {@link AdministrationSectionExt}
+ * would change in the future.
  */
 public class AdministrationSectionLinks {
 
