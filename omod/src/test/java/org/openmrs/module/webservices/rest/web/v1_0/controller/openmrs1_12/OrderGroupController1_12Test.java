@@ -126,7 +126,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		Assert.assertEquals(patient.getUuid(), Util.getByPath(response, "patient/uuid"));
 		Assert.assertEquals(encounter.getUuid(), Util.getByPath(response, "encounter/uuid"));
 		Assert.assertEquals(orderSet.getUuid(), Util.getByPath(response, "orderSet/uuid"));
-		Assert.assertEquals("1234 - Mr. John Doe - Order_Set_1", Util.getByPath(response, "display"));
+		Assert.assertEquals("1234 - John Doe - Order_Set_1", Util.getByPath(response, "display"));
 		List<Order> orderList = (List<Order>) PropertyUtils.getProperty(response, "orders");
 		Assert.assertEquals(2, orderList.size());
 	}

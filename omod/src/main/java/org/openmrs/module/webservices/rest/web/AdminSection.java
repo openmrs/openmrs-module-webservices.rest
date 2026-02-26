@@ -13,20 +13,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.openmrs.api.context.Context;
-import org.openmrs.module.Extension;
+import org.openmrs.module.web.extension.AdministrationSectionExt;
 
 /**
  * This class defines the links that will appear on the administration page under the
  * "basicmodule.title" heading. This extension is enabled by defining (uncommenting) it in the
  * /metadata/config.xml file.
  */
-public class AdminSection extends Extension {
+public class AdminSection extends AdministrationSectionExt {
 	
 	@Override
-	public Extension.MEDIA_TYPE getMediaType() {
-		return Extension.MEDIA_TYPE.html;
-	}
-	
 	public String getTitle() {
 		return RestConstants.MODULE_ID + ".title";
 	}

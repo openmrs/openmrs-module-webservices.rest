@@ -17,7 +17,7 @@ import io.swagger.models.properties.StringProperty;
 import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
-import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
+import org.openmrs.module.web.extension.AdministrationSectionExt;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -31,9 +31,9 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -170,39 +170,25 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 	}
 
 	private boolean isAdminSectionExtension(Extension extension) {
-		try {
-			extension.getClass().getMethod("getTitle");
-			extension.getClass().getMethod("getLinks");
-			return true;
-		} catch (NoSuchMethodException e) {
-			return false;
-		}
+		return extension instanceof AdministrationSectionExt;
 	}
 
-	@SuppressWarnings("unchecked")
 	private AdministrationSectionLinks mapAdminListExtension(Extension extension,
 			MessageSourceService messageSourceService) {
-		try {
-			Method getTitleMethod = extension.getClass().getMethod("getTitle");
-			Method getLinksMethod = extension.getClass().getMethod("getLinks");
-			getTitleMethod.setAccessible(true);
-			getLinksMethod.setAccessible(true);
+		AdministrationSectionExt adminExt = (AdministrationSectionExt) extension;
 
-			String title = messageSourceService.getMessage((String) getTitleMethod.invoke(extension));
+		String title = messageSourceService.getMessage(adminExt.getTitle());
 
-			Map<String, String> links = (Map<String, String>) getLinksMethod.invoke(extension);
-			for (Map.Entry<String, String> link : links.entrySet()) {
-				link.setValue(messageSourceService.getMessage(link.getValue()));
-			}
-
-			AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
-			administrationSectionLinks.setModuleId(extension.getModuleId());
-			administrationSectionLinks.setTitle(title);
-			administrationSectionLinks.setLinks(links);
-
-			return administrationSectionLinks;
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to map admin list extension", e);
+		Map<String, String> links = adminExt.getLinks();
+		for (Map.Entry<String, String> link : links.entrySet()) {
+			link.setValue(messageSourceService.getMessage(link.getValue()));
 		}
+
+		AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
+		administrationSectionLinks.setModuleId(extension.getModuleId());
+		administrationSectionLinks.setTitle(title);
+		administrationSectionLinks.setLinks(links);
+
+		return administrationSectionLinks;
 	}
 }
