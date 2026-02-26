@@ -60,6 +60,8 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	
 	@Before
 	public void before() throws Exception {
+		// save a backup of the current global property value for name layout,
+		// before setting a specific name layout value for the tests.
 		AdministrationService service = Context.getAdministrationService();
 		originalNametemplate = service.getGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT);
 		service.setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, PERSON_NAME_FORMAT_SHORT);
@@ -68,6 +70,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	@After
 	public void after() throws Exception {
 		if (!StringUtils.isEmpty(originalNametemplate)) {
+			// restore the backed up name layout global property value.
 			AdministrationService service = Context.getAdministrationService();
 			service.setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, originalNametemplate);
 		}
