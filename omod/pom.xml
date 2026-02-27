@@ -39,8 +39,8 @@
 	</dependencies>
 	
 	<build>
-        <finalName>${project.parent.artifactId}-${project.parent.version}.${revisionNumber}</finalName>
-		
+        <finalName>${project.parent.artifactId}-${project.parent.version}</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.openmrs.maven.plugins</groupId>
