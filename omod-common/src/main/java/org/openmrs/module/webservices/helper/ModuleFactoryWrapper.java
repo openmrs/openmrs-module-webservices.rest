@@ -20,7 +20,7 @@ import org.openmrs.module.web.WebModuleUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.ServletContext;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jasper</artifactId>
+			<artifactId>jasper</artifactId>
 			<version>${apacheTomcatVersion}</version>
 			<scope>provided</scope>
 		</dependency>

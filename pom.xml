@@ -39,15 +39,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openmrs.version>3.0.0-SNAPSHOT</openmrs.version>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
+		<openmrs.version>2.8.3</openmrs.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<MODULE_ID>${project.parent.artifactId}</MODULE_ID>
 		<MODULE_NAME>${project.name}</MODULE_NAME>
 		<MODULE_VERSION>${project.parent.version}</MODULE_VERSION>
 		<MODULE_PACKAGE>${project.parent.groupId}.${project.parent.artifactId}</MODULE_PACKAGE>
-		<apacheTomcatVersion>11.0.5</apacheTomcatVersion>
+		<apacheTomcatVersion>6.0.53</apacheTomcatVersion>
 		<javaxVersion>4.0.1</javaxVersion>
 		<jacksonVersion>2.19.1</jacksonVersion>
 	</properties>
@@ -90,12 +90,31 @@
 				<type>pom</type>
 				<version>${openmrs.version}</version>
 				<scope>test</scope>
+				<!-- in Core 2.8.x, Mockito version was updated to 5.6.0 when building with Java 17 or higher -->
+				<!-- many of the tests weren't working with this version of Mockito, so excluding and included an earlier -->
+				<!-- version (see below) until we get this working -->
+				<exclusions>
+					<exclusion>
+						<groupId>org.mockito</groupId>
+						<artifactId>mockito-core</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
 				<artifactId>openmrs-web</artifactId>
 				<version>${openmrs.version}</version>
 				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>servlet-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>jsp-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.web</groupId>
@@ -103,6 +122,16 @@
 				<version>${openmrs.version}</version>
 				<type>test-jar</type>
 				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>servlet-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>javax.servlet</groupId>
+						<artifactId>jsp-api</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.tools</groupId>
@@ -117,9 +146,9 @@
 				<scope>compile</scope>
 			</dependency>
 			<dependency>
-				<groupId>jakarta.servlet</groupId>
-				<artifactId>jakarta.servlet-api</artifactId>
-				<version>6.1.0</version>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${javaxVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -149,8 +178,14 @@
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>legacyui-omod</artifactId>
-				<version>3.0.0-SNAPSHOT</version>
+				<version>1.23.0</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-core</artifactId>
+				<version>3.12.4</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -190,8 +225,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -215,6 +250,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -267,10 +307,9 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.14.0</version>
 					<configuration>
-						<target>21</target>
-						<source>21</source>
+						<target>8</target>
+						<source>8</source>
 						<encoding>UTF-8</encoding>
-						<parameters>true</parameters>
 					</configuration>
 				</plugin>
 

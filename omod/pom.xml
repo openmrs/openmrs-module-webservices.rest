@@ -23,12 +23,10 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>legacyui-omod</artifactId>
 			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 
 		<!-- Add jackson-dataformat-yaml with test scope to support tests without bundling -->

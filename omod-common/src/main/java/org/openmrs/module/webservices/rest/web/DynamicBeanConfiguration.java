@@ -47,7 +47,7 @@ public class DynamicBeanConfiguration {
 			clazz = Context.loadClass("org.springframework.http.converter.json.MappingJacksonHttpMessageConverter");
 		}
 		
-		return (HttpMessageConverter<?>) clazz.getDeclaredConstructor().newInstance();
+		return (HttpMessageConverter<?>) clazz.newInstance();
 	}
 	
 	/**
@@ -75,7 +75,7 @@ public class DynamicBeanConfiguration {
 			Class<?> clazz = Context
 			        .loadClass("org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver");
 			
-			bean = (AbstractHandlerExceptionResolver) clazz.getDeclaredConstructor().newInstance();
+			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
 			
 			Method method = bean.getClass().getMethod("setMessageConverters", HttpMessageConverter[].class);
 			method.invoke(bean, new Object[] { new HttpMessageConverter[] { stringHttpMessageConverter,
@@ -85,7 +85,7 @@ public class DynamicBeanConfiguration {
 			Class<?> clazz = Context
 			        .loadClass("org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver");
 			
-			bean = (AbstractHandlerExceptionResolver) clazz.getDeclaredConstructor().newInstance();
+			bean = (AbstractHandlerExceptionResolver) clazz.newInstance();
 			
 			Method method = bean.getClass().getMethod("setMessageConverters", List.class);
 			method.invoke(bean, Arrays.asList(stringHttpMessageConverter,
@@ -115,6 +115,6 @@ public class DynamicBeanConfiguration {
 			clazz = Context.loadClass("org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping");
 		}
 		
-		return (AbstractHandlerMapping) clazz.getDeclaredConstructor().newInstance();
+		return (AbstractHandlerMapping) clazz.newInstance();
 	}
 }

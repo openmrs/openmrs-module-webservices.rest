@@ -39,7 +39,7 @@ import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.util.ResourceUtils;
-import jakarta.servlet.ServletContext;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;

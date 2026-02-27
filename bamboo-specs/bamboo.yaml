@@ -10,7 +10,7 @@ stages:
     manual: false
     final: false
     jobs:
-    - Build and Test JDK 21
+    - Build and Test JDK 8
 - Deploy:
     manual: false
     final: false
@@ -22,8 +22,8 @@ stages:
     jobs:
     - Release to Maven
 
-Build and Test JDK 21:
-  key: BTJ21
+Build and Test JDK 8:
+  key: BTJ8
   tasks:
   - checkout:
       force-clean-build: 'false'
@@ -34,7 +34,7 @@ Build and Test JDK 21:
       - |-
         #!/bin/bash -eu
         set -x
-        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        export IMAGE="maven:3.9.9-amazoncorretto-8"
         docker pull ${IMAGE}
         docker run -v m2-repo:/root/.m2/repository -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn clean package && chmod -R 777 .'
       description: Build and test
@@ -63,7 +63,7 @@ Deploy to Maven:
       - |-
         #!/bin/bash -eu
         set -x
-        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        export IMAGE="maven:3.9.9-amazoncorretto-8"
         docker pull ${IMAGE}
         docker run -v m2-repo:/root/.m2/repository -v ~/.m2/settings.xml:/.m2/settings.xml:ro -v ${PWD}:/module --rm -w="/module" ${IMAGE} bash -c 'mvn deploy -DskipTests --settings /.m2/settings.xml'
       description: Deploy
@@ -97,7 +97,7 @@ Release to Maven:
       - |-
         #!/bin/bash -eu
         set -x
-        export IMAGE="maven:3.9.9-amazoncorretto-21"
+        export IMAGE="maven:3.9.9-amazoncorretto-8"
         docker pull ${IMAGE}
         docker run \
           -v m2-repo:/root/.m2/repository \

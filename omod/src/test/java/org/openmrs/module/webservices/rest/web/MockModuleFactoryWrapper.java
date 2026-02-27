@@ -14,7 +14,7 @@ import org.openmrs.module.Module;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.ServletContext;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.docs.swagger;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 /* The object provides metadata about the API.*/
 public class Info {

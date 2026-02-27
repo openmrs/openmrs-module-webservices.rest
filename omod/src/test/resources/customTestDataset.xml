@@ -45,8 +45,8 @@
     <encounter encounter_id="2" encounter_type="1" patient_id="2" location_id="10" form_id="1" encounter_datetime="2015-09-30 10:46:44.2"
                creator="1" date_created="2015-09-30 10:44:45.2" voided="false" uuid="E8B79256-213C-4E2D-B812-D09D6C220273"/>
 
-    <!-- Use order_type_id=17 (Plain Order) and set date_activated to match encounter datetime for Core 3.0 validation -->
-    <orders order_id="991" urgency="ROUTINE" order_type_id="17" encounter_id="2" order_number="1" care_setting="1" concept_id="5497" order_action="NEW" orderer="1" instructions="Do a CD4 Test" date_activated="2015-09-30 10:46:44.2" auto_expire_date="2016-01-08 00:00:00.0" creator="1" date_created="2015-09-30 12:20:22.0" voided="false" patient_id="2" uuid="ff97d3a0-8dbf-11e1-bc86-da3a922f3783"/>
+    <orders order_id="991" urgency="ROUTINE" order_type_id="1" encounter_id="1" order_number="1" care_setting="1" concept_id="5497" order_action="NEW" orderer="1" instructions="Do a CD4 Test" date_activated="2008-08-08 00:00:00.0" auto_expire_date="2008-09-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="7" uuid="ff97d3a0-8dbf-11e1-bc86-da3a922f3783"/>
+    <orders order_id="992" urgency="ROUTINE" order_type_id="1" encounter_id="1" order_number="2" care_setting="1" concept_id="5497" order_action="NEW" orderer="1" instructions="Do a CD4 Test" date_activated="2008-08-08 00:00:00.0" auto_expire_date="2008-09-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="true" patient_id="7" uuid="b7ed4e20-f27a-11e1-aff1-0800200c9a66"/>
 
     <encounter_provider encounter_provider_id="1" provider_id="1" encounter_id="1" encounter_role_id="1" date_created="2015-06-19 10:46:45.2" voided="false"
                         uuid="bf218490-1691-11df-97a5-7038c432aabf"/>

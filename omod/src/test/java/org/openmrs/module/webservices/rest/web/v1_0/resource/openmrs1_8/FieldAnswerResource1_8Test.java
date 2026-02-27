@@ -27,7 +27,7 @@ public class FieldAnswerResource1_8Test extends BaseDelegatingResourceTest<Field
 		Field field = Context.getFormService().getFieldByUuid(RestTestConstants1_8.FIELD_UUID);
 		FieldAnswer fieldAnswer = new FieldAnswer();
 		fieldAnswer.setConcept(Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT_UUID));
-		fieldAnswer.setField(field);
+		field.addAnswer(fieldAnswer);
 		
 		fieldAnswerUUID = fieldAnswer.getUuid();
 		
@@ -39,7 +39,7 @@ public class FieldAnswerResource1_8Test extends BaseDelegatingResourceTest<Field
 	 */
 	@Override
 	public String getDisplayProperty() {
-		return "Some concept - YES";
+		return "Null Field - YES";
 	}
 	
 	/**

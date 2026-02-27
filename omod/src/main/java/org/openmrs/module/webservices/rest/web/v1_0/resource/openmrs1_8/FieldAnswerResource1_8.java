@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.swagger.models.Model;
@@ -25,7 +26,6 @@ import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.RefRepresentation;
@@ -200,8 +200,10 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 	 */
 	@Override
 	public NeedsPaging<FieldAnswer> doGetAll(Field parent, RequestContext context) throws ResponseException {
-		List<FieldAnswer> fieldAnswers = Context.getService(RestHelperService.class)
-				.getObjectsByFields(FieldAnswer.class, new RestHelperService.Field("field", parent));
+		List<FieldAnswer> fieldAnswers = new ArrayList<FieldAnswer>();
+		if (parent.getAnswers() != null) {
+			fieldAnswers.addAll(parent.getAnswers());
+		}
 		return new NeedsPaging<FieldAnswer>(fieldAnswers, context);
 	}
 	

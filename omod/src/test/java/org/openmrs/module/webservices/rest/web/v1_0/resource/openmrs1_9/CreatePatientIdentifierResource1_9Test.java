@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import java.util.HashMap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

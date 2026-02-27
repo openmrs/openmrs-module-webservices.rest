@@ -34,7 +34,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.web.WebUtil;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.ServletContext;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.openmrs.api.APIException;
 import org.openmrs.module.ModuleUtil;

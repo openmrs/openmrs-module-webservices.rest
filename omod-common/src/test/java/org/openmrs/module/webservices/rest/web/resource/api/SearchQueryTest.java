@@ -116,7 +116,7 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfTheDescriptionIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
+		expectedException.expect(IllegalArgumentException.class);
 		expectedException.expectMessage("Description must not be empty");
 		new SearchQuery.Builder(null).withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
 		        .build();

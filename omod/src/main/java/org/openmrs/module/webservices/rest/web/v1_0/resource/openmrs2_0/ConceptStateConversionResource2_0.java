@@ -13,7 +13,6 @@ import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.ArrayProperty;
 import io.swagger.models.properties.RefProperty;
-import org.openmrs.Concept;
 import org.openmrs.ConceptStateConversion;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -77,14 +76,6 @@ public class ConceptStateConversionResource2_0 extends DelegatingCrudResource<Co
 	@PropertyGetter("display")
 	public String getDisplayProperty(ConceptStateConversion delegate) {
 		return delegate.toString();
-	}
-
-	@PropertyGetter("concept")
-	public Concept getConcept(ConceptStateConversion delegate) {
-		if (delegate.getConcept() != null) {
-			return Context.getConceptService().getConceptByUuid(delegate.getConcept().getUuid());
-		}
-		return null;
 	}
 
 	@Override

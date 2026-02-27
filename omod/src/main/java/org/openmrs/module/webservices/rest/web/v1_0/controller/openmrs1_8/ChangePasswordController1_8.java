@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import java.util.Map;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.APIException;

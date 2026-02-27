@@ -23,7 +23,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.WebRequest;
 
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public class LocationAttributeTypeController1_9Test extends MainResourceControllerTest {

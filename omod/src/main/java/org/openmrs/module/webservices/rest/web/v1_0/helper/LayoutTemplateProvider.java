@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.context.Context;
 import org.openmrs.layout.LayoutSupport;
 import org.openmrs.layout.LayoutTemplate;
@@ -51,9 +51,6 @@ public abstract class LayoutTemplateProvider<T extends LayoutTemplate> {
 	
 	public List<T> getAllLayoutTemplates() {
 		List<T> templates = source.getLayoutTemplates();
-		if (templates == null) {
-			return new ArrayList<>();
-		}
 		List<T> populated = new ArrayList<>(templates.size());
 		for (T template : templates) {
 			populated.add(createPopulatedLayoutTemplate(template));

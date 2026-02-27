@@ -24,7 +24,7 @@ public class ProgramWorkflowStateController2_0Test extends MainResourceControlle
 
 	@Override
 	public String getURI() {
-		return "workflow/" + RestTestConstants1_8.WORKFLOW_UUID + "/state";
+		return "workflow/" + RestTestConstants1_8.WORKFLOW_UUID + "/state/";
 	}
 
 	@Override

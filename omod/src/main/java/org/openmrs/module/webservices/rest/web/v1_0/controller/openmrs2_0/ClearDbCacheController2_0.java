@@ -79,7 +79,7 @@ public class ClearDbCacheController2_0 extends BaseRestController {
 					log.debug("Clearing DB cache via REST for resource: {} ({})", resourceName, supportedClass);
 				}
 				
-				sf.getCache().evict(supportedClass);
+				sf.getCache().evictEntityRegion(supportedClass);
 			} else {
 				if (log.isDebugEnabled()) {
 					log.debug("Clearing DB cache via REST for resource: {} ({}) with uuid: {}",
@@ -96,10 +96,10 @@ public class ClearDbCacheController2_0 extends BaseRestController {
 					return;
 				}
 				
-				sf.getCache().evict(supportedClass, object.getId());
+				sf.getCache().evictEntity(supportedClass, object.getId());
 			}
 			
-			sf.getCache().evictCollectionData();
+			sf.getCache().evictCollectionRegions();
 			sf.getCache().evictQueryRegions();
 		}
 	}

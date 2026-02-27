@@ -11,7 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.jupiter;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -26,7 +26,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;

@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 

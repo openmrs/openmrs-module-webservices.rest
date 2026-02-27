@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
@@ -34,8 +34,8 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -496,7 +496,7 @@ public class RestUtil implements GlobalPropertyListener {
 	 * @param request the current http web request
 	 * @param response the current http web response
 	 * @return a {@link RequestContext} object filled with all the necessary values
-	 * @see getRequestContext(jakarta.servlet.http.HttpServletRequest,
+	 * @see getRequestContext(javax.servlet.http.HttpServletRequest,
 	 *      org.openmrs.module.webservices.rest.web.representation.Representation)
 	 */
 	public static RequestContext getRequestContext(HttpServletRequest request, HttpServletResponse response) {
@@ -552,7 +552,11 @@ public class RestUtil implements GlobalPropertyListener {
 	public static void setResponseStatus(Throwable ex, HttpServletResponse response) {
 		ResponseStatus ann = ex.getClass().getAnnotation(ResponseStatus.class);
 		if (ann != null) {
-			response.setStatus(ann.value().value());
+			if (StringUtils.isNotBlank(ann.reason())) {
+				response.setStatus(ann.value().value(), ann.reason());
+			} else {
+				response.setStatus(ann.value().value());
+			}
 		} else {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
