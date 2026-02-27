@@ -3,9 +3,9 @@ name: Build with Maven
 
 on:
   push:
-    branches: [ master ]
+    branches: [ platform-3 ]
   pull_request:
-    branches: [ master ]
+    branches: [ platform-3 ]
   workflow_dispatch:
 
 jobs:
@@ -58,4 +58,3 @@ jobs:
           CI_BRANCH: ${{ steps.refs.outputs.branch_name }}
           CI_PULL_REQUEST: ${{ steps.refs.outputs.pr_number }}
         run: mvn jacoco:report coveralls:report --batch-mode --file pom.xml --no-transfer-progress -DrepoToken=${{ secrets.COVERALLS_TOKEN }}
-
