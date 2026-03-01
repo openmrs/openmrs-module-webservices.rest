@@ -20,6 +20,8 @@ import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -32,8 +34,10 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,7 +90,64 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	public PatientProgram save(PatientProgram delegate) {
 		return Context.getProgramWorkflowService().savePatientProgram(delegate);
 	}
-	
+
+	@Override
+	public Object create(SimpleObject propertiesToCreate, RequestContext context) throws ResponseException {
+		Object patientRef = propertiesToCreate.get("patient");
+		if (patientRef != null) {
+			Patient patient = Context.getPatientService().getPatientByUuid(patientRef.toString());
+			if (patient != null) {
+				Date birthdate = patient.getBirthdate();
+				if (birthdate != null) {
+					Object dateEnrolledRaw = propertiesToCreate.get("dateEnrolled");
+					if (dateEnrolledRaw != null) {
+						Date dateEnrolled = (Date) ConversionUtil.convert(dateEnrolledRaw, Date.class);
+						if (dateEnrolled != null && dateEnrolled.before(birthdate)) {
+							throw new IllegalRequestException(
+							        "Enrollment date cannot be before the patient's date of birth");
+						}
+					}
+					Object dateCompletedRaw = propertiesToCreate.get("dateCompleted");
+					if (dateCompletedRaw != null) {
+						Date dateCompleted = (Date) ConversionUtil.convert(dateCompletedRaw, Date.class);
+						if (dateCompleted != null && dateCompleted.before(birthdate)) {
+							throw new IllegalRequestException(
+							        "Completion date cannot be before the patient's date of birth");
+						}
+					}
+				}
+			}
+		}
+		return super.create(propertiesToCreate, context);
+	}
+
+	@Override
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+		PatientProgram patientProgram = getByUniqueId(uuid);
+		if (patientProgram != null) {
+			Date birthdate = patientProgram.getPatient().getBirthdate();
+			if (birthdate != null) {
+				Object dateEnrolledRaw = propertiesToUpdate.get("dateEnrolled");
+				if (dateEnrolledRaw != null) {
+					Date dateEnrolled = (Date) ConversionUtil.convert(dateEnrolledRaw, Date.class);
+					if (dateEnrolled != null && dateEnrolled.before(birthdate)) {
+						throw new IllegalRequestException(
+						        "Enrollment date cannot be before the patient's date of birth");
+					}
+				}
+				Object dateCompletedRaw = propertiesToUpdate.get("dateCompleted");
+				if (dateCompletedRaw != null) {
+					Date dateCompleted = (Date) ConversionUtil.convert(dateCompletedRaw, Date.class);
+					if (dateCompleted != null && dateCompleted.before(birthdate)) {
+						throw new IllegalRequestException(
+						        "Completion date cannot be before the patient's date of birth");
+					}
+				}
+			}
+		}
+		return super.update(uuid, propertiesToUpdate, context);
+	}
+
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {

@@ -21,6 +21,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -191,6 +192,47 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		Assert.assertEquals(existingPatientState.getState().getUuid(), Util.getByPath(result,"states[0]/state/uuid") );
 	}
 	
+	// patient da7f524f (PATIENT_IN_A_PROGRAM_UUID) has birthdate 1975-04-08
+	@Test(expected = IllegalRequestException.class)
+	public void shouldRejectCreateWhenDateEnrolledIsBeforeBirthdate() throws Exception {
+		String json = "{ \"patient\":\"" + RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID
+		        + "\", \"program\":\"" + RestTestConstants1_8.PROGRAM_UUID
+		        + "\", \"dateEnrolled\":\"1970-01-01\" }";
+		handle(newPostRequest(getURI(), json));
+	}
+
+	@Test(expected = IllegalRequestException.class)
+	public void shouldRejectCreateWhenDateCompletedIsBeforeBirthdate() throws Exception {
+		String json = "{ \"patient\":\"" + RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID
+		        + "\", \"program\":\"" + RestTestConstants1_8.PROGRAM_UUID
+		        + "\", \"dateEnrolled\":\"2000-01-01\", \"dateCompleted\":\"1970-01-01\" }";
+		handle(newPostRequest(getURI(), json));
+	}
+
+	@Test(expected = IllegalRequestException.class)
+	public void shouldRejectUpdateWhenDateEnrolledIsBeforeBirthdate() throws Exception {
+		// PATIENT_PROGRAM_UUID belongs to patient da7f524f (birthdate 1975-04-08)
+		String json = "{ \"dateEnrolled\":\"1970-01-01\" }";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+	}
+
+	@Test(expected = IllegalRequestException.class)
+	public void shouldRejectUpdateWhenDateCompletedIsBeforeBirthdate() throws Exception {
+		// PATIENT_PROGRAM_UUID belongs to patient da7f524f (birthdate 1975-04-08)
+		String json = "{ \"dateCompleted\":\"1970-01-01\" }";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+	}
+
+	@Test
+	public void shouldCreateWhenDateEnrolledIsAfterBirthdate() throws Exception {
+		// patient da7f524f (PATIENT_IN_A_PROGRAM_UUID) has birthdate 1975-04-08
+		String json = "{ \"patient\":\"" + RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID
+		        + "\", \"program\":\"" + RestTestConstants1_8.PROGRAM_UUID
+		        + "\", \"dateEnrolled\":\"2000-01-01\" }";
+		Object result = deserialize(handle(newPostRequest(getURI(), json)));
+		Assert.assertNotNull(result);
+	}
+
 	private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {
 		Collections.sort(patientStates, new Comparator<PatientState>() {
 			
