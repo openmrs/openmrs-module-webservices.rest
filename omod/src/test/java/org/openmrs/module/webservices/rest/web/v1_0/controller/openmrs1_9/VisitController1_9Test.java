@@ -23,6 +23,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -382,6 +383,59 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         int filteredVisitsSize = Util.getResultsSize(filteredVisits);
         Assert.assertEquals(1, filteredVisitsSize);
 
+    }
+
+    // patient da7f524f (patient_id=2) has birthdate 1975-04-08
+    @Test(expected = IllegalRequestException.class)
+    public void shouldRejectCreateWhenStartDatetimeIsBeforeBirthdate() throws Exception {
+        String json = "{ \"patient\":\"" + RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID
+                + "\", \"visitType\":\"" + RestTestConstants1_9.VISIT_TYPE_UUID
+                + "\", \"startDatetime\":\"1970-01-01T00:00:00.000+0000\" }";
+        handle(newPostRequest(getURI(), json));
+    }
+
+    @Test(expected = IllegalRequestException.class)
+    public void shouldRejectCreateWhenStopDatetimeIsBeforeBirthdate() throws Exception {
+        String json = "{ \"patient\":\"" + RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID
+                + "\", \"visitType\":\"" + RestTestConstants1_9.VISIT_TYPE_UUID
+                + "\", \"stopDatetime\":\"1970-01-01T00:00:00.000+0000\" }";
+        handle(newPostRequest(getURI(), json));
+    }
+
+    @Test(expected = IllegalRequestException.class)
+    public void shouldRejectUpdateWhenStartDatetimeIsBeforeBirthdate() throws Exception {
+        // VISIT_UUID belongs to patient da7f524f (birthdate 1975-04-08)
+        String json = "{ \"startDatetime\":\"1970-01-01T00:00:00.000+0000\" }";
+        handle(newPostRequest(getURI() + "/" + getUuid(), json));
+    }
+
+    @Test(expected = IllegalRequestException.class)
+    public void shouldRejectUpdateWhenStopDatetimeIsBeforeBirthdate() throws Exception {
+        // VISIT_UUID belongs to patient da7f524f (birthdate 1975-04-08)
+        String json = "{ \"stopDatetime\":\"1970-01-01T00:00:00.000+0000\" }";
+        handle(newPostRequest(getURI() + "/" + getUuid(), json));
+    }
+
+    @Test
+    public void shouldCreateWhenStartDatetimeIsAfterBirthdate() throws Exception {
+        int originalCount = service.getAllVisits().size();
+        String json = "{ \"patient\":\"" + RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID
+                + "\", \"visitType\":\"" + RestTestConstants1_9.VISIT_TYPE_UUID
+                + "\", \"startDatetime\":\"" + DATE_FORMAT.format(new Date()) + "\" }";
+        Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
+        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+    }
+
+    @Test
+    public void shouldCreateWhenPatientBirthdateIsNull() throws Exception {
+        // patient 8adf539e (patient_id=8) has no birthdate
+        int originalCount = service.getAllVisits().size();
+        String json = "{ \"patient\":\"8adf539e-4b5a-47aa-80c0-ba1025c957fa\", \"visitType\":\""
+                + RestTestConstants1_9.VISIT_TYPE_UUID + "\", \"startDatetime\":\"1960-01-01T00:00:00.000+0000\" }";
+        Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
+        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
     }
 
 }

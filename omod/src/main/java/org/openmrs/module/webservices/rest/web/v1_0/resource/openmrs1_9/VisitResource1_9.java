@@ -39,6 +39,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudR
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
@@ -236,7 +237,57 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		if (propertiesToCreate.get("startDatetime") == null) {
 			propertiesToCreate.add("startDatetime", new Date());
 		}
+		Object patientRef = propertiesToCreate.get("patient");
+		if (patientRef != null) {
+			Date birthdate = getPatient(patientRef.toString()).getBirthdate();
+			if (birthdate != null) {
+				Object startRaw = propertiesToCreate.get("startDatetime");
+				if (startRaw != null) {
+					Date startDatetime = (Date) ConversionUtil.convert(startRaw, Date.class);
+					if (startDatetime != null && startDatetime.before(birthdate)) {
+						throw new IllegalRequestException(
+						        "Visit startDatetime cannot be before the patient's date of birth");
+					}
+				}
+				Object stopRaw = propertiesToCreate.get("stopDatetime");
+				if (stopRaw != null) {
+					Date stopDatetime = (Date) ConversionUtil.convert(stopRaw, Date.class);
+					if (stopDatetime != null && stopDatetime.before(birthdate)) {
+						throw new IllegalRequestException(
+						        "Visit stopDatetime cannot be before the patient's date of birth");
+					}
+				}
+			}
+		}
 		return super.create(propertiesToCreate, context);
+	}
+
+	@Override
+	public Object update(String uuid, SimpleObject propertiesToUpdate, RequestContext context) throws ResponseException {
+		Visit visit = getByUniqueId(uuid);
+		if (visit == null) {
+			throw new ObjectNotFoundException();
+		}
+		Date birthdate = visit.getPatient().getBirthdate();
+		if (birthdate != null) {
+			Object startRaw = propertiesToUpdate.get("startDatetime");
+			if (startRaw != null) {
+				Date startDatetime = (Date) ConversionUtil.convert(startRaw, Date.class);
+				if (startDatetime != null && startDatetime.before(birthdate)) {
+					throw new IllegalRequestException(
+					        "Visit startDatetime cannot be before the patient's date of birth");
+				}
+			}
+			Object stopRaw = propertiesToUpdate.get("stopDatetime");
+			if (stopRaw != null) {
+				Date stopDatetime = (Date) ConversionUtil.convert(stopRaw, Date.class);
+				if (stopDatetime != null && stopDatetime.before(birthdate)) {
+					throw new IllegalRequestException(
+					        "Visit stopDatetime cannot be before the patient's date of birth");
+				}
+			}
+		}
+		return super.update(uuid, propertiesToUpdate, context);
 	}
 	
 	/**
