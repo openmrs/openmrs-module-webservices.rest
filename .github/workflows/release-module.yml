@@ -4,15 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       release_version:
-        description: 'Release version (e.g., 6.8.0)'
+        description: 'Release version (e.g., 3.2.0)'
         required: true
       development_version:
-        description: 'Next development version (e.g., 6.8.1-SNAPSHOT)'
+        description: 'Next development version (e.g., 3.3.0-SNAPSHOT)'
         required: true
       branch:
-        description: 'Branch to release from (e.g., master)'
-        required: false
-        default: 'master'
+        description: 'Branch to release from (e.g., 3.x)'
+        required: true
 
 jobs:
   release:
