@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
@@ -74,7 +73,7 @@ public class EncounterSearchHandler2_0 implements SearchHandler {
 		EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
 				.getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 
-		if (patient != null && (encounterType != null || StringUtils.isBlank(encounterTypeUuid))) {
+		if (patient != null && (encounterType != null || encounterTypeUuid == null)) {
 			EncounterSearchCriteriaBuilder encounterSearchCriteriaBuilder = new EncounterSearchCriteriaBuilder()
 					.setPatient(patient).setFromDate(fromDate).setToDate(toDate).setIncludeVoided(false);
 			if (encounterType != null) {

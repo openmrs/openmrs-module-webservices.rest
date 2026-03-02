@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
 import org.openmrs.Order;

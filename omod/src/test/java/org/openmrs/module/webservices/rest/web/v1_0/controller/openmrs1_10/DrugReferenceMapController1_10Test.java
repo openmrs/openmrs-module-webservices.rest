@@ -39,7 +39,7 @@ public class DrugReferenceMapController1_10Test extends MainResourceControllerTe
 	
 	@Override
 	public String getURI() {
-		return "/drugreferencemap";
+		return "drugreferencemap";
 	}
 	
 	@Override
