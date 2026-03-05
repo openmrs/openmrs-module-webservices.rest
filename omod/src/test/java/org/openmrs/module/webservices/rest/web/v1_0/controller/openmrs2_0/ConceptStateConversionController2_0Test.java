@@ -31,7 +31,25 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 	@Before
 	public void setUp() {
-		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID);
+		ProgramWorkflowState state = createWorkflowState(RestTestConstants1_8.CONCEPT2_UUID);
+		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+
+		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
+		conceptStateConversion.setConcept(state.getConcept());
+		conceptStateConversion.setProgramWorkflow(workflow);
+		conceptStateConversion.setProgramWorkflowState(state);
+
+		Context.getProgramWorkflowService().saveConceptStateConversion(conceptStateConversion);
+		uuid = conceptStateConversion.getUuid();
+	}
+
+	/**
+	 * Creates a new ProgramWorkflowState for the given concept UUID, saves it,
+	 * and returns a clean re-fetched instance. The flush/clear/re-fetch cycle
+	 * is needed because Hibernate 6 is stricter about transient references.
+	 */
+	private ProgramWorkflowState createWorkflowState(String conceptUuid) {
+		Concept concept = Context.getConceptService().getConceptByUuid(conceptUuid);
 		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
 
 		ProgramWorkflowState state = new ProgramWorkflowState();
@@ -41,16 +59,16 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 		workflow.addState(state);
 		Context.getProgramWorkflowService().saveProgram(workflow.getProgram());
-
 		Context.flushSession();
+		Context.clearSession();
 
-		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
-		conceptStateConversion.setConcept(concept);
-		conceptStateConversion.setProgramWorkflow(workflow);
-		conceptStateConversion.setProgramWorkflowState(state);
-
-		Context.getProgramWorkflowService().saveConceptStateConversion(conceptStateConversion);
-		uuid = conceptStateConversion.getUuid();
+		workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
+		for (ProgramWorkflowState s : workflow.getStates()) {
+			if (concept.equals(s.getConcept())) {
+				return s;
+			}
+		}
+		throw new IllegalStateException("Could not find state for concept " + conceptUuid);
 	}
 
 	@Override
@@ -74,18 +92,9 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 
 		int countBefore = service.getAllConceptStateConversions().size();
 
-		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
+		ProgramWorkflowState state = createWorkflowState("0955b484-b364-43dd-909b-1fa3655eaad2");
 		ProgramWorkflow workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
-
-		ProgramWorkflowState state = new ProgramWorkflowState();
-		state.setConcept(concept);
-		state.setInitial(true);
-		state.setTerminal(false);
-
-		workflow.addState(state);
-		service.saveProgram(workflow.getProgram());
-
-		Context.flushSession();
+		Concept concept = state.getConcept();
 
 		String json =
 				"{\"concept\": \"" + concept.getUuid() + "\",\"programWorkflow\": \"" + workflow.getUuid()
@@ -107,20 +116,11 @@ public class ConceptStateConversionController2_0Test extends MainResourceControl
 	public void shouldPurgeStateConversion() throws Exception {
 		ProgramWorkflowService service = Context.getProgramWorkflowService();
 
-		Concept concept = Context.getConceptService().getConceptByUuid("0955b484-b364-43dd-909b-1fa3655eaad2");
-		ProgramWorkflow workflow = Context.getProgramWorkflowService().getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
-
-		ProgramWorkflowState state = new ProgramWorkflowState();
-		state.setConcept(concept);
-		state.setInitial(true);
-		state.setTerminal(false);
-
-		workflow.addState(state);
-		service.saveProgram(workflow.getProgram());
-		Context.flushSession();
+		ProgramWorkflowState state = createWorkflowState("0955b484-b364-43dd-909b-1fa3655eaad2");
+		ProgramWorkflow workflow = service.getWorkflowByUuid(RestTestConstants1_8.WORKFLOW_UUID);
 
 		ConceptStateConversion conceptStateConversion = new ConceptStateConversion();
-		conceptStateConversion.setConcept(concept);
+		conceptStateConversion.setConcept(state.getConcept());
 		conceptStateConversion.setProgramWorkflow(workflow);
 		conceptStateConversion.setProgramWorkflowState(state);
 		service.saveConceptStateConversion(conceptStateConversion);

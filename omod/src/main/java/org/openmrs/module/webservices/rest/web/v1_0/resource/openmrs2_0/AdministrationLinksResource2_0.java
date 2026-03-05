@@ -18,7 +18,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.Extension;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
-import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -32,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.AdministrationSectionLinks;
 
 import java.util.ArrayList;
@@ -145,7 +145,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
-			if (adminListExtension instanceof AdministrationSectionExt && adminListExtension.getModuleId()
+			if (isAdminSectionExtension(adminListExtension) && adminListExtension.getModuleId()
 					.equals(moduleId)) {
 				return mapAdminListExtension(adminListExtension, messageSourceService);
 			}
@@ -161,7 +161,7 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		List<Extension> adminListsExtensions = moduleFactoryWrapper.getExtensions(ADMIN_LIST_POINT_ID);
 
 		for (Extension adminListExtension : adminListsExtensions) {
-			if (adminListExtension instanceof AdministrationSectionExt) {
+			if (isAdminSectionExtension(adminListExtension)) {
 				modulesWithLinksList.add(mapAdminListExtension(adminListExtension, messageSourceService));
 			}
 		}
@@ -169,21 +169,23 @@ public class AdministrationLinksResource2_0 extends BaseDelegatingReadableResour
 		return modulesWithLinksList;
 	}
 
+	private boolean isAdminSectionExtension(Extension extension) {
+		return extension instanceof AdministrationSectionExt;
+	}
+
 	private AdministrationSectionLinks mapAdminListExtension(Extension extension,
 			MessageSourceService messageSourceService) {
-		AdministrationSectionExt adminListExtension = (AdministrationSectionExt) extension;
+		AdministrationSectionExt adminExt = (AdministrationSectionExt) extension;
 
-		// map module title message key to its value
-		String title = messageSourceService.getMessage(adminListExtension.getTitle());
+		String title = messageSourceService.getMessage(adminExt.getTitle());
 
-		// map link titles to their values
-		Map<String, String> links = adminListExtension.getLinks();
+		Map<String, String> links = adminExt.getLinks();
 		for (Map.Entry<String, String> link : links.entrySet()) {
 			link.setValue(messageSourceService.getMessage(link.getValue()));
 		}
 
 		AdministrationSectionLinks administrationSectionLinks = new AdministrationSectionLinks();
-		administrationSectionLinks.setModuleId(adminListExtension.getModuleId());
+		administrationSectionLinks.setModuleId(extension.getModuleId());
 		administrationSectionLinks.setTitle(title);
 		administrationSectionLinks.setLinks(links);
 

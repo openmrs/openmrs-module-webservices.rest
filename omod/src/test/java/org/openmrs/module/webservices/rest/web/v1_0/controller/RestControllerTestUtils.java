@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -23,7 +23,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -105,7 +105,6 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 
 		HandlerExecutionChain handlerExecutionChain = null;
 		for (RequestMappingHandlerMapping handlerMapping : handlerMappings) {
-			handlerMapping.setPathMatcher(pathMatcher);
 			handlerExecutionChain = handlerMapping.getHandler(request);
 			if (handlerExecutionChain != null) {
 				break;

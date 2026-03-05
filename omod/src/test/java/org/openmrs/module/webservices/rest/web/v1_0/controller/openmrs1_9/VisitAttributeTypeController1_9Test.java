@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Contains tests for {@link VisitAttributeTypeController} CRUD operations
@@ -72,7 +72,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @see VisitAttributeTypeController#create(SimpleObject, javax.servlet.http.HttpServletRequest,
+	 * @see VisitAttributeTypeController#create(SimpleObject, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 */
 	@Test
@@ -87,7 +87,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	
 	/**
 	 * @see VisitAttributeTypeController#update(String, SimpleObject,
-	 *      javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 *      jakarta.servlet.http.HttpServletRequest, HttpServletResponse)
 	 */
 	@Test
 	public void update_shouldChangeAPropertyOnAVisitAttributeType() throws Exception {
@@ -100,7 +100,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	
 	/**
 	 * @see VisitAttributeTypeController#delete(String, String,
-	 *      javax.servlet.http.HttpServletRequest, HttpServletResponse)
+	 *      jakarta.servlet.http.HttpServletRequest, HttpServletResponse)
 	 */
 	@Test
 	public void delete_shouldRetireAVisitAttributeType() throws Exception {
@@ -115,7 +115,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @see VisitAttributeTypeController#getAll(javax.servlet.http.HttpServletRequest,
+	 * @see VisitAttributeTypeController#getAll(jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 */
 	@Test
@@ -127,7 +127,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @see VisitAttributeTypeController#search(String, javax.servlet.http.HttpServletRequest,
+	 * @see VisitAttributeTypeController#search(String, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 */
 	@Test
@@ -138,7 +138,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @see VisitAttributeTypeController#search(String, javax.servlet.http.HttpServletRequest,
+	 * @see VisitAttributeTypeController#search(String, jakarta.servlet.http.HttpServletRequest,
 	 *      HttpServletResponse)
 	 */
 	@Test
@@ -150,7 +150,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	}
 	
 	/**
-	 * @See {@link VisitAttributeTypeController#purge(String, javax.servlet.http.HttpServletRequest, HttpServletResponse)}
+	 * @See {@link VisitAttributeTypeController#purge(String, jakarta.servlet.http.HttpServletRequest, HttpServletResponse)}
 	 */
 	@Test
 	public void purge_shouldPurgeAVisitAttributeType() throws Exception {

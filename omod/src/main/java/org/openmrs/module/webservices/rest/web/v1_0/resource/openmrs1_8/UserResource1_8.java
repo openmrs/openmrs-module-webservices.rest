@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
