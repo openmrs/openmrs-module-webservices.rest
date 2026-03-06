@@ -723,8 +723,11 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 				handler = this;
 			}
 			
-			// try to find a @PropertySetter-annotated method
+			// try to find a @PropertySetter-annotated method on either the resource handler or resource
 			Method annotatedSetter = ReflectionUtil.findPropertySetterMethod(handler, propertyName);
+			if (annotatedSetter == null) {
+				annotatedSetter = ReflectionUtil.findPropertySetterMethod(this, propertyName);
+			}
 			if (annotatedSetter != null) {
 				Type expectedType = annotatedSetter.getGenericParameterTypes()[1];
 				value = ConversionUtil.convert(value, expectedType);
