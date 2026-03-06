@@ -680,12 +680,18 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		try {
 			DelegatingResourceHandler<? extends T> handler = getResourceHandler(instance);
 			
-			// try to find a @PropertyGetter-annotated method
+			// try to find a @PropertyGetter-annotated method on resource handler
 			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(handler, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(handler, instance);
 			}
-			
+
+			// try to find a @PropertyGetter-annotated method on resource
+			annotatedGetter = ReflectionUtil.findPropertyGetterMethod(this, propertyName);
+			if (annotatedGetter != null) {
+				return annotatedGetter.invoke(this, instance);
+			}
+
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
