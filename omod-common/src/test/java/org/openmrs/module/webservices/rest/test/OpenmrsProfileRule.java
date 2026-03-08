@@ -20,7 +20,7 @@ import org.openmrs.util.OpenmrsConstants;
 
 /**
  * Allows to execute tests only on the specific version of OpenMRS.
- * Use with {@code @RegisterExtension} in JUnit 5 tests.
+ * Use with {@code @RegisterExtension} in JUnit 6 tests.
  */
 public class OpenmrsProfileRule implements ExecutionCondition {
 	
