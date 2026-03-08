@@ -324,7 +324,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		for (Map<String, String> o : newOrders) {
 			lookFor.remove(o.get("display"));
 		}
-		Assertions.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
+		Assertions.assertEquals(0, lookFor.size(), "Did not find: " + lookFor);
 	}
 
 	@Test
