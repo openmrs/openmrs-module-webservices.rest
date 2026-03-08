@@ -164,7 +164,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		if (object == null) {
 			object = newObject();
 		}
-		Assertions.assertNotNull("newObject must not return null", object);
+		Assertions.assertNotNull(object, "newObject must not return null");
 		return object;
 	}
 	
@@ -174,7 +174,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @return the representation
 	 */
 	public SimpleObject getRepresentation() {
-		Assertions.assertNotNull("representation must not be null", representation);
+		Assertions.assertNotNull(representation, "representation must not be null");
 		return representation;
 	}
 	
@@ -187,7 +187,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		if (resource == null) {
 			resource = newResource();
 		}
-		Assertions.assertNotNull("newResource must not return null", resource);
+		Assertions.assertNotNull(resource, "newResource must not return null");
 		return resource;
 	}
 	
@@ -234,7 +234,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * Equivalent to:
 	 * <p>
 	 * <code>
-	 * Assertions.assertEquals(property, value, getRepresentation().get(property));
+	 * Assertions.assertEquals(value, getRepresentation().get(property), property);
 	 * </code>
 	 * <p>
 	 * Performs data conversion like formatting a date for your convenience.
@@ -248,7 +248,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		} else if (value instanceof Locale) {
 			value = value.toString();
 		}
-		Assertions.assertEquals(property, value, getRepresentation().get(property));
+		Assertions.assertEquals(value, getRepresentation().get(property), property);
 	}
 	
 	/**

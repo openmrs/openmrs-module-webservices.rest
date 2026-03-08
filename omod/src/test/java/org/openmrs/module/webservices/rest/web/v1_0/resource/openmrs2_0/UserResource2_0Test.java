@@ -90,10 +90,10 @@ public class UserResource2_0Test extends BaseDelegatingResourceTest<UserResource
 		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
 		
 		// verify
-		Assertions.assertFalse("A non-empty list is expected.", results.isEmpty());
+		Assertions.assertFalse(results.isEmpty(), "A non-empty list is expected.");
 		for (SimpleObject result : results) {
 			final String selfLink = findSelfLink(result);
-			Assertions.assertTrue("Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
+			Assertions.assertTrue(selfLink.contains("/user/"), "Resource should be user, but is " + selfLink);
 		}
 	}
 	

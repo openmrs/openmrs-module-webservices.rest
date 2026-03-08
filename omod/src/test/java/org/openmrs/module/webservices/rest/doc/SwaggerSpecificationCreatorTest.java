@@ -140,9 +140,9 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		Map<String, Integer> afterCounts = getRowCounts();
 		
-		Assertions.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
-		Assertions.assertTrue("Ensure that no data was added or removed from any tables",
-		    ensureCountsEqual(beforeCounts, afterCounts));
+		Assertions.assertEquals(beforeCounts.size(), afterCounts.size(), "Ensure no tables are created or destroyed");
+		Assertions.assertTrue(ensureCountsEqual(beforeCounts, afterCounts),
+		    "Ensure that no data was added or removed from any tables");
 	}
 	
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
@@ -169,7 +169,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
-				Assertions.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
+				Assertions.assertFalse(operationIds.contains(o.getOperationId()), "Ensure each operation has a unique ID");
 				operationIds.add(o.getOperationId());
 			}
 		}
@@ -184,8 +184,8 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			if (p.getGet() != null) {
-				Assertions.assertTrue("Ensure each GET operation has the 'v' query parameter",
-				    operationHasRepresentationParam(p.getGet()));
+				Assertions.assertTrue(operationHasRepresentationParam(p.getGet()),
+				    "Ensure each GET operation has the 'v' query parameter");
 			}
 		}
 	}
@@ -212,8 +212,8 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
 				if (o.getOperationId().matches("^getAll[A-Z].*")) {
-					Assertions.assertTrue("Ensure each operation that supports paging has both paging parameters",
-					    operationHasPagingParams(o));
+					Assertions.assertTrue(operationHasPagingParams(o),
+					    "Ensure each operation that supports paging has both paging parameters");
 				}
 			}
 		}

@@ -110,7 +110,7 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 				break;
 			}
 		}
-		Assertions.assertNotNull("The request URI does not exist", handlerExecutionChain);
+		Assertions.assertNotNull(handlerExecutionChain, "The request URI does not exist");
 
 		handlerAdapter.handle(request, response, handlerExecutionChain.getHandler());
 

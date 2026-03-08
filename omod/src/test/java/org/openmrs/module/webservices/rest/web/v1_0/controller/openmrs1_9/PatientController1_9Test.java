@@ -204,7 +204,7 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		req.setParameter("q", "Test");
 		SimpleObject results = deserialize(handle(req));
 		int fullCount = Util.getResultsSize(results);
-		assertTrue("This test assumes > 2 matching patients", fullCount > 2);
+		assertTrue(fullCount > 2, "This test assumes > 2 matching patients");
 		
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		results = deserialize(handle(req));

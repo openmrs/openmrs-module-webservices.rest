@@ -110,8 +110,8 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 								if (!hasFieldOrPropertySetter)
 									hasFieldOrPropertySetter = isallowedMissingProperty(resourceClass, key);
 								
-								Assertions.assertTrue("No property found for '" + key + "' for " + openmrsClass
-								        + " nor setter method on resource " + resourceClass, hasFieldOrPropertySetter);
+								Assertions.assertTrue(hasFieldOrPropertySetter, "No property found for '" + key + "' for " + openmrsClass
+								        + " nor setter method on resource " + resourceClass);
 							}
 						}
 					}
