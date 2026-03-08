@@ -9,9 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Allergen;
 import org.openmrs.Allergies;
 import org.openmrs.Allergy;
@@ -28,7 +29,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 public class PatientAllergyController2_0Test extends MainResourceControllerTest {
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet(RestTestConstants2_0.ALLERGY_TEST_DATA_XML);
 		executeDataSet(RestTestConstants2_0.OTHER_NON_CODED_CONCEPT_TEST_DATA_XML);
@@ -62,23 +63,25 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	@Test
 	public void shouldDeleteUniqueAllergy() throws Exception {
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
-		Assert.assertFalse(allergy.isVoided());
+		Assertions.assertFalse(allergy.isVoided());
 		
 		// attempt to delete allergy
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
 		
 		allergy = Context.getPatientService().getAllergyByUuid(getUuid());
-		Assert.assertTrue(allergy.isVoided());
-		Assert.assertEquals("unit test", allergy.getVoidReason());
+		Assertions.assertTrue(allergy.isVoided());
+		Assertions.assertEquals("unit test", allergy.getVoidReason());
 	}
 	
 	/**
 	 * Delete Allergy incorrectly throw ObjectNotFoundException because allergy does not exist
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void shouldThrowExceptionWhenDeletingNonExistentAllergy() throws Exception {
-		// attempt to delete allergy
-		handle(newDeleteRequest(getURI() + "/" + "NonExistentAllergyUUID", new Parameter("reason", "unit test")));
+		assertThrows(ObjectNotFoundException.class, () -> {
+			// attempt to delete allergy
+			handle(newDeleteRequest(getURI() + "/" + "NonExistentAllergyUUID", new Parameter("reason", "unit test")));
+		});
 	}
 	
 	/**
@@ -88,17 +91,17 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	public void shouldDeleteAllAllergies() throws Exception {
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Allergies allergies = Context.getPatientService().getAllergies(allergy.getPatient());
-		Assert.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
-		Assert.assertFalse(allergy.isVoided());
+		Assertions.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
+		Assertions.assertFalse(allergy.isVoided());
 		
 		// attempt to delete all allergies
 		handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
 		
 		allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		allergies = Context.getPatientService().getAllergies(allergy.getPatient());
-		Assert.assertTrue(allergy.isVoided());
-		Assert.assertEquals("unit test", allergy.getVoidReason());
-		Assert.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
+		Assertions.assertTrue(allergy.isVoided());
+		Assertions.assertEquals("unit test", allergy.getVoidReason());
+		Assertions.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
 	}
 	
 	/*
@@ -111,12 +114,12 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		// attempt to get allergy by uuid
 		SimpleObject savedAllergy = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
 		
-		Assert.assertEquals(allergy.getComment(), Util.getByPath(savedAllergy, "comment"));
-		Assert.assertEquals(allergy.getSeverity().getUuid(), Util.getByPath(savedAllergy, "severity/uuid"));
+		Assertions.assertEquals(allergy.getComment(), Util.getByPath(savedAllergy, "comment"));
+		Assertions.assertEquals(allergy.getSeverity().getUuid(), Util.getByPath(savedAllergy, "severity/uuid"));
 		
-		Assert.assertEquals(allergy.getAllergen().getCodedAllergen().getUuid(),
+		Assertions.assertEquals(allergy.getAllergen().getCodedAllergen().getUuid(),
 		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
-		Assert.assertEquals(allergy.getAllergen().getAllergenType().toString(),
+		Assertions.assertEquals(allergy.getAllergen().getAllergenType().toString(),
 		    Util.getByPath(savedAllergy, "allergen/allergenType"));
 	}
 
@@ -129,12 +132,12 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		request.addParameter("v", "custom:(uuid,allergen:(allergenType,codedAllergen:(uuid),nonCodedAllergen),severity:(uuid),comment,reactions:(reaction:(uuid),reactionNonCoded)");
 		SimpleObject savedAllergy  = deserialize(handle(request));
 
-		Assert.assertEquals(allergy.getComment(), Util.getByPath(savedAllergy, "comment"));
-		Assert.assertEquals(allergy.getSeverity().getUuid(), Util.getByPath(savedAllergy, "severity/uuid"));
+		Assertions.assertEquals(allergy.getComment(), Util.getByPath(savedAllergy, "comment"));
+		Assertions.assertEquals(allergy.getSeverity().getUuid(), Util.getByPath(savedAllergy, "severity/uuid"));
 
-		Assert.assertEquals(allergy.getAllergen().getCodedAllergen().getUuid(),
+		Assertions.assertEquals(allergy.getAllergen().getCodedAllergen().getUuid(),
 				Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
-		Assert.assertEquals(allergy.getAllergen().getAllergenType().toString(),
+		Assertions.assertEquals(allergy.getAllergen().getAllergenType().toString(),
 				Util.getByPath(savedAllergy, "allergen/allergenType"));
 	}
 	
@@ -146,7 +149,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(4, allergies.size());
+		Assertions.assertEquals(4, allergies.size());
 		
 		// save allergy with coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -157,16 +160,16 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		// save allergy 
 		SimpleObject savedAllergy = deserialize(handle(newPostRequest(getURI(), json)));
 		
-		Assert.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
+		Assertions.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
 		
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
 		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
-		Assert.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
+		Assertions.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(5, allergies.size());
+		Assertions.assertEquals(5, allergies.size());
 	}
 	
 	/**
@@ -177,7 +180,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(4, allergies.size());
+		Assertions.assertEquals(4, allergies.size());
 		
 		// save allergy with non coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -189,17 +192,17 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		// save allergy 
 		SimpleObject savedAllergy = deserialize(handle(newPostRequest(getURI(), json)));
 		
-		Assert.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
+		Assertions.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
 		
-		Assert.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+		Assertions.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
-		Assert.assertEquals("test non coded allergen", Util.getByPath(savedAllergy, "allergen/nonCodedAllergen"));
-		Assert.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
+		Assertions.assertEquals("test non coded allergen", Util.getByPath(savedAllergy, "allergen/nonCodedAllergen"));
+		Assertions.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(5, allergies.size());
+		Assertions.assertEquals(5, allergies.size());
 	}
 	
 	/**
@@ -210,7 +213,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(4, allergies.size());
+		Assertions.assertEquals(4, allergies.size());
 		
 		// update allergy with reactions
 		String json = "{ \"reactions\" : " + "[" + "{" + " \"allergy\" : { \"uuid\" : \"" + allergy.getUuid() + "\"},"
@@ -220,16 +223,16 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		        + " \"reactionNonCoded\" : \"test non coded reaction\"" + "}" + "]" + "}";
 		SimpleObject savedAllergy = deserialize(handle(newPostRequest(getURI() + "/" + allergy.getUuid(), json)));
 		
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
 		    Util.getByPath(savedAllergy, "reactions[0]/reaction/uuid"));
 		
-		Assert.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+		Assertions.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 		    Util.getByPath(savedAllergy, "reactions[1]/reaction/uuid"));
-		Assert.assertEquals("test non coded reaction", Util.getByPath(savedAllergy, "reactions[1]/reactionNonCoded"));
+		Assertions.assertEquals("test non coded reaction", Util.getByPath(savedAllergy, "reactions[1]/reactionNonCoded"));
 		
 		// assert that a allergy has been updated
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(4, allergies.size());
+		Assertions.assertEquals(4, allergies.size());
 	}
 	
 	/**
@@ -237,13 +240,15 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	 * body when list of allergies is empty throw ResourceDoesNotSupportOperationException because
 	 * Patient does not exist
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void shouldThrowExceptionWhenSettingNoKnownAllergiesForNonExistingPatient() throws Exception {
-		String nonExistentPatientURI = "patient/nonExistingPatient/allergy";
-		String json = "{}";
+		assertThrows(ObjectNotFoundException.class, () -> {
+			String nonExistentPatientURI = "patient/nonExistingPatient/allergy";
+			String json = "{}";
 		
-		// attempt to set no known allergies with PUT
-		handle(newPutRequest(nonExistentPatientURI, json));
+			// attempt to set no known allergies with PUT
+			handle(newPutRequest(nonExistentPatientURI, json));
+		});
 	}
 	
 	/**
@@ -251,28 +256,32 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 	 * body when list of allergies is empty throw ResourceDoesNotSupportOperationException because
 	 * List of Allergies is not empty
 	 */
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldThrowExceptionWhenSettingNoKnownAllergiesIfAllergiesNotEmpty() throws Exception {
-		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
-		Patient patient = allergy.getPatient();
-		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
+			Patient patient = allergy.getPatient();
+			Allergies allergies = Context.getPatientService().getAllergies(patient);
+			Assertions.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
 		
-		String json = "{}";
+			String json = "{}";
 		
-		// attempt to set no known allergies with PUT
-		handle(newPutRequest(getURI(), json));
+			// attempt to set no known allergies with PUT
+			handle(newPutRequest(getURI(), json));
+		});
 	}
 
 	/**
 	 * Return no response body with a 204 http response status code for a patient with UNKNOWN Allergies
 	 */
-	@Test(expected = NoContentFoundException.class)
+	@Test
 	public void shouldEnsureFetchingAllergiesForPatientThrowsNoContentFoundException() throws Exception {
-		handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
+		assertThrows(NoContentFoundException.class, () -> {
+			handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
 		
-		//fetch allergies for a patient with no allergies
-		handle(newGetRequest(getURI()));
+			//fetch allergies for a patient with no allergies
+			handle(newGetRequest(getURI()));
+		});
 	}
 	
 	/**
@@ -284,13 +293,13 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
+		Assertions.assertEquals(Allergies.SEE_LIST, allergies.getAllergyStatus());
 		
 		// delete existing allergies
 		handle(newDeleteRequest(getURI(), new Parameter("reason", "unit test")));
 		
 		allergies = Context.getPatientService().getAllergies(allergy.getPatient());
-		Assert.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
+		Assertions.assertEquals(Allergies.UNKNOWN, allergies.getAllergyStatus());
 		
 		String json = "{}";
 		
@@ -298,7 +307,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		handle(newPutRequest(getURI(), json));
 		
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(Allergies.NO_KNOWN_ALLERGIES, allergies.getAllergyStatus());
+		Assertions.assertEquals(Allergies.NO_KNOWN_ALLERGIES, allergies.getAllergyStatus());
 	}
 	
 	/**
@@ -309,7 +318,7 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		Allergy allergy = Context.getPatientService().getAllergyByUuid(getUuid());
 		Patient patient = allergy.getPatient();
 		Allergies allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(4, allergies.size());
+		Assertions.assertEquals(4, allergies.size());
 		
 		// save allergy with coded allergen
 		String json = "{" + " \"comment\" : \"allergy comment\","
@@ -323,24 +332,24 @@ public class PatientAllergyController2_0Test extends MainResourceControllerTest 
 		// save allergy 
 		SimpleObject savedAllergy = deserialize(handle(newPostRequest(getURI(), json)));
 		
-		Assert.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
+		Assertions.assertEquals("allergy comment", Util.getByPath(savedAllergy, "comment"));
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3", Util.getByPath(savedAllergy, "severity/uuid"));
 		
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
 		    Util.getByPath(savedAllergy, "allergen/codedAllergen/uuid"));
 		
-		Assert.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
+		Assertions.assertEquals("DRUG", Util.getByPath(savedAllergy, "allergen/allergenType"));
 		
-		Assert.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
+		Assertions.assertEquals("35d3346a-6769-4d52-823f-b4b234bac3e3",
 		    Util.getByPath(savedAllergy, "reactions[0]/reaction/uuid"));
 		
-		Assert.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+		Assertions.assertEquals("5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
 		    Util.getByPath(savedAllergy, "reactions[1]/reaction/uuid"));
 		
-		Assert.assertEquals("test non coded reaction", Util.getByPath(savedAllergy, "reactions[1]/reactionNonCoded"));
+		Assertions.assertEquals("test non coded reaction", Util.getByPath(savedAllergy, "reactions[1]/reactionNonCoded"));
 		
 		// assert that a new allergy has been added
 		allergies = Context.getPatientService().getAllergies(patient);
-		Assert.assertEquals(5, allergies.size());
+		Assertions.assertEquals(5, allergies.size());
 	}
 }

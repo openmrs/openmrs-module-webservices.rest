@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.ConceptProposal;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -20,7 +20,7 @@ public class ConceptProposalResource2_0Test extends BaseDelegatingResourceTest<C
 
 	private static ConceptProposal proposal;
 
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		proposal = new ConceptProposal();
 		proposal.setOriginalText("original text");

@@ -11,9 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -33,7 +34,7 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getConceptService();
 	}
@@ -69,8 +70,8 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		SimpleObject result = deserialize(handle(req));
 		
 		ConceptDatatype conceptDataType = service.getConceptDatatypeByUuid(getUuid());
-		Assert.assertEquals(conceptDataType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(conceptDataType.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertEquals(conceptDataType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(conceptDataType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -80,8 +81,8 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		SimpleObject result = deserialize(handle(req));
 		
 		ConceptDatatype conceptDataType = service.getConceptDatatypeByName("Coded");
-		Assert.assertEquals(conceptDataType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(conceptDataType.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertEquals(conceptDataType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(conceptDataType.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -89,50 +90,58 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldCreateAConceptDatatype() throws Exception {
-		SimpleObject conceptDataType = new SimpleObject();
-		conceptDataType.add("name", "test name");
-		conceptDataType.add("description", "test description");
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			SimpleObject conceptDataType = new SimpleObject();
+			conceptDataType.add("name", "test name");
+			conceptDataType.add("description", "test description");
 		
-		String json = new ObjectMapper().writeValueAsString(conceptDataType);
+			String json = new ObjectMapper().writeValueAsString(conceptDataType);
 		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
-		req.setContent(json.getBytes());
+			MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+			req.setContent(json.getBytes());
 		
-		handle(req);
+			handle(req);
+		});
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotSupportEditingAConceptDatatype() throws Exception {
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
 		
-		SimpleObject conceptDataType = new SimpleObject();
-		conceptDataType.add("name", "updated name");
+			SimpleObject conceptDataType = new SimpleObject();
+			conceptDataType.add("name", "updated name");
 		
-		String json = new ObjectMapper().writeValueAsString(conceptDataType);
+			String json = new ObjectMapper().writeValueAsString(conceptDataType);
 		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		req.setContent(json.getBytes());
-		handle(req);
+			MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+			req.setContent(json.getBytes());
+			handle(req);
 		
+		});
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotSupportRetiringAConceptDatatype() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("!purge", "");
-		handle(req);
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+			req.addParameter("!purge", "");
+			handle(req);
+		});
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotSupportPurgingAConceptDatatype() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
-		req.addParameter("purge", "true");
-		handle(req);
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
+			req.addParameter("purge", "true");
+			handle(req);
+		});
 	}
 	
 	@Test
@@ -141,7 +150,7 @@ public class ConceptDatatypeController1_9Test extends MainResourceControllerTest
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 }

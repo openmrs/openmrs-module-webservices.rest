@@ -11,11 +11,12 @@ package org.openmrs.module.webservices.rest.web;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.api.APIException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 public class RequestContextTest extends BaseModuleWebContextSensitiveTest {
@@ -24,18 +25,22 @@ public class RequestContextTest extends BaseModuleWebContextSensitiveTest {
 	 * @see RequestContext#setLimit(Integer)
 	 * @verifies not accept a value less than one
 	 */
-	@Test(expected = APIException.class)
+	@Test
 	public void setLimit_shouldNotAcceptAValueLessThanOne() throws Exception {
-		new RequestContext().setLimit(0);
+		assertThrows(APIException.class, () -> {
+			new RequestContext().setLimit(0);
+		});
 	}
 	
 	/**
 	 * @see RequestContext#setLimit(Integer)
 	 * @verifies not accept a null value
 	 */
-	@Test(expected = APIException.class)
+	@Test
 	public void setLimit_shouldNotAcceptANullValue() throws Exception {
-		new RequestContext().setLimit(null);
+		assertThrows(APIException.class, () -> {
+			new RequestContext().setLimit(null);
+		});
 	}
 	
 	/**

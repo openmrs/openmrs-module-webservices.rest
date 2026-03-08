@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -65,7 +65,7 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		return count;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getVisitService();
 	}
@@ -73,9 +73,9 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void shouldGetAVisitTypeByName() throws Exception {
 		Object result = deserialize(handle(newGetRequest(getURI() + "/Return TB Clinic Visit")));
-		Assert.assertNotNull(result);
-		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals("Return TB Clinic Visit", PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -83,8 +83,8 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		int originalCount = service.getAllVisitTypes().size();
 		String json = "{ \"name\":\"test visitType\", \"description\":\"description\" }";
 		Object newVisitType = deserialize(handle(newPostRequest(getURI(), json)));
-		Assert.assertNotNull(PropertyUtils.getProperty(newVisitType, "uuid"));
-		Assert.assertEquals(originalCount + 1, service.getAllVisitTypes().size());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newVisitType, "uuid"));
+		Assertions.assertEquals(originalCount + 1, service.getAllVisitTypes().size());
 	}
 	
 	@Test
@@ -92,37 +92,37 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 		String json = "{ \"name\":\"new visit type\", \"description\":\"new description\" }";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		VisitType updated = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
-		Assert.assertNotNull(updated);
-		Assert.assertEquals("new visit type", updated.getName());
-		Assert.assertEquals("new description", updated.getDescription());
+		Assertions.assertNotNull(updated);
+		Assertions.assertEquals("new visit type", updated.getName());
+		Assertions.assertEquals("new description", updated.getDescription());
 	}
 	
 	@Test
 	public void shouldRetireAVisitType() throws Exception {
 		VisitType visitType = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
-		Assert.assertFalse(visitType.isRetired());
+		Assertions.assertFalse(visitType.isRetired());
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
 		visitType = service.getVisitTypeByUuid(RestTestConstants1_9.VISIT_TYPE_UUID);
-		Assert.assertTrue(visitType.isRetired());
-		Assert.assertEquals("test reason", visitType.getRetireReason());
+		Assertions.assertTrue(visitType.isRetired());
+		Assertions.assertEquals("test reason", visitType.getRetireReason());
 	}
 	
 	@Test
 	public void shouldPurgeAVisitType() throws Exception {
 		String uuid = "759799ab-c9a5-435e-b671-77773ada74e6";
-		Assert.assertNotNull(service.getVisitTypeByUuid(uuid));
+		Assertions.assertNotNull(service.getVisitTypeByUuid(uuid));
 		int originalCount = service.getAllVisitTypes().size();
 		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true")));
-		Assert.assertNull(service.getVisitTypeByUuid(uuid));
-		Assert.assertEquals(originalCount - 1, service.getAllVisitTypes().size());
+		Assertions.assertNull(service.getVisitTypeByUuid(uuid));
+		Assertions.assertEquals(originalCount - 1, service.getAllVisitTypes().size());
 	}
 	
 	@Test
 	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryString() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Ret"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(RestTestConstants1_9.VISIT_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	
@@ -130,11 +130,11 @@ public class VisitTypeController1_9Test extends MainResourceControllerTest {
 	public void shouldSearchAndReturnAListOfVisitTypesMatchingTheQueryStringExcludingRetiredOnes() throws Exception {
 		final String searchString = "Hos";
 		//sanity check
-		Assert.assertEquals(1, Context.getVisitService().getVisitTypes(searchString).size());
+		Assertions.assertEquals(1, Context.getVisitService().getVisitTypes(searchString).size());
 		
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", searchString))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(0, hits.size());
+		Assertions.assertEquals(0, hits.size());
 		
 	}
 	

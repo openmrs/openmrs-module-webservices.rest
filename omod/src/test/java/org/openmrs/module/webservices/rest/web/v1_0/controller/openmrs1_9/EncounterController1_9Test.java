@@ -12,10 +12,11 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
@@ -55,7 +56,7 @@ import static org.hamcrest.Matchers.is;
  */
 public class EncounterController1_9Test extends MainResourceControllerTest {
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
@@ -96,16 +97,18 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController1_9Test#createEncounter_shouldCreateEncounterWithObsAttributesUnordered()
 	 */
 	@Test
-	@Ignore("Fails with org.hibernate.TransientObjectException: object references an unsaved transient instance")
+	@Disabled("Fails with org.hibernate.TransientObjectException: object references an unsaved transient instance")
 	public void createEncounter_shouldCreateEncounterWithObsAttributesUnordered() throws Exception {
 		long before = getAllCount();
 		
@@ -132,18 +135,18 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(newPostRequest(getURI(), encounter));
 		SimpleObject newEncounter = deserialize(response);
 		
-		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertNotNull(newEncounter);
+		Assertions.assertEquals(before + 1, getAllCount());
 		
 		List<Map<String, String>> result = (List<Map<String, String>>) newEncounter.get("obs");
 		
-		Assert.assertEquals(2, result.size());
+		Assertions.assertEquals(2, result.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
 		for (Map<String, String> o : result) {
 			obsDisplayValues.add(o.get("display"));
 		}
-		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
-		Assert.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
+		Assertions.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
+		Assertions.assertTrue(obsDisplayValues.contains("WEIGHT (KG): 70.0"));
 		
 	}
 	
@@ -183,13 +186,13 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Assert.assertThat(encounterObs.size(), is(1));
 		
 		Obs parentObs = encounterObs.iterator().next();
-		Assert.assertTrue(parentObs.hasGroupMembers());
+		Assertions.assertTrue(parentObs.hasGroupMembers());
 		
 		Set<Obs> parentGroupMembers = parentObs.getGroupMembers();
 		Assert.assertThat(parentGroupMembers.size(), is(1));
 		
 		Obs childObs = parentGroupMembers.iterator().next();
-		Assert.assertTrue(childObs.hasGroupMembers());
+		Assertions.assertTrue(childObs.hasGroupMembers());
 		
 		Set<Obs> childGroupMembers = childObs.getGroupMembers();
 		Assert.assertThat(childGroupMembers.size(), is(1));
@@ -210,27 +213,27 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(newPostRequest(getURI(), post));
 		SimpleObject newEncounter = deserialize(response);
 		
-		Assert.assertNotNull(newEncounter);
+		Assertions.assertNotNull(newEncounter);
 		Util.log("after = ", getAllCount());
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertEquals(before + 1, getAllCount());
 		
 		Util.log("created encounter with obs", newEncounter);
 		@SuppressWarnings("unchecked")
 		List<Map<String, String>> obs = (List<Map<String, String>>) newEncounter.get("obs");
 		
-		Assert.assertEquals(4, obs.size());
+		Assertions.assertEquals(4, obs.size());
 		Set<String> obsDisplayValues = new HashSet<String>();
 		for (Map<String, String> o : obs) {
 			obsDisplayValues.add(o.get("display"));
 		}
-		Assert.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
-		Assert.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED: fried chicken"));
+		Assertions.assertTrue(obsDisplayValues.contains("CIVIL STATUS: MARRIED"));
+		Assertions.assertTrue(obsDisplayValues.contains("FAVORITE FOOD, NON-CODED: fried chicken"));
 		
 		// obs.getValueAsString() uses application Locale and hence have to do this
 		Calendar cal = Calendar.getInstance();
 		cal.set(2011, Calendar.JUNE, 21, 0, 0, 0);
 		String format = Format.format(cal.getTime(), Context.getLocale(), FORMAT_TYPE.TIMESTAMP);
-		Assert.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE: " + format));
+		Assertions.assertTrue(obsDisplayValues.contains("DATE OF FOOD ASSISTANCE: " + format));
 	}
 	
 	/**
@@ -247,26 +250,26 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyy-MM-dd");
 		
 		Util.log("full", result);
-		Assert.assertNotNull(result);
-		Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", result.get("uuid"));
-		Assert.assertNotNull(result.get("obs"));
-		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result, "obs[0]/concept/uuid"));
-		Assert.assertEquals("96408258-000b-424e-af1a-403919332938",
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", result.get("uuid"));
+		Assertions.assertNotNull(result.get("obs"));
+		Assertions.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", Util.getByPath(result, "obs[0]/concept/uuid"));
+		Assertions.assertEquals("96408258-000b-424e-af1a-403919332938",
 		    Util.getByPath(result, "obs[0]/groupMembers[0]/concept/uuid"));
-		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[0]/value"));
-		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126",
+		Assertions.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[0]/value"));
+		Assertions.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126",
 		    Util.getByPath(result, "obs[0]/groupMembers[1]/concept/uuid"));
-		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT),
+		Assertions.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT),
 		    Util.getByPath(result, "obs[0]/groupMembers[1]/value"));
 		// make sure there's a group in the group
-		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147",
+		Assertions.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147",
 		    Util.getByPath(result, "obs[0]/groupMembers[2]/concept/uuid"));
-		Assert.assertEquals("96408258-000b-424e-af1a-403919332938",
+		Assertions.assertEquals("96408258-000b-424e-af1a-403919332938",
 		    Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/concept/uuid"));
-		Assert.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/value"));
-		Assert.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126",
+		Assertions.assertEquals("Some text", Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[0]/value"));
+		Assertions.assertEquals("11716f9c-1434-4f8d-b9fc-9aa14c4d6126",
 		    Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/concept/uuid"));
-		Assert.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT),
+		Assertions.assertEquals(ConversionUtil.convertToRepresentation(ymd.parse("2011-06-12"), Representation.DEFAULT),
 		    Util.getByPath(result, "obs[0]/groupMembers[2]/groupMembers[1]/value"));
 	}
 
@@ -279,15 +282,15 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
         SimpleObject result = deserialize(response);
 
         Util.log("full", result);
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.get("orders"));
-        Assert.assertEquals(0, ((List<?>) result.get("orders")).size());
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.get("orders"));
+        Assertions.assertEquals(0, ((List<?>) result.get("orders")).size());
     }
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.v1_0.controller.EncounterController1_9Test#shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes()
 	 */
 	@Test
-	@Ignore("Needs to be rewritten to use new order resource")
+	@Disabled("Needs to be rewritten to use new order resource")
 	public void shouldCreateAnEncounterWithObsAndOrdersOfDifferentTypes() throws Exception {
 		String foodAssistanceUuid = "0dde1358-7fcf-4341-a330-f119241a46e8";
 		String lunchOrderUuid = "e23733ab-787e-4096-8ba2-577a902d2c2b";
@@ -308,19 +311,19 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), post)));
 
-		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertNotNull(newEncounter);
+		Assertions.assertEquals(before + 1, getAllCount());
 		Util.log("created encounter with obs and orders", newEncounter);
 
 		@SuppressWarnings("unchecked")
 		List<Map<String, String>> newOrders = (List<Map<String, String>>) newEncounter.get("orders");
 
-		Assert.assertEquals(2, newOrders.size());
+		Assertions.assertEquals(2, newOrders.size());
 		List<String> lookFor = new ArrayList<String>(Arrays.asList("FOOD ASSISTANCE", "Triomune-30: 1.0 tablet"));
 		for (Map<String, String> o : newOrders) {
 			lookFor.remove(o.get("display"));
 		}
-		Assert.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
+		Assertions.assertEquals("Did not find: " + lookFor, 0, lookFor.size());
 	}
 
 	@Test
@@ -335,14 +338,14 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object newEncounterObject = deserialize(handle(newPostRequest(getURI(), post)));
 		
-		Assert.assertNotNull(newEncounterObject);
+		Assertions.assertNotNull(newEncounterObject);
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(
 		    ((SimpleObject) newEncounterObject).get("uuid").toString());
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertEquals(before + 1, getAllCount());
 		//the encounter should have been assigned to the visit
-		Assert.assertNotNull(newEncounter);
-		Assert.assertNotNull(newEncounter.getVisit());
-		Assert.assertEquals(visitUuid, newEncounter.getVisit().getUuid());
+		Assertions.assertNotNull(newEncounter);
+		Assertions.assertNotNull(newEncounter.getVisit());
+		Assertions.assertEquals(visitUuid, newEncounter.getVisit().getUuid());
 	}
 	
 	@Test
@@ -359,10 +362,10 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		Object newEncounterObject = handle(newPostRequest(getURI() + "/" + getUuid(), post));
 		
-		Assert.assertNotNull(newEncounterObject);
+		Assertions.assertNotNull(newEncounterObject);
 		Encounter update = es.getEncounterByUuid(getUuid());
 		//the encounter should have been res assigned to the new visit
-		Assert.assertEquals(newVisit, update.getVisit());
+		Assertions.assertEquals(newVisit, update.getVisit());
 	}
 	
 	@Test
@@ -372,13 +375,13 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		//Post
 		SimpleObject newEncounter = deserialize(handle(newPostRequest(getURI(), createEncounterWithProviders())));
 		
-		Assert.assertNotNull(newEncounter);
-		Assert.assertEquals(encountersBefore + 1, getAllCount());
+		Assertions.assertNotNull(newEncounter);
+		Assertions.assertEquals(encountersBefore + 1, getAllCount());
 		
 		Util.log("Created a new encounter with a list of providers with different roles", newEncounter);
 		
 		List<?> encounterProviderList = newEncounter.get("encounterProviders");
-		Assert.assertEquals(2, encounterProviderList.size());
+		Assertions.assertEquals(2, encounterProviderList.size());
 	}
 	
 	/**
@@ -435,9 +438,9 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 				}
 			}
 		}
-		Assert.assertNotNull(voidedEncounterProviderUuid);
+		Assertions.assertNotNull(voidedEncounterProviderUuid);
 		// the encounter has a voided encounter provider
-		Assert.assertEquals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, voidedEncounterProviderUuid);
+		Assertions.assertEquals(RestTestConstants1_9.VOIDED_ENCOUNTER_PROVIDER, voidedEncounterProviderUuid);
 		
 		// retrieve the same encounter via the encounter web service
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + RestTestConstants1_9.SECOND_ENCOUNTER_UUID);
@@ -458,7 +461,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 			}
 		}
 		// the voided encounter provider is not returned by the encounter web service
-		Assert.assertNull(voidedEncounterProviderUuid);
+		Assertions.assertNull(voidedEncounterProviderUuid);
 	}
 	
 	@Test
@@ -471,12 +474,12 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		//Get one EncounterProvider
 		EncounterProvider existing = encounter.getEncounterProviders().iterator().next();
 		
-		Assert.assertNotNull(existing);
+		Assertions.assertNotNull(existing);
 		
 		String newRoleUuid = "a0b03050-c99b-11e0-9572-0800201c9a71";
 		
-		Assert.assertNotNull(existing);
-		Assert.assertNotEquals(existing.getEncounterRole(), es.getEncounterRoleByUuid(newRoleUuid));
+		Assertions.assertNotNull(existing);
+		Assertions.assertNotEquals(existing.getEncounterRole(), es.getEncounterRoleByUuid(newRoleUuid));
 		
 		SimpleObject newOne = SimpleObject.parseJson("{" + "\"uuid\": \"" + existing.getUuid() + "\"," + "\"provider\": \""
 		        + existing.getProvider().getUuid() + "\"," + "\"encounterRole\": \"" + newRoleUuid + "\","
@@ -496,9 +499,9 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		EncounterProvider updateEncounterProvider = getEncounterProviderWthUuid(updatedEncounter.getEncounterProviders(),
 		    existing.getUuid());
 		
-		Assert.assertEquals(initialCount, updatedEncounter.getEncounterProviders().size());
-		Assert.assertNotNull(updatedEncounter);
-		Assert.assertEquals(es.getEncounterRoleByUuid(newRoleUuid), updateEncounterProvider.getEncounterRole());
+		Assertions.assertEquals(initialCount, updatedEncounter.getEncounterProviders().size());
+		Assertions.assertNotNull(updatedEncounter);
+		Assertions.assertEquals(es.getEncounterRoleByUuid(newRoleUuid), updateEncounterProvider.getEncounterRole());
 	}
 	
 	@Test
@@ -507,14 +510,14 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		Encounter encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
 		es.voidEncounter(encounter, "some random reason");
 		encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
-		Assert.assertTrue(encounter.isVoided());
+		Assertions.assertTrue(encounter.isVoided());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.ENCOUNTER_UUID, json)));
 		
 		encounter = es.getEncounterByUuid(RestTestConstants1_9.ENCOUNTER_UUID);
-		Assert.assertFalse(encounter.isVoided());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		Assertions.assertFalse(encounter.isVoided());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 		
 	}
 	
@@ -529,7 +532,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		//list of non voided encounters
 		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
-		Assert.assertEquals(2, encs.size());
+		Assertions.assertEquals(2, encs.size());
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
@@ -537,7 +540,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> encounters = result.get("results");
-		Assert.assertEquals(2, encounters.size());
+		Assertions.assertEquals(2, encounters.size());
 	}
 	
 	@Test
@@ -550,7 +553,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		//list of non voided encounters
 		List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
-		Assert.assertEquals(2, encs.size());
+		Assertions.assertEquals(2, encs.size());
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_ENCOUNTER_UUID);
@@ -558,7 +561,7 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> encounters = result.get("results");
-		Assert.assertEquals(encs.size(), encounters.size());
+		Assertions.assertEquals(encs.size(), encounters.size());
 	}
 	
 	private EncounterProvider getEncounterProviderWthUuid(Set<EncounterProvider> eps, String uuid) {

@@ -10,8 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.CareSetting;
 import org.openmrs.ConceptClass;
 import org.openmrs.Encounter;
@@ -39,12 +40,12 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Integration tests for the Order resource
@@ -59,7 +60,7 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	
 	private PatientService patientService;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.orderService = Context.getOrderService();
 		this.patientService = Context.getPatientService();
@@ -96,9 +97,11 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Test
@@ -582,20 +585,24 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 		assertEquals(activeTestOrderCount, resp.size());
 	}
 	
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void invalidCareCenterShouldThrowException() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI(),
-		    new Parameter("patient", PATIENT_UUID),
-		    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID")
-		        );
-		handle(req);
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = newGetRequest(getURI(),
+			    new Parameter("patient", PATIENT_UUID),
+			    new Parameter("careSetting", "FAKE-CARE-SETTING-UUID")
+			        );
+			handle(req);
+		});
 	}
 
-	@Test(expected = InvalidSearchException.class)
+	@Test
 	public void doSearch_shouldReturnExceptionIfNoPatientUuidIsSpecified() throws Exception {
-		MockHttpServletRequest req = newGetRequest(getURI(),
-				new Parameter("status", "active")
-		);
-		handle(req);
+		assertThrows(InvalidSearchException.class, () -> {
+			MockHttpServletRequest req = newGetRequest(getURI(),
+					new Parameter("status", "active")
+			);
+			handle(req);
+		});
 	}
 }

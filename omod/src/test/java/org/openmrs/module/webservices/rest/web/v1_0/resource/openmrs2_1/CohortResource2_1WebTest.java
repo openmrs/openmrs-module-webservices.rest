@@ -10,12 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.api.CohortService;
@@ -32,7 +32,7 @@ public class CohortResource2_1WebTest extends MainResourceControllerTest {
 	@Autowired
 	private CohortService cohortService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Cohort cohort = new Cohort();
 		cohort.addMembership(new CohortMembership(6));

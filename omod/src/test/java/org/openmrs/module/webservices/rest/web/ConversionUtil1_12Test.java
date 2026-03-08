@@ -10,14 +10,14 @@
 package org.openmrs.module.webservices.rest.web;
 
 import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.User;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.UserService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ConversionUtil1_12Test extends BaseModuleWebContextSensitiveTest {
 	

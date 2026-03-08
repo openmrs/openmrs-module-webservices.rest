@@ -10,8 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConceptTreeController1_9Test extends RestControllerTestUtils {
 
@@ -34,7 +35,7 @@ public class ConceptTreeController1_9Test extends RestControllerTestUtils {
 	private String childSetUuid;
 	private String leafConceptUuid;
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		ConceptService conceptService = Context.getConceptService();
 
@@ -93,10 +94,12 @@ public class ConceptTreeController1_9Test extends RestControllerTestUtils {
 		assertEquals(0, leafMembers.size());
 	}
 
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void search_shouldThrowExceptionForNonExistentConcept() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("concept", "invalid-concept");
-		handle(req);
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("concept", "invalid-concept");
+			handle(req);
+		});
 	}
 }

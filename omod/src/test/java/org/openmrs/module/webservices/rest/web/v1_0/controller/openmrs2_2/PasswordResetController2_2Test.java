@@ -9,14 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
 import org.openmrs.api.context.Context;
@@ -40,11 +39,7 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	
 	@Autowired
 	private UserDAO dao;
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
-	
-	@Before
+	@BeforeEach
 	public void before() {
 		Context.getAdministrationService().setGlobalProperty(OpenmrsConstants.GP_HOST_URL,
 		    "http://localhost:8080/openmrs/admin/users/changePassword.form/{activationKey}");
@@ -54,9 +49,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 	public void requestPasswordReset_shouldCreateUserActivationKeyGivenUsername() throws Exception {
 		User user = userService.getUserByUuid("c98a1558-e131-11de-babe-001e378eb67e");
 		assertNull(dao.getLoginCredential(user).getActivationKey());
-		expectedException.expect(MessageException.class);
+		assertThrows(MessageException.class, () -> {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+		});
 	}
 	
 	@Test
@@ -65,9 +61,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		user.setEmail("fanyuih@gmail.com");
 		userService.saveUser(user);
 		assertNull(dao.getLoginCredential(user).getActivationKey());
-		expectedException.expect(MessageException.class);
+		assertThrows(MessageException.class, () -> {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+		});
 	}
 
 	@Test
@@ -79,9 +76,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 
 		assertEquals(Context.getAuthenticatedUser().getUuid(), user.getUuid()); // Assert logged-in user is butch
 
-		expectedException.expect(MessageException.class);
+		assertThrows(MessageException.class, () -> {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+		});
 	}
 
 	@Test
@@ -92,9 +90,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 
 		assertEquals(Context.getAuthenticatedUser().getUuid(), user.getUuid()); // Assert logged-in user is butch
 
-		expectedException.expect(MessageException.class);
+		assertThrows(MessageException.class, () -> {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getUsername() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+		});
 	}
 
 	@Test
@@ -107,9 +106,10 @@ public class PasswordResetController2_2Test extends RestControllerTestUtils {
 		Context.logout();
 		assertNull(Context.getAuthenticatedUser()); // Assert no user is logged in.
 
-		expectedException.expect(MessageException.class);
+		assertThrows(MessageException.class, () -> {
 		handle(newPostRequest(RESET_PASSWORD_URI, "{\"usernameOrEmail\":\"" + user.getEmail() + "\"}"));
 		assertNotNull(dao.getLoginCredential(user).getActivationKey());
+		});
 	}
 	
 	@Test

@@ -8,26 +8,20 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link SearchQuery}.
  */
 public class SearchQueryTest {
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
-	
 	/**
 	 * @verifies fail if required parameters are already set
 	 * @see SearchQuery.Builder#withRequiredParameters(String...)
@@ -37,9 +31,10 @@ public class SearchQueryTest {
 		
 		SearchQuery.Builder builder = new SearchQuery.Builder("Enables search").withRequiredParameters("patient");
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("withRequiredParameters() must not be called twice");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
 		builder.withRequiredParameters("encounter");
+		});
+		assertTrue(ex.getMessage().contains("withRequiredParameters() must not be called twice"));
 	}
 	
 	/**
@@ -51,9 +46,10 @@ public class SearchQueryTest {
 		
 		SearchQuery.Builder builder = new SearchQuery.Builder("Enables search").withOptionalParameters("patient");
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("withOptionalParameters() must not be called twice");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
 		builder.withOptionalParameters("encounter");
+		});
+		assertTrue(ex.getMessage().contains("withOptionalParameters() must not be called twice"));
 	}
 	
 	/**
@@ -116,10 +112,11 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfTheDescriptionIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("Description must not be empty");
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
 		new SearchQuery.Builder(null).withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
 		        .build();
+		});
+		assertTrue(ex.getMessage().contains("Description must not be empty"));
 	}
 	
 	/**
@@ -129,10 +126,11 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfTheDescriptionIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("Description must not be empty");
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
 		new SearchQuery.Builder("").withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
 		        .build();
+		});
+		assertTrue(ex.getMessage().contains("Description must not be empty"));
 	}
 	
 	/**
@@ -142,9 +140,10 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfBothRequiredAndOptionalParametersAreEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("Either required or optional parameters must not be empty");
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
 		new SearchQuery.Builder("Enable search").build();
+		});
+		assertTrue(ex.getMessage().contains("Either required or optional parameters must not be empty"));
 	}
 	
 	/**

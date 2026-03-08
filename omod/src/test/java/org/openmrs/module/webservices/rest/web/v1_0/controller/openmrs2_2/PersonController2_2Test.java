@@ -10,8 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Person;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -22,11 +23,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 
 import java.text.SimpleDateFormat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests CRUD operations for {@link Person}s via web service calls
@@ -50,15 +51,17 @@ public class PersonController2_2Test extends MainResourceControllerTest {
         return 0;
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         this.service = Context.getPersonService();
     }
 
     @Override
-    @Test(expected = ResourceDoesNotSupportOperationException.class)
+    @Test
     public void shouldGetAll() throws Exception {
-        super.shouldGetAll();
+        assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+	        super.shouldGetAll();
+        });
     }
 
     @Test

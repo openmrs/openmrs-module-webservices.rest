@@ -15,9 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -25,7 +26,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 public class ObsTreeController1_9Test extends MainResourceControllerTest {
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet("obsTreeDataset.xml");
 	}
@@ -46,9 +47,11 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 	}
 
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Override
@@ -81,7 +84,7 @@ public class ObsTreeController1_9Test extends MainResourceControllerTest {
 		// this entire hack is because timezone will differ between environments
 		replaceTimeZone(actualResult);
 		replaceTimeZone(expectedResult);
-		Assert.assertEquals(expectedResult, actualResult);
+		Assertions.assertEquals(expectedResult, actualResult);
 	}
 
 	// pull timezone off the obsDatetime (while confirming there is one based on size)

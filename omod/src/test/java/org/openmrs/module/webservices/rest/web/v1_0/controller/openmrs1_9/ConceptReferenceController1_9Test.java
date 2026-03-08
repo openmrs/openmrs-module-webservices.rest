@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;

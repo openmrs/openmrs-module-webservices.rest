@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -60,7 +60,7 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		return count;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getPersonService();
 	}
@@ -68,9 +68,9 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 	@Test
 	public void shouldGetARelationshipTypeByName() throws Exception {
 		Object result = deserialize(handle(newGetRequest(getURI() + "/Doctor")));
-		Assert.assertNotNull(result);
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("Relationship from a primary care provider to the patient",
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals("Relationship from a primary care provider to the patient",
 		    PropertyUtils.getProperty(result, "description"));
 	}
 	
@@ -79,8 +79,8 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		int originalCount = service.getAllRelationshipTypes().size();
 		String json = "{ \"aIsToB\":\"Teacher\",\"bIsToA\":\"Student\",\"weight\":\"0\",\"description\":\"test relation\"}";
 		Object newRelationshipType = deserialize(handle(newPostRequest(getURI(), json)));
-		Assert.assertNotNull(PropertyUtils.getProperty(newRelationshipType, "uuid"));
-		Assert.assertEquals(originalCount + 1, service.getAllRelationshipTypes().size());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newRelationshipType, "uuid"));
+		Assertions.assertEquals(originalCount + 1, service.getAllRelationshipTypes().size());
 	}
 	
 	@Test
@@ -88,18 +88,18 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		String json = "{ \"aIsToB\":\"Teacher\",\"bIsToA\":\"Student\",\"weight\":\"0\",\"description\":\"new description\"}";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		RelationshipType updated = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
-		Assert.assertNotNull(updated);
-		Assert.assertEquals("new description", updated.getDescription());
+		Assertions.assertNotNull(updated);
+		Assertions.assertEquals("new description", updated.getDescription());
 	}
 	
 	@Test
 	public void shouldRetireARelationshipType() throws Exception {
 		RelationshipType relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
-		Assert.assertFalse(relationshipType.isRetired());
+		Assertions.assertFalse(relationshipType.isRetired());
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
 		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
-		Assert.assertTrue(relationshipType.isRetired());
-		Assert.assertEquals("test reason", relationshipType.getRetireReason());
+		Assertions.assertTrue(relationshipType.isRetired());
+		Assertions.assertEquals("test reason", relationshipType.getRetireReason());
 	}
 	
 	@Test
@@ -109,33 +109,33 @@ public class RelationshipTypeController1_8Test extends MainResourceControllerTes
 		relationshipType.setRetireReason("random reason");
 		service.saveRelationshipType(relationshipType);
 		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
-		Assert.assertTrue(relationshipType.isRetired());
+		Assertions.assertTrue(relationshipType.isRetired());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
 		relationshipType = service.getRelationshipTypeByUuid(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID);
-		Assert.assertFalse(relationshipType.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		Assertions.assertFalse(relationshipType.isRetired());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
 		
 	}
 	
 	@Test
 	public void shouldPurgeARelationshipType() throws Exception {
 		String uuid = "2a5f4ff4-a179-4b8a-aa4c-40f71956eabc";
-		Assert.assertNotNull(service.getRelationshipTypeByUuid(uuid));
+		Assertions.assertNotNull(service.getRelationshipTypeByUuid(uuid));
 		int originalCount = service.getAllRelationshipTypes().size();
 		handle(newDeleteRequest(getURI() + "/" + uuid, new Parameter("purge", "true")));
-		Assert.assertNull(service.getRelationshipTypeByUuid(uuid));
-		Assert.assertEquals(originalCount - 1, service.getAllRelationshipTypes().size());
+		Assertions.assertNull(service.getRelationshipTypeByUuid(uuid));
+		Assertions.assertEquals(originalCount - 1, service.getAllRelationshipTypes().size());
 	}
 	
 	@Test
 	public void shouldSearchAndReturnAListOfRelationshipTypesMatchingTheQueryString() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "Doc"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(RestTestConstants1_8.RELATIONSHIP_TYPE_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	

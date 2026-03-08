@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -59,12 +59,12 @@ public class ObsResource1_11Test extends BaseDelegatingResourceTest<ObsResource1
 		cn.setAllowDecimal(true);
 		SimpleObject rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		Object value = rep.get("value");
-		Assert.assertEquals(20.0, value);
-		Assert.assertEquals(Double.class, value.getClass());
+		Assertions.assertEquals(20.0, value);
+		Assertions.assertEquals(Double.class, value.getClass());
 		cn.setAllowDecimal(false);
 		rep = getResource().asRepresentation(getObject(), Representation.DEFAULT);
 		value = rep.get("value");
-		Assert.assertEquals(20, value);
-		Assert.assertEquals(Integer.class, value.getClass());
+		Assertions.assertEquals(20, value);
+		Assertions.assertEquals(Integer.class, value.getClass());
 	}
 }

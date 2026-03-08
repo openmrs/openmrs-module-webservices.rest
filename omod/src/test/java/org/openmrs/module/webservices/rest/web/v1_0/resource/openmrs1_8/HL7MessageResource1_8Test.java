@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -18,7 +18,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.IncomingH
 
 public class HL7MessageResource1_8Test extends BaseDelegatingResourceTest<HL7MessageResource1_8, IncomingHl7Message1_8> {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_8.RESOURCE_TEST_DATASET);
 	}

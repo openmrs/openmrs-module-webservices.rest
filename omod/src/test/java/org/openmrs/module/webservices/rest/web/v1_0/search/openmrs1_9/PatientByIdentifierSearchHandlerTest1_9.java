@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -59,7 +59,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
+		Assertions.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
 		    PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
@@ -71,7 +71,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
+		Assertions.assertEquals(Context.getPatientService().getPatient(8).getUuid(),
 		    PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
@@ -83,7 +83,7 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
+		Assertions.assertEquals(1, hits.size());
 	}
 	
 	/**
@@ -99,6 +99,6 @@ public class PatientByIdentifierSearchHandlerTest1_9 extends MainResourceControl
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
+		Assertions.assertEquals(1, hits.size());
 	}
 }

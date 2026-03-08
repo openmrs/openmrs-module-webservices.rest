@@ -10,8 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.openmrs2_4.ServerLogActionWrapper2_4;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -19,7 +20,7 @@ import org.openmrs.module.webservices.rest.web.MockServerLogActionWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_4.ServerLogResource2_4;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -55,30 +56,32 @@ public class ServerLogResource1_8Test extends BaseModuleWebContextSensitiveTest 
 		SimpleObject result = mainResourceController.get(getURI(), request, response);
 
 		ArrayList<String[]> serverLog = result.get("serverLog");
-		Assert.assertEquals(0, serverLog.size());
+		Assertions.assertEquals(0, serverLog.size());
 
 		String mockLogLine1 = "INFO - Simple.appender(115) |2018-03-03 15:44:54,834| Info Message";
 		// Add some mock log lines to mockMemoryAppenderBuffer
 		mockServerLogActionWrapper.mockMemoryAppenderBuffer.add(mockLogLine1);
 		result = mainResourceController.get(getURI(), request, response);
 		serverLog = result.get("serverLog");
-		Assert.assertNotEquals(serverLog.size(), 0);
+		Assertions.assertNotEquals(serverLog.size(), 0);
 
 		String[] logLine1 = serverLog.get(0);
-		Assert.assertNotEquals(logLine1[0], null);
-		Assert.assertNotEquals(logLine1[1], null);
-		Assert.assertNotEquals(logLine1[2], null);
-		Assert.assertNotEquals(logLine1[3], null);
+		Assertions.assertNotEquals(logLine1[0], null);
+		Assertions.assertNotEquals(logLine1[1], null);
+		Assertions.assertNotEquals(logLine1[2], null);
+		Assertions.assertNotEquals(logLine1[3], null);
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldThrowExceptionWhenRequestGetDefaultByUuid() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setMethod("GET");
-		MockHttpServletResponse response = new MockHttpServletResponse();
-		SimpleObject result = mainResourceController.get(getURI() + "/" + getUuid(), request, response);
+		assertThrows(Exception.class, () -> {
+			MockHttpServletRequest request = new MockHttpServletRequest();
+			request.setMethod("GET");
+			MockHttpServletResponse response = new MockHttpServletResponse();
+			SimpleObject result = mainResourceController.get(getURI() + "/" + getUuid(), request, response);
 
-		ArrayList<String[]> serverLog = result.get("serverLog");
+			ArrayList<String[]> serverLog = result.get("serverLog");
+		});
 	}
 
 	public String getUuid() {

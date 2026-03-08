@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Form;
 import org.openmrs.FormResource;
 import org.openmrs.api.DatatypeService;
@@ -47,7 +47,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 	
 	private DatatypeService datatypeService;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		formService = Context.getFormService();
 		datatypeService = Context.getDatatypeService();
@@ -67,10 +67,10 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		
 		MockHttpServletResponse response = handle(newPostRequest(getURI(), jsonPayload));
 		
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertEquals(before + 1, getAllCount());
 		
 		Object resource = deserialize(response);
-		Assert.assertEquals("Test Resource 2", PropertyUtils.getProperty(resource, "name"));
+		Assertions.assertEquals("Test Resource 2", PropertyUtils.getProperty(resource, "name"));
 	}
 	
 	@Test
@@ -87,10 +87,10 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 			names.add((String) PropertyUtils.getProperty(resource, "name"));
 		}
 		
-		Assert.assertEquals(resourceObjects.size(), resources.size());
-		Assert.assertTrue(names.contains("Resource 1"));
-		Assert.assertTrue(names.contains("Resource 2"));
-		Assert.assertTrue(names.contains("Resource 3"));
+		Assertions.assertEquals(resourceObjects.size(), resources.size());
+		Assertions.assertTrue(names.contains("Resource 1"));
+		Assertions.assertTrue(names.contains("Resource 2"));
+		Assertions.assertTrue(names.contains("Resource 3"));
 	}
 	
 	@Test
@@ -99,7 +99,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		
 		Object resource = deserialize(response);
 		
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(resource, "uuid"));
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(resource, "uuid"));
 		
 		List<Object> links = (List<Object>) PropertyUtils.getProperty(resource, "links");
 		
@@ -113,8 +113,8 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		
 		String expectedLink = uriPrefix + "v1/" + getURI() + "/" + getUuid() + "/value";
 		
-		Assert.assertTrue(linksMap.containsKey("value"));
-		Assert.assertEquals(expectedLink, linksMap.get("value"));
+		Assertions.assertTrue(linksMap.containsKey("value"));
+		Assertions.assertEquals(expectedLink, linksMap.get("value"));
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		long before = getAllCount();
 		MockHttpServletResponse response = handle(newDeleteRequest(getURI() + "/" + getUuid()));
 		
-		Assert.assertEquals(before - 1, getAllCount());
+		Assertions.assertEquals(before - 1, getAllCount());
 	}
 	
 	@Test
@@ -148,9 +148,9 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		
 		String valueReferenceAfter = formService.getFormResourceByUuid(getUuid()).getValueReference();
 		
-		Assert.assertNotEquals(valueReferenceBefore, valueReferenceAfter);
-		Assert.assertNotNull(datatypeService.getClobDatatypeStorageByUuid(valueReferenceAfter));
-		Assert.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
+		Assertions.assertNotEquals(valueReferenceBefore, valueReferenceAfter);
+		Assertions.assertNotNull(datatypeService.getClobDatatypeStorageByUuid(valueReferenceAfter));
+		Assertions.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
 	}
 	
 	@Test
@@ -162,8 +162,8 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/" + getUuid() + "/value"));
 		
 		String expected = "attachment;filename=\"" + resource.getName() + "\"";
-		Assert.assertTrue(StringUtils.equals((String) response.getHeader("Content-Disposition"), expected));
-		Assert.assertEquals(clobData.getValue(), response.getContentAsString());
+		Assertions.assertTrue(StringUtils.equals((String) response.getHeader("Content-Disposition"), expected));
+		Assertions.assertEquals(clobData.getValue(), response.getContentAsString());
 	}
 	
 	@Test
@@ -180,7 +180,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 	public void shouldEditAFormResource() throws Exception {		
 		final String EDITED_NAME = "Edited Form Resource";
 		FormResource formResource = formService.getFormResourceByUuid(getUuid());
-		Assert.assertFalse(EDITED_NAME.equals(formResource.getForm().getName()));
+		Assertions.assertFalse(EDITED_NAME.equals(formResource.getForm().getName()));
 		
 		String json = "{ \"name\":\"" + EDITED_NAME + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
@@ -188,7 +188,7 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		handle(req);
 
 		FormResource editedForm = formService.getFormResourceByUuid(getUuid());
-		Assert.assertEquals(EDITED_NAME, editedForm.getName());
+		Assertions.assertEquals(EDITED_NAME, editedForm.getName());
 	}
 	
 	@Override

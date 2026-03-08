@@ -12,9 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -33,7 +33,7 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = Context.getConceptService();
 	}
@@ -43,18 +43,18 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("ConceptClass fetched (default)", result);
-		Assert.assertEquals(getUuid(), result.get("uuid"));
+		Assertions.assertEquals(getUuid(), result.get("uuid"));
 	}
 	
 	@Test
 	public void getConceptClass_shouldGetAConceptClassByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("ConceptClass fetched (default)", result);
-		Assert.assertEquals(getUuid(), result.get("uuid"));
+		Assertions.assertEquals(getUuid(), result.get("uuid"));
 	}
 	
 	@Test
@@ -63,9 +63,9 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptClassName);
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("ConceptClassName fetched (default)", result);
-		Assert.assertEquals(conceptClassName, result.get("name"));
+		Assertions.assertEquals(conceptClassName, result.get("name"));
 	}
 	
 	@Test
@@ -73,7 +73,7 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
-		Assert.assertEquals(getAllCount(), results.size());
+		Assertions.assertEquals(getAllCount(), results.size());
 		Util.log("Found " + results.size() + " conceptClasse(s)", results);
 	}
 	
@@ -81,14 +81,14 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	public void shouldRetireAConceptClass() throws Exception {
 		String uuid = "77177ce7-1410-40ee-bbad-ff6905ee3095";
 		
-		Assert.assertEquals(false, service.getConceptClassByUuid(uuid).isRetired());
+		Assertions.assertEquals(false, service.getConceptClassByUuid(uuid).isRetired());
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
 		req.addParameter("!purge", "");
 		final String reason = "none";
 		req.addParameter("reason", reason);
 		handle(req);
-		Assert.assertEquals(true, service.getConceptClassByUuid(uuid).isRetired());
-		Assert.assertEquals(reason, service.getConceptClassByUuid(uuid).getRetireReason());
+		Assertions.assertEquals(true, service.getConceptClassByUuid(uuid).isRetired());
+		Assertions.assertEquals(reason, service.getConceptClassByUuid(uuid).getRetireReason());
 	}
 	
 	@Test
@@ -98,14 +98,14 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		conceptClass.setRetireReason("random reason");
 		service.saveConceptClass(conceptClass);
 		conceptClass = service.getConceptClassByUuid(getUuid());
-		Assert.assertTrue(conceptClass.isRetired());
+		Assertions.assertTrue(conceptClass.isRetired());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
 		conceptClass = service.getConceptClassByUuid(getUuid());
-		Assert.assertFalse(conceptClass.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		Assertions.assertFalse(conceptClass.isRetired());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
 		
 	}
 	
@@ -113,18 +113,18 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 	public void shouldPurgeAConceptClass() throws Exception {
 		String uuid = "77177ce7-1410-40ee-bbad-ff6905ee3095";
 		
-		Assert.assertNotNull(service.getConceptClassByUuid(uuid));
+		Assertions.assertNotNull(service.getConceptClassByUuid(uuid));
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
 		req.addParameter("purge", "true");
 		handle(req);
-		Assert.assertNull(service.getConceptClassByUuid(uuid));
+		Assertions.assertNull(service.getConceptClassByUuid(uuid));
 	}
 	
 	@Test
 	public void shouldNotIncludeTheAuditInfoForTheDefaultRepresentation() throws Exception {
 		Object result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid())));
-		Assert.assertNotNull(result);
-		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	@Test
@@ -132,8 +132,8 @@ public class ConceptClassController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest httpReq = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
 		Object result = deserialize(handle(httpReq));
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**

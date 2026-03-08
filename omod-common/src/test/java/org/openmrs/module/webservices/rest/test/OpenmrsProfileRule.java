@@ -12,16 +12,17 @@ package org.openmrs.module.webservices.rest.test;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openmrs.module.ModuleUtil;
 import org.openmrs.util.OpenmrsConstants;
 
 /**
  * Allows to execute tests only on the specific version of OpenMRS.
+ * Use with {@code @RegisterExtension} in JUnit 5 tests.
  */
-public class OpenmrsProfileRule implements TestRule {
+public class OpenmrsProfileRule implements ExecutionCondition {
 	
 	private final String[] openmrsVersions;
 	
@@ -41,47 +42,20 @@ public class OpenmrsProfileRule implements TestRule {
 	 * Allows to specify a version of OpenMRS on which tests should be executed.
 	 * 
 	 * @param openmrsVersion
-	 * @param openmrsVersions
 	 */
 	public OpenmrsProfileRule(String openmrsVersion) {
 		this.openmrsVersions = new String[] { openmrsVersion };
 	}
 	
-	/**
-	 * @see org.junit.rules.TestRule#apply(org.junit.runners.model.Statement,
-	 *      org.junit.runner.Description)
-	 */
 	@Override
-	public Statement apply(Statement base, Description description) {
-		return new OpenmrsProfileStatement(base, description);
-	}
-	
-	private class OpenmrsProfileStatement extends Statement {
-		
-		private final Statement base;
-		
-		private final Description description;
-		
-		public OpenmrsProfileStatement(Statement base, Description description) {
-			this.base = base;
-			this.description = description;
-		}
-		
-		/**
-		 * @see org.junit.runners.model.Statement#evaluate()
-		 */
-		@Override
-		public void evaluate() throws Throwable {
-			for (String openmrsVersion : openmrsVersions) {
-				if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, openmrsVersion)) {
-					base.evaluate();
-					return;
-				}
+	public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
+		for (String openmrsVersion : openmrsVersions) {
+			if (ModuleUtil.matchRequiredVersions(OpenmrsConstants.OPENMRS_VERSION_SHORT, openmrsVersion)) {
+				return ConditionEvaluationResult.enabled("OpenMRS version matches " + openmrsVersion);
 			}
-			System.out.println("Ignored " + description.getMethodName() + " (run only on OpenMRS "
-			        + StringUtils.join(openmrsVersions, ",") + ")");
 		}
-		
+		return ConditionEvaluationResult.disabled("Test skipped (run only on OpenMRS "
+		        + StringUtils.join(openmrsVersions, ",") + ")");
 	}
 	
 }

@@ -9,9 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_8;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Provider;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class ProviderSearchHandler2_8Test extends RestControllerTestUtils {
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         executeDataSet("providerTestDataset.xml");
         executeDataSet("providerRoleTestDataset.xml");
@@ -36,7 +37,7 @@ public class ProviderSearchHandler2_8Test extends RestControllerTestUtils {
         req.addParameter("providerRoles", "da7f523f-27ce-4bb2-86d6-6d1d05312bd5"); //binome role
         SimpleObject result = deserialize(handle(req));
         List<Provider> providers = (List<Provider>) result.get("results");
-        Assert.assertEquals(1, providers.size());
+        Assertions.assertEquals(1, providers.size());
     }
 
     @Test
@@ -45,7 +46,7 @@ public class ProviderSearchHandler2_8Test extends RestControllerTestUtils {
         req.addParameter("providerRoles", "da7f523f-27ce-4bb2-86d6-6d1d05312bd5,ea7f523f-27ce-4bb2-86d6-6d1d05312bd5"); //binome and binome superviser roles
         SimpleObject result = deserialize(handle(req));
         List<Provider> providers = (List<Provider>) result.get("results");
-        Assert.assertEquals(2, providers.size());
+        Assertions.assertEquals(2, providers.size());
     }
 
     @Test
@@ -55,16 +56,18 @@ public class ProviderSearchHandler2_8Test extends RestControllerTestUtils {
         req.addParameter("providerRoles", "ea7f523f-27ce-4bb2-86d6-6d1d05312bd5");
         SimpleObject result = deserialize(handle(req));
         List<Provider> providers = (List<Provider>) result.get("results");
-        Assert.assertEquals(2, providers.size());
+        Assertions.assertEquals(2, providers.size());
     }
 
 
-    @Test(expected = APIException.class)
+    @Test
     public void shouldThrowExceptionIfInvalidRole() throws Exception {
-        MockHttpServletRequest req = request(RequestMethod.GET, "provider");
-        req.addParameter("providerRoles", "bogus");
-        SimpleObject result = deserialize(handle(req));
-        List<Provider> providers = (List<Provider>) result.get("results");
+        assertThrows(APIException.class, () -> {
+	        MockHttpServletRequest req = request(RequestMethod.GET, "provider");
+	        req.addParameter("providerRoles", "bogus");
+	        SimpleObject result = deserialize(handle(req));
+	        List<Provider> providers = (List<Provider>) result.get("results");
+        });
     }
 
 }

@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -20,9 +20,9 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -56,7 +56,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	
 	private ConceptService conceptService;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		conceptService = Context.getConceptService();
 	}
@@ -119,8 +119,8 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 	public void getDrugs_shouldGetDrugsLinkedToConceptsWithNamesThatMatchThePhrase() throws Exception {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
 		        "Trio"))));
-		Assert.assertEquals(1, Util.getResultsSize(results));
-		Assert.assertEquals(conceptService.getDrug(2).getUuid(),
+		Assertions.assertEquals(1, Util.getResultsSize(results));
+		Assertions.assertEquals(conceptService.getDrug(2).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
@@ -170,13 +170,13 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		//Should look only in the exact locale if exactLocale is set to true
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
 		        searchPhrase), new Parameter("locale", "fr_CA"), new Parameter("exactLocale", "true"))));
-		Assert.assertEquals(0, Util.getResultsSize(results));
+		Assertions.assertEquals(0, Util.getResultsSize(results));
 		
 		//Should look in broader locale if exactLocale is set to false
 		results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"),
 		    new Parameter("q", searchPhrase), new Parameter("locale", "fr_CA"))));
-		Assert.assertEquals(1, Util.getResultsSize(results));
-		Assert.assertEquals(conceptService.getDrug(3).getUuid(),
+		Assertions.assertEquals(1, Util.getResultsSize(results));
+		Assertions.assertEquals(conceptService.getDrug(3).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
@@ -190,8 +190,8 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		updateSearchIndex();
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
 		        "XXX"), new Parameter("exactLocale", "true"), new Parameter("includeAll", "true"))));
-		Assert.assertEquals(2, Util.getResultsSize(results));
-		Assert.assertEquals(conceptService.getDrug(11).getUuid(),
+		Assertions.assertEquals(2, Util.getResultsSize(results));
+		Assertions.assertEquals(conceptService.getDrug(11).getUuid(),
 		    PropertyUtils.getProperty(Util.getResultsList(results).get(0), "uuid"));
 	}
 	
@@ -208,7 +208,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		SimpleObject results = deserialize(handle(newGetRequest(getURI(), new Parameter("s", "default"), new Parameter("q",
 		        "XXX"), new Parameter("exactLocale", "false"), new Parameter("includeAll", "true"))));
 		
-		Assert.assertEquals(3, Util.getResultsSize(results));
+		Assertions.assertEquals(3, Util.getResultsSize(results));
 		List<Object> resultList = Util.getResultsList(results);
 		List<String> uuids = Arrays.asList(new String[] { PropertyUtils.getProperty(resultList.get(0), "uuid").toString(),
 		        PropertyUtils.getProperty(resultList.get(1), "uuid").toString(),

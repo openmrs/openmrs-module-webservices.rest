@@ -9,13 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.webservices.rest.test.LinkMatcher.hasLink;
 
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.api.CohortService;
@@ -38,7 +38,7 @@ public class CohortMembershipResource2_1Test extends BaseDelegatingResourceTest<
 	@Autowired
 	private PatientService patientService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		startDate = DateUtils.parseDate("2017-01-01", "yyyy-MM-dd");
 		endDate = DateUtils.parseDate("2017-02-28 23:59:59", "yyyy-MM-dd HH:mm:ss");

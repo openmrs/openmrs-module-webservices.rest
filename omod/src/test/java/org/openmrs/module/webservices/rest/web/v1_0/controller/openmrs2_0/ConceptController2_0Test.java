@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAttribute;
 import org.openmrs.api.ConceptService;
@@ -28,7 +28,7 @@ public class ConceptController2_0Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		service = Context.getConceptService();
 	}
@@ -68,7 +68,7 @@ public class ConceptController2_0Test extends MainResourceControllerTest {
 		Concept concept = Context.getConceptService().getConceptByUuid(RestTestConstants2_0.CONCEPT_UUID);
 		int before = concept.getAttributes().size();
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
-		Assert.assertEquals(before + 1, concept.getAttributes().size());
+		Assertions.assertEquals(before + 1, concept.getAttributes().size());
 	}
 	
 	/**
@@ -85,14 +85,14 @@ public class ConceptController2_0Test extends MainResourceControllerTest {
 		ConceptAttribute conceptAttributeBeforeEdit = Context.getConceptService().getConceptAttributeByUuid(
 		    RestTestConstants2_0.CONCEPT_ATTRIBUTE_UUID);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Assert.assertEquals("2011-04-25", simpleDateFormat.format(conceptAttributeBeforeEdit.getValue()));
+		Assertions.assertEquals("2011-04-25", simpleDateFormat.format(conceptAttributeBeforeEdit.getValue()));
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
-		Assert.assertEquals(before, concept.getAttributes().size());
+		Assertions.assertEquals(before, concept.getAttributes().size());
 		ConceptAttribute actualConceptAttribute = Context.getConceptService().getConceptAttributeByUuid(
 		    RestTestConstants2_0.CONCEPT_ATTRIBUTE_UUID);
-		Assert.assertEquals("2001-01-01", simpleDateFormat.format(actualConceptAttribute.getValue()));
+		Assertions.assertEquals("2001-01-01", simpleDateFormat.format(actualConceptAttribute.getValue()));
 	}
 	
 }

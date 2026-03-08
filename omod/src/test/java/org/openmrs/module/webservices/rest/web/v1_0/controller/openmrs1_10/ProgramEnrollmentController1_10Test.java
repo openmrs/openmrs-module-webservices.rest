@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
@@ -40,7 +40,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 	
 	private PatientService patientService;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getProgramWorkflowService();
 		this.patientService = Context.getPatientService();
@@ -79,7 +79,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
-		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+		Assertions.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -90,7 +90,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
-		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+		Assertions.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -101,19 +101,19 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		        + "\"}, \"startDate\": \"" + stateStartDate + "\"}]}";
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertEquals(1, patientProgram.getStates().size());
+		Assertions.assertEquals(1, patientProgram.getStates().size());
 		
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + getUuid(), SimpleObject.parseJson(json));
 		SimpleObject result = deserialize(handle(req));
 		
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
-		Assert.assertEquals(2, states.size());
+		Assertions.assertEquals(2, states.size());
 		sortPatientStatesBasedOnStartDate(states);
-		Assert.assertEquals(RestTestConstants1_8.STATE_UUID, states.get(1).getState().getUuid());
+		Assertions.assertEquals(RestTestConstants1_8.STATE_UUID, states.get(1).getState().getUuid());
 		String existingStateEndDate = dateFormat.format(states.get(0).getEndDate());
-		Assert.assertEquals(stateStartDate, existingStateEndDate);
+		Assertions.assertEquals(stateStartDate, existingStateEndDate);
 	}
 	
 	@Test
@@ -124,9 +124,9 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
 		Set<PatientState> existingStates = patientProgram.getStates();
-		Assert.assertEquals(1, existingStates.size());
+		Assertions.assertEquals(1, existingStates.size());
 		PatientState existingPatientState = existingStates.iterator().next();
-		Assert.assertEquals(existingStartDate, dateFormat.format(existingPatientState.getStartDate()));
+		Assertions.assertEquals(existingStartDate, dateFormat.format(existingPatientState.getStartDate()));
 		
 		String json = "{ \"states\": [{ \"uuid\": \"" + existingPatientState.getUuid() + "\", \"startDate\": \""
 		        + stateStartDate + "\"}]}";
@@ -134,10 +134,10 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(req));
 		
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Set<PatientState> actualPatientStates = patientProgram.getStates();
-		Assert.assertEquals(1, actualPatientStates.size());
-		Assert.assertEquals(stateStartDate, dateFormat.format(actualPatientStates.iterator().next().getStartDate()));
+		Assertions.assertEquals(1, actualPatientStates.size());
+		Assertions.assertEquals(stateStartDate, dateFormat.format(actualPatientStates.iterator().next().getStartDate()));
 	}
 	
 	@Test
@@ -145,7 +145,7 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertEquals(1, patientProgram.getStates().size());
+		Assertions.assertEquals(1, patientProgram.getStates().size());
 		
 		//Transit the existing patient state to new state
 		String stateStartDate = "2015-08-04";
@@ -156,17 +156,17 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(req));
 		
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		List<PatientState> states = new ArrayList<PatientState>(patientProgram.getStates());
 		sortPatientStatesBasedOnStartDate(states);
-		Assert.assertEquals(2, states.size());
+		Assertions.assertEquals(2, states.size());
 		
 		PatientState transitedPatientState = states.get(1);
 		PatientState existingPatientState = states.get(0);
 		String existingStateEndDate = dateFormat.format(existingPatientState.getEndDate());
-		Assert.assertEquals(stateStartDate, existingStateEndDate);
-		Assert.assertFalse(existingPatientState.getVoided());
-		Assert.assertFalse(transitedPatientState.getVoided());
+		Assertions.assertEquals(stateStartDate, existingStateEndDate);
+		Assertions.assertFalse(existingPatientState.getVoided());
+		Assertions.assertFalse(transitedPatientState.getVoided());
 
 		//Delete the last patient state
 		req = newDeleteRequest(getURI() + "/" + getUuid() + "/state/" + transitedPatientState.getUuid(), new Parameter(
@@ -180,15 +180,15 @@ public class ProgramEnrollmentController1_10Test extends MainResourceControllerT
 		PatientState voidedPatientState = states.get(1);
 		existingPatientState = states.get(0);
 		
-		Assert.assertTrue(voidedPatientState.getVoided());
-		Assert.assertFalse(existingPatientState.getVoided());
+		Assertions.assertTrue(voidedPatientState.getVoided());
+		Assertions.assertFalse(existingPatientState.getVoided());
 
 		// confirm that the voided state is not returned when we re-request the program
 		req = request(RequestMethod.GET, getURI() + "/" + getUuid()) ;
 		req.setParameter("v", "custom:(states:(uuid,state:(uuid)))");
 		result = deserialize(handle(req));
-		Assert.assertEquals(1, ((List<?>) Util.getByPath(result,"states")).size());
-		Assert.assertEquals(existingPatientState.getState().getUuid(), Util.getByPath(result,"states[0]/state/uuid") );
+		Assertions.assertEquals(1, ((List<?>) Util.getByPath(result,"states")).size());
+		Assertions.assertEquals(existingPatientState.getState().getUuid(), Util.getByPath(result,"states[0]/state/uuid") );
 	}
 	
 	private static void sortPatientStatesBasedOnStartDate(List<PatientState> patientStates) {

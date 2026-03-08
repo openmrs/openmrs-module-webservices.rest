@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Relationship;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -60,7 +60,7 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		return service.getAllRelationships().size(); //not supported
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RELATIONSHIP_DATA_SET);
 		this.service = Context.getPersonService();
@@ -74,34 +74,34 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		        + "\"5946f880-b197-400b-9caa-a3c661d23041\"" + "}";
 		
 		Object newRelationship = deserialize(handle(newPostRequest(getURI(), json)));
-		Assert.assertNotNull(PropertyUtils.getProperty(newRelationship, "uuid"));
-		Assert.assertEquals(originalCount + 1, service.getAllRelationships().size());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newRelationship, "uuid"));
+		Assertions.assertEquals(originalCount + 1, service.getAllRelationships().size());
 	}
 	
 	@Test
 	public void shouldEditARelationship() throws Exception {
 		final String newRelationshipTypeUuid = "d47f056e-f147-49a3-88e1-0c91d199510d";
 		Relationship relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
-		Assert.assertNotNull(relationship);
+		Assertions.assertNotNull(relationship);
 		//sanity checks
-		Assert.assertFalse(newRelationshipTypeUuid.equalsIgnoreCase(relationship.getRelationshipType().getUuid()));
+		Assertions.assertFalse(newRelationshipTypeUuid.equalsIgnoreCase(relationship.getRelationshipType().getUuid()));
 		String json = "{\"relationshipType\":\"" + newRelationshipTypeUuid + "\"" + "}";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		Relationship updated = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
-		Assert.assertNotNull(updated);
-		Assert.assertEquals(newRelationshipTypeUuid, updated.getRelationshipType().getUuid());
+		Assertions.assertNotNull(updated);
+		Assertions.assertEquals(newRelationshipTypeUuid, updated.getRelationshipType().getUuid());
 	}
 	
 	@Test
 	public void shouldVoidARelationship() throws Exception {
 		Relationship relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
-		Assert.assertFalse(relationship.isVoided());
+		Assertions.assertFalse(relationship.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
 		
 		relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
-		Assert.assertTrue(relationship.isVoided());
-		Assert.assertEquals("test reason", relationship.getVoidReason());
+		Assertions.assertTrue(relationship.isVoided());
+		Assertions.assertEquals("test reason", relationship.getVoidReason());
 	}
 	
 	@Test
@@ -109,26 +109,26 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		Relationship relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
 		service.voidRelationship(relationship, "some random reason");
 		relationship = service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID);
-		Assert.assertTrue(relationship.isVoided());
+		Assertions.assertTrue(relationship.isVoided());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
 		relationship = service.getRelationshipByUuid(getUuid());
-		Assert.assertFalse(relationship.isVoided());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		Assertions.assertFalse(relationship.isVoided());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 		
 	}
 	
 	@Test
 	public void shouldPurgeARelatonship() throws Exception {
-		Assert.assertNotNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
+		Assertions.assertNotNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
 		int originalCount = service.getAllRelationships().size();
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 		
-		Assert.assertNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
-		Assert.assertEquals(originalCount - 1, service.getAllRelationships().size());
+		Assertions.assertNull(service.getRelationshipByUuid(RestTestConstants1_8.RELATIONSHIP_UUID));
+		Assertions.assertEquals(originalCount - 1, service.getAllRelationships().size());
 	}
 	
 	@Test
@@ -137,8 +137,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("person",
 		        "86526ed6-3c11-11de-a0ba-001e378eb67e"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(4, hits.size());
-		Assert.assertEquals(firstRelationshipUuidBelongsToPerson, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(4, hits.size());
+		Assertions.assertEquals(firstRelationshipUuidBelongsToPerson, PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -148,8 +148,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		        "86526ed6-3c11-11de-a0ba-001e378eb67e"), new Parameter("relatedPerson",
 		        "5946f880-b197-400b-9caa-a3c661d23041"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals(firstRelationshipUuid, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(2, hits.size());
+		Assertions.assertEquals(firstRelationshipUuid, PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -158,8 +158,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		        "341b4e41-790c-484f-b6ed-71dc8da222de"), new Parameter("relation",
 		        RestTestConstants1_8.RELATIONSHIP_TYPE_UUID))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(2, hits.size());
+		Assertions.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -168,8 +168,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		        "341b4e41-790c-484f-b6ed-71dc8da222de"), new Parameter("personB", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
 		    new Parameter("relation", RestTestConstants1_8.RELATIONSHIP_TYPE_UUID))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -177,8 +177,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("personA",
 		        "341b4e41-790c-484f-b6ed-71dc8da222de"), new Parameter("personB", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(RestTestConstants1_8.RELATIONSHIP_UUID, PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -187,8 +187,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		        "86526ed6-3c11-11de-a0ba-001e378eb67e"), new Parameter("relation",
 		        RestTestConstants1_8.RELATIONSHIP_TYPE_UUID))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("4ce634c8-d744-40b3-9d5f-577a5f025b01", PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(2, hits.size());
+		Assertions.assertEquals("4ce634c8-d744-40b3-9d5f-577a5f025b01", PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -196,8 +196,8 @@ public class RelationshipController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("personB",
 		        "86526ed6-3c11-11de-a0ba-001e378eb67e"), new Parameter("relation", "d38a8159-3e37-410d-83ae-245a205cb83c"))));
 		List<Object> hits = Util.getResultsList(result);
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals("70c34cf1-770b-49ec-9cc1-f79190834143", PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals("70c34cf1-770b-49ec-9cc1-f79190834143", PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 }

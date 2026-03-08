@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.PatientService;
@@ -42,7 +42,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 	
 	private PatientService patientService;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getProgramWorkflowService();
 		this.patientService = Context.getPatientService();
@@ -81,7 +81,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		
 		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, true);
-		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+		Assertions.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		
 		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_WITH_VOIDED_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, false);
-		Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+		Assertions.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -100,10 +100,10 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "patient"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "program"));
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "patient"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "program"));
 	}
 	
 	@Test
@@ -112,9 +112,9 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, Representation.REF.getRepresentation());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "patient"));
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertNull(PropertyUtils.getProperty(result, "patient"));
 	}
 	
 	@Test
@@ -123,11 +123,11 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		SimpleObject result = deserialize(handle(req));
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(patientProgram.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(patientProgram.getPatient().getUuid(),
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(patientProgram.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(patientProgram.getPatient().getUuid(),
 		    ((Map) PropertyUtils.getProperty(result, "patient")).get("uuid"));
-		Assert.assertEquals(patientProgram.getProgram().getUuid(),
+		Assertions.assertEquals(patientProgram.getProgram().getUuid(),
 		    ((Map) PropertyUtils.getProperty(result, "program")).get("uuid"));
 	}
 	
@@ -145,9 +145,9 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		Patient patient = patientService.getPatientByUuid(RestTestConstants1_8.PATIENT_IN_A_PROGRAM_UUID);
 		List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, true);
 		PatientProgram newEnrollment = patientPrograms.get(patientPrograms.size() - 1);
-		Assert.assertEquals(newEnrollment.getProgram().getUuid(), ((Map) result.get("program")).get("uuid"));
-		Assert.assertEquals(newEnrollment.getPatient().getUuid(), ((Map) result.get("patient")).get("uuid"));
-		Assert.assertNotNull(result.get("dateEnrolled"));
+		Assertions.assertEquals(newEnrollment.getProgram().getUuid(), ((Map) result.get("program")).get("uuid"));
+		Assertions.assertEquals(newEnrollment.getPatient().getUuid(), ((Map) result.get("patient")).get("uuid"));
+		Assertions.assertNotNull(result.get("dateEnrolled"));
 	}
 	
 	@Test
@@ -161,19 +161,19 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		SimpleObject result = deserialize(handle(req));
 		
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(dateFormat.format(patientProgram.getDateEnrolled()), date);
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(dateFormat.format(patientProgram.getDateEnrolled()), date);
 	}
 
 	@Test
 	public void shouldVoidAPatientProgram() throws Exception {
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertTrue(!patientProgram.isVoided());
+		Assertions.assertTrue(!patientProgram.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", "random reason")));
 		
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertTrue(patientProgram.isVoided());
+		Assertions.assertTrue(patientProgram.isVoided());
 	}
 	
 	@Test
@@ -181,22 +181,22 @@ public class ProgramEnrollmentController1_9Test extends MainResourceControllerTe
 		PatientProgram patientProgram = service.getPatientProgramByUuid(getUuid());
 		service.voidPatientProgram(patientProgram, "some random reason");
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertTrue(patientProgram.isVoided());
+		Assertions.assertTrue(patientProgram.isVoided());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
 		patientProgram = service.getPatientProgramByUuid(getUuid());
-		Assert.assertFalse(patientProgram.isVoided());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		Assertions.assertFalse(patientProgram.isVoided());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 		
 	}
 	
 	@Test
 	public void shouldPurgeAPatientProgram() throws Exception {
-		Assert.assertNotNull(service.getPatientProgramByUuid(getUuid()));
+		Assertions.assertNotNull(service.getPatientProgramByUuid(getUuid()));
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
-		Assert.assertNull(service.getPatientProgramByUuid(getUuid()));
+		Assertions.assertNull(service.getPatientProgramByUuid(getUuid()));
 	}
 	
 }

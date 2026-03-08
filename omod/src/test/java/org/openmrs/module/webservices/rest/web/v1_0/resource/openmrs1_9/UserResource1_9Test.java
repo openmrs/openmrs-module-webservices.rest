@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -91,10 +91,10 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		final List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
 		
 		// verify
-		Assert.assertFalse("A non-empty list is expected.", results.isEmpty());
+		Assertions.assertFalse("A non-empty list is expected.", results.isEmpty());
 		for (SimpleObject result : results) {
 			final String selfLink = findSelfLink(result);
-			Assert.assertTrue("Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
+			Assertions.assertTrue("Resource should be user, but is " + selfLink, selfLink.contains("/user/"));
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class UserResource1_9Test extends BaseDelegatingResourceTest<UserResource
 		// verify
 		final String errorMessage = "Number of results does not match for: userName=" + userName + ", roles=" + roles
 		        + ", Results=" + results;
-		Assert.assertEquals(errorMessage, expectedResultCount, results.size());
+		Assertions.assertEquals(errorMessage, expectedResultCount, results.size());
 	}
 	
 	/**

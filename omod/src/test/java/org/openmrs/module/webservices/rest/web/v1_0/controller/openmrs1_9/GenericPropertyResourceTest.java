@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
 public class GenericPropertyResourceTest extends MainResourceControllerTest {
@@ -41,8 +41,8 @@ public class GenericPropertyResourceTest extends MainResourceControllerTest {
 		
 		Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-		Assert.assertEquals(PropertyUtils.getProperty(newVisit, "value"), value);
+		Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+		Assertions.assertEquals(PropertyUtils.getProperty(newVisit, "value"), value);
 	}
 	
 	// Ignore these tests, we only care about testing that we can create the object

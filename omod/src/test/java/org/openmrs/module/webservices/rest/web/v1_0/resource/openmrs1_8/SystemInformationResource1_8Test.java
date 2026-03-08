@@ -10,12 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.openmrs.api.AdministrationService;
 import java.util.Map;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -43,44 +43,44 @@ public class SystemInformationResource1_8Test extends BaseModuleWebContextSensit
 		
 		// Check openmrsInformation
 		Map<String, String> openmrsInformation = systemInfo.get("SystemInfo.title.openmrsInformation");
-		Assert.assertTrue(systemInfo.containsKey("SystemInfo.title.openmrsInformation"));
+		Assertions.assertTrue(systemInfo.containsKey("SystemInfo.title.openmrsInformation"));
 		// Check openmrsInformation Property
-		Assert.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.systemDate"));
-		Assert.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.systemTime"));
-		Assert.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.openmrsVersion"));
+		Assertions.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.systemDate"));
+		Assertions.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.systemTime"));
+		Assertions.assertTrue(openmrsInformation.containsKey("SystemInfo.OpenMRSInstallation.openmrsVersion"));
 		
 		// Check javaRuntimeEnvironmentInformation
 		Map<String, String> javRuntime = systemInfo.get("SystemInfo.title.javaRuntimeEnvironmentInformation");
-		Assert.assertTrue(systemInfo.containsKey("SystemInfo.title.javaRuntimeEnvironmentInformation"));
+		Assertions.assertTrue(systemInfo.containsKey("SystemInfo.title.javaRuntimeEnvironmentInformation"));
 		// Check javaRuntimeEnvironmentInformation Property
-		Assert.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystem"));
-		Assert.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystemArch"));
-		Assert.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystemVersion"));
-		Assert.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.javaVersion"));
-		Assert.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.javaVendor"));
+		Assertions.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystem"));
+		Assertions.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystemArch"));
+		Assertions.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.operatingSystemVersion"));
+		Assertions.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.javaVersion"));
+		Assertions.assertTrue(javRuntime.containsKey("SystemInfo.JavaRuntimeEnv.javaVendor"));
 		
 		// Check memoryInformation
 		Map<String, String> memoryInformation = systemInfo.get("SystemInfo.title.memoryInformation");
-		Assert.assertTrue(systemInfo.containsKey("SystemInfo.title.memoryInformation"));
+		Assertions.assertTrue(systemInfo.containsKey("SystemInfo.title.memoryInformation"));
 		// Check memoryInformation Property
-		Assert.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.totalMemory"));
-		Assert.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.freeMemory"));
-		Assert.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.maximumHeapSize"));
+		Assertions.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.totalMemory"));
+		Assertions.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.freeMemory"));
+		Assertions.assertTrue(memoryInformation.containsKey("SystemInfo.Memory.maximumHeapSize"));
 		
 		// Check dataBaseInformation
 		Map<String, String> dataBaseInformation = systemInfo.get("SystemInfo.title.dataBaseInformation");
-		Assert.assertTrue(systemInfo.containsKey("SystemInfo.title.dataBaseInformation"));
+		Assertions.assertTrue(systemInfo.containsKey("SystemInfo.title.dataBaseInformation"));
 		// Check dataBaseInformation Property
-		Assert.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.name"));
-		Assert.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.connectionURL"));
-		Assert.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.userName"));
-		Assert.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.driver"));
-		Assert.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.dialect"));
+		Assertions.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.name"));
+		Assertions.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.connectionURL"));
+		Assertions.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.userName"));
+		Assertions.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.driver"));
+		Assertions.assertTrue(dataBaseInformation.containsKey("SystemInfo.Database.dialect"));
 		
 		// Check moduleInformation
 		Map<String, String> moduleInformation = systemInfo.get("SystemInfo.title.moduleInformation");
-		Assert.assertTrue(systemInfo.containsKey("SystemInfo.title.moduleInformation"));
+		Assertions.assertTrue(systemInfo.containsKey("SystemInfo.title.moduleInformation"));
 		// Check moduleInformation Property
-		Assert.assertTrue(moduleInformation.containsKey("SystemInfo.Module.repositoryPath"));
+		Assertions.assertTrue(moduleInformation.containsKey("SystemInfo.Module.repositoryPath"));
 	}
 }

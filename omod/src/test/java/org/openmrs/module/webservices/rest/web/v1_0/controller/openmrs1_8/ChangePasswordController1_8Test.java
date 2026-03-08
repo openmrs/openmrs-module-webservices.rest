@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
@@ -32,10 +32,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	
 	private static final String PASSWORD_URI = "password";
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
-	
 	@Autowired
 	@Qualifier("userService")
 	private UserService service;
@@ -84,11 +80,12 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String oldPassword = "SomeOtherPassword123";
 		String newPassword = "newPassword9";
 		
-		expectedException.expect(APIAuthenticationException.class);
-		expectedException.expectMessage("Must be authenticated to change your own password");
+		APIAuthenticationException ex = assertThrows(APIAuthenticationException.class, () -> {
 		
 		handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\"" + "," + "\"oldPassword\":\""
 		        + oldPassword + "\"}"));
+		});
+		assertTrue(ex.getMessage().contains("Must be authenticated to change your own password"));
 	}
 	
 	@Test
@@ -98,10 +95,11 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		String wrongOldPassword = "WrongPassword";
 		String newPassword = "newPassword9";
 		
-		expectedException.expect(ValidationException.class);
+		assertThrows(ValidationException.class, () -> {
 		
 		handle(newPostRequest(PASSWORD_URI, "{\"newPassword\":\"" + newPassword + "\"" + "," + "\"oldPassword\":\""
 		        + wrongOldPassword + "\"}"));
+		});
 	}
 	
 	@Test
@@ -134,11 +132,12 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		
 		String newPassword = "newPassword9";
 		
-		expectedException.expect(APIAuthenticationException.class);
+		assertThrows(APIAuthenticationException.class, () -> {
 		
 		handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID, "{\"newPassword\":\"" + newPassword
 		        + "\"}"));
 		
+		});
 	}
 	
 	@Test
@@ -147,9 +146,10 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 		
 		String newPassword = "newPassword9";
 		
-		expectedException.expect(NullPointerException.class);
+		assertThrows(NullPointerException.class, () -> {
 		
 		handle(newPostRequest(PASSWORD_URI + "/" + "someRandomUserUuid", "{\"newPassword\":\"" + newPassword + "\"}"));
+		});
 	}
 	
 	private User setUpUser(String userName) {

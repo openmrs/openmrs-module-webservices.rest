@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.VisitAttributeType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -24,7 +24,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -65,7 +65,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		return count;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		service = Context.getVisitService();
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
@@ -82,7 +82,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		
 		handle(newPostRequest(getURI(), json));
 		
-		Assert.assertEquals(before + 1, service.getAllVisitAttributeTypes().size());
+		Assertions.assertEquals(before + 1, service.getAllVisitAttributeTypes().size());
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
-		Assert.assertEquals("Updated description", service.getVisitAttributeType(1).getDescription());
+		Assertions.assertEquals("Updated description", service.getVisitAttributeType(1).getDescription());
 	}
 	
 	/**
@@ -105,13 +105,13 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	@Test
 	public void delete_shouldRetireAVisitAttributeType() throws Exception {
 		VisitAttributeType visitAttributeType = service.getVisitAttributeType(1);
-		Assert.assertFalse(visitAttributeType.isRetired());
+		Assertions.assertFalse(visitAttributeType.isRetired());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test")));
 		
 		visitAttributeType = service.getVisitAttributeType(1);
-		Assert.assertTrue(visitAttributeType.isRetired());
-		Assert.assertEquals("test", visitAttributeType.getRetireReason());
+		Assertions.assertTrue(visitAttributeType.isRetired());
+		Assertions.assertEquals("test", visitAttributeType.getRetireReason());
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
-		Assert.assertEquals(5, Util.getResultsSize(result));
+		Assertions.assertEquals(5, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	public void search_shouldFindMatchingVisitAttributeTypesExcludingRetiredOnes() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "date"))));
 		
-		Assert.assertEquals(2, Util.getResultsSize(result));
+		Assertions.assertEquals(2, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "date"), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
-		Assert.assertEquals(3, Util.getResultsSize(result));
+		Assertions.assertEquals(3, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -155,13 +155,13 @@ public class VisitAttributeTypeController1_9Test extends MainResourceControllerT
 	@Test
 	public void purge_shouldPurgeAVisitAttributeType() throws Exception {
 		final String visitAttributeTypeUuid = "6770f6d6-7673-11e0-8f03-001e378eb67g";
-		Assert.assertNotNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
+		Assertions.assertNotNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
 		int originalCount = service.getAllVisitAttributeTypes().size();
 		
 		handle(newDeleteRequest(getURI() + "/" + visitAttributeTypeUuid, new Parameter("purge", "true")));
 		
-		Assert.assertNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
-		Assert.assertEquals(originalCount - 1, service.getAllVisitAttributeTypes().size());
+		Assertions.assertNull(service.getVisitAttributeTypeByUuid(visitAttributeTypeUuid));
+		Assertions.assertEquals(originalCount - 1, service.getAllVisitAttributeTypes().size());
 	}
 	
 	@Test

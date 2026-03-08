@@ -23,9 +23,9 @@ import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.util.Json;
 import org.dbunit.database.DatabaseConnection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -33,7 +33,7 @@ import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResou
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -119,7 +119,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		return ret;
 	}
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		// init REST
 		Context.getService(RestService.class).initialize();
@@ -140,8 +140,8 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		Map<String, Integer> afterCounts = getRowCounts();
 		
-		Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
-		Assert.assertTrue("Ensure that no data was added or removed from any tables",
+		Assertions.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
+		Assertions.assertTrue("Ensure that no data was added or removed from any tables",
 		    ensureCountsEqual(beforeCounts, afterCounts));
 	}
 	
@@ -169,7 +169,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
-				Assert.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
+				Assertions.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
 				operationIds.add(o.getOperationId());
 			}
 		}
@@ -184,7 +184,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			if (p.getGet() != null) {
-				Assert.assertTrue("Ensure each GET operation has the 'v' query parameter",
+				Assertions.assertTrue("Ensure each GET operation has the 'v' query parameter",
 				    operationHasRepresentationParam(p.getGet()));
 			}
 		}
@@ -212,7 +212,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
 				if (o.getOperationId().matches("^getAll[A-Z].*")) {
-					Assert.assertTrue("Ensure each operation that supports paging has both paging parameters",
+					Assertions.assertTrue("Ensure each operation that supports paging has both paging parameters",
 					    operationHasPagingParams(o));
 				}
 			}

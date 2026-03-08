@@ -9,10 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class ProviderController1_9Test extends MainResourceControllerTest {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
@@ -46,7 +47,7 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		String json = "{ \"person\": \"da7f524f-27ce-4bb2-86d6-6d1d05312bd5\", \"identifier\":\"abc123ez\" }";
 		
 		handle(newPostRequest(getURI(), json));
-		Assert.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
+		Assertions.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
 	}
 	
 	/**
@@ -59,22 +60,24 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		        + "\"attributes\":[{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID
 		        + "\",\"value\":\"2005-01-01\"}]}";
 		handle(newPostRequest(getURI(), json));
-		Assert.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
+		Assertions.assertEquals(before + 1, Context.getProviderService().getAllProviders().size());
 		Provider provider = Context.getProviderService().getAllProviders().get(1);
-		Assert.assertEquals(1, provider.getAttributes().size());
+		Assertions.assertEquals(1, provider.getAttributes().size());
 	}
 	
 	/**
 	 * @see ProviderController#updateProvider(Provider,SimpleObject,WebRequest)
 	 * @verifies should fail when changing a person property on a Provider
 	 */
-	@Test(expected = ConversionException.class)
+	@Test
 	public void updateProvider_shouldFailWhenChangingAPersonPropertyOnAProvider() throws Exception {
-		Date now = new Date();
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String json = "{\"birthdate\":\"" + df.format(now) + "\"}";
+		assertThrows(ConversionException.class, () -> {
+			Date now = new Date();
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String json = "{\"birthdate\":\"" + df.format(now) + "\"}";
 		
-		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID, json));
+			handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID, json));
+		});
 	}
 	
 	/**
@@ -84,15 +87,15 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 	@Test
 	public void voidProvider_shouldRetireAProvider() throws Exception {
 		Provider pat = Context.getProviderService().getProvider(2);
-		Assert.assertFalse(pat.isRetired());
+		Assertions.assertFalse(pat.isRetired());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + RestTestConstants1_9.PROVIDER_UUID);
 		request.addParameter("reason", "unit test");
 		handle(request);
 		
 		pat = Context.getProviderService().getProvider(2);
-		Assert.assertTrue(pat.isRetired());
-		Assert.assertEquals("unit test", pat.getRetireReason());
+		Assertions.assertTrue(pat.isRetired());
+		Assertions.assertEquals("unit test", pat.getRetireReason());
 	}
 	
 	/**
@@ -105,7 +108,7 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		request.addParameter("q", "zzzznobody");
 		
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
-		Assert.assertEquals(0, results.size());
+		Assertions.assertEquals(0, results.size());
 	}
 	
 	/**
@@ -118,11 +121,11 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		request.addParameter("q", "Hornblower");
 		
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
-		Assert.assertEquals(1, results.size());
+		Assertions.assertEquals(1, results.size());
 		Object result = results.get(0);
-		Assert.assertEquals(RestTestConstants1_9.PROVIDER_UUID, PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertEquals(RestTestConstants1_9.PROVIDER_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
 	@Test
@@ -131,23 +134,23 @@ public class ProviderController1_9Test extends MainResourceControllerTest {
 		request.addParameter("user", "c98a1558-e131-11de-babe-001e378eb67e");
 		
 		List<?> results = (List<?>) deserialize(handle(request)).get("results");
-		Assert.assertNotSame(0, results.size());
+		Assertions.assertNotSame(0, results.size());
 		
 		Object next = results.iterator().next();
-		Assert.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
+		Assertions.assertEquals(getUuid(), (String) PropertyUtils.getProperty(next, "uuid"));
 	}
 	
 	@Test
 	public void shouldEditAProvider() throws Exception {
 		final String EDITED_PERSON_UUID = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
 		Provider provider = Context.getProviderService().getProviderByUuid(getUuid());
-		Assert.assertFalse(EDITED_PERSON_UUID.equals(provider.getPerson().getUuid()));
+		Assertions.assertFalse(EDITED_PERSON_UUID.equals(provider.getPerson().getUuid()));
 		
 		String json = "{\"person\":\"" + EDITED_PERSON_UUID + "\"" + "}";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		Provider updatedProvider = Context.getProviderService().getProviderByUuid(getUuid());
-		Assert.assertEquals(EDITED_PERSON_UUID, updatedProvider.getPerson().getUuid());
+		Assertions.assertEquals(EDITED_PERSON_UUID, updatedProvider.getPerson().getUuid());
 	}
 	
 	/**

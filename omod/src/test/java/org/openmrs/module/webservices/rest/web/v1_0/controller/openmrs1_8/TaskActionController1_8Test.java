@@ -15,10 +15,11 @@ import static org.hamcrest.core.IsNot.not;
 
 import java.util.Arrays;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper;
@@ -48,7 +49,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	
 	private MockTaskServiceWrapper mockTaskServiceWrapper = new MockTaskServiceWrapper();
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mockTaskServiceWrapper.registeredTasks.addAll(Arrays.asList(testTask, tempTask, testDummyTask));
 		
@@ -61,7 +62,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 		taskResource.setTaskServiceWrapper(mockTaskServiceWrapper);
 	}
 	
-	@After
+	@AfterEach
 	public void cleanup() {
 		TaskActionResource1_8 taskActionResource = (TaskActionResource1_8) restService
 		        .getResourceBySupportedClass(TaskAction.class);
@@ -127,40 +128,48 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	public void shouldRunTask() throws Exception {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
-		Assert.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
+		Assertions.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
 		//count before manual execution
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(), "{\"action\": \"runtask\", \"tasks\":[\"" + getTestDummyTaskName()
 		        + "\"]}")));
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
-		Assert.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
+		Assertions.assertEquals(3, mockTaskServiceWrapper.getRegisteredTasks().size());
 		//count after manual execution
 		int countAfter = count;
-		Assert.assertEquals(++countBefore, countAfter);
+		Assertions.assertEquals(++countBefore, countAfter);
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetDefaultByUuid() throws Exception {
-		super.shouldGetDefaultByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetDefaultByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetRefByUuid() throws Exception {
-		super.shouldGetRefByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetRefByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetFullByUuid() throws Exception {
-		super.shouldGetFullByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetFullByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Override

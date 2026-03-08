@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProviderAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ProviderAttributeTypeController1_9Test extends MainResourceControllerTest {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
@@ -44,7 +44,7 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		
 		handle(newPostRequest(getURI(), json));
 		
-		Assert.assertEquals(before + 1, Context.getProviderService().getAllProviderAttributeTypes().size());
+		Assertions.assertEquals(before + 1, Context.getProviderService().getAllProviderAttributeTypes().size());
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		String json = "{\"description\":\"Updated description\"}";
 		handle(newPostRequest(getURI() + "/" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, json));
 		
-		Assert.assertEquals("Updated description", Context.getProviderService().getProviderAttributeType(1).getDescription());
+		Assertions.assertEquals("Updated description", Context.getProviderService().getProviderAttributeType(1).getDescription());
 	}
 	
 	/**
@@ -66,7 +66,7 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 	@Test
 	public void retireProviderAttributeType_shouldRetireAProviderAttributeType() throws Exception {
 		ProviderAttributeType providerAttributeType = Context.getProviderService().getProviderAttributeType(1);
-		Assert.assertFalse(providerAttributeType.isRetired());
+		Assertions.assertFalse(providerAttributeType.isRetired());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		request.addParameter("reason", "test");
@@ -74,8 +74,8 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		handle(request);
 		
 		providerAttributeType = Context.getProviderService().getProviderAttributeType(1);
-		Assert.assertTrue(providerAttributeType.isRetired());
-		Assert.assertEquals("test", providerAttributeType.getRetireReason());
+		Assertions.assertTrue(providerAttributeType.isRetired());
+		Assertions.assertEquals("test", providerAttributeType.getRetireReason());
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		request.addParameter("q", "zzzznotype");
 		
 		SimpleObject result = deserialize(handle(request));
-		Assert.assertEquals(0, Util.getResultsSize(result));
+		Assertions.assertEquals(0, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -101,14 +101,14 @@ public class ProviderAttributeTypeController1_9Test extends MainResourceControll
 		request.addParameter("q", "Joining");
 		
 		SimpleObject response = deserialize(handle(request));
-		Assert.assertEquals(1, Util.getResultsSize(response));
+		Assertions.assertEquals(1, Util.getResultsSize(response));
 		
 		List<Object> results = Util.getResultsList(response);
 		Object result = results.get(0);
 		
-		Assert.assertEquals(RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertEquals(RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
 	/**

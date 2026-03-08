@@ -9,10 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProviderAttribute;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
@@ -50,14 +50,14 @@ public class ProviderAttributeController1_9Test extends MainResourceControllerTe
 		return service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getActiveAttributes().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getProviderService();
 	}
 	
 	@Test
-	@Ignore("null id in org.openmrs.ProviderAttribute entry (don't flush the Session after an exception occurs)")
+	@Disabled("null id in org.openmrs.ProviderAttribute entry (don't flush the Session after an exception occurs)")
 	public void shouldAddAttributeToProvider() throws Exception {
 		int before = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
 		String json = "{\"attributeType\":\"" + RestTestConstants1_9.PROVIDER_ATTRIBUTE_TYPE_UUID
@@ -66,7 +66,7 @@ public class ProviderAttributeController1_9Test extends MainResourceControllerTe
 		handle(newPostRequest(getURI(), json));
 
 		int after = service.getProviderByUuid(RestTestConstants1_9.PROVIDER_UUID).getAttributes().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -74,24 +74,24 @@ public class ProviderAttributeController1_9Test extends MainResourceControllerTe
 		String json = "{ \"attributeType\":\"9516cc50-n8ik-bc4f-8dw4-001e378eb67e\" }";
 		
 		ProviderAttribute providerAttribute = service.getProviderAttributeByUuid(getUuid());
-		Assert.assertEquals("Joining Date", providerAttribute.getAttributeType().getName());
+		Assertions.assertEquals("Joining Date", providerAttribute.getAttributeType().getName());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		providerAttribute = service.getProviderAttributeByUuid(getUuid());
-		Assert.assertEquals("Leave Date", providerAttribute.getAttributeType().getName());
+		Assertions.assertEquals("Leave Date", providerAttribute.getAttributeType().getName());
 	}
 	
 	@Test
 	public void shouldVoidAttribute() throws Exception {
 		ProviderAttribute providerAttribute = service.getProviderAttributeByUuid(getUuid());
-		Assert.assertFalse(providerAttribute.isVoided());
+		Assertions.assertFalse(providerAttribute.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
 		
 		providerAttribute = service.getProviderAttributeByUuid(getUuid());
-		Assert.assertTrue(providerAttribute.isVoided());
-		Assert.assertEquals("unit test", providerAttribute.getVoidReason());
+		Assertions.assertTrue(providerAttribute.isVoided());
+		Assertions.assertEquals("unit test", providerAttribute.getVoidReason());
 	}
 	
 }

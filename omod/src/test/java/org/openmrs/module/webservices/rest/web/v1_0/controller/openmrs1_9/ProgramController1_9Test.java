@@ -14,9 +14,9 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -34,7 +34,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 	
 	private ProgramWorkflowService service;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		service = Context.getProgramWorkflowService();
 	}
@@ -74,9 +74,9 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Program program = service.getProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -86,9 +86,9 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Program program = service.getProgramByName(getName());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -97,8 +97,8 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -117,10 +117,10 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject newProgram = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT_UUID,
+		Assertions.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
+		Assertions.assertEquals(RestTestConstants1_8.CONCEPT_UUID,
 		    ((Map) PropertyUtils.getProperty(newProgram, "concept")).get("uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	@Test
@@ -133,15 +133,15 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Program editedProgram = service.getProgramByUuid(getUuid());
-		Assert.assertNotNull(editedProgram);
-		Assert.assertEquals(editedName, editedProgram.getName());
+		Assertions.assertNotNull(editedProgram);
+		Assertions.assertEquals(editedName, editedProgram.getName());
 	}
 	
 	@Test
 	public void shouldRetireAProgram() throws Exception {
 		
 		Program program = service.getProgram(2);
-		Assert.assertFalse(program.isRetired());
+		Assertions.assertFalse(program.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + program.getUuid());
 		req.addParameter("!purge", "");
@@ -149,8 +149,8 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Program retiredProgram = service.getProgram(2);
-		Assert.assertTrue(retiredProgram.isRetired());
-		Assert.assertEquals("some good reason", retiredProgram.getRetireReason());
+		Assertions.assertTrue(retiredProgram.isRetired());
+		Assertions.assertEquals("some good reason", retiredProgram.getRetireReason());
 	}
 	
 	@Test
@@ -160,14 +160,14 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		program.setRetireReason("random reason");
 		service.saveProgram(program);
 		program = service.getProgramByUuid(getUuid());
-		Assert.assertTrue(program.isRetired());
+		Assertions.assertTrue(program.isRetired());
 		
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
 		program = service.getProgramByUuid(getUuid());
-		Assert.assertFalse(program.isRetired());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
+		Assertions.assertFalse(program.isRetired());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "retired").toString());
 		
 	}
 	
@@ -179,7 +179,7 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getProgram(3));
+		Assertions.assertNull(service.getProgram(3));
 	}
 	
 	@Test
@@ -190,8 +190,8 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(service.getProgram(3).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(service.getProgram(3).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -202,9 +202,9 @@ public class ProgramController1_9Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/45ad63a8-84cb-4bcb-bb2c-ec5b233502bc");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
-		Assert.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "allWorkflows")).size());
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals("Test Program", PropertyUtils.getProperty(result, "name"));
+		Assertions.assertEquals(2, ((List<Object>) PropertyUtils.getProperty(result, "allWorkflows")).size());
 		
 	}
 	

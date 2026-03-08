@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.LocationAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -52,7 +52,7 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 		return Context.getLocationService().getAllLocationAttributeTypes().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
@@ -68,7 +68,7 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 		
 		handle(newPostRequest(getURI(), json));
 		
-		Assert.assertEquals(before + 1, Context.getLocationService().getAllLocationAttributeTypes().size());
+		Assertions.assertEquals(before + 1, Context.getLocationService().getAllLocationAttributeTypes().size());
 	}
 	
 	/**
@@ -81,7 +81,7 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
-		Assert.assertEquals("Updated description", Context.getLocationService().getLocationAttributeType(1).getDescription());
+		Assertions.assertEquals("Updated description", Context.getLocationService().getLocationAttributeType(1).getDescription());
 	}
 	
 	/**
@@ -91,15 +91,15 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 	@Test
 	public void retireLocationAttributeType_shouldRetireALocationAttributeType() throws Exception {
 		LocationAttributeType locationAttributeType = Context.getLocationService().getLocationAttributeType(1);
-		Assert.assertFalse(locationAttributeType.isRetired());
+		Assertions.assertFalse(locationAttributeType.isRetired());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		request.addParameter("reason", "test");
 		handle(request);
 		
 		locationAttributeType = Context.getLocationService().getLocationAttributeType(1);
-		Assert.assertTrue(locationAttributeType.isRetired());
-		Assert.assertEquals("test", locationAttributeType.getRetireReason());
+		Assertions.assertTrue(locationAttributeType.isRetired());
+		Assertions.assertEquals("test", locationAttributeType.getRetireReason());
 	}
 	
 	/**
@@ -110,7 +110,7 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 	public void findLocationAttributeTypes_shouldReturnNoResultsIfThereAreNoMatchingLocations() throws Exception {
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("q", "zzzznotype"))));
 		
-		Assert.assertEquals(0, Util.getResultsSize(result));
+		Assertions.assertEquals(0, Util.getResultsSize(result));
 	}
 	
 	/**
@@ -123,12 +123,12 @@ public class LocationAttributeTypeController1_9Test extends MainResourceControll
 		
 		List<Object> results = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, results.size());
+		Assertions.assertEquals(1, results.size());
 		Util.log("Found " + results.size() + " LocationAttributeType(s)", results);
 		Object result = results.get(0);
-		Assert.assertEquals(RestTestConstants1_9.LOCATION_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "links"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertEquals(RestTestConstants1_9.LOCATION_ATTRIBUTE_TYPE_UUID, PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "links"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
 }

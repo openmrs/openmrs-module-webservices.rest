@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
 import org.openmrs.OrderGroup;
@@ -35,7 +36,7 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 	
 	private OrderService orderService;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		orderService = Context.getOrderService();
 		executeDataSet(RestTestConstants1_12.ORDER_GROUP_TEST_DATA_SET);
@@ -95,13 +96,13 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = newPostRequest(getURI(), JSON);
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertEquals(RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID, Util.getByPath(result, "patient/uuid"));
-		Assert.assertEquals(RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID, Util.getByPath(result, "encounter/uuid"));
-		Assert.assertEquals(RestTestConstants1_12.ORDER_GROUP_ORDERSET_UUID, Util.getByPath(result, "orderSet/uuid"));
-		Assert.assertEquals(RestTestConstants1_12.ORDER_GROUP_DISPLAY, Util.getByPath(result, "display"));
+		Assertions.assertEquals(RestTestConstants1_12.ORDER_GROUP_PATIENT_UUID, Util.getByPath(result, "patient/uuid"));
+		Assertions.assertEquals(RestTestConstants1_12.ORDER_GROUP_ENCOUNTER_UUID, Util.getByPath(result, "encounter/uuid"));
+		Assertions.assertEquals(RestTestConstants1_12.ORDER_GROUP_ORDERSET_UUID, Util.getByPath(result, "orderSet/uuid"));
+		Assertions.assertEquals(RestTestConstants1_12.ORDER_GROUP_DISPLAY, Util.getByPath(result, "display"));
 		
 		String uuid = (String) PropertyUtils.getProperty(result, "uuid");
-		Assert.assertEquals(2, orderService.getOrderGroupByUuid(uuid).getOrders().size());
+		Assertions.assertEquals(2, orderService.getOrderGroupByUuid(uuid).getOrders().size());
 	}
 	
 	@Test
@@ -123,12 +124,12 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + RestTestConstants1_12.ORDER_GROUP_UUID);
 		SimpleObject response = deserialize(handle(req));
-		Assert.assertEquals(patient.getUuid(), Util.getByPath(response, "patient/uuid"));
-		Assert.assertEquals(encounter.getUuid(), Util.getByPath(response, "encounter/uuid"));
-		Assert.assertEquals(orderSet.getUuid(), Util.getByPath(response, "orderSet/uuid"));
-		Assert.assertEquals("1234 - John Doe - Order_Set_1", Util.getByPath(response, "display"));
+		Assertions.assertEquals(patient.getUuid(), Util.getByPath(response, "patient/uuid"));
+		Assertions.assertEquals(encounter.getUuid(), Util.getByPath(response, "encounter/uuid"));
+		Assertions.assertEquals(orderSet.getUuid(), Util.getByPath(response, "orderSet/uuid"));
+		Assertions.assertEquals("1234 - John Doe - Order_Set_1", Util.getByPath(response, "display"));
 		List<Order> orderList = (List<Order>) PropertyUtils.getProperty(response, "orders");
-		Assert.assertEquals(2, orderList.size());
+		Assertions.assertEquals(2, orderList.size());
 	}
 	
 	@Test
@@ -153,12 +154,14 @@ public class OrderGroupController1_12Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI() + "/" + RestTestConstants1_12.ORDER_GROUP_UUID, JSON_ORDER);
 		handle(req);
 		Integer ordersAfter = orderService.getOrderGroupByUuid(RestTestConstants1_12.ORDER_GROUP_UUID).getOrders().size();
-		Assert.assertEquals(++ordersBefore, ordersAfter);
+		Assertions.assertEquals(++ordersBefore, ordersAfter);
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 }

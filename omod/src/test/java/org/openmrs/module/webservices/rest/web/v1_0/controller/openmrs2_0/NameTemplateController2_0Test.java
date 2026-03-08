@@ -16,12 +16,11 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -54,11 +53,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	public String getURI() {
 		return "nametemplate";
 	}
-	
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
-	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		// save a backup of the current global property value for name layout,
 		// before setting a specific name layout value for the tests.
@@ -67,7 +62,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		service.setGlobalProperty(GLOBAL_PROPERTY_LAYOUT_NAME_FORMAT, PERSON_NAME_FORMAT_SHORT);
 	}
 	
-	@After
+	@AfterEach
 	public void after() throws Exception {
 		if (!StringUtils.isEmpty(originalNametemplate)) {
 			// restore the backed up name layout global property value.
@@ -113,8 +108,9 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 	@Test
 	public void shouldReturnNotFoundForUnknownCodename() throws Exception {
 		MockHttpServletRequest req = newGetRequest(getURI() + "/" + UNKNOWN_NAMETEMPLATE);
-		thrown.expect(ObjectNotFoundException.class);
+		assertThrows(ObjectNotFoundException.class, () -> {
 		MockHttpServletResponse result = handle(req);
+		});
 	}
 	
 	private static SimpleObject parseNameTemplateResource(String resourceName) throws IOException {

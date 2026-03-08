@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -56,9 +57,11 @@ public class EncounterController2_2Test  extends MainResourceControllerTest {
     }
 
     @Override
-    @Test(expected = ResourceDoesNotSupportOperationException.class)
+    @Test
     public void shouldGetAll() throws Exception {
-        super.shouldGetAll();
+        assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+	        super.shouldGetAll();
+        });
     }
 
     @Test
@@ -70,8 +73,8 @@ public class EncounterController2_2Test  extends MainResourceControllerTest {
         SimpleObject result = deserialize(response);
 
         Util.log("full", result);
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.get("diagnoses"));
-        Assert.assertEquals(2, ((List<?>) result.get("diagnoses")).size());
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.get("diagnoses"));
+        Assertions.assertEquals(2, ((List<?>) result.get("diagnoses")).size());
     }
 }

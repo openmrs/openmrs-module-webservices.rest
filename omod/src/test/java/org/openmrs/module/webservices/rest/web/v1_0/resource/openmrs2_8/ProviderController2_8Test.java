@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_8;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 public class ProviderController2_8Test extends MainResourceControllerTest {
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         executeDataSet("providerRoleTestDataset.xml");
     }
@@ -32,9 +32,9 @@ public class ProviderController2_8Test extends MainResourceControllerTest {
         MockHttpServletResponse response = handle(request(RequestMethod.GET, getURI() + "/" + getUuid()));
         SimpleObject result = deserialize(response);
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals("Binome", PropertyUtils.getProperty(result, "providerRole.display"));
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+        Assertions.assertEquals("Binome", PropertyUtils.getProperty(result, "providerRole.display"));
     }
 
     /**

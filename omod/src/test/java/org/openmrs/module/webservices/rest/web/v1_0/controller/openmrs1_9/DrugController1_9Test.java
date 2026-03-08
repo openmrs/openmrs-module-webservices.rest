@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -32,7 +32,7 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = Context.getConceptService();
 	}
@@ -68,9 +68,9 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Drug drug = service.getDrugByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(drug.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(drug.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(drug.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(drug.getName(), PropertyUtils.getProperty(result, "name"));
 		
 	}
 	
@@ -80,8 +80,8 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 		
 	}
 	
@@ -103,8 +103,8 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject newDrug = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newDrug, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newDrug, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 		
 	}
 	
@@ -118,8 +118,8 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Drug editedDrug = service.getDrugByUuid(getUuid());
-		Assert.assertNotNull(editedDrug);
-		Assert.assertEquals(editedName, editedDrug.getName());
+		Assertions.assertNotNull(editedDrug);
+		Assertions.assertEquals(editedName, editedDrug.getName());
 		
 	}
 	
@@ -127,7 +127,7 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 	public void shouldRetireADrug() throws Exception {
 		
 		Drug drug = service.getDrugByUuid(getUuid());
-		Assert.assertFalse(drug.isRetired());
+		Assertions.assertFalse(drug.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + drug.getUuid());
 		req.addParameter("!purge", "");
@@ -135,8 +135,8 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Drug retiredDrug = service.getDrugByUuid(getUuid());
-		Assert.assertTrue(retiredDrug.isRetired());
-		Assert.assertEquals("random reason", retiredDrug.getRetireReason());
+		Assertions.assertTrue(retiredDrug.isRetired());
+		Assertions.assertEquals("random reason", retiredDrug.getRetireReason());
 		
 	}
 	
@@ -148,7 +148,7 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getDrug(11));
+		Assertions.assertNull(service.getDrug(11));
 		
 	}
 	
@@ -159,8 +159,8 @@ public class DrugController1_9Test extends MainResourceControllerTest {
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		
 	}
 	

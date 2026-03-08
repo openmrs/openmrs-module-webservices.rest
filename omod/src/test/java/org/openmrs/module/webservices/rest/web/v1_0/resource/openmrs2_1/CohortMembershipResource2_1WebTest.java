@@ -10,15 +10,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.api.CohortService;
@@ -40,7 +40,7 @@ public class CohortMembershipResource2_1WebTest extends MainResourceControllerTe
 	@Autowired
 	private CohortService cohortService;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		startDate = DateUtils.parseDate("2017-01-01", "yyyy-MM-dd");
 		endDate = DateUtils.parseDate("2017-02-28 23:59:59", "yyyy-MM-dd HH:mm:ss");

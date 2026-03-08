@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Diagnosis;
 import org.openmrs.api.DiagnosisService;
 import org.openmrs.api.EncounterService;
@@ -20,7 +20,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests functionality of {@link DiagnosisResource2_5}.
@@ -33,7 +33,7 @@ public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<Diagnos
 
     private PatientService patientService;
 
-    @Before
+    @BeforeEach
     public void before() {
         this.diagnosisService =  Context.getDiagnosisService();
         this.encounterService = Context.getEncounterService();
@@ -104,8 +104,8 @@ public class DiagnosisResource2_5Test extends BaseDelegatingResourceTest<Diagnos
         String formFieldNameSpace = savedDiagnosis.getFormFieldNamespace();
         String formFieldPath = savedDiagnosis.getFormFieldPath();
 
-        Assert.assertEquals("namespace", formFieldNameSpace);
-        Assert.assertEquals("formFieldPath", formFieldPath);
-        Assert.assertNotNull(savedDiagnosis.getFormNamespaceAndPath());
+        Assertions.assertEquals("namespace", formFieldNameSpace);
+        Assertions.assertEquals("formFieldPath", formFieldPath);
+        Assertions.assertNotNull(savedDiagnosis.getFormNamespaceAndPath());
     }
 }

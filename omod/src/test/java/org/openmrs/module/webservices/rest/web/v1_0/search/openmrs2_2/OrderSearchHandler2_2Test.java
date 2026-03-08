@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_2;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -42,7 +43,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(11, orders.size());
+		Assertions.assertEquals(11, orders.size());
 	}
 	
 	/**
@@ -57,7 +58,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(12, orders.size());
+		Assertions.assertEquals(12, orders.size());
 	}
 	
 	/**
@@ -72,7 +73,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(10, orders.size());
+		Assertions.assertEquals(10, orders.size());
 	}
 	
 	/**
@@ -88,7 +89,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(13, orders.size());
+		Assertions.assertEquals(13, orders.size());
 	}
 	
 	/**
@@ -104,7 +105,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(6, orders.size());
+		Assertions.assertEquals(6, orders.size());
 	}
 	
 	/**
@@ -119,7 +120,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(11, orders.size());
+		Assertions.assertEquals(11, orders.size());
 	}
 	
 	/**
@@ -134,7 +135,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(3, orders.size());
+		Assertions.assertEquals(3, orders.size());
 	}
 	
 	/**
@@ -149,7 +150,7 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(14, orders.size());
+		Assertions.assertEquals(14, orders.size());
 	}
 	
 	/**
@@ -170,58 +171,66 @@ public class OrderSearchHandler2_2Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(1, orders.size());
+		Assertions.assertEquals(1, orders.size());
 	}
 	
 	/**
 	 * @verifies throws exception for invalid patient uuid
 	 * @see OrderSearchHandler2_2#search(RequestContext)
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void getSearchConfig_shouldThrowExceptionForNonExistentPatient() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "default");
-		req.addParameter("patient", "FAKE_PATIENT_123_UUID");
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "default");
+			req.addParameter("patient", "FAKE_PATIENT_123_UUID");
 		
-		handle(req);
+			handle(req);
+		});
 	}
 	
 	/**
 	 * @verifies throws exception for invalid care setting
 	 * @see OrderSearchHandler2_2#search(RequestContext)
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void getSearchConfig_shouldThrowExceptionForNonExistentCareSetting() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "default");
-		req.addParameter("careSetting", "FAKE_CARE_SETTING_123_UUID");
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "default");
+			req.addParameter("careSetting", "FAKE_CARE_SETTING_123_UUID");
 		
-		handle(req);
+			handle(req);
+		});
 	}
 	
 	/**
 	 * @verifies throws exception if all order types are invalid
 	 * @see OrderSearchHandler2_2#search(RequestContext)
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void getSearchConfig_shouldThrowExceptionForNonExistentOrderTypes() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "default");
-		req.addParameter("orderTypes", "FAKE_ORDER_TYPE_123_UUID");
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "default");
+			req.addParameter("orderTypes", "FAKE_ORDER_TYPE_123_UUID");
 		
-		handle(req);
+			handle(req);
+		});
 	}
 	
 	/**
 	 * @verifies throws exception if all concepts are invalid
 	 * @see OrderSearchHandler2_2#search(RequestContext)
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void getSearchConfig_shouldThrowExceptionForNonExistentConcepts() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "default");
-		req.addParameter("concepts", "FAKE_CONCEPT_123_UUID,FAKE_CONCEPT_124_UUID");
+		assertThrows(ObjectNotFoundException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "default");
+			req.addParameter("concepts", "FAKE_CONCEPT_123_UUID,FAKE_CONCEPT_124_UUID");
 		
-		handle(req);
+			handle(req);
+		});
 	}
 }

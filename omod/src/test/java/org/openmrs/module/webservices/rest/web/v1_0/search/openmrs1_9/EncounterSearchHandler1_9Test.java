@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Encounter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -50,7 +51,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(2, encounters.size());
+		Assertions.assertEquals(2, encounters.size());
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(1, encounters.size());
+		Assertions.assertEquals(1, encounters.size());
 	}
 	
 	/**
@@ -89,7 +90,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(1, encounters.size());
+		Assertions.assertEquals(1, encounters.size());
 	}
 	
 	/**
@@ -108,7 +109,7 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(1, encounters.size());
+		Assertions.assertEquals(1, encounters.size());
 	}
 	
 	/**
@@ -129,41 +130,45 @@ public class EncounterSearchHandler1_9Test extends RestControllerTestUtils {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Encounter> encounters = result.get("results");
-		Assert.assertEquals(0, encounters.size());
+		Assertions.assertEquals(0, encounters.size());
 	}
 	
 	/**
 	 * @verifies does not return encounters without matching coded observations
 	 * @see EncounterSearchHandler1_9#search(RequestContext)
 	 */
-	@Test(expected = ObjectNotFoundException.class)
+	@Test
 	public void shouldThrowExceptionForInvalidConcept() throws Exception {
-		executeDataSet("encounterWithCodedObs1_9.xml");
+		assertThrows(ObjectNotFoundException.class, () -> {
+			executeDataSet("encounterWithCodedObs1_9.xml");
 		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "byObs");
-		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
-		// food assistance question
-		req.addParameter("obsConcept", "FAKE_CONCEPT_123_UUID");
-		// "no" answer
-		req.addParameter("obsValues", ANSWER_NO);
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "byObs");
+			req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
+			// food assistance question
+			req.addParameter("obsConcept", "FAKE_CONCEPT_123_UUID");
+			// "no" answer
+			req.addParameter("obsValues", ANSWER_NO);
 		
-		handle(req);
+			handle(req);
+		});
 	}
 	
 	/**
 	 * @verifies does not return encounters without matching coded observations
 	 * @see EncounterSearchHandler1_9#search(RequestContext)
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldThrowExceptionForInvalidNumericConcept() throws Exception {
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		req.addParameter("s", "byObs");
-		req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
-		// CD4 count concept
-		req.addParameter("obsConcept", RestTestConstants1_8.CONCEPT_NUMERIC_UUID);
-		req.addParameter("obsValues", "abc,175");
+		assertThrows(IllegalArgumentException.class, () -> {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("s", "byObs");
+			req.addParameter("patient", RestTestConstants1_9.PATIENT_WITH_OBS_UUID);
+			// CD4 count concept
+			req.addParameter("obsConcept", RestTestConstants1_8.CONCEPT_NUMERIC_UUID);
+			req.addParameter("obsValues", "abc,175");
 		
-		handle(req);
+			handle(req);
+		});
 	}
 }

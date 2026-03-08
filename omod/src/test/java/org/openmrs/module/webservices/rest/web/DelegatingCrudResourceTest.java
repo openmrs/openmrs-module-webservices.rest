@@ -18,9 +18,9 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.User;
@@ -36,7 +36,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Encounte
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.UserResource1_8;
 import org.openmrs.util.Reflect;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AssignableTypeFilter;
@@ -53,7 +53,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 	 */
 	@SuppressWarnings("rawtypes")
 	@Test
-	@Ignore
+	@Disabled
 	public void testAllReprsentationDescriptions() throws Exception {
 		ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
 		//only match subclasses of BaseDelegatingResource
@@ -63,7 +63,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		Set<BeanDefinition> components = provider
 		        .findCandidateComponents("org.openmrs.module.webservices.rest.web.resource");
 		if (CollectionUtils.isEmpty(components))
-			Assert.fail("Faile to load any resource classes");
+			Assertions.fail("Faile to load any resource classes");
 		
 		for (BeanDefinition component : components) {
 			Class resourceClass = Class.forName(component.getBeanClassName());
@@ -110,7 +110,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 								if (!hasFieldOrPropertySetter)
 									hasFieldOrPropertySetter = isallowedMissingProperty(resourceClass, key);
 								
-								Assert.assertTrue("No property found for '" + key + "' for " + openmrsClass
+								Assertions.assertTrue("No property found for '" + key + "' for " + openmrsClass
 								        + " nor setter method on resource " + resourceClass, hasFieldOrPropertySetter);
 							}
 						}
@@ -173,7 +173,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		so.add("description", "Location description");
 		DelegatingCrudResource<Location> resource = new LocationResource1_8();
 		Location location = resource.convert(so);
-		Assert.assertEquals(uuid, location.getUuid());
+		Assertions.assertEquals(uuid, location.getUuid());
 	}
 
 	@Test

@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.openmrs.Field;
 import org.openmrs.api.context.Context;
@@ -54,7 +54,7 @@ public class FieldController1_9Test extends MainResourceControllerTest {
 		return 1;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getFormService();
 	}

@@ -9,14 +9,14 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptProposal;
@@ -29,7 +29,7 @@ public class ConceptProposalController2_0Test extends MainResourceControllerTest
 
 	private static ConceptProposal proposal;
 
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		proposal = new ConceptProposal();
 		proposal.setOriginalText("original text");

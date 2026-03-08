@@ -17,9 +17,9 @@ import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -51,7 +51,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	
 	MockModuleFactoryWrapper mockModuleFactory = new MockModuleFactoryWrapper();
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mockModuleFactory.loadedModules.add(atlasModule);
 		mockModuleFactory.loadedModules.add(conceptLabModule);
@@ -66,8 +66,8 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(result);
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), results.size());
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), results.size());
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result.get("description"));
+		Assertions.assertNotNull(result.get("description"));
 	}
 	
 	@Test
@@ -90,7 +90,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		req.addParameter("v", "full");
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "author"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "author"));
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "version"));
 	}
 	
 	@Test
@@ -106,26 +106,26 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "full");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "packageName"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "author"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "packageName"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "author"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "version"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "started"));
 	}
 	
 	@Test
 	public void shouldIncludeAllPropertiesForDefaultRepresentation() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "version"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "version"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "started"));
 	}
 	
 	@Test
@@ -133,8 +133,8 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "ref");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "display"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
 	@Test

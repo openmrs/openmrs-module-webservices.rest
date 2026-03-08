@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_1;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -29,7 +29,7 @@ public class ConceptSourceController2_1Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getConceptService();
 	}
@@ -74,8 +74,8 @@ public class ConceptSourceController2_1Test extends MainResourceControllerTest {
 		
 		SimpleObject newConceptSource = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newConceptSource, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newConceptSource, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 }

@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 import java.util.Map;
@@ -18,10 +18,11 @@ import java.util.Map;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -46,7 +47,7 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	
 	private static final String MALARIA_PROGRAM_CONCEPT_UUID = "f923524a-b90c-4870-a948-4125638606fd";
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		service = Context.getConceptService();
 		if (!isIndexUpToDate) {
@@ -94,9 +95,9 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals("MALARIA PROGRAM", Util.getByPath(hits.get(0), "display"));
-		Assert.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(0), "concept/uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals("MALARIA PROGRAM", Util.getByPath(hits.get(0), "display"));
+		Assertions.assertEquals("f923524a-b90c-4870-a948-4125638606fd", Util.getByPath(hits.get(0), "concept/uuid"));
 		
 		//Try multiple concept classes
 		req.addParameter("conceptClasses", "ecdee8a7-d741-4fe7-8e01-f79cacbe97bc");
@@ -130,25 +131,27 @@ public class ConceptSearchController1_9Test extends MainResourceControllerTest {
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetDefaultByUuid() throws Exception {
 		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetFullByUuid() throws Exception {
 		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetRefByUuid() throws Exception {
 		//The super test class does some unnecessary crazy stuff not supported by the resource
 	}
