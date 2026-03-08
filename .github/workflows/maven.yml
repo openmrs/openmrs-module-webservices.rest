@@ -17,6 +17,7 @@ jobs:
     with:
       java_versions: '[21, 25]'
       main_java_version: '21'
+      maven_args: 'clean install -Dmaven.javadoc.skip=true'
     secrets:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
