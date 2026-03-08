@@ -12,9 +12,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Cohort;
 import org.openmrs.api.CohortService;
 import org.openmrs.api.context.Context;
@@ -36,7 +37,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 	
 	private CohortService service;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getCohortService();
 		executeDataSet(DATASET_FILENAME);
@@ -84,7 +85,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		
 		// Check existence in database
 		String uuid = (String) newCohort.get("uuid");
-		Assert.assertNotNull(service.getCohortByUuid(uuid));
+		Assertions.assertNotNull(service.getCohortByUuid(uuid));
 	}
 	
 	@Test
@@ -93,9 +94,9 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("Cohort fetched (default)", result);
-		Assert.assertEquals(getUuid(), result.get("uuid"));
+		Assertions.assertEquals(getUuid(), result.get("uuid"));
 	}
 	
 	@Test
@@ -107,7 +108,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		
 		String xml = result.getContentAsString();
 		
-		Assert.assertEquals(getUuid(), evaluateXPath(xml, "//uuid"));
+		Assertions.assertEquals(getUuid(), evaluateXPath(xml, "//uuid"));
 	}
 	
 	@Test
@@ -117,9 +118,9 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + cohortName);
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("Cohort fetched (default)", result);
-		Assert.assertEquals(cohortName, result.get("name"));
+		Assertions.assertEquals(cohortName, result.get("name"));
 	}
 	
 	@Test
@@ -130,22 +131,22 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> results = (List<Object>) result.get("results");
-		Assert.assertEquals(2, results.size());
+		Assertions.assertEquals(2, results.size());
 		Util.log("Found " + results.size() + " cohort(s)", results);
 	}
 	
 	@Test
 	public void voidCohort_shouldVoidACohort() throws Exception {
 		Cohort cohort = service.getCohort(1);
-		Assert.assertFalse(cohort.isVoided());
+		Assertions.assertFalse(cohort.isVoided());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("reason", "unit test");
 		handle(req);
 		
 		cohort = service.getCohort(1);
-		Assert.assertTrue(cohort.isVoided());
-		Assert.assertEquals("unit test", cohort.getVoidReason());
+		Assertions.assertTrue(cohort.isVoided());
+		Assertions.assertEquals("unit test", cohort.getVoidReason());
 	}
 	
 	@Test
@@ -161,21 +162,23 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Cohort editedCohort = service.getCohortByUuid(getUuid());
-		Assert.assertEquals("Updated cohort name", editedCohort.getName());
+		Assertions.assertEquals("Updated cohort name", editedCohort.getName());
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void updateCohort_shouldFailToOverwriteMemberIdsOnACohort() throws Exception {
-		Assert.assertEquals(3, service.getCohortByUuid(getUuid()).getMemberIds().size());
+		assertThrows(ConversionException.class, () -> {
+			Assertions.assertEquals(3, service.getCohortByUuid(getUuid()).getMemberIds().size());
 		
-		SimpleObject attributes = new SimpleObject();
-		attributes.add("memberIds", new Integer[] { 2, 6 });
-		String json = new ObjectMapper().writeValueAsString(attributes);
+			SimpleObject attributes = new SimpleObject();
+			attributes.add("memberIds", new Integer[] { 2, 6 });
+			String json = new ObjectMapper().writeValueAsString(attributes);
 		
-		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
-		req.setContent(json.getBytes());
-		handle(req);
+			MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
+			req.setContent(json.getBytes());
+			handle(req);
 		
+		});
 	}
 	
 	@Test
@@ -185,7 +188,7 @@ public class CohortController1_8Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getCohortByUuid(getUuid()));
+		Assertions.assertNull(service.getCohortByUuid(getUuid()));
 	}
 	
 }

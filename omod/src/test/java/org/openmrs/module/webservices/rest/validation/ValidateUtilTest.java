@@ -9,11 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.validation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.module.webservices.validation.ValidateUtil;
 import org.openmrs.test.Verifies;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 	

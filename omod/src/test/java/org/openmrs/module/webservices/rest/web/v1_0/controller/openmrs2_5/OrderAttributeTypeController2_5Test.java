@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_5;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.OrderAttributeType;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
@@ -51,7 +51,7 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         return service.getAllOrderAttributeTypes().size();
     }
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         executeDataSet(RestTestConstants2_5.ORDER_ATTRIBUTE_DATA_SET);
         this.service = Context.getOrderService();
@@ -69,18 +69,18 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         req.setContent(json.getBytes());
 
         Object newOrderAttributeType = deserialize(handle(req));
-        Assert.assertNotNull(PropertyUtils.getProperty(newOrderAttributeType, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllOrderAttributeTypes().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newOrderAttributeType, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllOrderAttributeTypes().size());
     }
 
     @Test
     public void shouldPurgeOrderAttributeType() throws Exception {
         final String UUID = "cfc96e8e-1234-4c44-aaaa-abcdef123456";
-        Assert.assertNotNull(service.getOrderAttributeTypeByUuid(UUID));
+        Assertions.assertNotNull(service.getOrderAttributeTypeByUuid(UUID));
         MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
         req.addParameter("purge", "true");
         handle(req);
-        Assert.assertNull(service.getOrderAttributeTypeByUuid(UUID));
+        Assertions.assertNull(service.getOrderAttributeTypeByUuid(UUID));
     }
 
     @Test
@@ -88,25 +88,25 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         MockHttpServletRequest req = request(RequestMethod.GET, getURI());
         SimpleObject result = deserialize(handle(req));
 
-        Assert.assertNotNull(result);
-        Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
     }
 
     @Test
     public void shouldUpdateOrderAttributeType() throws Exception {
         final String ORDER_ATTRIBUTE_TYPE_UUID = "cfc96e8e-1234-4c44-aaaa-abcdef123456";
         OrderAttributeType existingOrderAttributeType = service.getOrderAttributeTypeByUuid(ORDER_ATTRIBUTE_TYPE_UUID);
-        Assert.assertNotNull(existingOrderAttributeType);
+        Assertions.assertNotNull(existingOrderAttributeType);
 
         String json = "{\"name\": \"Updated Order Attribute\"," + " \"description\": \"Updated description for order attribute\"," + " \"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
 
         handle(newPostRequest(getURI() + "/" + existingOrderAttributeType.getUuid(), json));
         OrderAttributeType updatedOrderAttributeType = service.getOrderAttributeTypeByUuid(ORDER_ATTRIBUTE_TYPE_UUID);
 
-        Assert.assertNotNull(updatedOrderAttributeType);
-        Assert.assertEquals("Updated Order Attribute", updatedOrderAttributeType.getName());
-        Assert.assertEquals("Updated description for order attribute", updatedOrderAttributeType.getDescription());
-        Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedOrderAttributeType.getDatatypeClassname());
+        Assertions.assertNotNull(updatedOrderAttributeType);
+        Assertions.assertEquals("Updated Order Attribute", updatedOrderAttributeType.getName());
+        Assertions.assertEquals("Updated description for order attribute", updatedOrderAttributeType.getDescription());
+        Assertions.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedOrderAttributeType.getDatatypeClassname());
     }
 
     @Test
@@ -115,18 +115,18 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         SimpleObject result = deserialize(handle(req));
 
         OrderAttributeType orderAttributeType = service.getOrderAttributeTypeByUuid(getUuid());
-        Assert.assertEquals(orderAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-        Assert.assertEquals(orderAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
+        Assertions.assertEquals(orderAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+        Assertions.assertEquals(orderAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
     }
 
     @Test
     public void shouldRetireOrderAttributeType() throws Exception {
         final String UUID = "cfc96e8e-1234-4c44-aaaa-abcdef123456";
         OrderAttributeType orderAttributeType = service.getOrderAttributeTypeByUuid(UUID);
-        Assert.assertNotNull(orderAttributeType);
-        Assert.assertFalse(orderAttributeType.getRetired());
-        Assert.assertNull(orderAttributeType.getDateRetired());
-        Assert.assertNull(orderAttributeType.getRetiredBy());
+        Assertions.assertNotNull(orderAttributeType);
+        Assertions.assertFalse(orderAttributeType.getRetired());
+        Assertions.assertNull(orderAttributeType.getDateRetired());
+        Assertions.assertNull(orderAttributeType.getRetiredBy());
 
         MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
         req.addParameter("!purge", "");
@@ -134,9 +134,9 @@ public class OrderAttributeTypeController2_5Test extends MainResourceControllerT
         handle(req);
 
         orderAttributeType = service.getOrderAttributeTypeByUuid(UUID);
-        Assert.assertTrue(orderAttributeType.getRetired());
-        Assert.assertNotNull(orderAttributeType.getDateRetired());
-        Assert.assertNotNull(orderAttributeType.getRetiredBy());
-        Assert.assertEquals("let it retire for a while", orderAttributeType.getRetireReason());
+        Assertions.assertTrue(orderAttributeType.getRetired());
+        Assertions.assertNotNull(orderAttributeType.getDateRetired());
+        Assertions.assertNotNull(orderAttributeType.getRetiredBy());
+        Assertions.assertEquals("let it retire for a while", orderAttributeType.getRetireReason());
     }
 }

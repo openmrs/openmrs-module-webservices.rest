@@ -27,14 +27,14 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasKey;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.ParameterizedType;
 import java.text.SimpleDateFormat;
@@ -109,12 +109,12 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		boolean self = false;
 		for (Hyperlink link : links) {
 			if (link.getRel().equals("self")) {
-				Assert.assertNotNull(link.getUri());
+				Assertions.assertNotNull(link.getUri());
 				self = true;
 				break;
 			}
 		}
-		Assert.assertTrue(self);
+		Assertions.assertTrue(self);
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		if (object == null) {
 			object = newObject();
 		}
-		Assert.assertNotNull("newObject must not return null", object);
+		Assertions.assertNotNull(object, "newObject must not return null");
 		return object;
 	}
 	
@@ -174,7 +174,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * @return the representation
 	 */
 	public SimpleObject getRepresentation() {
-		Assert.assertNotNull("representation must not be null", representation);
+		Assertions.assertNotNull(representation, "representation must not be null");
 		return representation;
 	}
 	
@@ -187,7 +187,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		if (resource == null) {
 			resource = newResource();
 		}
-		Assert.assertNotNull("newResource must not return null", resource);
+		Assertions.assertNotNull(resource, "newResource must not return null");
 		return resource;
 	}
 	
@@ -234,7 +234,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * Equivalent to:
 	 * <p>
 	 * <code>
-	 * Assert.assertEquals(property, value, getRepresentation().get(property));
+	 * Assertions.assertEquals(property, value, getRepresentation().get(property));
 	 * </code>
 	 * <p>
 	 * Performs data conversion like formatting a date for your convenience.
@@ -248,14 +248,14 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 		} else if (value instanceof Locale) {
 			value = value.toString();
 		}
-		Assert.assertEquals(property, value, getRepresentation().get(property));
+		Assertions.assertEquals(value, getRepresentation().get(property), property);
 	}
 	
 	/**
 	 * Equivalent to:
 	 * <p>
 	 * <code>
-	 * Assert.assertTrue(getRepresentation().containsKey(property));
+	 * Assertions.assertTrue(getRepresentation().containsKey(property));
 	 * </code>
 	 * 
 	 * @param property
@@ -268,7 +268,7 @@ public abstract class BaseDelegatingResourceTest<R extends BaseDelegatingResourc
 	 * Equivalent to:
 	 * <p>
 	 * <code>
-	 * Assert.assertFalse(getRepresentation().containsKey(property));
+	 * Assertions.assertFalse(getRepresentation().containsKey(property));
 	 * </code>
 	 */
 	public void assertPropNotPresent(String property) {

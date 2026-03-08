@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,9 +19,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
@@ -49,7 +50,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		CODED, COMPLEX, DATETIME, DRUG, NUMERIC, TEXT
 	}
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		GlobalProperty trueConceptGlobalProperty = new GlobalProperty(OpenmrsConstants.GLOBAL_PROPERTY_TRUE_CONCEPT, "7",
 		        "Concept id of the concept defining the TRUE boolean concept");
@@ -124,42 +125,42 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		Concept concept = Context.getConceptService().getConceptByUuid("a09ab2c5-878e-4905-b25d-5784167d0216");
 		clearAndSetValue(obs, ObsType.CODED, concept);
 		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertTrue(rep.keySet().contains("value"));
+		Assertions.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
-		Assert.assertEquals("coded", concept.getUuid(), rep.get("uuid"));
+		Assertions.assertEquals(concept.getUuid(), rep.get("uuid"), "coded");
 		
 		// drug
 		Drug drug = Context.getConceptService().getDrugByUuid("3cfcf118-931c-46f7-8ff6-7b876f0d4202");
 		clearAndSetValue(obs, ObsType.DRUG, drug);
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertTrue(rep.keySet().contains("value"));
+		Assertions.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
-		Assert.assertEquals("drug", drug.getUuid(), rep.get("uuid"));
+		Assertions.assertEquals(drug.getUuid(), rep.get("uuid"), "drug");
 		
 		// string-based (complex, text)
 		String test = "whoa";
 		clearAndSetValue(obs, ObsType.COMPLEX, test);
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertEquals("complex", test, rep.get("value"));
+		Assertions.assertEquals(test, rep.get("value"), "complex");
 		
 		clearAndSetValue(obs, ObsType.TEXT, test);
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertEquals("text", test, rep.get("value"));
+		Assertions.assertEquals(test, rep.get("value"), "text");
 		
 		// numeric
 		Double number = Double.MAX_VALUE;
 		clearAndSetValue(obs, ObsType.NUMERIC, number);
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertEquals("numeric", number, rep.get("value"));
+		Assertions.assertEquals(number, rep.get("value"), "numeric");
 		
 		// location
 		Location location = Context.getLocationService().getLocation(2);
 		clearAndSetValue(obs, ObsType.TEXT, location.getId().toString());
 		obs.setComment("org.openmrs.Location");
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertTrue(rep.keySet().contains("value"));
+		Assertions.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
-		Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));
+		Assertions.assertEquals(location.getUuid(), rep.get("uuid"), "location");
 		;
 		
 		// location referenced by uuid
@@ -167,15 +168,15 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		clearAndSetValue(obs, ObsType.TEXT, location.getUuid());
 		obs.setComment("org.openmrs.Location");
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertTrue(rep.keySet().contains("value"));
+		Assertions.assertTrue(rep.keySet().contains("value"));
 		rep = (SimpleObject) rep.get("value");
-		Assert.assertEquals("location", location.getUuid(), rep.get("uuid"));
+		Assertions.assertEquals(location.getUuid(), rep.get("uuid"), "location");
 		
 		// location that doesn't exist shouldn't cause error, just return null
 		clearAndSetValue(obs, ObsType.TEXT, "20000");
 		obs.setComment("org.openmrs.Location");
 		rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertNull(rep.get("value"));
+		Assertions.assertNull(rep.get("value"));
 		rep = (SimpleObject) rep.get("value");
 	}
 
@@ -189,7 +190,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		Date datetime = new Date();
 		obs.setValueDate(datetime);
 		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertEquals(new DateTime(datetime).withTimeAtStartOfDay().toDate(), ConversionUtil.convert(rep.get("value"), Date.class));
+		Assertions.assertEquals(new DateTime(datetime).withTimeAtStartOfDay().toDate(), ConversionUtil.convert(rep.get("value"), Date.class));
 	}
 
 	@Test
@@ -201,7 +202,7 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		Date datetime = new Date();
 		obs.setValueDate(datetime);
 		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
-		Assert.assertEquals(datetime, ConversionUtil.convert(rep.get("value"), Date.class));
+		Assertions.assertEquals(datetime, ConversionUtil.convert(rep.get("value"), Date.class));
 	}
 
 	@Test
@@ -302,11 +303,13 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		assertEquals(falseConcept, new ObsResource2_1().getValue(obs));
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void setValue_shouldThrowExceptionOnUnexpectedValue() throws Exception {
-		Obs obs = new Obs();
-		obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
-		ObsResource2_1.setValue(obs, "unexpected");
+		assertThrows(ConversionException.class, () -> {
+			Obs obs = new Obs();
+			obs.setConcept(Context.getConceptService().getConceptByUuid(BOOLEAN_CONCEPT_UUID));
+			ObsResource2_1.setValue(obs, "unexpected");
+		});
 	}
 	
 	@Test

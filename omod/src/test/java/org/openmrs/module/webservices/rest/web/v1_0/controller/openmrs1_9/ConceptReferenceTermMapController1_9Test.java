@@ -13,13 +13,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptReferenceTermMap;
 import org.openmrs.api.context.Context;
@@ -52,7 +53,7 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 		return 0; //not supported
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		service = Context.getService(RestHelperService.class);
 	}
@@ -61,9 +62,11 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Test
@@ -91,9 +94,11 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 		assertThat(termMap.getTermB().getUuid(), is(RestTestConstants1_9.CONCEPT_REFERENCE_TERM2_UUID));
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotDeleteConceptReferenceTermMap() throws Exception {
-		handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		});
 	}
 	
 	@Test
@@ -102,9 +107,11 @@ public class ConceptReferenceTermMapController1_9Test extends MainResourceContro
 		assertNull(service.getObjectByUuid(ConceptReferenceTermMap.class, getUuid()));
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotSearch() throws Exception {
-		handle(newGetRequest(getURI(), new Parameter("q", "search query")));
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			handle(newGetRequest(getURI(), new Parameter("q", "search query")));
+		});
 	}
 	
 	@Test

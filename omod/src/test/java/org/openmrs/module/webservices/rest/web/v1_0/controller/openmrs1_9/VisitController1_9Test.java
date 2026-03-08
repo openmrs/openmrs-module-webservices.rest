@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -38,9 +38,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VisitController1_9Test extends MainResourceControllerTest {
 
@@ -72,7 +72,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         return service.getAllVisits().size();
     }
 
-    @Before
+    @BeforeEach
     public void before() {
         this.service = Context.getVisitService();
     }
@@ -86,8 +86,8 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 
         Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
 
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllVisits().size());
     }
 
     @Test
@@ -107,8 +107,8 @@ public class VisitController1_9Test extends MainResourceControllerTest {
 
         Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
 
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllVisits().size());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         int originalCount = service.getAllVisits().size();
         final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-        Assert.assertEquals(1, service.getVisitsByPatient(patient).size());
+        Assertions.assertEquals(1, service.getVisitsByPatient(patient).size());
         String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
                 + RestTestConstants1_9.VISIT_TYPE_UUID
                 + "\", \"location\":\""
@@ -125,9 +125,9 @@ public class VisitController1_9Test extends MainResourceControllerTest {
                 + DATE_FORMAT.format(new Date())
                 + "\", \"encounters\": [\"6519d653-393b-4118-9c83-a3715b82d4ac\", \"eec646cb-c847-45a7-98bc-91c8c4f70add\"] }";
         Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
-        Assert.assertEquals(2, service.getVisitsByPatient(patient).get(0).getEncounters().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllVisits().size());
+        Assertions.assertEquals(2, service.getVisitsByPatient(patient).get(0).getEncounters().size());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         int originalCount = service.getAllVisits().size();
         final String patientUuid = "5946f880-b197-400b-9caa-a3c661d23041";
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-        Assert.assertEquals(1, service.getVisitsByPatient(patient).size());
+        Assertions.assertEquals(1, service.getVisitsByPatient(patient).size());
         String json = "{ \"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"visitType\":\""
                 + RestTestConstants1_9.VISIT_TYPE_UUID
                 + "\", \"location\":\""
@@ -144,11 +144,11 @@ public class VisitController1_9Test extends MainResourceControllerTest {
                 + DATE_FORMAT.format(new Date())
                 + "\", \"encounters\": [{\"patient\":\"5946f880-b197-400b-9caa-a3c661d23041\", \"obs\": [{\"concept\":\"89ca642a-dab6-4f20-b712-e12ca4fc6d36\", \"value\":\"b055abd8-a420-4a11-8b98-02ee170a7b54\"}]}] }}] }";
         Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
-        Assert.assertEquals(1, service.getVisitsByPatient(patient).get(0).getEncounters().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllVisits().size());
+        Assertions.assertEquals(1, service.getVisitsByPatient(patient).get(0).getEncounters().size());
         Iterator<Encounter> encouters = service.getVisitsByPatient(patient).get(0).getEncounters().iterator();
-        Assert.assertEquals(1, encouters.next().getObs().size());
+        Assertions.assertEquals(1, encouters.next().getObs().size());
     }
 
     @Test
@@ -160,8 +160,8 @@ public class VisitController1_9Test extends MainResourceControllerTest {
                 + "\"attributes\":[{\"attributeType\":\"" + RestTestConstants1_9.VISIT_ATTRIBUTE_TYPE_UUID
                 + "\",\"value\":\"2012-12-01\"}]}";
         Object newVisit = deserialize(handle(newPostRequest(getURI(), json)));
-        Assert.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
-        Assert.assertEquals(originalCount + 1, service.getAllVisits().size());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newVisit, "uuid"));
+        Assertions.assertEquals(originalCount + 1, service.getAllVisits().size());
     }
 
     @Test
@@ -172,13 +172,13 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         final Date newStartDatetime = new Date();
         final Date newStopDatetime = new Date();
         Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertNotNull(visit);
+        Assertions.assertNotNull(visit);
         //sanity checks
-        Assert.assertFalse(newVisitTypeUuid.equalsIgnoreCase(visit.getVisitType().getUuid()));
-        Assert.assertFalse(newLocationUuid.equalsIgnoreCase(visit.getLocation().getUuid()));
-        Assert.assertFalse(newIndicationConceptUuid.equalsIgnoreCase(visit.getIndication().getUuid()));
-        Assert.assertFalse(newStartDatetime.equals(visit.getStartDatetime()));
-        Assert.assertFalse(newStopDatetime.equals(visit.getStopDatetime()));
+        Assertions.assertFalse(newVisitTypeUuid.equalsIgnoreCase(visit.getVisitType().getUuid()));
+        Assertions.assertFalse(newLocationUuid.equalsIgnoreCase(visit.getLocation().getUuid()));
+        Assertions.assertFalse(newIndicationConceptUuid.equalsIgnoreCase(visit.getIndication().getUuid()));
+        Assertions.assertFalse(newStartDatetime.equals(visit.getStartDatetime()));
+        Assertions.assertFalse(newStopDatetime.equals(visit.getStopDatetime()));
 
         String json = "{ \"visitType\":\"" + newVisitTypeUuid + "\", \"location\":\"" + newLocationUuid
                 + "\", \"indication\":\"" + newIndicationConceptUuid + "\", \"startDatetime\":\""
@@ -188,13 +188,13 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
         Visit updated = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertNotNull(updated);
-        Assert.assertEquals(newVisitTypeUuid, updated.getVisitType().getUuid());
-        Assert.assertEquals(newLocationUuid, updated.getLocation().getUuid());
-        Assert.assertEquals(newIndicationConceptUuid, updated.getIndication().getUuid());
-        Assert.assertEquals(newStartDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
+        Assertions.assertNotNull(updated);
+        Assertions.assertEquals(newVisitTypeUuid, updated.getVisitType().getUuid());
+        Assertions.assertEquals(newLocationUuid, updated.getLocation().getUuid());
+        Assertions.assertEquals(newIndicationConceptUuid, updated.getIndication().getUuid());
+        Assertions.assertEquals(newStartDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
                 updated.getStartDatetime().toInstant());
-        Assert.assertEquals(newStopDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
+        Assertions.assertEquals(newStopDatetime.toInstant().truncatedTo(ChronoUnit.SECONDS),
                 updated.getStopDatetime().toInstant());
     }
 
@@ -232,32 +232,32 @@ public class VisitController1_9Test extends MainResourceControllerTest {
     @Test
     public void shouldAddEncountersToAnExistingVisitOnEdit() throws Exception {
         Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertEquals(0, visit.getEncounters().size());
+        Assertions.assertEquals(0, visit.getEncounters().size());
 
         String json = "{\"encounters\": [\"6519d653-393b-4118-9c83-a3715b82d4ac\", \"eec646cb-c847-45a7-98bc-91c8c4f70add\"] }";
 
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
         Visit updated = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertEquals(2, updated.getEncounters().size());
+        Assertions.assertEquals(2, updated.getEncounters().size());
     }
 
     @Test
     public void shouldNotReturnVoidedEncounters() throws Exception {
         final String voidedEncounterId = "6519d653-393b-4118-9c83-a3715b82d4ac";
         Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertEquals(0, visit.getEncounters().size());
+        Assertions.assertEquals(0, visit.getEncounters().size());
 
         String json = "{\"encounters\": [\"" + voidedEncounterId + "\", \"eec646cb-c847-45a7-98bc-91c8c4f70add\"] }";
         // add 2 encounters to the visit
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
         Visit updated = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertEquals(2, updated.getEncounters().size());
+        Assertions.assertEquals(2, updated.getEncounters().size());
 
         SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", "full"))));
         List<Map> encounters = result.get("encounters");
-        Assert.assertEquals(2, encounters.size());
+        Assertions.assertEquals(2, encounters.size());
         // void one of the encounters
         Encounter encounter = Context.getEncounterService().getEncounterByUuid(voidedEncounterId);
         encounter = Context.getEncounterService().voidEncounter(encounter, "test visit");
@@ -265,7 +265,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         result = deserialize(handle(newGetRequest(getURI() + "/" + getUuid(), new Parameter("v", "full"))));
         encounters = result.get("encounters");
         // visit contains now just the one non-voided encounter
-        Assert.assertEquals(1, encounters.size());
+        Assertions.assertEquals(1, encounters.size());
     }
 
     @Test
@@ -275,26 +275,26 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         //add an encounter to be removed for testing purposes
         visit.getEncounters().add(Context.getEncounterService().getEncounterByUuid(encounterId));
         service.saveVisit(visit);
-        Assert.assertEquals(1, visit.getEncounters().size());
+        Assertions.assertEquals(1, visit.getEncounters().size());
 
         String json = "{\"encounters\": [] }";
 
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
         Visit updated = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertEquals(0, updated.getEncounters().size());
+        Assertions.assertEquals(0, updated.getEncounters().size());
     }
 
     @Test
     public void shouldVoidAVisit() throws Exception {
         Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertFalse(visit.isVoided());
+        Assertions.assertFalse(visit.isVoided());
 
         handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "test reason")));
 
         visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertTrue(visit.isVoided());
-        Assert.assertEquals("test reason", visit.getVoidReason());
+        Assertions.assertTrue(visit.isVoided());
+        Assertions.assertEquals("test reason", visit.getVoidReason());
     }
 
     @Test
@@ -302,26 +302,26 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         Visit visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
         service.voidVisit(visit, "some random reason");
         visit = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
-        Assert.assertTrue(visit.isVoided());
+        Assertions.assertTrue(visit.isVoided());
 
         String json = "{\"deleted\": \"false\"}";
         SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 
         visit = service.getVisitByUuid(getUuid());
-        Assert.assertFalse(visit.isVoided());
-        Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+        Assertions.assertFalse(visit.isVoided());
+        Assertions.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 
     }
 
     @Test
     public void shouldPurgeAVisit() throws Exception {
-        Assert.assertNotNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
+        Assertions.assertNotNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
         int originalCount = service.getAllVisits().size();
 
         handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "true")));
 
-        Assert.assertNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
-        Assert.assertEquals(originalCount - 1, service.getAllVisits().size());
+        Assertions.assertNull(service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID));
+        Assertions.assertEquals(originalCount - 1, service.getAllVisits().size());
     }
 
     /**
@@ -332,7 +332,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
                 "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"))));
 
-        Assert.assertEquals(3, Util.getResultsSize(result));
+        Assertions.assertEquals(3, Util.getResultsSize(result));
     }
 
     @Test
@@ -340,7 +340,7 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("location",
                 "8d6c993e-c2cc-11de-8d13-0010c6dffd0f"))));
 
-        Assert.assertEquals(1, Util.getResultsSize(result));
+        Assertions.assertEquals(1, Util.getResultsSize(result));
     }
 
     @Test
@@ -355,16 +355,16 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         int visitIncludingVoidedSize = Util.getResultsSize(resultWithVoidedVisits);
         int visitExcludingVoidedSize = Util.getResultsSize(resultWithoutVoidedVisits);
 
-        Assert.assertEquals(4, visitIncludingVoidedSize);
-        Assert.assertEquals(3, visitExcludingVoidedSize);
+        Assertions.assertEquals(4, visitIncludingVoidedSize);
+        Assertions.assertEquals(3, visitExcludingVoidedSize);
 
         handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "void test reason")));
 
         resultWithVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid),
                 new Parameter("includeAll", "true"))));
         resultWithoutVoidedVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient", patientUUid))));
-        Assert.assertEquals(2, Util.getResultsSize(resultWithoutVoidedVisits));
-        Assert.assertEquals(4, Util.getResultsSize(resultWithVoidedVisits));
+        Assertions.assertEquals(2, Util.getResultsSize(resultWithoutVoidedVisits));
+        Assertions.assertEquals(4, Util.getResultsSize(resultWithVoidedVisits));
     }
 
     @Test
@@ -378,9 +378,9 @@ public class VisitController1_9Test extends MainResourceControllerTest {
         SimpleObject filteredVisits = deserialize(handle(newGetRequest(getURI(), new Parameter("patient",
                 patientUUid), new Parameter("visitType", visitTypeUuid))));
 
-        Assert.assertEquals(3, Util.getResultsSize(allVisits));
+        Assertions.assertEquals(3, Util.getResultsSize(allVisits));
         int filteredVisitsSize = Util.getResultsSize(filteredVisits);
-        Assert.assertEquals(1, filteredVisitsSize);
+        Assertions.assertEquals(1, filteredVisitsSize);
 
     }
 

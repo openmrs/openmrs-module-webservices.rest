@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
@@ -142,7 +142,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 			SimpleObject rep = getResource().asRepresentation(object, new NamedRepresentation("fullchildreninternal"));
 		}
 		catch (ConversionException e) {
-			Assert.assertFalse(e.getCause().getCause().getMessage().contains("Cycles in children are not supported."));
+			Assertions.assertFalse(e.getCause().getCause().getMessage().contains("Cycles in children are not supported."));
 		}
 	}
 
@@ -158,7 +158,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		ConceptResource1_9 resource = new ConceptResource1_9();
 		String result = resource.getDisplayString(concept);
 
-		Assert.assertEquals("some name", result);
+		Assertions.assertEquals("some name", result);
 	}
 
 	@Test
@@ -166,7 +166,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		Concept concept = new Concept(1);
 		ConceptResource1_9 resource = new ConceptResource1_9();
 		String result = resource.getDisplayString(concept);
-		Assert.assertEquals("Concept #1", result);  // this will need to updated to "Concept #1" when we start building against more recent versions of OpenMRS Core
+		Assertions.assertEquals("Concept #1", result);  // this will need to updated to "Concept #1" when we start building against more recent versions of OpenMRS Core
 	}
 
 	@Test
@@ -194,6 +194,6 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		
 		ServiceContext.getInstance().setMessageSourceService(originalMessageSourceService);
 
-		Assert.assertEquals("Overridden by message source", result);
+		Assertions.assertEquals("Overridden by message source", result);
 	}
 }

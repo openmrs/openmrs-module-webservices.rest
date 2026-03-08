@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_7;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -45,9 +45,9 @@ public class ConceptReferenceRangeController2_7Test extends MainResourceControll
 		request.setParameter("v", "full");
 		SimpleObject response = deserialize(handle(request));
 		List<Object> resultsList = Util.getResultsList(response);
-		Assert.assertEquals(1, resultsList.size());
-		Assert.assertEquals(140.0, PropertyUtils.getProperty(resultsList.get(0), "hiAbsolute"));
-		Assert.assertEquals(70.0, PropertyUtils.getProperty(resultsList.get(0), "lowAbsolute"));
+		Assertions.assertEquals(1, resultsList.size());
+		Assertions.assertEquals(140.0, PropertyUtils.getProperty(resultsList.get(0), "hiAbsolute"));
+		Assertions.assertEquals(70.0, PropertyUtils.getProperty(resultsList.get(0), "lowAbsolute"));
 	}
 
 	@Override

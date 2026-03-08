@@ -9,15 +9,15 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
@@ -56,7 +56,7 @@ public class SystemSettingController1_9Test extends MainResourceControllerTest {
 		return 12;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getAdministrationService();
 	}

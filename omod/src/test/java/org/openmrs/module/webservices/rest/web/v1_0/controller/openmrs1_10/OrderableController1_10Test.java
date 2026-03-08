@@ -19,10 +19,11 @@ import java.util.Map;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -39,7 +40,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 	
 	private boolean isIndexUpToDate = false;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		service = Context.getConceptService();
 		if (!isIndexUpToDate) {
@@ -81,7 +82,7 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 		
 		List<Object> results = (List<Object>) result.get("results");
 		
-		Assert.assertTrue(results instanceof List);
+		Assertions.assertTrue(results instanceof List);
 		assertThat(results, containsInAnyOrder(isConceptWithUuid(RestTestConstants1_10.COUGH_SYRUP_UUID)));
 	}
 	
@@ -151,23 +152,25 @@ public class OrderableController1_10Test extends MainResourceControllerTest {
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetDefaultByUuid() throws Exception {
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetFullByUuid() throws Exception {
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetRefByUuid() throws Exception {
 	}
 	

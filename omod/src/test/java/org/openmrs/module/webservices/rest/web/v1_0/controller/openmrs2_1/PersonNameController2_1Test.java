@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_1;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -31,7 +31,7 @@ public class PersonNameController2_1Test extends MainResourceControllerTest {
 	
 	private PersonService service;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getPersonService();
 	}
@@ -74,7 +74,7 @@ public class PersonNameController2_1Test extends MainResourceControllerTest {
 		
 		SimpleObject newPersonName = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newPersonName, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newPersonName, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 }

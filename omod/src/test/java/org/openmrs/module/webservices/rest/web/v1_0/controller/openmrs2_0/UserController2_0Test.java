@@ -15,9 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openmrs.User;
 import org.openmrs.api.UserService;
@@ -37,7 +37,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	
 	private UserService service;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		service = Context.getUserService();
 	}
@@ -65,8 +65,8 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		SimpleObject newUser = deserialize(handle(req));
 		
 		Util.log("Created User", newUser);
-		Assert.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	/**
@@ -93,12 +93,12 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		SimpleObject newUser = deserialize(handle(req));
 		
 		Util.log("Created another user with a role this time.", newUser);
-		Assert.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newUser, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 		
 		User createdUser = service.getUserByUuid(getUuid());
-		Assert.assertNotNull(createdUser);
-		Assert.assertTrue(createdUser.hasRole("Provider"));
+		Assertions.assertNotNull(createdUser);
+		Assertions.assertTrue(createdUser.hasRole("Provider"));
 	}
 	
 	/**
@@ -114,14 +114,14 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		Util.log("User retrieved (default)", result);
 		
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "username"));
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "username"));
 		
-		Assert.assertEquals(userName, PropertyUtils.getProperty(result, "username"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertEquals(userName, PropertyUtils.getProperty(result, "username"));
+		Assertions.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	/**
@@ -138,10 +138,10 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		Util.log("User retrieved (full)", result);
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 		
-		Assert.assertNull(PropertyUtils.getProperty(result, "secretQuestion"));
+		Assertions.assertNull(PropertyUtils.getProperty(result, "secretQuestion"));
 	}
 	
 	/**
@@ -153,8 +153,8 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	public void updateUser_shouldChangeAPropertyOnAUser() throws Exception {
 		
 		User user = service.getUserByUuid(getUuid());
-		Assert.assertNotNull(user);
-		Assert.assertFalse("5-6".equals(user.getSystemId()));
+		Assertions.assertNotNull(user);
+		Assertions.assertFalse("5-6".equals(user.getSystemId()));
 		Util.log("Old User SystemId: ", user.getSystemId());
 		
 		String json = "{\"systemId\":\"5-6\",\"password\":\"Admin@123\"}";
@@ -163,8 +163,8 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		handle(req);
 		
 		User editedUser = service.getUserByUuid(getUuid());
-		Assert.assertNotNull(editedUser);
-		Assert.assertEquals("5-6", editedUser.getSystemId());
+		Assertions.assertNotNull(editedUser);
+		Assertions.assertEquals("5-6", editedUser.getSystemId());
 		Util.log("Edited User SystemId: ", editedUser.getSystemId());
 	}
 
@@ -213,7 +213,7 @@ public class UserController2_0Test extends MainResourceControllerTest {
 	public void retireUser_shouldRetireAUser() throws Exception {
 		
 		User user = service.getUserByUuid(getUuid());
-		Assert.assertFalse(user.isRetired());
+		Assertions.assertFalse(user.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + user.getUuid());
 		req.addParameter("!purge", "");
@@ -221,8 +221,8 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		handle(req);
 		
 		User retiredUser = service.getUserByUuid(getUuid());
-		Assert.assertTrue(retiredUser.isRetired());
-		Assert.assertEquals("unit test", retiredUser.getRetireReason());
+		Assertions.assertTrue(retiredUser.isRetired());
+		Assertions.assertEquals("unit test", retiredUser.getRetireReason());
 	}
 	
 	/**
@@ -237,10 +237,10 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		req.addParameter("q", "foo-bar-baz");
 		
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		
 		List<User> hits = (List<User>) result.get("results");
-		Assert.assertEquals(0, hits.size());
+		Assertions.assertEquals(0, hits.size());
 	}
 	
 	/**
@@ -255,13 +255,13 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		req.addParameter("q", "but");
 		
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
+		Assertions.assertEquals(1, hits.size());
 		
 		Util.log("Found " + hits.size() + " user(s)", result);
-		Assert.assertEquals(service.getUserByUuid(getUuid()).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(service.getUserByUuid(getUuid()).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -269,11 +269,11 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("username", "butch"))));
 		List<Object> results = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, results.size());
+		Assertions.assertEquals(1, results.size());
 		Object next = results.iterator().next();
 		
 		Util.log("Found " + results.size() + " user(s) by username", response);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(next, "uuid"));
 	}
 	
 	@Test
@@ -283,10 +283,10 @@ public class UserController2_0Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Util.log("Users fetched: ", result);
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 		
 		Util.log("Total users fetched: ", getAllCount());
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 	
 	/**

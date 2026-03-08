@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -19,9 +19,9 @@ import java.lang.reflect.Field;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
@@ -29,7 +29,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.GenericRestException;
 import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException;
 import org.openmrs.api.ValidationException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -48,7 +48,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 	
 	Log spyOnLog;
 
-	@Before
+	@BeforeEach
 	public void before() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		controller = new BaseRestController();
 		request = new MockHttpServletRequest();
@@ -97,7 +97,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 		
 		SimpleObject errors = (SimpleObject) responseSimpleObject.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
+		Assertions.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject responseSimpleObject = controller.conversionExceptionHandler(ex, request, response);
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 		LinkedHashMap errors = (LinkedHashMap) responseSimpleObject.get("error");
-		Assert.assertEquals("[" + message + "]", errors.get("message"));
+		Assertions.assertEquals("[" + message + "]", errors.get("message"));
 	}
 	
 	@Test

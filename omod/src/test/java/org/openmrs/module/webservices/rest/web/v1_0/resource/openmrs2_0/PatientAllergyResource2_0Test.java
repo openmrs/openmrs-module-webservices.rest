@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Allergy;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
 
 public class PatientAllergyResource2_0Test extends BaseDelegatingResourceTest<PatientAllergyResource2_0, Allergy> {
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet(RestTestConstants2_0.ALLERGY_TEST_DATA_XML);
 	}

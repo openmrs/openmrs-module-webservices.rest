@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProgramWorkflow;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.api.context.Context;
@@ -17,8 +17,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ProgramWorkflowStateController2_0Test extends MainResourceControllerTest {
 

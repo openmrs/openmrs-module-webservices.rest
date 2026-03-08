@@ -14,9 +14,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.not;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.LocationAttribute;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -58,7 +58,7 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		return service.getLocationByUuid(RestTestConstants1_9.LOCATION_UUID).getActiveAttributes().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getLocationService();
@@ -70,7 +70,7 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		String json = "{\"attributeType\":\"9516cc50-6f9f-132r-5433-001e378eb67f\", \"value\":\"2012-05-05\"}";
 		handle(newPostRequest(getURI(), json));
 		int after = service.getLocationByUuid(RestTestConstants1_9.LOCATION_UUID).getAttributes().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -78,26 +78,26 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		String json = "{ \"attributeType\":\"9516cc50-6f9f-132r-5433-001e378eb67f\" }";
 		
 		LocationAttribute locationAttribute = service.getLocationAttributeByUuid(getUuid());
-		Assert.assertEquals("Audit Date", locationAttribute.getAttributeType().getName());
+		Assertions.assertEquals("Audit Date", locationAttribute.getAttributeType().getName());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		locationAttribute = service.getLocationAttributeByUuid(getUuid());
-		Assert.assertEquals("Care Date", locationAttribute.getAttributeType().getName());
+		Assertions.assertEquals("Care Date", locationAttribute.getAttributeType().getName());
 	}
 	
 	@Test
 	public void shouldVoidAttribute() throws Exception {
 		LocationAttribute locationAttribute = service.getLocationAttributeByUuid(getUuid());
-		Assert.assertFalse(locationAttribute.isVoided());
+		Assertions.assertFalse(locationAttribute.isVoided());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		request.addParameter("reason", "unit test");
 		handle(request);
 		
 		locationAttribute = service.getLocationAttributeByUuid(getUuid());
-		Assert.assertTrue(locationAttribute.isVoided());
-		Assert.assertEquals("unit test", locationAttribute.getVoidReason());
+		Assertions.assertTrue(locationAttribute.isVoided());
+		Assertions.assertEquals("unit test", locationAttribute.getVoidReason());
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		assertThat(Util.getResultsList(response2), is(not(empty())));
 		for (Object result : Util.getResultsList(response2)) {
 			Object resultAttributeTypeUuid = Util.getByPath(Util.getByPath(result, "attributeType"), "uuid");
-			Assert.assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
+			assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
 		}
 	}
 }

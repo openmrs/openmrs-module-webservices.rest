@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -19,9 +19,9 @@ import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
 import org.openmrs.notification.AlertService;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests CRUD operations for {@link AlertRecipient}s via web service calls
@@ -34,7 +34,7 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 
 	private static final String EMPTY_ALERT_UUID = "4876faba-7b14-41e6-b2ad-3050a1030cae";
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		this.service = Context.getAlertService();
 

@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -48,7 +48,7 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 		return service.getDrugByUuid(drugUuid).getIngredients().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getConceptService();
 	}
@@ -61,7 +61,7 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 		handle(newPostRequest(getURI(), json));
 		
 		int after = service.getDrugByUuid(drugUuid).getIngredients().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -70,10 +70,10 @@ public class DrugIngredientController1_11Test extends MainResourceControllerTest
 		
 		List<Object> resultsList = Util.getResultsList(response);
 		
-		Assert.assertEquals(1, resultsList.size());
+		Assertions.assertEquals(1, resultsList.size());
 		List<Object> ingredients = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "ingredient"));
 		
-		Assert.assertEquals("ASPIRIN", ((Map) ingredients.get(0)).get("display"));
-		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", ((Map) ingredients.get(0)).get("uuid"));
+		Assertions.assertEquals("ASPIRIN", ((Map) ingredients.get(0)).get("display"));
+		Assertions.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", ((Map) ingredients.get(0)).get("uuid"));
 	}
 }

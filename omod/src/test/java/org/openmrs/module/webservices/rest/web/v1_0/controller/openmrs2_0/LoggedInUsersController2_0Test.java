@@ -10,7 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.openmrs.web.WebConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggedInUsersController2_0Test extends RestControllerTestUtils {
 

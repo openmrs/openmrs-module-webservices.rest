@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
@@ -18,7 +18,7 @@ public class ProgramEnrollmentResource2_2Test extends BaseDelegatingResourceTest
 	
 	protected static final String PROGRAM_ATTRIBUTES_XML = "ProgramAttributesDataset.xml";
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet("programEnrollmentDataSet.xml");
 	}

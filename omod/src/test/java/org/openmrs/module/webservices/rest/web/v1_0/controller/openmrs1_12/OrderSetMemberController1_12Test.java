@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.api.OrderSetService;
@@ -34,7 +34,7 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 	
 	private OrderSetService orderSetService;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		orderSetService = Context.getOrderSetService();
 		executeDataSet(RestTestConstants1_12.TEST_DATA_SET);
@@ -73,7 +73,7 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		handle(newPostRequest(getURI(), json));
 		
 		int after = orderSetService.getOrderSetByUuid(orderSetUuid).getOrderSetMembers().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -91,34 +91,34 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		        .getOrderSetMembers();
 		
 		for (OrderSetMember orderSetMember : orderSetMembers) {
-			Assert.assertNotNull(orderSetMember.getOrderSetMemberId());
+			Assertions.assertNotNull(orderSetMember.getOrderSetMemberId());
 		}
 		
-		Assert.assertEquals(3, testOrderSet.getOrderSetMembers().size());
+		Assertions.assertEquals(3, testOrderSet.getOrderSetMembers().size());
 		
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		
 		List<Object> resultsList = Util.getResultsList(response);
-		Assert.assertEquals(3, resultsList.size());
+		Assertions.assertEquals(3, resultsList.size());
 		
 		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "uuid"),
 		    PropertyUtils.getProperty(resultsList.get(1), "uuid"));
 		
-		Assert.assertTrue(descriptions.contains("order_set_member_uuid1"));
-		Assert.assertTrue(descriptions.contains("order_set_member_uuid2"));
+		Assertions.assertTrue(descriptions.contains("order_set_member_uuid1"));
+		Assertions.assertTrue(descriptions.contains("order_set_member_uuid2"));
 	}
 	
 	@Test
 	public void shouldEditAnOrderSetMember() throws Exception {
 		OrderSetMember orderSetMember = Context.getService(RestHelperService.class).getObjectByUuid(OrderSetMember.class,
 		    orderSetMemberUuid);
-		Assert.assertEquals(null, orderSetMember.getOrderTemplate());
+		Assertions.assertEquals(null, orderSetMember.getOrderTemplate());
 		
 		String json = "{\n" + "\"orderTemplate\": \"NEW TEST TEMPLATE\"\n" + "    }";
 		
 		deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 		
-		Assert.assertTrue(PropertyUtils.getProperty(orderSetMember, "orderTemplate").equals("NEW TEST TEMPLATE"));
+		Assertions.assertTrue(PropertyUtils.getProperty(orderSetMember, "orderTemplate").equals("NEW TEST TEMPLATE"));
 	}
 	
 	@Test
@@ -129,7 +129,7 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		        "testing delete")));
 		
 		int after = orderSetService.getOrderSetByUuid(orderSetUuid).getUnRetiredOrderSetMembers().size();
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertEquals(before - 1, after);
 	}
 	
 	@Test
@@ -139,7 +139,7 @@ public class OrderSetMemberController1_12Test extends MainResourceControllerTest
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		
 		int after = orderSetService.getOrderSetByUuid(orderSetUuid).getOrderSetMembers().size();
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertEquals(before - 1, after);
 	}
 	
 }

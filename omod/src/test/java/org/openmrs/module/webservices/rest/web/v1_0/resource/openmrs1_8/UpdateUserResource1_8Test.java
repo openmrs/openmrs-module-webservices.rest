@@ -10,15 +10,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class UpdateUserResource1_8Test extends BaseModuleWebContextSensitiveTest
 	
 	private UserResource1_8 resource;
 	
-	@Before
+	@BeforeEach
 	public void beforeEachTests() throws Exception {
 		resource = (UserResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 		    UserAndPassword1_8.class);
@@ -46,9 +46,9 @@ public class UpdateUserResource1_8Test extends BaseModuleWebContextSensitiveTest
 		    new RequestContext());
 		
 		Map<String, String> userProperties = (Map<String, String>) updated.get("userProperties");
-		Assert.assertEquals(2, userProperties.size());
-		Assert.assertNotNull(userProperties.get("favouriteObsTemplates"));
-		Assert.assertEquals("Gynaecology", userProperties.get("favouriteObsTemplates"));
+		Assertions.assertEquals(2, userProperties.size());
+		Assertions.assertNotNull(userProperties.get("favouriteObsTemplates"));
+		Assertions.assertEquals("Gynaecology", userProperties.get("favouriteObsTemplates"));
 		
 		userSimpleObject.putAll(new ObjectMapper().readValue(
 		    getClass().getClassLoader().getResourceAsStream("update_user.json"), HashMap.class));

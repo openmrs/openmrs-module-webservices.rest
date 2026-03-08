@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.filter;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,7 +35,7 @@ public class ContentTypeFilterTest {
 	
 	private MockHttpServletResponse resp;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		testFilter = new ContentTypeFilter();
 		mockChain = new MockFilterChain();
@@ -55,7 +55,7 @@ public class ContentTypeFilterTest {
 			req.setRequestURI("/ws/rest/v1/obs");
 			testFilter.doFilter(req, resp, mockChain);
 			
-			Assert.assertEquals(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, resp.getStatus());
+			Assertions.assertEquals(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, resp.getStatus());
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class ContentTypeFilterTest {
 		req.setRequestURI("/ws/rest/v1/obs");
 		testFilter.doFilter(req, resp, mockChain);
 		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		Assertions.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
 	
 	@Test
@@ -76,7 +76,7 @@ public class ContentTypeFilterTest {
 		req.setRequestURI("/ws/rest/v1/obs");
 		testFilter.doFilter(req, resp, mockChain);
 		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		Assertions.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class ContentTypeFilterTest {
 		req.setRequestURI("/ws/rest/v1/obs");
 		testFilter.doFilter(req, resp, mockChain);
 		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		Assertions.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
 	
 	@Test
@@ -94,11 +94,11 @@ public class ContentTypeFilterTest {
 		req.setMethod("POST");
 		req.setRequestURI("/ws/rest/v1/obs");
 		
-		Assert.assertEquals(null, req.getContentType());
+		Assertions.assertEquals(null, req.getContentType());
 		
 		testFilter.doFilter(req, resp, mockChain);
 		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		Assertions.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
 	
 	@Test
@@ -108,6 +108,6 @@ public class ContentTypeFilterTest {
 		req.setRequestURI("/ws/rest/v1/patient?sometestparam=bla");
 		testFilter.doFilter(req, resp, mockChain);
 		
-		Assert.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+		Assertions.assertNotEquals(resp.getStatus(), HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 	}
 }

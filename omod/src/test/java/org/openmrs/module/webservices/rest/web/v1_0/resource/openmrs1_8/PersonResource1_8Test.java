@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.context.Context;
@@ -24,7 +24,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonResource1_8, Person> {
 	
@@ -84,11 +84,11 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 		
 		List<PersonAttribute> attributes1 = PersonResource1_8.getAttributes(resource
 		        .getByUniqueId("df8ae447-6745-45be-b859-403241d9913c"));
-		Assert.assertEquals(2, attributes1.size());
+		Assertions.assertEquals(2, attributes1.size());
 		
 		List<PersonAttribute> attributes2 = PersonResource1_8.getAttributes(resource
 		        .getByUniqueId("341b4e41-790c-484f-b6ed-71dc8da222de"));
-		Assert.assertEquals(3, attributes2.size());
+		Assertions.assertEquals(3, attributes2.size());
 	}
 	
 	/**
@@ -104,10 +104,10 @@ public class PersonResource1_8Test extends BaseDelegatingResourceTest<PersonReso
 		SimpleObject simple = getResource().search(context);
 		List<SimpleObject> results = (List<SimpleObject>) simple.get("results");
 		
-		assertFalse("A non-empty list is expected.", results.isEmpty());
+		assertFalse(results.isEmpty(), "A non-empty list is expected.");
 		for (SimpleObject result : results) {
 			String selfLink = findSelfLink(result);
-			assertFalse("Resource should be person, but is " + selfLink, selfLink.contains("/patient/"));
+			assertFalse(selfLink.contains("/patient/"), "Resource should be person, but is " + selfLink);
 		}
 	}
 	

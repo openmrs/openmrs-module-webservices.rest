@@ -10,11 +10,11 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9.SessionController1_9;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 /**
  * Tests functionality of {@link SessionController1_9} in OpenMRS 2.0
@@ -32,13 +32,13 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
         // authenticate new user without privileges
         Context.logout();
         Context.authenticate("test_user", "test");
-        Assert.assertTrue(Context.isAuthenticated());
+        Assertions.assertTrue(Context.isAuthenticated());
 
         SessionController1_9 controller = Context.getRegisteredComponents(SessionController1_9.class).get(0);
 
         Object ret = controller.get();
         Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
-        Assert.assertNotNull(currentProvider);
-        Assert.assertTrue(currentProvider.toString().contains("Test Provider"));
+        Assertions.assertNotNull(currentProvider);
+        Assertions.assertTrue(currentProvider.toString().contains("Test Provider"));
     }
 }

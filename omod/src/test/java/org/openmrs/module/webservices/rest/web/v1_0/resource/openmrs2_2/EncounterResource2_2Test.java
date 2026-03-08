@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -18,11 +18,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EncounterResource2_2Test extends BaseDelegatingResourceTest<EncounterResource2_2, Encounter> {
 
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.DIAGNOSIS_TEST_DATA_XML);
 	}

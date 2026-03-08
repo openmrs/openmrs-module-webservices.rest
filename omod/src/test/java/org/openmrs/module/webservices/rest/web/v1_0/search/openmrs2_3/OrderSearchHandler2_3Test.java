@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_3;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -39,7 +39,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(4, orders.size());
+		Assertions.assertEquals(4, orders.size());
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(4, orders.size());
+		Assertions.assertEquals(4, orders.size());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(7, orders.size());
+		Assertions.assertEquals(7, orders.size());
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(1, orders.size());
+		Assertions.assertEquals(1, orders.size());
 	}
 
 	/**
@@ -101,13 +101,13 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
-		Assert.assertEquals(12, orders.size());
+		Assertions.assertEquals(12, orders.size());
 		for (Object order : orders) {
 			Object fulfillerStatus = PropertyUtils.getProperty(order, "fulfillerStatus");
 			if (fulfillerStatus != null) {
-				Assert.assertEquals("RECEIVED", fulfillerStatus);
+				Assertions.assertEquals("RECEIVED", fulfillerStatus);
 			} else {
-				Assert.assertNull(fulfillerStatus);
+				Assertions.assertNull(fulfillerStatus);
 			}
 		}
 	}
@@ -125,9 +125,9 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
-		Assert.assertEquals(3, orders.size());
+		Assertions.assertEquals(3, orders.size());
 		for (Object order : orders) {
-			Assert.assertNotNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
+			Assertions.assertNotNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
 		}
 	}
 
@@ -144,9 +144,9 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
-		Assert.assertEquals(10, orders.size());
+		Assertions.assertEquals(10, orders.size());
 		for (Object order : orders) {
-			Assert.assertNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
+			Assertions.assertNull(PropertyUtils.getProperty(order, "fulfillerStatus"));
 		}
 	}
 
@@ -162,7 +162,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(6, orders.size());
+		Assertions.assertEquals(6, orders.size());
 	}
 
 	/**
@@ -177,7 +177,7 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Order> orders = result.get("results");
-		Assert.assertEquals(2, orders.size());
+		Assertions.assertEquals(2, orders.size());
 	}
 
 	/**
@@ -193,9 +193,9 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Object> orders = (List<Object>) result.get("results");
-		Assert.assertEquals(11, orders.size());
+		Assertions.assertEquals(11, orders.size());
 		for (Object order : orders) {
-			Assert.assertNotEquals(PropertyUtils.getProperty(order, "action"), "DISCONTINUE");
+			Assertions.assertNotEquals(PropertyUtils.getProperty(order, "action"), "DISCONTINUE");
 		}
 	}
 
@@ -206,8 +206,8 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Order> orders = result.get("results");
-        Assert.assertEquals(1, orders.size());
-        Assert.assertEquals(PropertyUtils.getProperty(orders.get(0), "uuid"), "2c96f25c-4949-4f72-9931-d808fbc226df");
+        Assertions.assertEquals(1, orders.size());
+        Assertions.assertEquals(PropertyUtils.getProperty(orders.get(0), "uuid"), "2c96f25c-4949-4f72-9931-d808fbc226df");
     }
 
     @Test
@@ -217,8 +217,8 @@ public class OrderSearchHandler2_3Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Order> orders = result.get("results");
-        Assert.assertEquals(1, orders.size());
-        Assert.assertEquals(PropertyUtils.getProperty(orders.get(0), "uuid"), "e1f95924-697a-11e3-bd76-0800271c1b75");
+        Assertions.assertEquals(1, orders.size());
+        Assertions.assertEquals(PropertyUtils.getProperty(orders.get(0), "uuid"), "e1f95924-697a-11e3-bd76-0800271c1b75");
     }
 
 }

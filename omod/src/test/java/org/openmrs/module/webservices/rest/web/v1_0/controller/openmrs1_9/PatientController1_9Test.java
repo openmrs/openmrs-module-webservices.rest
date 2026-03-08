@@ -9,15 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.PatientService;
@@ -54,15 +55,17 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		return 0;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getPatientService();
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Test
@@ -201,7 +204,7 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		req.setParameter("q", "Test");
 		SimpleObject results = deserialize(handle(req));
 		int fullCount = Util.getResultsSize(results);
-		assertTrue("This test assumes > 2 matching patients", fullCount > 2);
+		assertTrue(fullCount > 2, "This test assumes > 2 matching patients");
 		
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		results = deserialize(handle(req));
@@ -289,16 +292,18 @@ public class PatientController1_9Test extends MainResourceControllerTest {
 		assertEquals(preferredIdentifier, prefIdentifier.getIdentifier());
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldFailIfThereAreMultiplePreferredIdentifiers() throws Exception {
-		String uuid = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
-		String json = "{ \"person\": \""
-		        + uuid
-		        + "\", \"identifiers\": ["
-		        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true}, "
-		        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true} ] }";
+		assertThrows(ConversionException.class, () -> {
+			String uuid = "ba1b19c2-3ed6-4f63-b8c0-f762dc8d7562";
+			String json = "{ \"person\": \""
+			        + uuid
+			        + "\", \"identifiers\": ["
+			        + "{ \"identifier\":\"1234\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true}, "
+			        + "{\"identifier\":\"12345678\", \"identifierType\":\"2f470aa8-1d73-43b7-81b5-01f0c0dfa53c\", \"location\":\"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"preferred\": true} ] }";
 		
-		deserialize(handle(newPostRequest(getURI(), json)));
+			deserialize(handle(newPostRequest(getURI(), json)));
+		});
 	}
 	
 	/**

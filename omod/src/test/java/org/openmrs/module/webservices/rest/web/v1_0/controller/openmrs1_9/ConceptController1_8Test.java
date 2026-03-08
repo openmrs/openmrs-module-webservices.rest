@@ -13,10 +13,11 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptMap;
@@ -52,7 +53,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Tests functionality of {@link ConceptController}.
@@ -61,7 +62,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getConceptService();
 	}
@@ -71,9 +72,9 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/15f83cd6-64e9-4e06-a5f9-364d3b14a43d");
 		SimpleObject result = deserialize(handle(req));
 		Util.log("Concept fetched", result);
-		Assert.assertNotNull(result);
-		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals("ASPIRIN", PropertyUtils.getProperty(PropertyUtils.getProperty(result, "name"), "name"));
 	}
 	
 	@Test
@@ -85,8 +86,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		String xml = result.getContentAsString();
 		printXML(xml);
 		
-		Assert.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", evaluateXPath(xml, "//uuid"));
-		Assert.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
+		Assertions.assertEquals("15f83cd6-64e9-4e06-a5f9-364d3b14a43d", evaluateXPath(xml, "//uuid"));
+		Assertions.assertEquals("ASPIRIN", evaluateXPath(xml, "//name/name"));
 	}
 	
 	@Test
@@ -106,9 +107,9 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		int totalCount = service.getAllConcepts(null, true, true).size();
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
-		Assert.assertTrue(totalCount > result.size());
-		Assert.assertEquals(getAllCount(), Util.getResultsList(result).size());
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(totalCount > result.size());
+		Assertions.assertEquals(getAllCount(), Util.getResultsList(result).size());
 	}
 	
 	@Test
@@ -116,7 +117,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
-		Assert.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
+		Assertions.assertNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
 	@Test
@@ -125,7 +126,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		req.setParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_DEFAULT);
 		SimpleObject result = deserialize(handle(req));
 		Object aResult = Util.getResultsList(result).get(0);
-		Assert.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(aResult, "datatype"));
 	}
 	
 	@Test
@@ -139,8 +140,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		
 		Object newConcept = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(newConcept, "uuid"));
-		Assert.assertEquals(originalCount + 1, service.getAllConcepts().size());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newConcept, "uuid"));
+		Assertions.assertEquals(originalCount + 1, service.getAllConcepts().size());
 	}
 	
 	@Test
@@ -151,8 +152,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
-		Assert.assertNotNull(updated);
-		Assert.assertEquals(changedName, updated.getFullySpecifiedName(Context.getLocale()).getName());
+		Assertions.assertNotNull(updated);
+		Assertions.assertEquals(changedName, updated.getFullySpecifiedName(Context.getLocale()).getName());
 	}
 	
 	@Test
@@ -163,15 +164,15 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Concept updated = service.getConceptByUuid("f923524a-b90c-4870-a948-4125638606fd");
-		Assert.assertNotNull(updated);
-		Assert.assertEquals(changedVersion, updated.getVersion());
+		Assertions.assertNotNull(updated);
+		Assertions.assertEquals(changedVersion, updated.getVersion());
 	}
 	
 	@Test
 	public void shouldRetireAConcept() throws Exception {
 		String uuid = "0a9afe04-088b-44ca-9291-0a8c3b5c96fa";
 		Concept concept = service.getConceptByUuid(uuid);
-		Assert.assertFalse(concept.isRetired());
+		Assertions.assertFalse(concept.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + uuid);
 		req.addParameter("!purge", "");
@@ -179,8 +180,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		concept = service.getConceptByUuid(uuid);
-		Assert.assertTrue(concept.isRetired());
-		Assert.assertEquals("really ridiculous random reason", concept.getRetireReason());
+		Assertions.assertTrue(concept.isRetired());
+		Assertions.assertEquals("really ridiculous random reason", concept.getRetireReason());
 	}
 	
 	@Test
@@ -192,8 +193,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getConceptByUuid(uuid));
-		Assert.assertEquals(originalCount - 1, service.getAllConcepts().size());
+		Assertions.assertNull(service.getConceptByUuid(uuid));
+		Assertions.assertEquals(originalCount - 1, service.getAllConcepts().size());
 	}
 	
 	@Test
@@ -201,8 +202,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/0dde1358-7fcf-4341-a330-f119241a46e8");
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 	}
 	
 	//Custom matcher
@@ -303,50 +304,56 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		assertThat(hits, contains(hasUuid("15f83cd6-64e9-4e06-a5f9-364d3b14a43d")));
 	}
 	
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void shouldThrowExceptionWhenSearchRequiredParametersAreCalledTwice() throws Exception {
-		new SearchQuery.Builder("Some search description").withRequiredParameters("source").withRequiredParameters("name") // <- Exception
-		        .withOptionalParameters("code").build();
-	}
-	
-	@Test(expected = IllegalStateException.class)
-	public void shouldThrowExceptionWhenSearchOptionalParametersAreCalledTwice() throws Exception {
-		new SearchQuery.Builder("Some search description").withRequiredParameters("source").withOptionalParameters("name") // <- Exception
-		        .withOptionalParameters("code").build();
-	}
-	
-	@Test(expected = InvalidSearchException.class)
-	public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
-		
-		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
-		SimpleObject result;
-		
-		String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
-		String name = "Aspirin"; //ASPIRIN
-		String searchType = "equalz";
-		
-		req.addParameter("class", conceptClassUuid);
-		req.addParameter("name", name);
-		req.addParameter("searchType", searchType);
-		
-		result = deserialize(handle(req));
+		assertThrows(IllegalStateException.class, () -> {
+			new SearchQuery.Builder("Some search description").withRequiredParameters("source").withRequiredParameters("name") // <- Exception
+			        .withOptionalParameters("code").build();
+		});
 	}
 	
 	@Test
-	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
+	public void shouldThrowExceptionWhenSearchOptionalParametersAreCalledTwice() throws Exception {
+		assertThrows(IllegalStateException.class, () -> {
+			new SearchQuery.Builder("Some search description").withRequiredParameters("source").withOptionalParameters("name") // <- Exception
+			        .withOptionalParameters("code").build();
+		});
+	}
+	
+	@Test
+	public void shouldThrowExceptionWhenSearchTypeParameterIsInvalid() throws Exception {
+		assertThrows(InvalidSearchException.class, () -> {
+		
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			SimpleObject result;
+		
+			String conceptClassUuid = "3d065ed4-b0b9-4710-9a17-6d8c4fd259b7"; // DRUG
+			String name = "Aspirin"; //ASPIRIN
+			String searchType = "equalz";
+		
+			req.addParameter("class", conceptClassUuid);
+			req.addParameter("name", name);
+			req.addParameter("searchType", searchType);
+		
+			result = deserialize(handle(req));
+		});
+	}
+	
+	@Test
+	@Disabled("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void shouldSearchAndReturnAListOfConceptsMatchingTheQueryString() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "food");
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(2, hits.size());
-		Assert.assertEquals("0dde1358-7fcf-4341-a330-f119241a46e8", PropertyUtils.getProperty(hits.get(0), "uuid"));
-		Assert.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", PropertyUtils.getProperty(hits.get(1), "uuid"));
+		Assertions.assertEquals(2, hits.size());
+		Assertions.assertEquals("0dde1358-7fcf-4341-a330-f119241a46e8", PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals("0f97e14e-cdc2-49ac-9255-b5126f8a5147", PropertyUtils.getProperty(hits.get(1), "uuid"));
 	}
 	
 	@Test
-	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
+	@Disabled("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void doSearch_shouldReturnMembersOfConcept() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		String memberOfUuid = "0f97e14e-cdc2-49ac-9255-b5126f8a5147"; // FOOD CONSTRUCT
@@ -355,12 +362,12 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals("f4d0b584-6ce5-40e2-9ce5-fa7ec07b32b4", PropertyUtils.getProperty(hits.get(0), "uuid")); // FAVORITE FOOD, NON-CODED
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals("f4d0b584-6ce5-40e2-9ce5-fa7ec07b32b4", PropertyUtils.getProperty(hits.get(0), "uuid")); // FAVORITE FOOD, NON-CODED
 	}
 	
 	@Test
-	@Ignore("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
+	@Disabled("TRUNK-1956: H2 cannot execute the generated SQL because it requires all fetched columns to be included in the group by clause")
 	public void doSearch_shouldReturnAnswersToConcept() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		
@@ -370,8 +377,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals("b98a6ed4-77e7-4cee-aae2-81957fcd7f48", PropertyUtils.getProperty(hits.get(0), "uuid")); // NO
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals("b98a6ed4-77e7-4cee-aae2-81957fcd7f48", PropertyUtils.getProperty(hits.get(0), "uuid")); // NO
 	}
 	
 	/**
@@ -413,7 +420,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		handle(request);
 		
 		Concept concept = Context.getConceptService().getConceptByUuid(getUuid());
-		Assert.assertEquals(2, concept.getSetMembers().size());
+		Assertions.assertEquals(2, concept.getSetMembers().size());
 	}
 	
 	@Test
@@ -424,14 +431,14 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		handle(request);
 		
 		Concept concept = Context.getConceptService().getConceptByUuid(getUuid());
-		Assert.assertEquals(2, concept.getSetMembers().size());
+		Assertions.assertEquals(2, concept.getSetMembers().size());
 		
 		json = "{ \"setMembers\": [\"0dde1358-7fcf-4341-a330-f119241a46e8\"] }";
 		request.setContent(json.getBytes());
 		handle(request);
 		
 		concept = Context.getConceptService().getConceptByUuid(getUuid());
-		Assert.assertEquals(1, concept.getSetMembers().size());
+		Assertions.assertEquals(1, concept.getSetMembers().size());
 	}
 	
 	@Test
@@ -446,9 +453,9 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Concept answer1 = service.getConceptByUuid("0dde1358-7fcf-4341-a330-f119241a46e8");
 		Concept answer2 = service.getConceptByUuid("54d2dce5-0357-4253-a91a-85ce519137f5");
 		Drug drug = Context.getConceptService().getDrugByUuid("05ec820a-d297-44e3-be6e-698531d9dd3f");
-		Assert.assertTrue(hasAnswer(concept, answer1));
-		Assert.assertTrue(hasAnswer(concept, answer2));
-		Assert.assertTrue(hasAnswer(concept, drug));
+		Assertions.assertTrue(hasAnswer(concept, answer1));
+		Assertions.assertTrue(hasAnswer(concept, answer2));
+		Assertions.assertTrue(hasAnswer(concept, drug));
 	}
 	
 	/**
@@ -495,9 +502,9 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		
 		// sanity check to make sure this concept has the existing answer and not the other
 		Concept concept = Context.getConceptService().getConceptByUuid(conceptWithAnswersUuid);
-		Assert.assertTrue(hasAnswer(concept, service.getConceptByUuid(existingAnswerUuid)));
-		Assert.assertFalse(hasAnswer(concept, service.getConceptByUuid(newAnswerUuid)));
-		Assert.assertEquals(3, concept.getAnswers().size());
+		Assertions.assertTrue(hasAnswer(concept, service.getConceptByUuid(existingAnswerUuid)));
+		Assertions.assertFalse(hasAnswer(concept, service.getConceptByUuid(newAnswerUuid)));
+		Assertions.assertEquals(3, concept.getAnswers().size());
 		
 		MockHttpServletRequest request = request(RequestMethod.POST, getURI() + "/" + conceptWithAnswersUuid);
 		String json = "{ \"answers\": [\"" + existingAnswerUuid + "\", \"" + newAnswerUuid + "\"] }";
@@ -509,9 +516,9 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		concept = Context.getConceptService().getConceptByUuid(conceptWithAnswersUuid);
 		Concept answer1 = service.getConceptByUuid(existingAnswerUuid);
 		Concept answer2 = service.getConceptByUuid(newAnswerUuid);
-		Assert.assertTrue(hasAnswer(concept, answer1));
-		Assert.assertTrue(hasAnswer(concept, answer2));
-		Assert.assertEquals(2, concept.getAnswers().size());
+		Assertions.assertTrue(hasAnswer(concept, answer1));
+		Assertions.assertTrue(hasAnswer(concept, answer2));
+		Assertions.assertEquals(2, concept.getAnswers().size());
 	}
 	
 	@Test
@@ -565,7 +572,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
 		List<Map<String, String>> data = (List<Map<String, String>>) object.get("links");
-		Assert.assertThat(
+		assertThat(
 		    data,
 		    contains(
 		        allOf(hasEntry("rel", "self"),
@@ -583,39 +590,39 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
 		
-		Assert.assertEquals("95312123-e0c2-466d-b6b1-cb6e990d0d65", object.get("uuid"));
-		Assert.assertNotNull(object.get("resourceVersion"));
-		Assert.assertEquals(5, object.size()); // note that `resourceVersion` is implicitly included
+		Assertions.assertEquals("95312123-e0c2-466d-b6b1-cb6e990d0d65", object.get("uuid"));
+		Assertions.assertNotNull(object.get("resourceVersion"));
+		Assertions.assertEquals(5, object.size()); // note that `resourceVersion` is implicitly included
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> datatype = (Map<Object, Object>) object.get("datatype");
-		Assert.assertEquals(3, datatype.size());
-		Assert.assertEquals("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", datatype.get("uuid"));
-		Assert.assertEquals("Coded", datatype.get("name"));
-		Assert.assertNotNull(datatype.get("resourceVersion"));
+		Assertions.assertEquals(3, datatype.size());
+		Assertions.assertEquals("8d4a48b6-c2cc-11de-8d13-0010c6dffd0f", datatype.get("uuid"));
+		Assertions.assertEquals("Coded", datatype.get("name"));
+		Assertions.assertNotNull(datatype.get("resourceVersion"));
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> conceptClass = (Map<Object, Object>) object.get("conceptClass");
-		Assert.assertEquals(7, conceptClass.size());
-		Assert.assertEquals("a82ef63c-e4e4-48d6-988a-fdd74d7541a7", conceptClass.get("uuid"));
-		Assert.assertEquals("Question", conceptClass.get("display"));
-		Assert.assertEquals("Question", conceptClass.get("name"));
-		Assert.assertEquals("Question (eg, patient history, SF36 items)", conceptClass.get("description"));
-		Assert.assertEquals(false, conceptClass.get("retired"));
-		Assert.assertNotNull(conceptClass.get("links"));
-		Assert.assertNotNull(conceptClass.get("resourceVersion"));
+		Assertions.assertEquals(7, conceptClass.size());
+		Assertions.assertEquals("a82ef63c-e4e4-48d6-988a-fdd74d7541a7", conceptClass.get("uuid"));
+		Assertions.assertEquals("Question", conceptClass.get("display"));
+		Assertions.assertEquals("Question", conceptClass.get("name"));
+		Assertions.assertEquals("Question (eg, patient history, SF36 items)", conceptClass.get("description"));
+		Assertions.assertEquals(false, conceptClass.get("retired"));
+		Assertions.assertNotNull(conceptClass.get("links"));
+		Assertions.assertNotNull(conceptClass.get("resourceVersion"));
 		
 		@SuppressWarnings("unchecked")
 		List<Object> names = (List<Object>) object.get("names");
-		Assert.assertEquals(1, names.size());
+		Assertions.assertEquals(1, names.size());
 		
 		@SuppressWarnings("unchecked")
 		Map<Object, Object> name = (Map<Object, Object>) names.get(0);
-		Assert.assertEquals(3, name.size());
-		Assert.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
-		Assert.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
-		Assert.assertNotNull(name.get("links"));
-		Assert.assertNull(name.get("resourceVersion")); // resourceVersion is not included in ref representation
+		Assertions.assertEquals(3, name.size());
+		Assertions.assertEquals("325391a8-db12-4e24-863f-5d66f7a4d713", name.get("uuid"));
+		Assertions.assertEquals("FOOD ASSISTANCE FOR ENTIRE FAMILY", name.get("display"));
+		Assertions.assertNotNull(name.get("links"));
+		Assertions.assertNull(name.get("resourceVersion")); // resourceVersion is not included in ref representation
 		
 	}
 	
@@ -626,7 +633,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		Concept questionConcept = service.getConceptByUuid(conceptUuid);
 		//for the test to stay valid, the sort weights should always be the same(null in this case)
 		for (ConceptAnswer ca : questionConcept.getAnswers(false)) {
-			Assert.assertNull(ca.getSortWeight());
+			Assertions.assertNull(ca.getSortWeight());
 		}
 		
 		int expectedAnswerCount = service.getConceptByUuid(conceptUuid).getAnswers(false).size();
@@ -634,8 +641,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(expectedAnswerCount, ((List<Object>) PropertyUtils.getProperty(result, "answers")).size());
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(expectedAnswerCount, ((List<Object>) PropertyUtils.getProperty(result, "answers")).size());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -654,8 +661,8 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + conceptUuid);
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(expectedMemberCount, ((List<Object>) PropertyUtils.getProperty(result, "setMembers")).size());
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(expectedMemberCount, ((List<Object>) PropertyUtils.getProperty(result, "setMembers")).size());
 	}
 	
 	@Test
@@ -691,16 +698,18 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	public void shouldFindConceptsByName() throws Exception {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name", "WEIGHT (KG)"))));
 		List<Object> results = Util.getResultsList(response);
-		Assert.assertEquals(1, results.size());
+		Assertions.assertEquals(1, results.size());
 		Object next = results.iterator().next();
-		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+		assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
 	
-	@Test(expected = APIException.class)
+	@Test
 	public void shouldFailToFetchAConceptByNameIfTheNameIsNeitherPreferredNorFullySpecified() throws Exception {
-		SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name", "WT"))));
-		List<Object> results = Util.getResultsList(response);
-		Assert.assertEquals(0, results.size());
+		assertThrows(APIException.class, () -> {
+			SimpleObject response = deserialize(handle(newGetRequest(getURI(), new Parameter("name", "WT"))));
+			List<Object> results = Util.getResultsList(response);
+			Assertions.assertEquals(0, results.size());
+		});
 	}
 	
 	@Test
@@ -737,30 +746,32 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		    conceptLevel5);
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldFailForFullChildrenWhenCyclesDetected() throws Exception {
-		Concept conceptLevel1 = newConcept("level1");
-		Concept conceptLevel2 = newConcept("level2");
-		Concept conceptLevel3 = newConcept("level3");
-		Concept conceptLevel4 = newConcept("level4");
-		Concept conceptLevel5 = newConcept("level5");
+		assertThrows(ConversionException.class, () -> {
+			Concept conceptLevel1 = newConcept("level1");
+			Concept conceptLevel2 = newConcept("level2");
+			Concept conceptLevel3 = newConcept("level3");
+			Concept conceptLevel4 = newConcept("level4");
+			Concept conceptLevel5 = newConcept("level5");
 		
-		conceptLevel1.addSetMember(conceptLevel2);
-		conceptLevel2.addSetMember(conceptLevel3);
-		conceptLevel3.addSetMember(conceptLevel4);
-		conceptLevel4.addSetMember(conceptLevel5);
+			conceptLevel1.addSetMember(conceptLevel2);
+			conceptLevel2.addSetMember(conceptLevel3);
+			conceptLevel3.addSetMember(conceptLevel4);
+			conceptLevel4.addSetMember(conceptLevel5);
 		
-		service.saveConcept(conceptLevel5);
-		service.saveConcept(conceptLevel4);
-		service.saveConcept(conceptLevel3);
-		service.saveConcept(conceptLevel2);
-		service.saveConcept(conceptLevel1);
+			service.saveConcept(conceptLevel5);
+			service.saveConcept(conceptLevel4);
+			service.saveConcept(conceptLevel3);
+			service.saveConcept(conceptLevel2);
+			service.saveConcept(conceptLevel1);
 		
-		//Create cycle
-		conceptLevel5.addSetMember(conceptLevel1);
-		service.saveConcept(conceptLevel5);
+			//Create cycle
+			conceptLevel5.addSetMember(conceptLevel1);
+			service.saveConcept(conceptLevel5);
 		
-		deserialize(handle(newGetRequest(getURI() + "/" + conceptLevel1.getUuid(), new Parameter("v", "fullchildren"))));
+			deserialize(handle(newGetRequest(getURI() + "/" + conceptLevel1.getUuid(), new Parameter("v", "fullchildren"))));
+		});
 	}
 	
 	private void assertThatLevelsIncluded(Map<String, Object> level1, Concept conceptLevel2, Concept conceptLevel3,

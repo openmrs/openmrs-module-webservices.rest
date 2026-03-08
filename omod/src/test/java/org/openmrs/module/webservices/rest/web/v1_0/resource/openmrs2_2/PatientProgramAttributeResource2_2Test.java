@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
 import org.openmrs.PatientProgramAttribute;
 import org.openmrs.api.ProgramWorkflowService;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_2;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class PatientProgramAttributeResource2_2Test extends BaseDelegatingResour
 	@Autowired
 	private ProgramWorkflowService programWorkflowService;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet("programEnrollmentDataSet.xml");
 	}

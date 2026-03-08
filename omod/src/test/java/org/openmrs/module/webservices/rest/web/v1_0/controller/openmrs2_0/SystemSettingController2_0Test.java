@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
@@ -21,7 +21,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests CRUD operations for {@link GlobalProperty}s via web service calls
@@ -51,7 +51,7 @@ public class SystemSettingController2_0Test extends MainResourceControllerTest {
 		return service.getAllGlobalProperties().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getAdministrationService();
 	}

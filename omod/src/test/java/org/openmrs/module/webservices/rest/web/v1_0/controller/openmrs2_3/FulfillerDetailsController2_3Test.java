@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_3;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -18,7 +19,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_3;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FulfillerDetailsController2_3Test extends MainResourceControllerTest {
 
@@ -40,24 +41,32 @@ public class FulfillerDetailsController2_3Test extends MainResourceControllerTes
 		assertEquals(order.getAccessionNumber(), accessionNumber);
 	}
 
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetDefaultByUuid() throws Exception {
-		super.shouldGetDefaultByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetDefaultByUuid();
+		});
 	}
 
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetFullByUuid() throws Exception {
-		super.shouldGetFullByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetFullByUuid();
+		});
 	}
 
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetRefByUuid() throws Exception {
-		super.shouldGetRefByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetRefByUuid();
+		});
 	}
 
 	@Override

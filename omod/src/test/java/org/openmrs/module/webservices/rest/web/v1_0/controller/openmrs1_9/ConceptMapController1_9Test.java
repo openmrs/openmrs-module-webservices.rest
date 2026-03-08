@@ -10,11 +10,12 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptMapType;
 import org.openmrs.api.ConceptService;
@@ -49,7 +50,7 @@ public class ConceptMapController1_9Test extends MainResourceControllerTest {
 		return service.getConceptByUuid(RestTestConstants1_9.CONCEPT_UUID).getConceptMappings().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		service = Context.getConceptService();
 		restHelperService = Context.getService(RestHelperService.class);
@@ -80,9 +81,11 @@ public class ConceptMapController1_9Test extends MainResourceControllerTest {
 		assertThat(conceptMap.getConceptReferenceTerm().getUuid(), is(RestTestConstants1_9.CONCEPT_REFERENCE_TERM_UUID));
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotDeleteConceptMap() throws Exception {
-		handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		});
 	}
 	
 	@Test

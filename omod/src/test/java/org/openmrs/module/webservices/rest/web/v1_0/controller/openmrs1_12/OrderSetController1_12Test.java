@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_12;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.OrderSet;
 import org.openmrs.api.OrderSetService;
 import org.openmrs.api.context.Context;
@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_12;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests functionality of OrderSet CRUD by MainResourceController
@@ -32,7 +32,7 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 	
 	private OrderSetService orderSetService;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		orderSetService = Context.getOrderSetService();
 		executeDataSet(RestTestConstants1_12.TEST_DATA_SET);
@@ -69,8 +69,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -81,11 +81,11 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		OrderSet orderSet = orderSetService.getOrderSetByUuid(getUuid());
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(orderSet.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(orderSet.getName(), PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals(orderSet.getDescription(), PropertyUtils.getProperty(result, "description"));
-		Assert.assertEquals(orderSet.getRetired(), PropertyUtils.getProperty(result, "retired"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(orderSet.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(orderSet.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertEquals(orderSet.getDescription(), PropertyUtils.getProperty(result, "description"));
+		Assertions.assertEquals(orderSet.getRetired(), PropertyUtils.getProperty(result, "retired"));
 	}
 	
 	@Test
@@ -104,8 +104,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		SimpleObject newOrderSet = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newOrderSet, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newOrderSet, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	@Test
@@ -123,8 +123,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		SimpleObject newOrderSet = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newOrderSet, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newOrderSet, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	@Test
@@ -138,8 +138,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		OrderSet editedOrderSet = orderSetService.getOrderSetByUuid(getUuid());
 		
-		Assert.assertNotNull(editedOrderSet);
-		Assert.assertEquals(editedName, editedOrderSet.getName());
+		Assertions.assertNotNull(editedOrderSet);
+		Assertions.assertEquals(editedName, editedOrderSet.getName());
 	}
 	
 	@Test
@@ -153,8 +153,8 @@ public class OrderSetController1_12Test extends MainResourceControllerTest {
 		
 		OrderSet retiredOrderSet = orderSetService.getOrderSetByUuid(getUuid());
 		
-		Assert.assertTrue(retiredOrderSet.isRetired());
-		Assert.assertEquals("random reason", retiredOrderSet.getRetireReason());
+		Assertions.assertTrue(retiredOrderSet.isRetired());
+		Assertions.assertEquals("random reason", retiredOrderSet.getRetireReason());
 	}
 	
 }

@@ -10,9 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.CodedOrFreeText;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
@@ -52,7 +53,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 	
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.CONDITION_TEST_DATA_XML);
 		
@@ -119,15 +120,15 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		LinkedHashMap nonCoded = newConditionSource.get("condition");
 		LinkedHashMap patient = newConditionSource.get("patient");
 		
-		Assert.assertNotNull(conditionService.getConditionByUuid(uuid));
+		Assertions.assertNotNull(conditionService.getConditionByUuid(uuid));
 		
 		Condition condition = conditionService.getConditionByUuid(uuid);
 		
-		Assert.assertEquals(nonCoded.get("nonCoded"), condition.getCondition().getNonCoded());
-		Assert.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
-		Assert.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
-		Assert.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
-		Assert.assertNotNull(newConditionSource.get("onsetDate"));
+		Assertions.assertEquals(nonCoded.get("nonCoded"), condition.getCondition().getNonCoded());
+		Assertions.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
+		Assertions.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
+		Assertions.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
+		Assertions.assertNotNull(newConditionSource.get("onsetDate"));
 	}
 	
 	@Test
@@ -157,16 +158,16 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		LinkedHashMap conceptName = (LinkedHashMap) cond.get("specificName");
 		LinkedHashMap patient = newConditionSource.get("patient");
 		
-		Assert.assertNotNull(conditionService.getConditionByUuid(uuid));
+		Assertions.assertNotNull(conditionService.getConditionByUuid(uuid));
 		
 		Condition condition = conditionService.getConditionByUuid(uuid);
 		
-		Assert.assertEquals(concept.get("uuid"), condition.getCondition().getCoded().getUuid());
-		Assert.assertEquals(conceptName.get("uuid"), condition.getCondition().getSpecificName().getUuid());
-		Assert.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
-		Assert.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
-		Assert.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
-		Assert.assertNotNull(newConditionSource.get("onsetDate"));
+		Assertions.assertEquals(concept.get("uuid"), condition.getCondition().getCoded().getUuid());
+		Assertions.assertEquals(conceptName.get("uuid"), condition.getCondition().getSpecificName().getUuid());
+		Assertions.assertEquals(patient.get("uuid"), condition.getPatient().getUuid());
+		Assertions.assertEquals(newConditionSource.get("clinicalStatus"), condition.getClinicalStatus().toString());
+		Assertions.assertEquals(newConditionSource.get("verificationStatus"), condition.getVerificationStatus().toString());
+		Assertions.assertNotNull(newConditionSource.get("onsetDate"));
 	}
 	
 	@Test
@@ -180,14 +181,14 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		
 		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.NON_CODED_CONDITION_UUID);
 		
-		Assert.assertNotNull(condition);
+		Assertions.assertNotNull(condition);
 		//sanity checks
-		Assert.assertFalse(newNonCoded.equalsIgnoreCase(condition.getCondition().getNonCoded()));
-		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
-		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
-		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
-		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
-		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		Assertions.assertFalse(newNonCoded.equalsIgnoreCase(condition.getCondition().getNonCoded()));
+		Assertions.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assertions.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assertions.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assertions.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assertions.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
 		
 		String json = "{ \"condition\":{\"coded\":null,\"specificName\":null,\"nonCoded\":\"" + newNonCoded
 		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
@@ -201,13 +202,13 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		// so the UUID returned in the response will differ from the original condition's UUID.
 		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
 		
-		Assert.assertNotNull(updatedCondition);
-		Assert.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
-		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
-		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
-		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
-		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
-		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+		Assertions.assertNotNull(updatedCondition);
+		Assertions.assertEquals(newNonCoded, updatedCondition.getCondition().getNonCoded());
+		Assertions.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assertions.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assertions.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assertions.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assertions.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
 	}
 	
 	@Test
@@ -222,15 +223,15 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		
 		Condition condition = conditionService.getConditionByUuid(RestTestConstants2_2.CODED_CONDITION_UUID);
 		
-		Assert.assertNotNull(condition);
+		Assertions.assertNotNull(condition);
 		//sanity checks
-		Assert.assertFalse(newCoded.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
-		Assert.assertFalse(newSpecificName.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
-		Assert.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
-		Assert.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
-		Assert.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
-		Assert.assertFalse(newEndDate.equals(condition.getEndDate()));
-		Assert.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
+		Assertions.assertFalse(newCoded.equalsIgnoreCase(condition.getCondition().getCoded().getUuid()));
+		Assertions.assertFalse(newSpecificName.equalsIgnoreCase(condition.getCondition().getSpecificName().getUuid()));
+		Assertions.assertFalse(newClinicalStatus.equals(condition.getClinicalStatus()));
+		Assertions.assertFalse(newVerificationStatus.equals(condition.getVerificationStatus()));
+		Assertions.assertFalse(newOnsetDate.equals(condition.getOnsetDate()));
+		Assertions.assertFalse(newEndDate.equals(condition.getEndDate()));
+		Assertions.assertFalse(newAdditionalDetail.equalsIgnoreCase(condition.getAdditionalDetail()));
 		
 		String json = "{\"condition\":{\"coded\":\"" + newCoded + "\",\"specificName\":\"" + newSpecificName
 		        + "\"},\"clinicalStatus\":\"" + newClinicalStatus
@@ -244,30 +245,30 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		// so the UUID returned in the response will differ from the original condition's UUID.
 		Condition updatedCondition = conditionService.getConditionByUuid(response.get("uuid"));
 		
-		Assert.assertNotNull(updatedCondition);
-		Assert.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
-		Assert.assertEquals(newSpecificName, updatedCondition.getCondition().getSpecificName().getUuid());
-		Assert.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
-		Assert.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
-		Assert.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
-		Assert.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
-		Assert.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
+		Assertions.assertNotNull(updatedCondition);
+		Assertions.assertEquals(newCoded, updatedCondition.getCondition().getCoded().getUuid());
+		Assertions.assertEquals(newSpecificName, updatedCondition.getCondition().getSpecificName().getUuid());
+		Assertions.assertEquals(newClinicalStatus, updatedCondition.getClinicalStatus());
+		Assertions.assertEquals(newVerificationStatus, updatedCondition.getVerificationStatus());
+		Assertions.assertEquals(newOnsetDate.toString(), updatedCondition.getOnsetDate().toString());
+		Assertions.assertEquals(newEndDate.toString(), updatedCondition.getEndDate().toString());
+		Assertions.assertEquals(newAdditionalDetail, updatedCondition.getAdditionalDetail());
 	}
 	
 	@Test
 	public void shouldVoidACondition() throws Exception {
 		Condition condition = conditionService.getConditionByUuid(getUuid());
-		Assert.assertFalse(condition.isVoided());
+		Assertions.assertFalse(condition.isVoided());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("reason", "unit test");
 		handle(req);
 		
 		condition = conditionService.getConditionByUuid(getUuid());
-		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), condition.getVoidedBy().getUuid());
-		Assert.assertTrue(condition.isVoided());
-		Assert.assertEquals("unit test", condition.getVoidReason());
-		Assert.assertNotNull(condition.getDateVoided());
+		Assertions.assertEquals(Context.getAuthenticatedUser().getUuid(), condition.getVoidedBy().getUuid());
+		Assertions.assertTrue(condition.isVoided());
+		Assertions.assertEquals("unit test", condition.getVoidReason());
+		Assertions.assertNotNull(condition.getDateVoided());
 	}
 	
 	@Test
@@ -276,7 +277,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		String voidedUuid = RestTestConstants2_2.VOIDED_CONDITION_UUID;
 		
 		Condition condition = conditionService.getConditionByUuid(voidedUuid);
-		Assert.assertEquals(true, condition.getVoided());
+		Assertions.assertEquals(true, condition.getVoided());
 		
 		SimpleObject attributes = new SimpleObject();
 		attributes.add("voided", false);
@@ -291,28 +292,30 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		// so the UUID returned in the response will differ from the original voided condition's UUID.
 
 		condition = conditionService.getConditionByUuid(response.get("uuid"));
-		Assert.assertEquals(false, condition.getVoided());
+		Assertions.assertEquals(false, condition.getVoided());
 	}
 	
 	@Test
 	public void shouldPurgeCondition() throws Exception {
 		
-		Assert.assertNotNull(conditionService.getConditionByUuid(getUuid()));
+		Assertions.assertNotNull(conditionService.getConditionByUuid(getUuid()));
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(conditionService.getConditionByUuid(getUuid()));
+		Assertions.assertNull(conditionService.getConditionByUuid(getUuid()));
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 
 	@Test
@@ -322,7 +325,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		request.addParameter("includeInactive", "false");
 		SimpleObject result = deserialize(handle(request));
 		List<Condition> conditions = result.get("results");
-		Assert.assertEquals(3, conditions.size());
+		Assertions.assertEquals(3, conditions.size());
 	}
 
 	@Test
@@ -332,7 +335,7 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		request.addParameter("includeInactive", "true");
 		SimpleObject result = deserialize(handle(request));
 		List<Condition> conditions = result.get("results");
-		Assert.assertEquals(3, conditions.size());
+		Assertions.assertEquals(3, conditions.size());
 	}
 
 	@Test
@@ -343,23 +346,23 @@ public class ConditionController2_2Test extends MainResourceControllerTest {
 		request.addParameter("v", "custom:(uuid,display,clinicalStatus,onsetDate,endDate,additionalDetail,condition:(coded:(id,uuid)))");
 		SimpleObject result = deserialize(handle(request));
 		List<Map<String, Object>> conditions = result.get("results");
-		Assert.assertEquals(3, conditions.size());
+		Assertions.assertEquals(3, conditions.size());
 		Map<String, Object> c1 = conditions.get(0);
-		Assert.assertEquals(8, c1.size()); // note that `resourceVersion` is implicitly included
-		Assert.assertEquals("c1d4185b-0364-4978-a635-3165a82a3178", c1.get("uuid"));
-		Assert.assertEquals("Concept 1", c1.get("display"));
-		Assert.assertEquals("ACTIVE", c1.get("clinicalStatus"));
-		Assert.assertNotNull(c1.get("onsetDate"));
-		Assert.assertNull(c1.get("endDate"));
-		Assert.assertNull(c1.get("additionalDetail"));
-		Assert.assertNotNull(c1.get("resourceVersion"));
+		Assertions.assertEquals(8, c1.size()); // note that `resourceVersion` is implicitly included
+		Assertions.assertEquals("c1d4185b-0364-4978-a635-3165a82a3178", c1.get("uuid"));
+		Assertions.assertEquals("Concept 1", c1.get("display"));
+		Assertions.assertEquals("ACTIVE", c1.get("clinicalStatus"));
+		Assertions.assertNotNull(c1.get("onsetDate"));
+		Assertions.assertNull(c1.get("endDate"));
+		Assertions.assertNull(c1.get("additionalDetail"));
+		Assertions.assertNotNull(c1.get("resourceVersion"));
 		Map<String, Object> codedOrNonCoded = (Map<String, Object>) c1.get("condition");
-		Assert.assertNotNull(codedOrNonCoded);
-		Assert.assertEquals(1, codedOrNonCoded.size());
+		Assertions.assertNotNull(codedOrNonCoded);
+		Assertions.assertEquals(1, codedOrNonCoded.size());
 		Map<String, Object> conditionCoded = (Map<String, Object>) codedOrNonCoded.get("coded");
-		Assert.assertEquals(3, conditionCoded.size());
-		Assert.assertEquals(111, conditionCoded.get("id"));
-		Assert.assertEquals("62a26128-006f-4e77-859b-4aa502e3dd62", conditionCoded.get("uuid"));
-		Assert.assertNotNull(conditionCoded.get("resourceVersion"));
+		Assertions.assertEquals(3, conditionCoded.size());
+		Assertions.assertEquals(111, conditionCoded.get("id"));
+		Assertions.assertEquals("62a26128-006f-4e77-859b-4aa502e3dd62", conditionCoded.get("uuid"));
+		Assertions.assertNotNull(conditionCoded.get("resourceVersion"));
 	}
 }

@@ -11,15 +11,16 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.OpenmrsConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
@@ -42,7 +43,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	
 	private HttpServletRequest hsr;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		controller = Context.getRegisteredComponents(SessionController1_9.class).iterator().next(); // should only be 1
 		MockHttpServletRequest mockHsr = new MockHttpServletRequest();
@@ -60,10 +61,10 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	 */
 	@Test
 	public void delete_shouldLogTheClientOut() throws Exception {
-		Assert.assertTrue(Context.isAuthenticated());
+		Assertions.assertTrue(Context.isAuthenticated());
 		controller.delete(hsr);
-		Assert.assertFalse(Context.isAuthenticated());
-		Assert.assertNull(hsr.getSession(false));
+		Assertions.assertFalse(Context.isAuthenticated());
+		Assertions.assertNull(hsr.getSession(false));
 	}
 	
 	/**
@@ -72,51 +73,51 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	 */
 	@Test
 	public void get_shouldReturnTheUserIfTheUserIsAuthenticated() throws Exception {
-		Assert.assertTrue(Context.isAuthenticated());
+		Assertions.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
 		Object userProp = PropertyUtils.getProperty(ret, "user");
 		List<HashMap<String, String>> userRoles = (List<HashMap<String, String>>) PropertyUtils.getProperty(userProp,
 		    "roles");
-		Assert.assertEquals("System Developer", userRoles.get(0).get("name"));
-		Assert.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
-		Assert.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
+		Assertions.assertEquals("System Developer", userRoles.get(0).get("name"));
+		Assertions.assertEquals(true, PropertyUtils.getProperty(ret, "authenticated"));
+		Assertions.assertEquals(Context.getAuthenticatedUser().getUuid(), PropertyUtils.getProperty(userProp, "uuid"));
 		Object personProp = PropertyUtils.getProperty(userProp, "person");
-		Assert.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(),
+		Assertions.assertEquals(Context.getAuthenticatedUser().getPerson().getUuid(),
 		    PropertyUtils.getProperty(personProp, "uuid"));
 	}
 
 	@Test
 	public void get_shouldReturnLocaleInfoIfTheUserIsNotAuthenticated() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        Assert.assertTrue(Context.isAuthenticated());
+        Assertions.assertTrue(Context.isAuthenticated());
 
 		// log out the current authenticated user
 		controller.delete(hsr);
-		Assert.assertFalse(Context.isAuthenticated());
-		Assert.assertNull(hsr.getSession(false));
+		Assertions.assertFalse(Context.isAuthenticated());
+		Assertions.assertNull(hsr.getSession(false));
 
 		// check if the unauthenticated user response has locale and allowedLocales
 		Object ret = controller.get();
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
 	@Test
 	public void get_shouldReturnLocaleInfoIfTheUserIsAuthenticated() throws Exception {
-		Assert.assertTrue(Context.isAuthenticated());
+		Assertions.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 		    ((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
 	@Test
 	public void get_shouldReturnLocationIfTheUserIsAuthenticated() throws Exception {
-		Assert.assertTrue(Context.isAuthenticated());
+		Assertions.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
 		Object loc = PropertyUtils.getProperty(ret, "sessionLocation");
-		Assert.assertTrue(loc.toString() + " should contain 'display=Unknown Location'",
-		    loc.toString().contains("display=Unknown Location"));
+		Assertions.assertTrue(loc.toString().contains("display=Unknown Location"),
+		    loc.toString() + " should contain 'display=Unknown Location'");
 	}
 
 	/**
@@ -125,11 +126,11 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 	 */
 	@Test
 	public void get_shouldReturnCurrentProviderIfTheUserIsAuthenticated() throws Exception {
-		Assert.assertTrue(Context.isAuthenticated());
+		Assertions.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
 		Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
-		Assert.assertNotNull(currentProvider);
-		Assert.assertTrue(currentProvider.toString().contains("Super User"));
+		Assertions.assertNotNull(currentProvider);
+		Assertions.assertTrue(currentProvider.toString().contains("Super User"));
 	}
 
 	@Test
@@ -137,51 +138,57 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		String content = "{}";
 		Object ret = controller.post(hsr,new ObjectMapper().readValue(content, HashMap.class));
 		Object currentProvider = PropertyUtils.getProperty(ret, "currentProvider");
-		Assert.assertNotNull(currentProvider);
-		Assert.assertTrue(currentProvider.toString().contains("Super User"));
+		Assertions.assertNotNull(currentProvider);
+		Assertions.assertTrue(currentProvider.toString().contains("Super User"));
 	}
 	
 	@Test
 	public void post_shouldSetTheUserLocale() throws Exception {
 		Locale newLocale = new Locale("sp");
 		String content = "{\"locale\":\"" + newLocale.toString() + "\"}";
-		Assert.assertNotEquals(newLocale, Context.getLocale());
+		Assertions.assertNotEquals(newLocale, Context.getLocale());
 		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
-		Assert.assertEquals(newLocale, Context.getLocale());
-		Assert.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertEquals(newLocale, Context.getLocale());
+		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
-	@Test(expected = APIException.class)
+	@Test
 	public void post_shouldFailWhenSettingIllegalLocale() throws Exception {
-		String newLocale = "fOOb@r:";
-		String content = "{\"locale\":\"" + newLocale + "\"}";
-		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		assertThrows(APIException.class, () -> {
+			String newLocale = "fOOb@r:";
+			String content = "{\"locale\":\"" + newLocale + "\"}";
+			controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		});
 	}
 	
-	@Test(expected = APIException.class)
+	@Test
 	public void post_shouldFailWhenSettingDisallowedLocale() throws Exception {
-		String newLocale = "km_KH";
-		String content = "{\"locale\":\"" + newLocale + "\"}";
-		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		assertThrows(APIException.class, () -> {
+			String newLocale = "km_KH";
+			String content = "{\"locale\":\"" + newLocale + "\"}";
+			controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		});
 	}
 	
 	@Test
 	public void post_shouldSetTheSessionLocation() throws Exception {
 		String content = "{\"sessionLocation\":\"" + XANADU_UUID + "\"}";
 		Location loc = Context.getLocationService().getLocationByUuid(XANADU_UUID);
-		Assert.assertNotEquals(loc, Context.getUserContext().getLocation());
+		Assertions.assertNotEquals(loc, Context.getUserContext().getLocation());
 		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
-		Assert.assertEquals(loc, Context.getUserContext().getLocation());
+		Assertions.assertEquals(loc, Context.getUserContext().getLocation());
 		Object responseLoc = PropertyUtils.getProperty(ret, "sessionLocation");
-		Assert.assertTrue(responseLoc.toString() + " should contain 'display=Xanadu'",
-				responseLoc.toString().contains("display=Xanadu"));
+		Assertions.assertTrue(responseLoc.toString().contains("display=Xanadu"),
+				responseLoc.toString() + " should contain 'display=Xanadu'");
 	}
 	
-	@Test(expected = APIException.class)
+	@Test
 	public void post_shouldFailWhenSettingNonexistantLocation() throws Exception {
-		String content = "{\"sessionLocation\":\"fake-nonexistant-uuid\"}";
-		controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		assertThrows(APIException.class, () -> {
+			String content = "{\"sessionLocation\":\"fake-nonexistant-uuid\"}";
+			controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
+		});
 	}
 }

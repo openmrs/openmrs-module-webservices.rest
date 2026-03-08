@@ -12,9 +12,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_11;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -29,7 +30,7 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	private PatientService patientService;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		patientService = Context.getPatientService();
 		executeDataSet(RestTestConstants1_11.LIVING_PATIENT_SEARCH_DATASET);
@@ -53,22 +54,22 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 	
 	@Test
 	public void shouldNotReturnPatientsIfQParamValueIsEmpty() throws Exception {
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(0, patients.size());
+		Assertions.assertEquals(0, patients.size());
 	}
 	
 	@Test
 	public void shouldNotReturnPatientsIfQParamIsNotSet() throws Exception {
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(0, patients.size());
+		Assertions.assertEquals(0, patients.size());
 	}
 	
 	@Test
@@ -77,65 +78,67 @@ public class LivingPatientSearchHandler1_11Test extends MainResourceControllerTe
 		patient.setDead(true);
 		patient.setCauseOfDeathNonCoded("unknown");
 		patientService.savePatient(patient);
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
 		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(4, patients.size());
+		Assertions.assertEquals(4, patients.size());
 	}
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsBydefaultIfIncludeDeadIsNotSet() throws Exception {
 		patientService.getPatientByUuid(getUuid()).setDead(true);
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(3, patients.size());
+		Assertions.assertEquals(3, patients.size());
 	}
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsOnWrongIncludeDeadParamValue() throws Exception {
 		patientService.getPatientByUuid(getUuid()).setDead(true);
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
 		req.addParameter("includeDead", "wrongx");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(3, patients.size());
+		Assertions.assertEquals(3, patients.size());
 	}
 	
 	@Test
 	public void shouldReturnOnlyLivingPatientsIfIncludeDeadParamIsSetToFalse() throws Exception {
 		patientService.getPatientByUuid(getUuid()).setDead(true);
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "Moz");
 		req.addParameter("includeDead", "False");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(3, patients.size());
+		Assertions.assertEquals(3, patients.size());
 	}
 	
 	@Test
 	public void shouldNotReturnPatientsIfNoPatientMatchesQParam() throws Exception {
 		patientService.getPatientByUuid(getUuid()).setDead(true);
-		Assert.assertEquals(8, getAllCount());
+		Assertions.assertEquals(8, getAllCount());
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		req.addParameter("q", "www");
 		req.addParameter("includeDead", "True");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> patients = result.get("results");
-		Assert.assertEquals(0, patients.size());
+		Assertions.assertEquals(0, patients.size());
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 }

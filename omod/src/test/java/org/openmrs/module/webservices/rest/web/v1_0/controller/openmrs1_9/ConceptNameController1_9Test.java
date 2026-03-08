@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -57,7 +57,7 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		return service.getConceptByUuid(conceptUuid).getNames().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getConceptService();
 	}
@@ -70,7 +70,7 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		handle(newPostRequest(getURI(), json));
 		
 		int after = service.getConceptByUuid(conceptUuid).getNames().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -79,20 +79,20 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		
 		List<Object> resultsList = Util.getResultsList(response);
 		
-		Assert.assertEquals(3, resultsList.size());
+		Assertions.assertEquals(3, resultsList.size());
 		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "name"),
 		    PropertyUtils.getProperty(resultsList.get(1), "name"), PropertyUtils.getProperty(resultsList.get(2), "name"));
 		
-		Assert.assertTrue(names.contains("CD4 COUNT"));
-		Assert.assertTrue(names.contains("CD4"));
-		Assert.assertTrue(names.contains("CD3+CD4+ABS CNT"));
+		Assertions.assertTrue(names.contains("CD4 COUNT"));
+		Assertions.assertTrue(names.contains("CD4"));
+		Assertions.assertTrue(names.contains("CD3+CD4+ABS CNT"));
 	}
 	
 	@Test
 	public void shouldEditAConceptName() throws Exception {
 		ConceptName conceptName = service.getConceptNameByUuid(nameUuid);
-		Assert.assertNotNull(conceptName);
-		Assert.assertEquals("COUGH SYRUP", conceptName.getName());
+		Assertions.assertNotNull(conceptName);
+		Assertions.assertEquals("COUGH SYRUP", conceptName.getName());
 		
 		String json = "{ \"name\":\"NEW TEST NAME\"}";
 		
@@ -100,13 +100,13 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		
 		ConceptName updateConceptName = service.getConceptNameByUuid(nameUuid);
 		//should have voided the old edited name
-		Assert.assertTrue(updateConceptName.isVoided());
+		Assertions.assertTrue(updateConceptName.isVoided());
 		
 		SimpleObject results2 = deserialize(handle(newGetRequest(getURI())));
 		List<Object> results2List = Util.getResultsList(results2);
-		Assert.assertEquals(1, results2List.size());
+		Assertions.assertEquals(1, results2List.size());
 		//should have created a new one with the new name
-		Assert.assertTrue(PropertyUtils.getProperty(results2List.get(0), "name").equals("NEW TEST NAME"));
+		Assertions.assertTrue(PropertyUtils.getProperty(results2List.get(0), "name").equals("NEW TEST NAME"));
 	}
 	
 	@Test
@@ -117,7 +117,7 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		        "reason", "testing")));
 		
 		int after = service.getConceptByUuid(conceptUuid2).getNames().size();
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertEquals(before - 1, after);
 	}
 	
 	@Test
@@ -134,6 +134,6 @@ public class ConceptNameController1_9Test extends MainResourceControllerTest {
 		
 		Long after = (Long) Context.getAdministrationService()
 		        .executeSQL("select count(*) from concept_name where concept_id = " + conceptId, true).get(0).get(0);
-		Assert.assertEquals(before.longValue() - 1, after.longValue());
+		Assertions.assertEquals(before.longValue() - 1, after.longValue());
 	}
 }

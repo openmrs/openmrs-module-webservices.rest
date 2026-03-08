@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
@@ -22,7 +22,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * Contains tests for the
@@ -44,10 +44,10 @@ public class RelationshipResource1_9Test extends BaseDelegatingResourceTest<Rela
 		assertPropPresent("startDate");
 		assertPropPresent("endDate");
 		assertPropEquals("voided", getObject().isVoided());
-		assertFalse("Should not expose the Patient subclass",
-		    findSelfLink((SimpleObject) getRepresentation().get("personA")).contains("/patient/"));
-		assertFalse("Should not expose the Patient subclass",
-		    findSelfLink((SimpleObject) getRepresentation().get("personB")).contains("/patient/"));
+		assertFalse(findSelfLink((SimpleObject) getRepresentation().get("personA")).contains("/patient/"),
+		    "Should not expose the Patient subclass");
+		assertFalse(findSelfLink((SimpleObject) getRepresentation().get("personB")).contains("/patient/"),
+		    "Should not expose the Patient subclass");
 	}
 	
 	@Override
@@ -60,10 +60,10 @@ public class RelationshipResource1_9Test extends BaseDelegatingResourceTest<Rela
 		assertPropPresent("endDate");
 		assertPropEquals("voided", getObject().isVoided());
 		assertPropPresent("auditInfo");
-		assertFalse("Should not expose the Patient subclass",
-		    findSelfLink((SimpleObject) getRepresentation().get("personA")).contains("/patient/"));
-		assertFalse("Should not expose the Patient subclass",
-		    findSelfLink((SimpleObject) getRepresentation().get("personB")).contains("/patient/"));
+		assertFalse(findSelfLink((SimpleObject) getRepresentation().get("personA")).contains("/patient/"),
+		    "Should not expose the Patient subclass");
+		assertFalse(findSelfLink((SimpleObject) getRepresentation().get("personB")).contains("/patient/"),
+		    "Should not expose the Patient subclass");
 	}
 	
 	@Override

@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Provider;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
@@ -18,7 +18,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 
 public class ProviderResource1_9Test extends BaseDelegatingResourceTest<ProviderResource1_9, Provider> {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}

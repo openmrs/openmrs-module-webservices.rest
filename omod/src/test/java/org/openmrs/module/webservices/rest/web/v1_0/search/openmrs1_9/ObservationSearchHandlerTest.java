@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.RestControllerTestUtils;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -32,8 +32,8 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("concept", "96408258-000b-424e-af1a-403919332938");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(1, obs.size());
-		Assert.assertEquals("e26cea2c-1b9f-4afe-b211-f3ef6c88af6f", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals(1, obs.size());
+		Assertions.assertEquals("e26cea2c-1b9f-4afe-b211-f3ef6c88af6f", PropertyUtils.getProperty(obs.get(0), "uuid"));
 	}
 	
 	@Test
@@ -43,12 +43,12 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("concepts", "95312123-e0c2-466d-b6b1-cb6e990d0d65,c607c80f-1ea9-4da3-bb88-6276ce8868dd");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(4, obs.size());
+		Assertions.assertEquals(4, obs.size());
 		// test should sort by order descending
-		Assert.assertEquals("2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0", PropertyUtils.getProperty(obs.get(0), "uuid"));
-		Assert.assertEquals("1ce473c8-3fac-440d-9f92-e10facab194f", PropertyUtils.getProperty(obs.get(2), "uuid"));
-		Assert.assertEquals("2f616900-5e7c-4667-9a7f-dcb260abf1de", PropertyUtils.getProperty(obs.get(1), "uuid"));
-		Assert.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(obs.get(3), "uuid"));
+		Assertions.assertEquals("2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals("1ce473c8-3fac-440d-9f92-e10facab194f", PropertyUtils.getProperty(obs.get(2), "uuid"));
+		Assertions.assertEquals("2f616900-5e7c-4667-9a7f-dcb260abf1de", PropertyUtils.getProperty(obs.get(1), "uuid"));
+		Assertions.assertEquals("39fb7f47-e80a-4056-9285-bd798be13c63", PropertyUtils.getProperty(obs.get(3), "uuid"));
 	}
 	
 	@Test
@@ -58,9 +58,9 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("answers", "b055abd8-a420-4a11-8b98-02ee170a7b54,c607c80f-1ea9-4da3-bb88-6276ce8868dd"); // only a match for the first concept
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(1, obs.size());
+		Assertions.assertEquals(1, obs.size());
 		// test should sort by order descending
-		Assert.assertEquals("b6521c32-47b6-47da-9c6f-3673ddfb74f9", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals("b6521c32-47b6-47da-9c6f-3673ddfb74f9", PropertyUtils.getProperty(obs.get(0), "uuid"));
 	}
 	
 	@Test
@@ -71,9 +71,9 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("answers", "b055abd8-a420-4a11-8b98-02ee170a7b54");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(1, obs.size());
+		Assertions.assertEquals(1, obs.size());
 		// test should sort by order descending
-		Assert.assertEquals("b6521c32-47b6-47da-9c6f-3673ddfb74f9", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals("b6521c32-47b6-47da-9c6f-3673ddfb74f9", PropertyUtils.getProperty(obs.get(0), "uuid"));
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("answers", "b055abd8-a420-4a11-8b98-02ee170a7b54");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(0, obs.size());
+		Assertions.assertEquals(0, obs.size());
 	}
 	
 	@Test
@@ -95,13 +95,13 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("groupingConcepts", "0f97e14e-cdc2-49ac-9255-b5126f8a5147");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(5, obs.size());
+		Assertions.assertEquals(5, obs.size());
 		// these two obs have the same obs time, so we really shouldn't be depending on sort order here
-		Assert.assertEquals("5117f5d4-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(0), "uuid"));
-		Assert.assertEquals("565f39c6-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(1), "uuid"));
-		Assert.assertEquals("05ba548c-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(2), "uuid"));
-		Assert.assertEquals("0d37552a-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(3), "uuid"));
-		Assert.assertEquals("11de743c-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(4), "uuid"));
+		Assertions.assertEquals("5117f5d4-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals("565f39c6-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(1), "uuid"));
+		Assertions.assertEquals("05ba548c-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(2), "uuid"));
+		Assertions.assertEquals("0d37552a-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(3), "uuid"));
+		Assertions.assertEquals("11de743c-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(4), "uuid"));
 	}
 	
 	@Test
@@ -113,9 +113,9 @@ public class ObservationSearchHandlerTest extends RestControllerTestUtils {
 		req.addParameter("groupingConcepts", "0f97e14e-cdc2-49ac-9255-b5126f8a5147");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> obs = result.get("results");
-		Assert.assertEquals(2, obs.size());
+		Assertions.assertEquals(2, obs.size());
 		// these two obs have the same obs time, so we really shouldn't be depending on sort order here
-		Assert.assertEquals("5117f5d4-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(0), "uuid"));
-		Assert.assertEquals("0d37552a-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(1), "uuid"));
+		Assertions.assertEquals("5117f5d4-96cc-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(0), "uuid"));
+		Assertions.assertEquals("0d37552a-96cd-11e0-8d6b-9b9415a91465", PropertyUtils.getProperty(obs.get(1), "uuid"));
 	}
 }

@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.VisitService;
@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class VisitConfigurationController2_0Test extends RestControllerTestUtils {
 
@@ -36,7 +36,7 @@ public class VisitConfigurationController2_0Test extends RestControllerTestUtils
 
 	private VisitService visitService;
 
-	@Before
+	@BeforeEach
 	public void before() throws SchedulerException {
 		administrationService = Context.getAdministrationService();
 		visitService = Context.getVisitService();

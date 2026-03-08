@@ -11,10 +11,10 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PersonName;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -50,7 +50,7 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		return service.getPersonByUuid(personUuid).getNames().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		this.service = Context.getPersonService();
 		executeDataSet("customTestDataset.xml");
@@ -62,9 +62,9 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest httpReq = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(httpReq));
 		
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "givenName"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "familyName"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "givenName"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "familyName"));
 		
 	}
 	
@@ -74,9 +74,9 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		List<Object> resultsList = Util.getResultsList(response);
 		
-		Assert.assertEquals(2, resultsList.size());
+		Assertions.assertEquals(2, resultsList.size());
 		List<Object> names = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "givenName"));
-		Assert.assertTrue(names.get(0).equals("Collet"));
+		Assertions.assertTrue(names.get(0).equals("Collet"));
 		
 	}
 	
@@ -89,7 +89,7 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		handle(newPostRequest(getURI(), json));
 		
 		int after = service.getPersonByUuid(personUuid).getNames().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 		
 	}
 	
@@ -97,14 +97,14 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 	public void shouldEditName() throws Exception {
 		
 		PersonName personName = service.getPersonNameByUuid(getUuid());
-		Assert.assertEquals("Chebaskwony", personName.getFamilyName());
+		Assertions.assertEquals("Chebaskwony", personName.getFamilyName());
 		String json = "{ \"familyName\":\"newName\" }";
 		
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
-		Assert.assertNotNull(response);
-		Assert.assertEquals("newName", PropertyUtils.getProperty(response, "familyName").toString());
+		Assertions.assertNotNull(response);
+		Assertions.assertEquals("newName", PropertyUtils.getProperty(response, "familyName").toString());
 		PersonName editedPersonName = service.getPersonNameByUuid(getUuid());
-		Assert.assertEquals("newName", editedPersonName.getFamilyName());
+		Assertions.assertEquals("newName", editedPersonName.getFamilyName());
 		
 	}
 	
@@ -112,12 +112,12 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 	public void shouldVoidName() throws Exception {
 		
 		PersonName personName = service.getPersonNameByUuid(getUuid());
-		Assert.assertTrue(!personName.isVoided());
+		Assertions.assertTrue(!personName.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", "random reason")));
 		
 		PersonName voidedPersonName = service.getPersonNameByUuid(getUuid());
-		Assert.assertTrue(voidedPersonName.isVoided());
+		Assertions.assertTrue(voidedPersonName.isVoided());
 		
 	}
 	
@@ -129,8 +129,8 @@ public class PersonNameController1_9Test extends MainResourceControllerTest {
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		
 		int after = service.getPersonByUuid(personUuid).getNames().size();
-		Assert.assertNull(service.getPersonNameByUuid(getUuid()));
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertNull(service.getPersonNameByUuid(getUuid()));
+		Assertions.assertEquals(before - 1, after);
 		
 	}
 	

@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
@@ -22,7 +22,7 @@ public class PersonAttributeTypeResourceWithConcept1_8Test extends BaseDelegatin
 	
 	private static final String ACTIVE_LIST_INITIAL_XML = "personAttributeTypeWithConcept.xml";
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		executeDataSet(ACTIVE_LIST_INITIAL_XML);
 	}

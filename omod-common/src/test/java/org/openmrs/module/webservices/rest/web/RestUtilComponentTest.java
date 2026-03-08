@@ -11,12 +11,12 @@ package org.openmrs.module.webservices.rest.web;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.api.ValidationException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
@@ -31,15 +31,15 @@ public class RestUtilComponentTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject result = RestUtil.wrapValidationErrorResponse(new ValidationException("some message", ex));
 		SimpleObject errors = (SimpleObject) result.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
+		Assertions.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 		
 		List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
-		Assert.assertEquals(1, globalErrors.size());
-		Assert.assertEquals("global.error.message", globalErrors.get(0).get("code"));
+		Assertions.assertEquals(1, globalErrors.size());
+		Assertions.assertEquals("global.error.message", globalErrors.get(0).get("code"));
 		
 		SimpleObject fieldErrors = (SimpleObject) errors.get("fieldErrors");
 		List<SimpleObject> birthdateFieldErrors = (List<SimpleObject>) fieldErrors.get("birthdate");
-		Assert.assertEquals("field.error.message", birthdateFieldErrors.get(0).get("code"));
+		Assertions.assertEquals("field.error.message", birthdateFieldErrors.get(0).get("code"));
 		
 	}
 	
@@ -50,10 +50,10 @@ public class RestUtilComponentTest extends BaseModuleWebContextSensitiveTest {
 		
 		SimpleObject result = RestUtil.wrapValidationErrorResponse(new ValidationException("some message", ex));
 		SimpleObject errors = (SimpleObject) result.get("error");
-		Assert.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
+		Assertions.assertEquals("webservices.rest.error.invalid.submission", errors.get("code"));
 		
-		Assert.assertEquals(0, ((List<SimpleObject>) errors.get("globalErrors")).size());
-		Assert.assertNotNull(errors.get("fieldErrors"));
+		Assertions.assertEquals(0, ((List<SimpleObject>) errors.get("globalErrors")).size());
+		Assertions.assertNotNull(errors.get("fieldErrors"));
 		
 	}
 }

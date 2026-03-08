@@ -13,13 +13,13 @@ import static org.hamcrest.beans.HasPropertyWithValue.hasProperty;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matcher;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.api.PersonService;
@@ -41,7 +41,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 	
 	private PersonService service;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet("PersonControllerTest-otherPersonData.xml");
 		this.service = Context.getPersonService();
@@ -87,12 +87,12 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals("3350d0b5-821c-4e5e-ad1d-a9bce331e118", PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals("1050 Wishard Blvd.", PropertyUtils.getProperty(result, "address1"));
-		Assert.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals("3350d0b5-821c-4e5e-ad1d-a9bce331e118", PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals("1050 Wishard Blvd.", PropertyUtils.getProperty(result, "address1"));
+		Assertions.assertNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
 	}
 	
 	@Test
@@ -102,9 +102,9 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "latitude"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "longitude"));
 	}
 	
 	@Test
@@ -113,7 +113,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertEquals(1, Util.getResultsSize(result));
+		Assertions.assertEquals(1, Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -128,7 +128,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertEquals(0, Util.getResultsSize(result));
+		Assertions.assertEquals(0, Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -144,7 +144,7 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		int after = service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID).getAddresses().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -159,8 +159,8 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		PersonAddress personAddress = service.getPersonByUuid(RestTestConstants1_8.PERSON_UUID).getPersonAddress();
-		Assert.assertNotNull(personAddress);
-		Assert.assertEquals(ADDRESS_TEST_UUID, personAddress.getUuid());
+		Assertions.assertNotNull(personAddress);
+		Assertions.assertEquals(ADDRESS_TEST_UUID, personAddress.getUuid());
 	}
 	
 	@Test
@@ -174,34 +174,34 @@ public class PersonAddressController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		PersonAddress updated = service.getPersonAddressByUuid(getUuid());
-		Assert.assertEquals(address.get("address1"), updated.getAddress1());
-		Assert.assertEquals(address.get("address2"), updated.getAddress2());
+		Assertions.assertEquals(address.get("address1"), updated.getAddress1());
+		Assertions.assertEquals(address.get("address2"), updated.getAddress2());
 	}
 	
 	@Test
 	public void shouldVoidADeletedPersonAddress() throws Exception {
 		
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
-		Assert.assertFalse(address.isVoided());
+		Assertions.assertFalse(address.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("!purge", ""), new Parameter("reason",
 		        "random reason")));
 		
 		address = service.getPersonAddressByUuid(getUuid());
-		Assert.assertTrue(address.isVoided());
-		Assert.assertEquals("random reason", address.getVoidReason());
+		Assertions.assertTrue(address.isVoided());
+		Assertions.assertEquals("random reason", address.getVoidReason());
 	}
 	
 	@Test
 	public void shouldPurgeAPersonAddress() throws Exception {
 		
 		PersonAddress address = service.getPersonAddressByUuid(getUuid());
-		Assert.assertNotNull(address);
+		Assertions.assertNotNull(address);
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		
 		address = service.getPersonAddressByUuid(getUuid());
-		Assert.assertNull(address);
+		Assertions.assertNull(address);
 	}
 	
 	@Test

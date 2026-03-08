@@ -11,8 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.EncounterRole;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
@@ -24,8 +24,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests functionality of {@link EncounterRoleController}.
@@ -49,7 +49,7 @@ public class EncounterRoleController1_9Test extends MainResourceControllerTest {
 		return service.getAllEncounterRoles(false).size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getEncounterService();
 	}

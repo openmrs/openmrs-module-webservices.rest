@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptAttributeType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -54,7 +54,7 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         return service.getAllConceptAttributeTypes().size();
     }
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         executeDataSet(RestTestConstants2_0.CONCEPT_ATTRIBUTE_DATA_SET);
         this.service = Context.getConceptService();
@@ -71,19 +71,19 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         req.setContent(json.getBytes());
 
         Object newConceptAttributeType = deserialize(handle(req));
-        Assert.assertNotNull(PropertyUtils.getProperty(newConceptAttributeType, "uuid"));
-        Assert.assertEquals(originalCount + 1 , getAllCount());
+        Assertions.assertNotNull(PropertyUtils.getProperty(newConceptAttributeType, "uuid"));
+        Assertions.assertEquals(originalCount + 1 , getAllCount());
 
     }
     
     @Test
     public void shouldPurgeConceptAttributeType() throws Exception {
     	final String UUID = "9516cc50-6f9f-11e0-8414-001e378eb67f";
-    	Assert.assertNotNull(service.getConceptAttributeTypeByUuid(UUID));
+    	Assertions.assertNotNull(service.getConceptAttributeTypeByUuid(UUID));
     	MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
     	req.addParameter("purge", "true");
     	handle(req);
-    	Assert.assertNull(service.getConceptAttributeTypeByUuid(UUID));
+    	Assertions.assertNull(service.getConceptAttributeTypeByUuid(UUID));
     }
     
 	@Test
@@ -91,25 +91,25 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 
     @Test
     public void shouldUpdateConceptAttributeType() throws Exception {
         final String CONCEPT_ATTRIBUTE_TYPE_UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
         ConceptAttributeType existingConceptAttributeType = service.getConceptAttributeTypeByUuid(CONCEPT_ATTRIBUTE_TYPE_UUID);
-        Assert.assertNotNull(existingConceptAttributeType);
+        Assertions.assertNotNull(existingConceptAttributeType);
 
         String json = "{\"name\": \"new updated name\", \"description\": \"Dummy description update\", \"datatypeClassname\": \"org.openmrs.customdatatype.datatype.LongFreeTextDatatype\"}";
 
         handle(newPostRequest(getURI() + "/" + existingConceptAttributeType.getUuid(), json));
         ConceptAttributeType updatedConceptAttributeType = service.getConceptAttributeTypeByUuid(CONCEPT_ATTRIBUTE_TYPE_UUID);
 
-        Assert.assertNotNull(updatedConceptAttributeType);
-        Assert.assertEquals("new updated name", updatedConceptAttributeType.getName());
-        Assert.assertEquals("Dummy description update", updatedConceptAttributeType.getDescription());
-        Assert.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedConceptAttributeType.getDatatypeClassname());
+        Assertions.assertNotNull(updatedConceptAttributeType);
+        Assertions.assertEquals("new updated name", updatedConceptAttributeType.getName());
+        Assertions.assertEquals("Dummy description update", updatedConceptAttributeType.getDescription());
+        Assertions.assertEquals("org.openmrs.customdatatype.datatype.LongFreeTextDatatype", updatedConceptAttributeType.getDatatypeClassname());
     }
     
     @Test
@@ -118,18 +118,18 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
     	SimpleObject result = deserialize(handle(req));
     	
     	ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(getUuid());
-    	Assert.assertEquals(conceptAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-    	Assert.assertEquals(conceptAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
+    	Assertions.assertEquals(conceptAttributeType.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+    	Assertions.assertEquals(conceptAttributeType.getName(), PropertyUtils.getProperty(result, "name"));
     }
 
     @Test
     public void shouldRetireAConceptAttributeType() throws Exception {
         final String UUID = "9516cc50-6f9f-11e0-8414-001e378eb67e";
         ConceptAttributeType conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
-        Assert.assertNotNull(conceptAttributeType);
-        Assert.assertFalse(conceptAttributeType.getRetired());
-        Assert.assertNull(conceptAttributeType.getDateRetired());
-        Assert.assertNull(conceptAttributeType.getRetiredBy());
+        Assertions.assertNotNull(conceptAttributeType);
+        Assertions.assertFalse(conceptAttributeType.getRetired());
+        Assertions.assertNull(conceptAttributeType.getDateRetired());
+        Assertions.assertNull(conceptAttributeType.getRetiredBy());
 
         MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + UUID);
         req.addParameter("!purge", "");
@@ -137,9 +137,9 @@ public class ConceptAttributeTypeController2_0Test extends MainResourceControlle
         handle(req);
 
         conceptAttributeType = service.getConceptAttributeTypeByUuid(UUID);
-        Assert.assertTrue(conceptAttributeType.getRetired());
-        Assert.assertNotNull(conceptAttributeType.getDateRetired());
-        Assert.assertNotNull(conceptAttributeType.getRetiredBy());
-        Assert.assertEquals("let it retire for a time", conceptAttributeType.getRetireReason());
+        Assertions.assertTrue(conceptAttributeType.getRetired());
+        Assertions.assertNotNull(conceptAttributeType.getDateRetired());
+        Assertions.assertNotNull(conceptAttributeType.getRetiredBy());
+        Assertions.assertEquals("let it retire for a time", conceptAttributeType.getRetireReason());
     }
 }

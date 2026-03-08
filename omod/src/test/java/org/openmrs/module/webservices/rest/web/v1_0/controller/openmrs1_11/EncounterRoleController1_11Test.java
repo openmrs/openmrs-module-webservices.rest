@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_11;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.EncounterRole;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -49,8 +49,8 @@ public class EncounterRoleController1_11Test extends MainResourceControllerTest 
 		Object encounterRoleObject = Util.getResultsList(result).get(0);
 		
 		EncounterRole encounterRole = Context.getEncounterService().getEncounterRoleByName(ROLE_NAME);
-		Assert.assertEquals(encounterRole.getUuid(), PropertyUtils.getProperty(encounterRoleObject, "uuid"));
-		Assert.assertEquals(encounterRole.getName(), PropertyUtils.getProperty(encounterRoleObject, "name"));
-		Assert.assertEquals(encounterRole.getDescription(), PropertyUtils.getProperty(encounterRoleObject, "description"));
+		Assertions.assertEquals(encounterRole.getUuid(), PropertyUtils.getProperty(encounterRoleObject, "uuid"));
+		Assertions.assertEquals(encounterRole.getName(), PropertyUtils.getProperty(encounterRoleObject, "name"));
+		Assertions.assertEquals(encounterRole.getDescription(), PropertyUtils.getProperty(encounterRoleObject, "description"));
 	}
 }

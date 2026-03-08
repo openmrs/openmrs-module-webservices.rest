@@ -9,7 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_2;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Obs;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
@@ -20,9 +21,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ObsController2_2Test extends MainResourceControllerTest {
 
@@ -53,9 +54,11 @@ public class ObsController2_2Test extends MainResourceControllerTest {
      * @see MainResourceControllerTest#shouldGetAll()
      */
     @Override
-    @Test(expected = ResourceDoesNotSupportOperationException.class)
+    @Test
     public void shouldGetAll() throws Exception {
-        super.shouldGetAll();
+    	assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+	        super.shouldGetAll();
+    	});
     }
 
     @Test

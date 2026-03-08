@@ -9,24 +9,21 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link SearchQuery}.
  */
 public class SearchQueryTest {
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 	
 	/**
 	 * @verifies fail if required parameters are already set
@@ -37,9 +34,10 @@ public class SearchQueryTest {
 		
 		SearchQuery.Builder builder = new SearchQuery.Builder("Enables search").withRequiredParameters("patient");
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("withRequiredParameters() must not be called twice");
-		builder.withRequiredParameters("encounter");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			builder.withRequiredParameters("encounter");
+		});
+		assertThat(ex.getMessage(), containsString("withRequiredParameters() must not be called twice"));
 	}
 	
 	/**
@@ -51,9 +49,10 @@ public class SearchQueryTest {
 		
 		SearchQuery.Builder builder = new SearchQuery.Builder("Enables search").withOptionalParameters("patient");
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("withOptionalParameters() must not be called twice");
-		builder.withOptionalParameters("encounter");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			builder.withOptionalParameters("encounter");
+		});
+		assertThat(ex.getMessage(), containsString("withOptionalParameters() must not be called twice"));
 	}
 	
 	/**
@@ -116,10 +115,11 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfTheDescriptionIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("Description must not be empty");
-		new SearchQuery.Builder(null).withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
-		        .build();
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+			new SearchQuery.Builder(null).withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
+			        .build();
+		});
+		assertThat(ex.getMessage(), containsString("Description must not be empty"));
 	}
 	
 	/**
@@ -129,10 +129,11 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfTheDescriptionIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("Description must not be empty");
-		new SearchQuery.Builder("").withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
-		        .build();
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			new SearchQuery.Builder("").withRequiredParameters("patient", "visit").withOptionalParameters("encounter", "date")
+			        .build();
+		});
+		assertThat(ex.getMessage(), containsString("Description must not be empty"));
 	}
 	
 	/**
@@ -142,9 +143,10 @@ public class SearchQueryTest {
 	@Test
 	public void build_shouldFailIfBothRequiredAndOptionalParametersAreEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("Either required or optional parameters must not be empty");
-		new SearchQuery.Builder("Enable search").build();
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			new SearchQuery.Builder("Enable search").build();
+		});
+		assertThat(ex.getMessage(), containsString("Either required or optional parameters must not be empty"));
 	}
 	
 	/**

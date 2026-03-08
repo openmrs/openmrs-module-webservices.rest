@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_8;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.FormService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -28,7 +28,7 @@ public class FormSearchHandlerTest extends MainResourceControllerTest {
 
 	private static final String FORM_DATASET_XML = "formTestDataSet.xml";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		formService = Context.getFormService();
 		executeDataSet(FORM_DATASET_XML);
@@ -59,7 +59,7 @@ public class FormSearchHandlerTest extends MainResourceControllerTest {
 		req.addParameter("published", "true");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = result.get("results");
-		Assert.assertEquals(3, hits.size());
+		Assertions.assertEquals(3, hits.size());
 	}
 	@Test
 	public void getSearchConfig_shouldReturnUnpublishedForms() throws Exception{
@@ -67,6 +67,6 @@ public class FormSearchHandlerTest extends MainResourceControllerTest {
 		req.addParameter("published", "false");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = result.get("results");
-		Assert.assertEquals(2, hits.size());
+		Assertions.assertEquals(2, hits.size());
 	}
 }

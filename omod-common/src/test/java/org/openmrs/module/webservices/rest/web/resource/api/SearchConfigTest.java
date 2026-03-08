@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,17 +20,14 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests {@link SearchConfig}.
  */
 public class SearchConfigTest {
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 	
 	/**
 	 * @verifies create an instance of search config
@@ -63,11 +60,12 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenIdIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("id must not be empty");
-		String id = null;
-		new SearchConfig(id, "v1/order", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
-		        .withOptionalParameters("id").build()));
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+			String id = null;
+			new SearchConfig(id, "v1/order", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
+			        .withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("id must not be empty"));
 	}
 	
 	/**
@@ -77,10 +75,11 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenIdIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("id must not be empty");
-		new SearchConfig("", "v1/order", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
-		        .withOptionalParameters("id").build()));
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			new SearchConfig("", "v1/order", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
+			        .withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("id must not be empty"));
 	}
 	
 	/**
@@ -90,11 +89,12 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedResourceIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("supportedResource must not be empty");
-		String supportedResource = null;
-		new SearchConfig("default", supportedResource, asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
-		        .withOptionalParameters("id").build()));
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+			String supportedResource = null;
+			new SearchConfig("default", supportedResource, asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
+			        .withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("supportedResource must not be empty"));
 	}
 	
 	/**
@@ -104,10 +104,11 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedResourceIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("supportedResource must not be empty");
-		new SearchConfig("default", "", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
-		        .withOptionalParameters("id").build()));
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			new SearchConfig("default", "", asList("1.8.*"), asList(new SearchQuery.Builder("Enables to search")
+			        .withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("supportedResource must not be empty"));
 	}
 	
 	/**
@@ -117,11 +118,12 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedOpenmrsVersionsIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("supportedOpenmrsVersions must not be empty");
-		List<String> supportedOpenmrsVersions = null;
-		new SearchConfig("default", "v1/order", supportedOpenmrsVersions,
-		        asList(new SearchQuery.Builder("Enables to search").withOptionalParameters("id").build()));
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+			List<String> supportedOpenmrsVersions = null;
+			new SearchConfig("default", "v1/order", supportedOpenmrsVersions,
+			        asList(new SearchQuery.Builder("Enables to search").withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("supportedOpenmrsVersions must not be empty"));
 	}
 	
 	/**
@@ -131,11 +133,12 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSupportedOpenmrsVersionsIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("supportedOpenmrsVersions must not be empty");
-		List<String> supportedOpenmrsVersions = Collections.emptyList();
-		new SearchConfig("default", "v1/order", supportedOpenmrsVersions,
-		        asList(new SearchQuery.Builder("Enables to search").withOptionalParameters("id").build()));
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			List<String> supportedOpenmrsVersions = Collections.emptyList();
+			new SearchConfig("default", "v1/order", supportedOpenmrsVersions,
+			        asList(new SearchQuery.Builder("Enables to search").withOptionalParameters("id").build()));
+		});
+		assertThat(ex.getMessage(), containsString("supportedOpenmrsVersions must not be empty"));
 	}
 	
 	/**
@@ -145,10 +148,11 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSearchQueriesIsNull() throws Exception {
 		
-		expectedException.expect(NullPointerException.class);
-		expectedException.expectMessage("searchQueries must not be empty");
-		List<SearchQuery> searchQueries = null;
-		new SearchConfig("default", "v1/order", "1.8.*", searchQueries);
+		NullPointerException ex = assertThrows(NullPointerException.class, () -> {
+			List<SearchQuery> searchQueries = null;
+			new SearchConfig("default", "v1/order", "1.8.*", searchQueries);
+		});
+		assertThat(ex.getMessage(), containsString("searchQueries must not be empty"));
 	}
 	
 	/**
@@ -158,10 +162,11 @@ public class SearchConfigTest {
 	@Test
 	public void SearchConfig_shouldFailIfGivenSearchQueriesIsEmpty() throws Exception {
 		
-		expectedException.expect(IllegalArgumentException.class);
-		expectedException.expectMessage("searchQueries must not be empty");
-		List<SearchQuery> searchQueries = Collections.emptyList();
-		new SearchConfig("default", "v1/order", "1.8.*", searchQueries);
+		IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
+			List<SearchQuery> searchQueries = Collections.emptyList();
+			new SearchConfig("default", "v1/order", "1.8.*", searchQueries);
+		});
+		assertThat(ex.getMessage(), containsString("searchQueries must not be empty"));
 	}
 	
 	/**
