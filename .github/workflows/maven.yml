@@ -18,6 +18,7 @@ jobs:
       java_versions: '[21, 25]'
       main_java_version: '21'
     secrets:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
 
