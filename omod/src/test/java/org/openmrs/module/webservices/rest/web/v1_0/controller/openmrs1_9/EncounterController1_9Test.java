@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.hamcrest.MatcherAssert;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
@@ -183,22 +184,22 @@ public class EncounterController1_9Test extends MainResourceControllerTest {
 		
 		Encounter newEncounter = Context.getEncounterService().getEncounterByUuid(newEncounterUuid);
 		Set<Obs> encounterObs = newEncounter.getAllObs();
-		Assert.assertThat(encounterObs.size(), is(1));
+		MatcherAssert.assertThat(encounterObs.size(), is(1));
 		
 		Obs parentObs = encounterObs.iterator().next();
 		Assertions.assertTrue(parentObs.hasGroupMembers());
 		
 		Set<Obs> parentGroupMembers = parentObs.getGroupMembers();
-		Assert.assertThat(parentGroupMembers.size(), is(1));
+		MatcherAssert.assertThat(parentGroupMembers.size(), is(1));
 		
 		Obs childObs = parentGroupMembers.iterator().next();
 		Assertions.assertTrue(childObs.hasGroupMembers());
 		
 		Set<Obs> childGroupMembers = childObs.getGroupMembers();
-		Assert.assertThat(childGroupMembers.size(), is(1));
+		MatcherAssert.assertThat(childGroupMembers.size(), is(1));
 		
 		Obs grandchildObs = childGroupMembers.iterator().next();
-		Assert.assertThat(grandchildObs.getValueNumeric(), is(1.0));
+		MatcherAssert.assertThat(grandchildObs.getValueNumeric(), is(1.0));
 		
 		System.out.println("");
 	}

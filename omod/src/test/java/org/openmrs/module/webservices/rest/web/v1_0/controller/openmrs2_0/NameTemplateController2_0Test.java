@@ -20,6 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.hamcrest.MatcherAssert;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
@@ -79,10 +80,10 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		SimpleObject defaultNameTemplateResource = parseNameTemplateResource(SHORT_NAMETEMPLATE_RESOURCE);
 		SimpleObject alternateNameTemplateResource = parseNameTemplateResource(LONG_NAMETEMPLATE_RESOURCE);
 
-		Assert.assertThat(result.containsKey("results"), is(true));
-		Assert.assertThat(result.get("results"), iterableWithSize(NAME_TEMPLATES_COUNT));
-		Assert.assertThat(result.get("results"), hasItem(defaultNameTemplateResource));
-		Assert.assertThat(result.get("results"), hasItem(alternateNameTemplateResource));
+		MatcherAssert.assertThat(result.containsKey("results"), is(true));
+		MatcherAssert.assertThat(result.get("results"), iterableWithSize(NAME_TEMPLATES_COUNT));
+		MatcherAssert.assertThat(result.get("results"), hasItem(defaultNameTemplateResource));
+		MatcherAssert.assertThat(result.get("results"), hasItem(alternateNameTemplateResource));
 	}
 	
 	@Test
@@ -92,7 +93,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		
 		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(SHORT_NAMETEMPLATE_RESOURCE));
 		
-		Assert.assertThat(result, is(expectedResult));
+		MatcherAssert.assertThat(result, is(expectedResult));
 	}
 	
 	@Test
@@ -102,7 +103,7 @@ public class NameTemplateController2_0Test extends RestControllerTestUtils {
 		
 		SimpleObject expectedResult = withResourceVersion(parseNameTemplateResource(LONG_NAMETEMPLATE_RESOURCE));
 		
-		Assert.assertThat(result, is(expectedResult));
+		MatcherAssert.assertThat(result, is(expectedResult));
 	}
 	
 	@Test

@@ -13,7 +13,7 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -44,7 +44,7 @@ public class AddressTemplateController2_0Test extends MainResourceControllerTest
 		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("addressTemplate.json")) {
 			json = IOUtils.toString(inputStream, "UTF-8");
 		}
-		Assert.assertThat(result, Matchers.is(SimpleObject.parseJson(json)));
+		MatcherAssert.assertThat(result, Matchers.is(SimpleObject.parseJson(json)));
 	}
 	
 	@Override

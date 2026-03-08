@@ -81,7 +81,7 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 	@Test
 	public void shouldIncludeIfModuleIsStarted() throws Exception {
 		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI() + "/" + getUuid())));
-		Assert.assertThat((Boolean) PropertyUtils.getProperty(result, "started"), is(false));
+		MatcherAssert.assertThat((Boolean) PropertyUtils.getProperty(result, "started"), is(false));
 	}
 	
 	@Test

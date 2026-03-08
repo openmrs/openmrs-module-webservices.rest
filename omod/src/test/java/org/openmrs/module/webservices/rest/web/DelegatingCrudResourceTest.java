@@ -218,7 +218,7 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		so.add("retiredBy", "1");
 		so.add("retireReason", "test");
 		DelegatingCrudResource<Encounter> resource = new EncounterResource1_8();
-		Assert.assertThrows(ConversionException.class, () -> {resource.convert(so);});
+		Assertions.assertThrows(ConversionException.class, () -> {resource.convert(so);});
 	}
 
 	@Test
@@ -243,6 +243,6 @@ public class DelegatingCrudResourceTest extends BaseModuleWebContextSensitiveTes
 		so.add("voidedBy", "1");
 		so.add("voidReason", "test");
 		DelegatingCrudResource<Location> resource = new LocationResource1_8();
-		Assert.assertThrows(ConversionException.class, () -> {resource.convert(so);});
+		Assertions.assertThrows(ConversionException.class, () -> {resource.convert(so);});
 	}
 }

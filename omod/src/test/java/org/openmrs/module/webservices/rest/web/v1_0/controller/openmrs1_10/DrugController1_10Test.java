@@ -132,7 +132,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		drug.setStrength("full");
 		conceptService.saveDrug(drug);
 		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + drugUuid)));
-		Assert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+		MatcherAssert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		drug.setStrength("full");
 		conceptService.saveDrug(drug);
 		SimpleObject result = deserialize(handle(newGetRequest(getURI() + "/" + drugUuid, new Parameter("v", "full"))));
-		Assert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+		MatcherAssert.assertThat("full", Matchers.is(PropertyUtils.getProperty(result, "strength")));
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ public class DrugController1_10Test extends MainResourceControllerTest {
 		drug.add("combination", "true");
 		drug.add("strength", "high");
 		SimpleObject result = deserialize(handle(newPostRequest(getURI(), drug)));
-		Assert.assertThat("high", Matchers.is(PropertyUtils.getProperty(result, "strength")));
+		MatcherAssert.assertThat("high", Matchers.is(PropertyUtils.getProperty(result, "strength")));
 	}
 	
 	/**

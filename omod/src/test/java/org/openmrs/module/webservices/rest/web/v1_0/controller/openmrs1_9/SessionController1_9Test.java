@@ -98,7 +98,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		// check if the unauthenticated user response has locale and allowedLocales
 		Object ret = controller.get();
 		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
@@ -107,7 +107,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Assertions.assertTrue(Context.isAuthenticated());
 		Object ret = controller.get();
 		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 		    ((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	
@@ -150,7 +150,7 @@ public class SessionController1_9Test extends BaseModuleWebContextSensitiveTest 
 		Object ret = controller.post(hsr, new ObjectMapper().readValue(content, HashMap.class));
 		Assertions.assertEquals(newLocale, Context.getLocale());
 		Assertions.assertEquals(Context.getLocale(), PropertyUtils.getProperty(ret, "locale"));
-		Assert.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
+		Assertions.assertArrayEquals(Context.getAdministrationService().getAllowedLocales().toArray(),
 				((List<Locale>) PropertyUtils.getProperty(ret, "allowedLocales")).toArray());
 	}
 	

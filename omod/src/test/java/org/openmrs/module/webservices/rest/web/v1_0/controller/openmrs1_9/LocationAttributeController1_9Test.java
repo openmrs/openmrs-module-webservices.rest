@@ -122,7 +122,7 @@ public class LocationAttributeController1_9Test extends MainResourceControllerTe
 		assertThat(Util.getResultsList(response2), is(not(empty())));
 		for (Object result : Util.getResultsList(response2)) {
 			Object resultAttributeTypeUuid = Util.getByPath(Util.getByPath(result, "attributeType"), "uuid");
-			Assert.assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
+			MatcherAssert.assertThat((String) resultAttributeTypeUuid, is(attributeTypeUuid));
 		}
 	}
 }

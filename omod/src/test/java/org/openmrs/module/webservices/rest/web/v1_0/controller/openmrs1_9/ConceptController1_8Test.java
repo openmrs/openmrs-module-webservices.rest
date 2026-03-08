@@ -572,7 +572,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		MockHttpServletResponse response = handle(request);
 		SimpleObject object = deserialize(response);
 		List<Map<String, String>> data = (List<Map<String, String>>) object.get("links");
-		Assert.assertThat(
+		MatcherAssert.assertThat(
 		    data,
 		    contains(
 		        allOf(hasEntry("rel", "self"),
@@ -700,7 +700,7 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		List<Object> results = Util.getResultsList(response);
 		Assertions.assertEquals(1, results.size());
 		Object next = results.iterator().next();
-		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+		MatcherAssert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
 	
 	@Test

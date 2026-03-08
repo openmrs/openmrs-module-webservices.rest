@@ -61,7 +61,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=true' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getAllProviders(true).stream()
 							.map(BaseOpenmrsObject::getUuid).toArray(),
 					allProvidersUuid.toArray()
@@ -80,7 +80,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getAllProviders(false).stream()
 							.map(BaseOpenmrsObject::getUuid).toArray(),
 					allNonRetiredUuid.toArray()
@@ -106,7 +106,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: no retired by default
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getProviders(providerName, null, null, null, false)
 							.stream().map(
 							BaseOpenmrsObject::getUuid
@@ -127,7 +127,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getProviders(providerName, null, null, null, false)
 							.stream().map(
 							BaseOpenmrsObject::getUuid

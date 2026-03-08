@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.hamcrest.MatcherAssert;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -60,7 +61,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 		
 		Assertions.assertEquals(1, results.size());
 		Object next = results.iterator().next();
-		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+		MatcherAssert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
 	
 	@Test
@@ -73,7 +74,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 		
 		Assertions.assertEquals(1, results.size());
 		Object next = results.iterator().next();
-		Assert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
+		MatcherAssert.assertThat((String) PropertyUtils.getProperty(next, "uuid"), is("568b58c8-e878-11e0-950d-00248140a5e3"));
 	}
 	
 	@Test
@@ -81,7 +82,7 @@ public class ConceptController1_9Test extends MainResourceControllerTest {
 		executeDataSet("customConceptDataset.xml");
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + "CIEL:WGT234");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
+		MatcherAssert.assertThat((String) PropertyUtils.getProperty(result, "uuid"), is("c607c80f-1ea9-4da3-bb88-6276ce8868dd"));
 	}
 	
 }
