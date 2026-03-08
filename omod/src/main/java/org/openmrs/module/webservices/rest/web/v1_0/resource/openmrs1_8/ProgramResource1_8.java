@@ -151,7 +151,9 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return ((ModelImpl) super.getUPDATEModel(rep))
+				.property("concept", new StringProperty().example("uuid"))
+				.property("retired", new BooleanProperty());
 	}
 	
 	@Override
