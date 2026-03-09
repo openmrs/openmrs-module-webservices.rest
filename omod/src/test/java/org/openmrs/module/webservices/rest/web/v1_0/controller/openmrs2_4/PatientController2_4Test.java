@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.sql.Date;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatientController2_4Test extends RestControllerTestUtils {
 
@@ -38,7 +38,7 @@ public class PatientController2_4Test extends RestControllerTestUtils {
 	private PersonDAO hibernatePersonDAO;
 
 	@Test
-	@Ignore("TRUNK-6010: The generated SQL contains syntax error in Core before version 2.5. This has been fixed on commit c3f63301. Once a submodule that depends on core version 2.5 is added, this test should be moved there and unignored.")
+	@Disabled("TRUNK-6010: The generated SQL contains syntax error in Core before version 2.5. This has been fixed on commit c3f63301. Once a submodule that depends on core version 2.5 is added, this test should be moved there and unignored.")
 	public void shouldReturnDuplicatedPatientsByAllAttributesIncludingVoided() throws Exception {
 		// given
 		Person person1 = new Person();

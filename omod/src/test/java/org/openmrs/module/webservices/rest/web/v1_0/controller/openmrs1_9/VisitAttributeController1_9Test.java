@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -57,7 +57,7 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		return service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID).getActiveAttributes().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 		this.service = Context.getVisitService();
@@ -68,8 +68,8 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL, "true"))));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(3, Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(3, Util.getResultsSize(result));
 	}
 	
 	@Test
@@ -80,42 +80,42 @@ public class VisitAttributeController1_9Test extends MainResourceControllerTest 
 		handle(newPostRequest(getURI(), json));
 		
 		int after = service.getVisitByUuid(RestTestConstants1_9.VISIT_UUID).getAttributes().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
 	public void shouldEditAVisitAttribute() throws Exception {
 		final String newValue = "2012-05-05";
 		VisitAttribute va = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertFalse(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(va.getValue()));
+		Assertions.assertFalse(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(va.getValue()));
 		String json = "{ \"value\":\"2012-05-05\" }";
 		
 		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertEquals("Audit Date", visitAttribute.getAttributeType().getName());
+		Assertions.assertEquals("Audit Date", visitAttribute.getAttributeType().getName());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		VisitAttribute updated = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertTrue(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(updated.getValue()));
+		Assertions.assertTrue(new SimpleDateFormat(DATE_PATTERN).parse(newValue).equals(updated.getValue()));
 	}
 	
 	@Test
 	public void shouldVoidAVisitAttribute() throws Exception {
 		VisitAttribute visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertFalse(visitAttribute.isVoided());
+		Assertions.assertFalse(visitAttribute.isVoided());
 		
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "unit test")));
 		
 		visitAttribute = service.getVisitAttributeByUuid(RestTestConstants1_9.VISIT_ATTRIBUTE_UUID);
-		Assert.assertTrue(visitAttribute.isVoided());
-		Assert.assertEquals("unit test", visitAttribute.getVoidReason());
+		Assertions.assertTrue(visitAttribute.isVoided());
+		Assertions.assertEquals("unit test", visitAttribute.getVoidReason());
 	}
 	
 	@Test
 	public void shouldNotThrowNullPointerExceptionIfMaxOccursIsNull() {
 		VisitAttribute visitAttribute = service.getVisitAttributeByUuid("7c2tyr18-6faa-11e0-7899-001e378eb66d");
-		Assert.assertFalse(visitAttribute.isVoided());
-		Assert.assertNull(visitAttribute.getAttributeType().getMaxOccurs());
+		Assertions.assertFalse(visitAttribute.isVoided());
+		Assertions.assertNull(visitAttribute.getAttributeType().getMaxOccurs());
 		
 		VisitAttributeResource1_9 visitAttributeResource1_9 = new VisitAttributeResource1_9();
 		visitAttributeResource1_9.save(visitAttribute);

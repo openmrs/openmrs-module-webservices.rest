@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -33,7 +33,7 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 	
 	private static final String LOCATION_TAG_INITIAL_XML = "customLocationTagDataset.xml";
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = Context.getLocationService();
 		executeDataSet(LOCATION_TAG_INITIAL_XML);
@@ -79,8 +79,8 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		
 		SimpleObject newLocationTag = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newLocationTag, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newLocationTag, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 		
 	}
 	
@@ -91,9 +91,9 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + locationTag.getUuid());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(locationTag.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(locationTag.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(locationTag.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(locationTag.getName(), PropertyUtils.getProperty(result, "name"));
 		
 	}
 	
@@ -103,8 +103,8 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 		
 	}
 	
@@ -114,8 +114,8 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		final String EDITED_NAME = "Location Tag edited";
 		final String EDITED_DESCRIPTION = "New Location Tag Description";
 		LocationTag locationTag = service.getLocationTagByUuid(getUuid());
-		Assert.assertFalse(EDITED_NAME.equals(locationTag.getName()));
-		Assert.assertFalse(EDITED_DESCRIPTION.equals(locationTag.getDescription()));
+		Assertions.assertFalse(EDITED_NAME.equals(locationTag.getName()));
+		Assertions.assertFalse(EDITED_DESCRIPTION.equals(locationTag.getDescription()));
 
 		String json = "{ \"name\":\"" + EDITED_NAME + "\", \"description\":\"" + EDITED_DESCRIPTION + "\" }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
@@ -123,9 +123,9 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		LocationTag editedLocationTag = service.getLocationTagByUuid(getUuid());
-		Assert.assertNotNull(editedLocationTag);
-		Assert.assertEquals(EDITED_NAME, editedLocationTag.getName());
-		Assert.assertEquals(EDITED_DESCRIPTION, editedLocationTag.getDescription());		
+		Assertions.assertNotNull(editedLocationTag);
+		Assertions.assertEquals(EDITED_NAME, editedLocationTag.getName());
+		Assertions.assertEquals(EDITED_DESCRIPTION, editedLocationTag.getDescription());		
 	}
 	
 	@Test
@@ -136,14 +136,14 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getLocationTag(3));
+		Assertions.assertNull(service.getLocationTag(3));
 	}
 	
 	@Test
 	public void shouldRetireLocationTag() throws Exception {
 		
 		LocationTag locationTag = service.getLocationTag(2);
-		Assert.assertFalse(locationTag.isRetired());
+		Assertions.assertFalse(locationTag.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + locationTag.getUuid());
 		req.addParameter("!purge", "");
@@ -151,8 +151,8 @@ public class LocationTagController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		LocationTag retiredLocationTag = service.getLocationTag(2);
-		Assert.assertTrue(retiredLocationTag.isRetired());
-		Assert.assertEquals("random reason", retiredLocationTag.getRetireReason());
+		Assertions.assertTrue(retiredLocationTag.isRetired());
+		Assertions.assertEquals("random reason", retiredLocationTag.getRetireReason());
 		
 	}
 	

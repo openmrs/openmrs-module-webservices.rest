@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openmrs.module.webservices.rest.test.Util.getByPath;
 import static org.openmrs.module.webservices.rest.test.Util.getResultsList;
 import static org.openmrs.module.webservices.rest.test.Util.getResultsSize;
@@ -112,7 +112,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 	}
 	
 	@Test
-	@Ignore("Fails when running with all tests, but passes if run alone... needs to be investigated")
+	@Disabled("Fails when running with all tests, but passes if run alone... needs to be investigated")
 	public void testAdd() throws Exception {
 		// If we don't explicitly set a locale, then a Context.getLocale() call nested somewhere below will trigger a
 		// premature hibernate flush because it looks up the global property for default locale
@@ -136,7 +136,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 	}
 	
 	@Test
-	@Ignore("Fails when running with all tests, but passes if run alone... needs to be investigated")
+	@Disabled("Fails when running with all tests, but passes if run alone... needs to be investigated")
 	public void testAddingDuplicateDoesNotCreateNewRecord() throws Exception {
 		// If we don't explicitly set a locale, then a Context.getLocale() call nested somewhere below will trigger a
 		// premature hibernate flush because it looks up the global property for default locale
@@ -158,7 +158,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 	}
 	
 	@Test
-	@Ignore("Fails when running with all tests, but passes if run alone... needs to be investigated")
+	@Disabled("Fails when running with all tests, but passes if run alone... needs to be investigated")
 	public void testDelete() throws Exception {
 		Encounter encounter = encounterService.getEncounter(3);
 		EncounterProviderResource1_9 resource = getResource();
@@ -169,7 +169,7 @@ public class EncounterProviderResource1_9Test extends BaseDelegatingResourceTest
 	}
 	
 	@Test
-	@Ignore("Fails when running with all tests, but passes if run alone... needs to be investigated")
+	@Disabled("Fails when running with all tests, but passes if run alone... needs to be investigated")
 	public void testDeleteAndAddAndDelete() throws Exception {
 		// delete existing provider
 		Encounter encounter = encounterService.getEncounter(3);

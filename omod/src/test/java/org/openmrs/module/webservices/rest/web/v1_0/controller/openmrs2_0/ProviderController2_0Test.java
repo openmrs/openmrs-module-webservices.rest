@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.BaseOpenmrsObject;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_0;
@@ -28,7 +28,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProviderController2_0Test extends MainResourceControllerTest {
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet(RestTestConstants2_0.PROVIDER_TEST_DATA_XML);
 	}
@@ -45,7 +45,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 
 			// Verify: no retired by default
 			for (Object provider : allProvidersDef) {
-				Assert.assertNotSame(true, PropertyUtils.getProperty(provider, "retired"));
+				Assertions.assertNotSame(true, PropertyUtils.getProperty(provider, "retired"));
 			}
 		}
 
@@ -61,7 +61,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=true' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getAllProviders(true).stream()
 							.map(BaseOpenmrsObject::getUuid).toArray(),
 					allProvidersUuid.toArray()
@@ -80,7 +80,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getAllProviders(false).stream()
 							.map(BaseOpenmrsObject::getUuid).toArray(),
 					allNonRetiredUuid.toArray()
@@ -106,7 +106,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: no retired by default
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getProviders(providerName, null, null, null, false)
 							.stream().map(
 							BaseOpenmrsObject::getUuid
@@ -127,7 +127,7 @@ public class ProviderController2_0Test extends MainResourceControllerTest {
 			).collect(Collectors.toList());
 
 			// Verify: 'includeAll=false' same as Java API
-			Assert.assertArrayEquals(
+			Assertions.assertArrayEquals(
 					Context.getProviderService().getProviders(providerName, null, null, null, false)
 							.stream().map(
 							BaseOpenmrsObject::getUuid

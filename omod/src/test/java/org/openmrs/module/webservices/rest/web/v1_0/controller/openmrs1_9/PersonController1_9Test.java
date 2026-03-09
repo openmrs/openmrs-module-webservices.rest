@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
@@ -35,11 +36,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests CRUD operations for {@link Person}s via web service calls
@@ -63,15 +64,17 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		return 0;
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getPersonService();
 	}
 	
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Test
@@ -159,14 +162,18 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		assertNotNull(person.getCauseOfDeath());
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldNotAllowUpdatingNamesProperty() throws Exception {
-		handle(newPostRequest(getURI() + "/" + getUuid(), "{\"names\":\"[]\"}"));
+		assertThrows(ConversionException.class, () -> {
+			handle(newPostRequest(getURI() + "/" + getUuid(), "{\"names\":\"[]\"}"));
+		});
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldNotAllowUpdatingAddressesProperty() throws Exception {
-		handle(newPostRequest(getURI() + "/" + getUuid(), "{\"addresses\":\"[]\"}"));
+		assertThrows(ConversionException.class, () -> {
+			handle(newPostRequest(getURI() + "/" + getUuid(), "{\"addresses\":\"[]\"}"));
+		});
 	}
 	
 	@Test
@@ -257,16 +264,20 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		assertEquals(getUuid(), PropertyUtils.getProperty(Util.getResultsList(result).get(0), "uuid"));
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldFailIfThePreferreNameBeingSetIsNew() throws Exception {
-		String json = "{\"preferredName\":{ \"givenName\":\"Joe\", \"familyName\":\"Smith\" }}";
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		assertThrows(ConversionException.class, () -> {
+			String json = "{\"preferredName\":{ \"givenName\":\"Joe\", \"familyName\":\"Smith\" }}";
+			handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		});
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void shouldFailIfThePreferreAddressBeingSetIsNew() throws Exception {
-		String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
-		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		assertThrows(ConversionException.class, () -> {
+			String json = "{\"preferredAddress\":{ \"address1\":\"test address\", \"country\":\"USA\" }}";
+			handle(newPostRequest(getURI() + "/" + getUuid(), json));
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -349,7 +360,7 @@ public class PersonController1_9Test extends MainResourceControllerTest {
 		req.setParameter("q", "Test");
 		SimpleObject results = deserialize(handle(req));
 		int fullCount = Util.getResultsSize(results);
-		assertTrue("This test assumes > 2 matching persons", fullCount > 2);
+		assertTrue(fullCount > 2, "This test assumes > 2 matching persons");
 		
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_LIMIT, "2");
 		results = deserialize(handle(req));

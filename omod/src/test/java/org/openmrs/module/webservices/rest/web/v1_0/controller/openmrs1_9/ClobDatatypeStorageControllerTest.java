@@ -10,10 +10,10 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.DatatypeService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.ClobDatatypeStorage;
@@ -33,7 +33,7 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 	
 	private DatatypeService datatypeService;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		datatypeService = Context.getDatatypeService();
 		executeDataSet(RestTestConstants1_9.FORM_RESOURCE_DATA_SET);
@@ -57,8 +57,8 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		
 		MockHttpServletResponse response = handle(request);
 		
-		Assert.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
-		Assert.assertEquals(before + 1, getAllCount());
+		Assertions.assertEquals(HttpServletResponse.SC_CREATED, response.getStatus());
+		Assertions.assertEquals(before + 1, getAllCount());
 	}
 	
 	@Test
@@ -66,12 +66,12 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		ClobDatatypeStorage clob = datatypeService
 		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 		
-		Assert.assertNotNull(clob);
+		Assertions.assertNotNull(clob);
 		int size = clob.getValue().getBytes().length;
 		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
 		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
 		
-		Assert.assertEquals(size, response.getContentAsByteArray().length);
+		Assertions.assertEquals(size, response.getContentAsByteArray().length);
 	}
 	
 	@Test
@@ -79,21 +79,21 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		ClobDatatypeStorage clob = datatypeService
 		        .getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 		
-		Assert.assertNotNull(clob);
+		Assertions.assertNotNull(clob);
 		
 		MockHttpServletResponse response = handle(newDeleteRequest(getURI() + "/"
 		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
 		
 		clob = datatypeService.getClobDatatypeStorageByUuid(RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID);
 		
-		Assert.assertNull(clob);
-		Assert.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		Assertions.assertNull(clob);
+		Assertions.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
 	}
 	
 	@Test
 	public void shouldReturnHTTP404ForNonExistenceClobdata() throws Exception {
 		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/non-existence-uuid"));
-		Assert.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
+		Assertions.assertEquals(HttpServletResponse.SC_NOT_FOUND, response.getStatus());
 	}
 	
 	@Override
@@ -124,25 +124,25 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetRefByUuid() throws Exception {
 		
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetDefaultByUuid() throws Exception {
 		
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetFullByUuid() throws Exception {
 		
 	}
 	
 	@Override
-	@Ignore
+	@Disabled
 	public void shouldGetAll() throws Exception {
 		
 	}

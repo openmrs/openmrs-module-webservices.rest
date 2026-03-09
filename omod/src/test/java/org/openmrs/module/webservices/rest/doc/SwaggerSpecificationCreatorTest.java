@@ -23,9 +23,9 @@ import io.swagger.models.auth.BasicAuthDefinition;
 import io.swagger.models.parameters.Parameter;
 import io.swagger.util.Json;
 import org.dbunit.database.DatabaseConnection;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.GlobalProperty;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
@@ -33,7 +33,7 @@ import org.openmrs.module.unrelatedtest.rest.resource.UnrelatedGenericChildResou
 import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -46,9 +46,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -119,7 +119,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		return ret;
 	}
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		// init REST
 		Context.getService(RestService.class).initialize();
@@ -140,9 +140,8 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		Map<String, Integer> afterCounts = getRowCounts();
 		
-		Assert.assertEquals("Ensure no tables are created or destroyed", beforeCounts.size(), afterCounts.size());
-		Assert.assertTrue("Ensure that no data was added or removed from any tables",
-		    ensureCountsEqual(beforeCounts, afterCounts));
+		Assertions.assertEquals(beforeCounts.size(), afterCounts.size(), "Ensure no tables are created or destroyed");
+		Assertions.assertTrue(ensureCountsEqual(beforeCounts, afterCounts), "Ensure that no data was added or removed from any tables");
 	}
 	
 	private boolean ensureCountsEqual(Map<String, Integer> beforeCounts, Map<String, Integer> afterCounts) {
@@ -169,7 +168,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
-				Assert.assertFalse("Ensure each operation has a unique ID", operationIds.contains(o.getOperationId()));
+				Assertions.assertFalse(operationIds.contains(o.getOperationId()), "Ensure each operation has a unique ID");
 				operationIds.add(o.getOperationId());
 			}
 		}
@@ -184,8 +183,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		
 		for (Path p : spec.getPaths().values()) {
 			if (p.getGet() != null) {
-				Assert.assertTrue("Ensure each GET operation has the 'v' query parameter",
-				    operationHasRepresentationParam(p.getGet()));
+				Assertions.assertTrue(operationHasRepresentationParam(p.getGet()), "Ensure each GET operation has the 'v' query parameter");
 			}
 		}
 	}
@@ -212,8 +210,7 @@ public class SwaggerSpecificationCreatorTest extends BaseModuleWebContextSensiti
 		for (Path p : spec.getPaths().values()) {
 			for (Operation o : p.getOperations()) {
 				if (o.getOperationId().matches("^getAll[A-Z].*")) {
-					Assert.assertTrue("Ensure each operation that supports paging has both paging parameters",
-					    operationHasPagingParams(o));
+					Assertions.assertTrue(operationHasPagingParams(o), "Ensure each operation that supports paging has both paging parameters");
 				}
 			}
 		}

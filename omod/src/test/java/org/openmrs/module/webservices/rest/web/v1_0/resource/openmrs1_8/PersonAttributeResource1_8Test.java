@@ -10,9 +10,9 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Attributable;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -25,7 +25,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	@Autowired
 	private LocationService locationService;
 	
-	@Before
+	@BeforeEach
 	public void beforeEachTests() throws Exception {
 		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON, HashMap.class));
 		resource = (PersonAttributeResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
@@ -63,7 +63,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	public void shouldCreatePersonAttribute() throws Exception {
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
-		Assert.assertEquals("Bangalore", created.get("value"));
+		Assertions.assertEquals("Bangalore", created.get("value"));
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		personAttributeSimpleObject.putAll(new ObjectMapper().readValue(PERSON_ATTRIBUTE_JSON_WITHOUT_UUID, HashMap.class));
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 				personAttributeSimpleObject, new RequestContext());
-		Assert.assertEquals("Bangalore", created.get("value"));
+		Assertions.assertEquals("Bangalore", created.get("value"));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 
 		resource.setValue(attribute, location.getUuid());
 
-		Assert.assertEquals(location.getId().toString(), resource.getValue(attribute));
+		Assertions.assertEquals(location.getId().toString(), resource.getValue(attribute));
 	}
 
 	@Test
@@ -157,10 +157,10 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		
 		PersonAttribute attribute = new PersonAttribute(type, null);
 		attribute.setAttributeType(type);
-		Assert.assertNull(attribute.getValue());
+		Assertions.assertNull(attribute.getValue());
 		
 		resource.setValue(attribute, location.getUuid());
-		Assert.assertEquals(location.getId().toString(), attribute.getValue());
+		Assertions.assertEquals(location.getId().toString(), attribute.getValue());
 	}
 	
 	@Test
@@ -176,12 +176,12 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		String nonExistenceLocationUuid = "this-uuid-does-not-exist-of-course";
 		PersonAttribute attribute = new PersonAttribute(type, null);
 		
-		Assert.assertNull(attribute.getValue());
-		Assert.assertTrue(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
+		Assertions.assertNull(attribute.getValue());
+		Assertions.assertTrue(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
 		
 		resource.setValue(attribute, nonExistenceLocationUuid);
 		
-		Assert.assertEquals(nonExistenceLocationUuid, attribute.getValue());
+		Assertions.assertEquals(nonExistenceLocationUuid, attribute.getValue());
 	}
 	
 	@Test
@@ -189,12 +189,12 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 		PersonAttributeType type = personService.getPersonAttributeTypeByName("Race");
 		PersonAttribute attribute = new PersonAttribute(type, null);
 		
-		Assert.assertNull(attribute.getValue());
-		Assert.assertEquals("java.lang.String", type.getFormat());
-		Assert.assertFalse(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
+		Assertions.assertNull(attribute.getValue());
+		Assertions.assertEquals("java.lang.String", type.getFormat());
+		Assertions.assertFalse(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
 		
 		resource.setValue(attribute, "arab");
 		
-		Assert.assertEquals("arab", attribute.getValue());
+		Assertions.assertEquals("arab", attribute.getValue());
 	}
 }

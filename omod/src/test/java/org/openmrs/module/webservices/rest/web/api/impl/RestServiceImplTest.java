@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.api.impl;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.mockingbird.test.Animal;
 import org.mockingbird.test.Cat;
 import org.mockingbird.test.HibernateProxyAnimal;
@@ -46,7 +46,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubclassH
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.UnknownResourceException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.CohortResource1_8;
-import org.openmrs.test.BaseContextMockTest;
+import org.openmrs.test.jupiter.BaseContextMockTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -81,9 +81,6 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	
 	@InjectMocks
 	RestService restService = new RestServiceImpl();
-	
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 	
 	/**
 	 * @verifies return default representation if given null
@@ -217,10 +214,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
 		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Cannot access REST resources");
-		expectedException.expectCause(is(ioException));
-		restService.getResourceByName("v1/animal");
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.getResourceByName("v1/animal");
+		});
+		assertThat(ex.getMessage(), containsString("Cannot access REST resources"));
+		assertThat(ex.getCause(), is(ioException));
 	}
 	
 	/**
@@ -230,9 +228,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 	@Test
 	public void getResourceByName_shouldFailIfResourceForGivenNameCannotBeFound() throws Exception {
 		
-		expectedException.expect(UnknownResourceException.class);
-		expectedException.expectMessage("Unknown resource: UNKNOWNRESOURCENAME");
-		restService.getResourceByName("UNKNOWNRESOURCENAME");
+		UnknownResourceException ex = assertThrows(UnknownResourceException.class, () -> {
+			restService.getResourceByName("UNKNOWNRESOURCENAME");
+		});
+		assertThat(ex.getMessage(), containsString("Unknown resource: UNKNOWNRESOURCENAME"));
 	}
 	
 	/**
@@ -247,9 +246,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(UnknownResourceException.class);
-		expectedException.expectMessage("Unknown resource: v1/animal");
-		restService.getResourceByName("v1/animal");
+		UnknownResourceException ex = assertThrows(UnknownResourceException.class, () -> {
+			restService.getResourceByName("v1/animal");
+		});
+		assertThat(ex.getMessage(), containsString("Unknown resource: v1/animal"));
 	}
 	
 	/**
@@ -283,9 +283,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(UnknownResourceException.class);
-		expectedException.expectMessage("Unknown resource: v1/animal/class");
-		restService.getResourceByName("v1/animal/class");
+		UnknownResourceException ex = assertThrows(UnknownResourceException.class, () -> {
+			restService.getResourceByName("v1/animal/class");
+		});
+		assertThat(ex.getMessage(), containsString("Unknown resource: v1/animal/class"));
 	}
 	
 	/**
@@ -301,9 +302,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
-		restService.getResourceByName("v1/animal");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.getResourceByName("v1/animal");
+		});
+		assertThat(ex.getMessage(), containsString("Two resources with the same name (v1/animal) must not have the same order"));
 	}
 	
 	/**
@@ -353,9 +355,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Unknown resource: class org.mockingbird.test.Animal");
-		restService.getResourceBySupportedClass(Animal.class);
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.getResourceBySupportedClass(Animal.class);
+		});
+		assertThat(ex.getMessage(), containsString("Unknown resource: class org.mockingbird.test.Animal"));
 	}
 	
 	/**
@@ -371,9 +374,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Unknown resource: class java.lang.String");
-		restService.getResourceBySupportedClass(String.class);
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.getResourceBySupportedClass(String.class);
+		});
+		assertThat(ex.getMessage(), containsString("Unknown resource: class java.lang.String"));
 	}
 	
 	/**
@@ -443,10 +447,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
 		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Cannot access REST resources");
-		expectedException.expectCause(is(ioException));
-		restService.getResourceByName("v1/animal");
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.getResourceByName("v1/animal");
+		});
+		assertThat(ex.getMessage(), containsString("Cannot access REST resources"));
+		assertThat(ex.getCause(), is(ioException));
 	}
 	
 	/**
@@ -463,9 +468,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
-		restService.getResourceBySupportedClass(Animal.class);
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.getResourceBySupportedClass(Animal.class);
+		});
+		assertThat(ex.getMessage(), containsString("Two resources with the same name (v1/animal) must not have the same order"));
 	}
 	
 	/**
@@ -523,10 +529,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		parameters.put("s", new String[] { searchHandlerId });
 		
-		expectedException.expect(InvalidSearchException.class);
-		expectedException.expectMessage("The search with id '" + searchHandlerId + "' for '"
-		        + searchConfig.getSupportedResource() + "' resource is not recognized");
-		restService.getSearchHandler("v1/concept", parameters);
+		InvalidSearchException ex = assertThrows(InvalidSearchException.class, () -> {
+			restService.getSearchHandler("v1/concept", parameters);
+		});
+		assertThat(ex.getMessage(), containsString("The search with id '" + searchHandlerId + "' for '"
+		        + searchConfig.getSupportedResource() + "' resource is not recognized"));
 	}
 	
 	/**
@@ -554,11 +561,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		Map<String, String[]> parameters = new HashMap<String, String[]>();
 		parameters.put("q", new String[] { "some name" });
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage(startsWith("Two search handlers ("));
-		expectedException
-		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
-		restService.getSearchHandlers("v1/concept");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.getSearchHandlers("v1/concept");
+		});
+		assertThat(ex.getMessage(), startsWith("Two search handlers ("));
+		assertThat(ex.getMessage(), endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
 	}
 	
 	/**
@@ -703,9 +710,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		parameters.put("source", new String[] { "some name" });
 		parameters.put("code", new String[] { "some code" });
 
-		expectedException.expect(InvalidSearchException.class);
-		expectedException.expectMessage("The search is ambiguous. Please specify s=");
-		restService.getSearchHandler("v1/concept", parameters);
+		InvalidSearchException ex = assertThrows(InvalidSearchException.class, () -> {
+			restService.getSearchHandler("v1/concept", parameters);
+		});
+		assertThat(ex.getMessage(), containsString("The search is ambiguous. Please specify s="));
 	}
 	
 	/**
@@ -845,10 +853,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
 		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Cannot access REST resources");
-		expectedException.expectCause(is(ioException));
-		restService.getResourceHandlers();
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.getResourceHandlers();
+		});
+		assertThat(ex.getMessage(), containsString("Cannot access REST resources"));
+		assertThat(ex.getCause(), is(ioException));
 	}
 	
 	/**
@@ -864,9 +873,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
-		restService.getResourceHandlers();
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.getResourceHandlers();
+		});
+		assertThat(ex.getMessage(), containsString("Two resources with the same name (v1/animal) must not have the same order"));
 	}
 	
 	/**
@@ -1036,11 +1046,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage(startsWith("Two search handlers ("));
-		expectedException
-		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
-		restService.getSearchHandlers("v1/concept");
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.getSearchHandlers("v1/concept");
+		});
+		assertThat(ex.getMessage(), startsWith("Two search handlers ("));
+		assertThat(ex.getMessage(), endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
 	}
 	
 	/**
@@ -1122,10 +1132,11 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenThrow(ioException);
 		
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Cannot access REST resources");
-		expectedException.expectCause(is(ioException));
-		restService.initialize();
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.initialize();
+		});
+		assertThat(ex.getMessage(), containsString("Cannot access REST resources"));
+		assertThat(ex.getCause(), is(ioException));
 	}
 	
 	/**
@@ -1140,9 +1151,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 		
 
-		expectedException.expect(APIException.class);
-		expectedException.expectMessage("Failed to instantiate " + InstantiateExceptionAnimalResource_1_9.class.toString());
-		restService.initialize();
+		APIException ex = assertThrows(APIException.class, () -> {
+			restService.initialize();
+		});
+		assertThat(ex.getMessage(), containsString("Failed to instantiate " + InstantiateExceptionAnimalResource_1_9.class.toString()));
 	}
 	
 	/**
@@ -1158,9 +1170,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
 
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage("Two resources with the same name (v1/animal) must not have the same order");
-		restService.initialize();
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.initialize();
+		});
+		assertThat(ex.getMessage(), containsString("Two resources with the same name (v1/animal) must not have the same order"));
 	}
 	
 	/**
@@ -1186,10 +1199,10 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		
 		RestUtil.disableContext(); //to avoid a Context call
 		
-		expectedException.expect(IllegalStateException.class);
-		expectedException.expectMessage(startsWith("Two search handlers ("));
-		expectedException
-		        .expectMessage(endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
-		restService.initialize();
+		IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+			restService.initialize();
+		});
+		assertThat(ex.getMessage(), startsWith("Two search handlers ("));
+		assertThat(ex.getMessage(), endsWith("for the same resource (v1/concept) must not have the same ID (conceptByMapping)"));
 	}
 }

@@ -12,11 +12,12 @@ package org.openmrs.module.webservices.rest.web;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -26,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2.OrderResource2_2;
 import org.openmrs.api.ValidationException;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -64,7 +65,7 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	@Qualifier("conceptService")
 	ConceptService conceptService;
 	
-	@Before
+	@BeforeEach
 	public void beforeEachTests() throws Exception {
 		executeDataSet(DATASET_FILENAME);
 		context = new RequestContext();
@@ -101,23 +102,23 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	public void shouldCreateASubclass() throws Exception {
 		SimpleObject created = (SimpleObject) resource.create(buildSubclass(), context);
 		Util.log("Created subclass", created);
-		Assert.assertEquals("drugorder", created.get("type"));
+		Assertions.assertEquals("drugorder", created.get("type"));
 	}
 	
 	@Test
 	public void shouldRetrieveASuperclass() throws Exception {
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUPERCLASS_UUID, context);
 		Util.log("Retrieved superclass", retrieved);
-		Assert.assertEquals("order", retrieved.get("type"));
-		Assert.assertEquals("a09ab2c5-878e-4905-b25d-5784167d0216", Util.getByPath(retrieved, "concept/uuid"));
+		Assertions.assertEquals("order", retrieved.get("type"));
+		Assertions.assertEquals("a09ab2c5-878e-4905-b25d-5784167d0216", Util.getByPath(retrieved, "concept/uuid"));
 	}
 	
 	@Test
 	public void shouldRetrieveASubclass() throws Exception {
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUBCLASS_UUID, context);
 		Util.log("Retrieved subclass", retrieved);
-		Assert.assertEquals("drugorder", retrieved.get("type"));
-		Assert.assertEquals(325d, (double) retrieved.get("dose"), 0.0d);
+		Assertions.assertEquals("drugorder", retrieved.get("type"));
+		Assertions.assertEquals(325d, (double) retrieved.get("dose"), 0.0d);
 	}
 	
 	@Test
@@ -149,28 +150,28 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	public void shouldDeleteASuperclass() throws Exception {
 		resource.delete(SUPERCLASS_UUID, "because", context);
 		Order deleted = Context.getOrderService().getOrderByUuid(SUPERCLASS_UUID);
-		Assert.assertTrue(deleted.isVoided());
+		Assertions.assertTrue(deleted.isVoided());
 	}
 	
 	@Test
 	public void shouldDeleteASubclass() throws Exception {
 		resource.delete(SUBCLASS_UUID, "because", context);
 		Order deleted = Context.getOrderService().getOrderByUuid(SUBCLASS_UUID);
-		Assert.assertTrue(deleted.isVoided());
+		Assertions.assertTrue(deleted.isVoided());
 	}
 	
 	@Test
 	public void shouldPurgeASuperclass() throws Exception {
 		resource.purge(SUPERCLASS_UUID, context);
 		Order purged = Context.getOrderService().getOrderByUuid(SUPERCLASS_UUID);
-		Assert.assertNull(purged);
+		Assertions.assertNull(purged);
 	}
 	
 	@Test
 	public void shouldPurgeASubclass() throws Exception {
 		resource.purge("e1f95924-697a-11e3-bd76-0800271c1b75", context);
 		Order purged = Context.getOrderService().getOrderByUuid("e1f95924-697a-11e3-bd76-0800271c1b75");
-		Assert.assertNull(purged);
+		Assertions.assertNull(purged);
 	}
 	
 	@Test
@@ -196,10 +197,12 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		fail();
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void shouldNotAllowSpecifyingDefaultTypeOnGetAll() throws Exception {
-		context.setType("order");
-		resource.getAll(context);
+		assertThrows(IllegalArgumentException.class, () -> {
+			context.setType("order");
+			resource.getAll(context);
+		});
 	}
 	
 	@Test
@@ -209,9 +212,9 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		context.setRequest(request);
 		SimpleObject simple = resource.search(context);
 		Util.log("all orders for patient", simple);
-		Assert.assertEquals(5, Util.getResultsSize(simple));
+		Assertions.assertEquals(5, Util.getResultsSize(simple));
 		Object typeForFirst = Util.getByPath(simple, "results[0]/type");
-		Assert.assertTrue("drugorder".equals(typeForFirst) || "order".equals(typeForFirst));
+		Assertions.assertTrue("drugorder".equals(typeForFirst) || "order".equals(typeForFirst));
 	}
 	
 	@Test
@@ -222,8 +225,8 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 		context.setRequest(request);
 		SimpleObject simple = resource.search(context);
 		Util.log("drug orders for patient", simple);
-		Assert.assertEquals(4, Util.getResultsSize(simple));
-		Assert.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));
+		Assertions.assertEquals(4, Util.getResultsSize(simple));
+		Assertions.assertEquals("drugorder", Util.getByPath(simple, "results[0]/type"));
 	}
 	
 }

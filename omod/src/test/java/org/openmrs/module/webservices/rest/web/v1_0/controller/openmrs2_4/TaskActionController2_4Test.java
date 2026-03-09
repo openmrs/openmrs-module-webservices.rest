@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.helper.openmrs2_4.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.CHRONIC_CARE_UUID;
 import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.EQUIPMENT_MAINTENANCE_UUID;
 import static org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_4.NURSE_PRECEPTING_UUID;
@@ -39,7 +39,7 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 
 	private final TaskServiceWrapper2_4 TASK_SERVICE_WRAPPER = new TaskServiceWrapper2_4();
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		executeDataSet(TASK_SCHEDULER_XML);
 		this.schedulerService = Context.getSchedulerService();

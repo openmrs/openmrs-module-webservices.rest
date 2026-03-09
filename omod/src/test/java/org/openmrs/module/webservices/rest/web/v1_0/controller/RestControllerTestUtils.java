@@ -24,11 +24,11 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openmrs.module.webservices.rest.OpenmrsPathMatcher;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -110,7 +110,7 @@ public class RestControllerTestUtils extends BaseModuleWebContextSensitiveTest {
 				break;
 			}
 		}
-		Assert.assertNotNull("The request URI does not exist", handlerExecutionChain);
+		Assertions.assertNotNull(handlerExecutionChain, "The request URI does not exist");
 
 		handlerAdapter.handle(request, response, handlerExecutionChain.getHandler());
 

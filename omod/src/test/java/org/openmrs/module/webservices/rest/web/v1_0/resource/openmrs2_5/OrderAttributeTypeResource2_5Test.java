@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.OrderAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
@@ -17,7 +17,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.RestTestConstants2_5;
 
 public class OrderAttributeTypeResource2_5Test extends BaseDelegatingResourceTest<OrderAttributeTypeResource2_5, OrderAttributeType> {
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         executeDataSet(RestTestConstants2_5.ORDER_ATTRIBUTE_DATA_SET);
     }

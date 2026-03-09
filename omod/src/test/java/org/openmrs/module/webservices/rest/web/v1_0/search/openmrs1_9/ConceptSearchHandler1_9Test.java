@@ -11,12 +11,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_9;
 
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -30,7 +30,7 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 	
 	private ConceptService service;
 	
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		service = Context.getConceptService();
 	}
@@ -56,8 +56,8 @@ public class ConceptSearchHandler1_9Test extends MainResourceControllerTest {
 		req.addParameter("term", "SSTRM-WGT234");
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(service.getConcept(5089).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(service.getConcept(5089).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test

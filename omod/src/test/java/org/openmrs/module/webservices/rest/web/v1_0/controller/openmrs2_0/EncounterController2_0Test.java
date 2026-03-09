@@ -15,9 +15,10 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -26,13 +27,13 @@ import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EncounterController2_0Test extends MainResourceControllerTest {
 	
 	public static final String CURRENT_TIMEZONE = Calendar.getInstance().getTimeZone().getDisplayName(true, TimeZone.SHORT);
 	
-	@Before
+	@BeforeEach
 	public void setup() throws Exception {
 		executeDataSet("EncountersForDifferentTypesWithObservations.xml");
 	}
@@ -44,18 +45,20 @@ public class EncounterController2_0Test extends MainResourceControllerTest {
 		        "ff7397ea-c090-11e3-be87-005056821db0"))));
 		
 		List<?> encounters = result.get("results");
-		Assert.assertEquals(1, encounters.size());
+		Assertions.assertEquals(1, encounters.size());
 		String encounterUuid = (String) PropertyUtils.getProperty(encounters.get(0), "uuid");
-		Assert.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
+		Assertions.assertEquals("62967e68-96bb-11e0-8d6b-9b9415a91465", encounterUuid);
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Test

@@ -9,10 +9,11 @@
  */
 package org.openmrs.module.webservices.validation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.openmrs.Location;
 import org.openmrs.test.Verifies;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 	
@@ -21,12 +22,14 @@ public class ValidateUtilTest extends BaseModuleWebContextSensitiveTest {
 	/**
 	 * @see {@link org.openmrs.validator.ValidateUtil#validate(Object)}
 	 */
-	@Test(expected = ValidationException.class)
+	@Test
 	@Verifies(value = "should throw ValidationException if errors occur during validation", method = "validate(Object)")
 	public void validate_shouldThrowValidationExceptionIfErrorsOccurDuringValidation() throws Exception {
+		assertThrows(ValidationException.class, () -> {
 		
-		Location loc = new Location();
-		ValidateUtil.validate(loc);
+			Location loc = new Location();
+			ValidateUtil.validate(loc);
+		});
 	}
 	
 }

@@ -11,8 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptMapType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -24,9 +24,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests CRUD operations for {@link ConceptMapType}s via web service calls
@@ -50,7 +50,7 @@ public class ConceptMapTypeController1_9Test extends MainResourceControllerTest 
 		return service.getConceptMapTypes(false, false).size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getConceptService();
 	}

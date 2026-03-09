@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptAttribute;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -55,7 +55,7 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 		return service.getConceptByUuid(RestTestConstants2_0.CONCEPT_UUID).getActiveAttributes().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_0.CONCEPT_ATTRIBUTE_DATA_SET);
 		this.service = Context.getConceptService();
@@ -68,7 +68,7 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 		        + "\", \"value\":\"2012-05-05\"}";
 		handle(newPostRequest(getURI(), json));
 		int after = service.getConceptByUuid(RestTestConstants2_0.CONCEPT_UUID).getAttributes().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	@Test
@@ -77,26 +77,26 @@ public class ConceptAttributeController2_0Test extends MainResourceControllerTes
 		        + "\", \"value\": \"2015-04-12\" }";
 		
 		ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
-		Assert.assertEquals("2011-04-25", conceptAttribute.getValueReference());
+		Assertions.assertEquals("2011-04-25", conceptAttribute.getValueReference());
 		
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		conceptAttribute = service.getConceptAttributeByUuid(getUuid());
-		Assert.assertEquals("2015-04-12", conceptAttribute.getValueReference());
+		Assertions.assertEquals("2015-04-12", conceptAttribute.getValueReference());
 	}
 	
 	@Test
 	public void shouldVoidAttribute() throws Exception {
 		ConceptAttribute conceptAttribute = service.getConceptAttributeByUuid(getUuid());
-		Assert.assertFalse(conceptAttribute.isVoided());
+		Assertions.assertFalse(conceptAttribute.isVoided());
 		
 		MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
 		request.addParameter("reason", "unit test");
 		handle(request);
 		
 		conceptAttribute = service.getConceptAttributeByUuid(getUuid());
-		Assert.assertTrue(conceptAttribute.isVoided());
-		Assert.assertEquals("unit test", conceptAttribute.getVoidReason());
+		Assertions.assertTrue(conceptAttribute.isVoided());
+		Assertions.assertEquals("unit test", conceptAttribute.getVoidReason());
 	}
 	
 	@Test

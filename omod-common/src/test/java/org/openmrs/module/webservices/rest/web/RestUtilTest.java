@@ -15,14 +15,15 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openmrs.GlobalProperty;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
 /**
@@ -36,7 +37,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	 */
 	@Test
 	public void ipMatches_shouldReturnTrueIfListIsEmpty() throws Exception {
-		Assert.assertTrue(RestUtil.ipMatches("10.0.0.0", new ArrayList<String>()));
+		Assertions.assertTrue(RestUtil.ipMatches("10.0.0.0", new ArrayList<String>()));
 	}
 	
 	/**
@@ -49,7 +50,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		candidateIps.add("10.0.0.0");
 		candidateIps.add("10.0.0.1");
 		
-		Assert.assertFalse(RestUtil.ipMatches("10.0.0.2", candidateIps));
+		Assertions.assertFalse(RestUtil.ipMatches("10.0.0.2", candidateIps));
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		candidateIps.add("10.0.0.0");
 		candidateIps.add("10.0.0.1");
 		
-		Assert.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
+		Assertions.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
 	}
 	
 	/**
@@ -74,7 +75,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		List<String> candidateIps = new ArrayList<String>();
 		candidateIps.add("10.0.0.0/30");
 		
-		Assert.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
+		Assertions.assertTrue(RestUtil.ipMatches("10.0.0.1", candidateIps));
 	}
 	
 	/**
@@ -86,7 +87,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		List<String> candidateIps = new ArrayList<String>();
 		candidateIps.add("10.0.0.0/30");
 		
-		Assert.assertFalse(RestUtil.ipMatches("10.0.0.4", candidateIps));
+		Assertions.assertFalse(RestUtil.ipMatches("10.0.0.4", candidateIps));
 	}
 	
 	/**
@@ -98,19 +99,21 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		List<String> candidateIps = new ArrayList<String>();
 		candidateIps.add("fe80:0:0:0:202:b3ff:fe1e:8329");
 		
-		Assert.assertTrue(RestUtil.ipMatches("fe80::202:b3ff:fe1e:8329", candidateIps));
+		Assertions.assertTrue(RestUtil.ipMatches("fe80::202:b3ff:fe1e:8329", candidateIps));
 	}
 	
 	/**
 	 * @see RestUtil#ipMatches(String,List)
 	 * @verifies throw IllegalArgumentException for invalid mask
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void ipMatches_shouldThrowIllegalArgumentExceptionForInvalidMask() throws Exception {
-		List<String> candidateIps = new ArrayList<String>();
-		candidateIps.add("10.0.0.0/33");
+		assertThrows(IllegalArgumentException.class, () -> {
+			List<String> candidateIps = new ArrayList<String>();
+			candidateIps.add("10.0.0.0/33");
 		
-		RestUtil.ipMatches("10.0.0.4", candidateIps);
+			RestUtil.ipMatches("10.0.0.4", candidateIps);
+		});
 	}
 	
 	/**
@@ -123,20 +126,16 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		String includeAllParam = RestConstants.REQUEST_PROPERTY_FOR_INCLUDE_ALL;
 		
-		Assert.assertNull("getBooleanParam should return true if includeAllParam is not set",
-		    RestUtil.getBooleanParam(request, includeAllParam));
+		Assertions.assertNull(RestUtil.getBooleanParam(request, includeAllParam), "getBooleanParam should return true if includeAllParam is not set");
 		
 		request.setParameter(includeAllParam, "true");
-		Assert.assertTrue("getBooleanParam should return true if includeAllParam is equal 'true'",
-		    RestUtil.getBooleanParam(request, includeAllParam));
+		Assertions.assertTrue(RestUtil.getBooleanParam(request, includeAllParam), "getBooleanParam should return true if includeAllParam is equal 'true'");
 		
 		request.setParameter(includeAllParam, "t");
-		Assert.assertFalse("getBooleanParam should return false if includeAllParam is not equal to 'true'",
-		    RestUtil.getBooleanParam(request, includeAllParam));
+		Assertions.assertFalse(RestUtil.getBooleanParam(request, includeAllParam), "getBooleanParam should return false if includeAllParam is not equal to 'true'");
 		
 		request.setParameter(includeAllParam, (String) null);
-		Assert.assertNull("getBooleanParam should return null if includeAllParam is null",
-		    RestUtil.getBooleanParam(request, includeAllParam));
+		Assertions.assertNull(RestUtil.getBooleanParam(request, includeAllParam), "getBooleanParam should return null if includeAllParam is null");
 	}
 	
 	/**
@@ -147,7 +146,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsNull() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), null);
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
+		Assertions.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
@@ -158,7 +157,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	public void wrapErrorResponse_shouldSetExceptionMessageIfReasonIsEmpty() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "");
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
+		Assertions.assertEquals("[exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
@@ -169,7 +168,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 	public void wrapErrorResponse_shouldSetReasonAsMessageIfNotEmpty() throws Exception {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(new Exception("exceptionmessage"), "reason");
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("reason [exceptionmessage]", errorResponseMap.get("message"));
+		Assertions.assertEquals("reason [exceptionmessage]", errorResponseMap.get("message"));
 	}
 	
 	/**
@@ -184,7 +183,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(apiException, "wraperrorresponsemessage");
 
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("org.mypackage.myclassname:149", errorResponseMap.get("code"));
+		Assertions.assertEquals("org.mypackage.myclassname:149", errorResponseMap.get("code"));
 	}
 	
 	/**
@@ -199,8 +198,8 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(apiException, "wraperrorresponsemessage");
 		
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("", errorResponseMap.get("code"));
-		Assert.assertEquals("", errorResponseMap.get("detail"));
+		Assertions.assertEquals("", errorResponseMap.get("code"));
+		Assertions.assertEquals("", errorResponseMap.get("detail"));
 	}
 	@Test
 	public void wrapErrorResponse_shouldSetStackTraceDetailsIfGlobalPropEnabled() throws Exception {
@@ -210,7 +209,7 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
 
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertNotEquals("", errorResponseMap.get("detail"));
+		Assertions.assertNotEquals("", errorResponseMap.get("detail"));
 	}
 	@Test
 	public void wrapErrorResponse_shouldSetNoStackTraceDetailsIfGlobalPropDisabled() throws Exception {
@@ -220,6 +219,6 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		SimpleObject returnObject = RestUtil.wrapErrorResponse(ex, "wraperrorresponsemessage");
 
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
-		Assert.assertEquals("", errorResponseMap.get("detail"));
+		Assertions.assertEquals("", errorResponseMap.get("detail"));
 	}
 }

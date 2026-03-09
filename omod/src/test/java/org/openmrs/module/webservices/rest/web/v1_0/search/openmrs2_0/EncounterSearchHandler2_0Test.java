@@ -11,8 +11,8 @@ package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_0;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Encounter;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -40,11 +40,11 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Encounter> encounters = result.get("results");
-        Assert.assertEquals(3, encounters.size());
+        Assertions.assertEquals(3, encounters.size());
         int totalCount = result.get("totalCount");
-        Assert.assertNotNull(totalCount);
-        Assert.assertEquals(3, totalCount);
-        Assert.assertEquals(encounters.size(), totalCount);
+        Assertions.assertNotNull(totalCount);
+        Assertions.assertEquals(3, totalCount);
+        Assertions.assertEquals(encounters.size(), totalCount);
     }
 
     /**
@@ -61,11 +61,11 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Encounter> encounters = result.get("results");
-        Assert.assertEquals(2, encounters.size());
+        Assertions.assertEquals(2, encounters.size());
         int totalCount = result.get("totalCount");
-        Assert.assertNotNull(totalCount);
-        Assert.assertEquals(2, totalCount);
-        Assert.assertEquals(encounters.size(), totalCount);
+        Assertions.assertNotNull(totalCount);
+        Assertions.assertEquals(2, totalCount);
+        Assertions.assertEquals(encounters.size(), totalCount);
     }
 
     /**
@@ -84,11 +84,11 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Encounter> encounters = result.get("results");
-        Assert.assertEquals(1, encounters.size());
+        Assertions.assertEquals(1, encounters.size());
         int totalCount = result.get("totalCount");
-        Assert.assertNotNull(totalCount);
-        Assert.assertEquals(3, totalCount);
-        Assert.assertNotEquals(encounters.size(), totalCount);
+        Assertions.assertNotNull(totalCount);
+        Assertions.assertEquals(3, totalCount);
+        Assertions.assertNotEquals(encounters.size(), totalCount);
     }
 
     /**
@@ -109,10 +109,10 @@ public class EncounterSearchHandler2_0Test extends RestControllerTestUtils {
 
         SimpleObject result = deserialize(handle(req));
         List<Encounter> encounters = result.get("results");
-        Assert.assertEquals(1, encounters.size());
+        Assertions.assertEquals(1, encounters.size());
         int totalCount = result.get("totalCount");
-        Assert.assertNotNull(totalCount);
-        Assert.assertEquals(3, totalCount);
-        Assert.assertNotEquals(encounters.size(), totalCount);
+        Assertions.assertNotNull(totalCount);
+        Assertions.assertEquals(3, totalCount);
+        Assertions.assertNotEquals(encounters.size(), totalCount);
     }
 }

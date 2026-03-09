@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.MockTaskServiceWrapper;
@@ -36,7 +36,7 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 	
 	private MockTaskServiceWrapper mockTaskServiceWrapper = new MockTaskServiceWrapper();
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		testTask.setRepeatInterval(10L);
 		testTask.setStartOnStartup(true);
@@ -60,8 +60,8 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject resultTasks = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(resultTasks);
-		Assert.assertNotNull(resultTasks);
-		Assert.assertEquals(results.size(), getAllCount());
+		Assertions.assertNotNull(resultTasks);
+		Assertions.assertEquals(results.size(), getAllCount());
 	}
 	
 	/**
@@ -75,17 +75,17 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		req.addParameter("q", "scheduled");
 		SimpleObject resultTasks = deserialize(handle(req));
 		List<Object> results = Util.getResultsList(resultTasks);
-		Assert.assertNotNull(resultTasks);
-		Assert.assertEquals(results.size(), getAllScheduledCount());
+		Assertions.assertNotNull(resultTasks);
+		Assertions.assertEquals(results.size(), getAllScheduledCount());
 	}
 	
 	@Test
 	public void shouldGetTaskByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(result.get("name"));
-		Assert.assertNotNull(result.get("description"));
-		Assert.assertNotNull(result.get("taskClass"));
+		Assertions.assertNotNull(result.get("name"));
+		Assertions.assertNotNull(result.get("description"));
+		Assertions.assertNotNull(result.get("taskClass"));
 	}
 	
 	@Test
@@ -95,13 +95,13 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		req.addParameter("v", "full");
 		
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "repeatInterval"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "startOnStartup"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "properties"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "repeatInterval"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "startOnStartup"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "started"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "properties"));
 	}
 	
 	@Test
@@ -109,11 +109,11 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 	public void shouldGetDefaultByUuid() throws Exception {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "startTime"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "started"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "startTime"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "started"));
 	}
 	
 	@Test
@@ -122,9 +122,9 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
 		req.addParameter("v", "ref");
 		SimpleObject result = deserialize(handle(req));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "name"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "description"));
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "description"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "taskClass"));
 	}
 	
 	@Test
@@ -139,11 +139,11 @@ public class TaskDefinitionController1_8Test extends MainResourceControllerTest 
 		mockTask.add("properties", null);
 		String json = new ObjectMapper().writeValueAsString(mockTask);
 		
-		Assert.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask"));
+		Assertions.assertNull(mockTaskServiceWrapper.getTaskByName("MockTask"));
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
 		req.setContent(json.getBytes());
 		deserialize(handle(req));
-		Assert.assertEquals("MockTask", mockTaskServiceWrapper.getTaskByName("MockTask").getName());
+		Assertions.assertEquals("MockTask", mockTaskServiceWrapper.getTaskByName("MockTask").getName());
 	}
 	
 	@Override

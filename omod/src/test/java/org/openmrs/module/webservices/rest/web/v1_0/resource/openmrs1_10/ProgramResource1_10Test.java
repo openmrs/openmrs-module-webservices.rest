@@ -11,9 +11,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Program;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
@@ -29,7 +29,7 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 	
 	private ProgramWorkflowService service;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		service = Context.getProgramWorkflowService();
 	}
@@ -66,10 +66,10 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 		
 		SimpleObject newProgram = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
-		Assert.assertEquals(RestTestConstants1_8.CONCEPT2_UUID,
+		Assertions.assertNotNull(PropertyUtils.getProperty(newProgram, "uuid"));
+		Assertions.assertEquals(RestTestConstants1_8.CONCEPT2_UUID,
 		    ((Map) PropertyUtils.getProperty(newProgram, "outcomesConcept")).get("uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 	}
 	
 	@Test
@@ -78,10 +78,10 @@ public class ProgramResource1_10Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Program program = service.getProgramByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
-		Assert.assertEquals(program.getOutcomesConcept(), PropertyUtils.getProperty(result, "outcomesConcept"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(program.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(program.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertEquals(program.getOutcomesConcept(), PropertyUtils.getProperty(result, "outcomesConcept"));
 	}
 	
 }

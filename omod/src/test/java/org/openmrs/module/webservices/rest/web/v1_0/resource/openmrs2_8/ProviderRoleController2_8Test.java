@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_8;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ProviderRole;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class ProviderRoleController2_8Test extends MainResourceControllerTest {
 
 
-    @Before
+    @BeforeEach
     public void init() throws Exception {
         executeDataSet("providerRoleTestDataset.xml");
     }
@@ -31,21 +31,21 @@ public class ProviderRoleController2_8Test extends MainResourceControllerTest {
         int before = Context.getProviderService().getAllProviderRoles(false).size();
         String json = "{ \"name\": \"Social Worker\", \"description\":\"Clinical Social Worker\" }";
         handle(newPostRequest(getURI(), json));
-        Assert.assertEquals(before + 1, Context.getProviderService().getAllProviderRoles(false).size());
+        Assertions.assertEquals(before + 1, Context.getProviderService().getAllProviderRoles(false).size());
     }
 
     @Test
     public void voidProvider_shouldRetireAProviderRole() throws Exception {
         ProviderRole providerRole = Context.getProviderService().getProviderRoleByUuid(getUuid());
-        Assert.assertFalse(providerRole.isRetired());
+        Assertions.assertFalse(providerRole.isRetired());
 
         MockHttpServletRequest request = request(RequestMethod.DELETE, getURI() + "/" + getUuid() );
         request.addParameter("reason", "unit test");
         handle(request);
 
         providerRole = Context.getProviderService().getProviderRoleByUuid(getUuid());
-        Assert.assertTrue(providerRole.isRetired());
-        Assert.assertEquals("unit test", providerRole.getRetireReason());
+        Assertions.assertTrue(providerRole.isRetired());
+        Assertions.assertEquals("unit test", providerRole.getRetireReason());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ProviderRoleController2_8Test extends MainResourceControllerTest {
         handle(newPostRequest(getURI() + "/" + getUuid(), json));
 
         ProviderRole updatedProviderRole = (ProviderRole) Context.getProviderService().getProviderRoleByUuid(getUuid());
-        Assert.assertEquals("new description", updatedProviderRole.getDescription());
+        Assertions.assertEquals("new description", updatedProviderRole.getDescription());
     }
 
     @Override

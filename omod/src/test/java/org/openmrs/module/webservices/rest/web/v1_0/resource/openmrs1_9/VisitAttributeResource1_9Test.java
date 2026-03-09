@@ -12,9 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
  */
 public class VisitAttributeResource1_9Test extends BaseDelegatingResourceTest<VisitAttributeResource1_9, VisitAttribute> {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants1_9.TEST_DATASET);
 	}
@@ -58,7 +58,7 @@ public class VisitAttributeResource1_9Test extends BaseDelegatingResourceTest<Vi
 			return "Audit Date: " + new SimpleDateFormat("yyyy-MM-dd").parse("2011-04-25");
 		}
 		catch (ParseException ex) {
-			Assert.fail(ex.getMessage());
+			Assertions.fail(ex.getMessage());
 		}
 		return null;
 	}

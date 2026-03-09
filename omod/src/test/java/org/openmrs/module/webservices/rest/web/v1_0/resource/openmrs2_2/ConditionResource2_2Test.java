@@ -9,9 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.CodedOrFreeText;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
@@ -29,7 +29,7 @@ import java.util.Locale;
 
 public class ConditionResource2_2Test extends BaseDelegatingResourceTest<ConditionResource2_2, Condition> {
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		executeDataSet(RestTestConstants2_2.CONDITION_TEST_DATA_XML);
 	}
@@ -104,6 +104,6 @@ public class ConditionResource2_2Test extends BaseDelegatingResourceTest<Conditi
 		ConditionResource2_2 resource = new ConditionResource2_2();
 		String result = resource.getDisplayString(condition);
 		
-		Assert.assertEquals("some name", result);
+		Assertions.assertEquals("some name", result);
 	}
 }

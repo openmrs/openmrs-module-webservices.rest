@@ -9,8 +9,8 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.web.extension.AdministrationSectionExt;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -43,7 +43,7 @@ public class AdministrationLinksController2_0Test extends MainResourceController
 
 	MockModuleFactoryWrapper mockModuleFactory = new MockModuleFactoryWrapper();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		setupMockRestWsModuleAdminListExtension();
 		setupMockAtlasModuleAdminListExtension();

@@ -12,12 +12,12 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
@@ -41,7 +41,7 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 	
 	private PersonService service;
 
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getPersonService();
 	}
@@ -159,7 +159,7 @@ public class PersonAttributeController1_9Test extends MainResourceControllerTest
 		Map<String, Object> value = personAttribute.get("value");
 
 		assertThat(value.get("uuid"), is(notNullValue()));
-		Assert.assertEquals(value.get("uuid"), location.getUuid());
+		Assertions.assertEquals(value.get("uuid"), location.getUuid());
 		assertThat((String) value.get("display"), is("Unknown Location"));
 		assertThat(value.get("links"), is(notNullValue()));
 	}

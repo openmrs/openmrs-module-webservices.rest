@@ -9,16 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs1_10;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -36,7 +36,7 @@ public class DrugSearchHandler1_10Test extends MainResourceControllerTest {
 	private static final String TRIOMUNE_CONCEPT_UUID = "d144d24f-6913-4b63-9660-a9108c2bebef";
 	private static final String TRIOMUNE_DRUG_UUID = "3cfcf118-931c-46f7-8ff6-7b876f0d4202";
 
-	@Before
+	@BeforeEach
 	public void init() throws Exception {
 		conceptService = Context.getConceptService();
 	}

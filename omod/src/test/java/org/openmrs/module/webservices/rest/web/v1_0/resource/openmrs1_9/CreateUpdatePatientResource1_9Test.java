@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -25,7 +25,7 @@ import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 /**
  * Integration tests for the framework that lets a resource handle an entire class hierarchy
@@ -34,7 +34,7 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 	
 	private PatientResource1_9 resource;
 	
-	@Before
+	@BeforeEach
 	public void beforeEachTests() throws Exception {
 		resource = (PatientResource1_9) Context.getService(RestService.class).getResourceBySupportedClass(Patient.class);
 	}
@@ -45,7 +45,7 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 		patientSimpleObject.putAll(new ObjectMapper().readValue(
 		    getClass().getClassLoader().getResourceAsStream("create_patient.json"), HashMap.class));
 		SimpleObject created = (SimpleObject) resource.create(patientSimpleObject, new RequestContext());
-		Assert.assertEquals("id-B - Ram Kabir", created.get("display"));
+		Assertions.assertEquals("id-B - Ram Kabir", created.get("display"));
 	}
 	
 	@Test
@@ -58,19 +58,19 @@ public class CreateUpdatePatientResource1_9Test extends BaseModuleWebContextSens
 		
 		Date birthdate = (Date) ConversionUtil.convert("1979-12-08T00:00:00.000+0530", Date.class);
 		
-		Assert.assertEquals("101-6 - Rama Kabira", created.get("display"));
+		Assertions.assertEquals("101-6 - Rama Kabira", created.get("display"));
 		Map<String, Object> person = (Map<String, Object>) created.get("person");
-		Assert.assertEquals("F", person.get("gender"));
-		Assert.assertNotNull(person.get("age"));
-		Assert.assertEquals(ConversionUtil.convertToRepresentation(birthdate, Representation.DEFAULT),
+		Assertions.assertEquals("F", person.get("gender"));
+		Assertions.assertNotNull(person.get("age"));
+		Assertions.assertEquals(ConversionUtil.convertToRepresentation(birthdate, Representation.DEFAULT),
 		    person.get("birthdate"));
-		Assert.assertEquals(false, person.get("birthdateEstimated"));
+		Assertions.assertEquals(false, person.get("birthdateEstimated"));
 		Map preferredName = (Map) person.get("preferredName");
-		Assert.assertEquals("Rama Kabira", preferredName.get("display"));
+		Assertions.assertEquals("Rama Kabira", preferredName.get("display"));
 		Map preferredAddress = (Map) person.get("preferredAddress");
-		Assert.assertEquals("address 1", preferredAddress.get("display"));
+		Assertions.assertEquals("address 1", preferredAddress.get("display"));
 		List<Map> attributes = (List<Map>) person.get("attributes");
-		Assert.assertEquals("Muslim", attributes.get(0).get("display"));
+		Assertions.assertEquals("Muslim", attributes.get(0).get("display"));
 	}
 	
 }

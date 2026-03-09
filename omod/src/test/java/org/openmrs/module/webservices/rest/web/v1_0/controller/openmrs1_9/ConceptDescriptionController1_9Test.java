@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.api.ConceptService;
@@ -58,7 +58,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		return service.getConceptByUuid(conceptUuid).getDescriptions().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getConceptService();
 	}
@@ -75,7 +75,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		handle(newPostRequest(getURI(), json));
 		
 		int after = service.getConceptByUuid(conceptUuid).getDescriptions().size();
-		Assert.assertEquals(before + 1, after);
+		Assertions.assertEquals(before + 1, after);
 	}
 	
 	/**
@@ -89,18 +89,18 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		ConceptDescription testDescription = new ConceptDescription("another description", new Locale("fr"));
 		testConcept.addDescription(testDescription);
 		Context.getConceptService().saveConcept(testConcept);
-		Assert.assertNotNull(testDescription.getConceptDescriptionId());
-		Assert.assertEquals(2, testConcept.getDescriptions().size());
+		Assertions.assertNotNull(testDescription.getConceptDescriptionId());
+		Assertions.assertEquals(2, testConcept.getDescriptions().size());
 		
 		SimpleObject response = deserialize(handle(newGetRequest(getURI())));
 		
 		List<Object> resultsList = Util.getResultsList(response);
-		Assert.assertEquals(2, resultsList.size());
+		Assertions.assertEquals(2, resultsList.size());
 		List<Object> descriptions = Arrays.asList(PropertyUtils.getProperty(resultsList.get(0), "description"),
 		    PropertyUtils.getProperty(resultsList.get(1), "description"));
 		
-		Assert.assertTrue(descriptions.contains("Affirmative"));
-		Assert.assertTrue(descriptions.contains("another description"));
+		Assertions.assertTrue(descriptions.contains("Affirmative"));
+		Assertions.assertTrue(descriptions.contains("another description"));
 	}
 	
 	/**
@@ -110,13 +110,13 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 	@Test
 	public void shouldEditAConceptDescription() throws Exception {
 		ConceptDescription conceptDescription = service.getConceptDescriptionByUuid(descriptionUuid);
-		Assert.assertEquals("Affirmative", conceptDescription.getDescription());
+		Assertions.assertEquals("Affirmative", conceptDescription.getDescription());
 		
 		String json = "{ \"description\":\"NEW TEST DESCRIPTION\"}";
 		handle(newPostRequest(getURI() + "/" + getUuid(), json));
 		
 		//should have created a new one with the new description
-		Assert.assertTrue(PropertyUtils.getProperty(conceptDescription, "description").equals("NEW TEST DESCRIPTION"));
+		Assertions.assertTrue(PropertyUtils.getProperty(conceptDescription, "description").equals("NEW TEST DESCRIPTION"));
 	}
 	
 	/**
@@ -134,7 +134,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("reason", "testing")));
 		
 		int after = service.getConceptByUuid(conceptUuid).getDescriptions().size();
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertEquals(before - 1, after);
 	}
 	
 	/**
@@ -148,7 +148,7 @@ public class ConceptDescriptionController1_9Test extends MainResourceControllerT
 		handle(newDeleteRequest(getURI() + "/" + getUuid(), new Parameter("purge", "")));
 		
 		int after = service.getConceptByUuid(conceptUuid).getDescriptions().size();
-		Assert.assertEquals(before - 1, after);
+		Assertions.assertEquals(before - 1, after);
 	}
 	
 }

@@ -12,8 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -34,10 +35,10 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Tests CRUD operations for {@link ConceptReferenceTerm}s via web service calls
@@ -61,7 +62,7 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		return service.getConceptReferenceTerms(false).size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getConceptService();
 	}
@@ -272,9 +273,11 @@ public class ConceptReferenceTermController1_9Test extends MainResourceControlle
 		assertThat(results, (Matcher) containsInAnyOrder(hasEntry("name", "died term"), hasEntry("name", "married term")));
 	}
 	
-	@Test(expected = InvalidSearchException.class)
+	@Test
 	public void shouldThrowExceptionWhenSearchTypeIsInvalid() throws Exception {
-		SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
-		        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT"), new Parameter("searchType", "invalid"))));
+		assertThrows(InvalidSearchException.class, () -> {
+			SimpleObject result = deserialize(handle(newGetRequest(getURI(), new Parameter("source",
+			        "Some Standardized Terminology"), new Parameter("codeOrName", "WGT"), new Parameter("searchType", "invalid"))));
+		});
 	}
 }

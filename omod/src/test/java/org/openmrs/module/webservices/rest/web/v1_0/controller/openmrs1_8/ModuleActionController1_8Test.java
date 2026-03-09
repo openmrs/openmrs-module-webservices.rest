@@ -9,8 +9,9 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.helper.ModuleAction;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
@@ -49,7 +50,7 @@ public class ModuleActionController1_8Test extends MainResourceControllerTest {
 	
 	MockModuleFactoryWrapper mockModuleFactory = new MockModuleFactoryWrapper();
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		mockModuleFactory.loadedModules.addAll(Arrays.asList(atlasModule, conceptLabModule, webservicesRestModule));
 		
@@ -70,10 +71,12 @@ public class ModuleActionController1_8Test extends MainResourceControllerTest {
 		assertThat(mockModuleFactory.startedModules, hasItem(mockModuleToLoad));
 	}
 	
-	@Test(expected = IllegalRequestException.class)
+	@Test
 	public void shouldThrowErrorOnPoorUri() throws Exception {
-		deserialize(handle(newPostRequest(getURI(), "{\"action\":\"install\", \"modules\":[\""
-		        + getUuid() + "\"], \"installUri\":\"anystring\"}")));
+		assertThrows(IllegalRequestException.class, () -> {
+			deserialize(handle(newPostRequest(getURI(), "{\"action\":\"install\", \"modules\":[\""
+			        + getUuid() + "\"], \"installUri\":\"anystring\"}")));
+		});
 	}
 	
 	@Test
@@ -178,27 +181,35 @@ public class ModuleActionController1_8Test extends MainResourceControllerTest {
 	
 	//ModuleAction resource does not support these operations
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetDefaultByUuid() throws Exception {
-		super.shouldGetDefaultByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetDefaultByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetRefByUuid() throws Exception {
-		super.shouldGetRefByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetRefByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetFullByUuid() throws Exception {
-		super.shouldGetFullByUuid();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetFullByUuid();
+		});
 	}
 	
 	@Override
-	@Test(expected = Exception.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(Exception.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 	@Override

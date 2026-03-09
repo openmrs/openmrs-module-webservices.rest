@@ -9,7 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.openmrs.Cohort;
 import org.openmrs.CohortMembership;
 import org.openmrs.api.context.Context;
@@ -20,7 +20,7 @@ public class CohortResource2_1Test extends BaseDelegatingResourceTest<CohortReso
 	
 	public static final String COHORT_NAME = "A cohort";
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Cohort cohort = new Cohort();
 		cohort.addMembership(new CohortMembership(6));

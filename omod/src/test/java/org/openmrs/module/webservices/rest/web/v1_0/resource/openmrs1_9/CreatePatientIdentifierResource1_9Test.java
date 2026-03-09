@@ -12,22 +12,22 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientIdentifierResource1_8;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContextSensitiveTest {
 	
 	private PatientIdentifierResource1_8 resource;
 	
-	@Before
+	@BeforeEach
 	public void beforeEachTests() throws Exception {
 		resource = (PatientIdentifierResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(
 		    PatientIdentifier.class);
@@ -46,7 +46,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
-		Assert.assertEquals("101-6", created.get("identifier"));
+		Assertions.assertEquals("101-6", created.get("identifier"));
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
-		Assert.assertEquals("101-6", created.get("identifier"));
+		Assertions.assertEquals("101-6", created.get("identifier"));
 	}
 	
 }

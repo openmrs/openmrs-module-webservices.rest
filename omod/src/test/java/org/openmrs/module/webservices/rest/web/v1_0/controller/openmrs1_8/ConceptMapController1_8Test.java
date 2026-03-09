@@ -10,14 +10,15 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.UUID;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openmrs.Concept;
 import org.openmrs.ConceptMap;
 import org.openmrs.api.ConceptService;
@@ -40,7 +41,7 @@ public class ConceptMapController1_8Test extends MainResourceControllerTest {
 	
 	private String conceptMapUuid;
 	
-	@Rule
+	@RegisterExtension
 	public OpenmrsProfileRule openmrsProfileRule = new OpenmrsProfileRule("1.8.*");
 	
 	@Override
@@ -58,7 +59,7 @@ public class ConceptMapController1_8Test extends MainResourceControllerTest {
 		return service.getConceptByUuid(RestTestConstants1_8.CONCEPT2_UUID).getConceptMappings().size();
 	}
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		service = Context.getConceptService();
 		restHelperService = Context.getService(RestHelperService.class);
@@ -95,9 +96,11 @@ public class ConceptMapController1_8Test extends MainResourceControllerTest {
 		assertThat(conceptMap.getConceptReferenceTerm().getCode(), is("test"));
 	}
 	
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldNotDeleteConceptMap() throws Exception {
-		handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			handle(newDeleteRequest(getURI() + "/" + getUuid()));
+		});
 	}
 	
 	@Test

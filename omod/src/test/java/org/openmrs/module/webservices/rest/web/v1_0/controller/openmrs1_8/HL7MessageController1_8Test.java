@@ -9,10 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7InQueue;
 import org.openmrs.hl7.HL7Service;
@@ -36,7 +37,7 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 	
 	private static final String DATASET_FILENAME = "customTestDataset.xml";
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		this.service = Context.getHL7Service();
 		executeDataSet(DATASET_FILENAME);
@@ -66,10 +67,10 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		
 		Util.log("Enqued hl7 message", newHl7Message);
 		
-		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		Assertions.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
+				Assertions.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
 			}
 		}
 	}
@@ -84,25 +85,25 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
 		SimpleObject newHl7Message = deserialize(handle(req));
 		
-		Assert.assertEquals(before + 1, service.getAllHL7InQueues().size());
+		Assertions.assertEquals(before + 1, service.getAllHL7InQueues().size());
 		for (HL7InQueue hl7InQueue : service.getAllHL7InQueues()) {
 			if (hl7InQueue.getUuid().equals(newHl7Message.get("uuid"))) {
-				Assert.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
+				Assertions.assertEquals(HL7_DATA, hl7InQueue.getHL7Data());
 			}
 		}
 	}
 	
 	@Test
-	@Ignore("No route for hl7 message: ADT_A05")
+	@Disabled("No route for hl7 message: ADT_A05")
 	public void adt_a28_shouldCreatePatient() throws Exception {
 		
 		//get the initial number of patients
 		int count = Context.getPatientService().getAllPatients().size();
 		
 		//all hl7 queues should be empty
-		Assert.assertEquals(0, service.getAllHL7InQueues().size());
-		Assert.assertEquals(0, service.getAllHL7InErrors().size());
-		Assert.assertEquals(0, service.getAllHL7InArchives().size());
+		Assertions.assertEquals(0, service.getAllHL7InQueues().size());
+		Assertions.assertEquals(0, service.getAllHL7InErrors().size());
+		Assertions.assertEquals(0, service.getAllHL7InArchives().size());
 		
 		//create an ADT_A28 hl7 message
 		SimpleObject hl7Message = new SimpleObject();
@@ -116,64 +117,74 @@ public class HL7MessageController1_8Test extends MainResourceControllerTest {
 		handle(req);
 		
 		//only the hl7 in queue should have data
-		Assert.assertEquals(1, service.getAllHL7InQueues().size());
-		Assert.assertEquals(0, service.getAllHL7InErrors().size());
-		Assert.assertEquals(0, service.getAllHL7InArchives().size());
+		Assertions.assertEquals(1, service.getAllHL7InQueues().size());
+		Assertions.assertEquals(0, service.getAllHL7InErrors().size());
+		Assertions.assertEquals(0, service.getAllHL7InArchives().size());
 		
 		service.processHL7InQueue(service.getAllHL7InQueues().get(0));
 		
 		//only the hl7 archive queue should have data
-		Assert.assertEquals(0, service.getAllHL7InQueues().size());
-		Assert.assertEquals(0, service.getAllHL7InErrors().size());
-		Assert.assertEquals(1, service.getAllHL7InArchives().size());
+		Assertions.assertEquals(0, service.getAllHL7InQueues().size());
+		Assertions.assertEquals(0, service.getAllHL7InErrors().size());
+		Assertions.assertEquals(1, service.getAllHL7InArchives().size());
 		
 		//a new patient should be created
-		Assert.assertEquals((count + 1), Context.getPatientService().getAllPatients().size());
+		Assertions.assertEquals((count + 1), Context.getPatientService().getAllPatients().size());
 	}
 	
-	@Test(expected = ConversionException.class)
+	@Test
 	public void enqueHl7Message_shouldFailIfSourceDoesNotExist() throws Exception {
-		SimpleObject hl7Message = new SimpleObject();
-		hl7Message.add("hl7", HL7_INVALID_SOURCE_DATA);
+		assertThrows(ConversionException.class, () -> {
+			SimpleObject hl7Message = new SimpleObject();
+			hl7Message.add("hl7", HL7_INVALID_SOURCE_DATA);
 		
-		MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
-		deserialize(handle(req));
+			MockHttpServletRequest req = newPostRequest(getURI(), hl7Message);
+			deserialize(handle(req));
+		});
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetDefaultByUuid()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetDefaultByUuid() throws Exception {
-		super.shouldGetDefaultByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetDefaultByUuid();
+		});
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetFullByUuid()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetFullByUuid() throws Exception {
-		super.shouldGetFullByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetFullByUuid();
+		});
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetRefByUuid()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetRefByUuid() throws Exception {
-		super.shouldGetRefByUuid();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetRefByUuid();
+		});
 	}
 	
 	/**
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 	
 }

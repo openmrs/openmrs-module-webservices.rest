@@ -13,8 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptName;
@@ -47,10 +48,10 @@ import java.util.Locale;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ObsController1_9Test extends MainResourceControllerTest {
 
@@ -66,7 +67,7 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		        + "\", \"concept\":\"SNOMED CT:2332523\", \"obsDatetime\":\"2013-12-09T00:00:00.000+0100\"}";
 
 		Object newObs = deserialize(handle(newPostRequest(getURI(), json)));
-		Assert.assertNotNull(PropertyUtils.getProperty(newObs, "concept"));
+		Assertions.assertNotNull(PropertyUtils.getProperty(newObs, "concept"));
 	}
 
 	@Test
@@ -91,14 +92,14 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		Obs obs = obsService.getObsByUuid(getUuid());
 		obsService.voidObs(obs, "some random reason");
 		obs = obsService.getObsByUuid(getUuid());
-		Assert.assertTrue(obs.isVoided());
+		Assertions.assertTrue(obs.isVoided());
 
 		String json = "{\"deleted\": \"false\"}";
 		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
 
 		obs = obsService.getObsByUuid(getUuid());
-		Assert.assertFalse(obs.isVoided());
-		Assert.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
+		Assertions.assertFalse(obs.isVoided());
+		Assertions.assertEquals("false", PropertyUtils.getProperty(response, "voided").toString());
 
 	}
 
@@ -127,9 +128,11 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 	 * @see MainResourceControllerTest#shouldGetAll()
 	 */
 	@Override
-	@Test(expected = ResourceDoesNotSupportOperationException.class)
+	@Test
 	public void shouldGetAll() throws Exception {
-		super.shouldGetAll();
+		assertThrows(ResourceDoesNotSupportOperationException.class, () -> {
+			super.shouldGetAll();
+		});
 	}
 
 	@Test
@@ -194,9 +197,9 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 		Object noCreated = deserialize(handle(newPostRequest(getURI(), noPayload)));
 		Object noValue = PropertyUtils.getProperty(noCreated, "value");
 
-		Assert.assertEquals(before + 2, getAllCount());
-		Assert.assertEquals(yesConceptUuid, PropertyUtils.getProperty(yesValue, "uuid"));
-		Assert.assertEquals(noConceptUuid, PropertyUtils.getProperty(noValue, "uuid"));
+		Assertions.assertEquals(before + 2, getAllCount());
+		Assertions.assertEquals(yesConceptUuid, PropertyUtils.getProperty(yesValue, "uuid"));
+		Assertions.assertEquals(noConceptUuid, PropertyUtils.getProperty(noValue, "uuid"));
 	}
 
 	@Test

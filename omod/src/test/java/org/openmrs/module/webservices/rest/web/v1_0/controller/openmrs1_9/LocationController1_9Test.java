@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.List;
 import org.apache.commons.beanutils.PropertyUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.Location;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
@@ -28,7 +28,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Tests functionality of {@link LocationController}.
@@ -39,7 +39,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	
 	private LocationService service;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		service = Context.getLocationService();
 	}
@@ -75,9 +75,9 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Location location = service.getLocationByUuid(getUuid());
-		Assert.assertNotNull(result);
-		Assert.assertEquals(location.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(location.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));
 		
 	}
 	
@@ -88,9 +88,9 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		Location location = service.getLocation("Xanadu");
-		Assert.assertNotNull(result);
-		Assert.assertEquals(location.getUuid(), PropertyUtils.getProperty(result, "uuid"));
-		Assert.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(location.getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertEquals(location.getName(), PropertyUtils.getProperty(result, "name"));
 	}
 	
 	@Test
@@ -99,8 +99,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
 		SimpleObject result = deserialize(handle(req));
 		
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 		
 	}
 	
@@ -119,8 +119,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject newLocation = deserialize(handle(req));
 		
-		Assert.assertNotNull(PropertyUtils.getProperty(newLocation, "uuid"));
-		Assert.assertEquals(originalCount + 1, getAllCount());
+		Assertions.assertNotNull(PropertyUtils.getProperty(newLocation, "uuid"));
+		Assertions.assertEquals(originalCount + 1, getAllCount());
 		
 	}
 	
@@ -134,8 +134,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Location editedLocation = service.getLocationByUuid(getUuid());
-		Assert.assertNotNull(editedLocation);
-		Assert.assertEquals(editedName, editedLocation.getName());
+		Assertions.assertNotNull(editedLocation);
+		Assertions.assertEquals(editedName, editedLocation.getName());
 		
 	}
 	
@@ -168,8 +168,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		req.setContent(json.getBytes());
 		handle(req);
 		Location updatedLocation = service.getLocationByUuid(getUuid());
-		Assert.assertNotNull(updatedLocation);
-		Assert.assertTrue(updatedLocation.getChildLocations().isEmpty());
+		Assertions.assertNotNull(updatedLocation);
+		Assertions.assertTrue(updatedLocation.getChildLocations().isEmpty());
 		
 	}
 	
@@ -177,7 +177,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	public void shouldRetireALocation() throws Exception {
 		
 		Location location = service.getLocation(2);
-		Assert.assertFalse(location.isRetired());
+		Assertions.assertFalse(location.isRetired());
 		
 		MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + location.getUuid());
 		req.addParameter("!purge", "");
@@ -185,8 +185,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		handle(req);
 		
 		Location retiredLocation = service.getLocation(2);
-		Assert.assertTrue(retiredLocation.isRetired());
-		Assert.assertEquals("random reason", retiredLocation.getRetireReason());
+		Assertions.assertTrue(retiredLocation.isRetired());
+		Assertions.assertEquals("random reason", retiredLocation.getRetireReason());
 		
 	}
 	
@@ -194,14 +194,14 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	public void shouldUnretireALocation() throws Exception {
 		
 		Location location = service.getLocation(3);
-		Assert.assertTrue(location.isRetired());
+		Assertions.assertTrue(location.isRetired());
 		
 		String json = "{ \"retired\": false }";
 		MockHttpServletRequest req = request(RequestMethod.POST, getURI() + "/" + getUuid());
 		req.setContent(json.getBytes());
 		handle(req);
 		Location updatedLocation = service.getLocationByUuid(getUuid());
-		Assert.assertTrue(!updatedLocation.isRetired());
+		Assertions.assertTrue(!updatedLocation.isRetired());
 		
 	}
 	
@@ -213,7 +213,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		req.addParameter("purge", "true");
 		handle(req);
 		
-		Assert.assertNull(service.getLocation(3));
+		Assertions.assertNull(service.getLocation(3));
 		
 	}
 	
@@ -228,8 +228,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "parentLocation"));
 		
 	}
 	
@@ -237,7 +237,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 	public void shouldIncludeTheListOfChildLocations() throws Exception {
 		
 		Location location = service.getLocationByUuid(getUuid());
-		Assert.assertEquals(0, location.getChildLocations().size());
+		Assertions.assertEquals(0, location.getChildLocations().size());
 		location.addChildLocation(service.getLocation(2));
 		service.saveLocation(location);
 		
@@ -245,7 +245,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
-		Assert.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
+		Assertions.assertEquals(1, ((Collection) PropertyUtils.getProperty(result, "childLocations")).size());
 		
 	}
 	
@@ -256,8 +256,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		httpReq.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 		SimpleObject result = deserialize(handle(httpReq));
 		
-		Assert.assertNotNull(result);
-		Assert.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
+		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(PropertyUtils.getProperty(result, "auditInfo"));
 		
 	}
 	
@@ -269,8 +269,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 		
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size());
-		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size());
+		Assertions.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 		
 	}
 	
@@ -284,8 +284,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size()); // should ignore retired location?
-		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size()); // should ignore retired location?
+		Assertions.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 
 	@Test
@@ -298,8 +298,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size()); // should ignore retired location?
-		Assert.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size()); // should ignore retired location?
+		Assertions.assertEquals(service.getLocation(1).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -313,8 +313,8 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(1, hits.size()); // should ignore retired location?
-		Assert.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
+		Assertions.assertEquals(1, hits.size()); // should ignore retired location?
+		Assertions.assertEquals(service.getLocation(2).getUuid(), PropertyUtils.getProperty(hits.get(0), "uuid"));
 	}
 	
 	@Test
@@ -328,7 +328,7 @@ public class LocationController1_9Test extends MainResourceControllerTest {
 		
 		SimpleObject result = deserialize(handle(req));
 		List<Object> hits = (List<Object>) result.get("results");
-		Assert.assertEquals(0, hits.size()); // should ignore retired location?
+		Assertions.assertEquals(0, hits.size()); // should ignore retired location?
 	}
 	
 }

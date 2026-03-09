@@ -10,8 +10,8 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -40,8 +40,8 @@ public abstract class MainResourceControllerTest extends RestControllerTestUtils
 		MockHttpServletResponse response = handle(request(RequestMethod.GET, getURI() + "/" + getUuid()));
 		SimpleObject result = deserialize(response);
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 
 	@Test
@@ -50,8 +50,8 @@ public abstract class MainResourceControllerTest extends RestControllerTestUtils
 		request.addParameter("v", "ref");
 		SimpleObject result = deserialize(handle(request));
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 
 	@Test
@@ -60,16 +60,16 @@ public abstract class MainResourceControllerTest extends RestControllerTestUtils
 		request.addParameter("v", "full");
 		SimpleObject result = deserialize(handle(request));
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 
 	@Test
 	public void shouldGetAll() throws Exception {
 		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI())));
 
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(getAllCount(), Util.getResultsSize(result));
 	}
 
 	/**

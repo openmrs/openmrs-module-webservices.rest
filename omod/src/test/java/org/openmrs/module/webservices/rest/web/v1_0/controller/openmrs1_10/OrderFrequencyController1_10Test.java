@@ -10,17 +10,17 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_10;
 
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openmrs.OrderFrequency;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
@@ -44,7 +44,7 @@ public class OrderFrequencyController1_10Test extends MainResourceControllerTest
 	
 	private ConceptService conceptService;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		this.service = Context.getOrderService();
 		this.conceptService = Context.getConceptService();
