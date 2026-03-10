@@ -27,8 +27,10 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.Searchable;
 import org.openmrs.module.webservices.rest.web.resource.api.Updatable;
 import org.openmrs.module.webservices.rest.web.resource.api.Uploadable;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.validator.ValidateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +44,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -91,6 +96,40 @@ public class MainResourceController extends BaseRestController {
 		Creatable res = (Creatable) restService.getResourceByName(buildResourceName(resource));
 		Object created = res.create(post, context);
 		return RestUtil.created(response, created);
+	}
+	
+	/**
+	 * Validates a resource without persisting it to the database.
+	 * Supports validation for any resource type (order, patient, encounter, obs, etc.)
+	 * 
+	 * @param resource the resource type to validate
+	 * @param post the properties to validate
+	 * @param request
+	 * @param response
+	 * @return empty response if valid (HTTP 200), or validation errors if invalid (HTTP 400)
+	 * @throws ResponseException
+	 */
+	@RequestMapping(value = "/{resource}/validate", method = RequestMethod.POST)
+	@ResponseBody
+	public Object validate(@PathVariable("resource") String resource,
+	        @RequestBody SimpleObject post,
+	        HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		baseUriSetup.setup(request);
+		
+		Object res = restService.getResourceByName(buildResourceName(resource));
+		if (!(res instanceof DelegatingCrudResource)) {
+			throw new ResourceDoesNotSupportOperationException(
+				resource + " resource does not support validation");
+		}
+		
+		DelegatingCrudResource crudResource = (DelegatingCrudResource) res;
+		
+		Object delegate = crudResource.convert(post);
+		
+		ValidateUtil.validate(delegate);
+		
+		return new SimpleObject();
 	}
 	
 	@RequestMapping(value = "/{resource}", method = RequestMethod.POST, headers = "Content-Type=multipart/form-data")
