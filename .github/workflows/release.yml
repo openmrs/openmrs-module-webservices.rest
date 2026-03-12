@@ -23,7 +23,7 @@ jobs:
       release_version: ${{ inputs.release_version }}
       development_version: ${{ inputs.development_version }}
       branch: ${{ inputs.branch }}
-      java_version: '8'
+      java_version: '21'
     secrets:
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
