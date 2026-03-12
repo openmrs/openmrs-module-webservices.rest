@@ -1,34 +1,30 @@
-on:
-  push:
-    tags:
-      - '*' # Create release for every new tag
+name: Release
 
-name: Create Release
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Release version (e.g., 1.3.3)'
+        required: true
+      development_version:
+        description: 'Next development version (e.g., 1.4.0-SNAPSHOT)'
+        required: true
+      branch:
+        description: 'Branch to release from (e.g., master)'
+        required: false
+        default: 'master'
 
 jobs:
-  build:
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Release Notes
-        uses: openmrs/openmrs-contrib-create-release-notes@v1.0.3
-        id: create-release-notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with: 
-          head-ref: ${{ github.ref }}
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            ## What's Changed
-            ${{ steps.create-release-notes.outputs.release-notes }}
-          draft: false
-          prerelease: false
+  release:
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/release-backend-module.yml@main
+    permissions:
+      contents: write
+    with:
+      release_version: ${{ inputs.release_version }}
+      development_version: ${{ inputs.development_version }}
+      branch: ${{ inputs.branch }}
+      java_version: '8'
+    secrets:
+      MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
+      MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
+      BOT_PAT: ${{ secrets.BOT_PAT }}
