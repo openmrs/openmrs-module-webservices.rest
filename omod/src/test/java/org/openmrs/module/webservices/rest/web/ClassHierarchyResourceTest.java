@@ -109,8 +109,8 @@ public class ClassHierarchyResourceTest extends BaseModuleWebContextSensitiveTes
 	public void shouldRetrieveASuperclass() throws Exception {
 		SimpleObject retrieved = (SimpleObject) resource.retrieve(SUPERCLASS_UUID, context);
 		Util.log("Retrieved superclass", retrieved);
-		Assertions.assertEquals("order", retrieved.get("type"));
-		Assertions.assertEquals("a09ab2c5-878e-4905-b25d-5784167d0216", Util.getByPath(retrieved, "concept/uuid"));
+        Assertions.assertEquals("testorder", retrieved.get("type"));
+        Assertions.assertEquals("a09ab2c5-878e-4905-b25d-5784167d0216", Util.getByPath(retrieved, "concept/uuid"));
 	}
 	
 	@Test
