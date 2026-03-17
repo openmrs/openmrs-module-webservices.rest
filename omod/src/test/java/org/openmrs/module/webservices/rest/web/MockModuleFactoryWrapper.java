@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web;
 import org.openmrs.module.Extension;
 import org.openmrs.module.Module;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
+import org.openmrs.module.webservices.rest.web.response.ForbiddenException;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletContext;
@@ -31,7 +32,17 @@ public class MockModuleFactoryWrapper extends ModuleFactoryWrapper {
 	public List<Module> startedModules = new ArrayList<Module>();
 	
 	public Module loadModuleMock;
-	
+
+	public boolean webAdminEnabled = true;
+
+	@Override
+	public void checkWebAdminEnabled() {
+		if (!webAdminEnabled) {
+			throw new ForbiddenException(
+			    "Module uploads are not allowed. Set the runtime property module.allow_web_admin=true to enable.");
+		}
+	}
+
 	@Override
 	public Module getModuleById(String id) {
 		for (Module module : loadedModules) {
