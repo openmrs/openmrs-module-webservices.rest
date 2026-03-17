@@ -69,18 +69,20 @@ public class SessionController1_9 extends BaseRestController {
 		session.add("locale", Context.getLocale());
 		try {
 			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
-			
+			Context.addProxyPrivilege(PrivilegeConstants.GET_PROVIDERS);
 			session.add("allowedLocales", Context.getAdministrationService().getAllowedLocales());
+			if (authenticated) {
+				session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
+						new CustomRepresentation(USER_CUSTOM_REP)));
+				session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
+				session.add("currentProvider", ConversionUtil.convertToRepresentation(getCurrentProvider(), Representation.REF));
+			}
 		}
 		finally {
 			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_PROVIDERS);
 		}
-		if (authenticated) {
-			session.add("user", ConversionUtil.convertToRepresentation(Context.getAuthenticatedUser(),
-			    new CustomRepresentation(USER_CUSTOM_REP)));
-			session.add("sessionLocation", ConversionUtil.convertToRepresentation(Context.getUserContext().getLocation(), Representation.REF));
-			session.add("currentProvider", ConversionUtil.convertToRepresentation(getCurrentProvider(), Representation.REF));
-		}
+
 		return session;
 	}
 

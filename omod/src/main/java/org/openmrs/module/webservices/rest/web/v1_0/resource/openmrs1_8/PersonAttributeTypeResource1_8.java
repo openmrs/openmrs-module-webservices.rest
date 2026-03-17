@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsUtil;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * Allows standard CRUD for the {@link PersonAttributeType} domain object
@@ -42,9 +43,14 @@ import org.openmrs.util.OpenmrsUtil;
 public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResource<PersonAttributeType> {
 	
 	public PersonAttributeTypeResource1_8() {
-		
+
 	}
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_PERSON_ATTRIBUTE_TYPES;
+	}
+
 	private PersonService service() {
 		return Context.getPersonService();
 	}
