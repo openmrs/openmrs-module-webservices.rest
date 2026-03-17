@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.MockModuleFactoryWrapper;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.openmrs.module.webservices.rest.web.response.ForbiddenException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.ModuleResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -137,6 +138,26 @@ public class ModuleController1_8Test extends MainResourceControllerTest {
 		Assertions.assertNotNull(PropertyUtils.getProperty(result, "display"));
 	}
 	
+	@Test
+	public void shouldRejectUploadWhenWebAdminDisabled() throws Exception {
+		mockModuleFactory.webAdminEnabled = false;
+
+		final String moduleFile = "org/openmrs/module/webservices/rest/include/mockModule.omod";
+		byte[] fileData = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream(moduleFile));
+		MockMultipartFile toUpload = new MockMultipartFile("file", "mockModule.omod", "archive/zip", fileData);
+
+		MockMultipartHttpServletRequest request = new MockMultipartHttpServletRequest();
+		request.setRequestURI(getBaseRestURI() + getURI());
+		request.setMethod(RequestMethod.POST.name());
+		request.addHeader("Content-Type", "multipart/form-data");
+
+		request.addFile(toUpload);
+
+		mockModuleFactory.loadModuleMock = mockModuleToLoad;
+
+		Assertions.assertThrows(ForbiddenException.class, () -> handle(request));
+	}
+
 	@Test
 	public void shouldUploadModule() throws Exception {
 		final String moduleFile = "org/openmrs/module/webservices/rest/include/mockModule.omod";
