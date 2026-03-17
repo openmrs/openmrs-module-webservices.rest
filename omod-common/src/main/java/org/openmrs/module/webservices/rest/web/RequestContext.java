@@ -170,7 +170,7 @@ public class RequestContext {
 	public Hyperlink getNextLink() {
 		String query = getQueryWithoutStartIndex();
 		query += RestConstants.REQUEST_PROPERTY_FOR_START_INDEX + "=" + (startIndex + limit);
-		return new Hyperlink("next", request.getRequestURL().append(query).toString());
+		return new Hyperlink("next", RestUtil.determineSchemeHostAndPortFromRequest(request).append(request.getRequestURI()).append(query).toString());
 	}
 	
 	/**
@@ -185,7 +185,7 @@ public class RequestContext {
 			prevStart = 0;
 		if (prevStart > 0)
 			query += RestConstants.REQUEST_PROPERTY_FOR_START_INDEX + "=" + prevStart;
-		return new Hyperlink("prev", request.getRequestURL().append(query).toString());
+		return new Hyperlink("prev", RestUtil.determineSchemeHostAndPortFromRequest(request).append(request.getRequestURI()).append(query).toString());
 	}
 	
 	/**
