@@ -156,6 +156,7 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 	
 	@Override
 	public Object upload(MultipartFile file, RequestContext context) throws ResponseException, IOException {
+		moduleFactoryWrapper.checkWebAdminEnabled();
 		moduleFactoryWrapper.checkPrivilege();
 		
 		File moduleFile = null;
