@@ -947,4 +947,43 @@ public class RestUtil implements GlobalPropertyListener {
 	public static boolean isValidUuid(String uuid) {
 		return uuid != null && (uuid.length() == 36 || uuid.length() == 38 || uuid.indexOf(' ') < 0 || uuid.indexOf('.') < 0);
 	}
+
+    /**
+     * Given an HttpServetRequest, determine the scheme, host, port, and path from it, taking into account
+     * how any proxy server may have manipulated the request
+     *
+     * @param request
+     * @return
+     */
+    public static StringBuffer determineSchemeHostAndPortFromRequest(HttpServletRequest request) {
+        String scheme;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Proto"))) {
+            scheme = request.getHeader("X-Forwarded-Proto");
+        } else {
+            scheme = request.getScheme();
+        }
+        String host;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Host"))) {
+            host = request.getHeader("X-Forwarded-Host");
+        } else {
+            host = request.getServerName();
+        }
+        int serverPort = request.getServerPort();
+        String port;
+        if (StringUtils.isNotBlank(request.getHeader("X-Forwarded-Port"))) {
+            port = ":" + request.getHeader("X-Forwarded-Port");
+            if (scheme.equalsIgnoreCase("http") && port.equals(":80")) {
+                port = "";
+            } else if (scheme.equalsIgnoreCase("https") && port.equals(":443")) {
+                port = "";
+            }
+        } else if ("http".equalsIgnoreCase(request.getScheme())) {
+            port = serverPort == 80 ? "" : ":" + serverPort;
+        } else if ("https".equalsIgnoreCase(request.getScheme())) {
+            port = serverPort == 443 ? "" : ":" + serverPort;
+        } else {
+            port = ":" + serverPort;
+        }
+        return new StringBuffer(scheme + "://" + host + port);
+    }
 }
