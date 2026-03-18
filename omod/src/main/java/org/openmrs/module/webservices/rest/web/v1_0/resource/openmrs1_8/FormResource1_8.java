@@ -28,6 +28,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,12 @@ import java.util.List;
  */
 @Resource(name = RestConstants.VERSION_1 + "/form", supportedClass = Form.class, supportedOpenmrsVersions = { "1.8.* - 9.*" })
 public class FormResource1_8 extends MetadataDelegatingCrudResource<Form> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_FORMS;
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */

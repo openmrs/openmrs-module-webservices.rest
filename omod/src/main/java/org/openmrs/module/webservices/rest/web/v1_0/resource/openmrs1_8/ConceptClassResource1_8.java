@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * {@link Resource} for {@link ConceptClass}, supporting standard CRUD operations
@@ -27,7 +28,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource(name = RestConstants.VERSION_1 + "/conceptclass", supportedClass = ConceptClass.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
 public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<ConceptClass> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_CONCEPT_CLASSES;
+	}
+
 	/**
 	 * @see DelegatingCrudResource#newDelegate()
 	 */

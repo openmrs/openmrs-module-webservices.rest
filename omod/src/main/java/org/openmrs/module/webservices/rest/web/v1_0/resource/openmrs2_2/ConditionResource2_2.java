@@ -34,6 +34,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * {@link Resource} for Condition, supporting standard CRUD operations
@@ -41,7 +42,12 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 @Resource(name = RestConstants.VERSION_1 + "/condition", supportedClass = Condition.class, supportedOpenmrsVersions = {
         "2.2.* - 9.*" })
 public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_CONDITIONS;
+	}
+
 	private ConditionService conditionService = Context.getConditionService();
 	
 	/**

@@ -31,13 +31,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/orderset", supportedClass = OrderSet.class, supportedOpenmrsVersions = {
         "1.12.* - 9.*" })
 public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSet> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_ORDER_SETS;
+	}
+
 	@Override
 	public OrderSet getByUniqueId(String uniqueId) {
 		return Context.getOrderSetService().getOrderSetByUuid(uniqueId);

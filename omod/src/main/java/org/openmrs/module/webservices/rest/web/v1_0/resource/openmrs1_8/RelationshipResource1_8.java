@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * {@link Resource} for Provider, supporting
@@ -37,7 +38,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  */
 @Resource(name = RestConstants.VERSION_1 + "/relationship", supportedClass = Relationship.class, supportedOpenmrsVersions = { "1.8.*" })
 public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relationship> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_RELATIONSHIPS;
+	}
+
 	@Override
 	public Relationship getByUniqueId(String uuid) {
 		return Context.getPersonService().getRelationshipByUuid(uuid);

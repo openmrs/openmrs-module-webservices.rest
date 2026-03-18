@@ -26,6 +26,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription.Property;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
@@ -62,6 +63,8 @@ public class ConversionUtil {
 	static final Log log = LogFactory.getLog(ConversionUtil.class);
 	
 	public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+	public static final Object PRIVILEGE_DENIED = new Object();
 	
 	// This would better be a Map<Pair<Class, String>, Type> but adding the dependency for
 	//  org.apache.commons.lang3.tuple.Pair (through omrs-api) messed up other tests
@@ -411,6 +414,12 @@ public class ConversionUtil {
 				}
 				// otherwise we have no choice but to return the plain object
 				return o;
+			}
+			if (converter instanceof BaseDelegatingResource) {
+				String requiredPrivilege = ((BaseDelegatingResource<?>) converter).getRequiredGetPrivilege();
+				if (requiredPrivilege != null && !Context.hasPrivilege(requiredPrivilege)) {
+					return PRIVILEGE_DENIED;
+				}
 			}
 			try {
 				return converter.asRepresentation(o, rep);
