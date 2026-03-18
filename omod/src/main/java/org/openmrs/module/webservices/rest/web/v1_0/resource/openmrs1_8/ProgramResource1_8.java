@@ -30,12 +30,18 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.List;
 
 @Resource(name = RestConstants.VERSION_1 + "/program", supportedClass = Program.class, supportedOpenmrsVersions = { "1.8.* - 1.9.*" }, order = 1)
 public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_PROGRAMS;
+	}
+
 	@Override
 	public Program getByUniqueId(String uniqueId) {
 		Program programByUuid = Context.getProgramWorkflowService().getProgramByUuid(uniqueId);

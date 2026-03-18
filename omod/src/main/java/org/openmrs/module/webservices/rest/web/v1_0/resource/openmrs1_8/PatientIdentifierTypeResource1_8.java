@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * Allows standard CRUD for the {@link PatientIdentifierType} domain object
@@ -39,7 +40,12 @@ public class PatientIdentifierTypeResource1_8 extends MetadataDelegatingCrudReso
 		allowedMissingProperties.add("locationBehavior");
 		allowedMissingProperties.add("uniquenessBehavior");
 	}
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_IDENTIFIER_TYPES;
+	}
+
 	private PatientService service() {
 		return Context.getPatientService();
 	}

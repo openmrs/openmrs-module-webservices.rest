@@ -15,7 +15,15 @@ import org.openmrs.ConceptName;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Privilege;
+import org.openmrs.Role;
+import org.openmrs.User;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.UserService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -24,14 +32,17 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Encounte
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openmrs.module.webservices.rest.web.representation.Representation.DEFAULT;
 import static org.openmrs.module.webservices.rest.web.representation.Representation.REF;
 
@@ -131,10 +142,88 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         assertEquals(DEFAULT, uuidProperty.getRep());
     }
 
+
+    /**
+     * Verifies that a user with "Get Visits" but without "Get Patients" or "Get People"
+     * cannot leak patient/person data through a custom representation like:
+     * GET /visit?v=custom:(uuid,patient:(uuid,display,person:(uuid,gender)))
+     */
+    @Test
+    public void convertToRepresentation_shouldNotLeakPatientDataThroughVisitCustomRepresentation() {
+        Visit visit = Context.getVisitService().getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+        assertNotNull(visit);
+        assertNotNull(visit.getPatient());
+
+        // Admin should see patient data
+        Object adminResult = ConversionUtil.convertToRepresentation(visit,
+                new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        assertInstanceOf(SimpleObject.class, adminResult);
+        SimpleObject adminVisit = (SimpleObject) adminResult;
+        assertNotNull(adminVisit.get("patient"), "Admin should see patient data");
+
+        // Create and authenticate as a user who only has "Get Visits"
+        createLimitedUser();
+        Context.logout();
+        Context.authenticate("limited_user", "LimitedTest123");
+        assertTrue(Context.isAuthenticated());
+        assertTrue(Context.hasPrivilege("Get Visits"));
+        assertFalse(Context.hasPrivilege("Get Patients"));
+        assertFalse(Context.hasPrivilege("Get People"));
+
+        Visit visitAsLimited;
+        try {
+            Context.addProxyPrivilege("Get Visits");
+            visitAsLimited = Context.getVisitService().getVisitByUuid(RestTestConstants1_9.VISIT_UUID);
+        } finally {
+            Context.removeProxyPrivilege("Get Visits");
+        }
+        assertNotNull(visitAsLimited);
+
+        // Patient property should be omitted because the user lacks "Get Patients"
+        Object limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
+                new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        assertInstanceOf(SimpleObject.class, limitedResult);
+        SimpleObject limitedVisit = (SimpleObject) limitedResult;
+        assertFalse(limitedVisit.containsKey("patient"),
+                "User without 'Get Patients' privilege should NOT see patient data through custom representation");
+    }
+
     public void assertCustomRepresentation(Representation representation, String rep) {
         assertNotNull(representation);
         assertTrue(representation instanceof CustomRepresentation);
         CustomRepresentation customRepresentation = (CustomRepresentation) representation;
         assertEquals(rep, customRepresentation.getRepresentation());
+    }
+
+    private void createLimitedUser() {
+        UserService userService = Context.getUserService();
+
+        Person person = new Person();
+        person.setGender("M");
+        person.addName(new PersonName("Limited", null, "User"));
+        Context.getPersonService().savePerson(person);
+
+        Role role = new Role("Limited Role");
+        role.setDescription("Role with limited privileges for testing");
+        for (String privName : new String[] { "Get Visits" }) {
+            Privilege priv = userService.getPrivilege(privName);
+            if (priv == null) {
+                priv = new Privilege(privName);
+                priv.setDescription(privName);
+                userService.savePrivilege(priv);
+            }
+            role.addPrivilege(priv);
+        }
+        userService.saveRole(role);
+
+        User user = new User(person);
+        user.setUsername("limited_user");
+        user.addRole(role);
+        for (Role r : new ArrayList<>(user.getAllRoles())) {
+            if (!r.getRole().equals("Limited Role")) {
+                user.removeRole(r);
+            }
+        }
+        userService.createUser(user, "LimitedTest123");
     }
 }

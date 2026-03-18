@@ -52,6 +52,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.LocaleUtility;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -71,7 +72,12 @@ import java.util.Set;
  */
 @Resource(name = RestConstants.VERSION_1 + "/concept", order = 2, supportedClass = Concept.class, supportedOpenmrsVersions = "1.8.*")
 public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_CONCEPTS;
+	}
+
 	public ConceptResource1_8() {
 		//RESTWS-439
 		//Concept numeric fields

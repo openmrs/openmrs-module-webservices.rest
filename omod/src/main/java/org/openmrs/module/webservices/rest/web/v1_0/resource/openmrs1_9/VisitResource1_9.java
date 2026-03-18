@@ -44,6 +44,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.LocationResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
+import org.openmrs.util.PrivilegeConstants;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -58,7 +59,12 @@ import io.swagger.models.properties.StringProperty;
  */
 @Resource(name = RestConstants.VERSION_1 + "/visit", supportedClass = Visit.class, supportedOpenmrsVersions = { "1.9.* - 9.*" })
 public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_VISITS;
+	}
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getRepresentationDescription(Representation)
 	 */

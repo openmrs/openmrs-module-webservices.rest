@@ -20,6 +20,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.PrivilegeConstants;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -51,8 +52,13 @@ import java.util.Set;
  */
 @Resource(name = RestConstants.VERSION_1 + "/patient", supportedClass = Patient.class, supportedOpenmrsVersions = { "1.8.*" })
 public class PatientResource1_8 extends DataDelegatingCrudResource<Patient> {
-	
+
 	public PatientResource1_8() {
+	}
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_PATIENTS;
 	}
 	
 	@PropertyGetter("person")

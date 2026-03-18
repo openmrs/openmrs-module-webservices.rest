@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -44,7 +45,12 @@ import io.swagger.models.properties.StringProperty;
 @Resource(name = RestConstants.VERSION_1 + "/systemsetting", supportedClass = GlobalProperty.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
 public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalProperty> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_GLOBAL_PROPERTIES;
+	}
+
 	public static final String GENERAL = "General Settings";
 	
 	/**

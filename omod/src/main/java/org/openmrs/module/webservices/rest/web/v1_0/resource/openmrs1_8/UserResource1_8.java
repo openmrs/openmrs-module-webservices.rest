@@ -40,6 +40,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPassword1_8;
+import org.openmrs.util.PrivilegeConstants;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -55,7 +56,12 @@ import io.swagger.models.properties.StringProperty;
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
         "1.8.* - 1.12.*" })
 public class UserResource1_8 extends MetadataDelegatingCrudResource<UserAndPassword1_8> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_USERS;
+	}
+
 	/**
 	 * The name of the parameter that can be used to restrict a search to roles.
 	 */
