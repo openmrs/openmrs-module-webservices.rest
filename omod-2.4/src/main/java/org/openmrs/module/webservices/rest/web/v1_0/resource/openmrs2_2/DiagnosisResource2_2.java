@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -48,6 +49,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientR
 @Resource(name = RestConstants.VERSION_1 + "/patientdiagnoses", supportedClass = Diagnosis.class, supportedOpenmrsVersions = {
         "2.2.* - 2.4.*" })
 public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> {
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_DIAGNOSES;
+	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getByUniqueId(String)

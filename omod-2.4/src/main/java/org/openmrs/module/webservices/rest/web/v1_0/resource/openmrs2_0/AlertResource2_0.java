@@ -36,6 +36,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.Collections;
 import java.util.HashSet;

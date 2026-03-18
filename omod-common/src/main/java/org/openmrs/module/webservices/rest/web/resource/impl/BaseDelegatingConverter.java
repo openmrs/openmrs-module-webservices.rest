@@ -140,7 +140,11 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 			throw new NullPointerException();
 		SimpleObject ret = new SimpleObject();
 		for (Map.Entry<String, DelegatingResourceDescription.Property> e : rep.getProperties().entrySet()) {
-			ret.put(e.getKey(), e.getValue().evaluate(this, delegate));
+			Object value = e.getValue().evaluate(this, delegate);
+			if (value == ConversionUtil.PRIVILEGE_DENIED) {
+				continue;
+			}
+			ret.put(e.getKey(), value);
 		}
 		List<Hyperlink> links = new ArrayList<Hyperlink>();
 		for (Hyperlink link : rep.getLinks()) {

@@ -42,7 +42,12 @@ import org.openmrs.util.PrivilegeConstants;
  */
 @Resource(name = RestConstants.VERSION_1 + "/location", supportedClass = Location.class, supportedOpenmrsVersions = "1.8.*")
 public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_LOCATIONS;
+	}
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */

@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 /**
  * Allows standard CRUD for the {@link LocationTag} domain object
@@ -31,7 +32,12 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 @Resource(name = RestConstants.VERSION_1 + "/locationtag", supportedClass = LocationTag.class, supportedOpenmrsVersions = {
         "1.8.* - 9.*" })
 public class LocationTagResource1_8 extends MetadataDelegatingCrudResource<LocationTag> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_LOCATIONS;
+	}
+
 	private LocationService service() {
 		return Context.getLocationService();
 	}

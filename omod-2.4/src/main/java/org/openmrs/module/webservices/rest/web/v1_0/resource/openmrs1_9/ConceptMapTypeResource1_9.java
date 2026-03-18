@@ -25,6 +25,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,12 @@ import java.util.regex.Pattern;
 @Resource(name = RestConstants.VERSION_1 + "/conceptmaptype", supportedClass = ConceptMapType.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
 public class ConceptMapTypeResource1_9 extends MetadataDelegatingCrudResource<ConceptMapType> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_CONCEPT_MAP_TYPES;
+	}
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */

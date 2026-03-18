@@ -62,6 +62,11 @@ import java.util.stream.Collectors;
 public class ConceptProposalResource2_0 extends DelegatingCrudResource<ConceptProposal> {
 
 	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_CONCEPT_PROPOSALS;
+	}
+
+	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
 			DelegatingResourceDescription description = new DelegatingResourceDescription();

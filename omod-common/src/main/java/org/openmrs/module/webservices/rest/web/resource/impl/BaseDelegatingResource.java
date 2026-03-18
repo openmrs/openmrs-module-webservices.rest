@@ -70,9 +70,13 @@ import io.swagger.models.properties.StringProperty;
  * @param <T> the class we're delegating to
  */
 public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<T> implements Converter<T>, Resource, DelegatingResourceHandler<T> {
-	
+
 	private final Log log = LogFactory.getLog(getClass());
-	
+
+	public String getRequiredGetPrivilege() {
+		return null;
+	}
+
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = new ModelImpl();

@@ -27,6 +27,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceD
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,12 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		this.propertiesIgnoredWhenUpdating.add("displayAIsToB");
 		this.propertiesIgnoredWhenUpdating.add("displayBIsToA");
 	}
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_RELATIONSHIP_TYPES;
+	}
+
 	/**
 	 * Fetches a relationshipType by uuid, if no match is found, it tries to look up one with a
 	 * matching name with the assumption that the passed parameter is a relationshipType name

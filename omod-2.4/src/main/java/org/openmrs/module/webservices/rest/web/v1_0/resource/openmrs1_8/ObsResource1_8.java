@@ -55,6 +55,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.IllegalRequestException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 import org.openmrs.obs.ComplexData;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,6 +73,11 @@ import io.swagger.models.properties.StringProperty;
  */
 @Resource(name = RestConstants.VERSION_1 + "/obs", order = 2, supportedClass = Obs.class, supportedOpenmrsVersions = { "1.8.*" })
 public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements Uploadable {
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_OBS;
+	}
 
 	public static final String DATETIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 

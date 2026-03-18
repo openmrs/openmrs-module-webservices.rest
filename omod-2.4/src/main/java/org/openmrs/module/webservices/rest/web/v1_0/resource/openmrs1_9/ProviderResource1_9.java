@@ -33,6 +33,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.util.List;
 import java.util.Set;
@@ -43,7 +44,12 @@ import java.util.Set;
 @Resource(name = RestConstants.VERSION_1 + "/provider", supportedClass = Provider.class, supportedOpenmrsVersions = {
         "1.9.* - 9.*" })
 public class ProviderResource1_9 extends MetadataDelegatingCrudResource<Provider> {
-	
+
+	@Override
+	public String getRequiredGetPrivilege() {
+		return PrivilegeConstants.GET_PROVIDERS;
+	}
+
 	public ProviderResource1_9() {
 	}
 	
