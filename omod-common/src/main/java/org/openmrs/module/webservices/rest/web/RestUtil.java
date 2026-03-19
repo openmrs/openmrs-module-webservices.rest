@@ -877,13 +877,15 @@ public class RestUtil implements GlobalPropertyListener {
 		MessageSourceService messageSourceService = Context.getMessageSourceService();
 		
 		SimpleObject errors = new SimpleObject();
-		errors.add("message",
-    messageSourceService.getMessage(
-        "webservices.rest.error.invalid.submission",
-        null,
-        Context.getLocale()
-    )
-);
+		String mainMessage = ex.getMessage();
+
+         if (mainMessage == null || mainMessage.isEmpty()) {
+            mainMessage = messageSourceService.getMessage(
+              "webservices.rest.error.invalid.submission",
+              null,
+              Context.getLocale()
+        );
+}
 		errors.add("code", "webservices.rest.error.invalid.submission");
 		
 		List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
