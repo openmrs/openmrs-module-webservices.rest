@@ -19,3 +19,4 @@ jobs:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
+      BOT_GH_TOKEN: ${{ secrets.OMRS_BOT_GH_TOKEN }}
