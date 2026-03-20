@@ -212,6 +212,9 @@ public class RelationshipResource1_8 extends DataDelegatingCrudResource<Relation
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
-		        .property("voided", new BooleanProperty()); //FIXME missing properties
+				.property("relationshipType", new StringProperty().example("uuid"))
+				.property("startDate", new DateProperty())
+				.property("endDate", new DateProperty())
+				.property("voided", new BooleanProperty());
 	}
 }
