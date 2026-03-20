@@ -14,6 +14,7 @@ jobs:
       java_versions: '["8"]'
       main_java_version: '8'
       maven_args: 'clean install -Dmaven.javadoc.skip=true'
+      deploy_branch: '3.x'
     secrets:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
