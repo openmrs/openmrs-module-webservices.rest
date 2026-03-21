@@ -8,6 +8,9 @@
  * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.webservices.rest.web;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.openmrs.api.ValidationException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -16,6 +19,8 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Assertions;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,6 +30,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+
 
 /**
  * Tests for the {@link RestUtil} class.
@@ -221,4 +227,32 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
 		Assertions.assertEquals("", errorResponseMap.get("detail"));
 	}
+        @Test
+public void shouldUseExceptionMessageWhenAvailable() {
+    BindException bindEx = new BindException(new Object(), "objectName");
+    bindEx.reject("error.code", "Test message");
+    ValidationException ex = new ValidationException("Test message", (Errors) bindEx);
+
+    SimpleObject result = RestUtil.wrapValidationErrorResponse(ex);
+
+    SimpleObject errors = (SimpleObject) result.get("error");
+    List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
+    assertEquals("Test message", globalErrors.get(0).get("message"));
+}
+
+@Test
+public void shouldFallbackWhenMessageIsNull() {
+    BindException bindEx = new BindException(new Object(), "objectName");
+    bindEx.reject("error.code");
+    ValidationException ex = new ValidationException("", (Errors) bindEx);
+
+    SimpleObject result = RestUtil.wrapValidationErrorResponse(ex);
+
+    SimpleObject errors = (SimpleObject) result.get("error");
+    List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
+    Assertions.assertNotNull(globalErrors.get(0).get("message"));
+}
+
+
+   
 }
