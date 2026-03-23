@@ -887,6 +887,7 @@ public class RestUtil implements GlobalPropertyListener {
         );
 }
 		errors.add("code", "webservices.rest.error.invalid.submission");
+        errors.add("message", messageSourceService.getMessage("webservices.rest.error.invalid.submission", null, Context.getLocale()));
 		
 		List<SimpleObject> globalErrors = new ArrayList<SimpleObject>();
 		SimpleObject fieldErrors = new SimpleObject();

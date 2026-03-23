@@ -21,6 +21,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -227,31 +229,35 @@ public class RestUtilTest extends BaseModuleWebContextSensitiveTest {
 		LinkedHashMap errorResponseMap = (LinkedHashMap) returnObject.get("error");
 		Assertions.assertEquals("", errorResponseMap.get("detail"));
 	}
-        @Test
-public void shouldUseExceptionMessageWhenAvailable() {
+   @Test
+    public void shouldUseExceptionMessageWhenAvailable() {
     BindException bindEx = new BindException(new Object(), "objectName");
-    bindEx.reject("error.code", "Test message");
+    bindEx.reject("error.code", new Object[]{"interpolatedValue"}, "Default message with {0}");
     ValidationException ex = new ValidationException("Test message", (Errors) bindEx);
 
     SimpleObject result = RestUtil.wrapValidationErrorResponse(ex);
 
     SimpleObject errors = (SimpleObject) result.get("error");
     List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
-    assertEquals("Test message", globalErrors.get(0).get("message"));
-}
+    String message = (String) globalErrors.get(0).get("message");
+    assertNotNull(message);
+    assertFalse(message.contains("{0}"));
+    }
 
-@Test
-public void shouldFallbackWhenMessageIsNull() {
+   @Test
+    public void shouldFallbackWhenMessageIsNull() {
     BindException bindEx = new BindException(new Object(), "objectName");
-    bindEx.reject("error.code");
+    bindEx.reject("error.code", new Object[]{"interpolatedValue"}, "Fallback message with {0}");
     ValidationException ex = new ValidationException("", (Errors) bindEx);
 
     SimpleObject result = RestUtil.wrapValidationErrorResponse(ex);
 
     SimpleObject errors = (SimpleObject) result.get("error");
     List<SimpleObject> globalErrors = (List<SimpleObject>) errors.get("globalErrors");
-    Assertions.assertNotNull(globalErrors.get(0).get("message"));
-}
+    String message = (String) globalErrors.get(0).get("message");
+    assertNotNull(message);
+    assertFalse(message.contains("{0}"));
+   }
 
 
    
