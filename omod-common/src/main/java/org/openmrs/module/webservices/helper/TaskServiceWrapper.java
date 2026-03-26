@@ -103,7 +103,6 @@ public class TaskServiceWrapper {
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
-		// see: https://openmrs.atlassian.net/browse/RESTWS-1032
-		throw new UnsupportedOperationException("Not supported.");
-    }
+		Context.getSchedulerService().schedule(taskDefinition);
+	}
 }

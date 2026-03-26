@@ -32,6 +32,7 @@ import org.openmrs.scheduler.TaskDefinition;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.http.HttpStatus;
+import org.springframework.orm.ObjectRetrievalFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -105,19 +106,28 @@ public class VisitConfigurationController2_0 extends BaseRestController {
 	}
 
 	private Boolean getAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService) {
-		TaskDefinition autoCloseVisitsTaskStarted = schedulerService
-				.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
-
-		if (autoCloseVisitsTaskStarted != null) {
-			return autoCloseVisitsTaskStarted.getStarted();
+		try {
+			TaskDefinition autoCloseVisitsTaskStarted = schedulerService
+					.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
+			if (autoCloseVisitsTaskStarted != null) {
+				return autoCloseVisitsTaskStarted.getStarted();
+			}
 		}
-
+		catch (ObjectRetrievalFailureException e) {
+			// task not configured — treat as not started
+		}
 		return false;
 	}
 
 	private void updateGetAutoCloseVisitsTaskStartedValue(SchedulerService schedulerService,
 			Boolean autoCloseVisitsTaskStarted) throws SchedulerException {
-		TaskDefinition closeVisitsTask = schedulerService.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
+		TaskDefinition closeVisitsTask;
+		try {
+			closeVisitsTask = schedulerService.getTaskByName(OpenmrsConstants.AUTO_CLOSE_VISITS_TASK_NAME);
+		}
+		catch (ObjectRetrievalFailureException e) {
+			return;
+		}
 		if (closeVisitsTask != null) {
 			if (autoCloseVisitsTaskStarted && !closeVisitsTask.getStarted()) {
 				schedulerService.scheduleTask(closeVisitsTask);

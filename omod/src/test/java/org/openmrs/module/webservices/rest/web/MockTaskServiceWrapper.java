@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web;
 
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
 import org.openmrs.scheduler.SchedulerException;
+import org.openmrs.scheduler.Task;
 import org.openmrs.scheduler.TaskDefinition;
 
 import java.util.ArrayList;
@@ -141,5 +142,18 @@ public class MockTaskServiceWrapper extends TaskServiceWrapper {
 		}
 		scheduledTasks.add(task);
 	}
-	
+
+	@Override
+	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
+		try {
+			Class<?> taskClass = Class.forName(taskDefinition.getTaskClass());
+			Task task = (Task) taskClass.getDeclaredConstructor().newInstance();
+			task.initialize(taskDefinition);
+			task.execute();
+		}
+		catch (Exception e) {
+			throw new SchedulerException("Failed to run task", e);
+		}
+	}
+
 }
