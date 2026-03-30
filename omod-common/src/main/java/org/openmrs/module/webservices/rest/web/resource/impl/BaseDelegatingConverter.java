@@ -78,7 +78,6 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 		return convertDelegateToRepresentation(delegate, description);
 	}
 
-	// AFTER
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
