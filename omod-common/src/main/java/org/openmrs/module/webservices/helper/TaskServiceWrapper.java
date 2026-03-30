@@ -11,10 +11,10 @@
 package org.openmrs.module.webservices.helper;
 
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
+import org.openmrs.util.OpenmrsClassLoader;
 
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
@@ -106,11 +106,28 @@ public class TaskServiceWrapper {
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
-		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
-        try {
-            task.execute();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+		try {
+			Class<?> taskClass = OpenmrsClassLoader.getInstance().loadClass(taskDefinition.getTaskClass());
+			Object instance = taskClass.getDeclaredConstructor().newInstance();
+			if (!(instance instanceof Task)) {
+				throw new SchedulerException("Task class " + taskDefinition.getTaskClass() + " must implement Task");
+			}
+			Task task = (Task) instance;
+			task.initialize(taskDefinition);
+			task.execute();
+		}
+		catch (ClassNotFoundException e) {
+			throw new SchedulerException("Task class " + taskDefinition.getTaskClass() + " not found", e);
+		}
+		catch (ReflectiveOperationException e) {
+			throw new SchedulerException("Unable to instantiate task class " + taskDefinition.getTaskClass(), e);
+		}
+		catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new SchedulerException("Task execution interrupted", e);
+		}
+		catch (ExecutionException e) {
+			throw new SchedulerException("Task execution failed", e);
+		}
+	}
 }

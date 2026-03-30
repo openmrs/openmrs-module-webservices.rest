@@ -36,7 +36,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 	@Test
 	public void shouldCreatePatientIdentifier_WhenTypeIsSpecifiedByUuid() throws Exception {
 		
-		String personAttributeJson = "{" + "            \"identifier\": \"101-6\"," + "            \"identifierType\": {"
+		String personAttributeJson = "{" + "            \"identifier\": \"1234-4\"," + "            \"identifierType\": {"
 		        + "              \"uuid\" : \"1a339fe9-38bc-4ab3-b180-320988c0b968\"" + "            },"
 		        + "            \"location\" : {" + "              \"uuid\" : \"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\""
 		        + "            }," + "            \"preferred\": true" + "        }";
@@ -46,12 +46,12 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
-		Assertions.assertEquals("101-6", created.get("identifier"));
+		Assertions.assertEquals("1234-4", created.get("identifier"));
 	}
 	
 	@Test
 	public void shouldCreatePatientIdentifier_WhenTypeIsSpecifiedByName() throws Exception {
-		String personAttributeJson = "{" + "            \"identifier\": \"101-6\"," + "            \"identifierType\": {"
+		String personAttributeJson = "{" + "            \"identifier\": \"1234-4\"," + "            \"identifierType\": {"
 		        + "              \"name\" : \"OpenMRS Identification Number\"" + "            },"
 		        + "            \"location\" : {" + "              \"uuid\" : \"8d6c993e-c2cc-11de-8d13-0010c6dffd0f\""
 		        + "            }," + "            \"preferred\": true" + "        }";
@@ -61,7 +61,7 @@ public class CreatePatientIdentifierResource1_9Test extends BaseModuleWebContext
 		
 		SimpleObject created = (SimpleObject) resource.create("da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
 		    personAttributeSimpleObject, new RequestContext());
-		Assertions.assertEquals("101-6", created.get("identifier"));
+		Assertions.assertEquals("1234-4", created.get("identifier"));
 	}
 	
 }
