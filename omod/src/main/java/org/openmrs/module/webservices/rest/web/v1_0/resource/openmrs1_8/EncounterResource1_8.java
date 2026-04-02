@@ -296,17 +296,21 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 			List<Encounter> encs = Context.getEncounterService().getEncountersByPatient(patient);
 
 			encs = encs.stream()
-			    .filter(enc -> {
-			        if (enc.getPatient() != null && enc.getPatient().getAge() < 18) {
-			            if (enc.getForm() == null || enc.getForm().getName() == null) {
-			                return true;
-			            }
-			            String formName = enc.getForm().getName().toLowerCase();
-			            return !formName.contains("phq");
-			        }
-			        return true;
-			    })
-			    .collect(Collectors.toList());
+    			.filter(enc -> {
+        			if (enc.getPatient() != null 
+            			&& enc.getPatient().getAge() != null 
+           	 			&& enc.getPatient().getAge() < 18) {
+
+            			if (enc.getForm() == null || enc.getForm().getName() == null) {
+                		return true;
+            			}
+
+            			String formName = enc.getForm().getName().toLowerCase();
+            			return !formName.contains("phq");
+        		}
+        		return true;
+    		})
+    		.collect(Collectors.toList());
 
 			return new NeedsPaging<Encounter>(encs, context);
 		}
