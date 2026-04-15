@@ -383,6 +383,23 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		}
 		return null;
 	}
+
+	/**
+	 * Gets the previous versions of this obs, if any exist.
+	 * @see Obs#getPreviousVersion() for more details on how obs versioning works
+	 * @param obs
+	 * @return List of previous versions of the obs, in reverse chronological order (most recent first)
+	 */
+	@PropertyGetter("previousVersions")
+	public static List<Obs> getPreviousVersions(Obs obs) {
+		List<Obs> previousVersions = new ArrayList<Obs>();
+		Obs previousVersion = obs.getPreviousVersion();
+		while (previousVersion != null) {
+			previousVersions.add(previousVersion);
+			previousVersion = previousVersion.getPreviousVersion();
+		}
+		return previousVersions;
+	}
 	
 	/**
 	 * Annotated setter for Concept
