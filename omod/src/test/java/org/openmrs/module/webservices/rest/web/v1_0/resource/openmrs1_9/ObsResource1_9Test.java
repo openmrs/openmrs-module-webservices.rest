@@ -10,11 +10,13 @@
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -328,6 +330,27 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		assertEquals(falseConcept, new ObsResource2_1().getValue(obs));
 	}
 	
+	@Test
+	public void getPreviousVersions_shouldReturnEmptyListWhenNoPreviousVersionExists() {
+		Obs obs = new Obs();
+		List<Obs> previousVersions = ObsResource2_1.getPreviousVersions(obs);
+		assertTrue(previousVersions.isEmpty());
+	}
+
+	@Test
+	public void getPreviousVersions_shouldReturnAllPreviousVersionsInOrder() {
+		Obs obs1 = new Obs();
+		Obs obs2 = new Obs();
+		Obs obs3 = new Obs();
+		obs2.setPreviousVersion(obs1);
+		obs3.setPreviousVersion(obs2);
+
+		List<Obs> previousVersions = ObsResource2_1.getPreviousVersions(obs3);
+		assertEquals(2, previousVersions.size());
+		assertEquals(obs2, previousVersions.get(0));
+		assertEquals(obs1, previousVersions.get(1));
+	}
+
 	private void clearAndSetValue(Obs obs, ObsType type, Object value) {
 		obs.setValueCoded(type.equals(ObsType.CODED) ? (Concept) value : null);
 		obs.setValueComplex(type.equals(ObsType.COMPLEX) ? (String) value : null);
