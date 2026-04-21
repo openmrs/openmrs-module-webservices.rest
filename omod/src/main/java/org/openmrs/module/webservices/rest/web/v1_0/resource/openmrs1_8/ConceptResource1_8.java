@@ -157,6 +157,24 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		return availableRepresentations;
 	}
 	
+	/**
+	 * Returns the short name of the given concept for the current user's locale, or null if no short
+	 * name is defined for that locale.
+	 * <p>
+	 * Note: this method performs an <em>exact</em> locale match via
+	 * {@link Concept#getShortNameInLocale(Locale)}. It does <strong>not</strong> fall back to a
+	 * parent locale (e.g. {@code en} when the current locale is {@code en_GB}). If no short name
+	 * exists for the exact locale, {@code null} is returned.
+	 * </p>
+	 *
+	 * @param instance the concept delegate
+	 * @return the short {@link ConceptName} for the current locale, or {@code null} if none exists
+	 */
+	@PropertyGetter("shortName")
+	public static ConceptName getShortName(Concept instance) {
+		return instance.getShortNameInLocale(Context.getLocale());
+	}
+
 	protected DelegatingResourceDescription fullRepresentationDescription(Concept delegate) {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("uuid");
@@ -175,6 +193,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		
 		description.addProperty("answers", Representation.DEFAULT);
 		description.addProperty("setMembers", Representation.DEFAULT);
+		description.addProperty("shortName");
 		description.addProperty("auditInfo");
 		description.addSelfLink();
 		if (delegate.isNumeric()) {
@@ -239,6 +258,21 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingGetRef"))) //FIXME
 			        .property("answers", new ArrayProperty(new ObjectProperty())) //FIXME
 			        .property("setMembers", new ArrayProperty(new ObjectProperty())); //FIXME
+		} else if (rep instanceof FullRepresentation) {
+			modelImpl
+			        .property("name", new RefProperty("#/definitions/ConceptNameGet"))
+			        .property("datatype", new RefProperty("#/definitions/ConceptdatatypeGetRef"))
+			        .property("conceptClass", new RefProperty("#/definitions/ConceptclassGetRef"))
+			        .property("set", new BooleanProperty())
+			        .property("version", new StringProperty())
+			        .property("retired", new BooleanProperty())
+			        .property("names", new ArrayProperty(new RefProperty("#/definitions/ConceptNameGet")))
+			        .property("descriptions", new ArrayProperty(new RefProperty("#/definitions/ConceptDescriptionGet")))
+			        .property("mappings", new ArrayProperty(new RefProperty("#/definitions/ConceptMappingGet")))
+			        .property("answers", new ArrayProperty(new ObjectProperty()))
+			        .property("setMembers", new ArrayProperty(new ObjectProperty()))
+			        .property("shortName", new RefProperty("#/definitions/ConceptNameGet"))
+			        .property("auditInfo", new StringProperty());
 		}
 		return modelImpl;
 	}
