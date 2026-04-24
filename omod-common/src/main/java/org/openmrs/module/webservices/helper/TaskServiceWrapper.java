@@ -11,13 +11,10 @@
 package org.openmrs.module.webservices.helper;
 
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.SchedulerException;
-import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Wrapping the required task information between related resource and SchedulerService
@@ -106,11 +103,7 @@ public class TaskServiceWrapper {
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
-		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
-        try {
-            task.execute();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+		// see: https://openmrs.atlassian.net/browse/RESTWS-1032
+		throw new UnsupportedOperationException("Not supported.");
     }
 }

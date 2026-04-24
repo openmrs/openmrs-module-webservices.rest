@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_4;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.helper.openmrs2_4.TaskServiceWrapper2_4;
@@ -89,6 +90,7 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 	}
 	
 	@Test
+	@Disabled// see: https://openmrs.atlassian.net/browse/RESTWS-1032
 	public void shouldRunTask() throws Exception {
 		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
 		taskDefinition.setTaskClass(DummyTask.class.getName());

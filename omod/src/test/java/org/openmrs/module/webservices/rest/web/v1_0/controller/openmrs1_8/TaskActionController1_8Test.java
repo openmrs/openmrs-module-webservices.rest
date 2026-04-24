@@ -19,6 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmrs.module.webservices.helper.TaskAction;
 import org.openmrs.module.webservices.helper.TaskServiceWrapper;
@@ -125,6 +126,7 @@ public class TaskActionController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	@Disabled// see: https://openmrs.atlassian.net/browse/RESTWS-1032
 	public void shouldRunTask() throws Exception {
 		//sanity check
 		assertThat(mockTaskServiceWrapper.registeredTasks, hasItem(testDummyTask));
