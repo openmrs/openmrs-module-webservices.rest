@@ -34,7 +34,6 @@
 	<modules>
 		<module>omod-common</module>
 		<module>omod</module>
-		<module>integration-tests</module>
 	</modules>
 
 	<properties>
@@ -572,7 +571,6 @@
 			<modules>
 				<module>omod-common</module>
 				<module>omod</module>
-				<module>integration-tests</module>
 			</modules>
 
 			<build>
