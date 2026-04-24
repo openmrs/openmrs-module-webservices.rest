@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+
+<dataset>
+	<!-- Concept for the dispensed drug/medication -->
+	<concept concept_id="300" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
+			 date_created="2004-08-12 00:00:00.0" version="" uuid="3ee9057f-87a2-4039-a2ee-821e778aded4"/>
+	<concept_name concept_id="300" name="Test Drug" concept_name_id="3001" locale="en" creator="1"
+				  date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+				  voided="false" uuid="e3537f29-b275-4049-a2f6-782cffa849f4"/>
+
+	<!-- Concept for the dispense status (e.g. COMPLETED) -->
+	<concept concept_id="301" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
+			 date_created="2004-08-12 00:00:00.0" version="" uuid="d93d0035-d666-4f48-92e8-aa290d9c5759"/>
+	<concept_name concept_id="301" name="COMPLETED" concept_name_id="3002" locale="en" creator="1"
+				  date_created="2008-08-15 13:52:53.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+				  voided="false" uuid="d6aea224-7798-4f4f-b82f-51d2f4594491"/>
+
+	<patient patient_id="2" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+
+	<medication_dispense medication_dispense_id="1" patient_id="2" concept="300" status="301"
+						 creator="1" date_created="2021-06-01 00:00:00.0"
+						 voided="false" uuid="f6b7b4de-596c-4d38-bb14-167fc872732c"/>
+	<medication_dispense medication_dispense_id="2" patient_id="2" concept="300" status="301"
+						 creator="1" date_created="2021-06-01 00:00:00.0"
+						 voided="true" voided_by="1" date_voided="2021-06-02 00:00:00.0" void_reason="Testing void"
+						 uuid="2587c7cc-5e0d-4ffe-8b3a-e548086f11df"/>
+</dataset>
