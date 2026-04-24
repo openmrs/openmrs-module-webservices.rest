@@ -300,16 +300,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>3.4.2</version>
 					<executions>
 						<execution>
-							<id>default-test-jar</id>
 							<goals>
 								<goal>test-jar</goal>
 							</goals>
-							<configuration>
-								<classifier>tests</classifier>
-							</configuration>
 						</execution>
 					</executions>
 				</plugin>
