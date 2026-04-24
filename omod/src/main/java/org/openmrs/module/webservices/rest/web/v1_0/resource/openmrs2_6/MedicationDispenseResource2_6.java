@@ -19,6 +19,7 @@ import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.MedicationDispense;
+import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.MedicationDispenseService;
@@ -349,13 +350,19 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 	 */
 	@PropertyGetter("display")
 	public String getDisplayString(MedicationDispense medicationDispense) {
+		StringBuilder ret = new StringBuilder();
+		ret.append("(" + medicationDispense.getStatus().getName().getName() + ") ");
 		if (medicationDispense.getDrug() != null) {
-			return medicationDispense.getDrug().getDisplayName();
+			ret.append(medicationDispense.getDrug().getName());
+		} else {
+			ret.append(medicationDispense.getConcept().getName().getName());
 		}
-		if (medicationDispense.getConcept() != null) {
-			return medicationDispense.getConcept().getName().getName();
+
+		if (medicationDispense.getQuantity() != null) {
+			ret.append(": " + medicationDispense.getQuantity() + " " + medicationDispense.getQuantityUnits().getName().getName());
 		}
-		return "";
+
+		return ret.toString();
 	}
 
 	/**

@@ -141,4 +141,54 @@ public class MedicationDispenseController2_6Test extends MainResourceControllerT
 		List<Object> results = result.get("results");
 		Assert.assertTrue(results.size() > 0);
 	}
+
+	@Test
+	public void shouldSetFormNamespaceAndPathOnCreate() throws Exception {
+		SimpleObject dispenseSource = new SimpleObject();
+		dispenseSource.add("patient", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+		dispenseSource.add("concept", "3ee9057f-87a2-4039-a2ee-821e778aded4");
+		dispenseSource.add("status", "d93d0035-d666-4f48-92e8-aa290d9c5759");
+		dispenseSource.add("formFieldNamespace", "my.form.app");
+		dispenseSource.add("formFieldPath", "dispenseForm/quantity");
+
+		String json = new ObjectMapper().writeValueAsString(dispenseSource);
+
+		MockHttpServletRequest req = request(RequestMethod.POST, getURI());
+		req.setContent(json.getBytes());
+
+		SimpleObject newDispense = deserialize(handle(req));
+		String uuid = newDispense.get("uuid");
+
+		MedicationDispense saved = medicationDispenseService.getMedicationDispenseByUuid(uuid);
+		Assert.assertEquals("my.form.app", saved.getFormFieldNamespace());
+		Assert.assertEquals("dispenseForm/quantity", saved.getFormFieldPath());
+	}
+
+	@Test
+	public void shouldUpdateFormNamespaceAndPath() throws Exception {
+		MedicationDispense dispense = medicationDispenseService.getMedicationDispenseByUuid(getUuid());
+		Assert.assertNull(dispense.getFormFieldNamespace());
+		Assert.assertNull(dispense.getFormFieldPath());
+
+		String json = "{ \"formFieldNamespace\": \"my.form.app\", \"formFieldPath\": \"dispenseForm/quantity\" }";
+		SimpleObject response = deserialize(handle(newPostRequest(getURI() + "/" + getUuid(), json)));
+
+		MedicationDispense updated = medicationDispenseService
+		        .getMedicationDispenseByUuid((String) response.get("uuid"));
+		Assert.assertEquals("my.form.app", updated.getFormFieldNamespace());
+		Assert.assertEquals("dispenseForm/quantity", updated.getFormFieldPath());
+	}
+
+	@Test
+	public void shouldReturnFormNamespaceAndPathInFullRepresentation() throws Exception {
+		String json = "{ \"formFieldNamespace\": \"my.form.app\", \"formFieldPath\": \"dispenseForm/quantity\" }";
+		handle(newPostRequest(getURI() + "/" + getUuid(), json));
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter("v", "full");
+		SimpleObject result = deserialize(handle(req));
+
+		Assert.assertEquals("my.form.app", result.get("formFieldNamespace"));
+		Assert.assertEquals("dispenseForm/quantity", result.get("formFieldPath"));
+	}
 }

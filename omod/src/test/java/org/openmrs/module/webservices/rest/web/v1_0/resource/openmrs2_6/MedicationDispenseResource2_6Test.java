@@ -32,7 +32,7 @@ public class MedicationDispenseResource2_6Test
 
 	@Override
 	public String getDisplayProperty() {
-		return "Test Drug";
+		return "(COMPLETED) Test Drug";
 	}
 
 	@Override
