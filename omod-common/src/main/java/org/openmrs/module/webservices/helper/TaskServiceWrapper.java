@@ -11,7 +11,6 @@
 package org.openmrs.module.webservices.helper;
 
 import org.openmrs.scheduler.TaskDefinition;
-import org.openmrs.scheduler.TaskFactory;
 import org.openmrs.scheduler.SchedulerException;
 import org.openmrs.scheduler.Task;
 import org.openmrs.api.context.Context;
@@ -106,11 +105,14 @@ public class TaskServiceWrapper {
 	 * @throws SchedulerException - It will throw in case of any SchedulerService exceptions
 	 */
 	public void runTask(TaskDefinition taskDefinition) throws SchedulerException {
-		Task task = TaskFactory.getInstance().createInstance(taskDefinition);
-        try {
-            task.execute();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+		try {
+			Task task = (Task) Class.forName(taskDefinition.getTaskClass()).newInstance();
+			task.initialize(taskDefinition);
+			task.execute();
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		} catch (ReflectiveOperationException e) {
+			throw new SchedulerException("Failed to instantiate task class: " + taskDefinition.getTaskClass(), e);
+		}
+	}
 }
