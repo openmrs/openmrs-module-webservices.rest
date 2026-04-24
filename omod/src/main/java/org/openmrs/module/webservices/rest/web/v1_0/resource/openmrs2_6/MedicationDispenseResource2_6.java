@@ -46,8 +46,8 @@ import org.openmrs.util.PrivilegeConstants;
 /**
  * {@link Resource} for MedicationDispense, supporting standard CRUD operations
  */
-@Resource(name = RestConstants.VERSION_1 + "/medicationdispense", supportedClass = MedicationDispense.class, supportedOpenmrsVersions = {
-        "2.6.* - 9.*" })
+@Resource(name = RestConstants.VERSION_1 + "/medicationdispense", supportedClass = MedicationDispense.class,
+		supportedOpenmrsVersions = {"2.6.* - 9.*" })
 public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<MedicationDispense> {
 
 	@Override
@@ -351,15 +351,15 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 	@PropertyGetter("display")
 	public String getDisplayString(MedicationDispense medicationDispense) {
 		StringBuilder ret = new StringBuilder();
-		ret.append("(" + medicationDispense.getStatus().getName().getName() + ") ");
+		ret.append("(").append(medicationDispense.getStatus().getDisplayString()).append(") ");
 		if (medicationDispense.getDrug() != null) {
 			ret.append(medicationDispense.getDrug().getName());
 		} else {
-			ret.append(medicationDispense.getConcept().getName().getName());
+			ret.append(medicationDispense.getConcept().getDisplayString());
 		}
 
-		if (medicationDispense.getQuantity() != null) {
-			ret.append(": " + medicationDispense.getQuantity() + " " + medicationDispense.getQuantityUnits().getName().getName());
+		if (medicationDispense.getQuantity() != null && medicationDispense.getQuantityUnits() != null) {
+			ret.append(": ").append(medicationDispense.getQuantity()).append(" ").append(medicationDispense.getQuantityUnits().getDisplayString());
 		}
 
 		return ret.toString();
