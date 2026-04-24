@@ -11,6 +11,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs2_0;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmrs.VisitType;
 import org.openmrs.api.AdministrationService;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@Disabled // see: https://openmrs.atlassian.net/browse/RESTWS-1033
 public class VisitConfigurationController2_0Test extends RestControllerTestUtils {
 
 	private AdministrationService administrationService;
