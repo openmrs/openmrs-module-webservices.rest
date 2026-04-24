@@ -34,7 +34,6 @@
 	<modules>
 		<module>omod-common</module>
 		<module>omod</module>
-		<module>integration-tests</module>
 	</modules>
 
 	<properties>
@@ -493,6 +492,13 @@
 
 	<profiles>
 
+		<profile>
+			<id>integration-tests</id>
+
+			<modules>
+				<module>integration-tests</module>
+			</modules>
+		</profile>
 		<!-- if you update this default profile, be sure to update the "release" profile to make sure it stays consistent -->
 		<profile>
 			<id>ci</id>
@@ -533,7 +539,6 @@
 			<modules>
 				<module>omod-common</module>
 				<module>omod</module>
-				<module>integration-tests</module>
 			</modules>
 
 			<build>
