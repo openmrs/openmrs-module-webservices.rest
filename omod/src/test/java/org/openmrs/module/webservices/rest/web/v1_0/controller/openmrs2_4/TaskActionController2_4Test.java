@@ -96,8 +96,10 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 	public void shouldRunTask() throws Exception {
 		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
 		taskDefinition.setTaskClass(DummyTask.class.getName());
-		// Set startTime far in the future to verify runTask() actually runs it relatively quickly
+		// startTime is 1 hour in the future — verifies runTask() ignores it and runs the task almost immediately (within 15 seconds)
 		taskDefinition.setStartTime(new Date(System.currentTimeMillis() + 3_600_000L));
+		// repeatInterval is 1s — verifies runTask() ignores it and runs the task exactly once
+		taskDefinition.setRepeatInterval(1L);
 		assertEquals(4, schedulerService.getRegisteredTasks().size());
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(),
@@ -112,6 +114,9 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 			Thread.sleep(200);
 		}
 		assertEquals(countBefore + 1, count, "Task should have run almost immediately despite future startTime");
+		// Wait longer than repeatInterval to verify the task did not repeat
+		Thread.sleep(2_000L);
+		assertEquals(countBefore + 1, count, "Task should have run exactly once (repeatInterval should be ignored)");
 	}
 
 	@Test
