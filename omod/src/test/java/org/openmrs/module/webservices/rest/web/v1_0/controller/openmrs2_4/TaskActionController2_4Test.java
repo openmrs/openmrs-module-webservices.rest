@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmrs.api.context.Context;
+
+import java.util.Date;
 import org.openmrs.module.webservices.helper.openmrs2_4.TaskServiceWrapper2_4;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_8.TaskActionController1_8Test;
@@ -94,14 +96,27 @@ public class TaskActionController2_4Test extends TaskActionController1_8Test {
 	public void shouldRunTask() throws Exception {
 		TaskDefinition taskDefinition = getTaskByUuid(CHRONIC_CARE_UUID);
 		taskDefinition.setTaskClass(DummyTask.class.getName());
+		// startTime is 1 hour in the future — verifies runTask() ignores it and runs the task almost immediately (within 15 seconds)
+		taskDefinition.setStartTime(new Date(System.currentTimeMillis() + 3_600_000L));
+		// repeatInterval is 1s — verifies runTask() ignores it and runs the task exactly once
+		taskDefinition.setRepeatInterval(1L);
 		assertEquals(4, schedulerService.getRegisteredTasks().size());
 		int countBefore = count;
 		deserialize(handle(newPostRequest(getURI(),
 				"{\"action\": \"runtask\", \"tasks\":[\"" + CHRONIC_CARE_UUID + "\"]}")));
 		assertThat(schedulerService.getRegisteredTasks(), hasItem(getTaskByUuid(CHRONIC_CARE_UUID)));
 		assertEquals(4, schedulerService.getRegisteredTasks().size());
-		int countAfter = count;
-		assertEquals(++countBefore, countAfter);
+		// Task runs asynchronously via JobRunr — poll until executed or timeout
+		// By default, JobRunr's BackgroundJobServer has a polling interval of 15 seconds, see:
+		// https://javadoc.io/static/org.jobrunr/jobrunr/5.3.2/org/jobrunr/server/BackgroundJobServerConfiguration.html#usingStandardBackgroundJobServerConfiguration()
+		long deadline = System.currentTimeMillis() + 15_000L;
+		while (count == countBefore && System.currentTimeMillis() < deadline) {
+			Thread.sleep(200);
+		}
+		assertEquals(countBefore + 1, count, "Task should have run almost immediately despite future startTime");
+		// Wait longer than repeatInterval to verify the task did not repeat
+		Thread.sleep(2_000L);
+		assertEquals(countBefore + 1, count, "Task should have run exactly once (repeatInterval should be ignored)");
 	}
 
 	@Test
