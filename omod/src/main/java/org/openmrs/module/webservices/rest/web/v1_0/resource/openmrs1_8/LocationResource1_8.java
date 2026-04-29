@@ -258,15 +258,19 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
 	}
 
-	@PropertyGetter("parentLocations")
-	public static List<Location> getParentLocations(Location location) {
-		List<Location> parentLocations = new ArrayList<Location>();
+	/**
+	 * @param location
+	 * @return a list of ancestor locations for a given location, starting with the parent location and ending with the topmost ancestor
+	 */
+	@PropertyGetter("ancestorLocations")
+	public static List<Location> getAncestorLocations(Location location) {
+		List<Location> ancestorLocations = new ArrayList<Location>();
 		Location parentLocation = location.getParentLocation();
 		while (parentLocation != null) {
-			parentLocations.add(parentLocation);
+			ancestorLocations.add(parentLocation);
 			parentLocation = parentLocation.getParentLocation();
 		}
-		return parentLocations;
+		return ancestorLocations;
 	}
 
 	/**

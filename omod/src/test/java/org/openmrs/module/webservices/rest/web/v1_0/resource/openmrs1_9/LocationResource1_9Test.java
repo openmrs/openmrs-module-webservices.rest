@@ -102,21 +102,21 @@ public class LocationResource1_9Test extends BaseDelegatingResourceTest<Location
 	}
 
 	@Test
-	public void getParentLocations_shouldReturnEmptyListWhenNoParentLocationExists() {
+	public void getAncestorLocations_shouldReturnEmptyListWhenNoParentLocationExists() {
 		Location location = new Location();
-		List<Location> parentLocations = LocationResource1_8.getParentLocations(location);
+		List<Location> parentLocations = LocationResource1_8.getAncestorLocations(location);
 		assertTrue(parentLocations.isEmpty());
 	}
 
 	@Test
-	public void getParentLocations_shouldReturnAllParentLocationsInOrder() {
+	public void getAncestorLocations_shouldReturnAncestorLocationsInOrder() {
 		Location loc1 = new Location();
 		Location loc2 = new Location();
 		Location loc3 = new Location();
 		loc2.setParentLocation(loc1);
 		loc3.setParentLocation(loc2);
 
-		List<Location> parentLocations = LocationResource1_8.getParentLocations(loc3);
+		List<Location> parentLocations = LocationResource1_8.getAncestorLocations(loc3);
 		assertEquals(2, parentLocations.size());
 		assertEquals(loc2, parentLocations.get(0));
 		assertEquals(loc1, parentLocations.get(1));
