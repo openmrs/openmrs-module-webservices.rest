@@ -25,6 +25,7 @@ import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
@@ -255,6 +256,17 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	@Override
 	protected NeedsPaging<Location> doGetAll(RequestContext context) {
 		return new NeedsPaging<Location>(Context.getLocationService().getAllLocations(context.getIncludeAll()), context);
+	}
+
+	@PropertyGetter("parentLocations")
+	public static List<Location> getParentLocations(Location location) {
+		List<Location> parentLocations = new ArrayList<Location>();
+		Location parentLocation = location.getParentLocation();
+		while (parentLocation != null) {
+			parentLocations.add(parentLocation);
+			parentLocation = parentLocation.getParentLocation();
+		}
+		return parentLocations;
 	}
 
 	/**
