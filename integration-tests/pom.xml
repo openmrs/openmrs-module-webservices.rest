@@ -6,7 +6,7 @@
 		<version>2.51.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>webservices.rest-integration-tests</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>Rest Web Services Integration Tests</name>
 	<description>
 		It contains integration tests for Rest Web Services. They can be executed 
@@ -41,6 +41,7 @@
 			<artifactId>fluent-hc</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -59,6 +60,18 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>2.20</version>
+					<dependencies>
+						<dependency>
+							<groupId>jakarta.xml.bind</groupId>
+							<artifactId>jakarta.xml.bind-api</artifactId>
+							<version>2.3.3</version>
+						</dependency>
+						<dependency>
+							<groupId>org.glassfish.jaxb</groupId>
+							<artifactId>jaxb-runtime</artifactId>
+							<version>2.3.8</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
