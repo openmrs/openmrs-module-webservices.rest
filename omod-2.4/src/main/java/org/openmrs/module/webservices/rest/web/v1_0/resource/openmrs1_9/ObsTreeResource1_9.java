@@ -23,12 +23,12 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSet;
 import org.openmrs.Obs;
-import org.openmrs.ObsReferenceRange;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.HibernateUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -153,10 +153,15 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		
 		List<Obs> obsList = obsService.getObservations(whom, null, Arrays.asList(concept), null, null, null, 
 				null, null, null, fromDate, toDate, false);
-		
-		List<HashMap<String, Object>> mapList = new ArrayList<HashMap<String, Object>>();
+
+		Concept conceptNumeric = null;
+		if (concept.isNumeric()) {
+			conceptNumeric = HibernateUtil.getRealObjectFromProxy(concept);
+		}
+
+		List<HashMap<String, Object>> mapList = new ArrayList<>();
 		for (Obs obs : obsList) {
-			HashMap<String, Object> valueMap = new HashMap<String, Object>();
+			HashMap<String, Object> valueMap = new HashMap<>();
 			String value;
 			// we special case they obs of type date and datetime because for some reason getValueAsString strips off the timezone of datetimes
 			if (obs.getValueDatetime() != null) {
@@ -172,15 +177,12 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 			valueMap.put("value", value);
 			valueMap.put("obsDatetime", new SimpleDateFormat(DATETIME_FORMAT).format(obs.getObsDatetime()));
 			
-			if (concept.isNumeric()) {
+			if (conceptNumeric instanceof ConceptNumeric) {
 				if (obs.getInterpretation() != null) {
 					valueMap.put("interpretation", obs.getInterpretation().toString());
 				}
-				
-				ObsReferenceRange referenceRange = obs.getReferenceRange();
-				if (referenceRange != null) {
-					fillObsReferenceRange(obs.getReferenceRange(), valueMap);
-				}
+
+				fillConceptNumericMetadata(valueMap, (ConceptNumeric) conceptNumeric, false);
 			}
 			
 			mapList.add(valueMap);
@@ -191,9 +193,8 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		map.put("conceptUuid", concept.getUuid());
 		map.put("datatype", concept.getDatatype().getName());
 		
-		if (concept.isNumeric()) {
-			ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(concept.getConceptId());
-			fillConceptNumericMetadata(map, conceptNumeric);
+		if (conceptNumeric instanceof ConceptNumeric) {
+			fillConceptNumericMetadata(map, (ConceptNumeric) conceptNumeric, true);
 		}
 		
 		map.put("obs", mapList);
@@ -209,11 +210,14 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 		return map;
 	}
 	
-	private void fillConceptNumericMetadata(HashMap<String, Object> map, ConceptNumeric conceptNumeric) {
-		String units = conceptNumeric.getUnits();
-		if (StringUtils.isNotBlank(units)) {
-			map.put("units", units);
+	private void fillConceptNumericMetadata(HashMap<String, Object> map, ConceptNumeric conceptNumeric, boolean	includeUnits) {
+		if (includeUnits) {
+			String units = conceptNumeric.getUnits();
+			if (StringUtils.isNotBlank(units)) {
+				map.put("units", units);
+			}
 		}
+
 		Double hiAbsolute = conceptNumeric.getHiAbsolute();
 		if (hiAbsolute != null) {
 			map.put("hiAbsolute", hiAbsolute);
@@ -235,33 +239,6 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 			map.put("lowCritical", lowCritical);
 		}
 		Double lowNormal = conceptNumeric.getLowNormal();
-		if (lowNormal != null) {
-			map.put("lowNormal", lowNormal);
-		}
-	}
-	
-	private void fillObsReferenceRange(ObsReferenceRange referenceRange, HashMap<String, Object> map) {
-		Double hiAbsolute = referenceRange.getHiAbsolute();
-		if (hiAbsolute != null) {
-			map.put("hiAbsolute", hiAbsolute);
-		}
-		Double hiCritical = referenceRange.getHiCritical();
-		if (hiCritical != null) {
-			map.put("hiCritical", hiCritical);
-		}
-		Double hiNormal = referenceRange.getHiNormal();
-		if (hiNormal != null) {
-			map.put("hiNormal", hiNormal);
-		}
-		Double lowAbsolute = referenceRange.getLowAbsolute();
-		if (lowAbsolute != null) {
-			map.put("lowAbsolute", lowAbsolute);
-		}
-		Double lowCritical = referenceRange.getLowCritical();
-		if (lowCritical != null) {
-			map.put("lowCritical", lowCritical);
-		}
-		Double lowNormal = referenceRange.getLowNormal();
 		if (lowNormal != null) {
 			map.put("lowNormal", lowNormal);
 		}

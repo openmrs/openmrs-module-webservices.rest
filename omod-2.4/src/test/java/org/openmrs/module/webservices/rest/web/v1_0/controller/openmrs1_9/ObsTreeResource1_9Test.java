@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-public class ObsTreeController1_9Test extends MainResourceControllerTest {
+public class ObsTreeResource1_9Test extends MainResourceControllerTest {
 
 	@Before
 	public void init() throws Exception {

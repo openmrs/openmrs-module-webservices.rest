@@ -38,7 +38,6 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -157,7 +156,7 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         // Admin should see patient data
         Object adminResult = ConversionUtil.convertToRepresentation(visit,
                 new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
-        assertInstanceOf(SimpleObject.class, adminResult);
+        assertTrue(adminResult instanceof SimpleObject);
         SimpleObject adminVisit = (SimpleObject) adminResult;
         assertNotNull(adminVisit.get("patient"), "Admin should see patient data");
 
@@ -182,7 +181,7 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         // Patient property should be omitted because the user lacks "Get Patients"
         Object limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
                 new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
-        assertInstanceOf(SimpleObject.class, limitedResult);
+        assertTrue(adminResult instanceof SimpleObject);
         SimpleObject limitedVisit = (SimpleObject) limitedResult;
         assertFalse(limitedVisit.containsKey("patient"),
                 "User without 'Get Patients' privilege should NOT see patient data through custom representation");

@@ -105,7 +105,5 @@
 	<obs obs_id="140" person_id="7" concept_id="188" encounter_id="4" status="FINAL" obs_datetime="2008-08-15 00:00:00.0" location_id="1" value_numeric="62" comments="" creator="1" date_created="2008-08-19 12:32:20.0" voided="false" uuid="aa521c32-47b6-47da-9c6f-3673ddfb74f1"/>
 	<obs obs_id="141" person_id="7" concept_id="189" encounter_id="4" status="FINAL" obs_datetime="2008-08-15 00:00:00.0" location_id="1" value_numeric="51" comments="" creator="1" date_created="2008-08-19 12:32:20.0" voided="false" uuid="bb521c32-47b6-47da-9c6f-3673ddfb74f1"/>
 	<obs obs_id="142" person_id="7" concept_id="190" encounter_id="4" status="FINAL" obs_datetime="2008-08-15 00:00:00.0" location_id="1" value_numeric="44" comments="" creator="1" date_created="2008-08-19 12:32:20.0" voided="false" uuid="cc521c32-47b6-47da-9c6f-3673ddfb74f1"/>
-	
-	<obs_reference_range obs_id="136" hi_absolute="60" hi_critical="68" uuid="b4166639-24d5-4d13-941d-1c58a225da9b" />
-	
+
 </dataset>

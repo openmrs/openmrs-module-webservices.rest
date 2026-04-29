@@ -224,6 +224,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 		Field modifiersField = Field.class.getDeclaredField("modifiers");
 		modifiersField.setAccessible(true);
 		modifiersField.setInt(versionField, versionField.getModifiers() & ~Modifier.FINAL);
+		versionField.setAccessible(true);
 		versionField.set(null, currentOpenmrsVersion);
 	}
 	

@@ -9,8 +9,8 @@
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
           "value" : "7.0",
           "interpretation" : "NORMAL",
-          "hiAbsolute" : 60.0,
-          "hiCritical" : 68.0
+          "lowCritical" : 0.0,
+          "hiNormal" : 50.0
         } ],
         "datatype" : "Numeric",
         "display" : "Hematocrit",
@@ -21,7 +21,9 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "8.0"
+          "value" : "8.0",
+          "lowCritical" : 0.0,
+          "hiNormal" : 150.0
         } ],
         "datatype" : "Numeric",
         "display" : "Platelets",
@@ -32,7 +34,9 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "9.0"
+          "value" : "9.0",
+          "lowCritical" : 0.0,
+          "hiNormal" : 25.0
         } ],
         "datatype" : "Numeric",
         "display" : "Haemoglobin",
@@ -43,7 +47,9 @@
       }, {
         "obs" : [ {
           "obsDatetime" : "2008-08-15T00:00:00.000+0200",
-          "value" : "10.0"
+          "value" : "10.0",
+          "lowCritical" : 0.0,
+          "hiNormal" : 250.0
         } ],
         "datatype" : "Numeric",
         "display" : "White blood cells",
