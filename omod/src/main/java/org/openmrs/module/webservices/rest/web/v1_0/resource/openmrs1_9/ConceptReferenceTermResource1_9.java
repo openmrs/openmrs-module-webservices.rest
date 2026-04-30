@@ -129,7 +129,10 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return ((ModelImpl) super.getUPDATEModel(rep))
+				.property("code", new StringProperty())
+				.property("conceptSource", new RefProperty("#/definitions/ConceptsourceCreate"))
+				.property("version", new StringProperty());
 	}
 	
 	/**
