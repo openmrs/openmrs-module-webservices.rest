@@ -55,6 +55,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		assertPropEquals("display", getDisplayProperty());
 		assertPropPresent("answers");
 		assertPropPresent("setMembers");
+		assertPropNotPresent("shortName");
 	}
 	
 	@Override
@@ -72,6 +73,7 @@ public class ConceptResource1_9Test extends BaseDelegatingResourceTest<ConceptRe
 		assertPropEquals("display", getDisplayProperty());
 		assertPropPresent("answers");
 		assertPropPresent("setMembers");
+		assertPropPresent("shortName");
 	}
 	
 	@Override
