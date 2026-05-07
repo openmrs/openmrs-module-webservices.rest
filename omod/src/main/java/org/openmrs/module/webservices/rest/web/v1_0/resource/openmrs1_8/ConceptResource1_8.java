@@ -61,6 +61,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -601,6 +602,11 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 			if (memberOfList == null || memberOfList.contains(csr.getConcept()))
 				results.add(csr.getConcept());
 		}
+		
+		// Remove duplicate concepts that can arise from HQL joins on multi-valued associations
+		// (e.g., concept_name, concept_map) in the underlying queries. Uses LinkedHashSet to
+		// preserve insertion order while eliminating duplicates.
+		results = new ArrayList<Concept>(new LinkedHashSet<Concept>(results));
 		
 		PageableResult result = null;
 		if (canPage) {
