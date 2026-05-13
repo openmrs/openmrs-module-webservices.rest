@@ -187,9 +187,10 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
-		        .property("dateEnrolled", new DateProperty())
-		        .property("dateCompleted", new DateProperty()); //FIXME missing props
-		
+				.property("dateEnrolled", new DateProperty())
+				.property("dateCompleted", new DateProperty())
+				.property("location", new StringProperty().example("uuid"))
+				.property("voided", new BooleanProperty());
 	}
 	
 	/**

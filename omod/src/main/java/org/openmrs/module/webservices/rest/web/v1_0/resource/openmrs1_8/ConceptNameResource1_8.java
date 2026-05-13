@@ -98,7 +98,10 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()
-		        .property("name", new StringProperty()); //FIXME missing props
+				.property("name", new StringProperty())
+				.property("locale", new StringProperty().example("en"))
+				.property("localePreferred", new BooleanProperty()._default(false))
+				.property("conceptNameType", new EnumProperty(ConceptNameType.class));
 	}
 	
 	/**
