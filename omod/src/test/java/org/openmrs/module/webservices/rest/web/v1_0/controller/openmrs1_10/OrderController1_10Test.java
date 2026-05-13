@@ -27,11 +27,13 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_10;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -604,5 +606,35 @@ public class OrderController1_10Test extends MainResourceControllerTest {
 			);
 			handle(req);
 		});
+	}
+
+	@Test
+	public void shouldValidateOrderPayloadWithoutPersisting() throws Exception {
+		executeDataSet("OrderController1_10Test-orderTypeAndConceptClassMap.xml");
+		CareSetting outPatient = orderService.getCareSettingByUuid(RestTestConstants1_10.CARE_SETTING_UUID);
+		Patient patient = patientService.getPatientByUuid(PATIENT_UUID);
+		int originalActiveOrderCount = orderService.getActiveOrders(patient, null, outPatient, null).size();
+
+		SimpleObject order = new SimpleObject();
+		order.add("type", "order");
+		order.add("patient", PATIENT_UUID);
+		order.add("concept", "0a9afe04-088b-44ca-9291-0a8c3b5c96fa");
+		order.add("careSetting", RestTestConstants1_10.CARE_SETTING_UUID);
+		order.add("encounter", "e403fafb-e5e4-42d0-9d11-4f52e89d148c");
+		order.add("orderer", "c2299800-cca9-11e0-9572-0800200c9a66");
+
+		MockHttpServletResponse response = handle(newPostRequest(getURI() + "/validate", order));
+
+		assertEquals(200, response.getStatus());
+		assertEquals(originalActiveOrderCount, orderService.getActiveOrders(patient, null, outPatient, null).size());
+	}
+
+	@Test(expected = ConversionException.class)
+	public void shouldRejectInvalidOrderPayloadOnValidateEndpoint() throws Exception {
+		// A payload missing required fields (patient, encounter, etc.) should be rejected
+		SimpleObject order = new SimpleObject();
+		order.add("type", "order");
+
+		handle(newPostRequest(getURI() + "/validate", order));
 	}
 }
