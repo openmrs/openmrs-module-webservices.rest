@@ -13,6 +13,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -21,17 +23,26 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.openmrs.User;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler;
+import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
@@ -376,4 +387,100 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	public class GreatGrandchildGenericType_Int extends GrandchildGenericType_Int {}
 	
 	public class ChildMultiGenericType extends BaseMultiGenericType<Integer, String, Temp> {}
+
+	@Test
+	@SuppressWarnings({ "rawtypes" })
+	public void convertMap_shouldCallSetPropertyOnlyOnceForPropertiesInDefaultRepresentation() throws Exception {
+		String expectedKey = "someKey";
+		String expectedValue = "someValue";
+		String expectedUUID = "12345";
+
+		Map<String, Object> mapToConvert = new HashMap<String, Object>();
+		mapToConvert.put(expectedKey, expectedValue);
+		mapToConvert.put(RestConstants.PROPERTY_UUID, expectedUUID);
+		mapToConvert.put(RestConstants.PROPERTY_FOR_TYPE, "someType");
+
+		DelegatingResourceHandler converter = (DelegatingResourceHandler) ConversionUtil.getConverter(DummyUser.class);
+		Assertions.assertNotNull(converter);
+
+		DelegatingResourceDescription representationDesc = converter.getRepresentationDescription(Representation.DEFAULT);
+		Map<String, DelegatingResourceDescription.Property> repDescProperties = new HashMap<String, DelegatingResourceDescription.Property>();
+		DelegatingResourceDescription.Property mockProperty = mock(DelegatingResourceDescription.Property.class);
+		repDescProperties.put(expectedKey, mockProperty);
+
+		when(representationDesc.getProperties()).thenReturn(repDescProperties);
+
+		DummyUser expectedUser = mock(DummyUser.class);
+		((DummyUserConverter) converter).addUser(expectedUUID, expectedUser);
+
+		DummyUser actualUser = (DummyUser) ConversionUtil.convertMap(mapToConvert, DummyUser.class);
+
+		Assertions.assertEquals(expectedUser, actualUser);
+		Assertions.assertEquals(1, (int) ((DummyUserConverter) converter).getPropertyKeyToNbTimesSet().get(expectedKey));
+	}
+
+	@Resource(name = "dummyUserConverter", supportedClass = DummyUser.class, supportedOpenmrsVersions = { "1.0.* - 9.*" })
+	public static class DummyUserConverter extends DelegatingCrudResource<DummyUser> {
+
+		private final DelegatingResourceDescription mockRepDesc = mock(DelegatingResourceDescription.class);
+
+		private final Map<String, Object> properties = new HashMap<String, Object>();
+
+		private final Map<String, Integer> propertyKeyToNbTimesSet = new HashMap<String, Integer>();
+
+		private final Map<String, DummyUser> uniqueIdToUser = new HashMap<String, DummyUser>();
+
+		public void addUser(String uniqueId, DummyUser user) {
+			uniqueIdToUser.put(uniqueId, user);
+		}
+
+		@Override
+		public void setProperty(Object instance, String propertyName, Object value) throws ConversionException {
+			properties.put(propertyName, value);
+			Integer nbTimesCalled = propertyKeyToNbTimesSet.get(propertyName);
+			propertyKeyToNbTimesSet.put(propertyName, nbTimesCalled == null ? 1 : nbTimesCalled + 1);
+		}
+
+		@Override
+		public DummyUser getByUniqueId(String uniqueId) {
+			return uniqueIdToUser.get(uniqueId);
+		}
+
+		@Override
+		public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
+			return mockRepDesc;
+		}
+
+		@Override
+		protected void delete(DummyUser delegate, String reason, RequestContext context) throws ResponseException {
+			// Do nothing
+		}
+
+		@Override
+		public void purge(DummyUser delegate, RequestContext context) throws ResponseException {
+			// Do nothing
+		}
+
+		@Override
+		public DummyUser newDelegate() {
+			return null;
+		}
+
+		@Override
+		public DummyUser save(DummyUser delegate) {
+			return delegate;
+		}
+
+		public Map<String, Object> getProperties() {
+			return properties;
+		}
+
+		public Map<String, Integer> getPropertyKeyToNbTimesSet() {
+			return propertyKeyToNbTimesSet;
+		}
+	}
+
+	protected static class DummyUser extends User {
+		// No overrides needed
+	}
 }
