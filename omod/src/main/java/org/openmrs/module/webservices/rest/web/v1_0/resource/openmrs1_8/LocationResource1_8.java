@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
@@ -279,8 +278,8 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	 * @return a set of descendant locations for a given location, starting with the parent location and ending with the topmost ancestor
 	 */
 	@PropertyGetter("descendantLocations")
-	public static Set<Location> getDescendantLocations(Location location) {
-		return location.getDescendantLocations(false);
+	public static List<Location> getDescendantLocations(Location location) {
+		return Context.getLocationService().getDescendantLocations(location, false);
 	}
 
 	/**
