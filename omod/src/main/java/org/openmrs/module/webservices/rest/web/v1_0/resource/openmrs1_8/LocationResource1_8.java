@@ -274,6 +274,15 @@ public class LocationResource1_8 extends MetadataDelegatingCrudResource<Location
 	}
 
 	/**
+	 * @param location
+	 * @return a set of descendant locations for a given location, starting with the parent location and ending with the topmost ancestor
+	 */
+	@PropertyGetter("descendantLocations")
+	public static List<Location> getDescendantLocations(Location location) {
+		return Context.getLocationService().getDescendantLocations(location, false);
+	}
+
+	/**
 	 * @see DelegatingCrudResource#doSearch(RequestContext)
 	 *      A query string and/or a tag (referenced by name or uuid) can be passed in; if both are passed in, returns an
 	 *      intersection of the results; excludes retired locations
