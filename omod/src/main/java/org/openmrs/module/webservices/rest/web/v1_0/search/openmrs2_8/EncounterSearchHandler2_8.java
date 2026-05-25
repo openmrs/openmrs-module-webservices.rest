@@ -63,15 +63,16 @@ public class EncounterSearchHandler2_8 implements SearchHandler {
     }
 
     @Override
+    
     public PageableResult search(RequestContext context) throws ResponseException {
         String patientUuid = context.getRequest().getParameter("patient");
         String encounterTypeUuid = context.getRequest().getParameter("encounterType");
         String[] visitUuids = context.getRequest().getParameterValues("visit");
         String formUuid = context.getRequest().getParameter(PARAM_FORM);
         String formName = context.getRequest().getParameter(PARAM_FORM_NAME);
-
         String dateFrom = context.getRequest().getParameter(DATE_FROM);
         String dateTo = context.getRequest().getParameter(DATE_TO);
+
         Date fromDate = dateFrom != null ? (Date) ConversionUtil.convert(dateFrom, Date.class) : null;
         Date toDate = dateTo != null ? (Date) ConversionUtil.convert(dateTo, Date.class) : null;
 
@@ -80,55 +81,58 @@ public class EncounterSearchHandler2_8 implements SearchHandler {
         EncounterType encounterType = ((EncounterTypeResource1_8) Context.getService(RestService.class)
                 .getResourceBySupportedClass(EncounterType.class)).getByUniqueId(encounterTypeUuid);
 
-        if (patient != null && (encounterType != null || encounterTypeUuid == null)) {
-            EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder()
-                    .setPatient(patient)
-                    .setFromDate(fromDate)
-                    .setToDate(toDate)
-                    .setIncludeVoided(false);
-
-            if (encounterType != null) {
-                builder.setEncounterTypes(Arrays.asList(encounterType));
-            }
-
-            if (visitUuids != null && visitUuids.length > 0) {
-                List<Visit> visits = new ArrayList<>();
-                for (String visitUuid : visitUuids) {
-                    visits.add(Context.getVisitService().getVisitByUuid(visitUuid));
-                }
-                builder.setVisits(visits);
-            }
-
-            EncounterSearchCriteria criteria = builder.createEncounterSearchCriteria();
-            List<Encounter> encounters = Context.getEncounterService().getEncounters(criteria);
-
-            // Filter by form uuid or form name
-            if (formUuid != null || formName != null) {
-                Form form = null;
-                if (formUuid != null) {
-                    form = Context.getFormService().getFormByUuid(formUuid);
-                } else if (formName != null) {
-                    List<Form> forms = Context.getFormService().getForms(formName, false, null, false, null, null, null);
-                    if (!forms.isEmpty()) {
-                        form = forms.get(0);
-                    }
-                }
-                if (form != null) {
-                    final Form targetForm = form;
-                    encounters = encounters.stream()
-                            .filter(e -> e.getForm() != null && e.getForm().equals(targetForm))
-                            .collect(Collectors.toList());
-                }
-            }
-
-            String order = context.getRequest().getParameter("order");
-            if ("desc".equals(order)) {
-                Collections.reverse(encounters);
-            }
-
-            return new NeedsPaging<>(encounters, context);
+        if (patient == null || (encounterType == null && encounterTypeUuid != null)) {
+            return new EmptySearchResult();
         }
 
-        return new EmptySearchResult();
+        EncounterSearchCriteriaBuilder builder = new EncounterSearchCriteriaBuilder()
+                .setPatient(patient)
+                .setFromDate(fromDate)
+                .setToDate(toDate)
+                .setIncludeVoided(false);
+
+        if (encounterType != null) {
+            builder.setEncounterTypes(Arrays.asList(encounterType));
+        }
+
+        addVisits(builder, visitUuids);
+        addForms(builder, formUuid, formName);
+
+        List<Encounter> encounters = Context.getEncounterService()
+                .getEncounters(builder.createEncounterSearchCriteria());
+
+        if ("desc".equals(context.getRequest().getParameter("order"))) {
+            Collections.reverse(encounters);
+        }
+
+        return new NeedsPaging<>(encounters, context);
+    }
+
+    private void addVisits(EncounterSearchCriteriaBuilder builder, String[] visitUuids) {
+        if (visitUuids != null && visitUuids.length > 0) {
+            List<Visit> visits = new ArrayList<>();
+            for (String visitUuid : visitUuids) {
+                visits.add(Context.getVisitService().getVisitByUuid(visitUuid));
+            }
+            builder.setVisits(visits);
+        }
+    }
+
+    private void addForms(EncounterSearchCriteriaBuilder builder, String formUuid, String formName) {
+        if (formUuid == null && formName == null) {
+            return;
+        }
+        List<Form> forms = new ArrayList<>();
+        if (formUuid != null) {
+            Form form = Context.getFormService().getFormByUuid(formUuid);
+            if (form != null) {
+                forms.add(form);
+            }
+        } else {
+            forms.addAll(Context.getFormService().getForms(formName, false, null, false, null, null, null));
+        }
+        if (!forms.isEmpty()) {
+            builder.setEnteredViaForms(forms);
+        }
     }
 }
