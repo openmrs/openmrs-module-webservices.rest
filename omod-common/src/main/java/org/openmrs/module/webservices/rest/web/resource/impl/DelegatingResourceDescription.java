@@ -245,8 +245,13 @@ public class DelegatingResourceDescription implements RepresentationDescription 
 				Object propVal = converter.getProperty(delegate, delegateProperty);
 				if (propVal instanceof Collection) {
 					List<Object> ret = new ArrayList<Object>();
-					for (Object element : (Collection<?>) propVal)
-						ret.add(ConversionUtil.convertToRepresentation(element, rep, getConvertAs()));
+					for (Object element : (Collection<?>) propVal) {
+						Object converted = ConversionUtil.convertToRepresentation(element, rep, getConvertAs());
+						if (converted == ConversionUtil.PRIVILEGE_DENIED) {
+							return ConversionUtil.PRIVILEGE_DENIED;
+						}
+						ret.add(converted);
+					}
 					return ret;
 				} else {
 					return ConversionUtil.convertToRepresentation(propVal, rep, getConvertAs());
