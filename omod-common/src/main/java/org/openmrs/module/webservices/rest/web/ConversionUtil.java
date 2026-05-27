@@ -363,8 +363,13 @@ public class ConversionUtil {
 		}
 		if (o instanceof Collection) {
 			List<Object> ret = new ArrayList<Object>();
-			for (Object element : (Collection<?>) o)
-				ret.add(convertToRepresentation(element, rep));
+			for (Object element : (Collection<?>) o) {
+				Object converted = convertToRepresentation(element, rep);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.add(converted);
+			}
 			return ret;
 		} else {
 			o = convertToRepresentation(o, rep);
@@ -392,7 +397,11 @@ public class ConversionUtil {
 		if (o instanceof Collection) {
 			List ret = new ArrayList();
 			for (Object item : ((Collection) o)) {
-				ret.add(convertToRepresentation(item, rep, specificConverter));
+				Object converted = convertToRepresentation(item, rep, specificConverter);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.add(converted);
 			}
 			return ret;
 		} else if (o instanceof Map) {
@@ -401,8 +410,11 @@ public class ConversionUtil {
 			}
 			SimpleObject ret = new SimpleObject();
 			for (Map.Entry<?, ?> entry : ((Map<?, ?>) o).entrySet()) {
-				ret.put(entry.getKey().toString(),
-				    convertToRepresentation(entry.getValue(), Representation.REF, (Converter) null));
+				Object converted = convertToRepresentation(entry.getValue(), Representation.REF, (Converter) null);
+				if (converted == PRIVILEGE_DENIED) {
+					return PRIVILEGE_DENIED;
+				}
+				ret.put(entry.getKey().toString(), converted);
 			}
 			return ret;
 		} else {
