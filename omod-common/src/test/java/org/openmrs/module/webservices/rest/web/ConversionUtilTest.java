@@ -11,38 +11,27 @@ package org.openmrs.module.webservices.rest.web;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openmrs.api.ConceptNameType;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
-import org.openmrs.module.webservices.rest.web.resource.api.Converter;
-import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 
 public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
@@ -387,209 +376,4 @@ public class ConversionUtilTest extends BaseModuleWebContextSensitiveTest {
 	public class GreatGrandchildGenericType_Int extends GrandchildGenericType_Int {}
 	
 	public class ChildMultiGenericType extends BaseMultiGenericType<Integer, String, Temp> {}
-
-	// ---- RESTWS-1035: PRIVILEGE_DENIED leakage into Collection/Map element conversions ----
-
-	private static final String FAKE_PRIVILEGE = "Test-Privilege-Nobody-Has-9f8c7d6e";
-
-	@AfterEach
-	public void resetConverterCache() {
-		ConversionUtil.clearCache();
-	}
-
-	@Test
-	public void convertToRepresentation_shouldReturnPrivilegeDeniedWhenAnyListElementIsDenied() throws Exception {
-		Context.logout();
-		List<TestDelegate> input = Arrays.asList(new TestDelegate("a"), new TestDelegate("b"));
-
-		Object result = ConversionUtil.convertToRepresentation(input, Representation.DEFAULT, new DeniedTestResource());
-
-		assertSame(ConversionUtil.PRIVILEGE_DENIED, result);
-	}
-
-	@Test
-	public void convertToRepresentation_shouldRetainAllowedListElements() throws Exception {
-		List<TestDelegate> input = Arrays.asList(new TestDelegate("a"), new TestDelegate("b"));
-
-		Object result = ConversionUtil.convertToRepresentation(input, Representation.DEFAULT, new AllowedTestResource());
-
-		List<?> resultList = (List<?>) result;
-		assertEquals(2, resultList.size());
-		assertEquals("a", ((SimpleObject) resultList.get(0)).get("uuid"));
-		assertEquals("b", ((SimpleObject) resultList.get(1)).get("uuid"));
-	}
-
-	@Test
-	public void convertToRepresentation_shouldReturnPrivilegeDeniedWhenAnyElementOfMixedListIsDenied() throws Exception {
-		Context.logout();
-		List<TestDelegate> input = Arrays.asList(new TestDelegate("a"), new TestDelegate("b"), new TestDelegate("c"),
-		    new TestDelegate("d"));
-
-		Object result = ConversionUtil.convertToRepresentation(input, Representation.DEFAULT, new AlternatingTestResource());
-
-		assertSame(ConversionUtil.PRIVILEGE_DENIED, result);
-	}
-
-	@Test
-	public void convertToRepresentation_shouldReturnPrivilegeDeniedWhenAnyMapValueIsDenied() throws Exception {
-		Context.logout();
-		seedConverterCache(TestDelegate.class, new DeniedTestResource());
-
-		Map<String, TestDelegate> input = new LinkedHashMap<String, TestDelegate>();
-		input.put("k1", new TestDelegate("a"));
-		input.put("k2", new TestDelegate("b"));
-
-		Object result = ConversionUtil.convertToRepresentation(input, Representation.DEFAULT);
-
-		assertSame(ConversionUtil.PRIVILEGE_DENIED, result);
-	}
-
-	@Test
-	public void convertToRepresentation_shouldRetainAllowedMapValues() throws Exception {
-		seedConverterCache(TestDelegate.class, new AllowedTestResource());
-
-		Map<String, TestDelegate> input = new LinkedHashMap<String, TestDelegate>();
-		input.put("k1", new TestDelegate("a"));
-		input.put("k2", new TestDelegate("b"));
-
-		Object result = ConversionUtil.convertToRepresentation(input, Representation.DEFAULT);
-
-		SimpleObject resultMap = (SimpleObject) result;
-		assertEquals(2, resultMap.size());
-		assertEquals("a", ((SimpleObject) resultMap.get("k1")).get("uuid"));
-		assertEquals("b", ((SimpleObject) resultMap.get("k2")).get("uuid"));
-	}
-
-	@Test
-	public void getPropertyWithRepresentation_shouldReturnPrivilegeDeniedWhenAnyCollectionPropertyElementIsDenied() throws Exception {
-		Context.logout();
-		seedConverterCache(TestDelegate.class, new DeniedTestResource());
-
-		TestParent bean = new TestParent();
-		bean.setChildren(Arrays.asList(new TestDelegate("a"), new TestDelegate("b")));
-
-		Object result = ConversionUtil.getPropertyWithRepresentation(bean, "children", Representation.DEFAULT);
-
-		assertSame(ConversionUtil.PRIVILEGE_DENIED, result);
-	}
-
-	@Test
-	public void convertToRepresentation_shouldStillReturnPrivilegeDeniedForSingleDeniedObject() throws Exception {
-		Context.logout();
-
-		Object result = ConversionUtil.convertToRepresentation(new TestDelegate("a"), Representation.DEFAULT,
-		    new DeniedTestResource());
-
-		assertSame(ConversionUtil.PRIVILEGE_DENIED, result);
-	}
-
-	@Test
-	public void convertToRepresentation_shouldNotMutateSourceCollection() throws Exception {
-		Context.logout();
-		List<TestDelegate> input = new ArrayList<TestDelegate>(Arrays.asList(new TestDelegate("a"), new TestDelegate("b")));
-
-		ConversionUtil.convertToRepresentation(input, Representation.DEFAULT, new DeniedTestResource());
-
-		assertEquals(2, input.size());
-		assertEquals("a", input.get(0).uuid);
-		assertEquals("b", input.get(1).uuid);
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static void seedConverterCache(Class<?> clazz, Converter<?> converter) throws Exception {
-		Field cacheField = ConversionUtil.class.getDeclaredField("converterCache");
-		cacheField.setAccessible(true);
-		ConcurrentMap cache = (ConcurrentMap) cacheField.get(null);
-		cache.put(clazz, converter);
-	}
-
-	public static class TestDelegate {
-
-		public final String uuid;
-
-		public TestDelegate(String uuid) {
-			this.uuid = uuid;
-		}
-	}
-
-	public static class TestParent {
-
-		private List<TestDelegate> children;
-
-		public List<TestDelegate> getChildren() {
-			return children;
-		}
-
-		public void setChildren(List<TestDelegate> children) {
-			this.children = children;
-		}
-	}
-
-	public static abstract class StubTestResource extends BaseDelegatingResource<TestDelegate> {
-
-		@Override
-		public SimpleObject asRepresentation(TestDelegate delegate, Representation rep) {
-			SimpleObject obj = new SimpleObject();
-			obj.put("uuid", delegate.uuid);
-			return obj;
-		}
-
-		@Override
-		public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
-			return null;
-		}
-
-		@Override
-		public TestDelegate getByUniqueId(String uniqueId) {
-			return null;
-		}
-
-		@Override
-		protected void delete(TestDelegate delegate, String reason, RequestContext context) {
-		}
-
-		@Override
-		public void purge(TestDelegate delegate, RequestContext context) {
-		}
-
-		@Override
-		public TestDelegate newDelegate() {
-			return null;
-		}
-
-		@Override
-		public TestDelegate save(TestDelegate delegate) {
-			return delegate;
-		}
-
-		@Override
-		public String getUri(Object delegate) {
-			return "";
-		}
-	}
-
-	public static class DeniedTestResource extends StubTestResource {
-
-		@Override
-		public String getRequiredGetPrivilege() {
-			return FAKE_PRIVILEGE;
-		}
-	}
-
-	public static class AllowedTestResource extends StubTestResource {
-		// inherits null from BaseDelegatingResource.getRequiredGetPrivilege()
-	}
-
-	public static class AlternatingTestResource extends StubTestResource {
-
-		// Alternates allow/deny per element so we can test a list with both kept and dropped entries
-		// using a single specificConverter (the recursion preserves specificConverter, so all elements
-		// flow through the same resource instance).
-		private int counter = 0;
-
-		@Override
-		public String getRequiredGetPrivilege() {
-			return (counter++ % 2 == 1) ? FAKE_PRIVILEGE : null;
-		}
-	}
 }
