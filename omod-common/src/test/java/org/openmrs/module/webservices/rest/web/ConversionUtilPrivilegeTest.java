@@ -145,8 +145,13 @@ public class ConversionUtilPrivilegeTest extends BaseModuleWebContextSensitiveTe
 		cache.put(clazz, converter);
 	}
 
-	public record TestDelegate(String uuid) {
+	public static class TestDelegate {
 
+		public final String uuid;
+
+		public TestDelegate(String uuid) {
+			this.uuid = uuid;
+		}
 	}
 
 	public static class TestParent {
