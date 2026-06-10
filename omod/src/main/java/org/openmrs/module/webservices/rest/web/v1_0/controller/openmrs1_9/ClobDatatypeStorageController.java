@@ -54,6 +54,11 @@ public class ClobDatatypeStorageController {
 		if (clobData == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		} else {
+			// Serve the stored content as plain text and instruct browsers not to MIME-sniff it. Clob content is
+			// arbitrary, unsanitized user input, so without these headers a browser can interpret an uploaded HTML
+			// payload as HTML and execute embedded scripts, resulting in stored XSS (RESTWS).
+			response.setContentType("text/plain;charset=UTF-8");
+			response.setHeader("X-Content-Type-Options", "nosniff");
 			PrintWriter writer = null;
 			try {
 				writer = response.getWriter();

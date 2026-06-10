@@ -73,7 +73,16 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		
 		Assertions.assertEquals(size, response.getContentAsByteArray().length);
 	}
-	
+
+	@Test
+	public void shouldServeClobDataWithNonSniffableHeadersToPreventStoredXss() throws Exception {
+		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
+		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
+
+		Assertions.assertEquals("text/plain;charset=UTF-8", response.getContentType());
+		Assertions.assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
+	}
+
 	@Test
 	public void shouldDeleteAnExistingClobData() throws Exception {
 		ClobDatatypeStorage clob = datatypeService
