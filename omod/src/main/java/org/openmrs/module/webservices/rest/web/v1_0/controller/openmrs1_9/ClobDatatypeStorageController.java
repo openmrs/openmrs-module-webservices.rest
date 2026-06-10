@@ -26,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/clobdata")
@@ -39,8 +40,11 @@ public class ClobDatatypeStorageController {
 	public String create(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response)
 	        throws IOException {
 		ClobDatatypeStorage clobData = new ClobDatatypeStorage();
-		String encoding = request.getHeader("Content-Encoding");
-		clobData.setValue(IOUtils.toString(file.getInputStream(), encoding));
+		// Read the upload as UTF-8 to pair with the UTF-8 output in retrieve(). The previous code used the
+		// Content-Encoding request header as the charset name, but that header describes content compression
+		// (e.g. gzip), not a charset: a non-charset value made Charset.forName(...) throw and return HTTP 500,
+		// while an absent header silently fell back to the platform default and could corrupt non-ASCII content.
+		clobData.setValue(IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8));
 		clobData = datatypeService.saveClobDatatypeStorage(clobData);
 		response.setStatus(HttpServletResponse.SC_CREATED);
 		return clobData.getUuid();
