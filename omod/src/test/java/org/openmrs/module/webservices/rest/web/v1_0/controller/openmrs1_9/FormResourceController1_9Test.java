@@ -35,6 +35,7 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
@@ -167,7 +168,8 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 
 		// This route serves the value by delegating to ClobDatatypeStorageController.retrieve() and must keep
 		// its non-sniffable headers; otherwise stored HTML would render as HTML here, reopening stored XSS.
-		Assertions.assertEquals("text/plain;charset=UTF-8", response.getContentType());
+		Assertions.assertEquals(MediaType.parseMediaType("text/plain;charset=UTF-8"),
+		    MediaType.parseMediaType(response.getContentType()));
 		Assertions.assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
 	}
 	

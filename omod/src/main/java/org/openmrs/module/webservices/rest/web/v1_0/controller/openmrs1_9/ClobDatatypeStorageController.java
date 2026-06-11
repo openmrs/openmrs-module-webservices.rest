@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.controller.openmrs1_9;
 
+import com.google.common.net.HttpHeaders;
 import org.apache.commons.io.IOUtils;
 import org.openmrs.api.DatatypeService;
 import org.openmrs.api.db.ClobDatatypeStorage;
@@ -60,7 +61,7 @@ public class ClobDatatypeStorageController {
 			// arbitrary, unsanitized user input, so without these headers a browser can interpret an uploaded HTML
 			// payload as HTML and execute embedded scripts, resulting in stored XSS.
 			response.setContentType("text/plain;charset=UTF-8");
-			response.setHeader("X-Content-Type-Options", "nosniff");
+			response.setHeader(HttpHeaders.X_CONTENT_TYPE_OPTIONS, "nosniff");
 			PrintWriter writer = null;
 			try {
 				writer = response.getWriter();

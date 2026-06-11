@@ -19,6 +19,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.db.ClobDatatypeStorage;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_9;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
@@ -120,7 +121,11 @@ public class ClobDatatypeStorageControllerTest extends MainResourceControllerTes
 		MockHttpServletResponse response = handle(newGetRequest(getURI() + "/"
 		        + RestTestConstants1_9.CLOBDATATYPESTORAGE_RESOURCE_UUID));
 
-		Assertions.assertEquals("text/plain;charset=UTF-8", response.getContentType());
+		// Assert the status first so a missing fixture row reads as a 404 failure, not a header regression.
+		Assertions.assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+		// Compare parsed media types so the test pins header semantics (type, subtype, charset), not formatting.
+		Assertions.assertEquals(MediaType.parseMediaType("text/plain;charset=UTF-8"),
+		    MediaType.parseMediaType(response.getContentType()));
 		Assertions.assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
 	}
 
