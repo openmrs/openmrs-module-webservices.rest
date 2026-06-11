@@ -164,6 +164,11 @@ public class FormResourceController1_9Test extends MainResourceControllerTest {
 		String expected = "attachment;filename=\"" + resource.getName() + "\"";
 		Assertions.assertTrue(StringUtils.equals((String) response.getHeader("Content-Disposition"), expected));
 		Assertions.assertEquals(clobData.getValue(), response.getContentAsString());
+
+		// This route serves the value by delegating to ClobDatatypeStorageController.retrieve() and must keep
+		// its non-sniffable headers; otherwise stored HTML would render as HTML here, reopening stored XSS.
+		Assertions.assertEquals("text/plain;charset=UTF-8", response.getContentType());
+		Assertions.assertEquals("nosniff", response.getHeader("X-Content-Type-Options"));
 	}
 	
 	@Test

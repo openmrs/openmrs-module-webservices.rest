@@ -40,10 +40,8 @@ public class ClobDatatypeStorageController {
 	public String create(@RequestParam MultipartFile file, HttpServletRequest request, HttpServletResponse response)
 	        throws IOException {
 		ClobDatatypeStorage clobData = new ClobDatatypeStorage();
-		// Read the upload as UTF-8 to pair with the UTF-8 output in retrieve(). The previous code used the
-		// Content-Encoding request header as the charset name, but that header describes content compression
-		// (e.g. gzip), not a charset: a non-charset value made Charset.forName(...) throw and return HTTP 500,
-		// while an absent header silently fell back to the platform default and could corrupt non-ASCII content.
+		// Read the upload as UTF-8 to pair with the UTF-8 output in retrieve(). The Content-Encoding request
+		// header describes compression (e.g. gzip), not a charset, so it must not be used as the read charset.
 		clobData.setValue(IOUtils.toString(file.getInputStream(), StandardCharsets.UTF_8));
 		clobData = datatypeService.saveClobDatatypeStorage(clobData);
 		response.setStatus(HttpServletResponse.SC_CREATED);
@@ -60,7 +58,7 @@ public class ClobDatatypeStorageController {
 		} else {
 			// Serve the stored content as plain text and instruct browsers not to MIME-sniff it. Clob content is
 			// arbitrary, unsanitized user input, so without these headers a browser can interpret an uploaded HTML
-			// payload as HTML and execute embedded scripts, resulting in stored XSS (RESTWS).
+			// payload as HTML and execute embedded scripts, resulting in stored XSS.
 			response.setContentType("text/plain;charset=UTF-8");
 			response.setHeader("X-Content-Type-Options", "nosniff");
 			PrintWriter writer = null;
