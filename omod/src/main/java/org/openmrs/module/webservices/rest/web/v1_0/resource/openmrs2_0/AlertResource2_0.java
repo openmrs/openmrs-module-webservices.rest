@@ -221,11 +221,11 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	@Override
 	public Alert getByUniqueId(String uniqueId) {
-		boolean includeRetired = true;
-		List<Alert> alerts = Context.getAlertService().getAllAlerts(includeRetired);
+		boolean includeExpired = true;
+		List<Alert> alerts = Context.getAlertService().getAllAlerts(includeExpired);
 		for (Alert alert : alerts) {
 			if (alert.getUuid().equals(uniqueId)) {
-				if (canViewAllAlerts() || alert.getRecipient(Context.getAuthenticatedUser()) != null) {
+				if (canViewAlert(alert)) {
 					return alert;
 				}
 				return null;
@@ -281,7 +281,20 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 		return Context.getAlertService().getAlerts(Context.getAuthenticatedUser(), true, includeExpired);
 	}
 
-	private boolean canViewAllAlerts() {
+	private static boolean canViewAllAlerts() {
 		return Context.hasPrivilege(PrivilegeConstants.MANAGE_ALERTS);
+	}
+
+	/**
+	 * Alerts are personal notifications, so a caller may only see an alert addressed to them, unless
+	 * they hold the {@link PrivilegeConstants#MANAGE_ALERTS} privilege and therefore administer
+	 * alerts for everyone. Shared with {@link AlertRecipientResource2_0} so both resources enforce
+	 * the same rule.
+	 *
+	 * @param alert the alert to check
+	 * @return true if the currently authenticated user is allowed to see the given alert
+	 */
+	static boolean canViewAlert(Alert alert) {
+		return canViewAllAlerts() || alert.getRecipient(Context.getAuthenticatedUser()) != null;
 	}
 }

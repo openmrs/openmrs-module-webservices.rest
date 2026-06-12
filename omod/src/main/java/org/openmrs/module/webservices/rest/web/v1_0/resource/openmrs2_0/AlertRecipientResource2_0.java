@@ -30,6 +30,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingSubResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.notification.Alert;
@@ -37,6 +38,7 @@ import org.openmrs.notification.AlertRecipient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Sub-resource for {@link AlertRecipient}
@@ -157,9 +159,15 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 		List<Alert> alerts = Context.getAlertService().getAllAlerts();
 
 		for (Alert alert : alerts) {
+			if (alert.getRecipients() == null) {
+				continue;
+			}
 			for (AlertRecipient recipient : alert.getRecipients()) {
 				if (recipient.getUuid().equals(uniqueId)) {
-					return recipient;
+					if (AlertResource2_0.canViewAlert(alert)) {
+						return recipient;
+					}
+					return null;
 				}
 			}
 		}
@@ -188,7 +196,12 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 
 	@Override
 	public PageableResult doGetAll(Alert parent, RequestContext context) throws ResponseException {
-		List<AlertRecipient> recipients = new ArrayList<>(parent.getRecipients());
-		return new NeedsPaging<>(recipients, context);
+		if (parent == null) {
+			// the parent resource returns null when the current user may not see the alert
+			throw new ObjectNotFoundException();
+		}
+		Set<AlertRecipient> recipients = parent.getRecipients();
+		List<AlertRecipient> recipientList = recipients == null ? new ArrayList<>() : new ArrayList<>(recipients);
+		return new NeedsPaging<>(recipientList, context);
 	}
 }

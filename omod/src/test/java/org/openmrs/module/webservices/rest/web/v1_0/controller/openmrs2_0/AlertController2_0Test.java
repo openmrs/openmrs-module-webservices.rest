@@ -46,6 +46,10 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 
 	private AlertService service;
 
+	private static final String EXPIRED_ALERT_UUID = "b24d1550-90ee-4e9c-be7a-5a0bf7e84ec1";
+
+	private static final String OTHER_USER_ALERT_UUID = "0e8a1dc0-0d3b-4f3a-9d8c-1d2e3f4a5b6c";
+
 	@BeforeEach
 	public void setUp() {
 		this.service = Context.getAlertService();
@@ -63,7 +67,7 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 
 		Alert expiredAlert = new Alert();
 		expiredAlert.setText("Expired Alert");
-		expiredAlert.setUuid("b24d1550-90ee-4e9c-be7a-5a0bf7e84ec1");
+		expiredAlert.setUuid(EXPIRED_ALERT_UUID);
 		expiredAlert.setRecipients(new HashSet<>());
 		expiredAlert.setDateToExpire(new Date(946681200000L)); // 01/01/2000
 		expiredAlert.addRecipient(alertRecipient);
@@ -120,7 +124,7 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 	public void shouldOnlyReturnTheCurrentUsersAlertsToANonPrivilegedUser() throws Exception {
 		// An alert addressed to the super user, who is not "butch"
 		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
-				"0e8a1dc0-0d3b-4f3a-9d8c-1d2e3f4a5b6c");
+				OTHER_USER_ALERT_UUID);
 
 		// "butch" is a Provider without the Manage Alerts privilege; he is a recipient of the two
 		// alerts created in setUp, but not of the alert above
@@ -138,14 +142,14 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 
 		assertEquals(2, returnedUuids.size());
 		assertTrue(returnedUuids.contains(getUuid()));
-		assertTrue(returnedUuids.contains("b24d1550-90ee-4e9c-be7a-5a0bf7e84ec1"));
+		assertTrue(returnedUuids.contains(EXPIRED_ALERT_UUID));
 		assertFalse(returnedUuids.contains(othersAlert.getUuid()));
 	}
 
 	@Test
 	public void shouldNotReturnAnotherUsersAlertByUuidToANonPrivilegedUser() throws Exception {
 		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
-				"0e8a1dc0-0d3b-4f3a-9d8c-1d2e3f4a5b6c");
+				OTHER_USER_ALERT_UUID);
 
 		// "butch" is not a recipient of the alert above and cannot manage alerts
 		Context.becomeUser("3-4");
@@ -154,6 +158,43 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
 
 		assertThrows(ObjectNotFoundException.class, () -> handle(req));
+	}
+
+	@Test
+	public void shouldOnlyReturnTheCurrentUsersActiveAlertsToANonPrivilegedUserOnGetAll() throws Exception {
+		// An alert addressed to the super user, who is not "butch"
+		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
+				OTHER_USER_ALERT_UUID);
+
+		Context.becomeUser("3-4");
+
+		// no includeExpired parameter, so this exercises doGetAll rather than doSearch
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
+
+		Set<String> returnedUuids = new HashSet<>();
+		for (Object alert : Util.getResultsList(result)) {
+			returnedUuids.add((String) PropertyUtils.getProperty(alert, "uuid"));
+		}
+
+		// only butch's active alert: not the expired one, and not the super user's alert
+		assertEquals(1, returnedUuids.size());
+		assertTrue(returnedUuids.contains(getUuid()));
+		assertFalse(returnedUuids.contains(EXPIRED_ALERT_UUID));
+		assertFalse(returnedUuids.contains(othersAlert.getUuid()));
+	}
+
+	@Test
+	public void shouldReturnTheCurrentUsersOwnAlertByUuidToANonPrivilegedUser() throws Exception {
+		// "butch" is a recipient of the alert created in setUp, so he may still read it by uuid
+		Context.becomeUser("3-4");
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + getUuid());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
+
+		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
 	}
 
 	private Alert saveAlertFor(User recipient, String text, String uuid) {
