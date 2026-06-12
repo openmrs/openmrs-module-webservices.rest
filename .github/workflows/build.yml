@@ -14,6 +14,12 @@ concurrency:
 jobs:
   build:
     uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/build-backend-module.yml@main
+    with:
+      # Pin to Java 21 (matches maven.compiler.target and release.yml). When java_versions is
+      # omitted the shared workflow infers the JDK from the platform dependency, which currently
+      # yields Java 25 — a version openmrs-core 3.0.0-SNAPSHOT cannot initialize (ServiceContext
+      # fails to load). Revisit once core supports Java 25.
+      java_versions: '[21]'
     secrets:
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
