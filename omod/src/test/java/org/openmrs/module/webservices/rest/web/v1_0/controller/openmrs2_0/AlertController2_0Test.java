@@ -18,6 +18,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceControllerTest;
 import org.openmrs.notification.Alert;
 import org.openmrs.notification.AlertRecipient;
@@ -29,10 +30,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests CRUD operations for {@link Alert}s via web service calls
@@ -109,6 +114,55 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 
 		assertCorrectAlertRepresentation(result);
+	}
+
+	@Test
+	public void shouldOnlyReturnTheCurrentUsersAlertsToANonPrivilegedUser() throws Exception {
+		// An alert addressed to the super user, who is not "butch"
+		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
+				"0e8a1dc0-0d3b-4f3a-9d8c-1d2e3f4a5b6c");
+
+		// "butch" is a Provider without the Manage Alerts privilege; he is a recipient of the two
+		// alerts created in setUp, but not of the alert above
+		Context.becomeUser("3-4");
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("includeExpired", "true");
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+		SimpleObject result = deserialize(handle(req));
+
+		Set<String> returnedUuids = new HashSet<>();
+		for (Object alert : Util.getResultsList(result)) {
+			returnedUuids.add((String) PropertyUtils.getProperty(alert, "uuid"));
+		}
+
+		assertEquals(2, returnedUuids.size());
+		assertTrue(returnedUuids.contains(getUuid()));
+		assertTrue(returnedUuids.contains("b24d1550-90ee-4e9c-be7a-5a0bf7e84ec1"));
+		assertFalse(returnedUuids.contains(othersAlert.getUuid()));
+	}
+
+	@Test
+	public void shouldNotReturnAnotherUsersAlertByUuidToANonPrivilegedUser() throws Exception {
+		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
+				"0e8a1dc0-0d3b-4f3a-9d8c-1d2e3f4a5b6c");
+
+		// "butch" is not a recipient of the alert above and cannot manage alerts
+		Context.becomeUser("3-4");
+
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI() + "/" + othersAlert.getUuid());
+		req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+
+		assertThrows(ObjectNotFoundException.class, () -> handle(req));
+	}
+
+	private Alert saveAlertFor(User recipient, String text, String uuid) {
+		Alert alert = new Alert();
+		alert.setText(text);
+		alert.setUuid(uuid);
+		alert.setRecipients(new HashSet<>());
+		alert.addRecipient(recipient);
+		return service.saveAlert(alert);
 	}
 
 	@Test

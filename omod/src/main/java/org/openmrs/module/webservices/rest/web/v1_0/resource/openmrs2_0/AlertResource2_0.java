@@ -225,7 +225,10 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 		List<Alert> alerts = Context.getAlertService().getAllAlerts(includeRetired);
 		for (Alert alert : alerts) {
 			if (alert.getUuid().equals(uniqueId)) {
-				return alert;
+				if (canViewAllAlerts() || alert.getRecipient(Context.getAuthenticatedUser()) != null) {
+					return alert;
+				}
+				return null;
 			}
 		}
 		return null;
@@ -252,19 +255,33 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		List<Alert> alerts = Context.getAlertService().getAllAlerts();
-		return new NeedsPaging<>(alerts, context);
+		return new NeedsPaging<>(getAlertsForCurrentUser(false), context);
 	}
 
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		// include expired
 		String includeExpiredStr = context.getRequest().getParameter("includeExpired");
-		if (includeExpiredStr != null) {
-			boolean includeExpired = Boolean.parseBoolean(includeExpiredStr);
-			return new NeedsPaging<>(Context.getAlertService().getAllAlerts(includeExpired), context);
-		}
+		boolean includeExpired = Boolean.parseBoolean(includeExpiredStr);
+		return new NeedsPaging<>(getAlertsForCurrentUser(includeExpired), context);
+	}
 
-		return new NeedsPaging<>(Context.getAlertService().getAllAlerts(), context);
+	/**
+	 * Alerts are personal notifications, so a caller may only list alerts addressed to them.
+	 * Callers holding the {@link PrivilegeConstants#MANAGE_ALERTS} privilege administer alerts for
+	 * everyone and may therefore list every alert in the system.
+	 *
+	 * @param includeExpired whether expired alerts should be included
+	 * @return the alerts the currently authenticated user is allowed to see
+	 */
+	private List<Alert> getAlertsForCurrentUser(boolean includeExpired) {
+		if (canViewAllAlerts()) {
+			return Context.getAlertService().getAllAlerts(includeExpired);
+		}
+		return Context.getAlertService().getAlerts(Context.getAuthenticatedUser(), true, includeExpired);
+	}
+
+	private boolean canViewAllAlerts() {
+		return Context.hasPrivilege(PrivilegeConstants.MANAGE_ALERTS);
 	}
 }
