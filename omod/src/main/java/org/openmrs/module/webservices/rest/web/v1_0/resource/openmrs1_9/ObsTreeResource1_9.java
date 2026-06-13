@@ -171,6 +171,7 @@ public class ObsTreeResource1_9 extends BaseDelegatingResource<SimpleObject> imp
 			}
 			valueMap.put("value", value);
 			valueMap.put("obsDatetime", new SimpleDateFormat(DATETIME_FORMAT).format(obs.getObsDatetime()));
+			valueMap.put("uuid", obs.getUuid());
 			
 			if (concept.isNumeric()) {
 				if (obs.getInterpretation() != null) {
