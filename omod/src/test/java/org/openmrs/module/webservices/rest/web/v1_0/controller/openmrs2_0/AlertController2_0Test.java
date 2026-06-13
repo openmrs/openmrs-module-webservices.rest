@@ -13,6 +13,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openmrs.User;
+import org.openmrs.util.PrivilegeConstants;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -126,7 +127,7 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
 				OTHER_USER_ALERT_UUID);
 
-		// "butch" is a Provider without the Manage Alerts privilege; he is a recipient of the two
+		// "butch" is a Provider without the Get Alerts privilege; he is a recipient of the two
 		// alerts created in setUp, but not of the alert above
 		Context.becomeUser("3-4");
 
@@ -195,6 +196,33 @@ public class AlertController2_0Test extends MainResourceControllerTest {
 		SimpleObject result = deserialize(handle(req));
 
 		assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
+	}
+
+	@Test
+	public void shouldReturnEveryUsersAlertsToANonSuperUserHoldingTheGetAlertsPrivilege() throws Exception {
+		// An alert addressed to the super user, who is not "butch"
+		Alert othersAlert = saveAlertFor(Context.getAuthenticatedUser(), "Super user only alert",
+				OTHER_USER_ALERT_UUID);
+
+		// "butch" is not a super user; granting him Get Alerts (here via a proxy privilege) must let
+		// him list every user's alerts, exercising the privileged branch without the super-user bypass
+		Context.becomeUser("3-4");
+		Context.addProxyPrivilege(PrivilegeConstants.GET_ALERTS);
+		try {
+			MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+			req.addParameter("includeExpired", "true");
+			req.addParameter(RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL);
+			SimpleObject result = deserialize(handle(req));
+
+			Set<String> returnedUuids = new HashSet<>();
+			for (Object alert : Util.getResultsList(result)) {
+				returnedUuids.add((String) PropertyUtils.getProperty(alert, "uuid"));
+			}
+
+			assertTrue(returnedUuids.contains(othersAlert.getUuid()));
+		} finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_ALERTS);
+		}
 	}
 
 	private Alert saveAlertFor(User recipient, String text, String uuid) {

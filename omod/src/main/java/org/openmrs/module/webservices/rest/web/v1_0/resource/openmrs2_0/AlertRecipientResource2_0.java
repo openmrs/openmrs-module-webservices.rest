@@ -156,18 +156,15 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 
 	@Override
 	public AlertRecipient getByUniqueId(String uniqueId) {
-		List<Alert> alerts = Context.getAlertService().getAllAlerts();
-
-		for (Alert alert : alerts) {
+		// scope the lookup to the alerts the caller is allowed to see, so the recipients of another
+		// user's alert are not exposed to a non-recipient
+		for (Alert alert : AlertResource2_0.getAlertsForCurrentUser(true)) {
 			if (alert.getRecipients() == null) {
 				continue;
 			}
 			for (AlertRecipient recipient : alert.getRecipients()) {
 				if (recipient.getUuid().equals(uniqueId)) {
-					if (AlertResource2_0.canViewAlert(alert)) {
-						return recipient;
-					}
-					return null;
+					return recipient;
 				}
 			}
 		}

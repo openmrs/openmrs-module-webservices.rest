@@ -221,14 +221,11 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	@Override
 	public Alert getByUniqueId(String uniqueId) {
-		boolean includeExpired = true;
-		List<Alert> alerts = Context.getAlertService().getAllAlerts(includeExpired);
-		for (Alert alert : alerts) {
+		// scope the lookup to the alerts the caller is allowed to see, so a non-recipient simply
+		// gets a not-found (null) for an alert addressed to someone else
+		for (Alert alert : getAlertsForCurrentUser(true)) {
 			if (alert.getUuid().equals(uniqueId)) {
-				if (canViewAlert(alert)) {
-					return alert;
-				}
-				return null;
+				return alert;
 			}
 		}
 		return null;
@@ -268,13 +265,13 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	/**
 	 * Alerts are personal notifications, so a caller may only list alerts addressed to them.
-	 * Callers holding the {@link PrivilegeConstants#MANAGE_ALERTS} privilege administer alerts for
-	 * everyone and may therefore list every alert in the system.
+	 * Callers holding the {@link PrivilegeConstants#GET_ALERTS} privilege may read every user's
+	 * alerts and may therefore list every alert in the system.
 	 *
 	 * @param includeExpired whether expired alerts should be included
 	 * @return the alerts the currently authenticated user is allowed to see
 	 */
-	private List<Alert> getAlertsForCurrentUser(boolean includeExpired) {
+	static List<Alert> getAlertsForCurrentUser(boolean includeExpired) {
 		if (canViewAllAlerts()) {
 			return Context.getAlertService().getAllAlerts(includeExpired);
 		}
@@ -282,19 +279,6 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 	}
 
 	private static boolean canViewAllAlerts() {
-		return Context.hasPrivilege(PrivilegeConstants.MANAGE_ALERTS);
-	}
-
-	/**
-	 * Alerts are personal notifications, so a caller may only see an alert addressed to them, unless
-	 * they hold the {@link PrivilegeConstants#MANAGE_ALERTS} privilege and therefore administer
-	 * alerts for everyone. Shared with {@link AlertRecipientResource2_0} so both resources enforce
-	 * the same rule.
-	 *
-	 * @param alert the alert to check
-	 * @return true if the currently authenticated user is allowed to see the given alert
-	 */
-	static boolean canViewAlert(Alert alert) {
-		return canViewAllAlerts() || alert.getRecipient(Context.getAuthenticatedUser()) != null;
+		return Context.hasPrivilege(PrivilegeConstants.GET_ALERTS);
 	}
 }

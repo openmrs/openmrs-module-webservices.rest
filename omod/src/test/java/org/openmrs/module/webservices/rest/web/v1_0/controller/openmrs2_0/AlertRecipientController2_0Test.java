@@ -116,7 +116,7 @@ public class AlertRecipientController2_0Test extends MainResourceControllerTest 
 	public void shouldNotRetrieveARecipientOfAnotherUsersAlertForANonPrivilegedUser() throws Exception {
 		saveAlertAddressedToSuperUser();
 
-		// "butch" is a Provider without the Manage Alerts privilege and is not a recipient of the
+		// "butch" is a Provider without the Get Alerts privilege and is not a recipient of the
 		// alert above, so he must not be able to read its recipient even with the correct uuids
 		Context.becomeUser("3-4");
 
