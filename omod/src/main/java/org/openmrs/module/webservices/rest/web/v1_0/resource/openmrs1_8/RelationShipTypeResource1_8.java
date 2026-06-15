@@ -164,7 +164,11 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return ((ModelImpl) super.getUPDATEModel(rep))
+				.property("aIsToB", new StringProperty())
+				.property("bIsToA", new StringProperty())
+				.property("weight", new IntegerProperty())
+				.property("description", new StringProperty());
 	}
 	
 	/**

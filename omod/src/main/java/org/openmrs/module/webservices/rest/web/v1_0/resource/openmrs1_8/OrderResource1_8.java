@@ -277,7 +277,17 @@ public class OrderResource1_8 extends DataDelegatingCrudResource<Order> {
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return new ModelImpl()
+				.property("instructions", new StringProperty())
+				.property("startDate", new DateProperty())
+				.property("autoExpireDate", new DateProperty())
+				.property("encounter", new StringProperty().example("uuid"))
+				.property("orderer", new StringProperty().example("uuid"))
+				.property("discontinuedBy", new StringProperty().example("uuid"))
+				.property("discontinuedDate", new DateProperty())
+				.property("discontinuedReason", new RefProperty("#/definitions/ConceptCreate"))
+				.property("discontinuedReasonNonCoded", new StringProperty())
+				.property("accessionNumber", new StringProperty());
 	}
 	
 	/**
