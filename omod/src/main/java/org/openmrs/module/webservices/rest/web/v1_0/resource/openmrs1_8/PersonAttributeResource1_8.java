@@ -55,8 +55,8 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 			DelegatingResourceDescription description = new DelegatingResourceDescription();
 			description.addProperty("display");
 			description.addProperty("uuid");
-			description.addProperty("value");
 			description.addProperty("attributeType", Representation.REF);
+			description.addProperty("value");
 			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
