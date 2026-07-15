@@ -24,7 +24,7 @@ jobs:
     if: ${{ github.event_name != 'pull_request' }}
     uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/owasp-dependency-check.yml@main
     with:
-      java_versions: "[21]"
+      java_version: "21"
     secrets:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
       BOT_GH_TOKEN: ${{ secrets.OMRS_BOT_GH_TOKEN }}
