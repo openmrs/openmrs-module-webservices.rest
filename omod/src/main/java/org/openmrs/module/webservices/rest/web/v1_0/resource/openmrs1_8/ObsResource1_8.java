@@ -11,10 +11,14 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.openmrs.api.APIException;
+import org.openmrs.api.impl.ObsArchiveHelper;
+import org.openmrs.util.OpenmrsConstants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -378,10 +382,23 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 */
 	@PropertyGetter("groupMembers")
 	public static Object getGroupMembers(Obs obs) throws ConversionException {
-		if (obs.getGroupMembers() != null && !obs.getGroupMembers().isEmpty()) {
-			return obs.getGroupMembers();
+		Set<Obs> members = obs.getGroupMembers();
+		if (members == null) {
+			members = new LinkedHashSet<Obs>();
+		} else {
+			members = new LinkedHashSet<Obs>(members);
 		}
-		return null;
+
+		// Also include any archived children from obs_archive
+		ObsArchiveHelper archiveHelper = getObsArchiveHelperSafely();
+		if (archiveHelper != null && obs.getObsId() != null) {
+			List<Obs> archivedChildren = archiveHelper.getArchivedChildObs(obs.getObsId());
+			if (archivedChildren != null) {
+				members.addAll(archivedChildren);
+			}
+		}
+
+		return members.isEmpty() ? null : members;
 	}
 
 	/**
@@ -574,7 +591,12 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 			if (enc == null)
 				return new EmptySearchResult();
 			
-			List<Obs> obs = new ArrayList<Obs>(enc.getAllObs(context.getIncludeAll()));
+			List<Obs> obs;
+			if (context.getIncludeAll()) {
+				obs = new ArrayList<Obs>(enc.getAllObsIncludingArchived());
+			} else {
+				obs = new ArrayList<Obs>(enc.getAllObs(false));
+			}
 			return new NeedsPaging<Obs>(obs, context);
 		}
 		
@@ -603,6 +625,20 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 		obs = obsService.saveObs(obs, null);
 		
 		return (SimpleObject) ConversionUtil.convertToRepresentation(obs, Representation.DEFAULT);
+	}
+	
+	private static ObsArchiveHelper getObsArchiveHelperSafely() {
+		try {
+			String lastProcessedId = Context.getAdministrationService()
+					.getGlobalProperty(OpenmrsConstants.GP_OBS_ARCHIVE_LAST_PROCESSED_OBS_ID);
+			if (lastProcessedId != null && !lastProcessedId.trim().isEmpty()) {
+				return Context.getRegisteredComponent("obsArchiveHelper", ObsArchiveHelper.class);
+			}
+		}
+		catch (APIException e) {
+			// archive table may not exist yet or context not available, degrade gracefully
+		}
+		return null;
 	}
 	
 }
