@@ -107,6 +107,10 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);

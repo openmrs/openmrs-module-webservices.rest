@@ -38,6 +38,10 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 		return PrivilegeConstants.GET_FIELD_TYPES;
 	}
 
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -47,6 +51,10 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props

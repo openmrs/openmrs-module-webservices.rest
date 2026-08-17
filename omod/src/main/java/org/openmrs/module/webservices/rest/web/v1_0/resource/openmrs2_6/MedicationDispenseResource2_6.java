@@ -130,8 +130,10 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Override
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -173,8 +175,10 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Override
+	@Deprecated
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
 		        .property("patient", new StringProperty().example("uuid"))
@@ -206,8 +210,10 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Override
+	@Deprecated
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()
 		        .property("encounter", new StringProperty().example("uuid"))

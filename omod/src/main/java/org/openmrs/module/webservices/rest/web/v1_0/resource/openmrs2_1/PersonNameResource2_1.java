@@ -28,6 +28,10 @@ public class PersonNameResource2_1 extends PersonNameResource2_0 {
 		return resourceDescription;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		Model model = super.getCREATEModel(rep);

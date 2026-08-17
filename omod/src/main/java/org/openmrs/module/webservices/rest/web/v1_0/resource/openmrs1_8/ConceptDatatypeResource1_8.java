@@ -73,6 +73,10 @@ public class ConceptDatatypeResource1_8 extends MetadataDelegatingCrudResource<C
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {

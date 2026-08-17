@@ -141,6 +141,10 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
@@ -161,6 +165,10 @@ public class FormResourceResource1_9 extends DelegatingSubResource<FormResource,
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()

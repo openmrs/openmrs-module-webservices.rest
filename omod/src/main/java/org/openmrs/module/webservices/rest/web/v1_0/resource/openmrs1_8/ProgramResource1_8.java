@@ -123,6 +123,10 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -141,6 +145,10 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
@@ -155,6 +163,10 @@ public class ProgramResource1_8 extends MetadataDelegatingCrudResource<Program> 
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props

@@ -65,6 +65,10 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
@@ -84,6 +88,10 @@ public class ConceptMapResource1_8 extends DelegatingSubResource<ConceptMap, Con
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return new ModelImpl()

@@ -131,6 +131,10 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -148,6 +152,10 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -155,6 +163,10 @@ public class RoleResource1_8 extends MetadataDelegatingCrudResource<Role> {
 		        .property("inheritedRoles", new ArrayProperty(new RefProperty("#/definitions/RoleCreate")));
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()

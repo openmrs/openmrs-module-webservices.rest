@@ -137,6 +137,10 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -152,6 +156,10 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -162,6 +170,10 @@ public class RelationShipTypeResource1_8 extends MetadataDelegatingCrudResource<
 		        .required("aIsToB").required("bIsToA");
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props

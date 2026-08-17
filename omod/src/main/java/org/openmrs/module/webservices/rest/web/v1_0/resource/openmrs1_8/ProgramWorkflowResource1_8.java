@@ -77,6 +77,10 @@ public class ProgramWorkflowResource1_8 extends MetadataDelegatingCrudResource<P
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);

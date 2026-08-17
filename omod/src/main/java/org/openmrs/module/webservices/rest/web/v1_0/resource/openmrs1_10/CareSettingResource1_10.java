@@ -76,6 +76,10 @@ public class CareSettingResource1_10 extends MetadataDelegatingCrudResource<Care
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);

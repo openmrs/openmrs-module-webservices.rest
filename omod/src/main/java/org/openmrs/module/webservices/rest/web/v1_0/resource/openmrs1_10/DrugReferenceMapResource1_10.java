@@ -118,6 +118,10 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
@@ -134,6 +138,10 @@ public class DrugReferenceMapResource1_10 extends DelegatingCrudResource<DrugRef
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl().property("conceptReferenceTerm", new StringProperty().example("uuid"))

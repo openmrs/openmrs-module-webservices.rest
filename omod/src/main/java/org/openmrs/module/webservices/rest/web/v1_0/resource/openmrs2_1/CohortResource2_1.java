@@ -33,6 +33,10 @@ public class CohortResource2_1 extends CohortResource1_8 {
 		return RestConstants2_1.RESOURCE_VERSION;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);

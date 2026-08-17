@@ -172,6 +172,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
@@ -197,6 +201,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl().property("patient", new StringProperty().example("uuid"))
@@ -217,6 +225,10 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl().property("visitType", new RefProperty("#/definitions/VisittypeCreate"))
