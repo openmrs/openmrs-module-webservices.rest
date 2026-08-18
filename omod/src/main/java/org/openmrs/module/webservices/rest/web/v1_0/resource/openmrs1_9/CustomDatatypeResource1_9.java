@@ -104,7 +104,7 @@ public class CustomDatatypeResource1_9 extends DelegatingCrudResource<CustomData
 	}
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	@Override

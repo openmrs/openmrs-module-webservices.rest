@@ -98,7 +98,7 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	 *            {@link Representation#FULL}
 	 * @return a {@link Model} object or null in case if such model does not exist or not
 	 *         documented.
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	Model getGETModel(Representation rep);
@@ -112,7 +112,7 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	 *            can take {@link Representation#DEFAULT}, or {@link Representation#FULL}
 	 * @return a {@link Model} object or null in case if such model does not exist or not
 	 *         documented.
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	Model getCREATEModel(Representation rep);
@@ -126,7 +126,7 @@ public interface DelegatingResourceHandler<T> extends DelegatingPropertyAccessor
 	 *            can take {@link Representation#DEFAULT}, or {@link Representation#FULL}
 	 * @return a {@link Model} object or null in case if such model does not exist or not
 	 *         documented.
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	Model getUPDATEModel(Representation rep);

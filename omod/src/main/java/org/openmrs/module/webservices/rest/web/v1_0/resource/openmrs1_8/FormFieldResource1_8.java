@@ -43,7 +43,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	public Model getGETModel(Representation rep) {
@@ -76,7 +76,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	}
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	@Override
@@ -104,7 +104,7 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 	}
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	@Override

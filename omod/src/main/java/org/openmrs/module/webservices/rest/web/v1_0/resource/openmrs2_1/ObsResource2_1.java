@@ -27,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ObsReso
 public class ObsResource2_1 extends ObsResource1_11 {
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	@Override
@@ -38,7 +38,7 @@ public class ObsResource2_1 extends ObsResource1_11 {
 	}
 	
 	/**
-	 * @deprecated since 4.0.0-SNAPSHOT, this will be replaced by OpenAPI-generated documentation
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Deprecated
 	@Override
