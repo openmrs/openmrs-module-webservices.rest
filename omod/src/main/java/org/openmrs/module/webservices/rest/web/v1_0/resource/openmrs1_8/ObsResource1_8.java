@@ -33,6 +33,7 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -235,9 +236,9 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	public Object getValue(Obs obs) throws ConversionException {
 		if (obs.isComplex()) {
 			//Note that complex obs value is handled by ObsComplexValueController1_8
-			SimpleObject so = new SimpleObject();
+			TypedSimpleObject<?> so = new TypedSimpleObject<>();
 			so.put("display", "raw file");
-			SimpleObject links = new SimpleObject();
+			TypedSimpleObject<?> links = new TypedSimpleObject<>();
 			links.put("rel", "self");
 			links.put("uri", new ObsResource1_8().getUri(obs) + "/value");
 			so.put("links", links);
