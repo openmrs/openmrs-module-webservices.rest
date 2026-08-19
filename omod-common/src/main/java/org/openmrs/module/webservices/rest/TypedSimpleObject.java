@@ -63,7 +63,6 @@ public class TypedSimpleObject<T> extends SimpleObject {
 	 * Creates an empty {@code TypedSimpleObject}.
 	 */
 	public TypedSimpleObject() {
-		super();
 	}
 	
 	/**

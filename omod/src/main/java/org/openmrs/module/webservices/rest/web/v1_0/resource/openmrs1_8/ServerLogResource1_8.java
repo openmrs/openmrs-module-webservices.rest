@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper;
 import org.openmrs.module.webservices.helper.ServerLogActionWrapper1_8;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -36,7 +35,7 @@ public class ServerLogResource1_8 extends BaseDelegatingResource<ServerLogAction
 	}
 	
 	@Override
-	public SimpleObject getAll(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<?> getAll(RequestContext context) throws ResponseException {
 		TypedSimpleObject<?> rest = new TypedSimpleObject<>();
 		rest.put("serverLog", serverLogActionWrapper.getServerLogs());
 		return rest;
