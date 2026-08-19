@@ -10,9 +10,9 @@ on:
         description: 'Next development version (e.g., 1.4.0-SNAPSHOT)'
         required: true
       branch:
-        description: 'Branch to release from (e.g., master)'
+        description: 'Branch to release from (e.g., 4.x)'
         required: false
-        default: '3.x'
+        default: '4.x'
 
 jobs:
   release:
