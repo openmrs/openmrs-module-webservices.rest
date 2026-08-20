@@ -161,12 +161,15 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         SimpleObject adminVisit = (SimpleObject) adminResult;
         assertNotNull(adminVisit.get("patient"), "Admin should see patient data");
 
-        // Create and authenticate as a user who only has "Get Visits"
+        // Create and authenticate as a user without "Get Patients"/"Get People"
         createLimitedUser();
         Context.logout();
         Context.authenticate("limited_user", "LimitedTest123");
         assertTrue(Context.isAuthenticated());
-        assertTrue(Context.hasPrivilege("Get Visits"));
+        // "Limited Role" grants nothing here: role privileges resolve by name from the database, and
+        // this role is created inside the test's uncommitted transaction. The visit is fetched and
+        // converted under a proxy privilege below instead. What matters here is the absence of
+        // patient access, which is what this test is about.
         assertFalse(Context.hasPrivilege("Get Patients"));
         assertFalse(Context.hasPrivilege("Get People"));
 
@@ -179,13 +182,38 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         }
         assertNotNull(visitAsLimited);
 
-        // Patient property should be omitted because the user lacks "Get Patients"
-        Object limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
-                new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        // "Get Visits" is held so the visit itself converts; "Get Patients"/"Get People" are not, so
+        // the patient property should be omitted.
+        Object limitedResult;
+        try {
+            Context.addProxyPrivilege("Get Visits");
+            limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
+                    new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        } finally {
+            Context.removeProxyPrivilege("Get Visits");
+        }
         assertInstanceOf(SimpleObject.class, limitedResult);
         SimpleObject limitedVisit = (SimpleObject) limitedResult;
         assertFalse(limitedVisit.containsKey("patient"),
                 "User without 'Get Patients' privilege should NOT see patient data through custom representation");
+
+        // Positive control: the same user and the same representation, but now holding patient access.
+        // Without this, the assertion above would also pass if the privilege check never ran at all.
+        Object allowedResult;
+        try {
+            Context.addProxyPrivilege("Get Visits");
+            Context.addProxyPrivilege("Get Patients");
+            Context.addProxyPrivilege("Get People");
+            allowedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
+                    new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        } finally {
+            Context.removeProxyPrivilege("Get People");
+            Context.removeProxyPrivilege("Get Patients");
+            Context.removeProxyPrivilege("Get Visits");
+        }
+        assertInstanceOf(SimpleObject.class, allowedResult);
+        assertNotNull(((SimpleObject) allowedResult).get("patient"),
+                "User with 'Get Patients' privilege SHOULD see patient data, otherwise the assertion above is vacuous");
     }
 
     public void assertCustomRepresentation(Representation representation, String rep) {
