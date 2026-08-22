@@ -9,14 +9,16 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.api;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Helper interface used by implementations that want to do pagination
+ *
+ * @param <T> the generic type of the list of results
  */
-public interface PageableResult {
+public interface PageableResult<T> {
 	
-	SimpleObject toSimpleObject(Converter<?> preferredConverter) throws ResponseException;
+	TypedSimpleObject<T> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException;
 	
 }
