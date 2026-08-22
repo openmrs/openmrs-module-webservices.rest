@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -26,7 +26,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * 
  * @param <T> the generic type of the list of results
  */
-public abstract class BasePageableResult<T> implements PageableResult {
+public abstract class BasePageableResult<T> implements PageableResult<T> {
 	
 	protected RequestContext context;
 	
@@ -48,18 +48,19 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	 * <strong>Should</strong> not add property totalCount if context contains parameter totalCount which is false
 	 * <strong>Should</strong> not add property totalCount if context does not contains parameter totalCount
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
+	public TypedSimpleObject<T> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
 		for (T match : getPageOfResults()) {
-			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter);
+			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), (Converter) preferredConverter);
 			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
 				continue;
 			}
 			results.add(converted);
 		}
 		
-		SimpleObject ret = new SimpleObject().add("results", results);
+		TypedSimpleObject<T> ret = new TypedSimpleObject<T>().add("results", results);
 		boolean hasMore = hasMoreResults();
 		if (context.getStartIndex() > 0 || hasMore) {
 			List<Hyperlink> links = new ArrayList<Hyperlink>();

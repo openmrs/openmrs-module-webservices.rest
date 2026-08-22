@@ -177,7 +177,7 @@ public class MainResourceController extends BaseRestController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
@@ -219,7 +219,7 @@ public class MainResourceController extends BaseRestController {
 	 * @return
 	 * @throws ResponseException
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/search/{searchHandlerId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	public SimpleObject searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
