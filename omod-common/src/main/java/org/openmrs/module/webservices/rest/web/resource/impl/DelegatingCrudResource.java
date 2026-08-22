@@ -16,11 +16,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.CrudResource;
 import org.openmrs.module.webservices.rest.web.resource.api.Listable;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -190,22 +192,23 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public SimpleObject search(RequestContext context) throws ResponseException {
-		PageableResult result = doSearch(context);
+	public TypedSimpleObject<T> search(RequestContext context) throws ResponseException {
+		PageableResult<T> result = doSearch(context);
 		return result.toSimpleObject(this);
 	}
 	
 	/**
 	 * Implementations should override this method if they are actually searchable.
 	 */
-	protected PageableResult doSearch(RequestContext context) {
-		return new EmptySearchResult();
+	protected PageableResult<T> doSearch(RequestContext context) {
+		return new EmptySearchResult<>();
 	}
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
@@ -218,10 +221,10 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 			if (handler == null)
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
-			PageableResult result = handler.getAllByType(context);
-			return result.toSimpleObject(this);
+			PageableResult<?> result = handler.getAllByType(context);
+			return result.toSimpleObject((Converter) this);
 		} else {
-			PageableResult result = doGetAll(context);
+			PageableResult<T> result = doGetAll(context);
 			return result.toSimpleObject(this);
 		}
 	}
@@ -233,7 +236,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * 
 	 * @throws ResponseException
 	 */
-	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
+	protected PageableResult<T> doGetAll(RequestContext context) throws ResponseException {
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	

@@ -49,6 +49,6 @@ public interface DelegatingSubclassHandler<Superclass, Subclass extends Supercla
 	 * @throws ResourceDoesNotSupportOperationException if this resource does not support the
 	 *             operation
 	 */
-	PageableResult getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException;
+	PageableResult<?> getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException;
 	
 }
