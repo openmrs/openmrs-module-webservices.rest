@@ -233,9 +233,6 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
 
         User user = new User(person);
         user.setUsername("limited_user");
-        for (Role r : new ArrayList<>(user.getAllRoles())) {
-            user.removeRole(r);
-        }
         userService.createUser(user, "LimitedTest123");
     }
 }
