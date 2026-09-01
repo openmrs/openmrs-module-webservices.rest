@@ -231,26 +231,10 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         person.addName(new PersonName("Limited", null, "User"));
         Context.getPersonService().savePerson(person);
 
-        Role role = new Role("Limited Role");
-        role.setDescription("Role with limited privileges for testing");
-        for (String privName : new String[] { "Get Visits" }) {
-            Privilege priv = userService.getPrivilege(privName);
-            if (priv == null) {
-                priv = new Privilege(privName);
-                priv.setDescription(privName);
-                userService.savePrivilege(priv);
-            }
-            role.addPrivilege(priv);
-        }
-        userService.saveRole(role);
-
         User user = new User(person);
         user.setUsername("limited_user");
-        user.addRole(role);
         for (Role r : new ArrayList<>(user.getAllRoles())) {
-            if (!r.getRole().equals("Limited Role")) {
-                user.removeRole(r);
-            }
+            user.removeRole(r);
         }
         userService.createUser(user, "LimitedTest123");
     }
