@@ -195,7 +195,8 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
                 "User without 'Get Patients' privilege should NOT see patient data through custom representation");
 
         // Positive control: the same user and the same representation, but now holding patient access.
-        // Without this, the assertion above would also pass if the privilege check never ran at all.
+        // Without this, the assertion above would pass even if the patient were unreachable on this
+        // visit for a reason unrelated to privileges, which would make it vacuous.
         Object allowedResult;
         try {
             Context.addProxyPrivilege("Get Visits");
