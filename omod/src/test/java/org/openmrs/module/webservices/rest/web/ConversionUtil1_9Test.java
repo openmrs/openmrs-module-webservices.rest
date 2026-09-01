@@ -17,8 +17,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
-import org.openmrs.Privilege;
-import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -32,7 +30,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Encounte
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
