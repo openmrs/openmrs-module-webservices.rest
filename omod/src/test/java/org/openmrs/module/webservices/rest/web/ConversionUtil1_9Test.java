@@ -166,10 +166,10 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         Context.logout();
         Context.authenticate("limited_user", "LimitedTest123");
         assertTrue(Context.isAuthenticated());
-        // "Limited Role" grants nothing here: role privileges resolve by name from the database, and
-        // this role is created inside the test's uncommitted transaction. The visit is fetched and
-        // converted under a proxy privilege below instead. What matters here is the absence of
-        // patient access, which is what this test is about.
+        // The user holds no roles at all: role privileges resolve by name from the database, so a role
+        // created inside the test's uncommitted transaction would grant nothing anyway. The visit is
+        // fetched and converted under a proxy privilege below instead. What matters here is the
+        // absence of patient access, which is what this test is about.
         assertFalse(Context.hasPrivilege("Get Patients"));
         assertFalse(Context.hasPrivilege("Get People"));
 
