@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
-import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.UserService;
@@ -107,23 +106,22 @@ public class ChangePasswordController1_8Test extends RestControllerTestUtils {
 	@Test
 	public void testUserChangeOtherUsersPassword() throws Exception {
 		Context.checkCoreDataset();
-		User authenticatedUser = setUpUser("daemon");
+		setUpUser("daemon");
 		
-		Role role = new Role("Privileged Role");
-
-		try {
-			Context.addProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
-			role.addPrivilege(service.getPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS));
-			role.addPrivilege(service.getPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES));
-		} finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.GET_PRIVILEGES);
-		}
-		authenticatedUser.addRole(role);
-
 		String newPassword = "newTest9453!#$";
 		
-		MockHttpServletResponse response = handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID,
-		    "{\"newPassword\":\"" + newPassword + "\"}"));
+		// Role privileges resolve from the database by name, so stubbing them on an in-memory role no
+		// longer grants them; hold the privileges as proxies so the changePassword gate passes.
+		MockHttpServletResponse response;
+		try {
+			Context.addProxyPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			response = handle(newPostRequest(PASSWORD_URI + "/" + RestTestConstants1_8.USER_UUID,
+			    "{\"newPassword\":\"" + newPassword + "\"}"));
+		} finally {
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(PrivilegeConstants.EDIT_USER_PASSWORDS);
+		}
 		
 		assertEquals(200, response.getStatus());
 	}

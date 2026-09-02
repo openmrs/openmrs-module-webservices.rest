@@ -152,6 +152,13 @@
 				<version>${jacksonVersion}</version>
 				<scope>provided</scope>
 			</dependency>
+			<!-- swagger-core pulls in the "android" flavor of Guava, which lacks the java.time
+			     overloads that openmrs-api relies on; pin the "jre" flavor used by openmrs-core -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.7.1-jre</version>
+			</dependency>
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>legacyui-omod</artifactId>
