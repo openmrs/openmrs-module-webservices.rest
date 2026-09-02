@@ -66,6 +66,10 @@ public class ProgramResource1_10 extends ProgramResource1_8 {
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))

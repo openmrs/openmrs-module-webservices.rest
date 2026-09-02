@@ -98,6 +98,10 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -128,6 +132,10 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -143,6 +151,10 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 		        .required("patient").required("encounterType");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

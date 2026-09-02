@@ -176,6 +176,10 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		return updatableProperties;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -201,6 +205,10 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -209,6 +217,10 @@ public class PatientStateResource1_8 extends DelegatingSubResource<PatientState,
 		        .required("state");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()

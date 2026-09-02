@@ -56,6 +56,10 @@ public class FulfillerDetailsResource2_3 extends DelegatingSubResource<Fulfiller
         return delegatingResourceDescription;
     }
 
+    /**
+     * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+     */
+    @Deprecated
     @Override
     public Model getCREATEModel(Representation rep) {
         return new ModelImpl()

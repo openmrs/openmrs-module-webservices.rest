@@ -36,6 +36,10 @@ public class LayoutTemplateRepresentation {
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public static ModelImpl getGETModel(Class<? extends Enum<?>> clsTokenEnum) {
 		return new ModelImpl()
 				.property("displayName", new StringProperty())

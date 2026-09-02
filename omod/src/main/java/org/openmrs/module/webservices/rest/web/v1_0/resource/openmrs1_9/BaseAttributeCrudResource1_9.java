@@ -108,6 +108,10 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -117,6 +121,10 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 		        .required("attributeType").required("value");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);

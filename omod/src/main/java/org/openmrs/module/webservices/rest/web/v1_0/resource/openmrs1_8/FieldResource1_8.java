@@ -36,6 +36,10 @@ import java.util.List;
 @Resource(name = RestConstants.VERSION_1 + "/field", supportedClass = Field.class, supportedOpenmrsVersions = { "1.8.* - 9.*" })
 public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -57,6 +61,10 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -70,6 +78,10 @@ public class FieldResource1_8 extends MetadataDelegatingCrudResource<Field> {
 		        .required("fieldType").required("selectMultiple");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl(); //FIXME missing props

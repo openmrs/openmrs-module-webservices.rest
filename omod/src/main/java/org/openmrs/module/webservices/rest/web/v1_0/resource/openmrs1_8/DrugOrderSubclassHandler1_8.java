@@ -132,6 +132,10 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 		return d;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)
@@ -155,6 +159,10 @@ public class DrugOrderSubclassHandler1_8 extends BaseDelegatingSubclassHandler<O
 		return orderModel;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		OrderResource1_8 orderResource = (OrderResource1_8) Context.getService(RestService.class)

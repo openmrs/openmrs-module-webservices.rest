@@ -149,6 +149,10 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 		return Collections.singletonList(RECIPIENTS);
 	}
 
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
@@ -179,6 +183,10 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 		return modelImpl;
 	}
 
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -188,6 +196,10 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 				.property(DATE_TO_EXPIRE, new DateProperty());
 	}
 
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()

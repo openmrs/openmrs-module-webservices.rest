@@ -114,6 +114,10 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		return d;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
@@ -133,6 +137,10 @@ public class OrderSetResource1_12 extends MetadataDelegatingCrudResource<OrderSe
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return new ModelImpl()

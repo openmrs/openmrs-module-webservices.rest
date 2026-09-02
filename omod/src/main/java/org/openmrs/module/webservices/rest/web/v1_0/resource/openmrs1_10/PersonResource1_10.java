@@ -59,16 +59,28 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		description.addProperty("birthtime");
 		return description;
 	}
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		return addNewProperties(super.getGETModel(rep), rep);
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return addNewProperties(super.getCREATEModel(rep), rep);
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return addNewProperties(super.getUPDATEModel(rep), rep);

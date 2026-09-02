@@ -125,6 +125,10 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -149,6 +153,10 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getCREATEModel(rep))
@@ -171,6 +179,10 @@ public class DrugResource1_8 extends MetadataDelegatingCrudResource<Drug> {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep); //FIXME no updatableProperties()

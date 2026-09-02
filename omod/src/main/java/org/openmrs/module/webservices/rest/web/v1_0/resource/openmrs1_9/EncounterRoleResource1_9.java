@@ -48,6 +48,10 @@ public class EncounterRoleResource1_9 extends MetadataDelegatingCrudResource<Enc
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

@@ -296,6 +296,10 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		return ((ModelImpl) super.getGETModel(rep))
@@ -303,6 +307,10 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		        .property("action", new EnumProperty(Action.class));
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()

@@ -73,6 +73,10 @@ public class ConceptClassResource1_8 extends MetadataDelegatingCrudResource<Conc
 		Context.getConceptService().purgeConceptClass(conceptClass);
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

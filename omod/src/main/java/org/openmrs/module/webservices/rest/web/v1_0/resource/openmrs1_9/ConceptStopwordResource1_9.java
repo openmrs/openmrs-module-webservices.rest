@@ -84,6 +84,10 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
@@ -98,6 +102,10 @@ public class ConceptStopwordResource1_9 extends DelegatingCrudResource<ConceptSt
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()

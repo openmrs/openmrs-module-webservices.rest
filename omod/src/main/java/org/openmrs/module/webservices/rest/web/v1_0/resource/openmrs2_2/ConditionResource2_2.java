@@ -92,7 +92,9 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -114,8 +116,10 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Override
+	@Deprecated
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
 		        .property("condition", new StringProperty())
@@ -130,8 +134,10 @@ public class ConditionResource2_2 extends DataDelegatingCrudResource<Condition> 
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
 	 */
 	@Override
+	@Deprecated
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()
 		        .property("condition", new StringProperty())

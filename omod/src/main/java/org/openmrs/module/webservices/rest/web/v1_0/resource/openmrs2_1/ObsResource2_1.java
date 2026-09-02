@@ -26,6 +26,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.ObsReso
 @Resource(name = RestConstants.VERSION_1 + "/obs", supportedClass = Obs.class, supportedOpenmrsVersions = { "2.1.* - 2.6.*" })
 public class ObsResource2_1 extends ObsResource1_11 {
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		return ((ModelImpl) super.getGETModel(rep))
@@ -33,6 +37,10 @@ public class ObsResource2_1 extends ObsResource1_11 {
 		        .property("interpretation", new EnumProperty(Obs.Interpretation.class));
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))

@@ -119,6 +119,10 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		return getCreatableProperties();
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -140,6 +144,10 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -152,6 +160,10 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 		        .required("description");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

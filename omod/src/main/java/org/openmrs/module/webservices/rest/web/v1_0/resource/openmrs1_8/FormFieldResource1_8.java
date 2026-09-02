@@ -42,6 +42,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
         "1.8.* - 9.*" })
 public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form, FormResource1_8> {
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -71,6 +75,10 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl() //FIXME validate if correct
@@ -95,6 +103,10 @@ public class FormFieldResource1_8 extends DelegatingSubResource<FormField, Form,
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props

@@ -139,6 +139,10 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		return d;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -164,6 +168,10 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()
@@ -184,6 +192,10 @@ public class ProgramEnrollmentResource1_8 extends DataDelegatingCrudResource<Pat
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl()

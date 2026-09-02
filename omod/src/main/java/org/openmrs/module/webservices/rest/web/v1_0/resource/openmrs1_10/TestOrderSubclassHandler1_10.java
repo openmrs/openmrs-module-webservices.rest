@@ -129,6 +129,10 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		return orderResource.getUpdatableProperties();
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
@@ -151,6 +155,10 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		return orderModel;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)
@@ -164,6 +172,10 @@ public class TestOrderSubclassHandler1_10 extends BaseDelegatingSubclassHandler<
 		        .property("numberOfRepeats", new IntegerProperty());
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		OrderResource1_10 orderResource = (OrderResource1_10) Context.getService(RestService.class)

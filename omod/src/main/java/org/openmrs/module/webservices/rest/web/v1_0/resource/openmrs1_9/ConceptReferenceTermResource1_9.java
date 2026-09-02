@@ -99,6 +99,10 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -117,6 +121,10 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -127,6 +135,10 @@ public class ConceptReferenceTermResource1_9 extends MetadataDelegatingCrudResou
 		        .required("code").required("conceptSource");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl(); //FIXME missing props

@@ -63,6 +63,10 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -70,6 +74,10 @@ public class HL7SourceResource1_8 extends MetadataDelegatingCrudResource<HL7Sour
 		        .required("description");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

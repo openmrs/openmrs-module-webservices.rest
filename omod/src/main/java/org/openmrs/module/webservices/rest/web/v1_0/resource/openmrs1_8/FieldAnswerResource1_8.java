@@ -80,6 +80,10 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
 		if (rep instanceof DefaultRepresentation) {
@@ -98,6 +102,10 @@ public class FieldAnswerResource1_8 extends DelegatingSubResource<FieldAnswer, F
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()

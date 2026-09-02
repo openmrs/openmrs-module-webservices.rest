@@ -152,6 +152,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return getCreatableProperties();
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -174,6 +178,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()
@@ -189,6 +197,10 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

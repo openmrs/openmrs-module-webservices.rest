@@ -99,6 +99,10 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 		return d;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return ((ModelImpl) super.getCREATEModel(rep))
@@ -106,6 +110,10 @@ public class ProgramEnrollmentResource1_10 extends ProgramEnrollmentResource1_8 
 		        .property("outcome", new RefProperty("#/definitions/ConceptCreate"));
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl() //FIXME use super.

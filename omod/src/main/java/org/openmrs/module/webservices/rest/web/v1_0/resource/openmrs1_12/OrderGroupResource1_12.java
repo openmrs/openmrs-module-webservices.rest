@@ -128,6 +128,10 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = (ModelImpl) super.getGETModel(rep);
@@ -153,6 +157,10 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return new ModelImpl().property("patient", new StringProperty().example("uuid"))
@@ -161,6 +169,10 @@ public class OrderGroupResource1_12 extends DataDelegatingCrudResource<OrderGrou
 		        .property("orderSet", new StringProperty().example("uuid"));
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return new ModelImpl().property("orders",

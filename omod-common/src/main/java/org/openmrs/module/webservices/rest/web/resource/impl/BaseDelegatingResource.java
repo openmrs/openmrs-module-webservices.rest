@@ -80,6 +80,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		return null;
 	}
 
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = new ModelImpl();
@@ -309,6 +313,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return null;
@@ -332,6 +340,10 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		return description;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		ModelImpl model = (ModelImpl) getCREATEModel(rep);

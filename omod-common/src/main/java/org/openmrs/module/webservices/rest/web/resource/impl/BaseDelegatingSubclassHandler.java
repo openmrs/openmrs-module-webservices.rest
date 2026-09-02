@@ -77,6 +77,10 @@ public abstract class BaseDelegatingSubclassHandler<Superclass, Subclass extends
 		return getCreatableProperties();
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation rep) {
 		return getCREATEModel(rep);

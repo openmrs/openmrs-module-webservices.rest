@@ -70,6 +70,10 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep))
 		        .property("uuid", new StringProperty())
@@ -85,6 +89,10 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -95,6 +103,10 @@ public class ConceptNameResource1_8 extends DelegatingSubResource<ConceptName, C
 		        .required("name").required("locale");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()

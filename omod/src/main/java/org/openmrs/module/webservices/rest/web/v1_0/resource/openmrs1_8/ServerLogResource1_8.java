@@ -44,6 +44,10 @@ public class ServerLogResource1_8 extends BaseDelegatingResource<ServerLogAction
 		return rest;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		return ((ModelImpl) super.getGETModel(rep))

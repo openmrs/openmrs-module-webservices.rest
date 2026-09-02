@@ -29,6 +29,10 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.ConceptS
         "2.1.* - 9.*" })
 public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = (ModelImpl) super.getGETModel(rep);
@@ -39,6 +43,10 @@ public class ConceptSourceResource2_1 extends ConceptSourceResource2_0 {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation representation) {
 		return ((ModelImpl) super.getCREATEModel(representation))

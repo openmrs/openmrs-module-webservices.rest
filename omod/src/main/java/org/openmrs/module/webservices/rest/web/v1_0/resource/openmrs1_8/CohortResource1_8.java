@@ -97,6 +97,10 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl model = ((ModelImpl) super.getGETModel(rep));
 		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
@@ -111,6 +115,10 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		return new ModelImpl()
@@ -120,6 +128,10 @@ public class CohortResource1_8 extends DataDelegatingCrudResource<Cohort> {
 		        .required("name").required("description").required("memberIds");
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()

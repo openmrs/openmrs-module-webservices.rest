@@ -241,6 +241,10 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		return null;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	public Model getGETModel(Representation rep) {
 		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
 		        .property("uuid", new StringProperty())
@@ -277,6 +281,10 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		return modelImpl;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getCREATEModel(Representation rep) {
 		ModelImpl model = new ModelImpl()
@@ -314,6 +322,10 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 		return model;
 	}
 	
+	/**
+	 * @deprecated since 3.6.0, this will be replaced by OpenAPI-generated documentation
+	 */
+	@Deprecated
 	@Override
 	public Model getUPDATEModel(Representation representation) {
 		return new ModelImpl()
