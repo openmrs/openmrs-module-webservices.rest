@@ -9,11 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.io.FileUtils;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
@@ -105,34 +100,6 @@ public class ModuleResource1_8 extends BaseDelegatingReadableResource<Module> im
 			return description;
 		}
 		return null;
-	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("name", new StringProperty())
-			        .property("description", new StringProperty())
-			        .property("started", new BooleanProperty()) //FIXME check type
-			        .property("startupErrorMessage", new StringProperty()); //FIXME add-link: action
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("packageName", new StringProperty())
-			        .property("author", new StringProperty())
-			        .property("version", new StringProperty())
-			        .property("requireOpenmrsVersion", new StringProperty())
-			        .property("awareOfModules", new ArrayProperty(new StringProperty())) //FIXME check type
-			        .property("requiredModules", new ArrayProperty(new StringProperty()));
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty());
-		}
-		return model;
 	}
 	
 	/**

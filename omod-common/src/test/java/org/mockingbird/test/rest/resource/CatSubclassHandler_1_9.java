@@ -9,7 +9,6 @@
  */
 package org.mockingbird.test.rest.resource;
 
-import io.swagger.models.Model;
 import org.mockingbird.test.Animal;
 import org.mockingbird.test.Cat;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -90,18 +89,4 @@ public class CatSubclassHandler_1_9 implements DelegatingSubclassHandler<Animal,
 		return null;
 	}
 	
-	@Override
-	public Model getGETModel(Representation representation) {
-		return null;
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation representation) {
-		return null;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation representation) {
-		return null;
-	}
 }

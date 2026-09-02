@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
-import io.swagger.models.Model;
 import org.openmrs.PersonName;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -28,10 +27,4 @@ public class PersonNameResource2_1 extends PersonNameResource2_0 {
 		return resourceDescription;
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		Model model = super.getCREATEModel(rep);
-		model.getProperties().get("familyName").setRequired(false);
-		return model;
-	}
 }

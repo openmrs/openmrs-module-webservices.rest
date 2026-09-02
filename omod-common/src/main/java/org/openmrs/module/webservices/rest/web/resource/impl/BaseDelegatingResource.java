@@ -59,12 +59,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
-
 /**
  * A base implementation of a resource or sub-resource that delegates operations to a wrapped
  * object. Implementations generally should extend either {@link DelegatingCrudResource} or
@@ -80,34 +74,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		return null;
 	}
 
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = new ModelImpl();
-		if (rep instanceof DefaultRepresentation) {
-			model
-			        .property("links", new ArrayProperty()
-			                .items(new ObjectProperty()
-			                        .property("rel", new StringProperty().example("self|full"))
-			                        .property("uri", new StringProperty(StringProperty.Format.URI))));
-			
-		} else if (rep instanceof FullRepresentation) {
-			model
-			        .property("auditInfo", new StringProperty())
-			        .property("links", new ArrayProperty()
-			                .items(new ObjectProperty()
-			                        .property("rel", new StringProperty()).example("self")
-			                        .property("uri", new StringProperty(StringProperty.Format.URI))));
-			
-		} else if (rep instanceof RefRepresentation) {
-			model
-			        .property("links", new ArrayProperty()
-			                .items(new ObjectProperty()
-			                        .property("rel", new StringProperty().example("self"))
-			                        .property("uri", new StringProperty(StringProperty.Format.URI))));
-		}
-		return model;
-	}
-	
 	protected Set<String> propertiesIgnoredWhenUpdating = new HashSet<String>();
 	
 	/**
@@ -309,11 +275,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 		throw new ResourceDoesNotSupportOperationException();
 	}
 	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return null;
-	}
-	
 	/**
 	 * Gets a description of resource's properties which can be edited.
 	 * <p/>
@@ -330,15 +291,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 			description.getProperties().remove(property);
 		}
 		return description;
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		ModelImpl model = (ModelImpl) getCREATEModel(rep);
-		for (String property : getPropertiesToExposeAsSubResources()) {
-			model.getProperties().remove(property);
-		}
-		return model;
 	}
 	
 	/**
@@ -866,7 +818,6 @@ public abstract class BaseDelegatingResource<T> extends BaseDelegatingConverter<
 	public T newDelegate(SimpleObject object) {
 		return newDelegate();
 	}
-
 
 	/**
 	 * Utility method to build a delegating resource description with the proper list of allowed creatable properties by starting

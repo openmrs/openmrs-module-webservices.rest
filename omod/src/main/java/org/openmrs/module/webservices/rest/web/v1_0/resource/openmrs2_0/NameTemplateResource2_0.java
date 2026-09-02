@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
 import org.openmrs.layout.name.NameSupport;
 import org.openmrs.layout.name.NameTemplate;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -45,11 +44,6 @@ public class NameTemplateResource2_0 extends BaseDelegatingReadableResource<Name
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		return LayoutTemplateRepresentation.getRepresentationDescription(rep);
-	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return LayoutTemplateRepresentation.getGETModel(NameTemplateTokenEnum.class);
 	}
 	
 	@Override

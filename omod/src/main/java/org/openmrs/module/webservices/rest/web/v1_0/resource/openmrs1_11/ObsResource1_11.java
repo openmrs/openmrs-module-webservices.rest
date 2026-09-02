@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.BooleanUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -40,20 +37,6 @@ public class ObsResource1_11 extends ObsResource1_9 {
 			description.addProperty("formFieldNamespace");
 		}
 		return description;
-	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return ((ModelImpl) super.getGETModel(rep))
-		        .property("formFieldPath", new StringProperty())
-		        .property("formFieldNamespace", new StringProperty());
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return ((ModelImpl) super.getCREATEModel(rep))
-		        .property("formFieldPath", new StringProperty())
-		        .property("formFieldNamespace", new StringProperty());
 	}
 	
 	/**
