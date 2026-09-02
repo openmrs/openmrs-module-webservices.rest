@@ -2,9 +2,9 @@ name: Build with Maven
 
 on:
   push:
-    branches: [ 3.x ]
+    branches: [ 4.x ]
   pull_request:
-    branches: [ 3.x ]
+    branches: [ 4.x ]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/build-backend-module.yml@main
     with:
       maven_args: 'clean install -Dmaven.javadoc.skip=true'
-      deploy_branch: '3.x'
+      deploy_branch: '4.x'
     secrets:
       MAVEN_REPO_USERNAME: ${{ secrets.MAVEN_REPO_USERNAME }}
       MAVEN_REPO_API_KEY: ${{ secrets.MAVEN_REPO_API_KEY }}
