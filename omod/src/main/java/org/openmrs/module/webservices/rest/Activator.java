@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 import org.openmrs.module.ModuleActivator;
-import org.openmrs.module.webservices.docs.swagger.SwaggerSpecificationCreator;
 import org.openmrs.module.webservices.rest.util.ReflectionUtil;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -45,7 +44,6 @@ public class Activator extends BaseModuleActivator {
 		
 		ConversionUtil.clearCache();
 		ReflectionUtil.clearCaches();
-		SwaggerSpecificationCreator.clearCache();
 	}
 	
 }

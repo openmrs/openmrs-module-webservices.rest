@@ -9,7 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 
-import io.swagger.models.Model;
 import org.openmrs.Person;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -48,7 +47,6 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		return description;
 	}
 
-
 	/**
 	 * @throws ResourceDoesNotSupportOperationException
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
@@ -58,25 +56,6 @@ public class PersonResource1_10 extends PersonResource1_8 {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
 		description.addProperty("birthtime");
 		return description;
-	}
-	@Override
-	public Model getGETModel(Representation rep) {
-		return addNewProperties(super.getGETModel(rep), rep);
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return addNewProperties(super.getCREATEModel(rep), rep);
-	}
-	
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return addNewProperties(super.getUPDATEModel(rep), rep);
-	}
-	
-	private Model addNewProperties(Model model, Representation rep) {
-		
-		return model;
 	}
 	
 	/**

@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateTimeProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
@@ -97,44 +91,6 @@ public class AlertRecipientResource2_0 extends DelegatingSubResource<AlertRecipi
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty(RECIPIENT);
 		return description;
-	}
-
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl modelImpl = ((ModelImpl) super.getGETModel(rep))
-				.property(UUID, new StringProperty())
-				.property(DISPLAY, new StringProperty());
-
-		if (rep instanceof DefaultRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGetRef"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserGet"))
-					.property(ALERT_READ, new BooleanProperty())
-					.property(DATE_CHANGED, new DateTimeProperty());
-		}
-		return modelImpl;
-	}
-
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		ModelImpl modelImpl = new ModelImpl()
-				.property(RECIPIENT, new StringProperty().example("uuid"));
-
-		if (rep instanceof FullRepresentation) {
-			modelImpl
-					.property(RECIPIENT, new RefProperty("#/definitions/UserCreate"));
-		}
-		return modelImpl;
-	}
-
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return getCREATEModel(rep);
 	}
 
 	@Override

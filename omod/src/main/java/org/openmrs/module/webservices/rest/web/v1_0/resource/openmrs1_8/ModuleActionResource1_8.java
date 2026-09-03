@@ -9,19 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.openmrs.api.APIException;
 import org.openmrs.module.Module;
 import org.openmrs.module.ModuleException;
 import org.openmrs.module.ModuleUtil;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.helper.ModuleAction;
 import org.openmrs.module.webservices.helper.ModuleFactoryWrapper;
 import org.openmrs.module.webservices.helper.ModuleAction.Action;
@@ -294,23 +287,6 @@ public class ModuleActionResource1_8 extends BaseDelegatingResource<ModuleAction
 		description.addProperty("installUri");
 		description.addRequiredProperty("action", "action");
 		return description;
-	}
-	
-	@Override
-	public Model getGETModel(Representation rep) {
-		return ((ModelImpl) super.getGETModel(rep))
-		        .property("modules", new ArrayProperty(new RefProperty("#/definitions/ModuleGetRef")))
-		        .property("action", new EnumProperty(Action.class));
-	}
-	
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("modules", new ArrayProperty(new StringProperty().example("moduleId")))
-		        .property("allModules", new BooleanProperty())
-		        .property("action", new EnumProperty(Action.class))
-		        .property("installUri", new StringProperty())
-		        .required("action");
 	}
 	
 	/**

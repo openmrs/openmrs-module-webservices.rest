@@ -9,12 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.helper;
 
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.MapProperty;
-import io.swagger.models.properties.ObjectProperty;
-import io.swagger.models.properties.StringProperty;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 
@@ -36,25 +30,4 @@ public class LayoutTemplateRepresentation {
 		return description;
 	}
 	
-	public static ModelImpl getGETModel(Class<? extends Enum<?>> clsTokenEnum) {
-		return new ModelImpl()
-				.property("displayName", new StringProperty())
-				.property("codeName", new StringProperty())
-				.property("country", new StringProperty())
-				.property("lines", new ArrayProperty(
-						new ArrayProperty(
-								new ObjectProperty()
-										.property("isToken", new EnumProperty(clsTokenEnum))
-										.property("displayText", new StringProperty())
-										.property("codeName", new StringProperty())
-										.property("displaySize", new StringProperty())
-						)))
-				.property("lineByLineFormat", new ArrayProperty(new StringProperty()))
-				.property("nameMappings", new MapProperty().additionalProperties(new StringProperty()))
-				.property("sizeMappings", new MapProperty().additionalProperties(new StringProperty()))
-				.property("elementDefaults", new MapProperty().additionalProperties(new StringProperty()))
-				.property("elementRegex", new MapProperty().additionalProperties(new StringProperty()))
-				.property("elementRegexFormats", new MapProperty().additionalProperties(new StringProperty()))
-				.property("requiredElements", new ArrayProperty(new StringProperty()));
-	}
 }

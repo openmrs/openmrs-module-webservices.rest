@@ -9,15 +9,10 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_5;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.Diagnosis;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
-import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -65,30 +60,6 @@ public class DiagnosisResource2_5 extends DiagnosisResource2_2 {
         description.addProperty("formFieldNamespace");
         description.addProperty("formFieldPath");
         return description;
-    }
-
-    @Override
-    public Model getGETModel(Representation rep) {
-        return addNewProperties(super.getGETModel(rep), rep);
-    }
-
-    @Override
-    public Model getCREATEModel(Representation rep) {
-        return addNewProperties(super.getCREATEModel(rep), rep);
-    }
-
-    @Override
-    public Model getUPDATEModel(Representation rep) {
-        return addNewProperties(super.getUPDATEModel(rep), rep);
-    }
-
-    private Model addNewProperties(Model model, Representation rep) {
-        if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-            ((ModelImpl) model)
-                    .property("formFieldNamespace", new StringProperty())
-                    .property("formFieldPath", new StringProperty());
-        }
-        return model;
     }
 
     /**

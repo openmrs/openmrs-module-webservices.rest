@@ -12,11 +12,9 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.docs.swagger.core.property.EnumProperty;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -35,12 +33,6 @@ import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOp
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.util.PrivilegeConstants;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.IntegerProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 /**
@@ -135,25 +127,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
-	 */
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("diagnosis", new StringProperty())
-			        .property("condition", new StringProperty())
-			        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
-			        .property("rank", new IntegerProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("voided", new BooleanProperty());
-		}
-		return model;
-	}
-	
-	/**
 	 * @param diagnosis
 	 * @return Diagnosis's name
 	 */
@@ -187,22 +160,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 	}
 	
 	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
-	 */
-	@Override
-	public Model getCREATEModel(Representation rep) {
-
-		return new ModelImpl()
-		        .property("diagnosis", new StringProperty())
-		        .property("encounter", new StringProperty())
-		        .property("condition", new StringProperty())
-		        .property("certainty", new StringProperty())
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("rank", new IntegerProperty());
-
-	}
-	
-	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
@@ -219,20 +176,6 @@ public class DiagnosisResource2_2 extends DataDelegatingCrudResource<Diagnosis> 
 		return description;
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
-	 */
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("diagnosis", new StringProperty())
-		        .property("condition", new StringProperty())
-		        .property("encounter", new StringProperty())
-		        .property("certainty", new EnumProperty(ConditionVerificationStatus.class))
-		        .property("rank", new IntegerProperty())
-		        .property("voided", new BooleanProperty());
-	}
-
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		String patientUuid = context.getRequest().getParameter("patientUuid");

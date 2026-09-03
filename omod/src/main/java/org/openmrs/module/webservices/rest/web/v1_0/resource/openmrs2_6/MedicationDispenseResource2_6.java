@@ -9,13 +9,6 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_6;
 
-import io.swagger.models.Model;
-import io.swagger.models.ModelImpl;
-import io.swagger.models.properties.BooleanProperty;
-import io.swagger.models.properties.DateProperty;
-import io.swagger.models.properties.DoubleProperty;
-import io.swagger.models.properties.RefProperty;
-import io.swagger.models.properties.StringProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.MedicationDispense;
@@ -126,114 +119,6 @@ public class MedicationDispenseResource2_6 extends DataDelegatingCrudResource<Me
 			return description;
 		}
 		return null;
-	}
-
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getGETModel(Representation)
-	 */
-	@Override
-	public Model getGETModel(Representation rep) {
-		ModelImpl model = (ModelImpl) super.getGETModel(rep);
-		if (rep instanceof DefaultRepresentation || rep instanceof FullRepresentation) {
-			model
-			        .property("uuid", new StringProperty())
-			        .property("display", new StringProperty())
-			        .property("patient", new RefProperty("#/definitions/PatientGetRef"))
-			        .property("encounter", new RefProperty("#/definitions/EncounterGetRef"))
-			        .property("concept", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("drug", new RefProperty("#/definitions/DrugGetRef"))
-			        .property("location", new RefProperty("#/definitions/LocationGetRef"))
-			        .property("dispenser", new RefProperty("#/definitions/ProviderGetRef"))
-			        .property("drugOrder", new RefProperty("#/definitions/DrugOrderGetRef"))
-			        .property("status", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("statusReason", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("type", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("quantity", new DoubleProperty())
-			        .property("quantityUnits", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("dose", new DoubleProperty())
-			        .property("doseUnits", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("route", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("frequency", new RefProperty("#/definitions/OrderFrequencyGetRef"))
-			        .property("asNeeded", new BooleanProperty())
-			        .property("dosingInstructions", new StringProperty())
-			        .property("datePrepared", new DateProperty())
-			        .property("dateHandedOver", new DateProperty())
-			        .property("wasSubstituted", new BooleanProperty())
-			        .property("substitutionType", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("substitutionReason", new RefProperty("#/definitions/ConceptGetRef"))
-			        .property("voided", new BooleanProperty());
-		}
-		if (rep instanceof FullRepresentation) {
-			model
-			        .property("formFieldNamespace", new StringProperty())
-			        .property("formFieldPath", new StringProperty());
-		}
-		return model;
-	}
-
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getCREATEModel(Representation)
-	 */
-	@Override
-	public Model getCREATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("patient", new StringProperty().example("uuid"))
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("drug", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("dispenser", new StringProperty().example("uuid"))
-		        .property("drugOrder", new StringProperty().example("uuid"))
-		        .property("status", new StringProperty().example("uuid"))
-		        .property("statusReason", new StringProperty().example("uuid"))
-		        .property("type", new StringProperty().example("uuid"))
-		        .property("quantity", new DoubleProperty())
-		        .property("quantityUnits", new StringProperty().example("uuid"))
-		        .property("dose", new DoubleProperty())
-		        .property("doseUnits", new StringProperty().example("uuid"))
-		        .property("route", new StringProperty().example("uuid"))
-		        .property("frequency", new StringProperty().example("uuid"))
-		        .property("asNeeded", new BooleanProperty())
-		        .property("dosingInstructions", new StringProperty())
-		        .property("datePrepared", new DateProperty())
-		        .property("dateHandedOver", new DateProperty())
-		        .property("wasSubstituted", new BooleanProperty())
-		        .property("substitutionType", new StringProperty().example("uuid"))
-		        .property("substitutionReason", new StringProperty().example("uuid"))
-		        .property("formFieldNamespace", new StringProperty())
-		        .property("formFieldPath", new StringProperty());
-	}
-
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceHandler#getUPDATEModel(Representation)
-	 */
-	@Override
-	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl()
-		        .property("encounter", new StringProperty().example("uuid"))
-		        .property("concept", new StringProperty().example("uuid"))
-		        .property("drug", new StringProperty().example("uuid"))
-		        .property("location", new StringProperty().example("uuid"))
-		        .property("dispenser", new StringProperty().example("uuid"))
-		        .property("drugOrder", new StringProperty().example("uuid"))
-		        .property("status", new StringProperty().example("uuid"))
-		        .property("statusReason", new StringProperty().example("uuid"))
-		        .property("type", new StringProperty().example("uuid"))
-		        .property("quantity", new DoubleProperty())
-		        .property("quantityUnits", new StringProperty().example("uuid"))
-		        .property("dose", new DoubleProperty())
-		        .property("doseUnits", new StringProperty().example("uuid"))
-		        .property("route", new StringProperty().example("uuid"))
-		        .property("frequency", new StringProperty().example("uuid"))
-		        .property("asNeeded", new BooleanProperty())
-		        .property("dosingInstructions", new StringProperty())
-		        .property("datePrepared", new DateProperty())
-		        .property("dateHandedOver", new DateProperty())
-		        .property("wasSubstituted", new BooleanProperty())
-		        .property("substitutionType", new StringProperty().example("uuid"))
-		        .property("substitutionReason", new StringProperty().example("uuid"))
-		        .property("formFieldNamespace", new StringProperty())
-		        .property("formFieldPath", new StringProperty());
 	}
 
 	/**
