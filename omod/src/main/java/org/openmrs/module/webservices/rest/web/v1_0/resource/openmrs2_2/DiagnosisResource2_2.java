@@ -12,7 +12,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.ConditionVerificationStatus;
 import org.openmrs.Diagnosis;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;

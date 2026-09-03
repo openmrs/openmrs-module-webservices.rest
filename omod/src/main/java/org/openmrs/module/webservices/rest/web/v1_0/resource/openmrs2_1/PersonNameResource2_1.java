@@ -11,7 +11,6 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_1;
 
 import org.openmrs.PersonName;
 import org.openmrs.module.webservices.rest.web.annotation.SubResource;
-import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_11.PersonResource1_11;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_0.PersonNameResource2_0;
