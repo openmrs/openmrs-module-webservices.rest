@@ -22,5 +22,5 @@ public interface SubResourceSearchHandler extends SearchHandler {
 	 * @return the result
 	 * @throws ResponseException
 	 */
-	PageableResult search(String parentUuid, RequestContext context) throws ResponseException;
+	PageableResult<?> search(String parentUuid, RequestContext context) throws ResponseException;
 }
