@@ -266,9 +266,11 @@ public class SystemSettingResource1_9 extends DelegatingCrudResource<GlobalPrope
 	
 	/**
 	 * Gets the value of the global property delegate
-	 * 
+	 *
 	 * @param instance the delegate instance to get the value off
-	 * @return value object
+	 * @return the property's value. The values' type is configurable via 
+	 *         global property (@see CustomDatatype), and cannot be narrowed down
+	 *         from Object.
 	 */
 	@PropertyGetter("value")
 	public static Object getValue(GlobalProperty globalProperty) {

@@ -264,7 +264,9 @@ public class PersonAttributeResource1_8 extends DelegatingSubResource<PersonAttr
 	 * Gets the hydrated object of person attribute.
 	 *
 	 * @param pa the person attribute.
-	 * @return an object containing the hydrated object.
+	 * @return the hydrated object. The value's type is named by {@code pa}'s
+	 *         {@link org.openmrs.PersonAttributeType#getFormat()}, reflectively loaded and
+	 *         populated via {@link Attributable#hydrate(String)}, cannot be narrowed down from Object. 
 	 */
 	@PropertyGetter("value")
 	public Object getValue(PersonAttribute pa) {

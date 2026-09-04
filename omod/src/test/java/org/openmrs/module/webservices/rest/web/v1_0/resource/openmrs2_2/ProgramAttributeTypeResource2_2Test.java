@@ -9,12 +9,12 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_2;
 
+import org.openmrs.Concept;
 import org.openmrs.ProgramAttributeType;
 import org.openmrs.api.ProgramWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -94,7 +94,7 @@ public class ProgramAttributeTypeResource2_2Test extends BaseDelegatingResourceT
 	@Test
 	public void ensureGetConceptReturnsTheConceptAttribute() throws Exception {
 		ProgramAttributeType programAttributeType = Context.getService(ProgramWorkflowService.class).getProgramAttributeTypeByUuid("d7477c21-bfc3-4922-9591-e89d8b9c8efh");;
-		SimpleObject concept = (SimpleObject) getResource().getConcept(programAttributeType);
-		assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.get("uuid"));
+		Concept concept = getResource().getConcept(programAttributeType);
+		assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dd", concept.getUuid());
 	}
 }

@@ -27,6 +27,8 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
@@ -575,7 +577,7 @@ public class ConceptResource1_8 extends DelegatingCrudResource<Concept> {
 	 * @param instance
 	 * @return the list of Concepts or Drugs
 	 */
-	@PropertyGetter("answers")
+	@PropertyGetter(value = "answers", arraySchema = @ArraySchema(schema = @Schema(anyOf = { Concept.class, Drug.class })))
 	public static Object getAnswers(Concept instance) {
 		List<ConceptAnswer> conceptAnswers = new ArrayList<ConceptAnswer>();
 		conceptAnswers.addAll(instance.getAnswers(false));

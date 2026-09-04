@@ -21,7 +21,8 @@ import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
 
-import org.apache.commons.lang.StringUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Drug;
@@ -34,6 +35,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.TypedSimpleObject;
+import org.openmrs.module.webservices.rest.web.ComplexObsDisplay;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -232,17 +234,11 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * @param obs
 	 * @return
 	 */
-	@PropertyGetter("value")
+	@PropertyGetter(value = "value", schema = @Schema(anyOf = { ComplexObsDisplay.class, String.class, Number.class, Concept.class, Drug.class, Location.class }))
 	public Object getValue(Obs obs) throws ConversionException {
 		if (obs.isComplex()) {
 			//Note that complex obs value is handled by ObsComplexValueController1_8
-			TypedSimpleObject<?> so = new TypedSimpleObject<>();
-			so.put("display", "raw file");
-			TypedSimpleObject<?> links = new TypedSimpleObject<>();
-			links.put("rel", "self");
-			links.put("uri", new ObsResource1_8().getUri(obs) + "/value");
-			so.put("links", links);
-			return so;
+			return new ComplexObsDisplay(new ObsResource1_8().getUri(obs) + "/value");
 		}
 		
 		if (obs.isObsGrouping())
@@ -319,7 +315,7 @@ public class ObsResource1_8 extends DataDelegatingCrudResource<Obs> implements U
 	 * @throws ConversionException
 	 */
 	@PropertyGetter("groupMembers")
-	public static Object getGroupMembers(Obs obs) throws ConversionException {
+	public static Set<Obs> getGroupMembers(Obs obs) throws ConversionException {
 		if (obs.getGroupMembers() != null && !obs.getGroupMembers().isEmpty()) {
 			return obs.getGroupMembers();
 		}

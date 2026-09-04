@@ -14,6 +14,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 
 /**
@@ -22,14 +24,33 @@ import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResou
  * expose a "attributes" property in the resource, but return from a different getter
  * (getActiveAttributes) from the delegate.) The "getter" method should have the form
  * "Object getXyz(T delegate)" and may be static.
+ * 
+ * The optional {@code schema} and {@code arraySchema} fields allows for narrower OpenAPI type hint
+ * when the method's declared return type is too broad (e.g. {@code Object}). Thehy should only be
+ * needed when the property is polymorphic, e.g. it can be one of several types. Examples:
+ * <ul>
+ *   <li>{@code schema = @Schema(anyOf = {Concept.class, Drug.class})} — property is one of these types</li>
+ *   <li>{@code arraySchema = @ArraySchema(schema = @Schema(anyOf = {Concept.class, Drug.class}))} — property is an array of those types</li>
+ * </ul>
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyGetter {
-	
+
 	/**
 	 * @return the name of the property the annotated method is a "getter" for.
 	 */
 	String value();
-	
+
+	/**
+	 * OpenAPI schema hint for this property. Ignored if the method's return type is already
+	 * specific enough. Use {@code anyOf} or {@code implementation} to document polymorphic types.
+	 */
+	Schema schema() default @Schema;
+
+	/**
+	 * OpenAPI schema hint when the property is an array. Takes precedence over {@link #schema()}.
+	 */
+	ArraySchema arraySchema() default @ArraySchema;
+
 }
