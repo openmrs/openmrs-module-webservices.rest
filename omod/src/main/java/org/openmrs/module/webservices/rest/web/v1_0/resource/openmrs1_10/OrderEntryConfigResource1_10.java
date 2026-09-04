@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -28,7 +29,7 @@ public class OrderEntryConfigResource1_10 implements Listable {
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
 		OrderService orderService = Context.getOrderService();
 		
-		SimpleObject ret = new SimpleObject();
+		TypedSimpleObject<?> ret = new TypedSimpleObject<>();
 		// try/catch each of these to avoid failing in the case where one of these is not configured
 		try {
 			ret.put("drugRoutes",

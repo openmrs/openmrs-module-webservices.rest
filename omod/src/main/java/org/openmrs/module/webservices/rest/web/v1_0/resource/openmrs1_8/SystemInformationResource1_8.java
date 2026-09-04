@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import org.openmrs.api.impl.AdministrationServiceImpl;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -24,7 +25,7 @@ public class SystemInformationResource1_8 implements Listable {
 	
 	@Override
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
-		SimpleObject rest = new SimpleObject();
+		TypedSimpleObject<?> rest = new TypedSimpleObject<>();
 		rest.put("systemInfo", Context.getAdministrationService().getSystemInformation());
 		return rest;
 		
