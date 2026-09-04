@@ -10,45 +10,9 @@
 package org.openmrs.module.webservices.rest;
 
 /**
- * A type-parameterized extension of {@link SimpleObject} introduced as part of
- * <a href="https://issues.openmrs.org/browse/RESTWS-1040">RESTWS-1040</a> /
- * <a href="https://issues.openmrs.org/browse/RESTWS-1041">RESTWS-1041</a> to
- * eventually carry accurate OpenAPI / Swagger type information for REST resource
- * representations.
- *
- * <h3>Why this class exists</h3>
- * <p>
- * {@code SimpleObject} (which extends {@code LinkedHashMap<String, Object>}) is the
- * universal return type for all REST resource handlers today. This works at runtime
- * but prevents tooling (OpenAPI generators, IDE inspections, static analysis) from
- * knowing <em>which</em> domain type a given map actually represents.
- * </p>
- * <p>
- * {@code TypedSimpleObject<T>} adds a generic type parameter {@code <T>} so that
- * resource methods can declare, for example,
- * {@code TypedSimpleObject<Patient>} instead of plain {@code SimpleObject}.
- * The parameter is erased at runtime and has <strong>no effect on serialization or
- * map behaviour</strong> — it exists solely to improve compile-time documentation
- * and to enable future OpenAPI schema generation.
- * </p>
- *
- * <h3>Backward compatibility</h3>
- * <p>
- * This class intentionally extends {@link SimpleObject} (not
- * {@code LinkedHashMap} directly) so that every {@code TypedSimpleObject} is
- * assignment-compatible with {@code SimpleObject}. Modules that still consume
- * the old {@code SimpleObject}-based API will continue to work unchanged
- * during the REST 4.x migration window.
- * </p>
- *
- * <h3>Current usage (Phase 1)</h3>
- * <p>
- * In this initial phase the type parameter is {@code <?>} in most call sites
- * ({@code TypedSimpleObject<?>}). Follow-up tickets will progressively replace
- * the wildcard with concrete domain types (e.g.&nbsp;{@code Patient},
- * {@code Encounter}) as individual resources are migrated.
- * </p>
- *
+ * TypedSimpleObject<T> is a subclass of {@link SimpleObject} that allows us to store the type of its underlying
+ * data in the generic class {@code T}. This allows us to make better inference on the return type via reflection.
+ * 
  * @param <T> the OpenMRS domain type this object represents; currently unused
  *            (erased) at most call sites and present only for compile-time
  *            documentation purposes
