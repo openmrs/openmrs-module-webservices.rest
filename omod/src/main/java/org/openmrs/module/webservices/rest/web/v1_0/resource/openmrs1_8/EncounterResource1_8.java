@@ -197,7 +197,7 @@ public class EncounterResource1_8 extends DataDelegatingCrudResource<Encounter> 
 	 * @return all non-voided top-level obs from the given encounter
 	 */
 	@PropertyGetter("obs")
-	public static Object getObsAtTopLevel(Encounter instance) {
+	public static Set<Obs> getObsAtTopLevel(Encounter instance) {
 		return instance.getObsAtTopLevel(false);
 	}
 	

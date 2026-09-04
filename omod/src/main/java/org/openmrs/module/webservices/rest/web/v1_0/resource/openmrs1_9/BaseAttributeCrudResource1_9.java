@@ -53,9 +53,11 @@ public abstract class BaseAttributeCrudResource1_9<T extends Attribute<?, ?>, P,
 	/**
 	 * Gets an attribute value, catching any {@link NotYetPersistedException} and returning null in
 	 * that case
-	 * 
+	 *
 	 * @param instance
-	 * @return
+	 * @return the value, converted from its persisted string form by the {@link CustomDatatype}
+	 *         configured on {@code instance}'s {@link org.openmrs.attribute.AttributeType}. and
+	 * 	       cannot be narrowed down from Object.
 	 */
 	@PropertyGetter("value")
 	public static Object getValue(Attribute<?, ?> instance) {

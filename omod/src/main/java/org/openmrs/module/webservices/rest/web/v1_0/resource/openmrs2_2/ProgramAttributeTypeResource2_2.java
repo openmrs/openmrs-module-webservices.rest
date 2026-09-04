@@ -14,7 +14,6 @@ import org.openmrs.Concept;
 import org.openmrs.ProgramAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.ConceptDatatype;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -74,17 +73,14 @@ public class ProgramAttributeTypeResource2_2 extends BaseAttributeTypeCrudResour
 	}
 
 	@PropertyGetter("concept")
-	public Object getConcept(ProgramAttributeType delegate) {
-		if (OpenmrsUtil.nullSafeEquals(delegate.getDatatypeClassname(), ConceptDatatype.class.getCanonicalName()))
-		{
-			Concept concept;
+	public Concept getConcept(ProgramAttributeType delegate) {
+		if (OpenmrsUtil.nullSafeEquals(delegate.getDatatypeClassname(), ConceptDatatype.class.getCanonicalName())) {
 			String id = delegate.getDatatypeConfig();
 			if (StringUtils.isNumeric(id)) {
-				concept = Context.getConceptService().getConcept(Integer.valueOf(id));
+				return Context.getConceptService().getConcept(Integer.valueOf(id));
 			} else {
-				concept = Context.getConceptService().getConceptByUuid(id);
+				return Context.getConceptService().getConceptByUuid(id);
 			}
-			return ConversionUtil.convertToRepresentation(concept, Representation.FULL);
 		}
 		return null;
 	}

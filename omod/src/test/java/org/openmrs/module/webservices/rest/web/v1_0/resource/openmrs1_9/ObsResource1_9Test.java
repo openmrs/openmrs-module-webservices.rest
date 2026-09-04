@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptComplex;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.GlobalProperty;
@@ -204,6 +206,23 @@ public class ObsResource1_9Test extends BaseDelegatingResourceTest<ObsResource2_
 		obs.setValueDate(datetime);
 		SimpleObject rep = getResource().asRepresentation(obs, Representation.DEFAULT);
 		Assert.assertEquals(datetime, ConversionUtil.convert(rep.get("value"), Date.class));
+	}
+
+	@Test
+	public void getValue_shouldReturnRawFileDisplayAndSelfLinkForComplexObs() throws Exception {
+		Obs obs = new Obs();
+		obs.setUuid("abcdef01-2345-6789-abcd-ef0123456789");
+		ConceptComplex conceptComplex = new ConceptComplex();
+		conceptComplex.setDatatype(Context.getConceptService().getConceptDatatypeByName("Complex"));
+		obs.setConcept(conceptComplex);
+		assertTrue(obs.isComplex());
+
+		Object value = new ObsResource2_1().getValue(obs);
+
+		assertEquals("raw file", PropertyUtils.getProperty(value, "display"));
+		Object links = PropertyUtils.getProperty(value, "links");
+		assertEquals("self", PropertyUtils.getProperty(links, "rel"));
+		assertTrue(((String) PropertyUtils.getProperty(links, "uri")).endsWith("obs/" + obs.getUuid() + "/value"));
 	}
 
 	@Test

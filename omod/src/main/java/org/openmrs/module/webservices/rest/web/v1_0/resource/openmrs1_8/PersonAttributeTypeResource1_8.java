@@ -13,7 +13,6 @@ import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
@@ -163,10 +162,9 @@ public class PersonAttributeTypeResource1_8 extends MetadataDelegatingCrudResour
 	}
 	
 	@PropertyGetter("concept")
-	public Object getConcept(PersonAttributeType delegate) {
+	public Concept getConcept(PersonAttributeType delegate) {
 		if (OpenmrsUtil.nullSafeEquals(delegate.getFormat(), Concept.class.getCanonicalName())) {
-			Concept concept = Context.getConceptService().getConcept(delegate.getForeignKey());
-			return ConversionUtil.convertToRepresentation(concept, Representation.FULL);
+			return Context.getConceptService().getConcept(delegate.getForeignKey());
 		}
 		return null;
 	}
