@@ -9,6 +9,8 @@
  */
 package org.openmrs.module.webservices.rest;
 
+import java.util.Map;
+
 /**
  * TypedSimpleObject<T> is a subclass of {@link SimpleObject} that allows us to store the type of its underlying
  * data in the generic class {@code T}. This allows us to make better inference on the return type via reflection.
@@ -36,6 +38,38 @@ public class TypedSimpleObject<T> extends SimpleObject {
 	 */
 	public TypedSimpleObject(int initialCapacity) {
 		super(initialCapacity);
+	}
+	
+	/**
+	 * Creates a {@code TypedSimpleObject} containing the elements of the specified map.
+	 *
+	 * @param map the map whose mappings are to be placed in this object
+	 */
+	public TypedSimpleObject(Map<String, ?> map) {
+		super();
+		if (map != null) {
+			putAll(map);
+		}
+	}
+	
+	/**
+	 * Adapts a {@link SimpleObject} to a {@link TypedSimpleObject}. If the object is
+	 * already a {@code TypedSimpleObject}, it is returned as-is. Otherwise, a new
+	 * {@code TypedSimpleObject} containing the same entries is created.
+	 *
+	 * @param <T> the target domain type
+	 * @param simpleObject the simple object to adapt
+	 * @return a {@code TypedSimpleObject} representing the same data, or null if input is null
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> TypedSimpleObject<T> from(SimpleObject simpleObject) {
+		if (simpleObject == null) {
+			return null;
+		}
+		if (simpleObject instanceof TypedSimpleObject) {
+			return (TypedSimpleObject<T>) simpleObject;
+		}
+		return new TypedSimpleObject<>(simpleObject);
 	}
 	
 	/**
