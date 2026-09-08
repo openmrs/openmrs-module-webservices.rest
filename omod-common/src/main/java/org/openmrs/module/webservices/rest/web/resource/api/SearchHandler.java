@@ -14,8 +14,10 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
  * Beans implementing this interface will be passed search requests.
+ *
+ * @param <T> the generic type of the search results
  */
-public interface SearchHandler {
+public interface SearchHandler<T> {
 	
 	/**
 	 * @return the search configuration
@@ -29,5 +31,5 @@ public interface SearchHandler {
 	 * @return the result
 	 * @throws ResponseException
 	 */
-	PageableResult<?> search(RequestContext context) throws ResponseException;
+	PageableResult<T> search(RequestContext context) throws ResponseException;
 }

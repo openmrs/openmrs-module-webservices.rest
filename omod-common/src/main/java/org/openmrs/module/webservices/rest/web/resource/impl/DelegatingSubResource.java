@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
@@ -170,7 +171,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 * @see SubResource#getAll(java.lang.String, RequestContext)
 	 */
 	@Override
-	public SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException {
+	public TypedSimpleObject<T> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
 		P parent = getParentResource().getByUniqueId(parentUniqueId);
 		PageableResult<T> result = doGetAll(parent, context);
 		return result.toSimpleObject(this);

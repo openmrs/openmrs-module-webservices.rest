@@ -209,7 +209,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public SimpleObject getAll(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<T> getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
 				throw new IllegalArgumentException(getClass() + " does not support "

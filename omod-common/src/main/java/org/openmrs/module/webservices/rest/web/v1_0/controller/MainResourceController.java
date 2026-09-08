@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.v1_0.controller;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -180,7 +181,7 @@ public class MainResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
+	public TypedSimpleObject<?> get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		Object res = restService.getResourceByName(buildResourceName(resource));
@@ -198,7 +199,7 @@ public class MainResourceController extends BaseRestController {
 		while (parameters.hasMoreElements()) {
 			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 				if (res instanceof Searchable) {
-					return ((Searchable) res).search(context);
+					return TypedSimpleObject.from(((Searchable) res).search(context));
 				} else {
 					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
 				}
@@ -206,7 +207,7 @@ public class MainResourceController extends BaseRestController {
 		}
 		
 		if (res instanceof Listable) {
-			return ((Listable) res).getAll(context);
+			return TypedSimpleObject.from(((Listable) res).getAll(context));
 		} else {
 			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not listable");
 		}
@@ -222,7 +223,7 @@ public class MainResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/search/{searchHandlerId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public SimpleObject searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
+	public TypedSimpleObject<?> searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
 					HttpServletRequest request, HttpServletResponse response) {
 		baseUriSetup.setup(request);
 		String resourceName = buildResourceName(resource);

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -78,7 +79,7 @@ public class MainSubResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.GET)
 	@ResponseBody
-	public SimpleObject get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	public TypedSimpleObject<?> get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		baseUriSetup.setup(request);
@@ -97,14 +98,14 @@ public class MainSubResourceController extends BaseRestController {
 		while (parameters.hasMoreElements()) {
 			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 				if (res instanceof Searchable) {
-					return ((Searchable) res).search(context);
+					return TypedSimpleObject.from(((Searchable) res).search(context));
 				} else {
 					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
 				}
 			}
 		}
 		
-		return res.getAll(parentUuid, context);
+		return TypedSimpleObject.from(res.getAll(parentUuid, context));
 	}
 	
 	/**
