@@ -17,8 +17,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
-import org.openmrs.Privilege;
-import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -32,7 +30,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.Encounte
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -161,12 +158,15 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         SimpleObject adminVisit = (SimpleObject) adminResult;
         assertNotNull(adminVisit.get("patient"), "Admin should see patient data");
 
-        // Create and authenticate as a user who only has "Get Visits"
+        // Create and authenticate as a user without "Get Patients"/"Get People"
         createLimitedUser();
         Context.logout();
         Context.authenticate("limited_user", "LimitedTest123");
         assertTrue(Context.isAuthenticated());
-        assertTrue(Context.hasPrivilege("Get Visits"));
+        // The user holds no roles at all: role privileges resolve by name from the database, so a role
+        // created inside the test's uncommitted transaction would grant nothing anyway. The visit is
+        // fetched and converted under a proxy privilege below instead. What matters here is the
+        // absence of patient access, which is what this test is about.
         assertFalse(Context.hasPrivilege("Get Patients"));
         assertFalse(Context.hasPrivilege("Get People"));
 
@@ -179,13 +179,39 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         }
         assertNotNull(visitAsLimited);
 
-        // Patient property should be omitted because the user lacks "Get Patients"
-        Object limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
-                new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        // "Get Visits" is held so the visit itself converts; "Get Patients"/"Get People" are not, so
+        // the patient property should be omitted.
+        Object limitedResult;
+        try {
+            Context.addProxyPrivilege("Get Visits");
+            limitedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
+                    new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        } finally {
+            Context.removeProxyPrivilege("Get Visits");
+        }
         assertInstanceOf(SimpleObject.class, limitedResult);
         SimpleObject limitedVisit = (SimpleObject) limitedResult;
         assertFalse(limitedVisit.containsKey("patient"),
                 "User without 'Get Patients' privilege should NOT see patient data through custom representation");
+
+        // Positive control: the same user and the same representation, but now holding patient access.
+        // Without this, the assertion above would pass even if the patient were unreachable on this
+        // visit for a reason unrelated to privileges, which would make it vacuous.
+        Object allowedResult;
+        try {
+            Context.addProxyPrivilege("Get Visits");
+            Context.addProxyPrivilege("Get Patients");
+            Context.addProxyPrivilege("Get People");
+            allowedResult = ConversionUtil.convertToRepresentation(visitAsLimited,
+                    new CustomRepresentation("(uuid,patient:(uuid,display,person:(uuid,gender)))"));
+        } finally {
+            Context.removeProxyPrivilege("Get People");
+            Context.removeProxyPrivilege("Get Patients");
+            Context.removeProxyPrivilege("Get Visits");
+        }
+        assertInstanceOf(SimpleObject.class, allowedResult);
+        assertNotNull(((SimpleObject) allowedResult).get("patient"),
+                "User with 'Get Patients' privilege SHOULD see patient data, otherwise the assertion above is vacuous");
     }
 
     public void assertCustomRepresentation(Representation representation, String rep) {
@@ -203,27 +229,8 @@ public class ConversionUtil1_9Test extends BaseModuleWebContextSensitiveTest {
         person.addName(new PersonName("Limited", null, "User"));
         Context.getPersonService().savePerson(person);
 
-        Role role = new Role("Limited Role");
-        role.setDescription("Role with limited privileges for testing");
-        for (String privName : new String[] { "Get Visits" }) {
-            Privilege priv = userService.getPrivilege(privName);
-            if (priv == null) {
-                priv = new Privilege(privName);
-                priv.setDescription(privName);
-                userService.savePrivilege(priv);
-            }
-            role.addPrivilege(priv);
-        }
-        userService.saveRole(role);
-
         User user = new User(person);
         user.setUsername("limited_user");
-        user.addRole(role);
-        for (Role r : new ArrayList<>(user.getAllRoles())) {
-            if (!r.getRole().equals("Limited Role")) {
-                user.removeRole(r);
-            }
-        }
         userService.createUser(user, "LimitedTest123");
     }
 }

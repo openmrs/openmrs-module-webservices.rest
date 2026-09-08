@@ -4,7 +4,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>webservices.rest</artifactId>
-	<version>4.0.0-SNAPSHOT</version>
+	<version>5.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Rest Web Services</name>
 	<description>Parent project for the Rest Web Services Module</description>
@@ -151,6 +151,13 @@
 				<artifactId>jackson-databind</artifactId>
 				<version>${jacksonVersion}</version>
 				<scope>provided</scope>
+			</dependency>
+			<!-- swagger-core pulls in the "android" flavor of Guava, which lacks the java.time
+			     overloads that openmrs-api relies on; pin the "jre" flavor used by openmrs-core -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.7.1-jre</version>
 			</dependency>
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
