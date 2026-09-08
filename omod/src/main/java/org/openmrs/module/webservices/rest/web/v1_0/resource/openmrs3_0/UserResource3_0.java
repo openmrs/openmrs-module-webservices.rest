@@ -25,37 +25,39 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
         "3.0.* - 9.*" })
 public class UserResource3_0 extends UserResource2_2 {
-	
+
+	private static final String PROPERTY_LOCATIONS = "locations";
+
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		DelegatingResourceDescription description = super.getRepresentationDescription(rep);
-		
+
 		if (description != null && rep instanceof FullRepresentation) {
-			description.addProperty("locations", Representation.REF);
+			description.addProperty(PROPERTY_LOCATIONS, Representation.REF);
 		}
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = super.getCreatableProperties();
-		description.addProperty("locations");
+		description.addProperty(PROPERTY_LOCATIONS);
 		return description;
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
 	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() {
 		DelegatingResourceDescription description = super.getUpdatableProperties();
-		description.addProperty("locations");
+		description.addProperty(PROPERTY_LOCATIONS);
 		return description;
 	}
 }
