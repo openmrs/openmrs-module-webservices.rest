@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs3_0;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.Location;
@@ -68,9 +69,9 @@ public class LocationForCurrentUserSearchHandler3_0 implements SearchHandler {
 				return new EmptySearchResult();
 			}
 			
-			List<Location> locations = forCurrentUser ? Context.getUserService().getAllowedLocations(
-			    Context.getAuthenticatedUser(), locationTag) : Context.getLocationService().getLocationsByTag(
-			    locationTag);
+			List<Location> locations = forCurrentUser ? new ArrayList<>(Context.getUserService()
+			        .getAllowedLocationsByTag(Context.getAuthenticatedUser(), locationTag)) : Context
+			        .getLocationService().getLocationsByTag(locationTag);
 			
 			return new NeedsPaging<Location>(locations, context);
 		}

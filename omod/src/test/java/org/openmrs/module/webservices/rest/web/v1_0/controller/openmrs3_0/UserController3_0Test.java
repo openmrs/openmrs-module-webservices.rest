@@ -59,8 +59,8 @@ public class UserController3_0Test extends MainResourceControllerTest {
 		assignLocation(location);
 		
 		User edited = service.getUserByUuid(getUuid());
-		assertEquals(1, edited.getLocations().size());
-		assertTrue(edited.getLocations().contains(location));
+		assertEquals(1, edited.getAssignedLocations().size());
+		assertTrue(edited.getAssignedLocations().contains(location));
 	}
 	
 	@Test

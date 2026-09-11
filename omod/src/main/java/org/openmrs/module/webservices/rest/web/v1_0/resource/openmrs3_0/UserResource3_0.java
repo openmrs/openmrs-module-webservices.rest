@@ -9,7 +9,13 @@
  */
 package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs3_0;
 
+import java.util.Set;
+
+import org.openmrs.Location;
+import org.openmrs.User;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -27,6 +33,20 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
 public class UserResource3_0 extends UserResource2_2 {
 
 	private static final String PROPERTY_LOCATIONS = "locations";
+
+	/**
+	 * The "locations" wire property maps to {@link User#getAssignedLocations()}, which doesn't match
+	 * the property name by naming convention, so it needs an explicit getter/setter mapping.
+	 */
+	@PropertyGetter(PROPERTY_LOCATIONS)
+	public Set<Location> getAssignedLocationsForRepresentation(UserAndPassword1_8 delegate) {
+		return delegate.getUser().getAssignedLocations();
+	}
+
+	@PropertySetter(PROPERTY_LOCATIONS)
+	public static void setAssignedLocationsFromRepresentation(User delegate, Set<Location> locations) {
+		delegate.setAssignedLocations(locations);
+	}
 
 	/**
 	 * @see DelegatingCrudResource#getRepresentationDescription(Representation)

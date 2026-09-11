@@ -121,7 +121,7 @@ public class LocationForCurrentUserSearchHandler3_0Test extends MainResourceCont
 		}
 		
 		User user = Context.getAuthenticatedUser();
-		user.setLocations(locations);
+		user.setAssignedLocations(locations);
 		Context.getUserService().saveUser(user);
 	}
 }
