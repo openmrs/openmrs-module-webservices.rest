@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs3_0;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_9;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.MainResourceContr
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-public class LocationForCurrentUserSearchHandler3_0Test extends MainResourceControllerTest {
+public class LocationForCurrentUserSearchHandler2_9Test extends MainResourceControllerTest {
 	
 	private static final String LOCATION_TAG_INITIAL_XML = "customLocationTagDataset.xml";
 	

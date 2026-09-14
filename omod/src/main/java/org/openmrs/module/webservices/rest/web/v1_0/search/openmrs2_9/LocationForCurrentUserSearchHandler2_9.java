@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs3_0;
+package org.openmrs.module.webservices.rest.web.v1_0.search.openmrs2_9;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +33,14 @@ import org.springframework.stereotype.Component;
  * resource's user would require.
  */
 @Component
-public class LocationForCurrentUserSearchHandler3_0 implements SearchHandler {
-	
+public class LocationForCurrentUserSearchHandler2_9 implements SearchHandler {
+
 	public static final String FOR_CURRENT_USER = "forCurrentUser";
-	
+
 	public static final String TAG = "tag";
-	
+
 	private final SearchConfig searchConfig = new SearchConfig("locationForCurrentUser", RestConstants.VERSION_1
-	        + "/location", "3.0.* - 9.*", new SearchQuery.Builder(
+	        + "/location", "2.9.* - 9.*", new SearchQuery.Builder(
 	        "Allows you to find the locations the authenticated user is allowed to use for a given tag")
 	        .withRequiredParameters(FOR_CURRENT_USER, TAG).build());
 	

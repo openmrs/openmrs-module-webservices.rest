@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs3_0;
+package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs2_9;
 
 import java.util.Set;
 
@@ -29,8 +29,8 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
  * user is unrestricted rather than confined to no locations.
  */
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
-        "3.0.* - 9.*" })
-public class UserResource3_0 extends UserResource2_2 {
+        "2.9.* - 9.*" })
+public class UserResource2_9 extends UserResource2_2 {
 
 	private static final String PROPERTY_LOCATIONS = "locations";
 
