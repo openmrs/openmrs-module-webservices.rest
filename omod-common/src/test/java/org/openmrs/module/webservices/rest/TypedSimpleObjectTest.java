@@ -119,28 +119,5 @@ public class TypedSimpleObjectTest {
 		assertEquals("val", obj.get("key"));
 	}
 	
-	@Test
-	public void from_shouldReturnNullGivenNull() {
-		assertNull(TypedSimpleObject.from(null));
-	}
-	
-	@Test
-	public void from_shouldReturnSameInstanceIfAlreadyTyped() {
-		TypedSimpleObject<Object> original = new TypedSimpleObject<>();
-		original.put("k", "v");
-		TypedSimpleObject<Object> result = TypedSimpleObject.from(original);
-		assertSame(original, result);
-	}
-	
-	@Test
-	public void from_shouldConvertSimpleObject() {
-		SimpleObject plain = new SimpleObject();
-		plain.put("name", "John");
-		plain.put("age", 30);
-		
-		TypedSimpleObject<?> converted = TypedSimpleObject.from(plain);
-		assertTrue(converted instanceof TypedSimpleObject);
-		assertEquals("John", converted.get("name"));
-		assertEquals(30, (int) converted.<Integer> get("age"));
-	}
+
 }

@@ -181,7 +181,7 @@ public class MainResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}", method = RequestMethod.GET)
 	@ResponseBody
-	public TypedSimpleObject<?> get(@PathVariable("resource") String resource, HttpServletRequest request,
+	public SimpleObject get(@PathVariable("resource") String resource, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		baseUriSetup.setup(request);
 		Object res = restService.getResourceByName(buildResourceName(resource));
@@ -199,7 +199,7 @@ public class MainResourceController extends BaseRestController {
 		while (parameters.hasMoreElements()) {
 			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 				if (res instanceof Searchable) {
-					return TypedSimpleObject.from(((Searchable) res).search(context));
+					return ((Searchable) res).search(context);
 				} else {
 					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
 				}
@@ -207,7 +207,7 @@ public class MainResourceController extends BaseRestController {
 		}
 		
 		if (res instanceof Listable) {
-			return TypedSimpleObject.from(((Listable) res).getAll(context));
+			return ((Listable) res).getAll(context);
 		} else {
 			throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not listable");
 		}
@@ -223,7 +223,7 @@ public class MainResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/search/{searchHandlerId}", method = {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
-	public TypedSimpleObject<?> searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
+	public SimpleObject searchByHandler(@PathVariable("resource") String resource, @PathVariable("searchHandlerId") String searchHandlerId, 
 					HttpServletRequest request, HttpServletResponse response) {
 		baseUriSetup.setup(request);
 		String resourceName = buildResourceName(resource);

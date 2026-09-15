@@ -12,7 +12,7 @@ package org.openmrs.module.webservices.rest.web.resource.api;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-public interface SubResourceSearchHandler extends SearchHandler {
+public interface SubResourceSearchHandler<T> extends SearchHandler<T> {
 	
 	/**
 	 * The search.
@@ -22,5 +22,5 @@ public interface SubResourceSearchHandler extends SearchHandler {
 	 * @return the result
 	 * @throws ResponseException
 	 */
-	PageableResult<?> search(String parentUuid, RequestContext context) throws ResponseException;
+	PageableResult<T> search(String parentUuid, RequestContext context) throws ResponseException;
 }

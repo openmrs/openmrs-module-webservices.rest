@@ -79,7 +79,7 @@ public class MainSubResourceController extends BaseRestController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.GET)
 	@ResponseBody
-	public TypedSimpleObject<?> get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
+	public SimpleObject get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,
 	        @PathVariable("subResource") String subResource, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		baseUriSetup.setup(request);
@@ -98,14 +98,14 @@ public class MainSubResourceController extends BaseRestController {
 		while (parameters.hasMoreElements()) {
 			if (!RestConstants.SPECIAL_REQUEST_PARAMETERS.contains(parameters.nextElement())) {
 				if (res instanceof Searchable) {
-					return TypedSimpleObject.from(((Searchable) res).search(context));
+					return ((Searchable) res).search(context);
 				} else {
 					throw new ResourceDoesNotSupportOperationException(res.getClass().getSimpleName() + " is not searchable");
 				}
 			}
 		}
 		
-		return TypedSimpleObject.from(res.getAll(parentUuid, context));
+		return res.getAll(parentUuid, context);
 	}
 	
 	/**
