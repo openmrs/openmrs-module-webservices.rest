@@ -19,6 +19,6 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  */
 public interface PageableResult<T> {
 	
-	TypedSimpleObject<T> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException;
+	TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException;
 	
 }

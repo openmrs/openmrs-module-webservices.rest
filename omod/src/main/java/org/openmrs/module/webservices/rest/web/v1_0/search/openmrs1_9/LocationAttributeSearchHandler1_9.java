@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class LocationAttributeSearchHandler1_9 implements SubResourceSearchHandler {
+public class LocationAttributeSearchHandler1_9 implements SubResourceSearchHandler<LocationAttribute> {
 	
 	private static final SearchConfig SEARCH_CONFIG = new SearchConfig("default", RestConstants.VERSION_1
 	        + "/location/attribute", Collections.singletonList("1.9.* - 9.*"), new SearchQuery.Builder(
@@ -41,16 +41,16 @@ public class LocationAttributeSearchHandler1_9 implements SubResourceSearchHandl
 	}
 	
 	@Override
-	public PageableResult search(RequestContext context) throws ResponseException {
+	public PageableResult<LocationAttribute> search(RequestContext context) throws ResponseException {
 		throw new UnsupportedOperationException("Cannot search for location attributes without parent location");
 	}
 	
 	@Override
-	public PageableResult search(String parentUuid, RequestContext context) throws ResponseException {
+	public PageableResult<LocationAttribute> search(String parentUuid, RequestContext context) throws ResponseException {
 		String attributeType = context.getParameter("attributeType");
 		
 		if (StringUtils.isBlank(attributeType) || StringUtils.isBlank(parentUuid)) {
-			return new EmptySearchResult();
+			return new EmptySearchResult<LocationAttribute>();
 		}
 		
 		Location parentLocation = Context.getLocationService().getLocationByUuid(parentUuid);

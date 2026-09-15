@@ -192,7 +192,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public TypedSimpleObject<T> search(RequestContext context) throws ResponseException {
+	public SimpleObject search(RequestContext context) throws ResponseException {
 		PageableResult<T> result = doSearch(context);
 		return result.toSimpleObject(this);
 	}
@@ -209,7 +209,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public TypedSimpleObject<T> getAll(RequestContext context) throws ResponseException {
+	public SimpleObject getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
 				throw new IllegalArgumentException(getClass() + " does not support "

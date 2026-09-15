@@ -171,7 +171,7 @@ public abstract class DelegatingSubResource<T, P, PR extends DelegatingCrudResou
 	 * @see SubResource#getAll(java.lang.String, RequestContext)
 	 */
 	@Override
-	public TypedSimpleObject<T> getAll(String parentUniqueId, RequestContext context) throws ResponseException {
+	public SimpleObject getAll(String parentUniqueId, RequestContext context) throws ResponseException {
 		P parent = getParentResource().getByUniqueId(parentUniqueId);
 		PageableResult<T> result = doGetAll(parent, context);
 		return result.toSimpleObject(this);

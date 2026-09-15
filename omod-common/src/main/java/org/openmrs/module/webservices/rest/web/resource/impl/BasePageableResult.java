@@ -18,6 +18,7 @@ import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -50,7 +51,7 @@ public abstract class BasePageableResult<T> implements PageableResult<T> {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public TypedSimpleObject<T> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
 		for (T match : getPageOfResults()) {
 			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), (Converter) preferredConverter);
@@ -60,7 +61,7 @@ public abstract class BasePageableResult<T> implements PageableResult<T> {
 			results.add(converted);
 		}
 		
-		TypedSimpleObject<T> ret = new TypedSimpleObject<T>().add("results", results);
+		TypedSimpleObject<PageableResultDto<T>> ret = new TypedSimpleObject<PageableResultDto<T>>().add("results", results);
 		boolean hasMore = hasMoreResults();
 		if (context.getStartIndex() > 0 || hasMore) {
 			List<Hyperlink> links = new ArrayList<Hyperlink>();

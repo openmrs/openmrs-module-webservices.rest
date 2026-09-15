@@ -52,25 +52,7 @@ public class TypedSimpleObject<T> extends SimpleObject {
 		}
 	}
 	
-	/**
-	 * Adapts a {@link SimpleObject} to a {@link TypedSimpleObject}. If the object is
-	 * already a {@code TypedSimpleObject}, it is returned as-is. Otherwise, a new
-	 * {@code TypedSimpleObject} containing the same entries is created.
-	 *
-	 * @param <T> the target domain type
-	 * @param simpleObject the simple object to adapt
-	 * @return a {@code TypedSimpleObject} representing the same data, or null if input is null
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> TypedSimpleObject<T> from(SimpleObject simpleObject) {
-		if (simpleObject == null) {
-			return null;
-		}
-		if (simpleObject instanceof TypedSimpleObject) {
-			return (TypedSimpleObject<T>) simpleObject;
-		}
-		return new TypedSimpleObject<>(simpleObject);
-	}
+
 	
 	/**
 	 * Puts a property in this map and returns the map itself (for chained method
