@@ -11,6 +11,8 @@ package org.openmrs.module.webservices.rest;
 
 import java.util.Map;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * TypedSimpleObject<T> is a subclass of {@link SimpleObject} that allows us to store the type of its underlying
  * data in the generic class {@code T}. This allows us to make better inference on the return type via reflection.
@@ -21,6 +23,7 @@ import java.util.Map;
  * @see SimpleObject
  * @since 2.46.0
  */
+@XStreamAlias("object")
 public class TypedSimpleObject<T> extends SimpleObject {
 	
 	private static final long serialVersionUID = 1L;

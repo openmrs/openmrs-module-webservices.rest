@@ -10,7 +10,6 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -61,7 +60,6 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public SimpleObject getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
@@ -74,8 +72,8 @@ public abstract class BaseDelegatingReadableResource<T> extends BaseDelegatingRe
 			if (handler == null)
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
-			PageableResult<?> result = handler.getAllByType(context);
-			return result.toSimpleObject((Converter) this);
+			PageableResult<? extends T> result = handler.getAllByType(context);
+			return result.toSimpleObject(this);
 		} else {
 			PageableResult<T> result = doGetAll(context);
 			return result.toSimpleObject(this);

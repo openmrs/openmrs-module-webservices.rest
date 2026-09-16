@@ -23,7 +23,7 @@ public class PageableResultDto<T> {
 	
 	private List<TypedSimpleObject<T>> results;
 	
-	private Integer totalCount;
+	private Long totalCount;
 	
 	private List<Hyperlink> links;
 	
@@ -35,11 +35,11 @@ public class PageableResultDto<T> {
 		this.results = results;
 	}
 	
-	public Integer getTotalCount() {
+	public Long getTotalCount() {
 		return totalCount;
 	}
 	
-	public void setTotalCount(Integer totalCount) {
+	public void setTotalCount(Long totalCount) {
 		this.totalCount = totalCount;
 	}
 	
