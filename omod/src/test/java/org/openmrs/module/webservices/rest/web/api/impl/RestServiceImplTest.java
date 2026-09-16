@@ -19,6 +19,7 @@ import org.mockingbird.test.MockingBird;
 import org.mockingbird.test.rest.resource.AnimalClassResource_1_9;
 import org.mockingbird.test.rest.resource.AnimalResource_1_11;
 import org.mockingbird.test.rest.resource.AnimalResource_1_9;
+import org.mockingbird.test.rest.resource.AnimalWithHigherOrderResource_1_9;
 import org.mockingbird.test.rest.resource.BirdResource_1_9;
 import org.mockingbird.test.rest.resource.CatSubclassHandler_1_11;
 import org.mockingbird.test.rest.resource.CatSubclassHandler_1_9;
@@ -31,6 +32,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.OpenmrsClassScanner;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestHelperService;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -485,7 +487,43 @@ public class RestServiceImplTest extends BaseContextMockTest {
 
 		assertThat(restService.getResourceBySupportedClass(Animal.class), instanceOf(AnimalResource_1_9.class));
 	}
-	
+
+	/**
+	 * @verifies return resource with lower order value for given class even if a resource with a worse order and
+	 *           a different name supporting the same class is scanned afterwards
+	 * @see RestServiceImpl#getResourceBySupportedClass(Class)
+	 */
+	@Test
+	public void getResourceBySupportedClass_shouldNotBeClobberedByADifferentlyNamedResourceWithAWorseOrder()
+	        throws Exception {
+
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_1_9.class);
+		resources.add(AnimalWithHigherOrderResource_1_9.class);
+
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+
+		assertThat(restService.getResourceBySupportedClass(Animal.class), instanceOf(AnimalResource_1_9.class));
+	}
+
+	/**
+	 * @verifies still be resolvable by its own name even when it loses the by-supported-class lookup to a
+	 *           resource with a better order
+	 * @see RestServiceImpl#getResourceByName(String)
+	 */
+	@Test
+	public void getResourceByName_shouldReturnResourceThatLostTheBySupportedClassLookup() throws Exception {
+
+		List<Class<? extends Resource>> resources = new ArrayList<Class<? extends Resource>>();
+		resources.add(AnimalResource_1_9.class);
+		resources.add(AnimalWithHigherOrderResource_1_9.class);
+
+		when(openmrsClassScanner.getClasses(Resource.class, true)).thenReturn(resources);
+
+		assertThat(restService.getResourceByName(RestConstants.VERSION_1 + "/animalwithhigherorder"),
+		    instanceOf(AnimalWithHigherOrderResource_1_9.class));
+	}
+
 	/**
 	 * @verifies return search handler matching id set in given parameters
 	 * @see RestServiceImpl#getSearchHandler(String, Map)
