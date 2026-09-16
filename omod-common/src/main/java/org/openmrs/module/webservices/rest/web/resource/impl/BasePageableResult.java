@@ -49,12 +49,11 @@ public abstract class BasePageableResult<T> implements PageableResult<T> {
 	 * <strong>Should</strong> not add property totalCount if context contains parameter totalCount which is false
 	 * <strong>Should</strong> not add property totalCount if context does not contains parameter totalCount
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
 		List<Object> results = new ArrayList<Object>();
 		for (T match : getPageOfResults()) {
-			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), (Converter) preferredConverter);
+			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter);
 			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
 				continue;
 			}

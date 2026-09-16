@@ -90,6 +90,18 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 	}
 	
 	@Test
+	public void shouldGetConceptsInXMLWithObjectRoot() throws Exception {
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addHeader("Accept", "application/xml");
+		MockHttpServletResponse result = handle(req);
+		
+		String xml = result.getContentAsString();
+		printXML(xml);
+		
+		Assert.assertEquals("object", evaluateXPath(xml, "name(/*)"));
+	}
+	
+	@Test
 	public void shouldReturnFullRepXML() throws Exception {
 		MockHttpServletRequest request = newGetRequest(getURI() + "/" + getUuid(), new Parameter(
 		        RestConstants.REQUEST_PROPERTY_FOR_REPRESENTATION, RestConstants.REPRESENTATION_FULL));
