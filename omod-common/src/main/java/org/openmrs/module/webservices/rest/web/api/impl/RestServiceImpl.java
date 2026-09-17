@@ -160,7 +160,7 @@ public class RestServiceImpl implements RestService {
 		if (resourceDefinitionsByNames != null) {
 			return;
 		}
-
+		
 		Map<String, ResourceDefinition> tempResourceDefinitionsByNames = new HashMap<String, ResourceDefinition>();
 		Map<Class<?>, Resource> tempResourcesBySupportedClasses = new HashMap<Class<?>, Resource>();
 		Map<Class<?>, Integer> tempOrdersBySupportedClasses = new HashMap<Class<?>, Integer>();
@@ -172,7 +172,7 @@ public class RestServiceImpl implements RestService {
 		catch (IOException e) {
 			throw new APIException("Cannot access REST resources", e);
 		}
-
+		
 		for (Class<? extends Resource> resource : resources) {
 			ResourceMetadata resourceMetadata = getResourceMetadata(resource);
 			if (resourceMetadata == null)
@@ -202,7 +202,7 @@ public class RestServiceImpl implements RestService {
 				}
 			}
 		}
-
+		
 		resourcesBySupportedClasses = tempResourcesBySupportedClasses;
 		resourceDefinitionsByNames = tempResourceDefinitionsByNames;
 	}

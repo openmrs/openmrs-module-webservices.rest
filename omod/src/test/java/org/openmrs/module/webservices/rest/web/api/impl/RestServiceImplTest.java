@@ -487,7 +487,7 @@ public class RestServiceImplTest extends BaseContextMockTest {
 
 		assertThat(restService.getResourceBySupportedClass(Animal.class), instanceOf(AnimalResource_1_9.class));
 	}
-
+	
 	/**
 	 * @verifies return resource with lower order value for given class even if a resource with a worse order and
 	 *           a different name supporting the same class is scanned afterwards
