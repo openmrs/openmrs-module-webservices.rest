@@ -16,7 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
@@ -191,7 +193,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Searchable#search(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public SimpleObject search(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<T>> search(RequestContext context) throws ResponseException {
 		PageableResult<T> result = doSearch(context);
 		return result.toSimpleObject(this);
 	}
@@ -207,7 +209,7 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.Listable#getAll(org.openmrs.module.webservices.rest.web.RequestContext)
 	 */
 	@Override
-	public SimpleObject getAll(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<? extends T>> getAll(RequestContext context) throws ResponseException {
 		if (context.getType() != null) {
 			if (!hasTypesDefined())
 				throw new IllegalArgumentException(getClass() + " does not support "
@@ -220,10 +222,14 @@ public abstract class DelegatingCrudResource<T> extends BaseDelegatingResource<T
 				throw new IllegalArgumentException("No handler is specified for " + RestConstants.REQUEST_PROPERTY_FOR_TYPE
 				        + "=" + context.getType());
 			PageableResult<? extends T> result = handler.getAllByType(context);
-			return result.toSimpleObject(this);
+			@SuppressWarnings("unchecked")
+			TypedSimpleObject<PageableResultDto<? extends T>> typedResult = (TypedSimpleObject<PageableResultDto<? extends T>>) (Object) result.toSimpleObject(this);
+			return typedResult;
 		} else {
 			PageableResult<T> result = doGetAll(context);
-			return result.toSimpleObject(this);
+			@SuppressWarnings("unchecked")
+			TypedSimpleObject<PageableResultDto<? extends T>> typedResult = (TypedSimpleObject<PageableResultDto<? extends T>>) (Object) result.toSimpleObject(this);
+			return typedResult;
 		}
 	}
 	
