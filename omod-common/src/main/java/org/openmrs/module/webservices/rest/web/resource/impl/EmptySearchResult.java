@@ -10,6 +10,7 @@
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
 import org.openmrs.module.webservices.rest.TypedSimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
@@ -27,7 +28,9 @@ public class EmptySearchResult<T> implements PageableResult<T> {
 	 */
 	@Override
 	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
-		return new TypedSimpleObject<PageableResultDto<T>>().add("results", Collections.emptyList());
+		PageableResultDto<T> dto = new PageableResultDto<>();
+		dto.setResults(Collections.<org.openmrs.module.webservices.rest.SimpleObject>emptyList());
+		return ConversionUtil.toTypedSimpleObject(dto);
 	}
 	
 }
