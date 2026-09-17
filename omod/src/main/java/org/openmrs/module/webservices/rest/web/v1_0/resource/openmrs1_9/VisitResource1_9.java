@@ -25,10 +25,12 @@ import org.openmrs.VisitAttribute;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.api.RestService;
@@ -262,7 +264,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 	 * @see DelegatingCrudResource#search(RequestContext)
 	 */
 	@Override
-	public SimpleObject search(RequestContext context) throws ResponseException {
+	public TypedSimpleObject<PageableResultDto<Visit>> search(RequestContext context) throws ResponseException {
 		String patientParameter = context.getRequest().getParameter("patient");
 		String locationParameter = context.getRequest().getParameter("location");
 		String includeInactiveParameter = context.getRequest().getParameter("includeInactive");
@@ -285,7 +287,7 @@ public class VisitResource1_9 extends DataDelegatingCrudResource<Visit> {
 		}
 	}
 	
-	private SimpleObject getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
+	private TypedSimpleObject<PageableResultDto<Visit>> getVisits(RequestContext context, String patientParameter, String includeInactiveParameter,
 	        Date minStartDate, Date maxStartDate, Date minStopDate, Date maxStopDate, String locationParameter, String visitTypeParameter, String includeParentLocations) {
 		Collection<Patient> patients = patientParameter == null ? null : Arrays.asList(getPatient(patientParameter));
 		Collection<Location> locations = locationParameter == null ? null :

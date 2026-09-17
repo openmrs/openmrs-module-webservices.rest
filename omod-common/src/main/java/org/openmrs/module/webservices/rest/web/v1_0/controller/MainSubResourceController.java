@@ -75,6 +75,7 @@ public class MainSubResourceController extends BaseRestController {
 	 * @return
 	 * @throws ResponseException
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/{resource}/{parentUuid}/{subResource}", method = RequestMethod.GET)
 	@ResponseBody
 	public SimpleObject get(@PathVariable("resource") String resource, @PathVariable("parentUuid") String parentUuid,

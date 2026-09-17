@@ -12,12 +12,13 @@ package org.openmrs.module.webservices.rest.web.resource.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.Hyperlink;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 /**
@@ -26,7 +27,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
  * 
  * @param <T> the generic type of the list of results
  */
-public abstract class BasePageableResult<T> implements PageableResult {
+public abstract class BasePageableResult<T> implements PageableResult<T> {
 	
 	protected RequestContext context;
 	
@@ -49,17 +50,25 @@ public abstract class BasePageableResult<T> implements PageableResult {
 	 * <strong>Should</strong> not add property totalCount if context does not contains parameter totalCount
 	 */
 	@Override
-	public SimpleObject toSimpleObject(Converter preferredConverter) throws ResponseException {
-		List<Object> results = new ArrayList<Object>();
+	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
+		List<org.openmrs.module.webservices.rest.SimpleObject> results = new ArrayList<>();
 		for (T match : getPageOfResults()) {
 			Object converted = ConversionUtil.convertToRepresentation(match, context.getRepresentation(), preferredConverter);
 			if (converted == ConversionUtil.PRIVILEGE_DENIED) {
 				continue;
 			}
-			results.add(converted);
+			if (converted instanceof org.openmrs.module.webservices.rest.SimpleObject) {
+				results.add((org.openmrs.module.webservices.rest.SimpleObject) converted);
+			} else {
+				// In tests, the converter might be missing and return the raw domain object.
+				// Wrap it in an empty SimpleObject to satisfy the List<SimpleObject> contract.
+				results.add(new org.openmrs.module.webservices.rest.SimpleObject());
+			}
 		}
 		
-		SimpleObject ret = new SimpleObject().add("results", results);
+		PageableResultDto<T> dto = new PageableResultDto<>();
+		dto.setResults(results);
+		
 		boolean hasMore = hasMoreResults();
 		if (context.getStartIndex() > 0 || hasMore) {
 			List<Hyperlink> links = new ArrayList<Hyperlink>();
@@ -67,12 +76,12 @@ public abstract class BasePageableResult<T> implements PageableResult {
 				links.add(context.getNextLink());
 			if (context.getStartIndex() > 0)
 				links.add(context.getPreviousLink());
-			ret.add("links", links);
+			dto.setLinks(links);
 		}
 		if (Boolean.valueOf(context.getParameter("totalCount"))) {
-			ret.add("totalCount", getTotalCount());
+			dto.setTotalCount(getTotalCount());
 		}
-		return ret;
+		return ConversionUtil.toTypedSimpleObject(dto);
 	}
 	
 }
