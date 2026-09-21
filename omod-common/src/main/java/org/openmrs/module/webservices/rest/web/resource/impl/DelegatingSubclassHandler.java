@@ -42,13 +42,15 @@ public interface DelegatingSubclassHandler<Superclass, Subclass extends Supercla
 	Class<Subclass> getSubclassHandled();
 	
 	/**
-	 * Gets all instances of this subclass of the resource
+	 * Gets all instances of this subclass of the resource. Note that while `PageableResult<Subclass>` would be the
+	 * more correct return type here, this type narrowing causes type erasure problems in BaseDelegatingReadableResource#getAll,
+	 * and does not actually provide enough type information about the possible Subclasses of the Superclass.
 	 * 
 	 * @param context
 	 * @return
 	 * @throws ResourceDoesNotSupportOperationException if this resource does not support the
 	 *             operation
 	 */
-	PageableResult<Subclass> getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException;
+	PageableResult<Superclass> getAllByType(RequestContext context) throws ResourceDoesNotSupportOperationException;
 	
 }
