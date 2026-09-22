@@ -188,13 +188,39 @@ public class PersonAttributeResource1_8Test extends BaseModuleWebContextSensitiv
 	public void setValue_shouldSetThePassedValueForNonAttributableClasses() throws ClassNotFoundException {
 		PersonAttributeType type = personService.getPersonAttributeTypeByName("Race");
 		PersonAttribute attribute = new PersonAttribute(type, null);
-		
+
 		Assertions.assertNull(attribute.getValue());
 		Assertions.assertEquals("java.lang.String", type.getFormat());
 		Assertions.assertFalse(Attributable.class.isAssignableFrom(Context.loadClass(type.getFormat())));
-		
+
 		resource.setValue(attribute, "arab");
-		
+
 		Assertions.assertEquals("arab", attribute.getValue());
+	}
+
+	@Test
+	public void create_shouldCorrectlyConvertCodedAttributeValueWhenCreatedViaConvertMap() throws Exception {
+		// Set up a Location-type attribute type
+		PersonAttributeType locationType = new PersonAttributeType();
+		locationType.setFormat("org.openmrs.Location");
+		locationType.setName("Coded Location Attribute");
+		locationType.setDescription("For testing coded attribute conversion");
+		locationType.setSearchable(false);
+		locationType = personService.savePersonAttributeType(locationType);
+
+		Location location = locationService.getAllLocations().get(0);
+
+		// Submit JSON with attributeType before value — matches DefaultRepresentation order after our fix
+		String json = "{\"attributeType\": {\"uuid\": \"" + locationType.getUuid() + "\"}, "
+		        + "\"value\": \"" + location.getUuid() + "\"}";
+
+		SimpleObject created = (SimpleObject) resource.create(
+		    "da7f524f-27ce-4bb2-86d6-6d1d05312bd5",
+		    SimpleObject.parseJson(json),
+		    new RequestContext());
+
+		// Value should be stored as location ID (serialized form), not the raw UUID
+		Assertions.assertNotNull(created.get("value"));
+		Assertions.assertNotEquals(location.getUuid(), created.get("value"));
 	}
 }
