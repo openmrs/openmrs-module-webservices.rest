@@ -28,6 +28,9 @@ import org.openmrs.module.webservices.rest.web.representation.CustomRepresentati
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.response.ConversionException;
+import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.resource.impl.PropertyDecorator;
 
 /**
  * A base implementation of a converter that can transform something that is _not_ a full resource
@@ -74,19 +77,62 @@ public abstract class BaseDelegatingConverter<T> implements Converter<T>, Delega
 
 		return convertDelegateToRepresentation(delegate, description);
 	}
-	
+
 	@Override
 	public Object getProperty(T instance, String propertyName) throws ConversionException {
 		try {
+			// Step 1: Check @PropertyGetter on this resource class
 			Method annotatedGetter = ReflectionUtil.findPropertyGetterMethod(this, propertyName);
 			if (annotatedGetter != null) {
 				return annotatedGetter.invoke(this, instance);
 			}
-			
+
+			// Step 2: Check registered PropertyDecorators for this instance type
+			List<PropertyDecorator> decorators = getDecoratorsForInstance(instance);
+			for (PropertyDecorator decorator : decorators) {
+				Method decoratorGetter = ReflectionUtil
+						.findPropertyGetterMethodOnObject(decorator, propertyName);
+				if (decoratorGetter != null) {
+					return decoratorGetter.invoke(decorator, instance);
+				}
+			}
+
+			// Step 3: Fall back to standard bean property access
 			return PropertyUtils.getProperty(instance, propertyName);
 		}
 		catch (Exception ex) {
 			throw new ConversionException("Unable to get property " + propertyName, ex);
+		}
+	}
+
+	/**
+	 * Returns all PropertyDecorators registered for the given instance's type.
+	 * Uses Spring's application context to find all beans implementing
+	 * PropertyDecorator whose @Handler annotation supports the instance's class.
+	 *
+	 * @param instance the domain object being converted
+	 * @return list of matching decorators, empty list if none found
+	 */
+	@SuppressWarnings("unchecked")
+	private List<PropertyDecorator> getDecoratorsForInstance(T instance) {
+		try {
+			Map<String, PropertyDecorator> beans = Context.getRegisteredComponents(PropertyDecorator.class);
+			List<PropertyDecorator> matching = new ArrayList<PropertyDecorator>();
+			for (PropertyDecorator decorator : beans.values()) {
+				Handler handler = decorator.getClass().getAnnotation(Handler.class);
+				if (handler != null) {
+					for (Class<?> supportedClass : handler.supports()) {
+						if (supportedClass.isAssignableFrom(instance.getClass())) {
+							matching.add(decorator);
+							break;
+						}
+					}
+				}
+			}
+			return matching;
+		}
+		catch (Exception e) {
+			return new ArrayList<PropertyDecorator>();
 		}
 	}
 	
