@@ -12,6 +12,7 @@ package org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8;
 import io.swagger.models.Model;
 import io.swagger.models.ModelImpl;
 import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.StringProperty;
 import org.openmrs.FieldType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -49,9 +50,11 @@ public class FieldTypeResource1_8 extends MetadataDelegatingCrudResource<FieldTy
 	
 	@Override
 	public Model getUPDATEModel(Representation rep) {
-		return new ModelImpl(); //FIXME missing props
+		return ((ModelImpl) super.getUPDATEModel(rep))
+				.property("description", new StringProperty())
+				.property("isSet", new BooleanProperty());
 	}
-	
+
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(Representation)
 	 */
