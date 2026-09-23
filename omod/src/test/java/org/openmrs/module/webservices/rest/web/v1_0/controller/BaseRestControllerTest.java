@@ -31,6 +31,7 @@ import org.openmrs.module.webservices.rest.web.response.IllegalPropertyException
 import org.openmrs.api.ValidationException;
 import org.openmrs.web.test.jupiter.BaseModuleWebContextSensitiveTest;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.validation.BindException;
@@ -87,6 +88,28 @@ public class BaseRestControllerTest extends BaseModuleWebContextSensitiveTest {
 		assertThat(response.getStatus(), is(HttpServletResponse.SC_FORBIDDEN));
 	}
 	
+	/**
+	 * @verifies delegate AuthorizationDeniedException to the same 401/403 handling as
+	 *           APIAuthenticationException
+	 * @see BaseRestController#handleException(Exception, jakarta.servlet.http.HttpServletRequest,
+	 *      HttpServletResponse)
+	 */
+	@Test
+	public void handleException_shouldReturnUnauthorizedForAuthorizationDeniedExceptionIfNotLoggedIn() throws Exception {
+		Context.logout();
+
+		controller.handleException(new AuthorizationDeniedException("Denied"), request, response);
+
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_UNAUTHORIZED));
+	}
+
+	@Test
+	public void handleException_shouldReturnForbiddenForAuthorizationDeniedExceptionIfLoggedIn() throws Exception {
+		controller.handleException(new AuthorizationDeniedException("Denied"), request, response);
+
+		assertThat(response.getStatus(), is(HttpServletResponse.SC_FORBIDDEN));
+	}
+
 	@Test
 	public void validationException_shouldReturnBadRequestResponse() throws Exception {
 		Errors ex = new BindException(new Person(), "");
