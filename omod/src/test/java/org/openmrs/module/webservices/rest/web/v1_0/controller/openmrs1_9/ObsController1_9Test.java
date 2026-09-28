@@ -27,6 +27,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.impl.ObsArchiveHelper;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestTestConstants1_8;
@@ -183,16 +184,12 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 
 		assertEquals(6, allNonVoidedObsList.size());
 		
-		try {
-			executeDataSet("obsArchive1_9.xml");
-			Object archiveHelper = Context.getRegisteredComponent("obsArchiveHelper", Object.class);
-			if (archiveHelper != null) {
-				archiveHelper.getClass().getMethod("markArchiveHasData").invoke(archiveHelper);
-			}
-		} catch (Exception e) {
-			// table obs_archive may not exist in this database version, skip the rest of the test
-			return;
-		}
+		Context.getAdministrationService().executeSQL(
+				"insert into obs_archive (obs_id, person_id, encounter_id, concept_id, value_text, status, obs_datetime, creator, " + 
+				"date_created, voided, void_reason, date_voided, voided_by, uuid) values (1006, 7, 1000, 19, 'Archived text', " + 
+				"'FINAL', '2008-08-01 00:00:00', 1, '2008-08-18 14:09:05', true, 'archived', '2008-08-18 14:09:05', 1, " + 
+				"'12345678-96cd-11e0-8d6b-9b9415a91465')", false);
+		Context.getRegisteredComponent("obsArchiveHelper", ObsArchiveHelper.class).markArchiveHasData();
 
 		MockHttpServletRequest allObsIncludingArchivedRequest = newGetRequest(getURI());
 		allObsIncludingArchivedRequest.addParameter("encounter", ENCOUNTER_UUID);
