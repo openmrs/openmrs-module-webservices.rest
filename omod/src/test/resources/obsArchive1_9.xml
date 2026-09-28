@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<obs_archive obs_id="1006" person_id="7" encounter_id="1000" concept_id="19" value_text="Archived text" status="FINAL" obs_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="true" void_reason="archived" date_voided="2008-08-18 14:09:05.0" voided_by="1" uuid="12345678-96cd-11e0-8d6b-9b9415a91465" />
+</dataset>

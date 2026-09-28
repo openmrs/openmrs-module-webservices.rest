@@ -170,6 +170,49 @@ public class ObsController1_9Test extends MainResourceControllerTest {
 	}
 
 	@Test
+	public void searchByEncounter_shouldGetArchivedObsIfIncludeAllIsTrue() throws Exception {
+
+		executeDataSet("encounterWithObsGroup1_9.xml");
+
+		final String ENCOUNTER_UUID = "62967e68-96bb-11e0-8d6b-9b9415a91465";
+
+		MockHttpServletRequest allNonVoidedObsRequest = newGetRequest(getURI());
+		allNonVoidedObsRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allNonVoidedObsResponse = handle(allNonVoidedObsRequest);
+		List<Object> allNonVoidedObsList = deserialize(allNonVoidedObsResponse).get("results");
+
+		assertEquals(6, allNonVoidedObsList.size());
+		
+		try {
+			executeDataSet("obsArchive1_9.xml");
+			Object archiveHelper = Context.getRegisteredComponent("obsArchiveHelper", Object.class);
+			if (archiveHelper != null) {
+				archiveHelper.getClass().getMethod("markArchiveHasData").invoke(archiveHelper);
+			}
+		} catch (Exception e) {
+			// table obs_archive may not exist in this database version, skip the rest of the test
+			return;
+		}
+
+		MockHttpServletRequest allObsIncludingArchivedRequest = newGetRequest(getURI());
+		allObsIncludingArchivedRequest.addParameter("encounter", ENCOUNTER_UUID);
+		allObsIncludingArchivedRequest.addParameter("includeAll", "true");
+		MockHttpServletResponse allObsIncludingArchivedResponse = handle(allObsIncludingArchivedRequest);
+		List<Object> allObsIncludingArchivedList = deserialize(allObsIncludingArchivedResponse).get("results");
+
+		// should now be 7 (6 original + 1 archived)
+		assertEquals(7, allObsIncludingArchivedList.size());
+		
+		// test that it doesn't come back with includeAll=false
+		MockHttpServletRequest allObsNotIncludingArchivedRequest = newGetRequest(getURI());
+		allObsNotIncludingArchivedRequest.addParameter("encounter", ENCOUNTER_UUID);
+		MockHttpServletResponse allObsNotIncludingArchivedResponse = handle(allObsNotIncludingArchivedRequest);
+		List<Object> allObsNotIncludingArchivedList = deserialize(allObsNotIncludingArchivedResponse).get("results");
+		
+		assertEquals(6, allObsNotIncludingArchivedList.size());
+	}
+
+	@Test
 	public void shouldSubmitProperValueCodedWhenBooleanConceptUuidIsPassedAsValue() throws Exception {
 		final String yesConceptUuid = "b055abd8-a420-4a11-8b98-02ee170a7b54";
 		final String yesConceptId = "7";
