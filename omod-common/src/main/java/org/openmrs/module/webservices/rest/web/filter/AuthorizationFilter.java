@@ -41,6 +41,8 @@ public class AuthorizationFilter implements Filter {
 	
 	private static final Logger log = LoggerFactory.getLogger(AuthorizationFilter.class);
 	
+	private static final String SESSION_PATH = "/ws/rest/" + RestConstants.VERSION_1 + "/session";
+	
 	/**
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
 	 */
@@ -77,7 +79,8 @@ public class AuthorizationFilter implements Filter {
 		// skip if the session has timed out, we're already authenticated, or it's not an HTTP request
 		if (request instanceof HttpServletRequest) {
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()) {
+			if (httpRequest.getRequestedSessionId() != null && !httpRequest.isRequestedSessionIdValid()
+			        && !isSessionEndpoint(httpRequest)) {
 				HttpServletResponse httpResponse = (HttpServletResponse) response;
 				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session timed out");
 			}
@@ -119,5 +122,14 @@ public class AuthorizationFilter implements Filter {
 		
 		// continue with the filter chain (unless IP is not allowed)
 		chain.doFilter(request, response);
+	}
+	
+	/**
+	 * The session endpoint is how clients find out that their session has expired and log in again, so a stale
+	 * session cookie must not cause requests to it to fail.
+	 */
+	private boolean isSessionEndpoint(HttpServletRequest request) {
+		String path = StringUtils.removeStart(request.getRequestURI(), request.getContextPath());
+		return SESSION_PATH.equals(path) || (SESSION_PATH + "/").equals(path);
 	}
 }
