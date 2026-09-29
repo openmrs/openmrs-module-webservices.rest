@@ -23,7 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.wrapper.openmrs1_8.UserAndPa
  * {@link Resource} for User, supporting standard CRUD operations
  */
 @Resource(name = RestConstants.VERSION_1 + "/user", supportedClass = UserAndPassword1_8.class, supportedOpenmrsVersions = {
-        "2.2.* - 9.*" })
+        "2.2.* - 2.9.*" })
 public class UserResource2_2 extends UserResource2_0 {
 
     /**
