@@ -1,0 +1,15 @@
+name: Upload Coverage
+
+on:
+  workflow_run:
+    workflows: ["Build with Maven"]  # must match the build workflow's name:
+    types: [completed]
+
+jobs:
+  upload:
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+      pull-requests: read
+    uses: openmrs/openmrs-contrib-gha-workflows/.github/workflows/upload-coverage.yml@main
