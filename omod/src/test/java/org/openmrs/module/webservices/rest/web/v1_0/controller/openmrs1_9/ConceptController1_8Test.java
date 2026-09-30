@@ -805,4 +805,47 @@ public class ConceptController1_8Test extends MainResourceControllerTest {
 		return concept;
 	}
 	
+	@Test
+	public void doSearch_shouldNotReturnDuplicateMembersOfConcept() throws Exception {
+		// Create a concept set with members that have multiple names, which can cause
+		// HQL joins to produce duplicate rows (RESTWS-1035)
+		Concept parentSet = newConcept("TEST PARENT SET");
+		parentSet.setSet(true);
+		
+		Concept member1 = newConcept("MEMBER ONE");
+		member1.addName(new ConceptName("MEMBER ONE SYNONYM", Locale.ENGLISH));
+		member1.addName(new ConceptName("MEMBRE UN", Locale.FRENCH));
+		
+		Concept member2 = newConcept("MEMBER TWO");
+		member2.addName(new ConceptName("MEMBER TWO SYNONYM", Locale.ENGLISH));
+		
+		service.saveConcept(member1);
+		service.saveConcept(member2);
+		
+		parentSet.addSetMember(member1);
+		parentSet.addSetMember(member2);
+		service.saveConcept(parentSet);
+		
+		// Query for members of the parent set
+		MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+		req.addParameter("memberOf", parentSet.getUuid());
+		req.addParameter("q", "MEMBER");
+		
+		service.updateConceptIndexes();
+		
+		SimpleObject result = deserialize(handle(req));
+		List<Object> hits = (List<Object>) result.get("results");
+		
+		// Collect all returned UUIDs and verify uniqueness
+		java.util.Set<String> seenUuids = new java.util.HashSet<String>();
+		for (Object hit : hits) {
+			String uuid = (String) PropertyUtils.getProperty(hit, "uuid");
+			Assertions.assertTrue(seenUuids.add(uuid),
+			    "Duplicate concept UUID found in memberOf results: " + uuid);
+		}
+		
+		// We should have exactly 2 unique member concepts
+		Assertions.assertEquals(2, hits.size(), "Expected exactly 2 member concepts");
+	}
+	
 }
