@@ -9,9 +9,11 @@
  */
 package org.openmrs.module.webservices.rest.web.resource.impl;
 
-import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
 import java.util.Collections;
@@ -19,14 +21,16 @@ import java.util.Collections;
 /**
  * Empty list of search results
  */
-public class EmptySearchResult implements PageableResult {
+public class EmptySearchResult<T> implements PageableResult<T> {
 	
 	/**
 	 * @see org.openmrs.module.webservices.rest.web.resource.api.PageableResult#toSimpleObject(Converter)
 	 */
 	@Override
-	public SimpleObject toSimpleObject(Converter<?> preferredConverter) throws ResponseException {
-		return new SimpleObject().add("results", Collections.emptyList());
+	public TypedSimpleObject<PageableResultDto<T>> toSimpleObject(Converter<? super T> preferredConverter) throws ResponseException {
+		PageableResultDto<T> dto = new PageableResultDto<>();
+		dto.setResults(Collections.<org.openmrs.module.webservices.rest.SimpleObject>emptyList());
+		return ConversionUtil.toTypedSimpleObject(dto);
 	}
 	
 }

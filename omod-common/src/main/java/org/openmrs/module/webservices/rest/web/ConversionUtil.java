@@ -20,11 +20,13 @@ import org.openmrs.Voidable;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.TypedSimpleObject;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.Converter;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResultDto;
 import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
@@ -609,5 +611,21 @@ public class ConversionUtil {
 		}
 
 		return desc;
+	}
+
+	/**
+	 * Wraps a PageableResultDto into a TypedSimpleObject by explicitly mapping
+	 * its fields to the well-known JSON property names.
+	 */
+	public static <T> TypedSimpleObject<PageableResultDto<T>> toTypedSimpleObject(PageableResultDto<T> dto) {
+		TypedSimpleObject<PageableResultDto<T>> ret = new TypedSimpleObject<>();
+		ret.put("results", dto.getResults());
+		if (dto.getTotalCount() != null) {
+			ret.put("totalCount", dto.getTotalCount());
+		}
+		if (dto.getLinks() != null && !dto.getLinks().isEmpty()) {
+			ret.put("links", dto.getLinks());
+		}
+		return ret;
 	}
 }
