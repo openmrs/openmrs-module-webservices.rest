@@ -221,9 +221,9 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	@Override
 	public Alert getByUniqueId(String uniqueId) {
-		boolean includeRetired = true;
-		List<Alert> alerts = Context.getAlertService().getAllAlerts(includeRetired);
-		for (Alert alert : alerts) {
+		// scope the lookup to the alerts the caller is allowed to see, so a non-recipient simply
+		// gets a not-found (null) for an alert addressed to someone else
+		for (Alert alert : getAlertsForCurrentUser(true)) {
 			if (alert.getUuid().equals(uniqueId)) {
 				return alert;
 			}
@@ -252,19 +252,33 @@ public class AlertResource2_0 extends DelegatingCrudResource<Alert> {
 
 	@Override
 	protected PageableResult doGetAll(RequestContext context) throws ResponseException {
-		List<Alert> alerts = Context.getAlertService().getAllAlerts();
-		return new NeedsPaging<>(alerts, context);
+		return new NeedsPaging<>(getAlertsForCurrentUser(false), context);
 	}
 
 	@Override
 	protected PageableResult doSearch(RequestContext context) {
 		// include expired
 		String includeExpiredStr = context.getRequest().getParameter("includeExpired");
-		if (includeExpiredStr != null) {
-			boolean includeExpired = Boolean.parseBoolean(includeExpiredStr);
-			return new NeedsPaging<>(Context.getAlertService().getAllAlerts(includeExpired), context);
-		}
+		boolean includeExpired = Boolean.parseBoolean(includeExpiredStr);
+		return new NeedsPaging<>(getAlertsForCurrentUser(includeExpired), context);
+	}
 
-		return new NeedsPaging<>(Context.getAlertService().getAllAlerts(), context);
+	/**
+	 * Alerts are personal notifications, so a caller may only list alerts addressed to them.
+	 * Callers holding the {@link PrivilegeConstants#GET_ALERTS} privilege may read every user's
+	 * alerts and may therefore list every alert in the system.
+	 *
+	 * @param includeExpired whether expired alerts should be included
+	 * @return the alerts the currently authenticated user is allowed to see
+	 */
+	static List<Alert> getAlertsForCurrentUser(boolean includeExpired) {
+		if (canViewAllAlerts()) {
+			return Context.getAlertService().getAllAlerts(includeExpired);
+		}
+		return Context.getAlertService().getAlerts(Context.getAuthenticatedUser(), true, includeExpired);
+	}
+
+	private static boolean canViewAllAlerts() {
+		return Context.hasPrivilege(PrivilegeConstants.GET_ALERTS);
 	}
 }
